@@ -56,7 +56,7 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_request(
 ) -> jstring {
     let response = catch_unwind(AssertUnwindSafe(|| {
         let input: String = env.get_string(&input).map_err(|_| ())?.into();
-        if input.len() > 4096 {
+        if input.len() > 34 * 1024 * 1024 {
             return Err(());
         }
         let value = serde_json::from_str(&input).map_err(|_| ())?;

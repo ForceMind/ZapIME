@@ -18,7 +18,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private final Handler main = new Handler(Looper.getMainLooper());
     private long handle, generation;
     private int epoch;
-    private boolean chinese = true, shift, sensitive, ready;
+    private boolean chinese = true, shift, sensitive, privateSession, ready;
     private TextView status;
     private LinearLayout candidates;
     private String preedit = "";
@@ -42,14 +42,15 @@ public final class ZapInputMethodService extends InputMethodService {
         super.onStartInput(info,restarting); final int active = ++epoch; ready = false; preedit=""; generation=0;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
-        sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
+        sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
+        privateSession = sensitive || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
         chinese = !sensitive;
-        final boolean privateMode = sensitive;
+        final boolean privateMode = privateSession;
         refreshStatus(); if(candidates!=null)candidates.removeAllViews();
         worker.execute(() -> {
             if(handle!=0) { NativeCore.close(handle); handle=0; }
             try {
-                prepareResources();
+                ResourceInstaller.prepare(this);
                 handle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(), privateMode);
                 final boolean success = handle!=0;
                 main.post(() -> { if(epoch==active) { ready=success; refreshStatus(); } });
@@ -58,19 +59,7 @@ public final class ZapInputMethodService extends InputMethodService {
             }
         });
     }
-    private void prepareResources() throws IOException {
-        File root = new File(getFilesDir(),"zapime/resources");
-        if(!root.isDirectory() && !root.mkdirs())throw new IOException("resource_directory");
-        for(String name : getAssets().list("dictionary")) {
-            File output = new File(root,name);
-            // 安装包只从经过哈希校验的资源构建；版本化目录在词库升级切片完善。
-            if(output.isFile() && output.length()>0)continue;
-            File staged = new File(root,name+".incoming");
-            try(InputStream in=getAssets().open("dictionary/"+name); OutputStream out=new FileOutputStream(staged)) { byte[] buffer=new byte[65536]; int n; while((n=in.read(buffer))!=-1)out.write(buffer,0,n); }
-            if(!staged.renameTo(output))throw new IOException("resource_install");
-        }
-    }
-    private void refreshStatus() { if(status!=null)status.setText(preedit.isEmpty()?(sensitive?"隐私输入 · 不学习":(ready?(chinese?"⚡ 闪电 · 离线":"⚡ ZapIME · English"):"正在准备离线词库…")):preedit); }
+    private void refreshStatus() { if(status!=null)status.setText(preedit.isEmpty()?(privateSession?"隐私输入 · 不学习":(ready?(chinese?"⚡ 闪电 · 离线":"⚡ ZapIME · English"):"正在准备离线词库…")):preedit); }
     private void send(JSONObject request, String fallback) {
         final int active=epoch;
         if(!ready)return;
@@ -83,7 +72,7 @@ public final class ZapInputMethodService extends InputMethodService {
         });
     }
     private void apply(JSONObject value, String fallback) {
-        if(value.has("error"))return;
+        if(value.has("error")){ if(status!=null)status.setText("操作未完成，请在个人资料中检查候选规则。"); return; }
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
         generation=value.optLong("generation");
         if(!value.isNull("commit"))connection.commitText(value.optString("commit"),1);
@@ -96,7 +85,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(preedit.isEmpty())connection.finishComposingText(); refreshStatus();
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(words==null)return;
         final long shownGeneration=generation;
-        for(int i=0;i<words.length();i++) { final int index=i; Button b=new Button(this); b.setText(words.optString(i)); b.setTextSize(20); candidates.addView(b); b.setOnClickListener(v -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} }); }
+        for(int i=0;i<words.length();i++) { final int index=i; Button b=new Button(this); b.setText(words.optString(i)); b.setTextSize(20); candidates.addView(b); b.setOnClickListener(v -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} }); b.setOnLongClickListener(v -> { if(privateSession)return false; try { send(new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration),null); return true; } catch(JSONException ignored) { return false; } }); }
     }
     private void press(String key) {
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
