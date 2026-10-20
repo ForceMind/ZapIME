@@ -15,6 +15,8 @@ subprocess.run(command+["shell","settings","put","secure","show_ime_with_hard_ke
 result=subprocess.run(command+["shell","am","instrument","-w","org.zapime.android.test/.SmokeInstrumentation"],text=True,capture_output=True,timeout=180)
 (output/"instrumentation.log").write_text(result.stdout+result.stderr)
 subprocess.run(command+["pull","/sdcard/Android/data/org.zapime.android/files/smoke.png",str(output/"smoke.png")],check=False)
+diagnostics=subprocess.run(command+["shell","dumpsys","input_method"],text=True,capture_output=True)
+(output/"input-method-state.log").write_text(diagnostics.stdout)
 logs=subprocess.run(command+["logcat","-d","-s","AndroidRuntime:E"],text=True,capture_output=True)
 (output/"runtime-errors.log").write_text(logs.stdout)
 print(result.stdout,flush=True)
