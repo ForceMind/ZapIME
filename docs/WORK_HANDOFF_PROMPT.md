@@ -109,3 +109,4 @@
 ## 8. 立即开始执行，而不是再次讨论
 
 首次动作：完整读取 docs/DEVELOPMENT_PLAN.md；从当前 ForceMind/ZapIME/main 状态开始；列出上游许可、四端构建证据和当前最大风险；创建 M0 审计文档与 GitHub 跟踪；实际移植可以合法使用的输入核心，尽快做出 Android 可输入的第一个真实 APK 并推进 iOS/macOS/Windows 的最小宿主构建。不要只设计 UI、不要只创建 Issues 就宣称研发启动；请真正修改源码、构建、验证、提交、继续。
+

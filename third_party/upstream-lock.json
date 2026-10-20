@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "msime": {"repository": "https://github.com/metasequoiaime/msime.git", "commit": "97d652a49cabb0887355b84186af2aa9032d3814", "license": "GPL-3.0-only", "integration": "pinned submodule; engine linked; four upstream native hosts available for migration"},
+  "chinese_ime_lm": {"repository": "https://github.com/metasequoiaime/chinese-ime-lm", "reviewed_commit": "4e745be72f1c49e9c7b5dadea819fbb1fcda0e13", "engine_dependency_commit": "15caab4fdeb59c11f452b91884371cf30e2e5608", "scope": "reference/ Apache-2.0; root tooling GPL-3.0; weights separate Apache-2.0 plus corpus attribution"},
+  "msime_cloud": {"repository": "https://github.com/metasequoiaime/msime-cloud", "reviewed_commit": "85fe4cebe474abbf03e662d95bbcc0b1ed38f1ee", "license": "NOASSERTION", "copied": false},
+  "dictionary": {"repository": "https://github.com/metasequoiaime/msime-dictionary", "release": "dict-v2.0.24", "source_commit": "71dc6f6cc7a451231ee29c0a39b39adbf2e04d32", "lock": "vendor/msime/resources/editions/pinyin.lock.json", "includes_unlicensed_inputs": false}
+}

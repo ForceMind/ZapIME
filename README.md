@@ -2,31 +2,27 @@
 
 **一个输入法，连接所有设备。**
 
-ZapIME 计划打造 Android、iOS、macOS 与 Windows 原生输入法，提供统一的个人词库、自定义候选字词、快捷短语、端到端加密云剪贴板、永久收藏与用户可掌控的自建同步服务。
+面向 Android、iOS、macOS、Windows 的原生中文输入法工程。以离线输入、统一个人数据、自建加密同步与长期可恢复为目标。
 
-> **开发状态（2026-10-20）：**工程规划已建立，**尚未引入客户端或服务器源码**。这是新建项目，四端产品尚未构建或发布；不要把设计目标表述为已经实现的功能。
+## 当前状态
 
-## 开发与工作交接
+开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；输入集成测试已运行，Android 打包验证进行中。其余三端、统一个人数据、云同步和恢复功能尚未完成。完整证据见[项目状态](docs/STATUS.md)。
 
-- [完整产品需求、架构与开发路线图](docs/DEVELOPMENT_PLAN.md)
-- [ChatGPT Work 持续自主研发接管指令](docs/WORK_HANDOFF_PROMPT.md)
-- [当前执行状态](docs/STATUS.md)
+## 开发
 
-## 核心设计原则
+```sh
+git submodule update --init
+cargo test --workspace --locked
+```
 
-- **四端原生**：Android InputMethodService、iOS Keyboard Extension、macOS InputMethodKit、Windows TSF。
-- **离线优先**：基本输入、已保存个人词库及快捷短语不依赖网络。
-- **本机即权威副本**：数据可导出和加密恢复；同步服务可替换并自行部署。
-- **不混淆剪贴板和永久收藏**：临时内容自动过期不影响用户主动保存的信息。
-- **隐私可验证**：敏感输入不默认上传；端到端加密、多设备配对和撤销。
-- **授权合规**：保留复用代码应有的开源许可证、版权声明及第三方资源 NOTICE。
+[构建说明](docs/BUILD.md) · [开发计划](docs/DEVELOPMENT_PLAN.md) · [架构](docs/ARCHITECTURE.md) · [接管指令](docs/WORK_HANDOFF_PROMPT.md)
 
-## 技术研究基线
+## 数据与隐私原则
 
-- [MSIME / 水杉输入法](https://github.com/metasequoiaime/msime)：跨平台原生输入法及 Rust 共享引擎，**GPL-3.0-only**。必须保留合法授权、版权和 NOTICE；用户不应以为只是改名字即可不受 GPL 约束。
-- [chinese-ime-lm](https://github.com/metasequoiaime/chinese-ime-lm)：输入法候选重排模型研究；公开参考推理和权重有 Apache-2.0 授权及语料署名义务。
-- [msime-cloud](https://github.com/metasequoiaime/msime-cloud)：Go 服务端研究参考，**不能假设公开可见即已获得二次使用许可**；未确认授权前不直接复制后端实现。
+本地输入不等网络。个人词库、自定义候选、短语、永久收藏与临时剪贴板使用可迁移的数据体系。云同步计划采用用户自持恢复材料的端到端加密；服务端可替换，四端均保留离线副本。当前 Android 验证包不申请网络权限。
 
-域名 zapime.com、zapime.app 均为候选；**未确认已购得**，任何生产 DNS/API 配置不得擅自以此为前提。
+## 许可与来源
 
-详见计划文档。
+客户端采用 GPL-3.0-only，保留 [MSIME](https://github.com/metasequoiaime/msime) 版权及第三方许可。上游固定在 `vendor/msime` 子模块；[来源锁](third_party/upstream-lock.json)、[许可审计](docs/LICENSE_AUDIT.md) 与 [NOTICE](third_party/NOTICE.txt) 记录各组件范围。分发二进制须履行对应源码等义务。未将授权不明确的 msime-cloud 实现复制进项目。
+
+zapime.com / zapime.app 仍是候选域名，未确认购买或绑定。

@@ -1,0 +1,84 @@
+name: ZapIME development checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: zapime-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  core:
+    name: Shared core (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          components: rustfmt, clippy
+      - run: python scripts/verify_upstream.py
+      - run: cargo fmt --all --check
+      - run: cargo test --workspace --locked
+      - run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: iOS simulator shared library check (not native keyboard acceptance)
+        if: runner.os == 'macOS'
+        run: |
+          rustup target add aarch64-apple-ios-sim
+          SDKROOT=$(xcrun --sdk iphonesimulator --show-sdk-path) cargo check --locked -p zapime-core --target aarch64-apple-ios-sim
+  android:
+    name: Android development APK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          targets: aarch64-linux-android, x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android-native
+          cache-on-failure: true
+      - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
+      - run: bash scripts/build_android.sh arm64-v8a
+      - run: bash scripts/build_android.sh x86_64
+      - run: bash scripts/build_android_tests.sh
+      - name: Enable KVM for native input acceptance
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android API 28 native keyboard smoke
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          target: default
+          emulator-boot-timeout: 300
+          script: |
+            adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            python3 scripts/android_smoke.py "$(command -v adb)" emulator-5554
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-Android-development
+          path: |
+            target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+            target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            target/device-smoke/
+          if-no-files-found: error

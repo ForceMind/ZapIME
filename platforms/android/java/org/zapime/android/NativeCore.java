@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-only
+package org.zapime.android;
+final class NativeCore {
+    static { System.loadLibrary("zapime_core"); }
+    static native long open(String root, boolean privateMode);
+    static native String request(long handle, String json);
+    static native void close(long handle);
+}
