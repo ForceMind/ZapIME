@@ -50,6 +50,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@1.97.1
         with:
           targets: aarch64-linux-android, x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android-native
+          cache-on-failure: true
       - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
@@ -68,9 +72,6 @@ jobs:
           emulator-boot-timeout: 300
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
-            adb shell settings put secure enabled_input_methods org.zapime.android/.ZapInputMethodService
-            adb shell ime set org.zapime.android/.ZapInputMethodService
-            adb shell am start -n org.zapime.android/.MainActivity
             python3 scripts/android_smoke.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         if: always()

@@ -3,5 +3,5 @@
   <application android:label="ZapIME test host" android:theme="@android:style/Theme.Material.Light.NoActionBar">
     <activity android:name=".ProbeActivity" android:exported="true" android:windowSoftInputMode="stateAlwaysVisible|adjustResize"/>
   </application>
-  <instrumentation android:name=".SmokeInstrumentation" android:targetPackage="org.zapime.android" android:label="ZapIME native keyboard smoke"/>
+  <instrumentation android:name=".SmokeInstrumentation" android:targetPackage="org.zapime.android.test" android:label="ZapIME native keyboard smoke"/>
 </manifest>
