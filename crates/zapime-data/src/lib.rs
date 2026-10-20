@@ -155,9 +155,23 @@ impl Store {
         }
         db.execute_batch("BEGIN IMMEDIATE;
             CREATE TABLE IF NOT EXISTS records(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS operations(id TEXT PRIMARY KEY, request TEXT NOT NULL, result TEXT NOT NULL, pending INTEGER NOT NULL);
             PRAGMA user_version=1; COMMIT;")?;
         Ok(Self { db })
+    }
+    /// 本地来源标识不等于同步认证凭据；只用于追踪编辑来源。
+    pub fn device_id(&self) -> Result<Uuid, Error> {
+        self.db.execute(
+            "INSERT OR IGNORE INTO metadata VALUES('device_id',?1)",
+            [Uuid::new_v4().to_string()],
+        )?;
+        let text: String = self.db.query_row(
+            "SELECT value FROM metadata WHERE key='device_id'",
+            [],
+            |r| r.get(0),
+        )?;
+        Uuid::parse_str(&text).map_err(|_| Error::Invalid)
     }
     pub fn get(&self, id: Uuid) -> Result<Option<Record>, Error> {
         let value: Option<String> = self

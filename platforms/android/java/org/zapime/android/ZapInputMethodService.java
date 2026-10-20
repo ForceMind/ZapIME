@@ -96,7 +96,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(preedit.isEmpty())connection.finishComposingText(); refreshStatus();
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(words==null)return;
         final long shownGeneration=generation;
-        for(int i=0;i<words.length();i++) { final int index=i; Button b=new Button(this); b.setText(words.optString(i)); b.setTextSize(20); candidates.addView(b); b.setOnClickListener(v -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} }); }
+        for(int i=0;i<words.length();i++) { final int index=i; Button b=new Button(this); b.setText(words.optString(i)); b.setTextSize(20); candidates.addView(b); b.setOnClickListener(v -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} }); b.setOnLongClickListener(v -> { if(sensitive)return false; try { send(new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration),null); return true; } catch(JSONException ignored) { return false; } }); }
     }
     private void press(String key) {
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;

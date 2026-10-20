@@ -90,3 +90,88 @@ fn backspace_raw_commit_and_focus_reset() {
     session.request(&json!({"op":"reset"}));
     assert_eq!(session.request(&json!({"op":"view"}))["preedit"], "");
 }
+
+#[test]
+fn persisted_user_candidate_rule_changes_selection_and_survives_reopen() {
+    let (dir, _private) = fixture();
+    let resources = dir.path().join("resources");
+    let data = dir.path().join("data");
+    let cache = dir.path().join("cache");
+    let mut session = InputSession::open(&resources, &data, &cache, false).unwrap();
+    let edit = json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":{"type":"candidate_rule","scheme":"pinyin","code":"nihao","text":"拟好","position":1}});
+    assert!(session.request(&edit).get("error").is_none());
+    drop(session);
+    let mut session = InputSession::open(&resources, &data, &cache, false).unwrap();
+    let mut view = json!(null);
+    for c in "nihao".chars() {
+        view = session.request(&json!({"op":"key","text":c.to_string()}));
+    }
+    assert_eq!(view["candidates"][0], "拟好");
+    assert_eq!(
+        session.request(&json!({"op":"command","name":"CommitCandidate"}))["commit"],
+        "拟好"
+    );
+}
+
+#[test]
+fn shortcut_can_commit_custom_text_without_replacing_pinyin_decoder() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    let edit = json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":{"type":"snippet","code":"wx","text":"合成快捷短语","tags":[]}});
+    assert!(session.request(&edit).get("error").is_none());
+    for c in "wx".chars() {
+        session.request(&json!({"op":"key","text":c.to_string()}));
+    }
+    assert_eq!(
+        session.request(&json!({"op":"command","name":"CommitCandidate"}))["commit"],
+        "合成快捷短语"
+    );
+    assert_eq!(session.request(&json!({"op":"view"}))["preedit"], "");
+    let mut private = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        true,
+    )
+    .unwrap();
+    assert_eq!(private.request(&edit)["error"], "private_session");
+}
+
+#[test]
+fn candidate_pin_reorders_visible_rows_and_rejects_old_click() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    let mut view = json!(null);
+    for c in "nihao".chars() {
+        view = session.request(&json!({"op":"key","text":c.to_string()}));
+    }
+    let index = view["candidates"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|v| v == "拟好")
+        .unwrap();
+    let pinned = session
+        .request(&json!({"op":"personal_pin","generation":view["generation"],"index":index}));
+    assert_eq!(pinned["candidates"][0], "拟好");
+    assert_eq!(
+        session.request(&json!({"op":"select","generation":view["generation"],"index":0}))["error"],
+        "stale_generation"
+    );
+    assert_eq!(
+        session.request(&json!({"op":"command","name":"CommitCandidate"}))["commit"],
+        "拟好"
+    );
+}

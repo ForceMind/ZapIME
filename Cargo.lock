@@ -1457,6 +1457,8 @@ dependencies = [
  "rusqlite",
  "serde_json",
  "tempfile",
+ "uuid",
+ "zapime-data",
 ]
 
 [[package]]
