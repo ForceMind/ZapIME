@@ -1,53 +1,22 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-3.0-only
-"""在已启动的专用模拟器里点击真实键盘；仅使用合成测试文本。"""
-import re
+"""专用模拟器上的原生输入验收，全部文本为合成内容。"""
+from pathlib import Path
 import subprocess
 import sys
-import time
-import xml.etree.ElementTree as ET
-from pathlib import Path
 
 adb, serial = sys.argv[1:3]
-root = Path(__file__).resolve().parents[1] / "target/device-smoke"
-root.mkdir(parents=True, exist_ok=True)
-def shell(*args):
-    return subprocess.check_output([adb, "-s", serial, "shell", *args], text=True, timeout=60)
-def hierarchy():
-    shell("uiautomator", "dump", "/sdcard/zapime-smoke.xml")
-    xml = shell("cat", "/sdcard/zapime-smoke.xml")
-    (root / "last-ui.xml").write_text(xml)
-    return ET.fromstring(xml)
-def tap(node):
-    a,b,c,d = map(int, re.findall(r"\d+",node.attrib["bounds"]))
-    shell("input", "tap",str((a+c)//2),str((b+d)//2))
-def find_text(text, tree):
-    return next((n for n in tree.iter("node") if n.attrib.get("text")==text or n.attrib.get("content-desc")==text),None)
-time.sleep(3)
-tree=hierarchy()
-editor=next(n for n in tree.iter("node") if n.attrib.get("class")=="android.widget.EditText")
-tap(editor)
-for attempt in range(25):
-    time.sleep(2)
-    tree=hierarchy()
-    if find_text("⚡ 闪电 · 离线",tree) is not None:break
-else:
-    raise AssertionError("Native keyboard did not become ready")
-for c in "nihao":
-    node=find_text(c,hierarchy())
-    assert node is not None,"Keyboard key missing"
-    tap(node)
-for attempt in range(8):
-    tree=hierarchy()
-    word=find_text("你好",tree)
-    if word is not None:break
-    time.sleep(1)
-assert word is not None,"Pinyin candidate missing"
-tap(word)
-time.sleep(1)
-tree=hierarchy()
-assert any(n.attrib.get("class")=="android.widget.EditText" and n.attrib.get("text")=="你好" for n in tree.iter("node")),"Candidate did not commit into real editor"
-(root / "pinyin-commit.xml").write_text(ET.tostring(tree,encoding="unicode"))
-subprocess.run([adb,"-s",serial,"shell","screencap","-p","/sdcard/zapime-smoke.png"],check=True)
-subprocess.run([adb,"-s",serial,"pull","/sdcard/zapime-smoke.png",str(root/"pinyin-commit.png")],check=True)
-print("PASS Android API 28: native keyboard activation, offline nihao candidate, real InputConnection commit",flush=True)
+root = Path(__file__).resolve().parents[1]
+output = root / "target/device-smoke"
+output.mkdir(parents=True, exist_ok=True)
+command = [adb,"-s",serial]
+subprocess.run(command+["install","-r",str(root/"target/android-tests/ZapIME-tests.apk")],check=True)
+subprocess.run(command+["shell","settings","put","secure","show_ime_with_hard_keyboard","1"],check=True)
+result=subprocess.run(command+["shell","am","instrument","-w","org.zapime.android.test/.SmokeInstrumentation"],text=True,capture_output=True,timeout=180)
+(output/"instrumentation.log").write_text(result.stdout+result.stderr)
+subprocess.run(command+["pull","/sdcard/Android/data/org.zapime.android/files/smoke.png",str(output/"smoke.png")],check=False)
+logs=subprocess.run(command+["logcat","-d","-s","AndroidRuntime:E"],text=True,capture_output=True)
+(output/"runtime-errors.log").write_text(logs.stdout)
+print(result.stdout,flush=True)
+if "PASS ZapIME native keyboard:" not in result.stdout:
+    raise SystemExit("Native keyboard instrumentation failed; inspect target/device-smoke")

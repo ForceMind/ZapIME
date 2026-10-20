@@ -50,6 +50,7 @@ jobs:
       - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
+      - run: bash scripts/build_android_tests.sh
       - name: Enable KVM for native input acceptance
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
