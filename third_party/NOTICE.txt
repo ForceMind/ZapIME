@@ -1,0 +1,20 @@
+ZapIME / 闪电输入法 0.1.0-dev
+
+This is a modified product built with the MSIME engine, not an official MSIME release.
+MSIME: https://github.com/metasequoiaime/msime
+Pinned source: 97d652a49cabb0887355b84186af2aa9032d3814
+MSIME copyright belongs to its respective contributors; GPL-3.0-only.
+ZapIME's independent Android host and session adapter were added on 2026-10-20.
+Corresponding source, build scripts and license texts must accompany binary distribution.
+
+The engine includes chinese-ime-lm reference/ (Apache-2.0).
+See licenses/chinese-ime-lm-NOTICE.txt and licenses/chinese-ime-lm-Apache-2.0.txt.
+This development package does not bundle neural model weights, n-gram files,
+voice SDKs, third-party cloud services, or unlicensed dictionary inputs.
+
+Pinyin and English dictionaries: metasequoiaime/msime-dictionary dict-v2.0.24.
+Their manifest states includes_unlicensed_inputs=false. rime-ice (GPL-3.0),
+ECDICT (MIT), SCOWL (permissive notices), and other resource notices remain
+in assets/licenses and assets/dictionary/msime-scowl_Copyright.txt.
+See licenses/msime-engine-dictionary-NOTICE.md for source attribution.
+All embedded engine resource and dependency licenses are retained.

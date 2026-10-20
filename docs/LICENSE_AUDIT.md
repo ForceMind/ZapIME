@@ -1,0 +1,22 @@
+# 许可审计 · 2026-10-20
+
+本表是固定版本的工程引入审计，不能代替发布时对最终依赖与产物的清单核对。
+
+| 组件 | 核验版本/范围 | 授权与处置 |
+| --- | --- | --- |
+| MSIME | 97d652a49cabb0887355b84186af2aa9032d3814 | 根 LICENSE + workspace GPL-3.0-only；submodule 原样保留源码、版权、第三方通知；当前链接 engine/path-trust |
+| chinese-ime-lm | 引擎依赖 15caab4fdeb59c11f452b91884371cf30e2e5608；另审查最新 4e745be7 | reference/ 的 Cargo.toml 与 LICENSE 为 Apache-2.0；根训练工具 GPL-3.0。随包复制精确依赖版本的 NOTICE 和 Apache 文本 |
+| 模型权重 | model-v1，未随首包分发 | 权重 Apache-2.0；再分发保留 safetensors attribution 及 C4 ODC-BY、LCCC MIT 署名；不能用根 GPL 推断全部目录 |
+| msime-cloud | 85fe4cebe474abbf03e662d95bbcc0b1ed38f1ee | 根目录无 LICENSE/COPYING。THIRD_PARTY_NOTICES 不是第一方许可；只研究 Go 依赖、路由与 E2EE 公共行为，不复制实现 |
+| 拼音/英文数据库 | dict-v2.0.24；资源锁 SHA-256 | manifest 明确 includes_unlicensed_inputs=false，拒绝未授权输入；保留 rime-ice、SCOWL、ECDICT 等来源通知。数据库按逐项许可，不称全部 Apache/MIT |
+| 词库源码清单 | 发布引用 71dc6f6cc7a451231ee29c0a39b39adbf2e04d32；审查最新 63c0db54 | 未授权 CustomPinyinDictionary 旧快照、whitelist、商业 OALD 词形必须排除；发布 manifest 已排除。部分 rime-ice 历史补充来源仍有记录不全的残余风险，正式发行前复核 |
+| n-gram 二/三元模型 | 未随首包分发 | 来自中文维基百科统计，CC-BY-SA 4.0 署名与相同方式共享义务；不能作为无通知二进制偷偷打包 |
+| 引擎嵌入资源 | 见 third_party/licenses 与 vendor/msime/resources/licenses | Unicode、libhangul、chaizi、vi、ewts、rink/MPL 等各自通知保留。未主动启用其他语言不表示链接二进制没有嵌入其数据 |
+
+## 源码与二进制分发
+
+ZapIME 新适配代码按 GPL-3.0-only；不得删除上游作者版权或以改名消除义务。开发包也不得脱离对应源码分发。对接收者提供完整对应源码、固定上游、构建脚本及适用的安装资料；仅提供无法访问的 Private 仓库链接不够。正式发布前生成 Rust 传递依赖 notice/SPDX 清单，核对最终 APK、Apple bundle 和 Windows installer。当前不是完成发布许可验收。
+
+## Android 首包范围
+
+构建脚本只取拼音、英文、SCOWL notice 和发布 manifest；不取神经模型、n-gram、日文、语音及上游品牌图像。所有下载先校验固定锁；运行时无下载与网络权限。third_party/NOTICE.txt 标明改动日期及与官方上游的区别。
