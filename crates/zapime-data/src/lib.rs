@@ -22,6 +22,10 @@ pub enum Error {
     Conflict,
     #[error("operation_id_reused")]
     OperationReused,
+    #[error("candidate_position_conflict")]
+    PositionConflict,
+    #[error("duplicate_dictionary_entry")]
+    Duplicate,
     #[error("unsupported_schema_version")]
     Version,
     #[error("archive_integrity_failed")]
@@ -218,6 +222,30 @@ impl Store {
             }
             return Ok(serde_json::from_str(&result)?);
         }
+        if !deleted {
+            match &content {
+                Content::CandidateRule {
+                    scheme,
+                    code,
+                    text,
+                    position,
+                } => {
+                    let collision: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='candidate_rule' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND (json_extract(body,'$.content.position')=?4 OR json_extract(body,'$.content.text')=?5) LIMIT 1",params![id.to_string(),scheme,code,position,text],|row|row.get(0)).optional()?;
+                    if collision.is_some() {
+                        return Err(Error::PositionConflict);
+                    }
+                }
+                Content::Dictionary {
+                    scheme, code, text, ..
+                } => {
+                    let duplicate: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='dictionary' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND json_extract(body,'$.content.text')=?4 LIMIT 1",params![id.to_string(),scheme,code,text],|row|row.get(0)).optional()?;
+                    if duplicate.is_some() {
+                        return Err(Error::Duplicate);
+                    }
+                }
+                _ => {}
+            }
+        }
         let current: i64 = tx
             .query_row(
                 "SELECT revision FROM records WHERE id=?1",
@@ -298,6 +326,9 @@ impl Store {
             return Err(Error::Invalid);
         }
         let mut seen = HashSet::new();
+        let mut dictionary_keys = HashSet::new();
+        let mut candidate_slots = HashSet::new();
+        let mut candidate_keys = HashSet::new();
         for record in &archive.body.records {
             if record.id.is_nil()
                 || record.device_id.is_nil()
@@ -308,6 +339,30 @@ impl Store {
                 return Err(Error::Invalid);
             }
             record.content.validate()?;
+            if !record.deleted {
+                match &record.content {
+                    Content::Dictionary {
+                        scheme, code, text, ..
+                    } => {
+                        if !dictionary_keys.insert((scheme, code, text)) {
+                            return Err(Error::Duplicate);
+                        }
+                    }
+                    Content::CandidateRule {
+                        scheme,
+                        code,
+                        text,
+                        position,
+                    } => {
+                        let unique_slot = candidate_slots.insert((scheme, code, position));
+                        let unique_text = candidate_keys.insert((scheme, code, text));
+                        if !unique_slot || !unique_text {
+                            return Err(Error::PositionConflict);
+                        }
+                    }
+                    _ => {}
+                }
+            }
         }
         let tx = self
             .db

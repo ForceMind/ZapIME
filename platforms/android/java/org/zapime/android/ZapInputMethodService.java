@@ -72,7 +72,7 @@ public final class ZapInputMethodService extends InputMethodService {
         });
     }
     private void apply(JSONObject value, String fallback) {
-        if(value.has("error"))return;
+        if(value.has("error")){ if(status!=null)status.setText("操作未完成，请在个人资料中检查候选规则。"); return; }
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
         generation=value.optLong("generation");
         if(!value.isNull("commit"))connection.commitText(value.optString("commit"),1);

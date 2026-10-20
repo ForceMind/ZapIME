@@ -84,7 +84,7 @@ impl InputSession {
             if code.is_empty() {
                 return json!({"error":"invalid_record"});
             }
-            let existing=self.personal.iter().find(|record| matches!(&record.content,Content::CandidateRule{scheme,code:old_code,text:old_text,..} if scheme=="pinyin" && old_code==&code && old_text==&text));
+            let existing=self.personal.iter().find(|record| matches!(&record.content,Content::CandidateRule{scheme,code:old_code,position,..} if scheme=="pinyin" && old_code==&code && *position==1));
             let (id, revision) = existing
                 .map(|r| (r.id, r.revision))
                 .unwrap_or((Uuid::new_v4(), 0));

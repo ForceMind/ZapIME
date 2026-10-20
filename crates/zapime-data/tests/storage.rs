@@ -167,3 +167,79 @@ fn local_device_identity_is_stable_across_connections() {
     assert!(!id.is_nil());
     assert_eq!(Store::open(&path).unwrap().device_id().unwrap(), id);
 }
+
+#[test]
+fn candidate_slots_and_dictionary_identity_reject_ambiguous_duplicates() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(&dir.path().join("a.db")).unwrap();
+    let dev = Uuid::new_v4();
+    let rule = Content::CandidateRule {
+        scheme: "pinyin".into(),
+        code: "zhong".into(),
+        text: "中".into(),
+        position: 1,
+    };
+    store
+        .edit(Uuid::new_v4(), Uuid::new_v4(), 0, dev, rule.clone(), false)
+        .unwrap();
+    assert!(matches!(
+        store.edit(Uuid::new_v4(), Uuid::new_v4(), 0, dev, rule, false),
+        Err(Error::PositionConflict)
+    ));
+    let entry = Content::Dictionary {
+        scheme: "pinyin".into(),
+        code: "zhong".into(),
+        text: "中".into(),
+        weight: 100,
+    };
+    store
+        .edit(Uuid::new_v4(), Uuid::new_v4(), 0, dev, entry.clone(), false)
+        .unwrap();
+    assert!(matches!(
+        store.edit(Uuid::new_v4(), Uuid::new_v4(), 0, dev, entry, false),
+        Err(Error::Duplicate)
+    ));
+    assert_eq!(store.pending_count().unwrap(), 2);
+}
+
+#[test]
+fn correctly_checksummed_archive_with_conflicting_rules_is_still_rejected() {
+    use serde::Serialize;
+    use sha2::{Digest, Sha256};
+    #[derive(Serialize)]
+    struct Body {
+        schema_version: u32,
+        records: Vec<zapime_data::Record>,
+    }
+    let dir = tempfile::tempdir().unwrap();
+    let mut source = Store::open(&dir.path().join("a.db")).unwrap();
+    let first = source
+        .edit(
+            Uuid::new_v4(),
+            Uuid::new_v4(),
+            0,
+            Uuid::new_v4(),
+            Content::CandidateRule {
+                scheme: "pinyin".into(),
+                code: "zhong".into(),
+                text: "中".into(),
+                position: 1,
+            },
+            false,
+        )
+        .unwrap();
+    let mut duplicate = first.clone();
+    duplicate.id = Uuid::new_v4();
+    let body = Body {
+        schema_version: 1,
+        records: vec![first, duplicate],
+    };
+    let hash = hex::encode(Sha256::digest(serde_json::to_vec(&body).unwrap()));
+    let archive = serde_json::to_vec(&serde_json::json!({"body":body,"sha256":hash})).unwrap();
+    let mut target = Store::open(&dir.path().join("fresh.db")).unwrap();
+    assert!(matches!(
+        target.restore_plaintext(&archive),
+        Err(Error::PositionConflict)
+    ));
+    assert!(target.records(true).unwrap().is_empty());
+}

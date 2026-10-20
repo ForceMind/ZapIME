@@ -209,3 +209,37 @@ fn personal_archive_api_restores_only_into_a_new_profile() {
         "restore_requires_empty_profile"
     );
 }
+
+#[test]
+fn pinning_another_candidate_replaces_the_previous_first_slot() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    let mut view = json!(null);
+    for c in "nihao".chars() {
+        view = session.request(&json!({"op":"key","text":c.to_string()}));
+    }
+    for text in ["拟好", "你好"] {
+        let index = view["candidates"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|v| v == text)
+            .unwrap();
+        view = session
+            .request(&json!({"op":"personal_pin","generation":view["generation"],"index":index}));
+        assert_eq!(view["candidates"][0], text);
+    }
+    assert_eq!(
+        session.request(&json!({"op":"personal_list"}))["records"]
+            .as_array()
+            .unwrap()
+            .len(),
+        1
+    );
+}

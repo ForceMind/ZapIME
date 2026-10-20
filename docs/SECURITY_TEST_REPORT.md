@@ -18,4 +18,4 @@
 | 平台受保护密钥存储、设备配对/撤销 | 未实现 | 不宣称完整 E2EE 同步 |
 | 独立密码学审计、模糊测试、压力测试 | 未完成 | 正式发布前必须补齐 |
 
-命令：cargo test --workspace --locked；cargo clippy --workspace --all-targets --locked -- -D warnings。当前共 17 项集成测试（core8、data6、crypto3）通过。测试输入和恢复数据全部为合成内容。
+命令：cargo test --workspace --locked；cargo clippy --workspace --all-targets --locked -- -D warnings。当前共 20 项集成测试（core9、data8、crypto3）通过。测试输入和恢复数据全部为合成内容。

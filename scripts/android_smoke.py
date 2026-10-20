@@ -14,7 +14,7 @@ command = [adb,"-s",serial]
 subprocess.run(command+["install","-r",str(root/"target/android-tests/ZapIME-tests.apk")],check=True)
 method="org.zapime.android/.ZapInputMethodService"
 for attempt in range(60):
-    methods=subprocess.run(command+["shell","ime","list","-s"],text=True,capture_output=True)
+    methods=subprocess.run(command+["shell","ime","list","-a","-s"],text=True,capture_output=True)
     if method in methods.stdout:break
     time.sleep(1)
 else:
