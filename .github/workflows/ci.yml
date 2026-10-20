@@ -65,11 +65,12 @@ jobs:
           emulator-boot-timeout: 300
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
-            adb shell ime enable org.zapime.android/.ZapInputMethodService
+            adb shell settings put secure enabled_input_methods org.zapime.android/.ZapInputMethodService
             adb shell ime set org.zapime.android/.ZapInputMethodService
             adb shell am start -n org.zapime.android/.MainActivity
             python3 scripts/android_smoke.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: ZapIME-Android-development
           path: |
