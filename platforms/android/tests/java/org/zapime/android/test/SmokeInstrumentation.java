@@ -67,7 +67,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好");
-            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.PersonalDataActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getTargetContext().startActivity(manager);
+            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet");
             screenshot(); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
