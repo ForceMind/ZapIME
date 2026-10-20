@@ -6,6 +6,9 @@ import android.content.*;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.view.accessibility.*;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.view.MotionEvent;
+import android.view.InputDevice;
 import java.io.*;
 
 public final class SmokeInstrumentation extends Instrumentation {
@@ -22,12 +25,22 @@ public final class SmokeInstrumentation extends Instrumentation {
         return walk(automation.getRootInActiveWindow(),text);
     }
     private AccessibilityNodeInfo waitFor(String text) throws Exception {
-        for(int i=0;i<150;i++) { AccessibilityNodeInfo node=find(text); if(node!=null)return node; Thread.sleep(100); }
+        for(int i=0;i<150;i++) {
+            if(find("System UI isn't responding")!=null) { AccessibilityNodeInfo wait=find("Wait");if(wait!=null)wait.performAction(AccessibilityNodeInfo.ACTION_CLICK); }
+            AccessibilityNodeInfo node=find(text); if(node!=null)return node; Thread.sleep(100);
+        }
         throw new Exception("Missing UI node: "+text);
     }
     private void click(String text) throws Exception {
         AccessibilityNodeInfo node=waitFor(text);
-        if(!node.performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("UI click rejected: "+text);
+        if("android.widget.EditText".contentEquals(node.getClassName())) {
+            // EditText 的无障碍 ACTION_CLICK 不保证触发系统软键盘；注入真实触摸。
+            Rect bounds=new Rect();node.getBoundsInScreen(bounds);long now=SystemClock.uptimeMillis();
+            MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
+            MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
+            down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+            automation.injectInputEvent(down,true);automation.injectInputEvent(up,true);down.recycle();up.recycle();
+        } else if(!node.performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("UI click rejected: "+text);
         Thread.sleep(150);
     }
     private void requireEditor(String expected) throws Exception {

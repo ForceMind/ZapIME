@@ -1,37 +1,47 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-20 14:12 北京时间；本次 Work 工程记录 #2；距记录 #1 约 12 分钟。
+更新时间：2026-10-20 14:34:31 +0800；本次 Work 工程记录 #4；距记录 #3 约 12 分钟。
 
 ## 当前事实
 
-- 仓库 Private，基线 main 076961750bab1657b8a98c5e019daa234861a54a，跟踪 Issue #1。
-- 已固定 MSIME 完整源码子模块、实现 ZapIME Rust 离线会话适配及原生 Android InputMethodService。不是上游品牌 APK，也不是网页键盘。
-- Rust 引擎及适配层已在 Linux 编译；4 项输入集成测试通过。Android arm64 / x86_64 开发 APK 均已实际构建并通过签名、16 KB 对齐、包名、IME 服务、通知文件和无 INTERNET 权限检查。
-- 生产拼音/英文资源大小和 SHA-256 已通过验证，manifest 排除了未授权输入；没有复制 msime-cloud 实现。
-- 未完成任何真机、四端同步、恢复、安全发布或生产部署验收。
+- 仓库保持 Private；初始 main = 076961750bab1657b8a98c5e019daa234861a54a。
+- M0/M1 跟踪 #1，原生基线 Draft PR #2；M2/恢复跟踪 #3，数据切片 Draft PR #4。
+- 上游 MSIME 固定 97d652a49cabb0887355b84186af2aa9032d3814，完整源码 submodule；未复制 msime-cloud 实现。
+- 已实际构建 Android arm64-v8a / x86_64 APK，签名、APK 16 KB zip 对齐、包名、IME 服务与无 INTERNET 权限检查通过。
+- API 28 本地软件模拟器已通过基础原生输入：离线 nihao→你好、实际上屏、英文、退格、密码框不学习、焦点切换；不是三星真机验收。
+- Android 已实现候选长按置顶、个人词库/候选规则/短语/收藏/显式本机剪贴板的原生管理页、明文备份导出和空资料库恢复入口。管理页到键盘的设备闭环仍在验证，不能标为全部通过。
+- 共享 SQLite 数据、XChaCha20-Poly1305 密文及 Argon2id 恢复包模块已实现；尚未连接 OS 密钥库、账号、设备配对或云服务器。
 
-| 里程碑 | 状态 | 证据/缺口 |
+## 代码与验证
+
+- 输入基线最新来源以 PR #2 head 为准；已保存 7aa72619954f10ded5125a9f8460d36e79d7524a。基础输入本地 instrumentation 的 PASS 记录已获取。
+- 数据切片已保存 b70615a69ae889dcf9b5ef0045e429877cc58436；后续测试触摸修正/进度报告在 PR #4 后继提交继续记录。
+- `cargo test --workspace --locked`：17 项集成测试通过（core8 / data6 / crypto3）。
+- `cargo fmt --all --check` 与 `cargo clippy --workspace --all-targets --locked -- -D warnings`：通过。
+- 个人规则/快捷短语真实进入共享候选和上屏；重开恢复、旧候选拒绝、两连接修订冲突、幂等重试、归档损坏/非空覆盖拒绝均有测试。
+- 模块级灾备：销毁原根密钥和旧库，仅用恢复码与加密包在新 SQLite 还原收藏，并解开原密文；通过。不是四端/空服务器恢复验收。
+- 生产词库探针 nihao/zhongguo/shurufa 通过；资源大小与 SHA-256 校验、manifest 未授权输入排除检查通过。
+- GitHub CI 的 Windows/macOS/Linux 共享核心及 iOS simulator 目标 check 已有成功记录（39378255837）。当前两个 PR 的最新完整 CI 仍在运行/修复，不因历史成功就合并。
+- CI 39379910157：双 ABI 构建通过，设备输入失败在软键盘未弹出；改用真实触摸并指定 SOURCE_TOUCHSCREEN。之前另有 AOSP 默认键盘 ID 失效，已修为专用设备显式启用 ZapIME。失败记录保留，未声称全绿。
+- Android 包内新增逐包依赖许可清单；核心非 dev 图 111 条目，明确许可及缺文件版本映射；正式发行许可与源码提供仍需最终审核。
+
+## 里程碑
+
+| 里程碑 | 状态 | 缺口 |
 | --- | --- | --- |
-| M0 | 基线审计已建立；发布许可仍需复核 | UPSTREAM_AUDIT / LICENSE_AUDIT / ARCHITECTURE / lock；存在词库历史来源残余风险 |
-| M1 | 进行中 | Rust 4 项测试、Android 双架构 APK 已编译；模拟器输入待验；三端宿主未迁移 |
-| M2 | 未完成 | SQLite 数据库模块开发中（另跟踪 #3），尚未接入原生 UI |
-| M3–M6 | 未开始 | 无同步、E2EE、恢复、四端验收或正式包 |
+| M0 | 基线建立 | 发布时复核传递依赖、词库历史来源与对应源码 |
+| M1 | Android 基础输入本地通过 | 最新 CI 收敛；三端原生宿主迁移、设备与签名 |
+| M2 | 共享数据与 Android 管理实现中 | Android 管理设备闭环；其余三端；候选规则冲突及复合唯一性 |
+| M3 | 密文/恢复模块实现，服务未开始 | Go/PostgreSQL、账号、配对、轮换、异步同步 |
+| M4 | 未完成 | 四端真实互通、冲突与撤销 |
+| M5 | 模块恢复已有证据 | 全新服务器/四端恢复、加密恢复 UI、成熟 UI/UX |
+| M6 | 开发 APK 与 CI 已建立 | 真机、安全审计、性能、安装签名/公证与正式发布 |
 
-## 已运行验证
+## 继续顺序与限制
 
-- `cargo test -p zapime-core`：4 passed，0 failed（实际输入/选词、stale generation、退格/取消、非法输入边界）。
-- `cargo build --locked -p zapime-core --release --target aarch64-linux-android`：通过（NDK 28.2.13676358）。
-- `scripts/fetch_resources.py`：锁内拼音、英文、SCOWL 声明和 manifest 均通过大小/SHA-256；`includes_unlicensed_inputs=false`。
-- Android APK 首次因缺 javac 中止，补齐本地 JDK 后双架构构建通过；不是正式发布签名。
-- GitHub Actions run 39378255837：Linux / Windows / macOS 共享核心、iOS simulator 目标 check、Android arm64 APK 全部通过。
-- 最新提交 f51de1b8feb2059b2f14fdbb23d7d1df04fa6f8a；Draft PR #2；新增硬件加速模拟器 CI 正在运行。
-- 生产词库离线探针 nihao→你好、zhongguo→中国、shurufa→输入法通过。
-- arm64 最新本地包 SHA-256：6850836b73e9431b8fc9f6d8bb2b91395eb7d9a3b704dfc55da751feaa70a5ae。
-
-## 限制与继续任务
-
-1. 软件 API 28 模拟器已启动，真实系统输入测试进行中；无 /dev/kvm，不冒称真机。
-2. 核验原生输入、焦点与密码框；修复结果后提交。
-3. 建立 CI 与四端工具链检查，逐步迁移 iOS/macOS/Windows 原生身份与服务。
-4. 继续统一 SQLite 数据、版本化导出/恢复与候选规则。之后独立同步服务、端到端加密与配对。
-5. macOS/Xcode、Windows/MSVC/真实系统、签名凭据与三星真机均不可用；域名未核实购买。不创建定时任务。
+1. 收敛最新 CI 和 Android 管理页到键盘的实际闭环；验证通过后按 PR 规则合并，不强推。
+2. 迁移 iOS/macOS/Windows 的独立身份、路径和原生设置。共享核心构建通过不能替代原生输入法验收。
+3. 独立实现 Go/PostgreSQL 服务、设备配对/撤销、端到端同步，再连接四端。
+4. 完成平台密钥库、恢复码界面、空服务器迁移与全设备丢失恢复演练。
+5. 本地只有 Linux 与 Android 软件模拟器，无 /dev/kvm、三星真机、Apple 签名身份或原生 Windows 桌面会话。GitHub 的 macOS/Windows runner 可用于后续原生编译，但当前未完成其宿主迁移。
+6. SQLite 和开放 JSON 归档为明文，逻辑删除不代表安全擦除；加密恢复包尚无用户 UI。未购买域名、未部署服务器、未宣称完整四端产品；不创建 ChatGPT 定时任务。

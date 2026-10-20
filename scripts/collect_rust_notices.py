@@ -44,4 +44,5 @@ missing=[p["name"] for p in inventory if not p["license_files"]]
 print("Collected",len(inventory),"dependency entries; no bundled license file:",missing)
 # 仓库自身及上游路径 crate 的根许可另外随 APK 打包；其他缺项必须人工补齐。
 unknown=[name for name in missing if name not in {"zapime-core","zapime-data","msime-engine","msime-path-trust"}]
+if any(p["license"] == "NOASSERTION" for p in inventory):raise SystemExit("Unreviewed dependency license")
 if unknown:raise SystemExit("Review missing dependency license files: "+", ".join(unknown))
