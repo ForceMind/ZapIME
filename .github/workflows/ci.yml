@@ -46,11 +46,33 @@ jobs:
           packages: platform-tools
       - uses: dtolnay/rust-toolchain@1.97.1
         with:
-          targets: aarch64-linux-android
+          targets: aarch64-linux-android, x86_64-linux-android
       - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
       - run: bash scripts/build_android.sh arm64-v8a
+      - run: bash scripts/build_android.sh x86_64
+      - name: Enable KVM for native input acceptance
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Android API 28 native keyboard smoke
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          arch: x86_64
+          target: default
+          emulator-boot-timeout: 300
+          script: |
+            adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            adb shell ime enable org.zapime.android/.ZapInputMethodService
+            adb shell ime set org.zapime.android/.ZapInputMethodService
+            adb shell am start -n org.zapime.android/.MainActivity
+            python3 scripts/android_smoke.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         with:
           name: ZapIME-Android-development
-          path: target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+          path: |
+            target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+            target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            target/device-smoke/
           if-no-files-found: error

@@ -70,7 +70,7 @@ public final class ZapInputMethodService extends InputMethodService {
             if(!staged.renameTo(output))throw new IOException("resource_install");
         }
     }
-    private void refreshStatus() { if(status!=null)status.setText(preedit.isEmpty()?(sensitive?"隐私输入 · 不学习":(ready?"⚡ 闪电 · 离线":"正在准备离线词库…")):preedit); }
+    private void refreshStatus() { if(status!=null)status.setText(preedit.isEmpty()?(sensitive?"隐私输入 · 不学习":(ready?(chinese?"⚡ 闪电 · 离线":"⚡ ZapIME · English"):"正在准备离线词库…")):preedit); }
     private void send(JSONObject request, String fallback) {
         final int active=epoch;
         if(!ready)return;
@@ -103,9 +103,17 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("⇧")) { shift=!shift; return; }
         if(key.equals("中/英")) { if(sensitive)return; command("CommitRaw",null); chinese=!chinese; refreshStatus(); return; }
         if(!chinese) {
-            if(key.equals("⌫"))connection.deleteSurroundingTextInCodePoints(1,0);
-            else if(key.equals("↵"))enter(connection);
-            else connection.commitText(key.equals("空格")?" ":(shift?key.toUpperCase(java.util.Locale.ROOT):key),1);
+            final int active=epoch;
+            final String text=key.equals("空格")?" ":(shift?key.toUpperCase(java.util.Locale.ROOT):key);
+            Runnable insert=() -> {
+                if(epoch!=active)return;
+                InputConnection current=getCurrentInputConnection(); if(current==null)return;
+                if(key.equals("⌫"))current.deleteSurroundingTextInCodePoints(1,0);
+                else if(key.equals("↵"))enter(current);
+                else current.commitText(text,1);
+            };
+            // 与尚在处理的中文按键共用队列，避免切到英文后先插入新字符。
+            if(ready)worker.execute(() -> main.post(insert)); else insert.run();
             shift=false; return;
         }
         if(key.equals("⌫")) { command("Backspace","⌫"); return; }
