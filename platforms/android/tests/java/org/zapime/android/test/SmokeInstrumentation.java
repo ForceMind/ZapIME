@@ -32,16 +32,21 @@ public final class SmokeInstrumentation extends Instrumentation {
         throw new Exception("Missing UI node: "+text);
     }
     private void click(String text) throws Exception {
-        AccessibilityNodeInfo node=waitFor(text);
-        if("android.widget.EditText".contentEquals(node.getClassName())) {
-            // EditText 的无障碍 ACTION_CLICK 不保证触发系统软键盘；注入真实触摸。
-            Rect bounds=new Rect();node.getBoundsInScreen(bounds);long now=SystemClock.uptimeMillis();
-            MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
-            MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
-            down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
-            automation.injectInputEvent(down,true);automation.injectInputEvent(up,true);down.recycle();up.recycle();
-        } else if(!node.performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("UI click rejected: "+text);
-        Thread.sleep(150);
+        for(int attempt=0;attempt<30;attempt++) {
+            AccessibilityNodeInfo node=waitFor(text);
+            Rect bounds=new Rect();node.getBoundsInScreen(bounds);
+            if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
+                long now=SystemClock.uptimeMillis();
+                MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
+                MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
+                down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+                boolean sent=automation.injectInputEvent(down,true) && automation.injectInputEvent(up,true);down.recycle();up.recycle();
+                if(sent) { Thread.sleep(200);return; }
+            } else if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {Thread.sleep(200);return;}
+            // 候选更新会替换节点；重新获取，而不是点击已经脱离窗口的节点。
+            Thread.sleep(100);
+        }
+        throw new Exception("UI click rejected: "+text);
     }
     private void requireEditor(String expected) throws Exception {
         for(int i=0;i<100;i++) { AccessibilityNodeInfo editor=find("probe-normal"); if(editor!=null && expected.contentEquals(editor.getText()==null?"":editor.getText()))return; Thread.sleep(100); }
