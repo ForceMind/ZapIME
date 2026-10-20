@@ -175,3 +175,37 @@ fn candidate_pin_reorders_visible_rows_and_rejects_old_click() {
         "拟好"
     );
 }
+
+#[test]
+fn personal_archive_api_restores_only_into_a_new_profile() {
+    let (dir, _private) = fixture();
+    let resources = dir.path().join("resources");
+    let mut source = InputSession::open(
+        &resources,
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    assert!(source.request(&json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":{"type":"favorite","title":"测试","text":"标准格式恢复"}})).get("error").is_none());
+    let archive = source.request(&json!({"op":"personal_export"}));
+    let mut destination = InputSession::open(
+        &resources,
+        &dir.path().join("fresh-data"),
+        &dir.path().join("fresh-cache"),
+        false,
+    )
+    .unwrap();
+    assert!(destination
+        .request(&json!({"op":"personal_import","archive":archive["archive"]}))
+        .get("error")
+        .is_none());
+    assert_eq!(
+        source.request(&json!({"op":"personal_list"})),
+        destination.request(&json!({"op":"personal_list"}))
+    );
+    assert_eq!(
+        destination.request(&json!({"op":"personal_import","archive":archive["archive"]}))["error"],
+        "restore_requires_empty_profile"
+    );
+}

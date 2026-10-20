@@ -37,7 +37,17 @@ impl InputSession {
         let store = if private {
             None
         } else {
-            Some(Store::open(&data.join("personal.sqlite3")).map_err(|_| "personal_store_failed")?)
+            let mut store =
+                Store::open(&data.join("personal.sqlite3")).map_err(|_| "personal_store_failed")?;
+            let device = store.device_id().map_err(|_| "personal_store_failed")?;
+            let now = std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .map(|d| d.as_millis().min(u64::MAX as u128) as u64)
+                .unwrap_or(0);
+            store
+                .expire_clipboard(now, device)
+                .map_err(|_| "personal_store_failed")?;
+            Some(store)
         };
         let personal = match &store {
             Some(store) => store.records(false).map_err(|_| "personal_store_failed")?,
@@ -147,6 +157,31 @@ impl InputSession {
                     request["deleted"].as_bool().unwrap_or(false),
                 ) {
                     return json!({"error": error.to_string()});
+                }
+                let Ok(personal) = store.records(false) else {
+                    return json!({"error":"personal_store_failed"});
+                };
+                self.personal = personal;
+                KeyResult::handled()
+            }
+            "personal_export" => {
+                let Some(store) = &self.store else {
+                    return json!({"error":"private_session"});
+                };
+                return match store.export_plaintext() {
+                    Ok(bytes) => json!({"archive":String::from_utf8_lossy(&bytes)}),
+                    Err(error) => json!({"error":error.to_string()}),
+                };
+            }
+            "personal_import" => {
+                let Some(store) = self.store.as_mut() else {
+                    return json!({"error":"private_session"});
+                };
+                let Some(archive) = request["archive"].as_str() else {
+                    return json!({"error":"invalid_archive"});
+                };
+                if let Err(error) = store.restore_plaintext(archive.as_bytes()) {
+                    return json!({"error":error.to_string()});
                 }
                 let Ok(personal) = store.records(false) else {
                     return json!({"error":"personal_store_failed"});

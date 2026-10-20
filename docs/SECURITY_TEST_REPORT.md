@@ -14,8 +14,8 @@
 | 恢复包错码/篡改/未来版本 | 通过 | 不返回根密钥和明文 |
 | 全设备密钥丢失恢复 | 模块通过 | 原对象销毁，只保留恢复码/包；新 DB 恢复并解密旧记录 |
 | APK 无网络权限 | 通过 | aapt2 manifest 检查，双 ABI 开发包 |
-| Android 密码框、焦点隔离 | 待设备验收 | instrumentation 测试正在建立 |
+| Android 密码框、焦点隔离 | API 28 本地通过 | 原生 instrumentation：拼音、上屏、英文、退格、密码框及焦点 |
 | 平台受保护密钥存储、设备配对/撤销 | 未实现 | 不宣称完整 E2EE 同步 |
 | 独立密码学审计、模糊测试、压力测试 | 未完成 | 正式发布前必须补齐 |
 
-命令：cargo test --workspace --locked；cargo clippy --workspace --all-targets --locked -- -D warnings。当前共 12 项集成测试（core4、data5、crypto3）通过。测试输入和恢复数据全部为合成内容。
+命令：cargo test --workspace --locked；cargo clippy --workspace --all-targets --locked -- -D warnings。当前共 17 项集成测试（core8、data6、crypto3）通过。测试输入和恢复数据全部为合成内容。

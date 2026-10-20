@@ -8,7 +8,7 @@ Android InputMethodService → 单线程后台队列 → JNI → zapime-core →
 
 ## 上游与扩展边界
 
-vendor/msime 为精确锁定的完整源码，内含 engine、input-runtime、host-api 与四端原生宿主。当前链接 engine 和 path-trust，尚未迁移完整 host-api 服务图。根目录 crates 为 ZapIME 自有适配和后续数据/加密模块。
+vendor/msime 为精确锁定的完整源码，内含 engine、input-runtime、host-api 与四端原生宿主。当前链接 engine 和 path-trust，尚未迁移完整 host-api 服务图。根目录 crates 为 ZapIME 自有适配、SQLite 个人数据与认证加密/恢复模块。Android 原生管理页通过同一后台 JNI 会话读取、编辑与导入导出个人资料；输入会话缓存有效规则并按精确编码应用。
 
 ## 后续链路
 

@@ -37,6 +37,10 @@ public final class SmokeInstrumentation extends Instrumentation {
     private void screenshot() {
         try { Bitmap bitmap=automation.takeScreenshot(); if(bitmap!=null)try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"smoke.png"))) { bitmap.compress(Bitmap.CompressFormat.PNG,100,out); } } catch(Exception ignored) {}
     }
+    private void setText(String label,String value) throws Exception {
+        Bundle args=new Bundle();args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,value);
+        if(!waitFor(label).performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,args))throw new Exception("Set text rejected");
+    }
     @Override public void onStart() {
         Bundle result=new Bundle();
         try {
@@ -50,7 +54,10 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好");
-            screenshot(); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field and focus isolation\n"); finish(Activity.RESULT_OK,result);
+            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.PersonalDataActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getTargetContext().startActivity(manager);
+            setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet");
+            screenshot(); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { screenshot(); result.putString("stream","FAIL ZapIME native keyboard: "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

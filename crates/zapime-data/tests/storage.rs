@@ -158,3 +158,12 @@ fn two_connections_cannot_silently_overwrite_each_other() {
     ));
     assert!(b.get(id).unwrap().unwrap().deleted);
 }
+
+#[test]
+fn local_device_identity_is_stable_across_connections() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("a.db");
+    let id = Store::open(&path).unwrap().device_id().unwrap();
+    assert!(!id.is_nil());
+    assert_eq!(Store::open(&path).unwrap().device_id().unwrap(), id);
+}

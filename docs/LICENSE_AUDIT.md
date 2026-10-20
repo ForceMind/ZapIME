@@ -20,3 +20,11 @@ ZapIME 新适配代码按 GPL-3.0-only；不得删除上游作者版权或以改
 ## Android 首包范围
 
 构建脚本只取拼音、英文、SCOWL notice 和发布 manifest；不取神经模型、n-gram、日文、语音及上游品牌图像。所有下载先校验固定锁；运行时无下载与网络权限。third_party/NOTICE.txt 标明改动日期及与官方上游的区别。
+
+## 实际核心依赖清单
+
+`scripts/collect_rust_notices.py` 按指定 Android target，从 zapime-core 的非 dev 依赖图递归收集包和许可文件，随 APK 放入 assets/rust-licenses/inventory.json 及逐包目录。当前数据切片共 111 个条目（含部分构建期工具）。根/路径 crate 的 GPL 文本统一打包。
+
+打包遗漏许可证文件的 ewts 0.1.4、exmex 0.21.0、jni-sys-macros 0.4.1、rink-core 0.9.0 用精确版本映射补齐。exmex 与 jni 宏的 MIT 文本取自 crates.io 包 `.cargo_vcs_info.json` 对应提交（分别 3ef98341…、64d77b7a…）；ewts 使用上游 MSIME 随附的 Maxim Zommer MIT 通知；rink-core 保留 MPL-2.0 全文及源仓 https://codeberg.org/tiffany/rink 的来源声明。vi 0.8.0 的 Cargo 通过 license-file 声明 MIT，不能因 license 字段为空误报无许可。
+
+这补齐了许可文本包装，不消除上游词库历史来源记录不全或正式发行前的完整源码/安装资料审核要求。

@@ -16,12 +16,13 @@ public final class MainActivity extends Activity {
         Button enable = new Button(this); enable.setText("1 · 启用闪电输入法"); enable.setOnClickListener(v -> startActivity(new Intent(Settings.ACTION_INPUT_METHOD_SETTINGS))); page.addView(enable);
         Button choose = new Button(this); choose.setText("2 · 切换到闪电输入法"); choose.setOnClickListener(v -> ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).showInputMethodPicker()); page.addView(choose);
         EditText editor = new EditText(this); editor.setHint("在此输入 nihao，选择候选"); editor.setMinLines(3); page.addView(editor);
+        Button personal = new Button(this); personal.setText("个人资料 · 离线管理与备份"); personal.setOnClickListener(v -> startActivity(new Intent(this,PersonalDataActivity.class))); page.addView(personal);
         Button legal = new Button(this); legal.setText("开源许可与来源"); legal.setOnClickListener(v -> {
             try (java.io.InputStream in = getAssets().open("NOTICE.txt")) {
                 java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream(); byte[] buffer = new byte[8192]; int count; while ((count = in.read(buffer)) != -1) bytes.write(buffer,0,count); String text = new String(bytes.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
                 TextView view = new TextView(this); view.setText(text); view.setPadding(24,16,24,16); ScrollView scroll = new ScrollView(this); scroll.addView(view);
                 new android.app.AlertDialog.Builder(this).setTitle("许可与来源").setView(scroll).setPositiveButton("关闭",null).show();
             } catch (Exception e) { new android.app.AlertDialog.Builder(this).setMessage("许可位于安装包 assets/licenses 中。").setPositiveButton("关闭",null).show(); }
-        }); page.addView(legal); setContentView(page);
+        }); page.addView(legal); ScrollView pageScroll = new ScrollView(this); pageScroll.addView(page); setContentView(pageScroll);
     }
 }
