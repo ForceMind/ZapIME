@@ -116,8 +116,9 @@ jobs:
           xcodebuild -project platforms/ios/ZapIME.xcodeproj -scheme ZapIME -configuration Debug \
             -destination "platform=iOS Simulator,id=$ZAPIME_IOS_UDID" \
             -derivedDataPath target/ios-xcode -resultBundlePath target/ios-native-tests.xcresult \
-            CODE_SIGNING_ALLOWED=NO test
+            CODE_SIGNING_ALLOWED=NO ARCHS="$(uname -m)" ONLY_ACTIVE_ARCH=YES test
       - name: Package ad-hoc macOS development bundle
+        if: always()
         run: ditto -c -k --sequesterRsrc --keepParent target/macos/ZapIME.app target/macos/ZapIME-macOS-development.zip
       - uses: actions/upload-artifact@v4
         if: always()

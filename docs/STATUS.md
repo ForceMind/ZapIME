@@ -7,7 +7,7 @@
 - 用户明确要求保持 Public，早期 Private 限制由本次指令覆盖；不再等待浏览器登录。
 - main 基线 7b72755e426e90ca52bdac4786c3b56ea94f6008；PR #2/#4 已合并，合并后的 CI 39384110640 全绿。
 - 本切片分支 codex/m1-apple-native-hosts，Refs #1；新 SHA 和 PR 以分支/PR 的实际记录为准。
-- 已加入有界 C ABI、macOS IMK 宿主、iOS 原生 App 与键盘扩展源码和 Apple CI；目前 Apple 原生 CI 待运行，不能称编译/系统输入通过。
+- 已加入有界 C ABI、macOS IMK 宿主、iOS 原生 App 与键盘扩展源码和 Apple CI；macOS 原生编译和 ad-hoc 签名校验已在 CI 39651249265 通过；iOS 首轮因 Xcode 同时请求 x86_64/arm64 而 Rust 仅有 arm64 归档导致链接失败，已改为显式单架构匹配，待重跑；不能称系统输入通过。
 
 ## 已有实现与验证
 
@@ -37,3 +37,8 @@
 - 现有 arm64 开发 APK SHA-256：58b42cff392e684d50a0034bd1adfc41cc5cf6bf0542308d73a017106a4886f7；来源功能提交 b8b733371c6351a8d0c24928ad1772aeceba5805。
 - 工作目录被平台维护清理后，本轮已从 GitHub 重建；没有真实用户数据。Linux 可运行 Rust；Apple/Windows 原生构建通过 CI 执行。没有 Apple 签名身份、三星真机或部署服务器权限。
 - 继续修复 Apple 原生 CI，增加键盘生命周期和文本代理测试，再迁移 Windows TSF。随后独立实现云服务及四端数据桥接；不以定时任务代替研发。
+
+## CI 收敛记录
+
+- 39651249265：Windows/macOS/Linux 共享核心全绿，macOS IMK 原生包编译/签名校验通过。iOS 失败在模拟器双架构链接，已限制到实际 Rust 构建架构；未绕开桥接测试。
+- 同轮 Android 两个 APK 均构建通过，但 emulator-runner 下载模拟器时报告 `Error on ZipFile unknown archive`，测试尚未启动，不计设备通过。继续重跑核实下载问题，保留设备测试门禁。
