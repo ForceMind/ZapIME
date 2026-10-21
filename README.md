@@ -8,7 +8,7 @@
 
 开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；Android 双架构开发包已构建，API 28 基础原生输入已在本地模拟器验证。已增加共享 SQLite 个人数据、认证加密恢复模块，以及 Android 离线管理、候选置顶和明文备份入口。其余三端、云服务、配对及完整恢复体验尚未完成。完整证据见[项目状态](docs/STATUS.md)。
 
-macOS InputMethodKit 和 iOS 原生键盘扩展正在接入独立宿主；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
+macOS InputMethodKit 和 iOS 原生键盘扩展正在接入独立宿主；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主也已加入源码与原生 CI，验证边界见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
 
 ## 开发
 

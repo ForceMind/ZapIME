@@ -1,0 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-only
+#pragma once
+#include <windows.h>
+// ZapIME 独立 COM/TSF 身份，不注册或覆盖水杉的输入源。
+inline constexpr CLSID ZapClsid = {0xd72ef286,0xc9d0,0x4aae,{0xb1,0x3a,0x18,0xe8,0x4f,0x59,0xb7,0x65}};
+inline constexpr GUID ZapProfile = {0x042dcdbd,0xb1dc,0x4a0d,{0x93,0x1c,0x56,0x72,0x21,0xa1,0x72,0xe8}};
+inline constexpr wchar_t ZapClsidText[] = L"{D72EF286-C9D0-4AAE-B13A-18E84F59B765}";
+inline constexpr LANGID ZapLanguage = 0x0804;

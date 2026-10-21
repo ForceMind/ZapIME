@@ -25,3 +25,9 @@ msime-cloud 未发现覆盖第一方实现的明确授权。只记录协议观�
 macOS 与 iOS 通过版本 1 的有界 C ABI 调用现有 ZapIME InputSession，保留 MSIME 固定引擎。宿主身份、缓存和资料路径均独立；未批量修改 vendor。macOS 使用 InputMethodKit，iOS 使用 UIInputViewController 原生扩展。先保留不学习的离线模式，不引入上游账号/网络服务，也不把共享库检查当作宿主验收。iOS 通过专用 Thread 保持 Rust 会话线程归属，主线程只渲染状态及操作文本代理；焦点代次过滤迟到结果。
 
 本切片以原生编译和桥接测试为门禁；系统激活、真实应用输入、键盘扩展内存、签名与分发仍需单独验证。
+
+## ADR-006 · 2026-10-22 · Windows 原生隔离边界
+
+上游完整 Windows TSF 与独立 Server、配置、云端协议及品牌版表绑定。首个 ZapIME Windows 切片采用最小原生 TSF/COM 宿主直接调用同一个有界 C ABI，解码器不重写；研究上游工厂生命周期、编辑锁和注册回滚，保留固定子模块供后续成熟交互迁移。仅声明实际实现的 keyboard category，关闭学习和联网，不提前声明安全桌面/UILess 等能力。
+
+CI 在 Windows SDK 下编译真实 DLL，并装载工厂和核心进行边界测试。未经系统安装和真实客户端输入验收，不将其记作完整 Windows 输入法完成，也不将新的最小宿主等同于上游全部成熟功能。nlohmann/json 固定 v3.12.0 和归档 SHA-256，保留 MIT 文本。

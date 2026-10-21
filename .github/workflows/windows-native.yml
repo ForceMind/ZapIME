@@ -1,0 +1,32 @@
+name: Windows native TSF development
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-tsf-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  tsf:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@1.97.1
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: windows-tsf
+          cache-on-failure: true
+      - name: Compile TSF DLL and test actual COM/native engine boundary
+        shell: pwsh
+        run: ./scripts/build_windows.ps1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-Windows-x64-development
+          path: target/windows-native/Release/
+          if-no-files-found: warn
