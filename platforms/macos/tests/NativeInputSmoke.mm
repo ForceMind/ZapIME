@@ -82,6 +82,11 @@ static int Run(NSString *appPath) {
         }
     }
     if (related) CFRelease(related);
+    // Apple's TIS contract requires the parent to be enabled before its mode.
+    // Re-enable the mode even if its old default-state snapshot said enabled.
+    status = TISEnableInputSource(selection.source);
+    fprintf(stderr,"TIS mode enable after parent status=%d\n",(int)status);
+    if (status != noErr) return 1;
     NSWorkspaceOpenConfiguration *launch = [NSWorkspaceOpenConfiguration configuration];
     launch.activates = NO;
     __block BOOL launched = NO;
@@ -115,9 +120,18 @@ static int Run(NSString *appPath) {
         fprintf(stderr, "BLOCKED: runner has no active GUI editor session\n");
         return 78;
     }
-    for (int attempt=0; attempt<5; ++attempt) {
-        status = TISSelectInputSource(selection.source);
-        fprintf(stderr,"TIS select attempt=%d status=%d\n",attempt+1,(int)status);
+    for (int attempt=0; attempt<30; ++attempt) {
+        // Query the enabled list afresh after registration/parent activation;
+        // do not select an old object from the all-installed list.
+        CFArrayRef fresh = TISCreateInputSourceList((__bridge CFDictionaryRef)filter, false);
+        BOOL available = fresh && CFArrayGetCount(fresh) > 0;
+        if (available) {
+            CFRelease(selection.source);
+            selection.source = (TISInputSourceRef)CFRetain(CFArrayGetValueAtIndex(fresh,0));
+            status = TISSelectInputSource(selection.source);
+        } else status = paramErr;
+        if (fresh) CFRelease(fresh);
+        fprintf(stderr,"TIS select attempt=%d enabledList=%d status=%d\n",attempt+1,available,(int)status);
         if (status == noErr) break;
         Pump(1);
     }

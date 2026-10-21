@@ -18,6 +18,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: macos-input-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
 jobs:
   cocoa-input:
     runs-on: macos-15-intel
@@ -30,6 +33,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
         with:
           key: macos-input-intel
+          cache-on-failure: true
       - run: bash scripts/build_macos.sh
       - name: Register source and type in independent Cocoa editor
         timeout-minutes: 3
