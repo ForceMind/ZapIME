@@ -22,7 +22,15 @@ evidence = root / "target/device-smoke-evidence" / f"{run}-{attempt}"
 evidence.mkdir(parents=True, exist_ok=False)
 subprocess.run([adb, "-s", serial, "install", "-r",
                 str(root / "target/android-tests/ZapIME-tests.apk")], check=True)
+methods = subprocess.check_output([adb, "-s", serial, "shell", "ime", "list", "-a", "-s"], text=True)
+system_methods = [line.strip() for line in methods.splitlines() if line.strip().startswith("com.android.")]
+if not system_methods:
+    raise SystemExit("AOSP system keyboard required for isolated fixture reset")
 for round_number in (1, 2):
+    # Unbind the previous ZapIME instance before clearing it; selecting the same
+    # already-current ID after pm clear need not reopen its input window.
+    for action in ("enable", "set"):
+        subprocess.run([adb, "-s", serial, "shell", "ime", action, system_methods[0]], check=True)
     # Only our two synthetic packages on the CI emulator are cleared.
     for package in ("org.zapime.android", "org.zapime.android.test"):
         result = subprocess.run([adb, "-s", serial, "shell", "pm", "clear", package],
