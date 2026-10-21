@@ -7,6 +7,8 @@ use sha2::{Digest, Sha256};
 use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
+pub mod sync;
+
 const MAX_ARCHIVE_BYTES: usize = 32 * 1024 * 1024;
 const MAX_RECORDS: usize = 100_000;
 
@@ -32,6 +34,12 @@ pub enum Error {
     Integrity,
     #[error("restore_requires_empty_profile")]
     NotEmpty,
+    #[error("sync_profile_mismatch")]
+    SyncProfile,
+    #[error("sync_operation_out_of_order")]
+    SyncOrder,
+    #[error("invalid_sync_acknowledgement")]
+    SyncAck,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -65,6 +73,15 @@ pub enum Content {
     },
 }
 impl Content {
+    pub fn kind(&self) -> u8 {
+        match self {
+            Self::Dictionary { .. } => 1,
+            Self::CandidateRule { .. } => 2,
+            Self::Snippet { .. } => 3,
+            Self::Favorite { .. } => 4,
+            Self::Clipboard { .. } => 5,
+        }
+    }
     fn validate(&self) -> Result<(), Error> {
         let (text, code) = match self {
             Self::Dictionary {
@@ -150,18 +167,33 @@ pub struct Store {
 }
 impl Store {
     pub fn open(path: &Path) -> Result<Self, Error> {
-        let db = Connection::open(path)?;
+        let mut db = Connection::open(path)?;
         db.busy_timeout(std::time::Duration::from_secs(2))?;
-        db.execute_batch("PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL;")?;
         let version: u32 = db.query_row("PRAGMA user_version", [], |r| r.get(0))?;
-        if version > 1 {
+        if version > 2 {
             return Err(Error::Version);
         }
-        db.execute_batch("BEGIN IMMEDIATE;
+        db.execute_batch("PRAGMA foreign_keys=ON; PRAGMA journal_mode=WAL;")?;
+        let tx = db.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let version: u32 = tx.query_row("PRAGMA user_version", [], |r| r.get(0))?;
+        if version > 2 {
+            return Err(Error::Version);
+        }
+        tx.execute_batch("
             CREATE TABLE IF NOT EXISTS records(id TEXT PRIMARY KEY, revision INTEGER NOT NULL, body TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS metadata(key TEXT PRIMARY KEY,value TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS operations(id TEXT PRIMARY KEY, request TEXT NOT NULL, result TEXT NOT NULL, pending INTEGER NOT NULL);
-            PRAGMA user_version=1; COMMIT;")?;
+            CREATE TABLE IF NOT EXISTS sync_queue(sequence INTEGER PRIMARY KEY AUTOINCREMENT,operation_id TEXT UNIQUE NOT NULL REFERENCES operations(id));
+            CREATE TRIGGER IF NOT EXISTS queue_new_operation AFTER INSERT ON operations BEGIN INSERT INTO sync_queue(operation_id) VALUES(NEW.id); END;
+            CREATE TABLE IF NOT EXISTS sync_uploads(operation_id TEXT PRIMARY KEY REFERENCES operations(id),wire TEXT NOT NULL,ack_revision INTEGER);
+            CREATE TABLE IF NOT EXISTS sync_versions(record_id TEXT PRIMARY KEY,server_revision INTEGER NOT NULL);
+            ")?;
+        // 只在旧库升级时回填；每次输入框重开都遍历历史会放大 IO，并使自增序列产生空洞。
+        if version < 2 {
+            tx.execute_batch("INSERT OR IGNORE INTO sync_queue(operation_id) SELECT id FROM operations ORDER BY rowid;")?;
+        }
+        tx.execute_batch("PRAGMA user_version=2;")?;
+        tx.commit()?;
         Ok(Self { db })
     }
     /// 本地来源标识不等于同步认证凭据；只用于追踪编辑来源。
