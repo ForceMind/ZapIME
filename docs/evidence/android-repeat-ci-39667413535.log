@@ -1,0 +1,17 @@
+Repository: ForceMind/ZapIME
+Head: 0a433be71a7dc67506d436bb570118c7953bef6c
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39667413535
+Job: Android development APK (119456701250)
+Artifact: 12378910954, per-round evidence preserved
+round-2 smoke.png SHA-256: d4b376097d7d9cdc203fbc1deefc4aee5dd7a06c4eb77966935a79b9eba74fdf
+Result: first complete native input round PASS; second round FAIL at keyboard display
+before typing. The second synthetic screenshot shows focused empty test editors and no
+keyboard. dumpsys: ZapIME bound, mInputStarted=true, mInputViewStarted=false,
+mShowRequested=false, mWindowVisible=false. No claim that both rounds passed.
+The next fixture revision switches to AOSP IME before app-data clearing and explicitly
+requests SHOW_IMPLICIT on the test editor window focus. Product IME code unchanged.
+
+2026-10-21T20:12:22.8086089Z Native input clean round 1/2
+2026-10-21T20:12:30.8248859Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI
+2026-10-21T20:12:30.9267828Z Native input clean round 2/2
+2026-10-21T20:12:48.2059755Z FAIL ZapIME native keyboard at launch: Exception: Missing UI node: ⚡ 闪电 · 离线

@@ -1,31 +1,31 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-22 04:07:07 +0800；第 13 次记录汇报；距第 12 次约 17.6 分钟。次数按仓库状态记录累计，不将每条聊天进度重复计数。
+更新时间：2026-10-22 04:23:30 +0800；第 14 次记录汇报；距第 13 次约 16.4 分钟。次数按仓库状态记录累计，不将每条聊天进度重复计数。
 
 ## 仓库与提交
 
 - 按用户 2026-10-22 明确指令保持 Public。签名凭据、设备令牌、恢复材料和真实输入不进入源码。
-- 当前已合并代码基线：c6aea091e15d752ae52b6505d0adeb489f95359a；文档提交不改变功能代码，实时 main 以 GitHub 为准。
+- 当前已合并代码基线：5fe02fd0ee772a00eede870293d42ef8793e1fb5；文档提交不改变功能代码，实时 main 以 GitHub 为准。
 - PR #5 Apple 原生宿主已合并：d3ff4aed5235495c79241894bd45099403b8116f；验证 head 7a272ce0c8abd3ecb188edf33c2ac15402dbeee5。
 - PR #6 Windows TSF 已合并：88710d57695c51044865e313068de29165d1666f；验证 head 1f884661622041f4c70c112781a28c20c8025f55。
 - PR #7 独立密文服务已合并：55efec2610b5a38bf8638ccb1a7f85d44050e8bf；验证 head 47822be7bc0c6554b8ceff002fb71a42c7950c05。
 - PR #11 持久上传准备层已合并：eb8d2ed6f941fe3a337d59ac8b2dc80339a5c3b1；验证 head ec1d39219c5980fd8965da7760bec7824c06fffc。
 - PR #9 原生焦点/通知修复已合并：936dd889f47d0a3db41d358a77fd675a37711c3b；验证 head 8d43f6f398981324cb5fbb41fbec8852826519bb，全部相关检查通过，包括 3 项实际执行的 iOS 模拟器测试。
 - PR #12 macOS 系统输入实验：head 616ef358b95edf2d1dc9e7a1eeba94fc3ae9bfbf，仍为草稿。三轮均编译通过，但输入源选择返回 -50；第三轮 39665778845 已确认父/子启用、IMK 启动及最新 enabled list，30 次仍失败，未进入输入断言，原因未解决。
-- PR #13 部署目标修正已合并：c6aea091e15d752ae52b6505d0adeb489f95359a；head 8fb16a837e46a0cb7eef664df1d084b9182c7a5f 的 ARM IMK 构建步骤、三系统 Rust、Windows 和服务已通过，同脚本 Intel 构建也通过。仅按改动相关门禁合并；通用工作流后续 Android 回归失败、iOS 模拟器仍在运行，不宣称全绿。
-- PR #14 Android 候选验收定位：head 0a433be71a7dc67506d436bb570118c7953bef6c，待两轮原生 CI。只修改测试；不放宽正文断言，不提前归因或标作产品修复。
+- PR #13 部署目标修正已合并：c6aea091e15d752ae52b6505d0adeb489f95359a；head 8fb16a837e46a0cb7eef664df1d084b9182c7a5f 的 ARM IMK 构建步骤、三系统 Rust、Windows 和服务已通过，同脚本 Intel 构建也通过。仅按改动相关门禁合并；通用工作流的 Android 回归失败，Apple 作业随后完整完成并通过（含 3 项模拟器测试），仍不宣称整条工作流全绿。
+- PR #14 Android 候选验收定位及独立门禁已合并：5fe02fd0ee772a00eede870293d42ef8793e1fb5；head 48ef95e43d045fa4a6288ce5e6c6fc272bf9e4ea。专用 CI 39669035178 两轮完整输入通过；39669035212 三系统 Rust、39669035039 Windows 和 39669035363 服务通过，额外 Apple 原生作业仍在运行，不宣称整条通用工作流全绿。未修改产品输入逻辑，不把测试定位修正当成物理触摸稳定性修复。
 - 跟踪：#1 原生基线、#3 本地个人数据、#8 独立服务及四端同步。所有后续 SHA/合并结果以 GitHub 为准。
 
 ## 实际验证
 
 | 范围 | 已有真实证据 | 尚不能宣称 |
 | --- | --- | --- |
-| Android | arm64/x86_64 APK；API28 原生输入、隐私字段、管理页新增短语到其他 App 上屏；PR #9 回归 39661698551 通过；后续 39665833406 在 focus_return 失败，PR #14 待复测 | ARM/三星真机与正式发布 |
+| Android | arm64/x86_64 APK；API28 原生输入、隐私字段、管理页新增短语到其他 App 上屏；39665833406 曾 focus_return 失败；PR #14 专用 39669035178 两轮干净资料的完整输入/短语插入通过，证据保留 | 候选物理触摸布局稳定性、ARM/三星真机与正式发布 |
 | macOS | 独立 IMK App 的 ARM/Intel 编译与 ad-hoc 签名；三轮 TIS 实验均在选择阶段 -50，未上屏 | 已完成系统启用/真实 App 输入、通用包或公证 |
-| iOS | 原生 App + 真正键盘扩展编译；基线模拟器桥接与专用 Thread 测试，39652099898；PR #9 的 UIKit 通知重入回归及其余 2 项模拟器测试，39661698551 通过 | 系统键盘激活、其他 App 输入、真机签名与发布 |
-| Windows | TSF DLL 编译、实际装载、COM 生命周期/锁/参数/身份隔离、打包词库 nihao→你好；39653361783 及 39661698399 通过 | 已注册并在记事本/浏览器输入、安装器或签名 |
-| Rust | 30 项集成测试、fmt、严格 Clippy；Linux/macOS/Windows，39661235469；本地同样通过 | 四端产品全部完成 |
-| 服务端 | 实际 PostgreSQL 16 事务/HTTP/race；Docker；两设备实际 Rust 密文与销毁原库后的空库恢复，39657713075；SQLite v2 回归 39661235583 | 四端联网客户端、生产部署或完整安全审计 |
+| iOS | 原生 App + 真正键盘扩展编译；基线模拟器桥接与专用 Thread 测试，39652099898；PR #9 的 UIKit 通知重入回归及其余 2 项模拟器测试，39661698551 通过，39665833406 的 Apple 作业再次通过 3 项测试 | 系统键盘激活、其他 App 输入、真机签名与发布 |
+| Windows | TSF DLL 编译、实际装载、COM 生命周期/锁/参数/身份隔离、打包词库 nihao→你好；39653361783、39661698399 及最新 39669035039 通过 | 已注册并在记事本/浏览器输入、安装器或签名 |
+| Rust | 30 项集成测试、fmt、严格 Clippy；Linux/macOS/Windows，39661235469；本地同样通过；最新 39669035212 三系统再次通过 | 四端产品全部完成 |
+| 服务端 | 实际 PostgreSQL 16 事务/HTTP/race；Docker；两设备实际 Rust 密文与销毁原库后的空库恢复，39657713075；SQLite v2 回归 39661235583，最新 39669035363 同样通过 | 四端联网客户端、生产部署或完整安全审计 |
 
 ## 当前实现
 
@@ -40,14 +40,16 @@
 ## 测试与失败记录
 
 - 服务 39657713075 全绿，明确启用 bash pipefail，避免 tee 隐藏测试退出码。实际验证幂等/重放拒绝、并发旧修订冲突、墓碑、分页、账号隔离、越权/撤销/凭据轮换后的旧 actor 拒绝、令牌摘要和配额原子拒绝。
-- 合成灾备：两设备交换实际 Rust AEAD 密文；撤销设备；pg_dump；销毁原测试数据库卷；空库 pg_restore；新进程仅用私密恢复材料恢复根密钥/归档并解密。撤销状态仍有效，非空库重复恢复拒绝。保存证据 docs/evidence/sync-service-ci-39655823283.log；最新服务 CI 链接为 https://github.com/ForceMind/ZapIME/actions/runs/39657713075。
+- 合成灾备：两设备交换实际 Rust AEAD 密文；撤销设备；pg_dump；销毁原测试数据库卷；空库 pg_restore；新进程仅用私密恢复材料恢复根密钥/归档并解密。撤销状态仍有效，非空库重复恢复拒绝。保存证据 docs/evidence/sync-service-ci-39655823283.log；最新服务 CI 链接为 https://github.com/ForceMind/ZapIME/actions/runs/39669035363。
 - govulncheck v1.9.0 初次检出 x/text v0.29.0 的 GO-2026-6629 / GO-2026-5970。升级到 x/text v0.41.0（x/sync v0.22.0），本地及升级后的 CI 均 No vulnerabilities found；不能替代完整审计。本地协议 fuzz 3 秒共 29440 执行，无失败。
 - 上传状态 7 项新增测试覆盖首次密文保留/重启重试、确认幂等/错误拒绝、旧确认不覆盖新编辑、跨账号/乱序拒绝、独立快照、v1 迁移与未来版本拒绝。其形状占位密文不是 AEAD 成功证据，实际密码交换由独立灾备演练验证。
 - PR #9 Android 首轮暴露同名编辑文本/按钮定位歧义，已限定 Android Button 控件并增加阶段诊断，最新实际输入回归通过。iOS 首轮新测试编译通过，但旧 xcresult 路径导致测试未执行；已按 run/attempt 唯一路径保存，最新 39661698551 实际执行 3 项测试并通过；证据 docs/evidence/ios-native-ci-39661698551.log。
 - 原生初轮的 iOS 架构链接、Windows msctf.lib 错误均已修正并通过后续构建。固定词库下载曾遇 HTTP502，只重跑失败 Windows job 后通过，不作为代码失败或输入成功的替代证据。
-- PR #12 在独立临时 runner 中使用 TIS 注册/选择 ZapIME，并向自己的 Cocoa 文本框派发合成事件；若 GUI、注册或选择失败则明确非零退出。三轮均在选择阶段失败，证据 docs/evidence/macos-input-ci-39663612323.log、macos-input-ci-39664522870.log、macos-input-ci-39665778845.log；不计为系统输入验收，更不等于真实用户物理按键测试。
+- PR #12 在独立临时 runner 中使用 TIS 注册/选择 ZapIME，准备向自己的 Cocoa 文本框派发合成事件；若 GUI、注册或选择失败则明确非零退出。三轮均在选择阶段失败，证据 docs/evidence/macos-input-ci-39663612323.log、macos-input-ci-39664522870.log、macos-input-ci-39665778845.log；不计为系统输入验收，更不等于真实用户物理按键测试。
 
-- 新回归 39665833406：Android focus_return 预期 你好qw你好（6），截图实际 你好qw你好啊（7）；密码框另有两次掩码输入。疑似候选列表刷新后旧坐标命中另一候选，尚未证明根因。PR #14 对指定 Button 走 ACTION_CLICK，读取独立测试 Activity 的真实 Editable/组字标记，允许过期节点重查但拒绝任何意外正文；键盘和焦点仍用触屏注入。两轮清空合成包资料、独立保存日志/截图的 CI 尚待完成。失败证据 docs/evidence/android-input-ci-39665833406.log。
+- 新回归 39665833406：Android focus_return 预期 你好qw你好（6），截图实际 你好qw你好啊（7）；密码框另有两次掩码输入。疑似候选列表刷新后旧坐标命中另一候选，尚未证明根因。PR #14 对指定 Button 走 ACTION_CLICK，读取独立测试 Activity 的真实 Editable/组字标记，允许过期节点重查但拒绝任何意外正文；键盘和焦点仍用触屏注入。两轮验收初轮 39667413535 第一轮通过、第二轮输入前键盘未显示（dumpsys: input started、show requested=false）；夹具显式切系统 IME 后清空，并由测试 Activity 请求 SHOW_IMPLICIT，专用 39669035178 两轮均通过；不直接调用核心或写入正文替代输入。失败证据 docs/evidence/android-input-ci-39665833406.log。
+- 新增独立 Android 门禁 .github/workflows/android.yml，避免被旧 Apple 模拟器作业占据通用并发组。两轮各自保留证据；失败夹具日志 docs/evidence/android-repeat-ci-39667413535.log，成功日志 docs/evidence/android-two-round-ci-39669035178.log。候选使用指定 Button 的 ACTION_CLICK，键盘/焦点使用触屏；不会将此结果当成候选物理触摸布局、ARM 真机或全平台验收。Apple 最新已完成的 3 项模拟器证据 docs/evidence/apple-native-ci-39665833406.log。
+
 ## 阶段与限制
 
 M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有源码和原生构建证据，只有 Android 已有原生输入闭环；Apple/Windows 系统激活和真实 App 验收未完成。M2 主要完成共享数据及 Android 管理，其余三端仍缺管理/个人规则接入。M3 独立服务及合成恢复已验证，客户端持久上传准备层已实现；四端联网客户端、图形账号、核对码配对、OS 密钥托管及密钥轮换未完成。M4–M6 未完成。
@@ -56,8 +58,8 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 
 ## 接续任务
 
-1. 收敛 PR #14 两轮 Android 原生回归，区分坐标定位竞态与产品缺陷；保留本轮失败证据。macOS TIS -50 仍未解决，需在可正常激活输入源的登录会话进一步定位，不猜测为签名或授权缺失。
-2. 共享同步客户端实现 HTTP/TLS 后台传输、远端认证导入、冲突副本和游标原子推进；在独立进程验证断网重试与恢复。
+1. 实现独立后台 HTTP/TLS 同步与远端认证应用、冲突副本、cursor 原子推进；现有持久上传准备层仍未联网。
+2. macOS TIS -50 仍未解决，在可正常激活输入源的登录会话继续定位；Windows/iOS 系统激活、第三方 App 和候选物理触摸仍需实际验收，不猜测签名或授权原因。
 3. 接 Android Keystore、Apple Keychain、Windows 受保护存储和加密恢复 UI；核对码配对、根密钥传输/轮换需单独验收。
 4. 完成四端个人管理与同步、Apple/Windows 真实应用输入和安全字段、全设备丢失与空服务器重建演练，再做生产部署与签名发布。
 
