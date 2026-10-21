@@ -4,6 +4,8 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 [[ $(uname -s) == Darwin ]] || { echo 'macOS/Xcode required' >&2; exit 1; }
 python3 scripts/fetch_resources.py
+# Apply the advertised minimum to Rust build scripts too (not only the final host link).
+export MACOSX_DEPLOYMENT_TARGET=13.0
 cargo build --release --locked -p zapime-core
 app=target/macos/ZapIME.app
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources/EngineResources"
