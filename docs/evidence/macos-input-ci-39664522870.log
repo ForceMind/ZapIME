@@ -1,0 +1,19 @@
+Repository: ForceMind/ZapIME
+Head: 0cd97af4cf914218e8faf46cf015befbd0e7e472
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39664522870
+Job: cocoa-input (119445901766), macOS 15 Intel
+Result: FAILURE before typing assertions. Parent activation and explicit IMK launch
+did not resolve TIS selection -50. Corrected deployment-target host compiled and
+passed ad-hoc signature verification; no macOS 13 runtime claim.
+
+2026-10-21T19:52:59.6743490Z Built host-architecture development bundle: target/macos/ZapIME.app (ad-hoc signed, not notarized)
+2026-10-21T19:53:08.3753080Z TIS register status=0
+2026-10-21T19:53:08.3930210Z TIS source=org.zapime.inputmethod.ZapIME enableCapable=1 enabled=0 selectable=0
+2026-10-21T19:53:09.2415300Z TIS enable status=0
+2026-10-21T19:53:09.3428850Z TIS source=org.zapime.inputmethod.ZapIME.Hans enableCapable=1 enabled=1 selectable=1
+2026-10-21T19:53:10.8890870Z IMK launch success=1 error=0
+2026-10-21T19:53:16.4560300Z TIS select attempt=1 status=-50
+2026-10-21T19:53:17.4939040Z TIS select attempt=2 status=-50
+2026-10-21T19:53:18.5214900Z TIS select attempt=3 status=-50
+2026-10-21T19:53:19.5256130Z TIS select attempt=4 status=-50
+2026-10-21T19:53:20.5286250Z TIS select attempt=5 status=-50

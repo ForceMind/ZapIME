@@ -18,6 +18,8 @@ Bundle ID `org.zapime.inputmethod.ZapIME`，输入源 `org.zapime.inputmethod.Za
 
 系统输入实验见 [PR #12](https://github.com/ForceMind/ZapIME/pull/12)。它只在临时 GitHub runner 中注册测试输入源，对独立 Cocoa 编辑器派发合成按键；拒绝在本地用户会话运行或覆盖现有安装。首轮 macOS 15 Intel CI 编译、注册/启用成功，但 TIS 选择返回 -50，未到达输入断言。该失败不计为系统输入通过，后续轮次结果以 STATUS.md 为准。固定上游也记录了新输入源登记和当前登录会话缓存的限制；不能把注册返回 noErr 当成可以选择或已经完成输入。
 
+第二、三轮显式启用父输入法、再次启用子模式、启动 IMK 并从最新已启用列表重新取源，第三轮 30 次选择仍为 -50，原因未解决，没有验证重新登录能修复。相关失败保留在 docs/evidence。独立 PR #13 已将 MACOSX_DEPLOYMENT_TARGET=13.0 传给 Cargo 的原生依赖构建，解决 runner 版本与宿主声明不一致的编译警告；ARM 和 Intel 构建通过不等于 macOS 13 真机运行验证。
+
 ## iOS
 
 需要 Xcode、XcodeGen、Rust 与 Python。运行：
