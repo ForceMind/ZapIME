@@ -36,6 +36,8 @@ Android 开发包还包含逐包 Rust 依赖许可清单。发现无许可文件
 ## 专用设备自动验收
 
 先构建 x86_64 开发包及 `scripts/build_android_tests.sh`，再在专用 API 28 模拟器上运行 `scripts/android_smoke.py <adb-path> <serial>`。该脚本会设置专用设备的默认输入法，不用于日常使用中的设备。测试宿主是独立包 org.zapime.android.test，避免 instrumentation 重启 IME；保存截图、结果和 InputMethodManager 状态以区分产品问题与测试环境问题。
+
+Android 的独立 CI 位于 `.github/workflows/android.yml`，执行两个干净合成资料轮次。`scripts/android_smoke_repeat.py` 只允许临时 GitHub runner 的 emulator serial，清空 ZapIME/测试宿主资料前切回系统输入法，逐轮独立保存结果；本地单轮脚本保留原有资料。候选测试调用指定 Button 的无障碍动作，其他键和焦点走触屏；最终同时核对真实 Editable/组字状态和无障碍正文，不能用它证明候选物理命中稳定性或 ARM 真机表现。
 ## Apple 原生构建
 
 macOS 和 iOS 原生宿主构建、安装及签名边界见 [APPLE_NATIVE.md](APPLE_NATIVE.md)。Linux 不能执行 Xcode/IMK 构建；CI 的 Apple 原生 job 负责实际编译，不以跨编译共享库替代。

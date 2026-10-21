@@ -1,0 +1,15 @@
+Repository: ForceMind/ZapIME
+Head: 8fb16a837e46a0cb7eef664df1d084b9182c7a5f
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39665833406
+Job: Apple native development hosts (119450494756)
+Job result: SUCCESS. ARM IMK bundle/signature, iOS App/extension builds and 3 simulator
+tests passed. The overall workflow separately FAILED Android candidate assertion;
+this Apple result does not overwrite that failure. No system keyboard activation,
+third-party app input, physical device, macOS 13 runtime or distribution signing claim.
+
+2026-10-21T19:57:45.1492100Z Built host-architecture development bundle: target/macos/ZapIME.app (ad-hoc signed, not notarized)
+2026-10-21T20:07:10.3744570Z Test Case '-[ZapIMETests.KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys]' passed (1.377 seconds).
+2026-10-21T20:07:11.8720960Z Test Case '-[ZapIMETests.NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary]' passed (0.702 seconds).
+2026-10-21T20:07:11.9546160Z Test Case '-[ZapIMETests.NativeCoreTests testWorkerKeepsNativeSessionOnOneThread]' passed (1.225 seconds).
+2026-10-21T20:07:12.6772180Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 3.305 (3.316) seconds
+2026-10-21T20:07:12.6930340Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 3.305 (3.318) seconds

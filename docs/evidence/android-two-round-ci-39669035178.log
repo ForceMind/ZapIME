@@ -1,0 +1,14 @@
+Repository: ForceMind/ZapIME
+Head: 48ef95e43d045fa4a6288ce5e6c6fc272bf9e4ea
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39669035178
+Job: Android development APK (119461655082), dedicated API28 x86_64 emulator
+Result: SUCCESS. arm64 and x86_64 APK builds, native test APK and both complete clean
+input rounds passed. Evidence screenshots/logs saved separately for each round.
+Candidate selection uses the exact accessibility Button action; other keys and focus
+use touch injection. Real test Activity Editable/composing state and accessibility text
+are asserted. Not proof of candidate physical hit-layout stability or ARM real-device use.
+
+2026-10-21T20:21:32.5052778Z Native input clean round 1/2
+2026-10-21T20:21:41.3839749Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI
+2026-10-21T20:21:41.5348707Z Native input clean round 2/2
+2026-10-21T20:21:49.9608925Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI
