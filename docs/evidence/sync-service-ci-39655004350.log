@@ -1,0 +1,36 @@
+ZapIME independent sync service CI evidence
+Run: https://github.com/ForceMind/ZapIME/actions/runs/39655004350
+Head: 3cfe496019b0623361f67745eb9f78b894934d28
+Scope: real PostgreSQL + Docker, synthetic data only; not four native clients.
+Note: dependency vulnerability remediation follows this baseline run.
+2026-10-21T18:42:43.4938501Z --- PASS: TestPostgresTransactions (0.10s)
+2026-10-21T18:42:43.4938927Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-10-21T18:42:43.4939432Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-10-21T18:42:43.4939912Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-10-21T18:42:43.4940632Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.02s)
+2026-10-21T18:42:43.4941049Z     --- PASS: TestPostgresTransactions/account_isolation (0.00s)
+2026-10-21T18:42:43.4941508Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+2026-10-21T18:42:43.4942071Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-10-21T18:42:43.4942585Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-10-21T18:42:43.4943071Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.00s)
+2026-10-21T18:42:43.4943693Z --- PASS: TestHTTPAndPersistentCiphertext (0.04s)
+2026-10-21T18:42:43.4946317Z --- PASS: TestEnvelopeBounds (0.00s)
+2026-10-21T18:42:43.4946853Z     --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+2026-10-21T18:42:43.4959817Z     --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+2026-10-21T18:42:43.4960366Z     --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+2026-10-21T18:42:43.4960863Z     --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+2026-10-21T18:42:43.4961347Z     --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+2026-10-21T18:42:43.4961811Z     --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+2026-10-21T18:42:43.4962269Z     --- PASS: TestEnvelopeBounds/too_large (0.00s)
+2026-10-21T18:42:43.4962749Z     --- PASS: TestEnvelopeBounds/padding (0.00s)
+2026-10-21T18:42:43.4963347Z --- PASS: TestTokenFormatAndHash (0.00s)
+2026-10-21T18:42:43.4963799Z --- PASS: TestDeviceNameBounds (0.00s)
+2026-10-21T18:42:43.4964463Z --- PASS: FuzzOperationBoundary (0.00s)
+2026-10-21T18:42:43.4964741Z     --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+2026-10-21T18:42:43.4964970Z PASS
+2026-10-21T18:43:32.9926913Z #12 4.312 Collected runtime module notices: 7
+2026-10-21T18:43:59.5434987Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-21T18:44:00.1585231Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-21T18:44:06.7349757Z Database restored; clients still need their own encryption/recovery material.
+2026-10-21T18:44:13.6680400Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-21T18:44:14.0560292Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery

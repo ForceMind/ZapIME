@@ -40,6 +40,10 @@ jobs:
           go vet ./...
       - name: Verify container build
         run: docker build -t zapime-sync:ci services/sync
+      - name: Known Go vulnerability gate
+        run: |
+          cd services/sync
+          go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./cmd/zapime-sync
       - name: Build real Rust encryption/recovery probe
         run: cargo build --locked -p zapime-crypto --example sync_fixture
       - name: Two-device ciphertext and fresh-server recovery exercise

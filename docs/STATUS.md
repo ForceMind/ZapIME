@@ -65,3 +65,10 @@
 - Apple PR #5 head 7a272ce0c8abd3ecb188edf33c2ac15402dbeee5：Windows/macOS/Linux 共享核心、Android 原生设备测试通过；macOS IMK、iOS App 和键盘扩展均编译通过，iOS 模拟器桥接测试仍在执行（39652099898）。
 - Windows PR #6 head 1f884661622041f4c70c112781a28c20c8025f55：原生 TSF DLL、COM 生命周期和打包词库桥接测试通过（39653361783）。首轮链接曾误列 msctf.lib，按上游的 COM/uuid 方式修正并重跑通过。
 - 这些是源码/编译/桥接证据，不是 Apple/Windows 系统激活或真实客户端输入验收，不把 M1/M3 标为完成。
+
+## 服务端验证与依赖修复
+
+- CI 39655004350 已通过实际 PostgreSQL 事务/HTTP 测试、Docker 构建和完整合成灾备演练：Rust 密文两设备交换、设备撤销、数据库备份、销毁原测试卷、空库还原、新进程仅凭恢复包/恢复码恢复根密钥并解密。过滤后的安全证据见 docs/evidence/sync-service-ci-39655004350.log。不是四端原生同步或生产部署。
+- 随后 govulncheck v1.9.0 检出 pgx 传递依赖 x/text v0.29.0 的 GO-2026-6629 与 GO-2026-5970；已升级 x/text v0.41.0（连带 x/sync v0.22.0），本地复扫 No vulnerabilities found。新增 CI 漏洞门禁，升级后的完整 CI 待重跑。不能把这次扫描等同于完整安全审计。
+- 本地协议 fuzz 3 秒执行 29440 次，未发现失败；Go race/vet 与 Rust 跨进程恢复 fixture 验证通过。
+- Apple PR #5 已合并 d3ff4aed5235495c79241894bd45099403b8116f；Windows PR #6 已合并 88710d57695c51044865e313068de29165d1666f，均在对应 head 检查通过后合并。PR #7 已改为面向 main，服务端跟踪 Issue #8。
