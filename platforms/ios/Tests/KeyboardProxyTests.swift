@@ -9,6 +9,7 @@ private final class SyntheticProxy: NSObject, UITextDocumentProxy {
     var documentContextBeforeInput: String? { text }
     var documentContextAfterInput: String? { "" }
     var selectedText: String? { nil }
+    var documentInputMode: UITextInputMode? { nil }
     var hasText: Bool { !text.isEmpty }
     var beforeEdit: (() -> Void)?
     var afterEdit: (() -> Void)?
