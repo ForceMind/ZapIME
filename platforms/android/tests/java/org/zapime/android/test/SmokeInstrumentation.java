@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.InputDevice;
+import android.view.inputmethod.BaseInputConnection;
+import android.text.Editable;
 import java.io.*;
 
 public final class SmokeInstrumentation extends Instrumentation {
@@ -60,22 +62,40 @@ public final class SmokeInstrumentation extends Instrumentation {
         int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
         throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
     }
-    private String editorText() throws Exception {
-        CharSequence text=waitFor("probe-normal").getText();
-        return text==null?"":text.toString();
+    private static final class EditorState {
+        String text, committed;
+        boolean composing;
+    }
+    private EditorState editorState() throws Exception {
+        final EditorState[] state=new EditorState[1];
+        // Read our independent test Activity's real Editable atomically on its UI thread.
+        // This observes the InputConnection result; it does not inject text or call the core.
+        runOnMainSync(() -> {
+            ProbeActivity activity=ProbeActivity.current.get();
+            if(activity==null)return;
+            Editable editable=activity.normal.getText();
+            EditorState value=new EditorState(); value.text=editable.toString();
+            int start=BaseInputConnection.getComposingSpanStart(editable);
+            int end=BaseInputConnection.getComposingSpanEnd(editable);
+            value.composing=start>=0 && end>=start;
+            value.committed=value.composing?value.text.substring(0,start)+value.text.substring(end):value.text;
+            state[0]=value;
+        });
+        if(state[0]==null)throw new Exception("Independent test editor unavailable");
+        return state[0];
     }
     private void chooseCandidate(String text,String expected,String phase) throws Exception {
         stage=phase;
-        String before=editorText();
+        String before=editorState().committed;
         for(int attempt=0;attempt<10;attempt++) {
             // A candidate refresh can move a different word under old screen coordinates.
             // Invoke this exact Button instead; detached or obsolete generations may reject.
             AccessibilityNodeInfo node=waitFor(text,true);
             if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {
                 for(int i=0;i<20;i++) {
-                    String current=editorText();
-                    if(current.equals(expected))return;
-                    if(!current.equals(before))throw new Exception("Candidate changed editor unexpectedly at "+phase+" expectedLength="+expected.length()+" actualLength="+current.length());
+                    EditorState current=editorState();
+                    if(!current.composing && current.text.equals(expected)) { requireEditor(expected,phase);return; }
+                    if(!current.committed.equals(before))throw new Exception("Candidate changed editor unexpectedly at "+phase+" expectedLength="+expected.length()+" actualLength="+current.committed.length());
                     Thread.sleep(50);
                 }
             }
