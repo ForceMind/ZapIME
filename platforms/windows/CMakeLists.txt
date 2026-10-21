@@ -18,7 +18,7 @@ add_library(ZapIMETsf SHARED ZapIMETsf.cpp ZapIME.def)
 target_compile_definitions(ZapIMETsf PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0A00)
 target_compile_options(ZapIMETsf PRIVATE /W4 /utf-8 /EHsc)
 target_link_libraries(ZapIMETsf PRIVATE zapime-core nlohmann_json::nlohmann_json
-  msctf ole32 oleaut32 uuid advapi32 shell32 user32 gdi32 bcrypt userenv ws2_32 ntdll secur32 crypt32)
+  ole32 oleaut32 uuid advapi32 shell32 user32 gdi32 bcrypt userenv ws2_32 ntdll secur32 crypt32)
 add_executable(ZapIMEWindowsTests tests/NativeTests.cpp)
 target_compile_options(ZapIMEWindowsTests PRIVATE /W4 /utf-8 /EHsc)
 target_compile_definitions(ZapIMEWindowsTests PRIVATE UNICODE _UNICODE)
