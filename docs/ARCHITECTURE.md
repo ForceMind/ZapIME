@@ -33,4 +33,4 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 
 服务只保存与 Rust `zapime-crypto` v1 相同格式的密文及最小元数据。客户端负责 AEAD 验证和正文/外层元数据核对。数据库备份可恢复账号和历史游标；用户自持恢复资料才能重新得到根密钥，二者不能互相替代。
 
-实际 PostgreSQL 与 Docker 合成测试已验证两设备密文交换、撤销、备份、空数据库恢复和新客户端进程解密。四端离线队列/服务器 revision 映射、核对码配对、Keychain/Keystore/DPAPI 及用户界面仍未接通。详情见 [SYNC_PROTOCOL.md](SYNC_PROTOCOL.md) 和 [服务手册](../services/sync/README.md)。
+实际 PostgreSQL 与 Docker 合成测试已验证两设备密文交换、撤销、备份、空数据库恢复和新客户端进程解密。共享库已增加持久上传准备层：显式待发序列、账号绑定、首次密文请求原样重试、服务端 revision 映射和事务确认；确认不覆盖后续本地编辑、不推进拉取游标。此层尚未联网。远端认证应用、冲突副本、游标原子推进、核对码配对、Keychain/Keystore/DPAPI 及四端用户界面仍未接通。详情见 [SYNC_STATE.md](SYNC_STATE.md)、[SYNC_PROTOCOL.md](SYNC_PROTOCOL.md) 和 [服务手册](../services/sync/README.md)。

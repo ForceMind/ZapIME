@@ -1,6 +1,6 @@
-# 本地个人数据 v1
+# 本地个人数据与开放归档
 
-实现：`crates/zapime-data`。当前为共享库，尚未接入四端 UI 与同步服务。
+实现：`crates/zapime-data`。Android 已接入本地管理与输入；其余平台管理和四端联网同步未完成。SQLite 内部版本为 2，开放归档仍为 1，二者分别演进。
 
 ## 记录与修改
 
@@ -8,7 +8,7 @@
 
 Store.edit 接收稳定 operation_id、expected_revision；新记录 expected_revision=0。记录与待发送操作在同一 SQLite IMMEDIATE 事务写入。重发同一个操作且参数相同返回原结果；复用操作 ID 修改参数则拒绝；旧修订不能覆盖新修订或删除墓碑。不用本机时钟决定冲突胜负。
 
-这些是本地修订，尚未冒充服务器 cursor 或跨设备因果关系。后续同步须单独保存服务端修订、配对身份、密钥及冲突版本；不能把本地 revision 直接当作云端 revision。
+这些是本地修订，不能直接当作云端 revision 或拉取 cursor。SQLite v2 通过独立表保存不可变待发快照、暂存密文请求、服务端实体修订及确认凭据；上传确认不推进拉取游标。详见 [SYNC_STATE.md](SYNC_STATE.md)。配对身份、平台密钥托管、远端应用与冲突副本仍待实现。
 
 ## 开放归档与恢复
 

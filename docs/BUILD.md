@@ -29,7 +29,7 @@ bash scripts/build_android.sh x86_64
 
 ## 其余平台
 
-完整上游原生源码位于 vendor/msime/platforms/{ios,macos,windows}，构建入口见 UPSTREAM_AUDIT.md。它们尚未完成 ZapIME 身份、同步与设置迁移，禁止直接将上游品牌包当作 ZapIME 发布。Apple 需要 macOS/Xcode；Windows 系统集成需要 Windows。当前 CI 先核验三种目标的共享核心编译，原生宿主验证另行列出。
+固定上游原生源码位于 vendor/msime/platforms/{ios,macos,windows}，审计入口见 UPSTREAM_AUDIT.md。ZapIME 自身宿主位于 platforms/{ios,macos,windows}，采用独立标识；不直接将上游品牌包当作 ZapIME 发布。Apple 需要 macOS/Xcode；Windows 系统集成需要 Windows。CI 分别执行三系统共享核心检查和各平台原生构建/桥接检查，实际系统启用及输入证据见 STATUS.md。
 
 Android 开发包还包含逐包 Rust 依赖许可清单。发现无许可文件的新依赖时构建会中止，先核对精确版本及原始来源，不能直接补一个不含版权归属的通用许可证。
 
