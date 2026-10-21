@@ -8,3 +8,8 @@
 *.p12
 *.mobileprovision
 /platforms/ios/ZapIME.xcodeproj/
+/services/sync/.env
+/services/sync/zapime-sync
+*.dump
+__pycache__/
+*.pyc
