@@ -60,6 +60,29 @@ public final class SmokeInstrumentation extends Instrumentation {
         int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
         throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
     }
+    private String editorText() throws Exception {
+        CharSequence text=waitFor("probe-normal").getText();
+        return text==null?"":text.toString();
+    }
+    private void chooseCandidate(String text,String expected,String phase) throws Exception {
+        stage=phase;
+        String before=editorText();
+        for(int attempt=0;attempt<10;attempt++) {
+            // A candidate refresh can move a different word under old screen coordinates.
+            // Invoke this exact Button instead; detached or obsolete generations may reject.
+            AccessibilityNodeInfo node=waitFor(text,true);
+            if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {
+                for(int i=0;i<20;i++) {
+                    String current=editorText();
+                    if(current.equals(expected))return;
+                    if(!current.equals(before))throw new Exception("Candidate changed editor unexpectedly at "+phase+" expectedLength="+expected.length()+" actualLength="+current.length());
+                    Thread.sleep(50);
+                }
+            }
+            Thread.sleep(100);
+        }
+        requireEditor(expected,phase);
+    }
     private void screenshot() {
         try { Bitmap bitmap=automation.takeScreenshot(); if(bitmap!=null)try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"smoke.png"))) { bitmap.compress(Bitmap.CompressFormat.PNG,100,out); } } catch(Exception ignored) {}
     }
@@ -74,12 +97,12 @@ public final class SmokeInstrumentation extends Instrumentation {
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));
-            click("你好"); requireEditor("你好","pinyin_commit");
+            chooseCandidate("你好","你好","pinyin_commit");
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好","focus_return");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");
             Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");

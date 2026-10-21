@@ -72,7 +72,7 @@ jobs:
           emulator-boot-timeout: 300
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
-            python3 scripts/android_smoke.py "$(command -v adb)" emulator-5554
+            python3 scripts/android_smoke_repeat.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -81,6 +81,7 @@ jobs:
             target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
             target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
             target/device-smoke/
+            target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: error
   apple-native:
     name: Apple native development hosts
