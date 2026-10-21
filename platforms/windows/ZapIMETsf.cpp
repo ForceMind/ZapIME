@@ -110,7 +110,8 @@ class Service final : public ITfTextInputProcessorEx, public ITfKeyEventSink,
         }
         if(key==VK_SPACE && GetKeyState(VK_SHIFT)<0)return true;
         if(english)return false;
-        return (key>='A' && key<='Z') || (composing() && (key==VK_SPACE || key==VK_RETURN || key==VK_BACK || key==VK_ESCAPE || !typed(key).empty()));
+        // 旧文档的组字不能让新文档首个空格、数字或标点被误吞。
+        return (key>='A' && key<='Z') || (activeContext.Get()==context && composing() && (key==VK_SPACE || key==VK_RETURN || key==VK_BACK || key==VK_ESCAPE || !typed(key).empty()));
     }
     void showCandidates(TfEditCookie cookie,ITfContext *context,ITfRange *range) {
         if(!composing() || !view.contains("candidates") || view["candidates"].empty()){if(candidate)ShowWindow(candidate,SW_HIDE);return;}

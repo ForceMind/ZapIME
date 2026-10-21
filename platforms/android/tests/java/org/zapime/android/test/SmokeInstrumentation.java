@@ -13,27 +13,32 @@ import java.io.*;
 
 public final class SmokeInstrumentation extends Instrumentation {
     private UiAutomation automation;
+    private String stage="launch";
     @Override public void onCreate(Bundle args) { super.onCreate(args); start(); }
-    private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) {
+    private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
+    private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
         if(node==null)return null;
-        if(text.contentEquals(node.getText()==null?"":node.getText()) || text.contentEquals(node.getContentDescription()==null?"":node.getContentDescription()))return node;
-        for(int i=0;i<node.getChildCount();i++) { AccessibilityNodeInfo found=walk(node.getChild(i),text); if(found!=null)return found; }
+        if((!button || "android.widget.Button".contentEquals(node.getClassName()==null?"":node.getClassName())) && (text.contentEquals(node.getText()==null?"":node.getText()) || text.contentEquals(node.getContentDescription()==null?"":node.getContentDescription())))return node;
+        for(int i=0;i<node.getChildCount();i++) { AccessibilityNodeInfo found=walk(node.getChild(i),text,button); if(found!=null)return found; }
         return null;
     }
-    private AccessibilityNodeInfo find(String text) {
-        for(AccessibilityWindowInfo window:automation.getWindows()) { AccessibilityNodeInfo found=walk(window.getRoot(),text); if(found!=null)return found; }
-        return walk(automation.getRootInActiveWindow(),text);
+    private AccessibilityNodeInfo find(String text) { return find(text,false); }
+    private AccessibilityNodeInfo find(String text,boolean button) {
+        for(AccessibilityWindowInfo window:automation.getWindows()) { AccessibilityNodeInfo found=walk(window.getRoot(),text,button); if(found!=null)return found; }
+        return walk(automation.getRootInActiveWindow(),text,button);
     }
-    private AccessibilityNodeInfo waitFor(String text) throws Exception {
+    private AccessibilityNodeInfo waitFor(String text) throws Exception { return waitFor(text,false); }
+    private AccessibilityNodeInfo waitFor(String text,boolean button) throws Exception {
         for(int i=0;i<150;i++) {
             if(find("System UI isn't responding")!=null) { AccessibilityNodeInfo wait=find("Wait");if(wait!=null)wait.performAction(AccessibilityNodeInfo.ACTION_CLICK); }
-            AccessibilityNodeInfo node=find(text); if(node!=null)return node; Thread.sleep(100);
+            AccessibilityNodeInfo node=find(text,button); if(node!=null)return node; Thread.sleep(100);
         }
         throw new Exception("Missing UI node: "+text);
     }
     private void click(String text) throws Exception {
         for(int attempt=0;attempt<30;attempt++) {
-            AccessibilityNodeInfo node=waitFor(text);
+            // 键盘/候选必须是真正的 Button，不能误点同文的编辑器内容或提示。
+            AccessibilityNodeInfo node=waitFor(text,!text.startsWith("probe-"));
             Rect bounds=new Rect();node.getBoundsInScreen(bounds);
             if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
                 long now=SystemClock.uptimeMillis();
@@ -48,9 +53,12 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         throw new Exception("UI click rejected: "+text);
     }
-    private void requireEditor(String expected) throws Exception {
+    private void requireEditor(String expected,String phase) throws Exception {
+        stage=phase;
         for(int i=0;i<100;i++) { AccessibilityNodeInfo editor=find("probe-normal"); if(editor!=null && expected.contentEquals(editor.getText()==null?"":editor.getText()))return; Thread.sleep(100); }
-        throw new Exception("Editor content assertion failed");
+        AccessibilityNodeInfo editor=find("probe-normal");
+        int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
+        throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
     }
     private void screenshot() {
         try { Bitmap bitmap=automation.takeScreenshot(); if(bitmap!=null)try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"smoke.png"))) { bitmap.compress(Bitmap.CompressFormat.PNG,100,out); } } catch(Exception ignored) {}
@@ -66,16 +74,16 @@ public final class SmokeInstrumentation extends Instrumentation {
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));
-            click("你好"); requireEditor("你好");
-            click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe");
-            click("⌫"); requireEditor("你好qw");
+            click("你好"); requireEditor("你好","pinyin_commit");
+            click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
+            click("⌫"); requireEditor("你好qw","backspace");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好","focus_return");
             Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet");
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
             screenshot(); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
-        } catch(Throwable error) { screenshot(); result.putString("stream","FAIL ZapIME native keyboard: "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
+        } catch(Throwable error) { screenshot(); result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

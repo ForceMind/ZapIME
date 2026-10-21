@@ -17,6 +17,8 @@ targets:
     sources:
       - App
       - Shared
+      # 让原生测试宿主加载同一个键盘控制器，验证文本代理边界；不是系统启用验收。
+      - Keyboard
       - path: ../../target/apple-ios/EngineResources
         type: folder
         buildPhase: resources
