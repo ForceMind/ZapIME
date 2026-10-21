@@ -8,4 +8,7 @@ ZapIME 仍处于开发阶段，尚未完成发布安全验收。
 - zapime-crypto 提供认证加密与独立恢复包，尚未连接 OS 密钥库、设备配对或远端服务，不能宣称已实现完整 E2EE 同步。
 - 不要将真实输入、密钥、恢复码、认证 Token 或签名证书写入日志或 Git。
 
-协议与限制见 docs/CRYPTO_PROTOCOL.md；来源与许可见 docs/LICENSE_AUDIT.md。发现问题时向本 Private 仓库提交不含真实秘密的复现材料。
+协议与限制见 docs/CRYPTO_PROTOCOL.md；来源与许可见 docs/LICENSE_AUDIT.md。仓库公开；公开 Issue 仅提交不含真实秘密的最小复现，不公开凭据、恢复资料或用户正文。
+
+
+Apple/Windows 开发宿主默认不学习、不联网。独立 Go/PostgreSQL 服务已有真实数据库与合成容器灾备验证，访问凭据只保存摘要，事务内复核撤销与轮换；四端客户端尚未接入，不能宣称完整四端 E2EE 同步。服务默认回环监听，生产需 HTTPS、外层速率限制、监控和后续安全验收。协议见 docs/SYNC_PROTOCOL.md。

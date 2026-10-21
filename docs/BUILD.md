@@ -39,3 +39,8 @@ Android 开发包还包含逐包 Rust 依赖许可清单。发现无许可文件
 ## Apple 原生构建
 
 macOS 和 iOS 原生宿主构建、安装及签名边界见 [APPLE_NATIVE.md](APPLE_NATIVE.md)。Linux 不能执行 Xcode/IMK 构建；CI 的 Apple 原生 job 负责实际编译，不以跨编译共享库替代。
+
+
+## Windows 原生与独立服务
+
+Windows x64 TSF DLL 构建、COM 边界与安装验收区分见 [WINDOWS_NATIVE.md](WINDOWS_NATIVE.md)。独立 Go/PostgreSQL 服务、容器与备份恢复见 [服务手册](../services/sync/README.md)。这些开发构建均不等于正式发行或生产部署。

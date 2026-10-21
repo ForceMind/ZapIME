@@ -12,7 +12,7 @@ Store.edit 接收稳定 operation_id、expected_revision；新记录 expected_re
 
 ## 开放归档与恢复
 
-导出为 UTF-8 JSON：`body.schema_version=1`、按 UUID 排序的 records，以及 body 序列化后的 SHA-256。该 SHA 只能检测意外损坏，不是防攻击签名。未来加密恢复包为另外一层，不能将本格式宣传为已加密。
+导出为 UTF-8 JSON：`body.schema_version=1`、按 UUID 排序的 records，以及 body 序列化后的 SHA-256。该 SHA 只能检测意外损坏，不是防攻击签名。已实现的加密恢复包为另外一层（zapime-crypto），不能将本开放格式宣传为已加密。
 
 首版只允许恢复到空资料库。导入前验证大小（32 MiB）、记录数量（100000）、schema、校验和、UUID 唯一性、修订边界和各类型字段；验证通过后一次事务写入。已有资料库直接拒绝，避免隐式覆盖。归档不含账户令牌、设备认证凭据或密钥；离线操作队列不导出，向空服务器重建同步仍须 M3 的重新登记流程。
 
