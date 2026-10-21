@@ -1,0 +1,10 @@
+Repository: ForceMind/ZapIME
+Head: 21761b65138205f9c60906966e0a4315f49fc988
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39663612323
+Job: cocoa-input (119442738685), macOS 15 Intel
+Result: FAILURE. Host and Cocoa probe compiled; registration and enable returned noErr,
+but selection returned -50. No typing assertion was reached. Not system typing acceptance.
+
+2026-10-21T19:43:54.5119640Z TIS register status=0
+2026-10-21T19:43:54.6563010Z TIS enable status=0
+2026-10-21T19:43:55.9132390Z TIS select status=-50

@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import UIKit
 
-final class KeyboardViewController: UIInputViewController {
+class KeyboardViewController: UIInputViewController {
     private var worker: CoreWorker?
     private var epoch: UInt64 = 0
     private var english = false
+    private var applyingOwnEdit = false
     private var snapshot: [String: Any] = [:]
     private let status = UILabel()
     private let candidateRow = UIStackView()
@@ -67,13 +68,18 @@ final class KeyboardViewController: UIInputViewController {
     }
     private func send(_ object: [String: Any], fallback: String? = nil, literal: String? = nil) {
         let current = epoch
+        let document = textDocumentProxy.documentIdentifier
         guard let worker else { status.text = "离线词库不可用，请重新安装开发包"; return }
         worker.submit(object) { [weak self] result in
             guard let self, current == self.epoch else { return }
+            guard self.textDocumentProxy.documentIdentifier == document else { self.invalidate(); return }
             if result["error"] != nil { self.status.text = "输入核心不可用，可切换到系统键盘"; return }
+            self.applyingOwnEdit = true
+            defer { self.applyingOwnEdit = false }
             if let commit = result["commit"] as? String { self.textDocumentProxy.insertText(commit) }
             if let literal { self.textDocumentProxy.insertText(literal) }
             if let fallback, result["handled"] as? Bool == false { self.textDocumentProxy.insertText(fallback) }
+            guard self.textDocumentProxy.documentIdentifier == document else { self.invalidate(); return }
             self.render(result)
         }
     }
@@ -97,9 +103,14 @@ final class KeyboardViewController: UIInputViewController {
     @objc private func enter() { send(["op": "command", "name": "CommitRaw"], fallback: "\n") }
     @objc private func backspace() {
         let current = epoch
+        let document = textDocumentProxy.documentIdentifier
         worker?.submit(["op": "command", "name": "Backspace"]) { [weak self] result in
             guard let self, self.epoch == current, result["error"] == nil else { return }
+            guard self.textDocumentProxy.documentIdentifier == document else { self.invalidate(); return }
+            self.applyingOwnEdit = true
+            defer { self.applyingOwnEdit = false }
             if result["handled"] as? Bool == false { self.textDocumentProxy.deleteBackward() }
+            guard self.textDocumentProxy.documentIdentifier == document else { self.invalidate(); return }
             self.render(result)
         }
     }
@@ -116,6 +127,10 @@ final class KeyboardViewController: UIInputViewController {
         worker?.submit(["op": "reset"]) { _ in }
         candidateRow.arrangedSubviews.forEach { candidateRow.removeArrangedSubview($0); $0.removeFromSuperview() }
     }
-    override func textWillChange(_ textInput: UITextInput?) { super.textWillChange(textInput); invalidate() }
+    override func textWillChange(_ textInput: UITextInput?) {
+        super.textWillChange(textInput)
+        // 自己上屏/退格引发的同步通知不能丢掉后续已经排队的按键。
+        if !applyingOwnEdit { invalidate() }
+    }
     override func viewWillDisappear(_ animated: Bool) { invalidate(); super.viewWillDisappear(animated) }
 }
