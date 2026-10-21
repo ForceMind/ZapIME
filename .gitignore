@@ -7,3 +7,4 @@
 *.keystore
 *.p12
 *.mobileprovision
+/platforms/ios/ZapIME.xcodeproj/
