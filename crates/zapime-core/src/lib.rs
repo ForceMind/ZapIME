@@ -8,6 +8,7 @@ use zapime_data::{Content, Record, Store};
 
 #[cfg(target_os = "android")]
 mod android;
+pub mod ffi;
 
 pub struct InputSession {
     engine: Session,

@@ -5,6 +5,9 @@ MSIME: https://github.com/metasequoiaime/msime
 Pinned source: 97d652a49cabb0887355b84186af2aa9032d3814
 MSIME copyright belongs to its respective contributors; GPL-3.0-only.
 ZapIME's independent Android host and session adapter were added on 2026-10-20.
+ZapIME Apple development hosts and the bounded C ABI were added on 2026-10-22.
+The Apple hosts reference the pinned MSIME native lifecycle and extension configuration;
+the engine and required upstream and dependency notices remain included.
 Corresponding source, build scripts and license texts must accompany binary distribution.
 
 The engine includes chinese-ime-lm reference/ (Apache-2.0).
