@@ -9,6 +9,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.InputDevice;
+import android.view.inputmethod.BaseInputConnection;
+import android.text.Editable;
 import java.io.*;
 
 public final class SmokeInstrumentation extends Instrumentation {
@@ -60,6 +62,47 @@ public final class SmokeInstrumentation extends Instrumentation {
         int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
         throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
     }
+    private static final class EditorState {
+        String text, committed;
+        boolean composing;
+    }
+    private EditorState editorState() throws Exception {
+        final EditorState[] state=new EditorState[1];
+        // Read our independent test Activity's real Editable atomically on its UI thread.
+        // This observes the InputConnection result; it does not inject text or call the core.
+        runOnMainSync(() -> {
+            ProbeActivity activity=ProbeActivity.current.get();
+            if(activity==null)return;
+            Editable editable=activity.normal.getText();
+            EditorState value=new EditorState(); value.text=editable.toString();
+            int start=BaseInputConnection.getComposingSpanStart(editable);
+            int end=BaseInputConnection.getComposingSpanEnd(editable);
+            value.composing=start>=0 && end>=start;
+            value.committed=value.composing?value.text.substring(0,start)+value.text.substring(end):value.text;
+            state[0]=value;
+        });
+        if(state[0]==null)throw new Exception("Independent test editor unavailable");
+        return state[0];
+    }
+    private void chooseCandidate(String text,String expected,String phase) throws Exception {
+        stage=phase;
+        String before=editorState().committed;
+        for(int attempt=0;attempt<10;attempt++) {
+            // A candidate refresh can move a different word under old screen coordinates.
+            // Invoke this exact Button instead; detached or obsolete generations may reject.
+            AccessibilityNodeInfo node=waitFor(text,true);
+            if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {
+                for(int i=0;i<20;i++) {
+                    EditorState current=editorState();
+                    if(!current.composing && current.text.equals(expected)) { requireEditor(expected,phase);return; }
+                    if(!current.committed.equals(before))throw new Exception("Candidate changed editor unexpectedly at "+phase+" expectedLength="+expected.length()+" actualLength="+current.committed.length());
+                    Thread.sleep(50);
+                }
+            }
+            Thread.sleep(100);
+        }
+        requireEditor(expected,phase);
+    }
     private void screenshot() {
         try { Bitmap bitmap=automation.takeScreenshot(); if(bitmap!=null)try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"smoke.png"))) { bitmap.compress(Bitmap.CompressFormat.PNG,100,out); } } catch(Exception ignored) {}
     }
@@ -74,12 +117,12 @@ public final class SmokeInstrumentation extends Instrumentation {
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));
-            click("你好"); requireEditor("你好","pinyin_commit");
+            chooseCandidate("你好","你好","pinyin_commit");
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));click("你好"); requireEditor("你好qw你好","focus_return");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");
             Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
