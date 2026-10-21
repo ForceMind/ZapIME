@@ -1,0 +1,56 @@
+name: Independent ciphertext sync service
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sync-service-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: zapime-ci-only
+          POSTGRES_DB: zapime_test
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 3s --health-retries 20
+    env:
+      ZAPIME_TEST_DATABASE_URL: postgres://postgres:zapime-ci-only@localhost:5432/zapime_test?sslmode=disable
+      ZAPIME_REQUIRE_DATABASE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@1.97.1
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: services/sync/go.mod
+          cache-dependency-path: services/sync/go.sum
+      - name: PostgreSQL transaction, HTTP, isolation and revoke tests
+        run: |
+          set -euo pipefail
+          cd services/sync
+          test -z "$(gofmt -l .)"
+          go test -race -count=1 -v ./... | tee ../../sync-service-tests.log
+          go vet ./...
+      - name: Verify container build
+        run: docker build -t zapime-sync:ci services/sync
+      - name: Known Go vulnerability gate
+        run: |
+          cd services/sync
+          go run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./cmd/zapime-sync
+      - name: Build real Rust encryption/recovery probe
+        run: cargo build --locked -p zapime-crypto --example sync_fixture
+      - name: Two-device ciphertext and fresh-server recovery exercise
+        run: python3 scripts/sync_service_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-sync-service-tests
+          path: sync-service-tests.log

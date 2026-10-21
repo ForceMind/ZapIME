@@ -6,7 +6,7 @@
 
 ## 当前状态
 
-开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；Android 双架构开发包已构建，API 28 基础原生输入已在本地模拟器验证。已增加共享 SQLite 个人数据、认证加密恢复模块，以及 Android 离线管理、候选置顶和明文备份入口。其余三端、云服务、配对及完整恢复体验尚未完成。完整证据见[项目状态](docs/STATUS.md)。
+开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；Android 双架构开发包已构建，API 28 基础原生输入已在本地模拟器验证。已增加共享 SQLite 个人数据、认证加密恢复模块，以及 Android 离线管理、候选置顶和明文备份入口。其余三端仍在原生验收中；独立密文服务已有源码与测试，四端云同步、配对及完整恢复体验尚未完成。完整证据见[项目状态](docs/STATUS.md)。
 
 macOS InputMethodKit 和 iOS 原生键盘扩展正在接入独立宿主；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主也已加入源码与原生 CI，验证边界见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
 
@@ -28,3 +28,5 @@ cargo test --workspace --locked
 客户端采用 GPL-3.0-only，保留 [MSIME](https://github.com/metasequoiaime/msime) 版权及第三方许可。上游固定在 `vendor/msime` 子模块；[来源锁](third_party/upstream-lock.json)、[许可审计](docs/LICENSE_AUDIT.md) 与 [NOTICE](third_party/NOTICE.txt) 记录各组件范围。分发二进制须履行对应源码等义务。未将授权不明确的 msime-cloud 实现复制进项目。
 
 zapime.com / zapime.app 仍是候选域名，未确认购买或绑定。
+
+独立服务源码、启动和备份说明见 [services/sync](services/sync/README.md)，协议见 [SYNC_PROTOCOL.md](docs/SYNC_PROTOCOL.md)。当前尚未连接四端客户端，不代表已部署云服务。

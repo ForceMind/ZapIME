@@ -28,3 +28,9 @@ ZapIME 新适配代码按 GPL-3.0-only；不得删除上游作者版权或以改
 打包遗漏许可证文件的 ewts 0.1.4、exmex 0.21.0、jni-sys-macros 0.4.1、rink-core 0.9.0 用精确版本映射补齐。exmex 与 jni 宏的 MIT 文本取自 crates.io 包 `.cargo_vcs_info.json` 对应提交（分别 3ef98341…、64d77b7a…）；ewts 使用上游 MSIME 随附的 Maxim Zommer MIT 通知；rink-core 保留 MPL-2.0 全文及源仓 https://codeberg.org/tiffany/rink 的来源声明。vi 0.8.0 的 Cargo 通过 license-file 声明 MIT，不能因 license 字段为空误报无许可。
 
 这补齐了许可文本包装，不消除上游词库历史来源记录不全或正式发行前的完整源码/安装资料审核要求。
+
+## 2026-10-22 原生宿主与独立服务补充
+
+Apple/Windows 最小宿主参考固定 MSIME 的系统集成约束，保留 GPL 与根 NOTICE；未修改固定子模块。Windows 额外使用 nlohmann/json v3.12.0（MIT），构建归档 SHA-256 固定为 42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa，MIT 文本随开发包打包。
+
+独立服务第一方代码 GPL-3.0-only。Go 运行时模块清单包括 pgx/v5、pgpassfile、pgservicefile、puddle/v2（MIT）和 x/sync、x/text（BSD/PATENTS）；实际版本由 services/sync/go.mod/go.sum 锁定。collect-notices 工具从实际命令依赖图收集全部 LICENSE/NOTICE/PATENTS，任何缺失即失败，容器包含该清单及 Go LICENSE。没有导入 msime-cloud 实现。此记录不是生产发布的最终完整法律/漏洞审计。

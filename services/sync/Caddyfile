@@ -1,0 +1,3 @@
+{$ZAPIME_HOST} {
+    reverse_proxy sync:8787
+}
