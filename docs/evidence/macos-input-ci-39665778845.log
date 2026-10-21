@@ -1,0 +1,17 @@
+Repository: ForceMind/ZapIME
+Head: 616ef358b95edf2d1dc9e7a1eeba94fc3ae9bfbf
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39665778845
+Job: cocoa-input (119450302263), macOS 15 Intel
+Result: FAILURE before typing assertions. Parent enabled, mode enabled after parent,
+IMK launched, fresh enabled list contains the mode. All 30 bounded selections returned
+-50. Excerpts show first and last attempt; full log remains in GitHub Actions.
+Cause unresolved; no assertion that relogin or any workaround has been validated.
+
+2026-10-21T20:00:27.4501090Z TIS register status=0
+2026-10-21T20:00:27.5669290Z TIS source=org.zapime.inputmethod.ZapIME enableCapable=1 enabled=0 selectable=0
+2026-10-21T20:00:28.3868090Z TIS enable status=0
+2026-10-21T20:00:28.3876900Z TIS source=org.zapime.inputmethod.ZapIME.Hans enableCapable=1 enabled=1 selectable=1
+2026-10-21T20:00:28.4063280Z TIS mode enable after parent status=0
+2026-10-21T20:00:29.1348570Z IMK launch success=1 error=0
+2026-10-21T20:00:34.9398650Z TIS select attempt=1 enabledList=1 status=-50
+2026-10-21T20:01:05.2318500Z TIS select attempt=30 enabledList=1 status=-50

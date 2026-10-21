@@ -1,0 +1,14 @@
+Repository: ForceMind/ZapIME
+Head: 8fb16a837e46a0cb7eef664df1d084b9182c7a5f
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39665833406
+Job: Android development APK (119450495309), API 28 x86_64
+Artifact: ZapIME-Android-development (12377866069)
+smoke.png SHA-256: 8f7dc0953d5654df5e0be31b6989347945e757d8f699696c2091ce9f3d5df3ee
+Result: FAILURE at focus_return after earlier pinyin/English/backspace phases.
+Downloaded synthetic screenshot inspected: normal editor shows 你好qw你好啊;
+password editor separately displays two masked characters. No real user data.
+Expected normal editor: 你好qw你好. Candidate coordinate refresh is a hypothesis;
+PR #14 changes only test selection/observability and requires two clean native rounds.
+This failure is retained and is not relabelled as a network error or successful input.
+
+2026-10-21T20:00:00.7152469Z FAIL ZapIME native keyboard at focus_return: Exception: Editor content assertion failed at focus_return expectedLength=6 actualLength=7
