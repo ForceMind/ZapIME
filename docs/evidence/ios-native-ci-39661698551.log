@@ -1,0 +1,15 @@
+Repository: ForceMind/ZapIME
+Head: 8d43f6f398981324cb5fbb41fbec8852826519bb
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/39661698551
+Job: Apple native development hosts (119436080520)
+Scope: real UIKit controller + synthetic text proxy, bundled Rust bridge, dedicated worker.
+Not evidence of system keyboard enablement, third-party app typing, physical device or distribution signing.
+
+2026-10-21T19:43:47.6170370Z Test Case '-[ZapIMETests.KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys]' started.
+2026-10-21T19:43:48.2500160Z Test Case '-[ZapIMETests.KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys]' passed (0.664 seconds).
+2026-10-21T19:43:48.3061540Z Test Case '-[ZapIMETests.NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary]' started.
+2026-10-21T19:43:48.7236490Z Test Case '-[ZapIMETests.NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary]' passed (0.477 seconds).
+2026-10-21T19:43:48.8042910Z Test Case '-[ZapIMETests.NativeCoreTests testWorkerKeepsNativeSessionOnOneThread]' started.
+2026-10-21T19:43:49.1523370Z Test Case '-[ZapIMETests.NativeCoreTests testWorkerKeepsNativeSessionOnOneThread]' passed (0.397 seconds).
+2026-10-21T19:43:49.1996690Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.539 (1.543) seconds
+2026-10-21T19:43:49.2313110Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.539 (1.547) seconds

@@ -16,6 +16,8 @@ bash scripts/build_macos.sh
 
 Bundle ID `org.zapime.inputmethod.ZapIME`，输入源 `org.zapime.inputmethod.ZapIME.Hans`。连接名遵守上游记录的 `<BundleID>_Connection` 约束；不会注册水杉的输入源或复用其资料目录。
 
+系统输入实验见 [PR #12](https://github.com/ForceMind/ZapIME/pull/12)。它只在临时 GitHub runner 中注册测试输入源，对独立 Cocoa 编辑器派发合成按键；拒绝在本地用户会话运行或覆盖现有安装。首轮 macOS 15 Intel CI 编译、注册/启用成功，但 TIS 选择返回 -50，未到达输入断言。该失败不计为系统输入通过，后续轮次结果以 STATUS.md 为准。固定上游也记录了新输入源登记和当前登录会话缓存的限制；不能把注册返回 noErr 当成可以选择或已经完成输入。
+
 ## iOS
 
 需要 Xcode、XcodeGen、Rust 与 Python。运行：
@@ -24,7 +26,7 @@ Bundle ID `org.zapime.inputmethod.ZapIME`，输入源 `org.zapime.inputmethod.Za
 bash scripts/build_ios.sh simulator
 ```
 
-输出 `target/ios-xcode/Build/Products/Debug-iphonesimulator/ZapIME.app`，包含真正 `com.apple.keyboard-service` 扩展。生成的 Xcode 工程不提交仓库。CI 自动选择已有 iPhone 模拟器，运行绑定打包词库的 Swift/Rust 桥接和专用线程测试；这些测试不代表已在系统设置中启用键盘或完成其他 App 的输入验收。
+输出 `target/ios-xcode/Build/Products/Debug-iphonesimulator/ZapIME.app`，包含真正 `com.apple.keyboard-service` 扩展。生成的 Xcode 工程不提交仓库。CI 自动选择已有 iPhone 模拟器，实际运行打包词库的 Swift/Rust 桥接、专用线程和真实键盘控制器的文本代理通知重入测试（3 项）；这些测试不代表已在系统设置中启用键盘或完成其他 App 的输入验收。模拟器脚本先执行 build-for-testing，CI 再 test-without-building，结果按 run/attempt 唯一路径保存。
 
 ```sh
 xcrun simctl install booted target/ios-xcode/Build/Products/Debug-iphonesimulator/ZapIME.app

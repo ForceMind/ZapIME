@@ -16,7 +16,7 @@
 
 ## 持久化密文与确认
 
-调用方用 `zapime-crypto` 按账号、记录、操作、密钥版本和 kind 生成认证密文，构造与服务端 v1 一致的 UploadOperation，再调用 `stage_upload`。组件校验 ID、类型、删除标志、长度/字符形状及远端基修订，并要求上传当前队首操作；不会保存明文传输正文。
+调用方用 `zapime-crypto` 按账号、记录、操作、密钥版本和 kind 生成认证密文，构造与服务端 v1 一致的 UploadOperation，再调用 `stage_upload`。组件校验 ID、类型、删除标志、长度/字符形状及远端基修订，并要求上传当前队首操作；`sync_uploads` 仅保存密文上传请求。原有 `records` 和 `operations` 中的本地业务正文仍为明文；这不是整个 SQLite 数据库的静态加密。
 
 第一次生成的完整请求被 SQLite 事务持久化。重启或丢失网络响应后重试返回同一份请求，包括 nonce 和密钥版本；不能对同一 operation_id 重新随机加密，否则服务器会按 operation_id_reused 拒绝。密钥轮换尚未实现，不能在存在待发请求时丢弃其旧密钥。
 
