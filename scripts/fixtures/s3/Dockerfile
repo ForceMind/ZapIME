@@ -5,6 +5,7 @@ RUN git init /src && git -C /src remote add origin https://github.com/minio/mini
 WORKDIR /src
 RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -o /minio .
 FROM scratch
+ENV HOME=/tmp MINIO_UPDATE=off
 COPY --from=build /minio /minio
 COPY --from=build /src/LICENSE /usr/share/licenses/minio/LICENSE
 ENTRYPOINT ["/minio"]

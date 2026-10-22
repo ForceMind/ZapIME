@@ -170,6 +170,28 @@ func liveObjects(t *testing.T, bucket string) *S3Objects {
 	}
 	return objects
 }
+func TestRealS3Protocol(t *testing.T) {
+	objects := liveObjects(t, "zapime-ci")
+	ctx := context.Background()
+	if err := objects.Probe(ctx); err != nil {
+		t.Fatal("real S3 probe", err)
+	}
+	store := &Store{Objects: objects}
+	change := Change{id(t), id(t), 1, operation(t)}
+	body, _ := json.Marshal(change)
+	raw, err := store.encodeChange(ctx, change, body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err = store.encodeChange(ctx, change, body); err != nil {
+		t.Fatal("conditional retry", err)
+	}
+	restored, err := store.decodeChange(ctx, change.AccountID, raw)
+	if err != nil || restored != change {
+		t.Fatal("real S3 immutable round trip", err)
+	}
+}
+
 func TestPostgresRealObjectStorageAndPortableArchive(t *testing.T) {
 	// Real PostgreSQL and a real S3-compatible server, not an in-memory repository.
 	objects := liveObjects(t, "zapime-ci")
