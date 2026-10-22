@@ -19,7 +19,7 @@ public final class SmokeInstrumentation extends Instrumentation {
     @Override public void onCreate(Bundle args) { super.onCreate(args); start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
-        if(node==null)return null;
+        if(node==null || !node.refresh())return null;
         if((!button || "android.widget.Button".contentEquals(node.getClassName()==null?"":node.getClassName())) && (text.contentEquals(node.getText()==null?"":node.getText()) || text.contentEquals(node.getContentDescription()==null?"":node.getContentDescription())))return node;
         for(int i=0;i<node.getChildCount();i++) { AccessibilityNodeInfo found=walk(node.getChild(i),text,button); if(found!=null)return found; }
         return null;
@@ -103,9 +103,16 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         requireEditor(expected,phase);
     }
-    private void screenshot() {
-        try { Bitmap bitmap=automation.takeScreenshot(); if(bitmap!=null)try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"smoke.png"))) { bitmap.compress(Bitmap.CompressFormat.PNG,100,out); } } catch(Exception ignored) {}
+    private void screenshot(String name) throws Exception {
+        Thread.sleep(250);Bitmap bitmap=automation.takeScreenshot();if(bitmap==null)throw new IOException("Screenshot unavailable: "+name);
+        try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),name))){if(!bitmap.compress(Bitmap.CompressFormat.PNG,100,out))throw new IOException("Screenshot write failed");}finally{bitmap.recycle();}
     }
+    private void dumpNode(AccessibilityNodeInfo node,Writer out,int depth) throws IOException {
+        if(node==null||depth>30||!node.refresh())return;Rect bounds=new Rect();node.getBoundsInScreen(bounds);
+        out.write(depth+" | "+node.getClassName()+" | "+node.getText()+" | "+node.getContentDescription()+" | "+node.isVisibleToUser()+" | "+bounds+"\n");
+        for(int i=0;i<node.getChildCount();i++)dumpNode(node.getChild(i),out,depth+1);
+    }
+    private void dumpHierarchy(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"hierarchy.txt")),"UTF-8")){for(AccessibilityWindowInfo window:automation.getWindows())dumpNode(window.getRoot(),out,0);}catch(Exception ignored){}}
     private void setText(String label,String value) throws Exception {
         Bundle args=new Bundle();args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,value);
         if(!waitFor(label).performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,args))throw new Exception("Set text rejected");
@@ -115,18 +122,20 @@ public final class SmokeInstrumentation extends Instrumentation {
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
-            click("probe-normal"); waitFor("⚡ 闪电 · 离线");
+            click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));
-            chooseCandidate("你好","你好","pinyin_commit");
+            waitFor("你好",true);screenshot("candidates.png");chooseCandidate("你好","你好","pinyin_commit");
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
+            click("⇧");click("a");requireEditor("你好qwA","shift_uppercase");click("⌫");
+            click("123");click("1");click("2");click("3");requireEditor("你好qw123","number_panel");screenshot("numbers.png");click("⌫");click("⌫");click("⌫");click("返回");requireEditor("你好qw","number_return");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");
-            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);click("个人资料 · 离线管理与备份");
-            setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");click("符号");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
+            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);waitFor("个人资料 · 离线管理与备份",true);screenshot("home.png");click("个人资料 · 离线管理与备份");
+            setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");screenshot("personal.png");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
-            screenshot(); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
-        } catch(Throwable error) { screenshot(); result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
+            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
+        } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){} result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }
