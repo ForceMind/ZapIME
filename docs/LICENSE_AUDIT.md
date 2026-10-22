@@ -37,4 +37,4 @@ Apple/Windows 最小宿主参考固定 MSIME 的系统集成约束，保留 GPL 
 
 ## R2 服务依赖补充
 
-AWS SDK for Go v2（核心 v1.47.3、credentials v1.20.9、S3 v1.114.4）及 smithy-go v1.28.5 采用 Apache-2.0，按 go.mod/go.sum 固定。运行时依赖通知工具已收集 19 个模块的 LICENSE/NOTICE/PATENTS 并随容器打包。Docker/PostgreSQL/Caddy 由其上游镜像提供；MinIO RELEASE.2025-09-07T16-13-09Z 只用于隔离 CI 的 S3 协议测试，不随 ZapIME 生产容器分发，不把兼容测试说成 Cloudflare 实际账号验收。
+AWS SDK for Go v2（核心 v1.47.3、credentials v1.20.9、S3 v1.114.4）及 smithy-go v1.28.5 采用 Apache-2.0，按 go.mod/go.sum 固定。运行时依赖通知工具已收集 19 个模块的 LICENSE/NOTICE/PATENTS 并随容器打包。Docker/PostgreSQL/Caddy 由其上游镜像提供；MinIO AGPL-3.0 源码 9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a（RELEASE.2025-10-15T17-29-55Z）由 CI 独立构建，只用于隔离的 S3 协议测试，不随 ZapIME 生产容器分发，不把兼容测试说成 Cloudflare 实际账号验收。
