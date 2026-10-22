@@ -11,7 +11,7 @@ action=${1:-status}
 case "$action" in
   status) "${compose[@]}" ps; curl --fail --silent --show-error http://127.0.0.1:8787/healthz; echo ;;
   logs) "${compose[@]}" logs --tail 100 sync ;;
-  stop) "${compose[@]}" stop ;;
+  stop) "${compose[@]}" --profile https stop ;;
   start)
     mode=$(sed -n 's/^ZAPIME_HTTPS_MODE=//p' "$ZAPIME_ENV_FILE")
     if [[ ${mode:-caddy} == caddy ]]; then "${compose[@]}" --profile https up -d --wait; else "${compose[@]}" up -d --wait db sync; fi ;;

@@ -67,7 +67,7 @@ def main():
         if (INSTALL/'current').exists():
             # Disconnect the separate test object server before removing this network.
             command('docker','network','disconnect','zapime_default','zapime-object-test',check=False)
-            compose('down','--volumes')
+            compose('--profile','https','down','--volumes')
         if INSTALL.exists():shutil.rmtree(INSTALL)
         Path('/usr/local/bin/zapime').unlink(missing_ok=True)
     try:
