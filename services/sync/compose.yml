@@ -11,6 +11,7 @@ services:
       interval: 5s
       timeout: 3s
       retries: 20
+    labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}
     logging: {driver: json-file, options: {max-size: 10m, max-file: "3"}}
     restart: unless-stopped
   sync:
@@ -33,6 +34,7 @@ services:
     read_only: true
     cap_drop: [ALL]
     security_opt: ['no-new-privileges:true']
+    labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}
     logging: {driver: json-file, options: {max-size: 10m, max-file: "3"}}
     restart: unless-stopped
   https:
@@ -45,8 +47,11 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - zapime-caddy:/data
     depends_on: [sync]
+    labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}
     logging: {driver: json-file, options: {max-size: 10m, max-file: "3"}}
     restart: unless-stopped
 volumes:
   zapime-db:
+    labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}
   zapime-caddy:
+    labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}

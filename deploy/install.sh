@@ -72,9 +72,10 @@ if [[ ! -f $root/config.env ]]; then
   [[ $account =~ ^[0-9a-fA-F]{32}$ && $access =~ ^[0-9a-fA-F]{32}$ && $secret =~ ^[0-9a-fA-F]{64}$ && $bucket =~ ^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$ ]] || { echo 'Invalid R2 settings' >&2; exit 1; }
   [[ ${#domain} -le 253 && $domain == *.* && $domain =~ ^[a-zA-Z0-9]([a-zA-Z0-9.-]*[a-zA-Z0-9])?$ && $domain != *..* ]] || { echo 'Enter a domain only, without a URL or path' >&2; exit 1; }
   case ${jurisdiction:-default} in default) endpoint="https://$account.r2.cloudflarestorage.com" ;; eu|us|fedramp) endpoint="https://$account.$jurisdiction.r2.cloudflarestorage.com" ;; *) echo 'Invalid jurisdiction' >&2; exit 1 ;; esac
+  installation_id=$(openssl rand -hex 16)
   password=$(openssl rand -hex 32)
   config=$(mktemp "$root/config.env.incoming.XXXXXX")
-  printf 'POSTGRES_PASSWORD=%s\nZAPIME_HOST=%s\nZAPIME_OBJECT_BACKEND=s3\nZAPIME_S3_ENDPOINT=%s\nZAPIME_S3_BUCKET=%s\nZAPIME_S3_ACCESS_KEY_ID=%s\nZAPIME_S3_SECRET_ACCESS_KEY=%s\nZAPIME_S3_REGION=auto\nZAPIME_HTTPS_MODE=%s\n' "$password" "$domain" "$endpoint" "$bucket" "$access" "$secret" "$proxy" > "$config"
+  printf 'ZAPIME_INSTALLATION_ID=%s\nPOSTGRES_PASSWORD=%s\nZAPIME_HOST=%s\nZAPIME_OBJECT_BACKEND=s3\nZAPIME_S3_ENDPOINT=%s\nZAPIME_S3_BUCKET=%s\nZAPIME_S3_ACCESS_KEY_ID=%s\nZAPIME_S3_SECRET_ACCESS_KEY=%s\nZAPIME_S3_REGION=auto\nZAPIME_HTTPS_MODE=%s\n' "$installation_id" "$password" "$domain" "$endpoint" "$bucket" "$access" "$secret" "$proxy" > "$config"
   ln "$config" "$root/config.env"; rm -f "$config"
   unset secret access password
 fi
@@ -86,6 +87,19 @@ else
   proxy=${proxy:-caddy}
 fi
 [[ $proxy == caddy || $proxy == existing ]] || { echo 'Invalid HTTPS mode in protected configuration' >&2; exit 1; }
+# Refuse a pre-existing Compose project/volume belonging to another installation.
+installation_id=$(sed -n 's/^ZAPIME_INSTALLATION_ID=//p' "$root/config.env")
+[[ $installation_id =~ ^[0-9a-f]{32}$ ]] || { echo 'Invalid installation ID in protected configuration' >&2; exit 1; }
+for container in $(docker ps -aq --filter label=com.docker.compose.project=zapime); do
+  owner=$(docker inspect --format '{{index .Config.Labels "io.zapime.installation"}}' "$container")
+  [[ $owner == "$installation_id" ]] || { echo 'Existing zapime Compose project belongs to another installation; no data was adopted' >&2; exit 1; }
+done
+for volume in zapime_zapime-db zapime_zapime-caddy; do
+  if docker volume inspect "$volume" >/dev/null 2>&1; then
+    owner=$(docker volume inspect --format '{{index .Labels "io.zapime.installation"}}' "$volume")
+    [[ $owner == "$installation_id" ]] || { echo 'Existing ZapIME volume belongs to another installation; no data was adopted' >&2; exit 1; }
+  fi
+done
 # Clone only the server and deployment tools; never download input-method models.
 staging=$(mktemp -d "$root/releases/incoming.XXXXXX")
 git -C "$staging" init -q

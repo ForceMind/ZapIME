@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import shutil
+import secrets
 import subprocess
 import tempfile
 import urllib.request
@@ -34,7 +35,8 @@ def main():
     def setup(bucket):
         INSTALL.mkdir(mode=0o700)
         (INSTALL/'installation-v1').write_text('zapime-installer-v1\n')
-        config = ('POSTGRES_PASSWORD=zapime-ci-only-password\n'
+        config = ('ZAPIME_INSTALLATION_ID='+secrets.token_hex(16)+'\n'
+                  'POSTGRES_PASSWORD=zapime-ci-only-password\n'
                   'ZAPIME_HOST=zapime-ci.invalid\nZAPIME_HTTPS_MODE=existing\n'
                   'ZAPIME_OBJECT_BACKEND=s3\nZAPIME_S3_ENDPOINT=http://zapime-object-test:9000\n'
                   f'ZAPIME_S3_BUCKET={bucket}\nZAPIME_S3_ACCESS_KEY_ID=zapime-ci-key\n'
