@@ -33,7 +33,7 @@ func database(t *testing.T) *Store {
 	}
 	db.SetMaxOpenConns(16)
 	t.Cleanup(func() { db.Close() })
-	s := &Store{db}
+	s := &Store{DB: db}
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	if err = s.Migrate(ctx); err != nil {
@@ -294,7 +294,7 @@ func TestHTTPAndPersistentCiphertext(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer second.Close()
-	reopened := &Store{second}
+	reopened := &Store{DB: second}
 	page, err := reopened.Pull(ctx, actor, 0, 100)
 	if err != nil || len(page.Changes) != 1 || page.Changes[0].Operation.Envelope != op.Envelope {
 		t.Fatal("persistent ciphertext roundtrip", err)

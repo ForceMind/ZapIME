@@ -3,7 +3,7 @@ WORKDIR /src
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
-RUN CGO_ENABLED=0 go build -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
 RUN go run ./cmd/collect-notices /licenses
 
 FROM scratch

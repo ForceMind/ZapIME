@@ -34,3 +34,7 @@ ZapIME 新适配代码按 GPL-3.0-only；不得删除上游作者版权或以改
 Apple/Windows 最小宿主参考固定 MSIME 的系统集成约束，保留 GPL 与根 NOTICE；未修改固定子模块。Windows 额外使用 nlohmann/json v3.12.0（MIT），构建归档 SHA-256 固定为 42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa，MIT 文本随开发包打包。
 
 独立服务第一方代码 GPL-3.0-only。Go 运行时模块清单包括 pgx/v5、pgpassfile、pgservicefile、puddle/v2（MIT）和 x/sync、x/text（BSD/PATENTS）；实际版本由 services/sync/go.mod/go.sum 锁定。collect-notices 工具从实际命令依赖图收集全部 LICENSE/NOTICE/PATENTS，任何缺失即失败，容器包含该清单及 Go LICENSE。没有导入 msime-cloud 实现。此记录不是生产发布的最终完整法律/漏洞审计。
+
+## R2 服务依赖补充
+
+AWS SDK for Go v2（核心 v1.47.3、credentials v1.20.9、S3 v1.114.4）及 smithy-go v1.28.5 采用 Apache-2.0，按 go.mod/go.sum 固定。运行时依赖通知工具已收集 19 个模块的 LICENSE/NOTICE/PATENTS 并随容器打包。Docker/PostgreSQL/Caddy 由其上游镜像提供；MinIO RELEASE.2025-09-07T16-13-09Z 只用于隔离 CI 的 S3 协议测试，不随 ZapIME 生产容器分发，不把兼容测试说成 Cloudflare 实际账号验收。
