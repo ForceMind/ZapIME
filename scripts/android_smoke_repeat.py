@@ -39,6 +39,9 @@ for round_number in (1, 2):
             raise SystemExit("Synthetic package data was not cleared")
     if output.exists():
         shutil.rmtree(output)
+    # This runner is guarded above as an ephemeral CI emulator. Isolate each
+    # round's fatal log evidence, including the graceful teardown exercised below.
+    subprocess.run([adb, "-s", serial, "logcat", "-c"], check=True)
     print(f"Native input clean round {round_number}/2", flush=True)
     try:
         subprocess.run([sys.executable, str(root / "scripts/android_smoke.py"), adb, serial],

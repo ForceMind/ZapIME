@@ -1,0 +1,4 @@
+2026-10-22T11:59:54.4541031Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-22T12:00:30.9968311Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-22T12:01:52.8834123Z Native input clean round 1/2
+2026-10-22T12:02:11.8080780Z FAIL ZapIME native keyboard at launch: Exception: Missing UI node: 返回键盘
