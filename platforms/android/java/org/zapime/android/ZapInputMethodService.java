@@ -161,5 +161,15 @@ public final class ZapInputMethodService extends InputMethodService {
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
     private void enter(InputConnection connection) { EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
     @Override public void onFinishInput() { ++epoch; ready=false; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
-    @Override public void onDestroy() { worker.execute(() -> { if(handle!=0)NativeCore.close(handle); }); worker.shutdown(); super.onDestroy(); }
+    @Override public void onDestroy() {
+        // InputMethodService.onDestroy invokes our onFinishInput. Keep the worker
+        // accepting that final close before shutting it down; both closes are queued
+        // on its owning thread and clear the handle so the core is closed once.
+        ++epoch;ready=false;
+        try { super.onDestroy(); }
+        finally {
+            worker.execute(() -> { if(handle!=0){NativeCore.close(handle);handle=0;} });
+            worker.shutdown();
+        }
+    }
 }
