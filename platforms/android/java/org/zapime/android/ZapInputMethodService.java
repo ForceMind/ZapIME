@@ -46,15 +46,15 @@ public final class ZapInputMethodService extends InputMethodService {
             if(action.equals("↵"))b.setBackground(new RippleDrawable(ColorStateList.valueOf(0x22ffffff),Ui.shape(this,Ui.BLUE,7),null));
             if(action.equals("⇧")&&shift)b.setBackground(Ui.shape(this,0xffc7dcff,7));
         }
-        b.setOnClickListener(v -> press(action));return b;
+        if(action.equals("中/英"))b.setTextSize(12);b.setOnClickListener(v -> press(action));return b;
     }
     private void addRow(String keys,int indent) {
         LinearLayout row=new LinearLayout(this);row.setPadding(dp(indent),0,dp(indent),0);
         for(String action:keys.split(" ")) {
-            String label=action.equals("空格")?(chinese?"拼音 · 空格":"English"):action.equals("中/英")?(chinese?"中 / 英":"英 / 中"):action.equals("返回")?"ABC":action;
+            String label=action.equals("空格")?(chinese?"拼音 · 空格":"English"):action.equals("中/英")?(chinese?"中/英":"英/中"):action.equals("返回")?"ABC":action;
             if(action.length()==1&&Character.isLetter(action.charAt(0)))label=shift?action.toUpperCase(java.util.Locale.ROOT):action;
             boolean special=action.equals("⇧")||action.equals("⌫")||action.equals("↵")||action.equals("123")||action.equals("中/英")||action.equals("返回");
-            Button b=key(label,action,special);float weight=action.equals("空格")?3.5f:action.equals("↵")?1.5f:1;
+            Button b=key(label,action,special);float weight=action.equals("空格")?3.5f:action.equals("↵")?1.5f:layer.equals("letters")&&(action.equals("⇧")||action.equals("⌫"))?1.3f:1;
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(46),weight);p.setMargins(dp(3),dp(3),dp(3),dp(3));row.addView(b,p);
         }body.addView(row,new LinearLayout.LayoutParams(-1,dp(52)));
     }
@@ -150,7 +150,7 @@ public final class ZapInputMethodService extends InputMethodService {
             };
             // 与尚在处理的中文按键共用队列，避免切到英文后先插入新字符。
             if(ready)worker.execute(() -> main.post(insert)); else insert.run();
-            shift=false;renderKeys();return;
+            boolean wasShift=shift;shift=false;if(wasShift)renderKeys();return;
         }
         if(key.equals("⌫")) { command("Backspace","⌫"); return; }
         if(key.equals("空格")) { command("CommitCandidate"," "); return; }
