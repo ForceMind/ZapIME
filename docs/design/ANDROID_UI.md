@@ -16,3 +16,13 @@
 通过独立测试应用的真实 InputConnection 验证，记录普通键盘、组字候选、工具、数字面板、主界面、个人资料和短语插入后的原生屏幕截图。候选选择走指定 Button 的无障碍 ACTION_CLICK，普通键位及焦点走触屏注入；不是候选物理触摸验收。两轮分别清空专用 CI 模拟器的合成资料，保留结果。
 
 本切片仅 Android 浅色界面。暗色/大字号/横屏专项适配、九键、语音、剪贴板键盘内列表、云端状态及其余平台视觉仍未完成；不能以本切片替代 M5 全部验收。所有示例和截图使用合成文本。
+
+## 原生画面
+
+以下为 CI [39776837197](https://github.com/ForceMind/ZapIME/actions/runs/39776837197) 的 API28 模拟器原始截图，验证代码 fa23f867870d556d3e9c20193bed0f6cb3d509a1。每轮均验证输入与真实服务退出，无本轮 ZapIME fatal。键盘截图上半屏为独立合成测试 App，下半屏为真正的 ZapIME InputMethodService；主界面为 ZapIME 原生 Activity。
+
+| 拼音候选 | 工具面板 | 原生设置首页 |
+| --- | --- | --- |
+| ![拼音候选](../evidence/ui-android-39776837197/candidates.png) | ![工具面板](../evidence/ui-android-39776837197/tools.png) | ![设置首页](../evidence/ui-android-39776837197/home.png) |
+
+同一 CI artifact 含两轮各七张原始截图、arm64/x86_64 开发 APK、输入日志、服务退出和运行时日志；归档 SHA-256 为 1b29d34de5aabadc2cdf71e8f11bfcb57f0becdc4ddc2b90bf51b1e4c71b22cb。本页三张图片直接取自该归档，没有重绘或修改。

@@ -57,4 +57,7 @@ if re.search(r"Process: org\.zapime\.android(?:\.test)?,", logs.stdout):
 if "PASS ZapIME native keyboard:" not in result.stdout:
     raise SystemExit("Native keyboard instrumentation failed; inspect target/device-smoke")
 
-print("PASS ZapIME native service teardown: no app fatal exception",flush=True)
+if os.environ.get("GITHUB_ACTIONS") == "true" and re.fullmatch(r"emulator-[0-9]+", serial):
+    print("PASS ZapIME native service teardown: no app fatal exception",flush=True)
+else:
+    print("SKIP service teardown: requires dedicated CI emulator",flush=True)

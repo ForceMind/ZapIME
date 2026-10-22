@@ -10,6 +10,8 @@
 
 macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建/桥接证据；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主也已加入源码与原生 CI，验证边界见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
 
+Android 原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。
+
 ## 开发
 
 ```sh

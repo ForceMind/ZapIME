@@ -1,0 +1,8 @@
+2026-10-22T12:17:44.5138235Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-22T12:18:21.7313127Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-22T12:19:53.1917957Z Native input clean round 1/2
+2026-10-22T12:20:10.7315487Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools and saved shortcut UI
+2026-10-22T12:20:10.7316054Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-22T12:20:10.8677670Z Native input clean round 2/2
+2026-10-22T12:20:27.8851230Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools and saved shortcut UI
+2026-10-22T12:20:27.8852188Z PASS ZapIME native service teardown: no app fatal exception
