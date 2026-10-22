@@ -34,7 +34,7 @@ public final class ZapInputMethodService extends InputMethodService {
         LinearLayout panel=Ui.column(this);panel.setPadding(dp(4),dp(2),dp(4),dp(6));panel.setBackgroundColor(Ui.KEYBOARD);
         status=Ui.text(this,"",12,Ui.MUTED);status.setGravity(Gravity.CENTER_VERTICAL);status.setPadding(dp(12),0,0,0);panel.addView(status,new LinearLayout.LayoutParams(-1,dp(24)));
         HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(false);candidates=new LinearLayout(this);candidates.setGravity(Gravity.CENTER_VERTICAL);scroll.addView(candidates);panel.addView(scroll,new LinearLayout.LayoutParams(-1,dp(44)));
-        body=Ui.column(this);panel.addView(body);layer="letters";renderKeys();refreshStatus();return panel;
+        body=Ui.column(this);panel.addView(body);layer="letters";renderKeys();refreshStatus();idleToolbar();return panel;
     }
     private Button key(String label,String action,boolean special) {
         Button b=Ui.button(this,label,special?Ui.SPECIAL:Color.WHITE,false);b.setPadding(0,0,0,0);b.setTextSize(label.length()==1?23:14);b.setContentDescription(action);b.setBackground(new RippleDrawable(ColorStateList.valueOf(0x242878fa),Ui.shape(this,special?Ui.SPECIAL:Color.WHITE,7),null));b.setElevation(dp(1));
