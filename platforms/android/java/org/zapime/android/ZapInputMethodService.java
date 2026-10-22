@@ -34,7 +34,7 @@ public final class ZapInputMethodService extends InputMethodService {
         LinearLayout panel=Ui.column(this);panel.setPadding(dp(4),dp(2),dp(4),dp(6));panel.setBackgroundColor(Ui.KEYBOARD);
         status=Ui.text(this,"",12,Ui.MUTED);status.setGravity(Gravity.CENTER_VERTICAL);status.setPadding(dp(12),0,0,0);panel.addView(status,new LinearLayout.LayoutParams(-1,dp(24)));
         HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setHorizontalScrollBarEnabled(false);candidates=new LinearLayout(this);candidates.setGravity(Gravity.CENTER_VERTICAL);scroll.addView(candidates);panel.addView(scroll,new LinearLayout.LayoutParams(-1,dp(44)));
-        body=Ui.column(this);panel.addView(body);layer="letters";renderKeys();refreshStatus();idleToolbar();return panel;
+        body=Ui.column(this);body.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);panel.addView(body);layer="letters";renderKeys();refreshStatus();idleToolbar();return panel;
     }
     private Button key(String label,String action,boolean special) {
         Button b=Ui.button(this,label,special?Ui.SPECIAL:Color.WHITE,false);b.setPadding(0,0,0,0);b.setTextSize(label.length()==1?23:14);b.setContentDescription(action);b.setBackground(new RippleDrawable(ColorStateList.valueOf(0x242878fa),Ui.shape(this,special?Ui.SPECIAL:Color.WHITE,7),null));b.setElevation(dp(1));
@@ -60,12 +60,13 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void renderKeys() {
         if(body==null)return;body.removeAllViews();
+        body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
             String[] labels={"个人资料","数字键盘","符号面板","输入设置"};String[] icons={"book","keys","keys","settings"};
             for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,labels[i],Color.WHITE,false);b.setTextSize(13);b.setPadding(0,dp(16),0,dp(10));b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],Ui.BLUE),null,null);b.setCompoundDrawablePadding(dp(10));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(88),1);p.setMargins(dp(4),0,dp(4),0);tiles.addView(b,p);b.setOnClickListener(v->{if(index==0)open(PersonalDataActivity.class);if(index==1){layer="numbers";renderKeys();}if(index==2){layer="symbols";renderKeys();}if(index==3)open(MainActivity.class);});}
             body.addView(tiles);TextView note=Ui.text(this,"资料保存在本机 · 长按候选可置顶",12,Ui.MUTED);note.setGravity(Gravity.CENTER);body.addView(note,new LinearLayout.LayoutParams(-1,dp(46)));
-            Button back=Ui.button(this,"返回键盘",Ui.SPECIAL,false);back.setOnClickListener(v->{layer="letters";renderKeys();});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(44));p.setMargins(dp(12),dp(8),dp(12),dp(8));body.addView(back,p);return;
+            Button back=Ui.button(this,"返回键盘",Ui.SPECIAL,false);back.setContentDescription("返回键盘");back.setOnClickListener(v->{layer="letters";renderKeys();});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(44));p.setMargins(dp(12),dp(8),dp(12),dp(8));body.addView(back,p);return;
         }
         if(layer.equals("numbers")){addRow("1 2 3 ⌫",20);addRow("4 5 6 +",20);addRow("7 8 9 -",20);addRow("返回 0 . ↵",20);return;}
         if(layer.equals("symbols")){addRow("， 。 ？ ！ ： ；",4);addRow("（ ） 【 】 《 》",4);addRow("@ # % & / ⌫",4);addRow("返回 ' , 空格 . ↵",4);return;}
