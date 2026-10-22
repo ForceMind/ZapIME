@@ -1,0 +1,2 @@
+2026-10-22T14:01:17.3887347Z Unable to find image 'quay.io/minio/minio:RELEASE.2025-09-07T16-13-09Z' locally
+2026-10-22T14:01:17.9627158Z docker: Error response from daemon: unauthorized: access to the requested resource is not authorized

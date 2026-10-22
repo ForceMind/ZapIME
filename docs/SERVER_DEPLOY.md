@@ -76,4 +76,4 @@ curl -fsSL https://raw.githubusercontent.com/ForceMind/ZapIME/main/deploy/instal
 
 ## 验证范围
 
-自动化将使用实际 PostgreSQL、独立 S3 兼容对象服务、Docker、安装器重跑，以及全新数据库/另一空桶恢复后由真实 Rust AEAD 探针解密；兼容协议验收不等于已访问用户 Cloudflare 账号。没有用户 R2 凭据、域名和服务器 SSH 时，不宣称已完成真实 R2、公网证书或用户服务器部署。具体 CI 和结果记录见 STATUS.md。
+CI [39793985624](https://github.com/ForceMind/ZapIME/actions/runs/39793985624) 已使用实际 PostgreSQL、独立 S3 兼容对象服务、Docker，完成安装器重跑、全新数据库/另一空桶恢复及真实 Rust AEAD 解密验收（验证 head 3f8251f7ba0fc6ba0a75c09bf804dc4616c4c966）。兼容协议验收不等于已访问用户 Cloudflare 账号。没有用户 R2 凭据、域名和服务器 SSH 时，不宣称已完成真实 R2、公网证书或用户服务器部署。具体 CI 和结果记录见 STATUS.md。

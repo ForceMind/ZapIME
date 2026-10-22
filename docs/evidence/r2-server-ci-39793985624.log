@@ -1,0 +1,22 @@
+2026-10-22T14:18:12.3863158Z --- PASS: TestPostgresTransactions (0.09s)
+2026-10-22T14:18:12.3863623Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-10-22T14:18:12.3863966Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-10-22T14:18:12.3864293Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-10-22T14:18:12.3864614Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.01s)
+2026-10-22T14:18:12.3864901Z     --- PASS: TestPostgresTransactions/account_isolation (0.00s)
+2026-10-22T14:18:12.3865214Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.00s)
+2026-10-22T14:18:12.3865594Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-10-22T14:18:12.3865941Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-10-22T14:18:12.3866270Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.00s)
+2026-10-22T14:18:12.3866819Z --- PASS: TestHTTPAndPersistentCiphertext (0.03s)
+2026-10-22T14:18:12.3867156Z --- PASS: TestS3Configuration (0.00s)
+2026-10-22T14:18:12.3867559Z --- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+2026-10-22T14:18:12.3867953Z --- PASS: TestPostgresObjectFailureRollback (0.01s)
+2026-10-22T14:18:12.3868265Z --- PASS: TestRealS3Protocol (0.01s)
+2026-10-22T14:18:12.3868913Z --- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.06s)
+2026-10-22T14:18:12.3869377Z --- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+2026-10-22T14:19:08.1862883Z #11 3.993 Collected runtime module notices: 19
+2026-10-22T14:19:16.0581875Z No vulnerabilities found.
+2026-10-22T14:19:58.5501312Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-22T14:20:35.1987690Z #12 3.512 Collected runtime module notices: 19
+2026-10-22T14:21:14.1006380Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
