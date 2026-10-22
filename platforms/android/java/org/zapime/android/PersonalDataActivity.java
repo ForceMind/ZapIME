@@ -23,20 +23,20 @@ public final class PersonalDataActivity extends Activity {
     private JSONObject selected;
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
-        LinearLayout page=new LinearLayout(this);page.setOrientation(1);page.setPadding(24,24,24,24);
-        TextView title=new TextView(this);title.setText("个人资料");title.setTextSize(28);page.addView(title);
-        TextView note=new TextView(this);note.setText("保存在本机，离线可用。云同步仍在开发；收藏不受临时剪贴板过期影响。长按键盘候选可置顶。");page.addView(note);
-        status=new TextView(this);status.setText("正在打开本机资料…");page.addView(status);
-        type=new Spinner(this);type.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"快捷短语","个人词库","候选置顶规则","永久收藏","本机剪贴板（保留7天）"}));page.addView(type);
-        code=new EditText(this);code.setHint("编码，例如 wx / nihao；收藏可留空");code.setSingleLine(true);code.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);code.setContentDescription("personal-code");page.addView(code);
-        text=new EditText(this);text.setHint("正文");text.setMinLines(2);text.setImeOptions(android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);text.setContentDescription("personal-text");page.addView(text);
-        position=new EditText(this);position.setHint("候选位置（1–40）");position.setInputType(2);position.setText("1");page.addView(position);
-        Button save=new Button(this);save.setText("保存到本机");save.setOnClickListener(v->save());page.addView(save);
-        Button clear=new Button(this);clear.setText("新建一条");clear.setOnClickListener(v->{selected=null;code.setText("");text.setText("");position.setText("1");});page.addView(clear);
-        Button export=new Button(this);export.setText("导出明文备份");export.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("导出明文资料").setMessage("文件包含个人词库、短语、收藏和逻辑删除记录；任何拿到文件的人都可能阅读。请保存到自己控制的安全位置。此入口不导出账号凭据。").setNegativeButton("取消",null).setPositiveButton("选择保存位置",(d,w)->{Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json").addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE,"ZapIME-personal-data.json");startActivityForResult(intent,10);}).show());page.addView(export);
-        Button restore=new Button(this);restore.setText("从备份恢复（仅空资料库）");restore.setOnClickListener(v->{Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("application/json").addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(intent,11);});page.addView(restore);
+        LinearLayout page=Ui.page(this);
+        TextView eyebrow=Ui.text(this,"ZAPIME  /  本机资料",12,Ui.BLUE);page.addView(eyebrow);TextView title=Ui.text(this,"你的常用，随手可用。",26,Ui.INK);title.setTypeface(null,android.graphics.Typeface.BOLD);title.setPadding(0,Ui.dp(this,14),0,Ui.dp(this,12));page.addView(title);
+        TextView note=Ui.text(this,"",13,Ui.MUTED);note.setText("保存在本机，离线可用。云同步仍在开发；收藏不受临时剪贴板过期影响。长按键盘候选可置顶。");page.addView(note);
+        status=Ui.text(this,"",13,Ui.BLUE);status.setPadding(0,Ui.dp(this,12),0,0);status.setText("正在打开本机资料…");page.addView(status);
+        LinearLayout form=Ui.card(page);form.addView(Ui.text(this,"新增或编辑",18,Ui.INK));type=new Spinner(this);type.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,new String[]{"快捷短语","个人词库","候选置顶规则","永久收藏","本机剪贴板（保留7天）"}));form.addView(type);
+        code=new EditText(this);code.setHint("编码，例如 wx / nihao；收藏可留空");code.setSingleLine(true);code.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);code.setContentDescription("personal-code");Ui.field(code);form.addView(code);
+        text=new EditText(this);text.setHint("正文");text.setMinLines(2);text.setImeOptions(android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);text.setContentDescription("personal-text");Ui.field(text);form.addView(text);
+        position=new EditText(this);position.setHint("候选位置（1–40）");position.setInputType(2);position.setText("1");Ui.field(position);form.addView(position);position.setVisibility(android.view.View.GONE);type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){public void onItemSelected(AdapterView<?> p,android.view.View v,int i,long id){position.setVisibility(i==2?android.view.View.VISIBLE:android.view.View.GONE);}public void onNothingSelected(AdapterView<?> p){}});
+        Button save=Ui.button(this,"",Ui.BLUE,true);save.setText("保存到本机");save.setOnClickListener(v->save());Ui.addButton(form,save);
+        Button clear=Ui.button(this,"",Ui.BG,false);clear.setText("新建一条");clear.setOnClickListener(v->{selected=null;code.setText("");text.setText("");position.setText("1");});Ui.addButton(form,clear);
+        LinearLayout backup=Ui.card(page);backup.addView(Ui.text(this,"备份与恢复",18,Ui.INK));Button export=Ui.button(this,"",Ui.BG,false);export.setText("导出明文备份");export.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("导出明文资料").setMessage("文件包含个人词库、短语、收藏和逻辑删除记录；任何拿到文件的人都可能阅读。请保存到自己控制的安全位置。此入口不导出账号凭据。").setNegativeButton("取消",null).setPositiveButton("选择保存位置",(d,w)->{Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT).setType("application/json").addCategory(Intent.CATEGORY_OPENABLE).putExtra(Intent.EXTRA_TITLE,"ZapIME-personal-data.json");startActivityForResult(intent,10);}).show());Ui.addButton(backup,export);
+        Button restore=Ui.button(this,"",Ui.BG,false);restore.setText("从备份恢复（仅空资料库）");restore.setOnClickListener(v->{Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).setType("application/json").addCategory(Intent.CATEGORY_OPENABLE);startActivityForResult(intent,11);});Ui.addButton(backup,restore);
         rows=new LinearLayout(this);rows.setOrientation(1);page.addView(rows);
-        ScrollView scroll=new ScrollView(this);scroll.addView(page);setContentView(scroll);
+        Ui.showPage(this,page);
         worker.execute(()->{try {ResourceInstaller.prepare(this);handle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(),false);if(handle==0)throw new IOException("open_failed");refresh();}catch(Exception|LinkageError error){message("资料打开失败，请重新进入。");}});
     }
     private void message(String value){main.post(()->{if(!closed)status.setText(value);});}
@@ -45,8 +45,8 @@ public final class PersonalDataActivity extends Activity {
         JSONArray records=request(new JSONObject().put("op","personal_list")).getJSONArray("records");
         main.post(()->{if(closed)return;rows.removeAllViews();status.setText("已保存 "+records.length()+" 条 · 本机数据");
             for(int i=0;i<records.length();i++) {JSONObject record=records.optJSONObject(i);if(record==null)continue;JSONObject content=record.optJSONObject("content");if(content==null)continue;
-                Button edit=new Button(this);edit.setAllCaps(false);edit.setText(content.optString("code",content.optString("title","收藏/剪贴板"))+"\n"+content.optString("text"));rows.addView(edit);edit.setOnClickListener(v->{selected=record;String kind=content.optString("type");type.setSelection(kind.equals("snippet")?0:kind.equals("dictionary")?1:kind.equals("candidate_rule")?2:kind.equals("favorite")?3:4);code.setText(content.optString("code"));text.setText(content.optString("text"));position.setText(content.optString("position","1"));});
-                Button delete=new Button(this);delete.setText("删除此条");rows.addView(delete);delete.setOnClickListener(v->new AlertDialog.Builder(this).setMessage("从有效资料中删除？备份与本地历史仍可能保留内容。").setNegativeButton("取消",null).setPositiveButton("删除",(d,w)->worker.execute(()->{try{request(editRequest(record,content,true));refresh();}catch(Exception error){message("删除失败："+error.getMessage());}})).show());
+                LinearLayout item=Ui.card(rows);Button edit=Ui.button(this,"",android.graphics.Color.WHITE,false);edit.setAllCaps(false);edit.setText(content.optString("code",content.optString("title","收藏/剪贴板"))+"\n"+content.optString("text"));edit.setGravity(android.view.Gravity.START|android.view.Gravity.CENTER_VERTICAL);edit.setPadding(0,Ui.dp(this,8),0,Ui.dp(this,8));item.addView(edit);edit.setOnClickListener(v->{selected=record;String kind=content.optString("type");type.setSelection(kind.equals("snippet")?0:kind.equals("dictionary")?1:kind.equals("candidate_rule")?2:kind.equals("favorite")?3:4);code.setText(content.optString("code"));text.setText(content.optString("text"));position.setText(content.optString("position","1"));});
+                Button delete=Ui.button(this,"",Ui.BG,false);delete.setTextColor(0xffc45252);delete.setText("删除此条");Ui.addButton(item,delete);delete.setOnClickListener(v->new AlertDialog.Builder(this).setMessage("从有效资料中删除？备份与本地历史仍可能保留内容。").setNegativeButton("取消",null).setPositiveButton("删除",(d,w)->worker.execute(()->{try{request(editRequest(record,content,true));refresh();}catch(Exception error){message("删除失败："+error.getMessage());}})).show());
             }
         });
     }
