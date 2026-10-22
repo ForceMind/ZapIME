@@ -23,6 +23,8 @@ jobs:
     env:
       ZAPIME_TEST_DATABASE_URL: postgres://postgres:zapime-ci-only@localhost:5432/zapime_test?sslmode=disable
       ZAPIME_REQUIRE_DATABASE: '1'
+      ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+      ZAPIME_REQUIRE_S3: '1'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -32,6 +34,15 @@ jobs:
         with:
           go-version-file: services/sync/go.mod
           cache-dependency-path: services/sync/go.sum
+      - name: Start isolated S3-compatible storage for R2 protocol acceptance
+        run: |
+          docker build -t zapime-s3-fixture:ci scripts/fixtures/s3
+          docker run -d --name zapime-object-test -p 127.0.0.1:9000:9000 -e MINIO_ROOT_USER=zapime-ci-key -e MINIO_ROOT_PASSWORD=zapime-ci-synthetic-secret zapime-s3-fixture:ci server /data
+          for attempt in $(seq 1 40); do
+            if curl -fsS http://127.0.0.1:9000/minio/health/live; then exit 0; fi
+            sleep 1
+          done
+          exit 1
       - name: PostgreSQL transaction, HTTP, isolation and revoke tests
         run: |
           set -euo pipefail
@@ -49,6 +60,8 @@ jobs:
         run: cargo build --locked -p zapime-crypto --example sync_fixture
       - name: Two-device ciphertext and fresh-server recovery exercise
         run: python3 scripts/sync_service_smoke.py
+      - name: One-command installer, repeat install and fresh DB + object bucket recovery
+        run: sudo --preserve-env=GITHUB_ACTIONS,GITHUB_SHA python3 scripts/server_install_smoke.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:

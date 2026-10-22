@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -31,6 +32,27 @@ func run() error {
 		}
 		return nil
 	}
+	objects, objectErr := syncapi.ObjectsFromEnv()
+	if objectErr != nil {
+		return errors.New("object_storage_configuration_invalid")
+	}
+	if len(os.Args) == 2 && (os.Args[1] == "check-storage" || os.Args[1] == "import-objects") {
+		if objects == nil {
+			return errors.New("object_storage_not_configured")
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+		defer cancel()
+		if os.Args[1] == "import-objects" {
+			if err := syncapi.ImportObjects(ctx, objects, os.Stdin); err != nil {
+				return errors.New("object_import_failed")
+			}
+			return nil
+		}
+		if err := objects.Probe(ctx); err != nil {
+			return errors.New("object_storage_check_failed")
+		}
+		return nil
+	}
 	if os.Getenv("DATABASE_URL") == "" {
 		return errors.New("DATABASE_URL is required")
 	}
@@ -43,11 +65,26 @@ func run() error {
 	db.SetMaxIdleConns(4)
 	db.SetConnMaxLifetime(30 * time.Minute)
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
-	store := &syncapi.Store{DB: db}
+	store := &syncapi.Store{DB: db, Objects: objects}
 	err = store.Migrate(ctx)
+	if err == nil {
+		err = store.CheckConfiguration(ctx)
+	}
 	cancel()
 	if err != nil {
 		return errors.New("database_migration_failed")
+	}
+	if len(os.Args) == 2 && (os.Args[1] == "export-objects" || os.Args[1] == "verify-objects") {
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+		defer cancel()
+		var output io.Writer = os.Stdout
+		if os.Args[1] == "verify-objects" {
+			output = io.Discard
+		}
+		if err := store.ExportObjects(ctx, output); err != nil {
+			return errors.New("object_export_failed")
+		}
+		return nil
 	}
 	if len(os.Args) > 1 {
 		if len(os.Args) != 3 || (os.Args[1] != "provision" && os.Args[1] != "recover-device") {

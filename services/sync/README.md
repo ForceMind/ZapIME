@@ -4,6 +4,10 @@
 
 当前账号由管理员 CLI 创建，账号 UUID 贯穿设备；尚无密码登录、邮件验证、图形账号页、带核对码的新设备配对、客户端密钥传输或四端同步客户端。设备令牌不会解开端到端密文。客户端仍须持有根密钥或恢复资料；服务端不接收这些材料。
 
+## 一键服务器部署与 R2
+
+新增私有 S3/R2 密文对象后端及一条命令的服务器安装入口，操作见 [SERVER_DEPLOY.md](../../docs/SERVER_DEPLOY.md)。数据库仅保存新对象的账号/哈希引用；旧内联记录兼容读取。使用官方 AWS SDK v2 的 SigV4、条件创建和逐对象 SHA-256 校验；R2 不可用时同步失败，不返回空页假成功。
+
 ## 本地开发
 
 需要 Go 1.27.3+、PostgreSQL 16。使用专门的开发数据库，设置连接信息后运行：
@@ -55,13 +59,13 @@ go vet ./...
 
 ## 备份与新服务器恢复
 
-数据库备份包含设备元数据、令牌摘要、密文、修订和操作历史，仍需以私密文件管理；它不包含 E2EE 根密钥。
+PostgreSQL 模式的数据库备份包含设备元数据、令牌摘要、密文、修订和操作历史；R2 模式新正文位于对象桶，必须同时保存 .objects.tar sidecar，仍需以私密文件管理；它不包含 E2EE 根密钥。
 
 ```sh
 bash backup.sh /absolute/path/zapime-backup.dump
 ```
 
-新服务器先只启动空数据库 `docker compose up -d db`，在启动 sync 自动建表前运行：
+备份命令会同时生成同名 .objects.tar，必须成套保存。恢复时 sync 必须停止。新服务器先只启动空数据库 `docker compose up -d db`，在启动 sync 自动建表前运行：
 
 ```sh
 bash restore.sh /absolute/path/zapime-backup.dump

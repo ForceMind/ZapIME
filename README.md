@@ -12,6 +12,8 @@ macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建
 
 Android 原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。
 
+服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。客户端同步接入仍未完成。
+
 ## 开发
 
 ```sh

@@ -12,3 +12,6 @@
 - Git submodule update --init 后 python3 scripts/verify_upstream.py 核验来源。不要提交 target、凭据、私钥或真实用户文本。
 - 每个独立切片用分支和 PR，禁止强推。审查当前差异、跑对应检查，按仓库规则合并。
 - docs/STATUS.md 区分源码、编译、模拟器、真机及签名证据；更新时记录时间与可追溯提交。不得用定时任务代替开发。
+- R2/S3 新写入必须在事务内授权/重放/条件修订/配额校验后、数据库提交前完成；对象条件创建、读时校验 SHA，缺失不得变成空页。旧数据库内联兼容；schema v2 不允许旧二进制降级。
+- 服务完整备份包含 .dump 和 .dump.objects.tar；先数据库快照再导出追加对象超集。恢复到空库，导入后验证引用；禁止自动删除对象历史或把管理访问凭据当作 E2EE 恢复密钥。
+- deploy/install.sh 及破坏性安装/恢复演练只在自有 Linux 服务器或隔离 CI 执行。scripts/server_install_smoke.py 必须保留 GITHUB_ACTIONS、root、空安装目录保护，不在用户 Mac 或已有生产实例测试清库。

@@ -12,7 +12,10 @@ import (
 	"time"
 )
 
-type Store struct{ DB *sql.DB }
+type Store struct {
+	DB      *sql.DB
+	Objects ObjectStore
+}
 
 // 迁移只管理自身表；未来版本必须显式迁移，拒绝降级覆盖未知 schema。
 func (s *Store) Migrate(ctx context.Context) error {
@@ -30,7 +33,7 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err = tx.QueryRowContext(ctx, `SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil {
 		return err
 	}
-	if version != 1 {
+	if version != 1 && version != 2 {
 		return errors.New("unsupported_database_version")
 	}
 	_, err = tx.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS zapime_accounts(
@@ -49,6 +52,9 @@ func (s *Store) Migrate(ctx context.Context) error {
         device_id uuid NOT NULL REFERENCES zapime_devices(id),revision bigint NOT NULL,digest bytea NOT NULL,change jsonb NOT NULL,
         PRIMARY KEY(account_id,operation_id),UNIQUE(account_id,revision));`)
 	if err != nil {
+		return err
+	}
+	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=2 WHERE id=1`); err != nil {
 		return err
 	}
 	return tx.Commit()
@@ -151,9 +157,9 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 		if !bytes.Equal(storedDigest, digest[:]) || device != actor.DeviceID {
 			return Change{}, ErrOperationReused
 		}
-		var change Change
-		if err = json.Unmarshal(stored, &change); err != nil {
-			return Change{}, err
+		change, decodeErr := s.decodeChange(ctx, actor.AccountID, stored)
+		if decodeErr != nil {
+			return Change{}, decodeErr
 		}
 		return change, tx.Commit()
 	}
@@ -170,9 +176,11 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 	if revision != op.BaseRevision {
 		var change *Change
 		if len(current) > 0 {
-			if err = json.Unmarshal(current, &change); err != nil {
-				return Change{}, err
+			decoded, decodeErr := s.decodeChange(ctx, actor.AccountID, current)
+			if decodeErr != nil {
+				return Change{}, decodeErr
 			}
+			change = &decoded
 		}
 		return Change{}, &Conflict{change}
 	}
@@ -196,12 +204,16 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 	if storedBytes+cost > 256*1024*1024 {
 		return Change{}, ErrLimit
 	}
-	_, err = tx.ExecContext(ctx, `INSERT INTO zapime_operations(account_id,operation_id,device_id,revision,digest,change) VALUES($1,$2,$3,$4,$5,$6)`, actor.AccountID, op.OperationID, actor.DeviceID, head+1, digest[:], encoded)
+	persisted, err := s.encodeChange(ctx, change, encoded)
+	if err != nil {
+		return Change{}, err
+	}
+	_, err = tx.ExecContext(ctx, `INSERT INTO zapime_operations(account_id,operation_id,device_id,revision,digest,change) VALUES($1,$2,$3,$4,$5,$6)`, actor.AccountID, op.OperationID, actor.DeviceID, head+1, digest[:], persisted)
 	if err != nil {
 		return Change{}, err
 	}
 	_, err = tx.ExecContext(ctx, `INSERT INTO zapime_records(account_id,record_id,revision,kind,change) VALUES($1,$2,$3,$4,$5)
-      ON CONFLICT(account_id,record_id) DO UPDATE SET revision=excluded.revision,kind=excluded.kind,change=excluded.change`, actor.AccountID, op.RecordID, head+1, op.Kind, encoded)
+      ON CONFLICT(account_id,record_id) DO UPDATE SET revision=excluded.revision,kind=excluded.kind,change=excluded.change`, actor.AccountID, op.RecordID, head+1, op.Kind, persisted)
 	if err != nil {
 		return Change{}, err
 	}
@@ -229,22 +241,25 @@ func (s *Store) Pull(ctx context.Context, actor Identity, after int64, limit int
 		return Page{}, err
 	}
 	defer rows.Close()
+	var bodies [][]byte
 	for rows.Next() {
 		var body []byte
 		if err = rows.Scan(&body); err != nil {
 			return Page{}, err
 		}
-		var change Change
-		if err = json.Unmarshal(body, &change); err != nil {
-			return Page{}, err
-		}
-		page.Changes = append(page.Changes, change)
-		page.NextCursor = change.Revision
+		bodies = append(bodies, body)
 	}
 	if err = rows.Err(); err != nil {
 		return Page{}, err
 	}
 	rows.Close()
+	page.Changes, err = s.decodeChanges(ctx, actor.AccountID, bodies)
+	if err != nil {
+		return Page{}, err
+	}
+	if len(page.Changes) > 0 {
+		page.NextCursor = page.Changes[len(page.Changes)-1].Revision
+	}
 	return page, tx.Commit()
 }
 
