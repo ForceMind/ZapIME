@@ -14,6 +14,7 @@ pub struct InputSession {
     engine: Session,
     generation: u64,
     private: bool,
+    nine_key: bool,
     store: Option<Store>,
     personal: Vec<Record>,
 }
@@ -60,6 +61,7 @@ impl InputSession {
             engine,
             generation: 0,
             private,
+            nine_key: false,
         })
     }
 
@@ -92,6 +94,33 @@ impl InputSession {
             return self.request(&json!({"op":"personal_edit","id":id,"operation_id":Uuid::new_v4(),"expected_revision":revision,"content":{"type":"candidate_rule","scheme":"pinyin","code":code,"text":text,"position":1}}));
         }
         let result = match request["op"].as_str().unwrap_or("") {
+            "layout" => {
+                let enabled = match request["name"].as_str() {
+                    Some("nine_key") => true,
+                    Some("qwerty") => false,
+                    _ => return json!({"error":"invalid_layout"}),
+                };
+                if !self.engine.snapshot().preedit.is_empty() {
+                    return json!({"error":"composition_active"});
+                }
+                self.engine.set_nine_key_enabled(enabled);
+                self.nine_key = enabled;
+                KeyResult::handled()
+            }
+            "nine_spelling" => {
+                if request["generation"].as_u64() != Some(self.generation) {
+                    return json!({"error":"stale_generation"});
+                }
+                let index = request["index"]
+                    .as_u64()
+                    .and_then(|n| usize::try_from(n).ok());
+                let Some(index) = index.filter(|n| {
+                    self.nine_key && *n < self.engine.snapshot().nine_key_spellings.len()
+                }) else {
+                    return json!({"error":"invalid_spelling"});
+                };
+                self.engine.choose_nine_key_spelling(index)
+            }
             "key" => {
                 let Some(text) = request["text"]
                     .as_str()
@@ -100,7 +129,10 @@ impl InputSession {
                     return json!({"error":"invalid_key"});
                 };
                 let byte = text.as_bytes()[0];
-                if byte.is_ascii_alphabetic() || byte == b'\'' {
+                if byte.is_ascii_alphabetic()
+                    || byte == b'\''
+                    || (self.nine_key && (b'2'..=b'9').contains(&byte))
+                {
                     self.engine.character(byte, false)
                 } else {
                     self.engine.punctuation(byte)
@@ -212,8 +244,11 @@ impl InputSession {
             rows.truncate(40);
             return rows;
         }
-        let matches =
-            |code: &str| code == snapshot.editing_text || code == snapshot.normalized_segmentation;
+        let matches = |code: &str| {
+            code == snapshot.editing_text
+                || code == snapshot.normalized_segmentation
+                || (self.engine.grid_composing() && nine_key_matches(code, &snapshot.preedit))
+        };
         let mut additions = Vec::new();
         let mut rules = Vec::new();
         for record in &self.personal {
@@ -275,7 +310,33 @@ impl InputSession {
             "preedit": snapshot.preedit,
             "candidates": self.display_candidates().into_iter().map(|row|row.0).collect::<Vec<_>>(),
             "code": snapshot.editing_text,
-            "private": self.private
+            "private": self.private,
+            "layout": if self.nine_key {"nine_key"} else {"qwerty"},
+            "spellings": snapshot.nine_key_spellings,
+            "reading": snapshot.nine_key_reading
         })
     }
+}
+
+// Compare the whole personal code with the grid's displayed locked letters and
+// ambiguous digits. Explicit spelling choices remain constraints, not just hints.
+fn nine_key_matches(code: &str, preedit: &str) -> bool {
+    let letters: Vec<_> = code.bytes().filter(|b| *b != b'\'').collect();
+    let pattern: Vec<_> = preedit.bytes().filter(|b| *b != b'\'').collect();
+    !letters.is_empty()
+        && letters.len() == pattern.len()
+        && letters.iter().zip(pattern).all(|(&letter, key)| {
+            let digit = match letter {
+                b'a'..=b'c' => b'2',
+                b'd'..=b'f' => b'3',
+                b'g'..=b'i' => b'4',
+                b'j'..=b'l' => b'5',
+                b'm'..=b'o' => b'6',
+                b'p'..=b's' => b'7',
+                b't'..=b'v' => b'8',
+                b'w'..=b'z' => b'9',
+                _ => 0,
+            };
+            letter == key || (digit != 0 && digit == key)
+        })
 }

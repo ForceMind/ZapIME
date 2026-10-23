@@ -26,7 +26,7 @@ subprocess.run(command+["shell","ime","set",method],check=True)
 subprocess.run(command+["shell","settings","put","secure","show_ime_with_hard_keyboard","1"],check=True)
 result=subprocess.run(command+["shell","am","instrument","-w","org.zapime.android.test/.SmokeInstrumentation"],text=True,capture_output=True,timeout=180)
 (output/"instrumentation.log").write_text(result.stdout+result.stderr)
-for name in ("smoke.png", "keyboard.png", "candidates.png", "tools.png", "numbers.png", "home.png", "personal.png", "hierarchy.txt"):
+for name in ("smoke.png", "keyboard.png", "candidates.png", "tools.png", "numbers.png", "home.png", "personal.png", "nine-key.png", "hierarchy.txt"):
     subprocess.run(command+["pull",f"/sdcard/Android/data/org.zapime.android.test/files/{name}",str(output/name)],check=False)
 # Exercise the system's real service teardown, which calls onFinishInput from
 # InputMethodService.onDestroy. Only switch away on the dedicated CI emulator.

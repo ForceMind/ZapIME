@@ -243,3 +243,128 @@ fn pinning_another_candidate_replaces_the_previous_first_slot() {
         1
     );
 }
+
+#[test]
+fn nine_key_uses_upstream_decoder_and_generation_checked_spellings() {
+    let (_dir, mut session) = fixture();
+    let layout = session.request(&json!({"op":"layout","name":"nine_key"}));
+    assert_eq!(layout["layout"], "nine_key");
+    let mut view = json!(null);
+    for key in "64".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    let ni = view["spellings"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|s| s == "ni")
+        .unwrap();
+    assert_eq!(
+        session
+            .request(&json!({"op":"nine_spelling","index":ni,"generation":layout["generation"]}))
+            ["error"],
+        "stale_generation"
+    );
+    view =
+        session.request(&json!({"op":"nine_spelling","index":ni,"generation":view["generation"]}));
+    assert!(view["preedit"].as_str().unwrap().starts_with("ni"));
+    assert_eq!(
+        session.request(&json!({"op":"layout","name":"qwerty"}))["error"],
+        "composition_active"
+    );
+    for key in "426".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    let selected = view["candidates"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|s| s == "你好")
+        .unwrap();
+    let commit =
+        session.request(&json!({"op":"select","index":selected,"generation":view["generation"]}));
+    assert_eq!(commit["commit"], "你好");
+    assert_eq!(commit["preedit"], "");
+    assert_eq!(
+        session.request(&json!({"op":"nine_spelling","index":0,"generation":commit["generation"]}))
+            ["error"],
+        "invalid_spelling"
+    );
+    assert_eq!(
+        session.request(&json!({"op":"layout","name":"qwerty"}))["layout"],
+        "qwerty"
+    );
+    for key in "nihao".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    assert!(view["candidates"]
+        .as_array()
+        .unwrap()
+        .contains(&json!("你好")));
+}
+
+#[test]
+fn nine_key_backspace_and_personal_shortcut_stay_local() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    assert!(session.request(&json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":{"type":"snippet","code":"wx","text":"本地九键短语","tags":[]}})).get("error").is_none());
+    session.request(&json!({"op":"layout","name":"nine_key"}));
+    session.request(&json!({"op":"key","text":"9"}));
+    session.request(&json!({"op":"key","text":"9"}));
+    assert_eq!(
+        session.request(&json!({"op":"command","name":"CommitCandidate"}))["commit"],
+        "本地九键短语"
+    );
+    session.request(&json!({"op":"key","text":"6"}));
+    let view = session.request(&json!({"op":"command","name":"Backspace"}));
+    assert_eq!(view["preedit"], "");
+    assert_eq!(
+        session.request(&json!({"op":"layout","name":"invalid"}))["error"],
+        "invalid_layout"
+    );
+}
+
+#[test]
+fn nine_key_personal_words_respect_explicit_spelling_disambiguation() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    for (code, text) in [("nihao", "你好自定义"), ("mihao", "米号自定义")] {
+        assert!(session.request(&json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":{"type":"dictionary","scheme":"pinyin","code":code,"text":text,"weight":100}})).get("error").is_none());
+    }
+    session.request(&json!({"op":"layout","name":"nine_key"}));
+    for (spelling, present, absent) in [
+        ("ni", "你好自定义", "米号自定义"),
+        ("mi", "米号自定义", "你好自定义"),
+    ] {
+        session.request(&json!({"op":"key","text":"6"}));
+        let view = session.request(&json!({"op":"key","text":"4"}));
+        let index = view["spellings"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|s| s == spelling)
+            .unwrap();
+        session
+            .request(&json!({"op":"nine_spelling","index":index,"generation":view["generation"]}));
+        let mut view = json!(null);
+        for key in "426".chars() {
+            view = session.request(&json!({"op":"key","text":key.to_string()}));
+        }
+        let candidates = view["candidates"].as_array().unwrap();
+        assert!(candidates.contains(&json!(present)));
+        assert!(!candidates.contains(&json!(absent)));
+        session.request(&json!({"op":"reset"}));
+    }
+}

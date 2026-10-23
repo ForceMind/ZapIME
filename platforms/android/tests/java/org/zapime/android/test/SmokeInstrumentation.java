@@ -135,7 +135,12 @@ public final class SmokeInstrumentation extends Instrumentation {
             Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);waitFor("个人资料 · 离线管理与备份",true);screenshot("home.png");click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");screenshot("personal.png");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
-            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools and saved shortcut UI\n"); finish(Activity.RESULT_OK,result);
+            stage="nine_key";click("切换九键");waitFor("九键 6",true);click("九键 6");click("九键 4");click("九键读音 ni");click("九键 4");click("九键 2");click("九键 6");waitFor("你好",true);screenshot("nine-key.png");chooseCandidate("你好","ZapIME test snippet你好","nine_key_commit");
+            click("九键 6");click("⌫");requireEditor("ZapIME test snippet你好","nine_key_backspace");
+            click("中/英");click("q");requireEditor("ZapIME test snippet你好q","nine_to_english");click("⌫");click("中/英");waitFor("九键 9",true);click("九键 9");click("九键 9");click("空格");requireEditor("ZapIME test snippet你好ZapIME test snippet","nine_key_shortcut");
+            click("123");click("1");requireEditor("ZapIME test snippet你好ZapIME test snippet1","nine_numeric_literal");click("⌫");click("返回");
+            click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
+            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){} result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }
