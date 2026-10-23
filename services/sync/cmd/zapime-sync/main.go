@@ -104,6 +104,9 @@ func run() error {
 		// 仅显式管理员命令输出一次新设备令牌，不在常规服务日志中打印。
 		return json.NewEncoder(os.Stdout).Encode(credential)
 	}
+	// Only online requests use this disposable cache. Admin exports and integrity
+	// checks above deliberately read the durable store rather than cached bytes.
+	store.Objects = syncapi.NewCachedObjects(objects, 16*1024*1024, 10*time.Minute)
 	address := os.Getenv("ZAPIME_LISTEN")
 	if address == "" {
 		address = "127.0.0.1:8787"
