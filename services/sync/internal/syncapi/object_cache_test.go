@@ -164,6 +164,20 @@ func TestObjectCacheWarmAfterSuccessfulWrite(t *testing.T) {
 func TestPostgresObjectCacheAuthorizationAndEmptyCursor(t *testing.T) {
 	s := database(t)
 	_, actor := provision(t, s)
+	// This test intentionally uses synthetic in-memory objects. Do not leave
+	// their references in the shared integration DB for real S3 archive tests.
+	t.Cleanup(func() {
+		for _, query := range []string{
+			`DELETE FROM zapime_operations WHERE account_id=$1`,
+			`DELETE FROM zapime_records WHERE account_id=$1`,
+			`DELETE FROM zapime_devices WHERE account_id=$1`,
+			`DELETE FROM zapime_accounts WHERE id=$1`,
+		} {
+			if _, err := s.DB.Exec(query, actor.AccountID); err != nil {
+				t.Error("synthetic cache fixture cleanup", err)
+			}
+		}
+	})
 	backend, _, _ := cacheFixture(t)
 	s.Objects = NewCachedObjects(backend, 4096, time.Minute)
 	ctx := context.Background()
