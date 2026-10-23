@@ -19,7 +19,7 @@ ZapIME 新适配代码按 GPL-3.0-only；不得删除上游作者版权或以改
 
 ## Android 首包范围
 
-构建脚本只取拼音、英文、SCOWL notice 和发布 manifest；不取神经模型、n-gram、日文、语音及上游品牌图像。所有下载先校验固定锁；运行时无下载与网络权限。third_party/NOTICE.txt 标明改动日期及与官方上游的区别。
+首个构建只取拼音、英文、SCOWL notice 和发布 manifest；没有神经模型、n-gram、日文或上游品牌图像。后续 Android 原生语音依赖见下面的单独审计，不随 APK 带模型。所有下载先校验固定锁；运行时无下载与网络权限。third_party/NOTICE.txt 标明改动日期及与官方上游的区别。
 
 ## 实际核心依赖清单
 
@@ -44,3 +44,11 @@ AWS SDK for Go v2（核心 v1.47.3、credentials v1.20.9、S3 v1.114.4）及 smi
 九键复用固定 GPL-3.0-only 引擎，无上游更新。开发 CPU 探针使用 sherpa-onnx / sherpa-onnx-core 1.13.8（Apache-2.0，内含 ONNX Runtime 须按其 MIT 及第三方 notices 审计）和 NumPy 2.5.4（BSD），未打包进 APK/服务。X-ASR 来源 Gilgamesh-J/X-ASR（Apache-2.0），模型归档及实际四成员 SHA/长度固定；保留 X-ASR-Apache-2.0.txt，下载目录附 LICENSE/NOTICE，不在 Git 分发权重。eSpeak NG 仅开发工具，用于本地合成固定测试句，未捆绑产品。
 
 SenseVoiceSmall 转换权重按固定上游记录适用 FunASR Model License v1.1，含保留出处/作者/模型名、行为与后续条款修订等独立条件，不等同框架 Apache/MIT；当前未引入。Fun-ASR-Nano 的具体模型/解码器须重新逐项审查，不泛化同一家项目的许可。模型性能和其他模型卡的许可证标签不能替代权重版本本身的授权核查。正式语音发行仍需补齐完整 native 运行库、模型与资源清单。
+
+## Android 原生语音引入（PR #32）
+
+复用固定 MSIME `shared/voice/LocalAsr.cpp/.h` 与其 Sherpa C API 头，不改 vendor；GPL-3.0-only 适用。sherpa-onnx 1.13.8 对应源码 `11afbd009a7f8c08f4bcf2fc1b265d0df4670fbf`，Android AAR 50,129,134 字节、SHA256 `633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96`。AAR 没有 LICENSE/NOTICE，不能直接无通知分发。只打包 ARM64/x86_64 的 C API 和 ONNX 原生库，逐库哈希见 `third_party/android-voice-lock.json`；不包含 Java/Kotlin 上游主机代码。
+
+APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPartyNotices；实际原生 ORT 的版本字符串为 1.28.2，与固定上游的 v1.28.2 通知一致。nlohmann/json 3.12.0 固定压缩包/单头 SHA，MIT 文本随包；NDK C++ 静态库的 toolchain/sysroot NOTICE 同时保留。构建核对不需要未捆绑的 libc++_shared。不是对所有二进制内第三方组件的正式发布审计替代。
+
+离线模型 ZIP 只包含固定四个推理文件、X-ASR Apache-2.0 全文及 Gilgamesh-J/X-ASR、k2-fsa/sherpa-onnx 转换出处 NOTICE；权重不提交 Git，不随 APK/云服务分发，可独立构建/通过 CI 产物分发。eSpeak NG 和 Python/NumPy 仅测试合成与打包工具，不进入 Android 产品。正式产品仍须提供对应 GPL 源码及构建资料，保留所有必需 notice。

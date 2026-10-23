@@ -17,7 +17,8 @@ import java.io.*;
 public final class SmokeInstrumentation extends Instrumentation {
     private UiAutomation automation;
     private String stage="launch";
-    @Override public void onCreate(Bundle args) { super.onCreate(args); start(); }
+    private boolean voiceOnly;
+    @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only")); start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
         if(node==null || !node.refresh())return null;
@@ -202,10 +203,24 @@ public final class SmokeInstrumentation extends Instrumentation {
         Bundle args=new Bundle();args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,value);
         if(!waitFor(label).performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,args))throw new Exception("Set text rejected");
     }
+    private void waitListening()throws Exception{
+        for(int i=0;i<900;i++){if(find("正在聆听 · 最长 60 秒")!=null)return;if(find("麦克风不可用，请检查权限或重试")!=null||find("离线识别未完成，请检查模型或重试")!=null)throw new Exception("IME microphone or model unavailable");Thread.sleep(100);}throw new Exception("IME microphone start timeout");
+    }
+    private void startDictation()throws Exception{click("工具");click("离线语音");waitListening();}
+    private void voiceAcceptance()throws Exception{
+        Intent intent=new Intent();intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity");intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);
+        click("probe-normal");waitFor("⚡ 闪电 · 离线");setText("probe-normal","voice guard test");Thread.sleep(300);
+        stage="voice recording preview";startDictation();requireEditor("voice guard test","voice_preview_not_committed");screenshot("voice-recording.png");
+        click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，请返回后重试")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");screenshot("voice-stopped.png");click("取消");waitFor("工具",true);
+        stage="voice selection guard";startDictation();runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0);});waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("stale voice retained after cursor move");requireEditor("voice guard test","voice_cursor_move_preserves_editor");
+        stage="voice focus guard";startDictation();click("probe-password");waitFor("隐私输入 · 不学习");if(find("确认插入",true)!=null)throw new Exception("voice result crossed editor");requireEditor("voice guard test","voice_focus_preserves_editor");click("probe-normal");waitFor("⚡ 闪电 · 离线");
+        stage="voice hide cancellation";startDictation();automation.injectInputEvent(new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_BACK),true);automation.injectInputEvent(new KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_BACK),true);Thread.sleep(500);click("probe-normal");waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("voice result survived keyboard hide");requireEditor("voice guard test","voice_hide_preserves_editor");
+    }
     @Override public void onStart() {
         Bundle result=new Bundle();
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
+            if(voiceOnly){voiceAcceptance();result.putString("stream","PASS ZapIME voice UI: actual emulator microphone preview/stop without automatic insertion, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));

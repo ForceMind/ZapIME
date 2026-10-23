@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import wave
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
@@ -18,7 +19,8 @@ out.mkdir(parents=True, exist_ok=True)
 
 
 def run(*args, **options):
-    return subprocess.run([adb, "-s", serial, *args], check=True, **options)
+    options.setdefault("check",True)
+    return subprocess.run([adb, "-s", serial, *args], **options)
 
 
 with wave.open(str(root / "target/voice-probe/synthetic.wav")) as source:
@@ -41,6 +43,27 @@ try:
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
+    method="org.zapime.android/.ZapInputMethodService"
+    for action in ("enable","set"):
+        run("shell","ime",action,method)
+    result=run("shell","am","instrument","-w","-r","-e","voice_only","true","org.zapime.android.test/.SmokeInstrumentation",text=True,capture_output=True,timeout=600)
+    (out/"ui-instrumentation.txt").write_text(result.stdout+result.stderr)
+    print(result.stdout)
+    for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt"):
+        run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=name!="hierarchy.txt",stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    if "PASS ZapIME voice UI:" not in result.stdout:
+        raise SystemExit("Voice keyboard UI acceptance failed")
+    methods=run("shell","ime","list","-a","-s",text=True,capture_output=True).stdout
+    system_methods=[line.strip() for line in methods.splitlines() if line.strip().startswith("com.android.")]
+    if not system_methods:raise SystemExit("AOSP IME required for actual voice-service teardown")
+    for action in ("enable","set"):run("shell","ime",action,system_methods[0])
+    for attempt in range(50):
+        teardown=run("shell","dumpsys","activity","services","org.zapime.android",text=True,capture_output=True).stdout
+        if "ZapInputMethodService" not in teardown:break
+        time.sleep(.1)
+    else:raise SystemExit("Voice IME service did not exit")
+    (out/"ime-teardown.txt").write_text(teardown)
+    time.sleep(1)
 finally:
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
     (out / "crash.txt").write_text(log)

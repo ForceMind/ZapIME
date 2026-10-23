@@ -80,7 +80,7 @@ final class VoiceCapture {
         } catch(Exception failure){if(!cancelled.get())captureFailure="microphone_unavailable";}
         finally {
             recording=false;Arrays.fill(block,(short)0);
-            if(recorder!=null){try{recorder.stop();}catch(IllegalStateException ignored){}recorder.release();}
+            if(recorder!=null){try{recorder.stop();}catch(RuntimeException ignored){}try{recorder.release();}catch(RuntimeException failure){if(!cancelled.get())captureFailure="microphone_unavailable";}}
             captured.set(true);
         }
     }
