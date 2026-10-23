@@ -1,0 +1,12 @@
+{
+  "runtime_commit": "0cba4fce367eedd0f58d19c4e148708c221be986",
+  "run_id": 40024642427,
+  "artifact_id": 12532243325,
+  "artifact_bytes": 845856,
+  "artifact_sha256_download_verified": "e1e4c24bfa0bde81b1569912b540b2528d63fd644ab007bba3d919cbf942e71f",
+  "files": {
+    "hierarchy.txt": "8e9a040cb7c513f4ed8d83be04ea0f3fa433c296345ea346705b3cfb77458db5",
+    "last-anr.txt": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  },
+  "scope": "API36 saved_shortcut_ui failure; external shell snapshots occur after instrumentation finish; not root-cause proof"
+}
