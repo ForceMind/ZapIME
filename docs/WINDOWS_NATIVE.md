@@ -61,3 +61,7 @@ ee32f52 的 Windows CI 40038009396 实际编译成功，但重新创建的 COM �
 新增同一 EXE 的 --query-only 子进程，在任何测试修改前仍执行 GitHub-hosted/run/attempt 守卫；该模式只创建系统查询接口，读取本产品固定 GUID 的 HKCU/HKLM COM/TIP 项存在性和 profile/category，不载入产品 DLL、不激活、不更改布局或文件。父进程用自己的绝对 EXE 路径创建子进程，继承日志句柄，等待最多15秒；超时终止只读子进程，父进程仍必须注销并验证清理。子进程缺少正确身份、enabled 或键盘类别时同样失败，不替代既有父进程门禁。常规本机 build/ctest 仍不运行系统探针。
 
 仅记录 HRESULT、产品 GUID、存在性与数值会话/窗口站状态，不枚举用户/注册表、输出账户或路径值。开始前也拒绝已有本产品 HKLM COM 及 HKCU/HKLM TIP，避免接管已有全局注册。此候选未在本地 Windows 编译，结果以新 CI 为准。上游同样使用 RegisterProfile；COM作用域和调用顺序只是待验证假设，不擅自写 HKLM 或改默认输入法。
+
+90cbbdc 的 Windows 40039850997 已实际编译及执行：session=2、visible_station=1、remote_session=0；子进程看到 HKCU COM、HKLM TIP 存在及键盘类别成员，但 GetProfile E_FAIL；新建父管理器同样失败，注销清理通过。整体仍失败，不能认定 headless 或无管理员权限是原因。这里也证实“COM 只写 HKCU”并不代表 TSF API 不写 HKLM：既有真实注册调用后本产品 HKLM TIP 项存在；新增诊断本身没有写入。
+
+下一候选继续只读本产品完整 language/profile 子项、合并的 HKCR COM 存在性，以及旧接口的描述存在性、启用状态和可用语言中是否包含0804；不输出描述、注册路径值或其它用户文本。接口结果不代替原 GetProfile/category/激活门禁，生产注册仍未改，结果待新 CI。

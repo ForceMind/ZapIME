@@ -29,6 +29,6 @@ add_test(NAME windows-native-com-and-engine COMMAND ZapIMEWindowsTests)
 add_executable(ZapIMEWindowsProfileProbe tests/ProfileProbe.cpp)
 target_compile_options(ZapIMEWindowsProfileProbe PRIVATE /W4 /utf-8 /EHsc)
 target_compile_definitions(ZapIMEWindowsProfileProbe PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN _WIN32_WINNT=0x0A00)
-target_link_libraries(ZapIMEWindowsProfileProbe PRIVATE ole32 uuid advapi32 shell32 user32)
+target_link_libraries(ZapIMEWindowsProfileProbe PRIVATE ole32 oleaut32 uuid advapi32 shell32 user32)
 add_custom_command(TARGET ZapIMETsf POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy "${json_SOURCE_DIR}/LICENSE.MIT" "$<TARGET_FILE_DIR:ZapIMETsf>/nlohmann-json-LICENSE.MIT")

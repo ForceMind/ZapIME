@@ -56,6 +56,25 @@ static int queryOnly(){
         registryPresence("child_hklm_com",HKEY_LOCAL_MACHINE,L"Software\\Classes\\CLSID\\"+id);
         registryPresence("child_hkcu_tip",HKEY_CURRENT_USER,L"Software\\Microsoft\\CTF\\TIP\\"+id);
         registryPresence("child_hklm_tip",HKEY_LOCAL_MACHINE,L"Software\\Microsoft\\CTF\\TIP\\"+id);
+        // Check only our exact language/profile keys, without exposing string values.
+        const std::wstring languageProfile=L"Software\\Microsoft\\CTF\\TIP\\"+id+L"\\LanguageProfile\\0x00000804\\"+std::wstring(L"{042DCDBD-B1DC-4A0D-931C-567221A172E8}");
+        registryPresence("child_hkcu_language_profile",HKEY_CURRENT_USER,languageProfile);
+        registryPresence("child_hklm_language_profile",HKEY_LOCAL_MACHINE,languageProfile);
+        registryPresence("child_merged_com",HKEY_CLASSES_ROOT,L"CLSID\\"+id);
+        ComPtr<ITfInputProcessorProfiles> legacy;
+        HRESULT legacyHr=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&legacy));result("child_legacy_profiles",legacyHr);
+        if(legacyHr==S_OK){
+            LANGID currentLanguage=0;result("child_current_language",legacy->GetCurrentLanguage(&currentLanguage));
+            std::cout<<"profile_probe child_current_language_id=0x"<<std::hex<<currentLanguage<<std::dec<<"\n";
+            BSTR description=nullptr;HRESULT descriptionHr=legacy->GetLanguageProfileDescription(ZapClsid,ZapLanguage,ZapProfile,&description);
+            result("child_legacy_description",descriptionHr);std::cout<<"profile_probe child_description_nonempty="<<(description&&SysStringLen(description)>0?1:0)<<"\n";SysFreeString(description);
+            BOOL enabled=FALSE;HRESULT enabledHr=legacy->IsEnabledLanguageProfile(ZapClsid,ZapLanguage,ZapProfile,&enabled);
+            result("child_legacy_enabled",enabledHr);std::cout<<"profile_probe child_legacy_enabled_value="<<(enabled?1:0)<<"\n";
+            LANGID *languages=nullptr;ULONG count=0;HRESULT languagesHr=legacy->GetLanguageList(&languages,&count);
+            result("child_language_list",languagesHr);bool available=false;
+            if(languagesHr==S_OK&&languages&&count<=256)for(ULONG i=0;i<count;++i)available=available||languages[i]==ZapLanguage;
+            std::cout<<"profile_probe child_language_count="<<count<<" bounded="<<(count<=256?1:0)<<" target_language_present="<<(available?1:0)<<"\n";CoTaskMemFree(languages);
+        }
         bool member=false;HRESULT category=E_FAIL,profile=E_FAIL;TF_INPUTPROCESSORPROFILE value{};
         if(p==S_OK)profile=profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&value);
         result("child_query_registered",profile);
