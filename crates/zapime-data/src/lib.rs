@@ -8,6 +8,7 @@ use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
 pub mod panel;
+pub mod schedule;
 pub mod sync;
 
 const MAX_ARCHIVE_BYTES: usize = 32 * 1024 * 1024;
