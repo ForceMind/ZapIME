@@ -31,3 +31,5 @@
 - Android 语音模型只接受 APK 固定白名单与逐项 SHA，包内清单不可信；失败不能覆盖已有有效模型。模型/录音和按键线程分开，不添加云端回退、录音落盘/上传或假识别文本。JNI 会话只在同一语音线程 start/feed/finish/close，跨线程只 cancel；capture 有 60 秒/960000 样本与全程有界队列，隐藏/失焦/光标移动/配置变化必须取消，确认前校验原连接/epoch/selection/有界上下文。实际合成 PCM 解码、模拟器静音 AudioRecord、独立 Editable UI 验收与自然语音/ARM 真机分别记证据。第二个 voice instrumentation 同签名且只在受保护临时 CI 撤销测试包录音权限；不在个人设备执行。
 
 - 失败页日志只在严格密文页形状/账号/连续修订通过后保存；Saved/NotEligible/Failed必须区分，禁止把回滚当保存成功。日志永不替代AEAD、cursor或冲突解决；8页/32MiB满额拒绝新页，不自动淘汰。导入/重试仍检查账号和原cursor并重新认证；旧records归档/恢复包不含此日志，需另导出及独立保留旧密钥。不要因独立辅助表而改变既有v2记录/队列或上屏线程路径。
+
+- 新增失败全局诊断只在GITHUB_ACTIONS+run/attempt数字+专用emulator序列全部验证后采集，每文件至多256KiB且有限超时；不得扩展到个人设备。主App或测试宿主ANR必须拒绝成功；系统Launcher启动ANR单独保留，不能删旧失败、虚构产品根因或跳过输入/退出断言。

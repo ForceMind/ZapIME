@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Read-only selection of a verified preinstalled keyboard for CI teardown."""
 import subprocess
+import os
+import re
 
 
 def system_keyboard(command):
@@ -19,3 +21,40 @@ def system_keyboard(command):
     proof = {"api_level": api, "selected_ime": chosen, "system_package_verified": True, "source": "pm list packages -s", "aosp": chosen.startswith("com.android.")}
     print("Verified system teardown keyboard:", proof, flush=True)
     return chosen, proof
+
+
+def dedicated_ci(command):
+    return (os.environ.get("GITHUB_ACTIONS") == "true"
+            and os.environ.get("GITHUB_RUN_ID", "").isdigit()
+            and os.environ.get("GITHUB_RUN_ATTEMPT", "").isdigit()
+            and len(command) == 3 and command[1] == "-s"
+            and re.fullmatch(r"emulator-[0-9]+", command[2]) is not None)
+
+
+def collect_failure_state(command, output):
+    """Synthetic CI only: preserve state BEFORE switching away from a failed UI."""
+    if not dedicated_ci(command):
+        return
+    probes = {
+        "activity-top.txt": ["shell", "dumpsys", "activity", "top"],
+        "activity-state.txt": ["shell", "dumpsys", "activity", "activities"],
+        "window-state.txt": ["shell", "dumpsys", "window", "windows"],
+        "last-anr.txt": ["shell", "dumpsys", "activity", "lastanr"],
+        "system-runtime.txt": ["logcat", "-d", "-v", "threadtime", "-t", "2000"],
+    }
+    for name, arguments in probes.items():
+        try:
+            result = subprocess.run(command + arguments, text=True, capture_output=True, timeout=10)
+            text = result.stdout + result.stderr
+        except (OSError, subprocess.TimeoutExpired) as error:
+            text = "diagnostic_unavailable: " + type(error).__name__
+        (output / name).write_text(text[-256 * 1024:])
+
+
+def assert_no_app_anr(command, output):
+    if not dedicated_ci(command):
+        return
+    result = subprocess.run(command + ["logcat", "-d", "-v", "threadtime", "-s", "ActivityManager:E"], text=True, capture_output=True, timeout=10, check=True)
+    (output / "activity-errors.txt").write_text(result.stdout)
+    if re.search(r"ANR in org\.zapime\.android(?:\.|\s|\(|$)", result.stdout):
+        raise SystemExit("ZapIME/test host ANR; inspect activity-errors.txt")
