@@ -43,12 +43,49 @@ static void environmentSummary(){
              <<" visible_station="<<(station&&(flags.dwFlags&WSF_VISIBLE)?1:0)
              <<" remote_session="<<GetSystemMetrics(SM_REMOTESESSION)<<"\n";
 }
-static int queryOnly(){
-    // This mode creates only the system query interfaces: no DLL load, writes,
-    // activation, layout change, or data-directory cleanup.
+// Independent-process runtime setup. It never registers profiles, loads a
+// new HKL, edits the user language list, or explicitly activates ZapIME.
+struct QueryRuntime {
+    ComPtr<ITfThreadMgr> threads;
+    ComPtr<ITfInputProcessorProfiles> languages;
+    HKL beforeLayout=nullptr;
+    LANGID beforeLanguage=0;
+    bool active=false,languageAttempted=false,finished=false;
+    HRESULT begin(){
+        beforeLayout=GetKeyboardLayout(0);if(!beforeLayout)return E_FAIL;
+        HRESULT hr=CoCreateInstance(CLSID_TF_ThreadMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&threads));result("child_runtime_thread_manager",hr);if(hr!=S_OK)return hr;
+        TfClientId client=TF_CLIENTID_NULL;hr=threads->Activate(&client);result("child_runtime_thread_activate",hr);active=SUCCEEDED(hr);if(hr!=S_OK)return hr;
+        hr=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&languages));result("child_runtime_languages",hr);if(hr!=S_OK)return hr;
+        hr=languages->GetCurrentLanguage(&beforeLanguage);result("child_runtime_original_language",hr);if(hr!=S_OK)return hr;
+        int count=GetKeyboardLayoutList(0,nullptr);if(count<=0||count>256)return E_FAIL;
+        std::vector<HKL> layouts(static_cast<size_t>(count));if(GetKeyboardLayoutList(count,layouts.data())!=count)return E_FAIL;
+        HKL chinese=nullptr;for(HKL layout:layouts)if(LOWORD(reinterpret_cast<ULONG_PTR>(layout))==ZapLanguage){chinese=layout;break;}
+        if(!chinese||!ActivateKeyboardLayout(chinese,0)||LOWORD(reinterpret_cast<ULONG_PTR>(GetKeyboardLayout(0)))!=ZapLanguage)return E_FAIL;
+        languageAttempted=true;hr=languages->ChangeCurrentLanguage(ZapLanguage);result("child_runtime_change_language",hr);if(hr!=S_OK)return hr;
+        LANGID current=0;hr=languages->GetCurrentLanguage(&current);result("child_runtime_query_language",hr);
+        return hr==S_OK&&current==ZapLanguage?S_OK:E_FAIL;
+    }
+    bool finish() noexcept {
+        if(finished)return true;finished=true;bool ok=true;
+        if(languageAttempted&&languages){HRESULT hr=languages->ChangeCurrentLanguage(beforeLanguage);result("child_runtime_restore_language",hr);ok=hr==S_OK&&ok;}
+        if(beforeLayout){ok=ActivateKeyboardLayout(beforeLayout,0)!=nullptr&&GetKeyboardLayout(0)==beforeLayout&&ok;beforeLayout=nullptr;}
+        if(active&&threads){HRESULT hr=threads->Deactivate();result("child_runtime_thread_deactivate",hr);ok=hr==S_OK&&ok;active=false;}
+        languages.Reset();threads.Reset();std::cout<<"profile_probe child_runtime_cleanup="<<(ok?"PASS":"FAIL")<<"\n";return ok;
+    }
+    ~QueryRuntime(){finish();}
+};
+static int queryOnly(bool prepareRuntime){
+
+    // --query-only retains the original read-only baseline. --query-runtime
+    // initializes transient TSF/language state in this fresh process and restores
+    // it. Windows may load a default service; no profile registration or explicit
+    // ZapIME activation occurs here, and the parent owns temporary data cleanup.
     HRESULT init=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);result("child_com_init",init);if(FAILED(init))return 1;
     int code=1;
     {
+        QueryRuntime runtime;bool runtimeReady=!prepareRuntime||runtime.begin()==S_OK;
+        std::cout<<"profile_probe child_mode_prepared="<<(prepareRuntime?1:0)<<" runtime_ready="<<(runtimeReady?1:0)<<"\n";
+        {
         ComPtr<ITfInputProcessorProfileMgr> profiles;ComPtr<ITfCategoryMgr> categories;
         HRESULT p=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&profiles));result("child_profiles",p);
         HRESULT c=CoCreateInstance(CLSID_TF_CategoryMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&categories));result("child_categories",c);
@@ -83,14 +120,16 @@ static int queryOnly(){
                                 <<" clsid="<<guidText(value.clsid)<<" profile="<<guidText(value.guidProfile)<<" category="<<guidText(value.catid)<<"\n";
         if(c==S_OK)category=keyboardCategory(categories.Get(),member);
         result("child_keyboard_category",category);std::cout<<"profile_probe child_keyboard_member="<<(member?1:0)<<"\n";
-        if(profile==S_OK&&value.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&value.langid==ZapLanguage&&value.clsid==ZapClsid&&value.guidProfile==ZapProfile
+        if(runtimeReady&&profile==S_OK&&value.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&value.langid==ZapLanguage&&value.clsid==ZapClsid&&value.guidProfile==ZapProfile
            &&(value.dwFlags&TF_IPP_FLAG_ENABLED)!=0&&category==S_OK&&member)code=0;
+        }
+        if(!runtime.finish())code=1;
     }
-    CoUninitialize();std::cout<<"profile_probe child_read_only="<<(code==0?"PASS":"FAIL")<<"\n";return code;
+    CoUninitialize();std::cout<<"profile_probe child_query_result="<<(code==0?"PASS":"FAIL")<<"\n";return code;
 }
 static bool queryFreshProcess(){
     wchar_t executable[MAX_PATH]{};DWORD length=GetModuleFileNameW(nullptr,executable,MAX_PATH);require(length>0&&length<MAX_PATH,"child_executable_path");
-    std::wstring command=L"\""+std::wstring(executable)+L"\" --query-only";
+    std::wstring command=L"\""+std::wstring(executable)+L"\" --query-runtime";
     STARTUPINFOW start{};start.cb=sizeof(start);start.dwFlags=STARTF_USESTDHANDLES;
     start.hStdInput=GetStdHandle(STD_INPUT_HANDLE);start.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);start.hStdError=GetStdHandle(STD_ERROR_HANDLE);
     PROCESS_INFORMATION child{};std::cout.flush();std::cerr.flush();
@@ -180,9 +219,9 @@ int main(int argc,char **argv){
     try{
         // This executable is not part of local ctest/build_windows execution.
         require(env(L"GITHUB_ACTIONS")==L"true"&&env(L"RUNNER_ENVIRONMENT")==L"github-hosted"&&digits(env(L"GITHUB_RUN_ID"))&&digits(env(L"GITHUB_RUN_ATTEMPT")),"dedicated_github_hosted_runner_required");
-        require(argc==1||(argc==2&&std::string(argv[1])=="--query-only"),"invalid_probe_arguments");
+        require(argc==1||(argc==2&&(std::string(argv[1])=="--query-only"||std::string(argv[1])=="--query-runtime")),"invalid_probe_arguments");
         environmentSummary();
-        if(argc==2)return queryOnly();
+        if(argc==2)return queryOnly(std::string(argv[1])=="--query-runtime");
         HRESULT comHr=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);probe.com=SUCCEEDED(comHr);checked("com_init",comHr);
         checked("profiles",CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.profiles)));
         checked("category_manager",CoCreateInstance(CLSID_TF_CategoryMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.categories)));
@@ -193,6 +232,7 @@ int main(int argc,char **argv){
                 &&absentAt(HKEY_LOCAL_MACHINE,std::wstring(L"Software\\Microsoft\\CTF\\TIP\\")+ZapClsidText),"refuse_existing_zapime_registration");
         PWSTR appData=nullptr;checked("local_appdata",SHGetKnownFolderPath(FOLDERID_LocalAppData,0,nullptr,&appData));probe.data=fs::path(appData)/L"ZapIME";CoTaskMemFree(appData);
         require(!fs::exists(probe.data),"refuse_existing_zapime_data");
+        probe.ownsData=true; // Reserved only after proving absence on this disposable runner.
         wchar_t module[MAX_PATH]{};DWORD length=GetModuleFileNameW(nullptr,module,MAX_PATH);require(length>0&&length<MAX_PATH,"executable_path");
         fs::path path=fs::path(module).parent_path()/L"ZapIMETsf.dll";
         probe.dll=LoadLibraryExW(path.c_str(),nullptr,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);require(probe.dll!=nullptr,"load_exact_sibling_dll");
@@ -229,7 +269,7 @@ int main(int argc,char **argv){
         ComPtr<ITfTextInputProcessorEx> registeredProcessor;checked("registered_com_object",CoCreateInstance(ZapClsid,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&registeredProcessor)));registeredProcessor.Reset();
         std::cout<<"profile_probe registered_identity_category_enabled=PASS\n";
         // No FORSESSION / default-profile update / deferred activation flag.
-        probe.ownsData=true;probe.activationAttempted=true;checked("activate_for_process",probe.profiles->ActivateProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,TF_IPPMF_FORPROCESS));
+        probe.activationAttempted=true;checked("activate_for_process",probe.profiles->ActivateProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,TF_IPPMF_FORPROCESS));
         TF_INPUTPROCESSORPROFILE active{};checked("query_active",probe.profiles->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD,&active));
         require(active.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&active.clsid==ZapClsid&&active.guidProfile==ZapProfile&&active.langid==ZapLanguage&&(active.dwFlags&TF_IPP_FLAG_ACTIVE)!=0,"active_profile_is_zapime");
         std::cout<<"PASS process-local TSF profile registration and activation; NOT application typing\n";code=0;

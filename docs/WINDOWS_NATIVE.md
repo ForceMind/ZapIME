@@ -89,3 +89,13 @@ dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，
 清理仍恢复原布局/profile并关闭自有窗口、恢复先前仍存在的前台窗口；只卸载本轮真正新加载的HKL。修正LoadKeyboardLayout回退为已有默认布局时不能标成新加载并卸载原布局的边界。不新增语言包下载或更改生产DLL，门禁仍须真实新进程查询/COM解析/FORPROCESS激活；结果待CI。
 
 接口依据：https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadkeyboardlayoutw 。
+
+## 独立进程的TSF运行时初始化（候选）
+
+5b073ff /40041883760 实际已通过自有窗口焦点、thread manager启动、线程中文布局；注册后父进程GetProfile已S_OK。但原只读子进程没有初始化TSF线程，仍在英文且GetProfile E_FAIL，整体失败；旧profile/线程/注册/窗口和原用户语言清理均通过。不能删独立进程门禁或据此宣称激活/上屏。
+
+保留--query-only原始纯查询基线，父进程的新子进程模式为--query-runtime：创建并Activate系统thread manager，记录原语言与HKL，只选择已经加载的0804 HKL，调用ChangeCurrentLanguage并精确确认当前语言后执行原身份/enabled/category查询。结束须还原原语言/HKL、Deactivate并释放所有接口；不注册、不加载新HKL、不改用户语言列表、不显式Activate本产品profile。Windows可能自动装载默认文本服务，因此不再把该新模式称为绝不加载产品DLL的纯只读进程。
+
+父进程在起始已证明ZapIME数据目录不存在后即接管本轮临时目录的清理责任，覆盖系统隐式默认服务激活或后续失败；不会接管起始已有用户目录。仍仅受GitHub-hosted保护的临时runner使用，不影响常规build/ctest。新进程查询必须成功且清理通过才继续父进程原COM与FORPROCESS门禁。此候选尚待实际CI，不先判根因已解决。
+
+接口依据：https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofiles-changecurrentlanguage （该接口要求调用线程已创建thread manager）。
