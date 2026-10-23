@@ -8,7 +8,7 @@ import subprocess
 import sys
 import time
 import json
-from android_ci_device import system_keyboard
+from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args
 
 adb, serial = sys.argv[1:3]
 root = Path(__file__).resolve().parents[1]
@@ -26,10 +26,15 @@ else:
 subprocess.run(command+["shell","settings","put","secure","enabled_input_methods",method],check=True)
 subprocess.run(command+["shell","ime","set",method],check=True)
 subprocess.run(command+["shell","settings","put","secure","show_ime_with_hard_keyboard","1"],check=True)
-result=subprocess.run(command+["shell","am","instrument","-w","org.zapime.android.test/.SmokeInstrumentation"],text=True,capture_output=True,timeout=300)
+result=subprocess.run(command+["shell","am","instrument","-w",*diagnostic_args(command),"org.zapime.android.test/.SmokeInstrumentation"],text=True,capture_output=True,timeout=300)
 (output/"instrumentation.log").write_text(result.stdout+result.stderr)
-for name in ("smoke.png", "keyboard.png", "candidates.png", "tools.png", "numbers.png", "home.png", "personal.png", "nine-key.png", "nine-key-light.png", "nine-key-dark.png", "nine-key-dark-candidates.png", "feedback-settings.png", "local-data.png", "local-search.png", "local-clipboard.png", "local-favorites.png", "hierarchy.txt"):
+if "PASS ZapIME native keyboard:" not in result.stdout:
+    collect_failure_state(command, output)
+for name in ("smoke.png", "keyboard.png", "candidates.png", "tools.png", "numbers.png", "home.png", "personal.png", "nine-key.png", "nine-key-light.png", "nine-key-dark.png", "nine-key-dark-candidates.png", "feedback-settings.png", "local-data.png", "local-search.png", "local-clipboard.png", "local-favorites.png", "hierarchy.txt", "host-lifecycle.txt"):
     subprocess.run(command+["pull",f"/sdcard/Android/data/org.zapime.android.test/files/{name}",str(output/name)],check=False)
+if "PASS ZapIME native keyboard:" not in result.stdout:
+    for name in ("host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
+        subprocess.run(command+["pull",f"/sdcard/Android/data/org.zapime.android.test/files/{name}",str(output/name)],check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
 # Exercise the system's real service teardown, which calls onFinishInput from
 # InputMethodService.onDestroy. Only switch away on the dedicated CI emulator.
 if os.environ.get("GITHUB_ACTIONS") == "true" and re.fullmatch(r"emulator-[0-9]+", serial):
@@ -52,6 +57,7 @@ diagnostics=subprocess.run(command+["shell","dumpsys","input_method"],text=True,
 (output/"input-method-state.log").write_text(diagnostics.stdout)
 logs=subprocess.run(command+["logcat","-d","-s","AndroidRuntime:E"],text=True,capture_output=True)
 (output/"runtime-errors.log").write_text(logs.stdout)
+assert_no_app_anr(command, output)
 print(result.stdout,flush=True)
 if re.search(r"Process: org\.zapime\.android(?:\.test)?,", logs.stdout):
     raise SystemExit("ZapIME runtime fatal exception; inspect runtime-errors.log")

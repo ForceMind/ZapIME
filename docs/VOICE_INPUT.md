@@ -21,7 +21,7 @@ python3 scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
 
 此次本地实际生成 ZIP 129,097,503 字节，SHA256 `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1`。ZIP 压缩字节可能受 zlib 版本影响；**App 信任 APK 内固定的每成员长度/SHA，不依赖此整包哈希**。四个推理文件总计 169,227,953 字节，另附 LICENSE/NOTICE；安装需要足够的暂存空间，重导入期间旧有效模型保留到新包校验完成。清除 App 数据/卸载会删除模型，模型可重新导入；本模型不是个人资料或 E2EE 恢复包。
 
-模型目录不在用户资料 JSON 备份中，也不上传 R2。导入拒绝未知名称、目录、路径穿越、重复成员、截断、超长及校验不符；不执行包内清单，最后写入 APK 可信清单。校验失败不覆盖已有模型；发布前后的目录移动使用同文件系统 atomic move，但突然断电/进程终止的两次目录移动之间仍可能需要重新导入，尚未做断电恢复验收。
+模型目录不在用户资料 JSON 备份中，也不上传 R2。导入拒绝未知名称、目录、路径穿越、重复成员、截断、超长及校验不符；不执行包内清单，最后写入 APK 可信清单。校验失败不覆盖已有模型；发布使用同文件系统atomic move；新增固定暂存/备份目录，在录音worker重校验全部APK白名单、逐项SHA及可信清单后恢复未完成发布或有效备份。取消/损坏不触发可信发布；这仍不是断电持久性或真实杀进程验收，详见下文。
 
 ## Android 执行边界
 
@@ -108,3 +108,9 @@ API29+在startRecording之前注册AudioRecord自身的录音配置回调，并�
 来源：[Sharing audio input](https://developer.android.com/media/platform/sharing-audio-input#configuration_changes)、[isClientSilenced](https://developer.android.com/reference/android/media/AudioRecordingConfiguration#isClientSilenced())。不能靠PCM全零判断系统静音，因为安静环境也可能产生零采样。
 
 9f5ea2b / [40019787217](https://github.com/ForceMind/ZapIME/actions/runs/40019787217)的API28/35/36完整通过；新增确定性状态回归、API35/36实际AudioRecord自身未被系统静音的配置和生产monitor正向测试已通过。它们不等于真实AppOps拒绝/竞争录音、蓝牙、后台/真机限制的负向验收；这些仍需独立实验。
+
+### 未完成模型发布的恢复（候选，待CI）
+
+使用当前APK模型ID对应的固定incoming/previous路径。正常已安装模型仍先完整重校验，不因临时目录出现而替换；目标缺失/无效时，仅在暂存目录全部文件、SHA、成员集合与APK可信清单通过后发布。若暂存无效而备份有效，恢复备份。不能从导入ZIP或遗留目录读取可执行配置，不能根据时间/目录名就信任模型。每次恢复仍校验取消状态；文件移动阶段中断保留已校验暂存供下次worker再校验，旧无效目录不会冒充有效备份。
+
+UI只做轻量存在提示，所有SHA与移动在语音worker；恢复提示不是已验证安装。设置页同步更新当前离线语音说明与直接重录文案。新增signed-target测试模拟“完整暂存+无效目标”“无效暂存+有效备份”“完整但清单被改的暂存”“取消验证”四种文件系统状态；待三API CI，未预记通过。它们不是实际断电/杀进程或SAF交互验收；目录fsync与真实电源故障仍需专项验证，旧版UUID临时残留目录也未自动迁移清理。

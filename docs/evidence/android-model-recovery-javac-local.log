@@ -1,0 +1,16 @@
+Local JDK17.0.21, Android API36r02. Java compilation only; no APK/device acceptance.
+product: 19 source files, javac exit=0
+warning: [options] bootstrap class path not set in conjunction with -source 8
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+1 warning
+
+voice-tests: 1 source files, javac exit=0
+warning: [options] bootstrap class path not set in conjunction with -source 8
+1 warning
+
+editor-tests: 2 source files, javac exit=0
+warning: [options] bootstrap class path not set in conjunction with -source 8
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+1 warning
