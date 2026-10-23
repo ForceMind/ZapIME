@@ -91,4 +91,4 @@ offline-voice.yml 下载/合成后用 `sudo unshare --net` 禁止推理进程联
 
 同head其它检查也已success：三系统共享核/真实Apple构建/实际执行3项iOS模拟器测试40009810845，Windows40009810864，真实PG/S3/安装及灾备40009810903，独立断网CPU40009810833。仍不表示本功能已接Apple/Windows，也不表示四端联网完成。后续 [PR #33](https://github.com/ForceMind/ZapIME/pull/33) 扩展API35/36，同一APK/模型复用，未完成前不提前声称现代系统通过。
 
-自动审阅随后发现结束队列的尾块竞态，当前候选改为先观察完成再复核队列空，并增加稳定控制该时序的回归。上述308085b结果仍是该旧源的证据；尾块修正版另行跑完整CI，合并前不沿用旧成功。
+自动审阅随后发现结束队列的尾块竞态，bec1701aa6715d056bba89698a08f053f01febe3改为先观察完成再复核队列空，并增加稳定控制该时序的回归。40013177652在该修正版已完整success，包括尾块后才EOF的确定性断言及原有native/AudioRecord/独立Editable完整门禁；摘要android-voice-tail-ci-40013177652.log。三系统/Apple原生及实际3项iOS、Windows、服务和断网CPU其它workflow均success。原始图像/性能数据仍明确属于308085b，队列修正未改变GUI源码；新artifact12527976119的SHA256 683b81da72c5c02de95378ba85c617bdc4947764ad4daf3a5d9c1279c254ed70来自GitHub元数据，未再本地下载校验，不冒充新图。
