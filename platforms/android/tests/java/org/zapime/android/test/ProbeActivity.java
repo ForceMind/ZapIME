@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 public final class ProbeActivity extends Activity {
     static WeakReference<ProbeActivity> current = new WeakReference<>(null);
     EditText normal, password;
+    private int focusRequest;
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         getWindow().setStatusBarColor(0xfff7f8fb);getWindow().setNavigationBarColor(0xffedf0f5);getWindow().getDecorView().setSystemUiVisibility(android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR|android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -21,12 +22,19 @@ public final class ProbeActivity extends Activity {
         password=new EditText(this); password.setHint("隐私输入测试"); password.setContentDescription("probe-password"); password.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD); panel.addView(password);
         setContentView(panel); current=new WeakReference<>(this); normal.requestFocus();
     }
-    @Override public void onDestroy() { if(current.get()==this)current.clear(); super.onDestroy(); }
+    @Override public void onDestroy() { ++focusRequest;if(current.get()==this)current.clear(); super.onDestroy(); }
     @Override public void onWindowFocusChanged(boolean focused) {
         super.onWindowFocusChanged(focused);
-        if(focused && normal!=null && normal.hasFocus())normal.post(() -> {
-            if(normal.hasWindowFocus() && normal.hasFocus())
-                ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).showSoftInput(normal,InputMethodManager.SHOW_IMPLICIT);
-        });
+        final int request=++focusRequest;
+        if(focused&&normal!=null&&normal.hasFocus())normal.post(()->requestKeyboard(request,0));
+    }
+    private void requestKeyboard(int request,int attempt){
+        if(request!=focusRequest||current.get()!=this||!normal.hasWindowFocus()||!normal.hasFocus())return;
+        // A fresh CLEAR_TASK Activity can gain window focus before its view has
+        // become InputMethodManager's served editor. Retry that system request,
+        // bounded, without calling the IME or writing the Editable.
+        InputMethodManager manager=(InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        if(manager.isActive(normal)&&manager.showSoftInput(normal,InputMethodManager.SHOW_IMPLICIT))return;
+        if(attempt<30)normal.postDelayed(()->requestKeyboard(request,attempt+1),100);
     }
 }

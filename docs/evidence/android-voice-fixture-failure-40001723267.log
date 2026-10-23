@@ -1,0 +1,9 @@
+Source: 972452057018a978b2fb859d287fdf63fefeafc4
+Run: https://github.com/ForceMind/ZapIME/actions/runs/40001723267
+FAILED in the existing native input fixture before voice acceptance ran.
+Downloaded artifact 12522222830, locally verified SHA256 ddc456290cafa99a60698a25875bdb5527528e2654996f2ad680aa4d65db08c4.
+Failure hierarchy contained the new, empty ProbeActivity and no IME window.
+The old stage label symbol_return also covered the later return from the personal-data Activity.
+No app fatal appeared in runtime-errors.log. This is not evidence that native model loading is fixed.
+
+2026-10-23T18:20:12.8161784Z FAIL ZapIME native keyboard at symbol_return: Exception: Missing UI node: ⚡ 闪电 · 离线

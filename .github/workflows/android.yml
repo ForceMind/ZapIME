@@ -13,6 +13,7 @@ jobs:
   android:
     name: Android development APK
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
         with:
@@ -60,8 +61,7 @@ jobs:
           emulator-boot-timeout: 300
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
-            python3 scripts/android_smoke_repeat.py "$(command -v adb)" emulator-5554
-            python3 scripts/android_voice_smoke.py "$(command -v adb)" emulator-5554
+            python3 scripts/android_acceptance.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         if: always()
         with:
