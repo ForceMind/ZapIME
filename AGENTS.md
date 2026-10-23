@@ -33,3 +33,5 @@
 - 失败页日志只在严格密文页形状/账号/连续修订通过后保存；Saved/NotEligible/Failed必须区分，禁止把回滚当保存成功。日志永不替代AEAD、cursor或冲突解决；8页/32MiB满额拒绝新页，不自动淘汰。导入/重试仍检查账号和原cursor并重新认证；旧records归档/恢复包不含此日志，需另导出及独立保留旧密钥。不要因独立辅助表而改变既有v2记录/队列或上屏线程路径。
 
 - 新增失败全局诊断只在GITHUB_ACTIONS+run/attempt数字+专用emulator序列全部验证后采集，每文件至多256KiB且有限超时；不得扩展到个人设备。主App或测试宿主ANR必须拒绝成功；系统Launcher启动ANR单独保留，不能删旧失败、虚构产品根因或跳过输入/退出断言。
+
+- UI失败现场须由test-only宿主在Instrumentation.finish之前采集；finish后宿主可被系统终止，外部dumpsys不能冒充当时现场。CI全局诊断开关只由已验证脚本传数字run-attempt参数，不能默认用于普通设备。独立宿主从真实前台按钮正常打开产品设置，显示键盘先确认served editor及实际Insets可见状态；不强制shell前台、覆盖系统策略或减弱组字/真实正文断言。

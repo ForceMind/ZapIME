@@ -8,7 +8,7 @@ import sys
 import time
 import wave
 import json
-from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr
+from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
     raise SystemExit("Ephemeral GitHub emulator required")
@@ -48,7 +48,7 @@ try:
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)
-    result=run("shell","am","instrument","-w","-r","-e","voice_only","true","org.zapime.android.test/.SmokeInstrumentation",text=True,capture_output=True,timeout=600)
+    result=run("shell","am","instrument","-w","-r","-e","voice_only","true",*diagnostic_args([adb,"-s",serial]),"org.zapime.android.test/.SmokeInstrumentation",text=True,capture_output=True,timeout=600)
     (out/"ui-instrumentation.txt").write_text(result.stdout+result.stderr)
     print(result.stdout)
     if "PASS ZapIME voice UI:" not in result.stdout:
@@ -69,7 +69,7 @@ try:
 finally:
     # A failed early UI assertion may not have reached either voice screenshot.
     # Always retain its actual failure hierarchy/screenshot before checking fatals.
-    for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png"):
+    for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png","host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/native-report.json",str(out/"native-report.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
