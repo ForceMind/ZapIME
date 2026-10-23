@@ -31,6 +31,7 @@ cp third_party/licenses/* "$build/assets/licenses/"
 cp third_party/NOTICE.txt "$build/assets/NOTICE.txt"
 python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/rust-licenses"
 cp "target/$rust_target/release/libzapime_core.so" "$build/lib/$abi/"
+bash scripts/build_android_voice.sh "$abi" "$build"
 "$tools/aapt2" compile --dir platforms/android/res -o "$build/resources.zip"
 "$tools/aapt2" link -o "$build/base.apk" --manifest platforms/android/AndroidManifest.xml -I "$android_jar" -A "$build/assets" "$build/resources.zip" --java "$build/generated"
 find platforms/android/java "$build/generated" -name '*.java' > "$build/java-sources.txt"
@@ -38,7 +39,7 @@ javac -source 8 -target 8 -encoding UTF-8 -classpath "$android_jar" -d "$build/c
 find "$build/classes" -name '*.class' > "$build/classes.txt"
 "$tools/d8" --lib "$android_jar" --min-api 28 --output "$build/dex" @"$build/classes.txt"
 cp "$build/dex/classes.dex" "$build/classes.dex"
-(cd "$build" && zip -q -u base.apk classes.dex lib/"$abi"/libzapime_core.so)
+(cd "$build" && zip -q -u base.apk classes.dex lib/"$abi"/*.so)
 "$tools/zipalign" -P 16 -f 4 "$build/base.apk" "$build/aligned.apk"
 key="$root/target/android-dev.keystore"
 if [[ ! -f "$key" ]]; then

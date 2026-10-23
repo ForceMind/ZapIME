@@ -25,9 +25,10 @@ SYNTHETIC_TEXT = "你好，这是一段离线语音输入测试。今天下午�
 
 
 def verified(path, spec):
-    return (path.is_file() and not path.is_symlink()
-            and path.stat().st_size == spec["size"]
-            and hashlib.file_digest(path.open("rb"), "sha256").hexdigest() == spec["sha256"])
+    if not path.is_file() or path.is_symlink() or path.stat().st_size != spec["size"]:
+        return False
+    with path.open("rb") as source:
+        return hashlib.file_digest(source, "sha256").hexdigest() == spec["sha256"]
 
 
 def prepare(directory):
