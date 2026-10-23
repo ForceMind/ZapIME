@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-24 04:30:39 +0800；第 30 次记录汇报；距第 29 次约 6.7 分钟。次数按仓库状态记录累计，不将每条聊天进度重复计数。
+更新时间：2026-10-24 04:47:40 +0800；第 31 次记录汇报；距第 30 次约 17.0 分钟。次数按仓库状态记录累计，不将每条聊天进度重复计数。
 
 ## 仓库与提交
 
@@ -237,6 +237,13 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 只接受自己的session，首次静音保持终态，close排空正在执行的回调并拒绝迟到回调；采音错误更快终止解码，不把已有排队片段继续算完。UI增加明确系统暂停提示，允许用户显式重录；并抑制错误后迟到的聆听/成功消息。
 - 增加确定性session/重复静音/close竞态回归；API29+另检查真实AudioRecord自身active configuration、实际静音PCM及生产monitor的正向流程。前者不冒充系统AppOps负向实测，后者也不是自然语音或真实权限限制中断测试。当前本机8项Python工具/差异检查通过；本机无Java/Android工具链，新增Java/JNI整套CI尚待执行，未预记成功。
 - 官方依据为Android Sharing audio input及AudioRecordingConfiguration.isClientSilenced，详细链接与边界见VOICE_INPUT。后续仍需真正竞争录音/后台/AppOps/蓝牙与ARM真机，不完成M4–M6或四端联网。
+
+## 系统录音静音处理通过（第31次）
+
+- PR #34运行时9f5ea2b28adb573a2e1c70888ce74e989e102846全部workflow success：Android40019787217（API28/35/36），共享核/Apple40019787127、Windows40019787068、服务40019787194、断网CPU40019787160。原有双轮输入/本机资料/隐私、JNI合成中文与尾块竞态、录音/独立Editable UI及真实服务退出/无app fatal仍通过。
+- 确定性自身session/一次终态/迟到回调/close排空回归在真实测试APK运行通过；API35/36还实际通过生产monitor注册/读取自身AudioRecord active configuration、核对session且isClientSilenced=false、读取静音PCM及关闭，不修改系统策略。原始摘录evidence/android-api35-recording-policy-40019787217.log与API36同号文件。
+- 这证明API兼容、真实正向配置观察及状态竞态，不证明真实AppOps/竞争录音/后台限制负向触发和UI提示端到端；自然语音、ARM/三星、蓝牙/耗电仍未验收。末尾只补文档/成功日志，合并前比较必须无产品源码变化。
+- PR #35共享失败页日志aa29136已保存并待跨系统CI，本地76集成+1索引单测、fmt/严格Clippy通过；非完整冲突解决或四端联网。接续另一个独立模型发布恢复切片和设置旧文案，不以本次合并作为整体完成。
 
 ## 接续任务
 
