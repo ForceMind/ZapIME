@@ -1,0 +1,7 @@
+create
+resume
+window focus=true
+normal connection created; length=0 selection=0:0 composing=-1:-1
+show request; attempt=0 sent=true
+normal connection created; length=0 selection=0:0 composing=-1:-1
+normal connection created; length=2 selection=2:2 composing=0:2

@@ -1,0 +1,17 @@
+{
+  "commit": "2c4948c95270f8b76ed0dcca97d15cb6be102f53",
+  "run": 40030765086,
+  "api": 36,
+  "artifact": 12535601800,
+  "zip_bytes": 887854,
+  "zip_sha256": "6c25a9929957576e6787ee46deaf0d2202d25a8c2848218c0f435f72401c7480",
+  "scope": "Downloaded and SHA256 verified. Synthetic CI; ci-* captured before finish. Test-only baseline, product fix not present.",
+  "files": {
+    "host-lifecycle.txt": "835b83043a4d4a95e3c3af57a85dd9b6a1d73fd9e6a147927608ea329db364f8",
+    "hierarchy.txt": "313408ef0018e1929521445ba32679322083ca5a91245f401f0d2cd9b4dde3d2",
+    "ci-input-service.txt": "28e58a8cccb79cedcb79ab4952b29cd4366cda1bb2193111271acb1706fc09ae",
+    "instrumentation.log": "b9fd27f5efa2087da61c84da8000a4b7773fa9b32cd501b1fa16f018680ef71f",
+    "runtime-errors.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "last-anr.txt": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  }
+}
