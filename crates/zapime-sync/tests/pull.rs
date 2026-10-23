@@ -595,3 +595,290 @@ fn even_authenticated_replacement_ciphertext_cannot_ack_a_different_frozen_snaps
         own.operation.to_wire().unwrap()
     );
 }
+
+fn preserve(s: &mut Store, p: Uuid, after: u64, wire: &[u8]) -> zapime_sync::PreservedError {
+    zapime_sync::apply_encrypted_page_preserving_failure(s, p, after, wire, |_| None).unwrap_err()
+}
+fn retained_id(error: zapime_sync::PreservedError) -> String {
+    match error.retention {
+        zapime_sync::Retention::Saved(summary) => summary.id,
+        other => panic!("retention failed: {other:?}"),
+    }
+}
+#[test]
+fn missing_key_page_is_durable_exportable_and_retried_only_with_fresh_authentication() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = Uuid::new_v4();
+    let kid = Uuid::new_v4();
+    let key = SecretKey::generate().unwrap();
+    let mut s = store(&dir, "journal.db", p);
+    let one = favorite(Uuid::new_v4(), 1, "synthetic-private-one");
+    let two = favorite(Uuid::new_v4(), 1, "synthetic-private-two");
+    let wire = page(
+        0,
+        vec![
+            change(p, kid, &key, one.clone(), 0, 1),
+            change(p, kid, &key, two, 0, 2),
+        ],
+        2,
+    );
+    let id = retained_id(preserve(&mut s, p, 0, &wire));
+    assert!(s.records(true).unwrap().is_empty());
+    assert_eq!(s.sync_cursor(p).unwrap(), 0);
+    let bundle = zapime_sync::export_retained_pull(&mut s, p, &id).unwrap();
+    assert!(!String::from_utf8(bundle.clone())
+        .unwrap()
+        .contains("synthetic-private"));
+    drop(s);
+    let db = rusqlite::Connection::open(dir.path().join("journal.db")).unwrap();
+    db.execute_batch("VACUUM").unwrap();
+    drop(db);
+    let mut s = store(&dir, "journal.db", p);
+    assert_eq!(
+        s.retained_pull(p, &id).unwrap().unwrap().wire.as_bytes(),
+        wire
+    );
+    assert!(matches!(
+        zapime_sync::retry_retained_pull(&mut s, p, &id, |_| None),
+        Err(Error::KeyUnavailable)
+    ));
+    let report =
+        zapime_sync::retry_retained_pull(&mut s, p, &id, |k| (k == kid).then_some(&key)).unwrap();
+    assert_eq!((report.cursor, report.applied), (2, 2));
+    assert_eq!(s.pending_count().unwrap(), 0);
+    assert_eq!(s.get(one.id).unwrap().unwrap().content, one.content);
+    assert_eq!(s.retained_pulls(p, 0, 20).unwrap().len(), 1);
+    assert!(matches!(
+        zapime_sync::retry_retained_pull(&mut s, p, &id, |_| Some(&key)),
+        Err(Error::Data(zapime_data::Error::SyncCursor))
+    ));
+    let mut restored = store(&dir, "restored.db", p);
+    let imported = zapime_sync::import_retained_pull(&mut restored, p, &bundle).unwrap();
+    assert_eq!(imported.id, id);
+    zapime_sync::retry_retained_pull(&mut restored, p, &id, |_| Some(&key)).unwrap();
+    assert_eq!(restored.records(true).unwrap(), s.records(true).unwrap());
+    assert!(restored.discard_retained_pull(p, &id).unwrap());
+    assert!(!restored.discard_retained_pull(p, &id).unwrap());
+    assert_eq!(restored.sync_cursor(p).unwrap(), 2);
+}
+#[test]
+fn durable_conflict_preserves_both_remote_wire_and_local_frozen_request_without_partial_ack() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = Uuid::new_v4();
+    let kid = Uuid::new_v4();
+    let key = SecretKey::generate().unwrap();
+    let id = Uuid::new_v4();
+    let mut s = store(&dir, "conflict.db", p);
+    edit(&mut s, id, 0, "local frozen");
+    let own = staged(&mut s, p, kid, &key, 1);
+    let frozen = own.operation.to_wire().unwrap();
+    edit(&mut s, id, 1, "later offline");
+    let remote = change(
+        p,
+        kid,
+        &key,
+        favorite(id, 9, "remote conflicting body"),
+        1,
+        2,
+    );
+    let wire = page(0, vec![own.clone(), remote], 2);
+    let failure =
+        zapime_sync::apply_encrypted_page_preserving_failure(&mut s, p, 0, &wire, |_| Some(&key))
+            .unwrap_err();
+    assert!(matches!(
+        *failure.cause,
+        Error::Data(zapime_data::Error::SyncLocalConflict)
+    ));
+    let retained = retained_id(failure);
+    drop(s);
+    let mut s = store(&dir, "conflict.db", p);
+    assert_eq!(s.pending_count().unwrap(), 2);
+    assert_eq!(s.sync_cursor(p).unwrap(), 0);
+    assert_eq!(receipts(&dir, "conflict.db"), 0);
+    assert_eq!(
+        s.retained_pull(p, &retained)
+            .unwrap()
+            .unwrap()
+            .wire
+            .as_bytes(),
+        wire
+    );
+    assert_eq!(
+        s.stage_upload(p, own.operation).unwrap().to_wire().unwrap(),
+        frozen
+    );
+    assert_eq!(s.get(id).unwrap().unwrap().revision, 2);
+}
+#[test]
+fn retained_tampered_cipher_and_bundle_never_gain_trust_from_the_journal() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = Uuid::new_v4();
+    let kid = Uuid::new_v4();
+    let key = SecretKey::generate().unwrap();
+    let mut s = store(&dir, "tampered.db", p);
+    let mut bad = change(
+        p,
+        kid,
+        &key,
+        favorite(Uuid::new_v4(), 1, "must remain encrypted"),
+        0,
+        1,
+    );
+    let old = bad.operation.envelope.ciphertext.remove(0);
+    bad.operation
+        .envelope
+        .ciphertext
+        .insert(0, if old == 'A' { 'B' } else { 'A' });
+    let wire = page(0, vec![bad], 1);
+    let failure =
+        zapime_sync::apply_encrypted_page_preserving_failure(&mut s, p, 0, &wire, |_| Some(&key))
+            .unwrap_err();
+    assert!(matches!(*failure.cause, Error::Authentication));
+    let id = retained_id(failure);
+    let bundle = zapime_sync::export_retained_pull(&mut s, p, &id).unwrap();
+    let mut fresh = store(&dir, "fresh.db", p);
+    zapime_sync::import_retained_pull(&mut fresh, p, &bundle).unwrap();
+    assert!(matches!(
+        zapime_sync::retry_retained_pull(&mut fresh, p, &id, |_| Some(&key)),
+        Err(Error::Authentication)
+    ));
+    assert!(fresh.records(true).unwrap().is_empty());
+    assert_eq!(fresh.sync_cursor(p).unwrap(), 0);
+    let mut edited: serde_json::Value = serde_json::from_slice(&bundle).unwrap();
+    edited["wire"] = serde_json::json!("{}");
+    assert!(zapime_sync::import_retained_pull(
+        &mut fresh,
+        p,
+        &serde_json::to_vec(&edited).unwrap()
+    )
+    .is_err());
+    let q = Uuid::new_v4();
+    let mut other = store(&dir, "other.db", q);
+    assert!(zapime_sync::import_retained_pull(&mut other, q, &bundle).is_err());
+    assert!(other.retained_pulls(q, 0, 20).unwrap().is_empty());
+}
+#[test]
+fn failure_journal_deduplicates_without_writes_and_never_evicts_on_capacity() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = Uuid::new_v4();
+    let kid = Uuid::new_v4();
+    let key = SecretKey::generate().unwrap();
+    let mut s = store(&dir, "quota.db", p);
+    let wire = page(
+        0,
+        vec![change(
+            p,
+            kid,
+            &key,
+            favorite(Uuid::new_v4(), 1, "synthetic"),
+            0,
+            1,
+        )],
+        1,
+    );
+    let first = retained_id(preserve(&mut s, p, 0, &wire));
+    let observer = rusqlite::Connection::open(dir.path().join("quota.db")).unwrap();
+    let before: i64 = observer
+        .pragma_query_value(None, "data_version", |r| r.get(0))
+        .unwrap();
+    assert_eq!(retained_id(preserve(&mut s, p, 0, &wire)), first);
+    let after: i64 = observer
+        .pragma_query_value(None, "data_version", |r| r.get(0))
+        .unwrap();
+    assert_eq!(before, after);
+    for _ in 1..8 {
+        let wire = page(
+            0,
+            vec![change(
+                p,
+                kid,
+                &key,
+                favorite(Uuid::new_v4(), 1, "other synthetic"),
+                0,
+                1,
+            )],
+            1,
+        );
+        retained_id(preserve(&mut s, p, 0, &wire));
+    }
+    let ninth = page(
+        0,
+        vec![change(
+            p,
+            kid,
+            &key,
+            favorite(Uuid::new_v4(), 1, "ninth"),
+            0,
+            1,
+        )],
+        1,
+    );
+    let failure = preserve(&mut s, p, 0, &ninth);
+    assert!(matches!(*failure.cause, Error::KeyUnavailable));
+    assert!(matches!(
+        failure.retention,
+        zapime_sync::Retention::Failed(zapime_data::Error::RetainedFull)
+    ));
+    assert_eq!(s.retained_pulls(p, 0, 20).unwrap().len(), 8);
+    assert!(s.retained_pull(p, &first).unwrap().is_some());
+    assert_eq!(s.sync_cursor(p).unwrap(), 0);
+    let head = s.retained_pulls(p, 0, 3).unwrap();
+    let tail = s
+        .retained_pulls(p, head.last().unwrap().sequence, 20)
+        .unwrap();
+    assert_eq!(head.len() + tail.len(), 8);
+    assert!(s.discard_retained_pull(p, &first).unwrap());
+    retained_id(preserve(&mut s, p, 0, &ninth));
+    assert!(s.retained_pulls(p, 0, 20).unwrap().last().unwrap().sequence > 8);
+}
+#[test]
+fn invalid_cross_account_and_stale_pages_are_not_retained_as_new_failures() {
+    let dir = tempfile::tempdir().unwrap();
+    let p = Uuid::new_v4();
+    let kid = Uuid::new_v4();
+    let key = SecretKey::generate().unwrap();
+    let mut s = store(&dir, "invalid.db", p);
+    for bad in [b"{}".as_slice(), b"not ciphertext".as_slice()] {
+        assert!(matches!(
+            preserve(&mut s, p, 0, bad).retention,
+            zapime_sync::Retention::NotEligible
+        ));
+    }
+    let wire = page(
+        0,
+        vec![change(
+            Uuid::new_v4(),
+            kid,
+            &key,
+            favorite(Uuid::new_v4(), 1, "wrong account"),
+            0,
+            1,
+        )],
+        1,
+    );
+    assert!(matches!(
+        preserve(&mut s, p, 0, &wire).retention,
+        zapime_sync::Retention::NotEligible
+    ));
+    let wire = page(
+        0,
+        vec![change(
+            p,
+            kid,
+            &key,
+            favorite(Uuid::new_v4(), 1, "valid"),
+            0,
+            1,
+        )],
+        1,
+    );
+    apply(&mut s, p, 0, &wire, kid, &key).unwrap();
+    let failure =
+        zapime_sync::apply_encrypted_page_preserving_failure(&mut s, p, 0, &wire, |_| Some(&key))
+            .unwrap_err();
+    assert!(matches!(
+        failure.retention,
+        zapime_sync::Retention::NotEligible
+    ));
+    assert!(s.retained_pulls(p, 0, 20).unwrap().is_empty());
+}
