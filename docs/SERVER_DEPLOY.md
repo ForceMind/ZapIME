@@ -13,6 +13,8 @@ Cloudflare 2026-10-22 官方定价：Standard 每月免费额度为 10 GB-month�
 
 来源：https://developers.cloudflare.com/r2/pricing/ 、 https://developers.cloudflare.com/r2/api/tokens/ 。
 
+日常打字、搜索和使用已下载数据不访问 R2；无新记录的增量查询只查服务器数据库。HTTP 服务增加有界密文缓存，减少重复下载的 R2 读取；完整备份/校验仍直接读持久对象。具体功能、请求估算、备份成本及尚未接入的客户端调度见[同步用量](SYNC_EFFICIENCY.md)。
+
 ## 一条命令安装
 
 在服务器 SSH 终端运行；首次按提示输入域名、R2 账号/桶和读写凭据。敏感输入不回显，不放进命令行参数或聊天。

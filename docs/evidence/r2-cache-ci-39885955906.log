@@ -1,0 +1,53 @@
+Selected verification log lines (not the full job log)
+Run: https://github.com/ForceMind/ZapIME/actions/runs/39885955906
+Job: 120194055410
+Verified code head: a52288056439b5322c62423509d68fa2865ae175
+Overall conclusion: success
+Real PostgreSQL/S3-compatible fixture/Docker acceptance, not live user Cloudflare/public TLS deployment.
+
+2026-10-23T01:50:30.1453440Z --- PASS: TestPostgresTransactions (0.12s)
+2026-10-23T01:50:30.1454307Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-10-23T01:50:30.1455369Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-10-23T01:50:30.1456382Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-10-23T01:50:30.1457385Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.02s)
+2026-10-23T01:50:30.1458387Z     --- PASS: TestPostgresTransactions/account_isolation (0.01s)
+2026-10-23T01:50:30.1459349Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+2026-10-23T01:50:30.1460554Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-10-23T01:50:30.1461657Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-10-23T01:50:30.1462692Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.01s)
+2026-10-23T01:50:30.1463981Z --- PASS: TestHTTPAndPersistentCiphertext (0.05s)
+2026-10-23T01:50:30.1465288Z --- PASS: TestObjectCacheReadWriteIsolationAndDurability (0.00s)
+2026-10-23T01:50:30.1466627Z --- PASS: TestObjectCacheExpiryEvictionAndFailedReads (0.00s)
+2026-10-23T01:50:30.1468005Z --- PASS: TestObjectCacheConcurrentReadersAndCancellation (0.00s)
+2026-10-23T01:50:30.1469886Z --- PASS: TestObjectCacheWarmAfterSuccessfulWrite (0.00s)
+2026-10-23T01:50:30.1471281Z --- PASS: TestPostgresObjectCacheAuthorizationAndEmptyCursor (0.03s)
+2026-10-23T01:50:30.1472496Z --- PASS: TestS3Configuration (0.00s)
+2026-10-23T01:50:30.1473644Z --- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+2026-10-23T01:50:30.1474761Z --- PASS: TestPostgresObjectFailureRollback (0.02s)
+2026-10-23T01:50:30.1475671Z --- PASS: TestRealS3Protocol (0.02s)
+2026-10-23T01:50:30.1476929Z --- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.08s)
+2026-10-23T01:50:30.1478490Z --- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+2026-10-23T01:50:30.1483129Z --- PASS: TestEnvelopeBounds (0.00s)
+2026-10-23T01:50:30.1483761Z     --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+2026-10-23T01:50:30.1484387Z     --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+2026-10-23T01:50:30.1485012Z     --- PASS: TestEnvelopeBounds/too_large (0.00s)
+2026-10-23T01:50:30.1485787Z     --- PASS: TestEnvelopeBounds/padding (0.00s)
+2026-10-23T01:50:30.1486540Z     --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+2026-10-23T01:50:30.1487512Z     --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+2026-10-23T01:50:30.1488465Z     --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+2026-10-23T01:50:30.1501941Z     --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+2026-10-23T01:50:30.1503015Z --- PASS: TestTokenFormatAndHash (0.00s)
+2026-10-23T01:50:30.1503913Z --- PASS: TestDeviceNameBounds (0.00s)
+2026-10-23T01:50:30.1505225Z --- PASS: FuzzOperationBoundary (0.00s)
+2026-10-23T01:50:30.1505807Z     --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+2026-10-23T01:51:12.7233489Z #11 5.460 Collected runtime module notices: 19
+2026-10-23T01:51:16.4181018Z No vulnerabilities found.
+2026-10-23T01:52:10.8609405Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-23T01:52:11.6734611Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-23T01:52:26.2726103Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-23T01:52:26.6520680Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-23T01:53:26.7907890Z #12 5.409 Collected runtime module notices: 19
+2026-10-23T01:53:42.1643941Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-23T01:53:43.0221094Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-23T01:54:08.3251848Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-23T01:54:08.6152096Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
