@@ -29,6 +29,60 @@ static HRESULT keyboardCategory(ITfCategoryMgr *categories,bool &present){
     }
     return E_FAIL;
 }
+// Read only this product's fixed GUID keys; never enumerate users or dump values.
+static bool absentAt(HKEY root,const std::wstring &key){HKEY h=nullptr;LSTATUS status=RegOpenKeyExW(root,key.c_str(),0,KEY_READ,&h);if(h)RegCloseKey(h);return status==ERROR_FILE_NOT_FOUND||status==ERROR_PATH_NOT_FOUND;}
+static void registryPresence(const char *phase,HKEY root,const std::wstring &key){
+    HKEY h=nullptr;LSTATUS status=RegOpenKeyExW(root,key.c_str(),0,KEY_READ,&h);if(h)RegCloseKey(h);
+    std::cout<<"profile_probe registry "<<phase<<" status="<<status<<" present="<<(status==ERROR_SUCCESS?1:0)<<"\n";
+}
+static void environmentSummary(){
+    DWORD session=0;BOOL known=ProcessIdToSessionId(GetCurrentProcessId(),&session);
+    USEROBJECTFLAGS flags{};DWORD bytes=0;BOOL station=GetUserObjectInformationW(GetProcessWindowStation(),UOI_FLAGS,&flags,sizeof(flags),&bytes);
+    std::cout<<"profile_probe environment session_known="<<(known?1:0)<<" session="<<session
+             <<" visible_station="<<(station&&(flags.dwFlags&WSF_VISIBLE)?1:0)
+             <<" remote_session="<<GetSystemMetrics(SM_REMOTESESSION)<<"\n";
+}
+static int queryOnly(){
+    // This mode creates only the system query interfaces: no DLL load, writes,
+    // activation, layout change, or data-directory cleanup.
+    HRESULT init=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);result("child_com_init",init);if(FAILED(init))return 1;
+    int code=1;
+    {
+        ComPtr<ITfInputProcessorProfileMgr> profiles;ComPtr<ITfCategoryMgr> categories;
+        HRESULT p=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&profiles));result("child_profiles",p);
+        HRESULT c=CoCreateInstance(CLSID_TF_CategoryMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&categories));result("child_categories",c);
+        const std::wstring id=ZapClsidText;
+        registryPresence("child_hkcu_com",HKEY_CURRENT_USER,L"Software\\Classes\\CLSID\\"+id);
+        registryPresence("child_hklm_com",HKEY_LOCAL_MACHINE,L"Software\\Classes\\CLSID\\"+id);
+        registryPresence("child_hkcu_tip",HKEY_CURRENT_USER,L"Software\\Microsoft\\CTF\\TIP\\"+id);
+        registryPresence("child_hklm_tip",HKEY_LOCAL_MACHINE,L"Software\\Microsoft\\CTF\\TIP\\"+id);
+        bool member=false;HRESULT category=E_FAIL,profile=E_FAIL;TF_INPUTPROCESSORPROFILE value{};
+        if(p==S_OK)profile=profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&value);
+        result("child_query_registered",profile);
+        if(profile==S_OK)std::cout<<"profile_probe child_identity type="<<value.dwProfileType<<" lang=0x"<<std::hex<<value.langid<<" flags=0x"<<value.dwFlags<<std::dec
+                                <<" clsid="<<guidText(value.clsid)<<" profile="<<guidText(value.guidProfile)<<" category="<<guidText(value.catid)<<"\n";
+        if(c==S_OK)category=keyboardCategory(categories.Get(),member);
+        result("child_keyboard_category",category);std::cout<<"profile_probe child_keyboard_member="<<(member?1:0)<<"\n";
+        if(profile==S_OK&&value.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&value.langid==ZapLanguage&&value.clsid==ZapClsid&&value.guidProfile==ZapProfile
+           &&(value.dwFlags&TF_IPP_FLAG_ENABLED)!=0&&category==S_OK&&member)code=0;
+    }
+    CoUninitialize();std::cout<<"profile_probe child_read_only="<<(code==0?"PASS":"FAIL")<<"\n";return code;
+}
+static bool queryFreshProcess(){
+    wchar_t executable[MAX_PATH]{};DWORD length=GetModuleFileNameW(nullptr,executable,MAX_PATH);require(length>0&&length<MAX_PATH,"child_executable_path");
+    std::wstring command=L"\""+std::wstring(executable)+L"\" --query-only";
+    STARTUPINFOW start{};start.cb=sizeof(start);start.dwFlags=STARTF_USESTDHANDLES;
+    start.hStdInput=GetStdHandle(STD_INPUT_HANDLE);start.hStdOutput=GetStdHandle(STD_OUTPUT_HANDLE);start.hStdError=GetStdHandle(STD_ERROR_HANDLE);
+    PROCESS_INFORMATION child{};std::cout.flush();std::cerr.flush();
+    BOOL created=CreateProcessW(executable,command.data(),nullptr,nullptr,TRUE,CREATE_NO_WINDOW,nullptr,nullptr,&start,&child);
+    std::cout<<"profile_probe child_started="<<(created?1:0)<<" error="<<(created?0:GetLastError())<<"\n";if(!created)return false;
+    CloseHandle(child.hThread);DWORD waited=WaitForSingleObject(child.hProcess,15000),exitCode=1;
+    bool finished=waited==WAIT_OBJECT_0&&GetExitCodeProcess(child.hProcess,&exitCode);
+    // The child cannot mutate profiles. Terminating this bounded read-only query
+    // does not bypass the parent's mandatory registration rollback.
+    if(!finished){TerminateProcess(child.hProcess,1);WaitForSingleObject(child.hProcess,2000);}
+    CloseHandle(child.hProcess);std::cout<<"profile_probe child_finished="<<(finished?1:0)<<" exit="<<exitCode<<"\n";return finished&&exitCode==0;
+}
 struct Probe {
     bool com=false,owned=false,threadActive=false,activationAttempted=false,loadedLayout=false,haveBefore=false,ownsData=false;
     HMODULE dll=nullptr;
@@ -70,17 +124,22 @@ struct Probe {
         return ok;
     }
 };
-int main(){
+int main(int argc,char **argv){
     Probe probe;int code=1;
     try{
         // This executable is not part of local ctest/build_windows execution.
         require(env(L"GITHUB_ACTIONS")==L"true"&&env(L"RUNNER_ENVIRONMENT")==L"github-hosted"&&digits(env(L"GITHUB_RUN_ID"))&&digits(env(L"GITHUB_RUN_ATTEMPT")),"dedicated_github_hosted_runner_required");
+        require(argc==1||(argc==2&&std::string(argv[1])=="--query-only"),"invalid_probe_arguments");
+        environmentSummary();
+        if(argc==2)return queryOnly();
         HRESULT comHr=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);probe.com=SUCCEEDED(comHr);checked("com_init",comHr);
         checked("profiles",CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.profiles)));
         checked("category_manager",CoCreateInstance(CLSID_TF_CategoryMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.categories)));
         bool categoryPresent=false;checked("category_before",keyboardCategory(probe.categories.Get(),categoryPresent));require(!categoryPresent,"refuse_existing_zapime_category");
         TF_INPUTPROCESSORPROFILE existing{};HRESULT existingHr=probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&existing);
-        require(existingHr!=S_OK&&absentKey(probe.key),"refuse_existing_zapime_registration");
+        require(existingHr!=S_OK&&absentKey(probe.key)&&absentAt(HKEY_LOCAL_MACHINE,probe.key)
+                &&absentAt(HKEY_CURRENT_USER,std::wstring(L"Software\\Microsoft\\CTF\\TIP\\")+ZapClsidText)
+                &&absentAt(HKEY_LOCAL_MACHINE,std::wstring(L"Software\\Microsoft\\CTF\\TIP\\")+ZapClsidText),"refuse_existing_zapime_registration");
         PWSTR appData=nullptr;checked("local_appdata",SHGetKnownFolderPath(FOLDERID_LocalAppData,0,nullptr,&appData));probe.data=fs::path(appData)/L"ZapIME";CoTaskMemFree(appData);
         require(!fs::exists(probe.data),"refuse_existing_zapime_data");
         wchar_t module[MAX_PATH]{};DWORD length=GetModuleFileNameW(nullptr,module,MAX_PATH);require(length>0&&length<MAX_PATH,"executable_path");
@@ -91,8 +150,10 @@ int main(){
         probe.owned=true;checked("register",install());
         // Registration ran through different COM instances inside the DLL.
         // Query with fresh managers after releasing prior enumerator caches.
+        bool childVisible=queryFreshProcess();
         checked("fresh_managers_after_register",probe.reopenManagers());
-        TF_INPUTPROCESSORPROFILE registered{};checked("query_registered",probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&registered));
+        TF_INPUTPROCESSORPROFILE registered{};HRESULT registeredHr=probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&registered);result("query_registered",registeredHr);
+        require(childVisible,"fresh_process_profile_and_category_visible");require(registeredHr==S_OK,"query_registered");
         std::cout<<"profile_probe queried type="<<registered.dwProfileType<<" lang=0x"<<std::hex<<registered.langid<<" flags=0x"<<registered.dwFlags<<std::dec<<" clsid="<<guidText(registered.clsid)<<" profile="<<guidText(registered.guidProfile)<<" category="<<guidText(registered.catid)<<"\n";
         require(registered.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&registered.langid==ZapLanguage&&registered.clsid==ZapClsid&&registered.guidProfile==ZapProfile,"registered_identity");
         // This runner returns GUID_NULL in GetProfile.catid. Verify actual

@@ -53,3 +53,11 @@ regsvr32.exe "C:\完整路径\ZapIMETsf.dll"
 首轮40033265710和字段诊断40035305480均实际编译/注册成功但整体失败。后者返回type1/lang0804/正确CLSID及profile/flags0x2，catid却为GUID_NULL；启用或身份错误不是该轮已证实根因。现在保留字段原文，通过ITfCategoryMgr.EnumItemsInCategory对键盘类别直接检查本产品GUID的成员资格：注册前不存在、注册后必须存在、注销后必须消失；不能仅凭未填catid判定不存在，也不会跳过真实类别断言。新方式的执行仍待CI，不能预记注册/激活全通过。接口依据：https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfcategorymgr-enumitemsincategory 。
 
 后续a78ba70的专用EnumItemsInCategory也未找到本产品，不能据此前一轮catid为零就认定只是未填字段。新增候选在注册/注销后释放并重新创建profile/category COM管理器再执行相同检查，以区分对象寿命或缓存与实际持久化；这仍是待验收假设，不改生产注册或忽略成员断言。
+
+## 已证实阻塞与独立进程诊断（#41）
+
+ee32f52 的 Windows CI 40038009396 实际编译成功，但重新创建的 COM 管理器在注册后返回 GetProfile E_FAIL；注销清理通过，整个系统探针失败。不能把注册 S_OK 算成持久化或激活成功。
+
+新增同一 EXE 的 --query-only 子进程，在任何测试修改前仍执行 GitHub-hosted/run/attempt 守卫；该模式只创建系统查询接口，读取本产品固定 GUID 的 HKCU/HKLM COM/TIP 项存在性和 profile/category，不载入产品 DLL、不激活、不更改布局或文件。父进程用自己的绝对 EXE 路径创建子进程，继承日志句柄，等待最多15秒；超时终止只读子进程，父进程仍必须注销并验证清理。子进程缺少正确身份、enabled 或键盘类别时同样失败，不替代既有父进程门禁。常规本机 build/ctest 仍不运行系统探针。
+
+仅记录 HRESULT、产品 GUID、存在性与数值会话/窗口站状态，不枚举用户/注册表、输出账户或路径值。开始前也拒绝已有本产品 HKLM COM 及 HKCU/HKLM TIP，避免接管已有全局注册。此候选未在本地 Windows 编译，结果以新 CI 为准。上游同样使用 RegisterProfile；COM作用域和调用顺序只是待验证假设，不擅自写 HKLM 或改默认输入法。

@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-24 06:26:30 +0800；第 34 次记录汇报；距第 33 次候选分支记录约 12.1 分钟。次数按仓库状态记录累计，不将每条聊天进度重复计数。
+更新时间：2026-10-23T23:28:04.726Z；第 36 次记录汇报；距第 35 次检查点以 GitHub 提交时间为准。次数按仓库状态记录累计。
 
 ## 仓库与提交
 
@@ -312,19 +312,6 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 
 未完成项不会因文档、一次构建或一次合成测试而标作整体完成。不创建定时任务替代研发。
 
-## Windows 当前用户注册/进程激活的独立实验（候选）
-
-- 2026-10-23接续开发，在main f7ab2c27f85e12f933446fd7f57280b7a89cab29基线上新增真实TSF profile注册/系统COM解析/进程激活/恢复注销探针；不更改生产Windows DLL或注册逻辑，不改Android并行修复。常规本机编译不执行探针，GitHub临时Windows runner才在严格双重守卫下运行。
-- 拒绝已有本产品profile/COM或LocalAppData，恢复原线程布局/profile，不设默认/FORSESSION或延迟激活。精确检查本产品active，注销后复查本产品profile/COM消失；任何阶段或清理失败/超时均非零，不把DLL装载/注册返回当成实际输入。
-- 新增CI守卫反例及原始日志归档；本地Python语法编译及在Linux实际拒绝启动Windows可执行文件通过。没有本机MSVC/Windows SDK，C++编译、注册/激活/清理均待真实Windows CI，不预记通过。详见WINDOWS_NATIVE.md。
-- #39 Android已提交组字重启测试及修复候选5937311，修复前三API的现代35/36明确红灯、原28通过；相关断言和ZIP证据另在#39，不把本Windows切片当作其通过。四端真实App输入、联网、自然语音/ARM、真实R2服务器与签名发布仍未完成。
-
-## Windows profile实验首轮真实失败（继续定位）
-
-- #40 / 52884deeeded911ac5306ecccf313956bf05b867，Windows40033265710，作业120686462541：MSVC编译新探针、原DLL/COM/真实词库门禁通过；临时runner EXE拒绝self-hosted反例通过后，实际CoInitialize/profile manager/本机目录/注册与GetProfile均S_OK，但registered_identity_category_enabled联合断言失败。尚未进入进程激活。
-- 异常路径真实UnregisterServer S_OK，之后GetProfile为E_FAIL且本产品HKCU项消失，cleanup=PASS；整体工作流仍failure，不把清理成功当作系统集成成功。精确选取原始作业日志保存在windows-profile-failure-40033265710.log，未下载完整artifact。
-- 当前只补profile类型/语言/flags/GUID的诊断并拆开全部原断言，额外要求profile type及LANGID精确，不减弱category/enabled检查，也不改生产注册代码。需要真实字段后才判断类别缓存、启用状态或其它根因；Windows CI待跑。
-
 ## 第32次：失败日志与诊断字节边界
 
 - #35 当前已验证源码 49d2c7b64a874105db8d90180c80d84235c9e781：40028157353 三系统Rust/Apple、40028157457服务、40028157497 Windows、40028157456 CPU均success；Android40028157362的API28/35成功，API36在launch缺少返回键盘失败。不能称全绿。已下载901892字节原始ZIP12533968153并校验SHA256 c9359484a97e054a1e507ecb1b71ab79967547e85e8c8ba5e67092bce5074d39，pre-finish原始层级/服务/宿主生命周期保存在evidence/android-api36-40028157362/。
@@ -357,22 +344,23 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 最后仅合入main的文档/证据与本结果，产品/测试/CI源码必须与ac54e15逐文件一致；不把新末尾文档提交当作另一次已经跑完的CI。按已通过运行时和无源码差异审查合并，实际SHA以GitHub为准。
 - 旧失败日志不删除；没有真实断电/杀进程/SAF、自然语音或ARM承诺。后续继续#37本机保护材料与#39组字重启闭环。
 
-- b1d22a0的字段诊断候选推送时与已合并的主干状态/AGENTS冲突，GitHub未创建新的PR工作流；现合入main be02110并保留两边记录，解决该阻塞后重新进入真实CI。没有删除旧注册失败或放宽断言；Windows探针/自身workflow源码与b1d22a0完全一致，其新诊断尚未编译/执行。
-
 ## 本机同步材料保护完成组合验收（第34次补充）
 
 - #35已合并c51a4c6，#36已合并be0211003b065b06f24656f9327dcd7889fd42c9。#37运行时4a7542aaf8062858116567d42dcaf9522e623c98全部五工作流success：Android40032429113(API28/35/36)、development40032428857、service40032428912、Windows40032428910、offlineCPU40032429070。三API真实Keystore和原模型/语音/两轮实际输入/隐私/系统退出均通过，原始摘录保留于同号sync-secrets日志。
 - 最后只合入已合并main的文档/证据与本结果；产品/测试/scripts/.github/crates均与4a7542a逐文件相同，不将末尾文档提交冒充新完整运行。按验证代码和无源码差异审查合并，merge SHA以GitHub为准。
 - 这是专用worker的保护原语，尚无生产账号/HTTP/UI调用；不生成E2EE根密钥，不代替用户恢复包，不是全库加密，也不证明硬件Keystore或真实断电。继续#39标记交接/组字恢复与#40系统profile实际定位，不把前者首轮失败改为成功。
 
-## Windows类别字段定位与专用成员验证（候选）
+## 第35次接续检查点
 
-- b42aaa6 / Windows40035305480实际MSVC编译成功，真实EXE在self-hosted反例中先拒绝；注册/GetProfile S_OK。字段原文为type1、lang0804、正确CLSID/profile、flags0x2(enabled)，catid全零；因此这轮失败明确是returned catid联合检查，不能称身份/启用失败或进程激活成功。注销/旧查询失效/COM清理通过，整体仍failure。原文另存windows-profile-category-diagnostics-40035305480.log，未下载完整artifact。
-- 新探针用TSF专用CategoryMgr有界枚举验证实际键盘类别成员：本产品GUID注册前不存在、注册后必须存在、注销后必须消失，并保留全部身份/启用/COM/active/cleanup断言。没有改生产注册逻辑；新的实际类别验证结果尚待CI，绝不把catid忽略后直接算成功。
-- 合入已合并main4f407fe的Keystore/文档基线以解决PR冲突；新增类别成员检查及GUID诊断的显式ASCII转换需要真实MSVC CI，本地没有Windows SDK。Python脚本逻辑未变。
+- 已验证并合并#35 c51a4c6（失败密文页保存/导出/AEAD重试）、#36 be02110（离线模型中断恢复）、#37 4f407fe5321bfbd312c4db65bfe021c81d84aced（AndroidKeyStore材料保护原语）。各自实际运行源码的五工作流及AndroidAPI28/35/36完整通过；最终文档收尾比较无源代码改变。不是四端联网/账号/恢复UI完成。
+- #39 73a6722的API28/36完整通过、API35仍失败，旧失败均保留。观察同步4bc3a86随后在API28 launch失败，不能声称完成；最新2931198真实批编辑+新served连接命令观察仍由CI40038914738等编译/设备验证，不预记成功，不因等待/原生语音通过而取消正文门禁。交接期间快速输入仍跟踪#38。
+- #40最新ee32f52在40038009396依旧失败：注册S_OK，重新创建管理器后GetProfile为E_FAIL；尚未激活或在App输入。原始作业摘录保存在windows-profile-fresh-manager-failure-40038009396.log。已经单独建立持久化/作用域跟踪问题，未按猜测改HKLM/默认键盘/签名或放宽断言。
+- 当前计算环境不可用；所有产品/测试修改已通过GitHub远端提交，最新代码位于各草稿PR，主干保持已验证4f407fe。此分支仅为进度与证据保存检查点，没有触发额外产品构建，也不冒充已并入main。
+- 未完成：四端真实App输入（macOSTIS-50、Windows持久注册、iOS激活）、宿主HTTP/账号/配对/恢复UI、记录级冲突解决、自然语音与ARM/三星、用户R2/服务器/域名及正式签名发布。继续依据实际源代码与设备证据推进，不创建ChatGPT定时任务替代研发。
 
-## Windows类别实际枚举仍失败：检查COM实例寿命（候选）
+## 接续：Windows 独立进程只读查询
 
-- a78ba70 / Windows40036406478作业120696859850：真实EXE守卫、编译、Register/GetProfile及身份/启用均通过；EnumItemsInCategory本身S_OK但没有发现本产品GUID，registered_keyboard_category_membership失败，尚未进入进程激活。Unregister与类别/COM清理通过，整体仍failure。精确原始作业摘录保存到windows-profile-category-result-40036406478.log，不把SDK调用成功当作成员已存在。
-- 预检在注册前枚举了类别，DLL注册用另一个COM实例。现在在注册之后、注销之后分别释放所有profile/category管理器和可卸载COM缓存，再创建新的管理器进行同样的成员查询。缓存只是待验证假设，不宣称根因或已修复。仍保留注册前不存在/注册后必须存在/注销后必须消失，身份/enabled/active/清理断言不减弱，生产注册源码未改。
-- 当前计算环境断连，不能本地编译/操作Windows；改动通过仓库远端接口保存，MSVC及原生结果由新CI确认，未预记通过。
+- #40 在 ee32f52 的 40038009396 仍失败：新建管理器看不到刚注册的 profile，cleanup PASS 不代表注册成功。已建 #41 跟踪，原始精确选段见检查点 c95a02f。
+- 本提交新增受相同 CI 守卫保护的只读子进程，查询自身 GUID 的 COM/TIP 存在性、profile/category 及会话元数据；父进程不跳过原门禁和注销清理。未修改生产注册函数，不写 HKLM。等待真实 Windows CI，不提前标为通过。
+- Android #39 最新代码 2931198 已通过 JNI/双架构产品 APK/验收 APK 编译和 JVM 回归（40038914738），模拟器输入门禁尚在执行；其它已完成工作流：服务 40038914806、Windows 基线 40038914779、语音 CPU 40038914838 成功，通用检查当时仍运行。
+- 本地执行环境当前不可用，代码经 GitHub API 保存，后续验证只以实际 CI 结果为准；没有本地新编译、真机、用户服务器部署或四端全部完成结论。
