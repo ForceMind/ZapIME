@@ -98,7 +98,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(body==null)return;touches.cancel();readingRail=null;body.removeAllViews();
         searchLabel=null;
         if(layer.equals("data")){buildDataPanel();return;}
-        if(searchActive){searchLabel=Ui.text(this,"",15,theme.ink);searchLabel.setSingleLine(true);searchLabel.setEllipsize(android.text.TextUtils.TruncateAt.END);searchLabel.setContentDescription("资料搜索内容");searchLabel.setPadding(dp(12),0,dp(12),0);body.addView(searchLabel,new LinearLayout.LayoutParams(-1,dp(36)));refreshSearchLabel();}
+        if(searchActive){LinearLayout queryBar=new LinearLayout(this);queryBar.setGravity(Gravity.CENTER_VERTICAL);searchLabel=Ui.text(this,"",15,theme.ink);searchLabel.setSingleLine(true);searchLabel.setEllipsize(android.text.TextUtils.TruncateAt.END);searchLabel.setContentDescription("资料搜索内容");searchLabel.setPadding(dp(12),0,dp(8),0);queryBar.addView(searchLabel,new LinearLayout.LayoutParams(0,dp(44),1));for(boolean keep:new boolean[]{true,false}){Button control=Ui.button(this,keep?"完成":"取消",theme.special,false);control.setTextColor(theme.ink);control.setTextSize(13);control.setPadding(0,0,0,0);control.setContentDescription(keep?"完成搜索":"取消搜索");queryBar.addView(control,new LinearLayout.LayoutParams(dp(48),dp(44)));bind(control,()->finishDataSearch(keep),false);}body.addView(queryBar);refreshSearchLabel();}
         body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
