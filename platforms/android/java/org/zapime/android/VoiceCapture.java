@@ -18,8 +18,8 @@ final class VoiceCapture {
     private final Context context;
     private final Listener listener;
     private final Handler main=new Handler(Looper.getMainLooper());
-    private final AtomicBoolean cancelled=new AtomicBoolean(),stopping=new AtomicBoolean(),captured=new AtomicBoolean();
-    private final ArrayBlockingQueue<short[]> audio=new ArrayBlockingQueue<>(602);
+    private final AtomicBoolean cancelled=new AtomicBoolean(),stopping=new AtomicBoolean();
+    private final VoicePcmQueue audio=new VoicePcmQueue();
     private volatile long handle;
     private volatile String captureFailure;
     private volatile boolean recording;
@@ -44,9 +44,9 @@ final class VoiceCapture {
             if(cancelled.get())return;
             capture=new Thread(this::capture,"zapime-microphone");capture.start();
             while(!cancelled.get()){
-                short[] chunk=audio.poll(100,TimeUnit.MILLISECONDS);
+                short[] chunk=audio.next(cancelled);
+                if(chunk==null)break;
                 if(chunk!=null){try{String partial=result(NativeVoice.accept(handle,chunk,chunk.length)).optString("text");long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",partial);}}finally{Arrays.fill(chunk,(short)0);}}
-                else if(captured.get())break;
             }
             if(cancelled.get())return;if(captureFailure!=null)throw new IOException("microphone_failure");
             update("decoding","");String text=result(NativeVoice.finish(handle)).getString("text");
@@ -55,7 +55,7 @@ final class VoiceCapture {
         finally {
             stopping.set(true);
             if(capture!=null){boolean interrupted=false;while(capture.isAlive())try{capture.join(200);}catch(InterruptedException e){interrupted=true;}if(interrupted)Thread.currentThread().interrupt();}
-            short[] pending;while((pending=audio.poll())!=null)Arrays.fill(pending,(short)0);
+            audio.clear();
             long id=handle;if(id!=0){NativeVoice.close(id);handle=0;}
             if(loaded)VoiceWorker.EXECUTOR.schedule(()->NativeVoice.release(120000),121,TimeUnit.SECONDS);
         }
@@ -81,7 +81,7 @@ final class VoiceCapture {
         finally {
             recording=false;Arrays.fill(block,(short)0);
             if(recorder!=null){try{recorder.stop();}catch(RuntimeException ignored){}try{recorder.release();}catch(RuntimeException failure){if(!cancelled.get())captureFailure="microphone_unavailable";}}
-            captured.set(true);
+            audio.finish();
         }
     }
 }

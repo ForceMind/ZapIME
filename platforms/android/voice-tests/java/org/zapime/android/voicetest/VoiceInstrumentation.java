@@ -35,10 +35,28 @@ public final class VoiceInstrumentation extends Instrumentation {
     private void importZip(InputStream input,BooleanSupplier cancelled)throws Exception{invoke(models,"importZip",new Class<?>[]{Context.class,InputStream.class,BooleanSupplier.class},getTargetContext(),input,cancelled);}
     private byte[] badZip(String name)throws Exception{ByteArrayOutputStream bytes=new ByteArrayOutputStream();try(ZipOutputStream zip=new ZipOutputStream(bytes)){zip.putNextEntry(new ZipEntry(name));zip.write(new byte[]{1,2,3});zip.closeEntry();}return bytes.toByteArray();}
     private void rejectImport(String member)throws Exception{boolean rejected=false;try{importZip(new ByteArrayInputStream(badZip(member)),()->false);}catch(InvocationTargetException e){rejected=true;}require(rejected,"import accepted invalid member");}
+    private void finalPcmRace()throws Exception{
+        // Freeze a timed-out poll before it returns. The real producer API then
+        // publishes the final PCM and completion in that exact scheduling gap.
+        class LatePoll extends ArrayBlockingQueue<short[]> {
+            final CountDownLatch timedOut=new CountDownLatch(1),resume=new CountDownLatch(1);
+            final AtomicBoolean first=new AtomicBoolean(true);
+            LatePoll(){super(2);}
+            @Override public short[] poll(long time,TimeUnit unit)throws InterruptedException{if(first.compareAndSet(true,false)){timedOut.countDown();if(!resume.await(5,TimeUnit.SECONDS))throw new InterruptedException("race fixture timeout");return null;}return super.poll(time,unit);}
+        }
+        LatePoll backing=new LatePoll();Class<?> type=Class.forName("org.zapime.android.VoicePcmQueue",true,getTargetContext().getClassLoader());Constructor<?> constructor=type.getDeclaredConstructor(BlockingQueue.class);constructor.setAccessible(true);Object queue=constructor.newInstance(backing);
+        Method next=type.getDeclaredMethod("next",AtomicBoolean.class),offer=type.getDeclaredMethod("offer",short[].class),finish=type.getDeclaredMethod("finish");next.setAccessible(true);offer.setAccessible(true);finish.setAccessible(true);
+        AtomicReference<Throwable> failure=new AtomicReference<>();AtomicBoolean cancelled=new AtomicBoolean();short[] tail={17,-31,4};CountDownLatch done=new CountDownLatch(1);
+        Thread consumer=new Thread(()->{try{require(next.invoke(queue,cancelled)==tail,"final PCM was lost after timed-out poll");require(next.invoke(queue,cancelled)==null,"EOF did not follow final PCM");}catch(Throwable error){failure.set(error);}finally{done.countDown();}},"voice-queue-race");consumer.start();
+        try{require(backing.timedOut.await(5,TimeUnit.SECONDS),"race fixture did not reach poll");require((Boolean)offer.invoke(queue,(Object)tail),"final PCM offer failed");finish.invoke(queue);backing.resume.countDown();require(done.await(5,TimeUnit.SECONDS),"queue completion stalled");require(failure.get()==null,"ordered final PCM regression");}
+        finally{cancelled.set(true);backing.resume.countDown();consumer.interrupt();consumer.join(1000);}
+        pass("deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF");
+    }
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
             nativeVoice=Class.forName("org.zapime.android.NativeVoice",true,getTargetContext().getClassLoader());models=Class.forName("org.zapime.android.VoiceModels",true,getTargetContext().getClassLoader());
+            stage="ordered PCM completion";finalPcmRace();
             fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
             stage="model boundary";rejectImport("../tokens.txt");rejectImport("msime-model.json");rejectImport("tokens.txt");
             try(InputStream in=new FileInputStream(new File(fixtures,"model.zip"))){importZip(in,()->false);}File model=verified();
