@@ -258,6 +258,15 @@ public final class SmokeInstrumentation extends Instrumentation {
         runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();Editable text=a.normal.getText();text.replace(0,text.length(),"xx");BaseInputConnection.setComposingSpans(text);a.normal.setSelection(2);});
         restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("xx",stage);
         for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","xx好","restart_changed_context_fresh_session");
+        stage="marker_removed_without_restart";setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");requireEditor("ni",stage);
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();BaseInputConnection.removeComposingSpans(a.normal.getText());((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).updateSelection(a.normal,2,2,-1,-1);});
+        waitImeText("⚡ 闪电 · 离线");requireEditor("ni","marker_loss_preserves_app_text");
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","ni好","marker_loss_resets_decoder_without_erasing_text");
+        stage="composition_cursor_move";setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");runOnMainSync(()->ProbeActivity.current.get().normal.setSelection(0));
+        waitImeText("⚡ 闪电 · 离线");requireEditor("ni","cursor_move_preserves_old_text");
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","好ni","cursor_move_inserts_at_new_position");
         setText("probe-normal","你好");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("你好","restart_regression_cleanup");
     }
     private void restartComposition() throws Exception {

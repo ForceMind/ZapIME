@@ -1,0 +1,17 @@
+{
+  "commit": "5937311368693b854e823c50c32444573166ff5f",
+  "run": 40032324365,
+  "api": 36,
+  "artifact": 12535243757,
+  "zip_bytes": 887548,
+  "zip_sha256": "7324718e159274e2fb126402aa525b9b153027d80ebdb1e107756a82d6e89f3e",
+  "scope": "Downloaded and verified failed first retention fix; no success claimed. ci-* is pre-finish synthetic CI.",
+  "files": {
+    "host-lifecycle.txt": "fc1a536b312f28407426b9aa6677f429e396347049e515c123761e1111c96fcf",
+    "hierarchy.txt": "26b3b5195ad80a13adbc994a260818d675540d75ea0bc8385fd2e0a9a4a6aabf",
+    "ci-input-service.txt": "d00e0b49f6ef02992cc590e282f7ecc7eb06a8affcb24c24598e46ab488de582",
+    "instrumentation.log": "acd23fde85a3283b642cc92f33a8b9912c96ba4a1d60e8d7b97d9c14c90dc04c",
+    "runtime-errors.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "last-anr.txt": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  }
+}

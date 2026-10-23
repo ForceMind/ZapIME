@@ -33,6 +33,7 @@ public final class ProbeActivity extends Activity {
                 note("normal connection created; length="+length()+" selection="+getSelectionStart()+":"+getSelectionEnd()+" composing="+BaseInputConnection.getComposingSpanStart(getText())+":"+BaseInputConnection.getComposingSpanEnd(getText()));
                 InputConnection connection=super.onCreateInputConnection(info);if(connection==null)return null;
                 normalConnections.incrementAndGet();
+                if(android.os.Build.VERSION.SDK_INT>=30)note("initial snapshot before length="+InitialInfo.beforeLength(info));
                 return new InputConnectionWrapper(connection,false){
                     @Override public CharSequence getTextBeforeCursor(int length,int flags){
                         // Synthetic unresponsive-editor fixture. No IME API or
@@ -72,6 +73,7 @@ public final class ProbeActivity extends Activity {
         else note("show deferred: editor not served; attempt="+attempt);
         if(attempt<30)normal.postDelayed(()->requestKeyboard(request,attempt+1),100);
     }
+    private static final class InitialInfo {static int beforeLength(EditorInfo info){CharSequence before=info.getInitialTextBeforeCursor(128,0);return before==null?-1:before.length();}}
     private static final class ImeVisibility {
         static boolean visible(android.view.View view){android.view.WindowInsets insets=view.getRootWindowInsets();return insets!=null&&insets.isVisible(android.view.WindowInsets.Type.ime());}
     }
