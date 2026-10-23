@@ -68,6 +68,25 @@ public final class VoiceInstrumentation extends Instrumentation {
         finally{release.countDown();event.join(1000);if(closer.getState()!=Thread.State.NEW)closer.join(1000);}
         pass("recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)");
     }
+    private void modelPublicationRecovery(File model)throws Exception{
+        // Simulate filesystem states left by interrupted publication. This is
+        // not an actual process-kill/power-loss or SAF file-picker test.
+        Path destination=model.toPath(),parent=destination.getParent();String id=model.getName();Path incoming=parent.resolve("incoming-"+id),previous=parent.resolve("previous-"+id);
+        Files.move(destination,incoming,StandardCopyOption.ATOMIC_MOVE);Files.createDirectory(destination);Files.write(destination.resolve("msime-model.json"),bytes("{}"));
+        require((Boolean)invoke(models,"recoverable",new Class<?>[]{Context.class},getTargetContext()),"completed staging recovery hint absent");
+        require(verified().equals(model),"verified staging did not recover interrupted publication");require(!Files.exists(incoming)&&!Files.exists(previous),"publication recovery left move state");
+        Files.move(destination,previous,StandardCopyOption.ATOMIC_MOVE);Files.createDirectory(incoming);Files.write(incoming.resolve("msime-model.json"),bytes("{}"));
+        require(verified().equals(model),"invalid staging displaced valid backup");require(!Files.exists(previous),"backup recovery did not restore destination");
+        Files.delete(incoming.resolve("msime-model.json"));Files.delete(incoming);
+        // Never promote a complete but modified staging model. Keep this copy
+        // recoverable by restoring its exact trusted manifest after rejection.
+        Files.move(destination,incoming,StandardCopyOption.ATOMIC_MOVE);Path manifest=incoming.resolve("msime-model.json");byte[] trusted=Files.readAllBytes(manifest);Files.write(manifest,bytes("{}"));
+        boolean rejected=false;try{verified();}catch(InvocationTargetException expected){rejected=true;}
+        require(rejected&&!Files.exists(destination)&&Files.exists(incoming),"untrusted staging was published");Files.write(manifest,trusted);require(verified().equals(model),"repaired trusted staging did not recover");
+        boolean cancelled=false;try{invoke(models,"verified",new Class<?>[]{Context.class,BooleanSupplier.class},getTargetContext(),(BooleanSupplier)()->true);}catch(InvocationTargetException expected){cancelled=true;}
+        require(cancelled&&verified().equals(model),"cancelled verification changed installed model");
+        pass("model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)");
+    }
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
@@ -81,6 +100,7 @@ public final class VoiceInstrumentation extends Instrumentation {
             byte[] manifest=Files.readAllBytes(new File(model,"msime-model.json").toPath());rejectImport("tokens.txt");require(verified().equals(model),"invalid import replaced model");
             boolean cancelled=false;try(InputStream in=getContext().getAssets().open("voice-fixtures/model.zip")){try{importZip(in,()->true);}catch(InvocationTargetException e){cancelled=true;}}require(cancelled,"cancelled import accepted");require(verified().equals(model),"cancel damaged installed model");
             Files.write(new File(model,"msime-model.json").toPath(),bytes("{}"));boolean tampered=false;try{verified();}catch(InvocationTargetException e){tampered=true;}finally{Files.write(new File(model,"msime-model.json").toPath(),manifest);}require(tampered,"tampered manifest accepted");verified();pass("verified import, traversal/config/checksum/cancellation rejection and preservation");
+            stage="model publication recovery";modelPublicationRecovery(model);
             stage="native ownership";long[] handles=new long[4];for(int i=0;i<4;i++){handles[i]=allocate();require(handles[i]!=0,"allocation");}require(allocate()==0,"unbounded handles");for(long h:handles)require(close(h),"close allocated handle");
             long handle=allocate();final long ownerHandle=handle;AtomicReference<Throwable> wrongFailure=new AtomicReference<>();Thread wrong=new Thread(()->{try{require(!close(ownerHandle),"wrong owner closed handle");require("invalid_owner".equals(accept(ownerHandle,new short[1],1).optString("error")),"wrong owner accepted PCM");}catch(Throwable e){wrongFailure.set(e);}});wrong.start();wrong.join();require(wrongFailure.get()==null,"wrong-owner boundary");
             require(start(handle,new File(getTargetContext().getFilesDir(),"missing-model")).has("error"),"missing model accepted");nativeCall("cancel",new Class<?>[]{long.class},handle);require("cancelled".equals(start(handle,model).optString("error")),"cancel before load ignored");require(close(handle)&&!close(handle),"stale handle close");pass("bounded handles, wrong-thread/stale ownership and load cancellation");

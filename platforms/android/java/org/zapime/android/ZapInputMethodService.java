@@ -306,7 +306,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void startVoice(){
         if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
-        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED||!VoiceModels.installed(this)){open(VoiceSettingsActivity.class);return;}
+        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED||!(VoiceModels.installed(this)||VoiceModels.recoverable(this))){open(VoiceSettingsActivity.class);return;}
         cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
         worker.execute(()->main.post(()->{
@@ -345,7 +345,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voiceState.equals("decoding"))label="录音已停止 · 正在整理文字…";
         if(voiceState.equals("checking"))label="正在核对输入位置…";
         if(voiceState.equals("result"))label="识别完成 · 确认后插入";
-        if(voiceState.equals("empty"))label="没有识别到文字，请返回后重试";
+        if(voiceState.equals("empty"))label="没有识别到文字，可重新录音";
         if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
         if(voiceState.equals("microphone_silenced"))label="系统已暂停麦克风，请检查权限或占用后重试";
         if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";

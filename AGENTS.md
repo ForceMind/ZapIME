@@ -35,3 +35,5 @@
 - 新增失败全局诊断只在GITHUB_ACTIONS+run/attempt数字+专用emulator序列全部验证后采集，每文件至多256KiB且有限超时；不得扩展到个人设备。主App或测试宿主ANR必须拒绝成功；系统Launcher启动ANR单独保留，不能删旧失败、虚构产品根因或跳过输入/退出断言。
 
 - UI失败现场须由test-only宿主在Instrumentation.finish之前采集；finish后宿主可被系统终止，外部dumpsys不能冒充当时现场。CI全局诊断开关只由已验证脚本传数字run-attempt参数，不能默认用于普通设备。独立宿主从真实前台按钮正常打开产品设置，显示键盘先确认served editor及实际Insets可见状态；不强制shell前台、覆盖系统策略或减弱组字/真实正文断言。
+
+- Android模型发布恢复只接受当前APK固定模型的已知暂存/备份路径，所有白名单/逐项SHA/可信清单与取消检查仍在worker；UI存在提示不代表可信安装。不要把文件系统中断状态测试称为真实断电、杀进程或SAF验收，不跳过原JNI/录音/隐私/真实服务退出门禁。
