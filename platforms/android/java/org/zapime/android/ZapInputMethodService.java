@@ -36,10 +36,16 @@ public final class ZapInputMethodService extends InputMethodService {
     private JSONArray readingChoices=new JSONArray();
     private String layer="letters";
     private String preedit = "";
+    private VoiceCapture voice;
+    private int voiceTicket,selectionVersion,voiceSelection;
+    private InputConnection voiceTarget;
+    private String voiceBefore,voiceAfter,voiceState="",voiceText="";
+    private TextView voiceLabel,voicePreview;
+    private Button voiceStop,voiceInsert;
     private int dp(int n) { return (int)(n * getResources().getDisplayMetrics().density); }
 
     @Override public View onCreateInputView() {
-        touches.cancel();theme=KeyboardTheme.load(this);
+        cancelVoice(false);touches.cancel();theme=KeyboardTheme.load(this);
         getWindow().getWindow().setNavigationBarColor(theme.deck);
         View decor=getWindow().getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(theme.dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
         LinearLayout panel=Ui.column(this);panel.setPadding(dp(2),0,dp(2),dp(6));panel.setBackgroundColor(theme.deck);
@@ -52,9 +58,10 @@ public final class ZapInputMethodService extends InputMethodService {
         if(body!=null&&theme.dark!=KeyboardTheme.load(this).dark){setInputView(onCreateInputView());try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}}
     }
     @Override public void onStartInputView(EditorInfo info,boolean restarting){super.onStartInputView(info,restarting);refreshTheme();}
-    @Override public void onConfigurationChanged(android.content.res.Configuration config){touches.cancel();super.onConfigurationChanged(config);refreshTheme();}
-    @Override public void onFinishInputView(boolean finishingInput){touches.cancel();super.onFinishInputView(finishingInput);}
-    @Override public void onWindowHidden(){touches.cancel();super.onWindowHidden();}
+    @Override public void onConfigurationChanged(android.content.res.Configuration config){cancelVoice(true);touches.cancel();super.onConfigurationChanged(config);refreshTheme();}
+    @Override public void onFinishInputView(boolean finishingInput){cancelVoice(true);touches.cancel();super.onFinishInputView(finishingInput);}
+    @Override public void onWindowHidden(){cancelVoice(true);touches.cancel();super.onWindowHidden();}
+    @Override public void onUpdateSelection(int oldStart,int oldEnd,int start,int end,int candidatesStart,int candidatesEnd){super.onUpdateSelection(oldStart,oldEnd,start,end,candidatesStart,candidatesEnd);if(oldStart!=start||oldEnd!=end){++selectionVersion;if(voiceTarget!=null)cancelVoice(true);}}
     private void bind(Button button,Runnable action,boolean repeat){touches.bind(button,action,repeat,()->getCurrentInputConnection()!=null);}
     private Button key(String label,String action,boolean special) {
         String hint="",icon="";
@@ -99,13 +106,14 @@ public final class ZapInputMethodService extends InputMethodService {
     private void renderKeys() {
         if(body==null)return;touches.cancel();readingRail=null;body.removeAllViews();
         searchLabel=null;
+        if(layer.equals("voice")){buildVoicePanel();return;}
         if(layer.equals("data")){buildDataPanel();return;}
         if(searchActive){LinearLayout queryBar=new LinearLayout(this);queryBar.setGravity(Gravity.CENTER_VERTICAL);searchLabel=Ui.text(this,"",15,theme.ink);searchLabel.setSingleLine(true);searchLabel.setEllipsize(android.text.TextUtils.TruncateAt.END);searchLabel.setContentDescription("资料搜索内容");searchLabel.setPadding(dp(12),0,dp(8),0);queryBar.addView(searchLabel,new LinearLayout.LayoutParams(0,dp(44),1));for(boolean keep:new boolean[]{true,false}){Button control=Ui.button(this,keep?"完成":"取消",theme.special,false);control.setTextColor(theme.ink);control.setTextSize(13);control.setPadding(0,0,0,0);control.setContentDescription(keep?"完成搜索":"取消搜索");queryBar.addView(control,new LinearLayout.LayoutParams(dp(48),dp(44)));bind(control,()->finishDataSearch(keep),false);}body.addView(queryBar);refreshSearchLabel();}
         body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
-            String[] labels={"个人资料","数字键盘","符号","输入设置"};String[] icons={"book","keys","keys","settings"};
-            for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,labels[i],theme.key,false);b.setTextColor(theme.ink);b.setTextSize(13);b.setPadding(0,dp(16),0,dp(10));b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],theme.accent),null,null);b.setCompoundDrawablePadding(dp(10));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(88),1);p.setMargins(dp(4),0,dp(4),0);tiles.addView(b,p);b.setOnClickListener(v->{if(index==0)open(PersonalDataActivity.class);if(index==1){layer="numbers";renderKeys();}if(index==2){layer="symbols";renderKeys();}if(index==3)open(KeyboardSettingsActivity.class);});}
+            String[] labels={"个人资料","离线语音","符号","输入设置"};String[] icons={"book","mic","keys","settings"};
+            for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,labels[i],theme.key,false);b.setTextColor(theme.ink);b.setTextSize(13);b.setPadding(0,dp(16),0,dp(10));b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],theme.accent),null,null);b.setCompoundDrawablePadding(dp(10));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(88),1);p.setMargins(dp(4),0,dp(4),0);tiles.addView(b,p);bind(b,()->{if(index==0)open(PersonalDataActivity.class);if(index==1)startVoice();if(index==2){layer="symbols";renderKeys();}if(index==3)open(KeyboardSettingsActivity.class);},false);}
             body.addView(tiles);TextView note=Ui.text(this,"资料保存在本机 · 长按候选可置顶",12,theme.muted);note.setGravity(Gravity.CENTER);body.addView(note,new LinearLayout.LayoutParams(-1,dp(46)));
             Button back=Ui.button(this,"返回键盘",theme.special,false);back.setTextColor(theme.ink);back.setContentDescription("返回键盘");back.setOnClickListener(v->{layer="letters";renderKeys();});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(44));p.setMargins(dp(12),dp(8),dp(12),dp(8));body.addView(back,p);return;
         }
@@ -119,6 +127,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void open(Class<?> activity){startActivity(new Intent(this,activity).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
     private void idleToolbar(){
         if(candidates==null)return;candidates.removeAllViews();
+        if(layer.equals("voice")){TextView hint=Ui.text(this,"离线语音 · 确认后插入",14,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(-1,dp(46)));return;}
         if(searchActive){TextView hint=Ui.text(this,searchChinese?"中文搜索 · 仅本机":"English 搜索 · 仅本机",13,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button clear=Ui.button(this,"清空搜索",theme.toolbar,false);clear.setTextColor(theme.ink);clear.setTextSize(14);clear.setContentDescription("清空搜索");candidates.addView(clear,new LinearLayout.LayoutParams(dp(90),dp(46)));bind(clear,()->clearDataSearch(),false);return;}
         String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","本机资料面板","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
         for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
@@ -126,7 +135,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void switchKeyboard(){if(sensitive||!ready)return;command("CommitRaw",null);nineKey=!nineKey;getSharedPreferences("keyboard",MODE_PRIVATE).edit().putBoolean("nine_key",nineKey).apply();chinese=true;shift=false;layer="letters";syncLayout();renderKeys();idleToolbar();}
     private void syncLayout(){try{send(new JSONObject().put("op","layout").put("name",chinese&&nineKey&&!searchActive?"nine_key":"qwerty"),null);}catch(JSONException ignored){}}
     @Override public void onStartInput(EditorInfo info, boolean restarting) {
-        super.onStartInput(info,restarting);touches.cancel();++dataQuerySerial;searchActive=false;searchReady=false;searchClosing=false;searchQuery="";dataPanel=null; final int active = ++epoch; ready = false; preedit=""; generation=0;
+        cancelVoice(false);super.onStartInput(info,restarting);touches.cancel();++dataQuerySerial;searchActive=false;searchReady=false;searchClosing=false;searchQuery="";dataPanel=null; final int active = ++epoch; ready = false; preedit=""; generation=0;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
@@ -292,6 +301,59 @@ public final class ZapInputMethodService extends InputMethodService {
         if(!value.optBoolean("handled")&&fallback!=null){if(fallback.equals("⌫"))deleteQuery();else appendQuery(fallback);}
         preedit=value.optString("preedit","");refreshSearchLabel();refreshStatus();renderResult(value);
     }
+    private void startVoice(){
+        if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
+        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED||!VoiceModels.installed(this)){open(VoiceSettingsActivity.class);return;}
+        cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
+        // Drain already queued keyboard replies before capturing the exact editor position.
+        worker.execute(()->main.post(()->{
+            if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
+            InputConnection target=getCurrentInputConnection();
+            if(target==null||!preedit.isEmpty()){cancelVoice(true);return;}
+            CharSequence before=target.getTextBeforeCursor(128,0),after=target.getTextAfterCursor(128,0),selected=target.getSelectedText(0);
+            if(before==null||after==null||(selected!=null&&selected.length()>0)){cancelVoice(true);Toast.makeText(this,"请将光标放在可输入的位置再开始",Toast.LENGTH_SHORT).show();return;}
+            voiceTarget=target;voiceSelection=selectionVersion;voiceBefore=before.toString();voiceAfter=after.toString();
+            voice=new VoiceCapture(this,(state,text)->{
+                if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+                if(state.equals("recording")&&voiceState.equals("decoding"))return;
+                voiceState=state;voiceText=text;updateVoicePanel();
+            });voice.start();
+        }));
+    }
+    private void buildVoicePanel(){
+        body.setPadding(0,0,0,0);
+        voiceLabel=Ui.text(this,"",15,theme.accent);voiceLabel.setPadding(dp(16),dp(10),dp(16),dp(6));body.addView(voiceLabel,new LinearLayout.LayoutParams(-1,dp(40)));
+        ScrollView scroll=new ScrollView(this);voicePreview=Ui.text(this,"",18,theme.ink);voicePreview.setPadding(dp(16),dp(6),dp(16),dp(6));voicePreview.setContentDescription("语音识别预览");scroll.addView(voicePreview);body.addView(scroll,new LinearLayout.LayoutParams(-1,dp(100)));
+        LinearLayout controls=new LinearLayout(this);
+        Button cancel=Ui.button(this,"取消",theme.special,false);cancel.setTextColor(theme.ink);place(controls,cancel,1,48);bind(cancel,()->cancelVoice(true),false);
+        voiceStop=Ui.button(this,"停止录音",theme.special,false);voiceStop.setTextColor(theme.ink);place(controls,voiceStop,1,48);bind(voiceStop,()->{if(voice!=null){voice.stop();voiceState="decoding";updateVoicePanel();}},false);
+        voiceInsert=Ui.button(this,"确认插入",theme.accent,true);place(controls,voiceInsert,1.2f,48);bind(voiceInsert,this::insertVoice,false);body.addView(controls);
+        Button settings=Ui.button(this,"语音设置",theme.deck,false);settings.setTextColor(theme.muted);settings.setTextSize(12);body.addView(settings,new LinearLayout.LayoutParams(-1,dp(40)));bind(settings,()->{cancelVoice(true);open(VoiceSettingsActivity.class);},false);updateVoicePanel();
+    }
+    private void updateVoicePanel(){
+        if(voiceLabel==null||!layer.equals("voice"))return;
+        String label="正在校验并加载离线模型…";
+        if(voiceState.equals("recording"))label="正在聆听 · 最长 60 秒";
+        if(voiceState.equals("decoding"))label="录音已停止 · 正在整理文字…";
+        if(voiceState.equals("result"))label="识别完成 · 确认后插入";
+        if(voiceState.equals("empty"))label="没有识别到文字，请返回后重试";
+        if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
+        if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";
+        voiceLabel.setText(label);voicePreview.setText(voiceText.isEmpty()?"录音不保存、不上传":voiceText);
+        voiceStop.setEnabled(voiceState.equals("recording"));voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());
+    }
+    private void insertVoice(){
+        if(!voiceState.equals("result")||voiceText.trim().isEmpty())return;
+        InputConnection target=getCurrentInputConnection();boolean valid=target!=null&&target==voiceTarget&&voiceSelection==selectionVersion&&!privateSession&&preedit.isEmpty();
+        if(valid){CharSequence before=target.getTextBeforeCursor(128,0),after=target.getTextAfterCursor(128,0),selected=target.getSelectedText(0);valid=before!=null&&after!=null&&voiceBefore.equals(before.toString())&&voiceAfter.equals(after.toString())&&(selected==null||selected.length()==0);}
+        String text=voiceText;cancelVoice(true);
+        if(valid){if(!target.commitText(text,1))Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();}
+        else Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
+    }
+    private void cancelVoice(boolean restore){
+        ++voiceTicket;if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceStop=null;voiceInsert=null;
+        if(layer.equals("voice")){layer="letters";if(restore&&body!=null){renderKeys();idleToolbar();refreshStatus();}}
+    }
     private void delete(InputConnection c){
         CharSequence selected=c.getSelectedText(0);
         if(selected!=null&&selected.length()>0){c.commitText("",1);return;}
@@ -311,7 +373,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
     private void enter(InputConnection connection) { EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
-    @Override public void onFinishInput() { touches.cancel();++epoch;++dataQuerySerial; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
+    @Override public void onFinishInput() { cancelVoice(false);touches.cancel();++epoch;++dataQuerySerial; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
     @Override public void onDestroy() {
         // InputMethodService.onDestroy invokes our onFinishInput. Keep the worker
         // accepting that final close before shutting it down; both closes are queued

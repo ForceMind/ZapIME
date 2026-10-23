@@ -40,6 +40,7 @@ final class Ui {
             case "cursor":canvas.drawLine(12,3,12,21,p);canvas.drawLine(9,3,15,3,p);canvas.drawLine(9,21,15,21,p);path.moveTo(6,8);path.lineTo(2,12);path.lineTo(6,16);path.moveTo(18,8);path.lineTo(22,12);path.lineTo(18,16);canvas.drawPath(path,p);break;
             case "clipboard":canvas.drawRoundRect(5,5,20,22,2,2,p);canvas.drawRoundRect(9,2,16,7,1,1,p);canvas.drawLine(9,12,16,12,p);canvas.drawLine(9,16,16,16,p);break;
             case "space":path.moveTo(4,10);path.lineTo(4,15);path.lineTo(20,15);path.lineTo(20,10);canvas.drawPath(path,p);break;
+            case "mic":canvas.drawRoundRect(9,2,15,14,3,3,p);canvas.drawArc(6,6,18,18,0,180,false,p);canvas.drawLine(12,18,12,22,p);canvas.drawLine(8,22,16,22,p);break;
             case "grid":for(int x=4;x<=14;x+=10)for(int y=4;y<=14;y+=10)canvas.drawRoundRect(x,y,x+6,y+6,1,1,p);break;
             case "hide":path.moveTo(5,9);path.lineTo(12,16);path.lineTo(19,9);canvas.drawPath(path,p);break;
             case "bolt":path.moveTo(14,2);path.lineTo(5,13);path.lineTo(11,13);path.lineTo(10,22);path.lineTo(19,10);path.lineTo(13,10);path.close();canvas.drawPath(path,p);break;
