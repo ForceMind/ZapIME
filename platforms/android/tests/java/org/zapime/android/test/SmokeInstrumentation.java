@@ -8,6 +8,7 @@ import android.view.accessibility.*;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.view.MotionEvent;
+import android.view.KeyEvent;
 import android.view.InputDevice;
 import android.view.inputmethod.BaseInputConnection;
 import android.text.Editable;
@@ -37,10 +38,11 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         throw new Exception("Missing UI node: "+text);
     }
-    private void click(String text) throws Exception {
+    private void click(String text) throws Exception { click(text,!text.startsWith("probe-")); }
+    private void click(String text,boolean button) throws Exception {
         for(int attempt=0;attempt<30;attempt++) {
             // 键盘/候选必须是真正的 Button，不能误点同文的编辑器内容或提示。
-            AccessibilityNodeInfo node=waitFor(text,!text.startsWith("probe-"));
+            AccessibilityNodeInfo node=waitFor(text,button);
             Rect bounds=new Rect();node.getBoundsInScreen(bounds);
             if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
                 long now=SystemClock.uptimeMillis();
@@ -57,10 +59,10 @@ public final class SmokeInstrumentation extends Instrumentation {
     }
     private void requireEditor(String expected,String phase) throws Exception {
         stage=phase;
-        for(int i=0;i<100;i++) { AccessibilityNodeInfo editor=find("probe-normal"); if(editor!=null && expected.contentEquals(editor.getText()==null?"":editor.getText()))return; Thread.sleep(100); }
-        AccessibilityNodeInfo editor=find("probe-normal");
-        int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
-        throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
+        // Accessibility getText() may expose an empty EditText's hint as text.
+        // Read the independent Activity's real Editable for every assertion.
+        for(int i=0;i<100;i++){if(expected.equals(editorState().text))return;Thread.sleep(100);}
+        throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+editorState().text.length());
     }
     private static final class EditorState {
         String text, committed;
@@ -103,6 +105,50 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         requireEditor(expected,phase);
     }
+    private AccessibilityNodeInfo scrollable(AccessibilityNodeInfo node) {
+        if(node==null)return null;if(node.isScrollable())return node;
+        for(int i=0;i<node.getChildCount();i++){AccessibilityNodeInfo found=scrollable(node.getChild(i));if(found!=null)return found;}return null;
+    }
+    private void reveal(String text) throws Exception {
+        for(int i=0;i<12;i++){AccessibilityNodeInfo node=find(text);if(node!=null&&node.isVisibleToUser())return;
+            AccessibilityNodeInfo scroll=scrollable(automation.getRootInActiveWindow());if(scroll!=null)scroll.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);Thread.sleep(200);}
+        throw new Exception("Cannot reveal UI control: "+text);
+    }
+    private void touchAt(int action,long down,int x,int y) throws Exception {
+        MotionEvent event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,x,y,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try{if(!automation.injectInputEvent(event,true))throw new Exception("Touch injection rejected");}finally{event.recycle();}
+    }
+    private Rect bounds(String label) throws Exception {Rect r=new Rect();waitFor(label,true).getBoundsInScreen(r);return r;}
+    private void repeatAcceptance() throws Exception {
+        stage="repeat_delete";setText("probe-normal","abcdefghijklmnopqrstuvwxyz");Thread.sleep(250);
+        Rect r=bounds("⌫");long down=SystemClock.uptimeMillis();touchAt(MotionEvent.ACTION_DOWN,down,r.centerX(),r.centerY());Thread.sleep(700);touchAt(MotionEvent.ACTION_CANCEL,down,r.centerX(),r.centerY());Thread.sleep(250);
+        String after=editorState().text;if(after.length()>23||!"abcdefghijklmnopqrstuvwxyz".startsWith(after))throw new Exception("Long delete did not repeat safely");Thread.sleep(500);requireEditor(after,"cancel_stops_delete");
+        down=SystemClock.uptimeMillis();touchAt(MotionEvent.ACTION_DOWN,down,r.centerX(),r.centerY());touchAt(MotionEvent.ACTION_MOVE,down,0,0);Thread.sleep(250);String moved=editorState().text;Thread.sleep(600);requireEditor(moved,"move_out_stops_delete");touchAt(MotionEvent.ACTION_UP,down,0,0);
+        setText("probe-normal","abc😀");Thread.sleep(200);click("⌫");requireEditor("abc","delete_whole_unicode");
+        for(String cluster:new String[]{"❤️","👍🏽","🇨🇳","👨‍👩‍👧‍👦","e\u0301"}){setText("probe-normal","abc"+cluster);Thread.sleep(150);click("⌫");requireEditor("abc","delete_grapheme_"+cluster.codePointCount(0,cluster.length()));}
+        stage="selected_delete";runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0,a.normal.length());});click("⌫");requireEditor("","delete_selection");
+        setText("probe-normal","focus safe text");Thread.sleep(200);down=SystemClock.uptimeMillis();touchAt(MotionEvent.ACTION_DOWN,down,r.centerX(),r.centerY());
+        runOnMainSync(()->ProbeActivity.current.get().password.requestFocus());Thread.sleep(700);touchAt(MotionEvent.ACTION_CANCEL,down,r.centerX(),r.centerY());waitFor("隐私输入 · 不学习");click("a");Thread.sleep(600);
+        final boolean[] safe={false};runOnMainSync(()->safe[0]=ProbeActivity.current.get().password.length()==1);if(!safe[0])throw new Exception("Delete repeated into next focused field");
+        click("probe-normal");waitFor("⚡ 闪电 · 离线");
+    }
+    private void requireKeyColor(int expected) throws Exception {
+        Rect r=bounds("九键 2");Bitmap bitmap=automation.takeScreenshot();if(bitmap==null)throw new Exception("Palette screenshot unavailable");
+        try{int color=bitmap.getPixel(r.left+8,r.top+8);for(int shift:new int[]{0,8,16})if(Math.abs(((color>>shift)&255)-((expected>>shift)&255))>5)throw new Exception("Keyboard palette did not change");}finally{bitmap.recycle();}
+    }
+    private void appearanceAcceptance(Intent probe) throws Exception {
+        stage="appearance_settings";
+        Intent home=new Intent();home.setClassName("org.zapime.android","org.zapime.android.MainActivity");home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);getContext().startActivity(home);Thread.sleep(350);
+        reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 light",false);click("按键震动开关",false);waitFor("返回",true);click("返回");
+        probe.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("切换九键");waitFor("九键 6",true);requireKeyColor(0xffffffff);screenshot("nine-key-light.png");
+        click("九键 6");click("九键 4");click("重输");requireEditor("","nine_key_retype");click("，");click("。");click("？");click("！");requireEditor("，。？！","punctuation_rail");
+        click("表情");click("😀");requireEditor("，。？！😀","emoji_commit");click("⌫");requireEditor("，。？！","emoji_delete");click("❤️");requireEditor("，。？！❤️","heart_commit");click("⌫");requireEditor("，。？！","delete_heart_grapheme");click("返回");
+        click("光标编辑");click("全选");click("复制");click("→");click("粘贴");requireEditor("，。？！，。？！","explicit_copy_paste");click("返回");
+        getContext().startActivity(home);Thread.sleep(300);reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 dark",false);if(waitFor("按键震动开关").isChecked())throw new Exception("Haptic preference did not persist disabled");screenshot("feedback-settings.png");click("返回");
+        getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);requireKeyColor(0xff4d4d50);screenshot("nine-key-dark.png");
+        click("九键 6");click("九键 4");click("九键读音 ni");click("九键 4");click("九键 2");click("九键 6");waitFor("你好",true);screenshot("nine-key-dark-candidates.png");chooseCandidate("你好","你好","dark_theme_pinyin");
+        click("切换全键");click("中/英");repeatAcceptance();
+    }
     private void screenshot(String name) throws Exception {
         Thread.sleep(250);Bitmap bitmap=automation.takeScreenshot();if(bitmap==null)throw new IOException("Screenshot unavailable: "+name);
         try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),name))){if(!bitmap.compress(Bitmap.CompressFormat.PNG,100,out))throw new IOException("Screenshot write failed");}finally{bitmap.recycle();}
@@ -131,7 +177,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("123");click("1");click("2");click("3");requireEditor("你好qw123","number_panel");screenshot("numbers.png");click("⌫");click("⌫");click("⌫");click("返回");requireEditor("你好qw","number_return");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");click("符号");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");click("工具");click("符号");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
             Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);waitFor("个人资料 · 离线管理与备份",true);screenshot("home.png");click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");screenshot("personal.png");
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
@@ -141,7 +187,8 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("中/英");click("q");requireEditor("ZapIME test snippet你好q","nine_to_english");click("⌫");click("中/英");waitFor("九键 9",true);click("九键 9");click("九键 9");click("空格");requireEditor("ZapIME test snippet你好ZapIME test snippet","nine_key_shortcut");
             click("123");click("1");requireEditor("ZapIME test snippet你好ZapIME test snippet1","nine_numeric_literal");click("⌫");click("返回");
             click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
-            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching\n"); finish(Activity.RESULT_OK,result);
+            appearanceAcceptance(intent);
+            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){} result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

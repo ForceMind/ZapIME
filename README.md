@@ -10,7 +10,7 @@
 
 macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建/桥接证据；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主也已加入源码与原生 CI，验证边界见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
 
-Android 原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。新增九键与离线语音原型的范围、复现及尚未完成项见 [九键与本地语音](docs/VOICE_INPUT.md)。
+Android 已有九键/全键、明暗配色、遵循系统的按键反馈、连续退格、常用表情和显式光标/剪贴板编辑。原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。新增九键与离线语音原型的范围、复现及尚未完成项见 [九键与本地语音](docs/VOICE_INPUT.md)。
 
 服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。客户端同步接入仍未完成。
 

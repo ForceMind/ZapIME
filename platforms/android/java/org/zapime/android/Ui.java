@@ -36,6 +36,10 @@ final class Ui {
             case "back":path.moveTo(9,5);path.lineTo(3,12);path.lineTo(9,19);path.lineTo(21,19);path.lineTo(21,5);path.close();canvas.drawPath(path,p);canvas.drawLine(12,9,17,15,p);canvas.drawLine(17,9,12,15,p);break;
             case "shift":path.moveTo(3,11);path.lineTo(12,3);path.lineTo(21,11);path.lineTo(16,11);path.lineTo(16,21);path.lineTo(8,21);path.lineTo(8,11);path.close();canvas.drawPath(path,p);break;
             case "enter":path.moveTo(20,5);path.lineTo(20,14);path.lineTo(4,14);path.moveTo(9,9);path.lineTo(4,14);path.lineTo(9,19);canvas.drawPath(path,p);break;
+            case "emoji":canvas.drawCircle(12,12,9,p);canvas.drawCircle(9,10,.6f,p);canvas.drawCircle(15,10,.6f,p);canvas.drawArc(8,10,16,17,15,150,false,p);break;
+            case "cursor":canvas.drawLine(12,3,12,21,p);canvas.drawLine(9,3,15,3,p);canvas.drawLine(9,21,15,21,p);path.moveTo(6,8);path.lineTo(2,12);path.lineTo(6,16);path.moveTo(18,8);path.lineTo(22,12);path.lineTo(18,16);canvas.drawPath(path,p);break;
+            case "clipboard":canvas.drawRoundRect(5,5,20,22,2,2,p);canvas.drawRoundRect(9,2,16,7,1,1,p);canvas.drawLine(9,12,16,12,p);canvas.drawLine(9,16,16,16,p);break;
+            case "space":path.moveTo(4,10);path.lineTo(4,15);path.lineTo(20,15);path.lineTo(20,10);canvas.drawPath(path,p);break;
             case "grid":for(int x=4;x<=14;x+=10)for(int y=4;y<=14;y+=10)canvas.drawRoundRect(x,y,x+6,y+6,1,1,p);break;
             case "hide":path.moveTo(5,9);path.lineTo(12,16);path.lineTo(19,9);canvas.drawPath(path,p);break;
             case "bolt":path.moveTo(14,2);path.lineTo(5,13);path.lineTo(11,13);path.lineTo(10,22);path.lineTo(19,10);path.lineTo(13,10);path.close();canvas.drawPath(path,p);break;

@@ -1,0 +1,13 @@
+ZapIME grapheme deletion follow-up — synthetic data only
+Verified source: a77a97c495ba098f8f0a7766135518a84f3ef910
+CI: https://github.com/ForceMind/ZapIME/actions/runs/39968475503
+GitHub artifact digest (API metadata, not a locally re-downloaded archive): 5eeaec5104fefbcba556a53eb0f5ca1ff2f21ce4237ca20b41761dc08354b32b
+Unconditional real-editor assertions cover the provided heart key plus heart/skin tone/flag/ZWJ family/combining accent and selection deletion.
+UI screenshots remain from the separately downloaded and verified 39966378186 archive; the follow-up changes deletion, not layout.
+
+2026-10-23T14:22:39.5659461Z Native input clean round 1/2
+2026-10-23T14:23:26.8985275Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete
+2026-10-23T14:23:26.8987212Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T14:23:27.0381056Z Native input clean round 2/2
+2026-10-23T14:24:13.7859742Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete
+2026-10-23T14:24:13.7861224Z PASS ZapIME native service teardown: no app fatal exception
