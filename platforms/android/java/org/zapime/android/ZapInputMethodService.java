@@ -19,6 +19,8 @@ import org.json.*;
 
 public final class ZapInputMethodService extends InputMethodService {
     private final ExecutorService worker = Executors.newSingleThreadExecutor();
+    private final ExecutorService reader = Executors.newSingleThreadExecutor();
+    private volatile int dataQuerySerial;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final KeyboardTouch touches=new KeyboardTouch(this,main);
     private KeyboardTheme theme;
@@ -117,14 +119,14 @@ public final class ZapInputMethodService extends InputMethodService {
     private void open(Class<?> activity){startActivity(new Intent(this,activity).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
     private void idleToolbar(){
         if(candidates==null)return;candidates.removeAllViews();
-        if(searchActive){for(String name:new String[]{"完成搜索","清空搜索","取消搜索"}){Button b=Ui.button(this,name,theme.toolbar,false);b.setTextColor(theme.ink);b.setTextSize(14);b.setContentDescription(name);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(name.equals("清空搜索")){searchQuery="";command("Cancel",null);refreshSearchLabel();}else finishDataSearch(name.equals("完成搜索"));},false);}return;}
+        if(searchActive){TextView hint=Ui.text(this,searchChinese?"中文搜索 · 仅本机":"English 搜索 · 仅本机",13,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button clear=Ui.button(this,"清空搜索",theme.toolbar,false);clear.setTextColor(theme.ink);clear.setTextSize(14);clear.setContentDescription("清空搜索");candidates.addView(clear,new LinearLayout.LayoutParams(dp(90),dp(46)));bind(clear,()->clearDataSearch(),false);return;}
         String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","本机资料面板","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
         for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
     }
     private void switchKeyboard(){if(sensitive||!ready)return;command("CommitRaw",null);nineKey=!nineKey;getSharedPreferences("keyboard",MODE_PRIVATE).edit().putBoolean("nine_key",nineKey).apply();chinese=true;shift=false;layer="letters";syncLayout();renderKeys();idleToolbar();}
     private void syncLayout(){try{send(new JSONObject().put("op","layout").put("name",chinese&&nineKey&&!searchActive?"nine_key":"qwerty"),null);}catch(JSONException ignored){}}
     @Override public void onStartInput(EditorInfo info, boolean restarting) {
-        super.onStartInput(info,restarting);touches.cancel();searchActive=false;searchReady=false;searchClosing=false;searchQuery="";dataPanel=null; final int active = ++epoch; ready = false; preedit=""; generation=0;
+        super.onStartInput(info,restarting);touches.cancel();++dataQuerySerial;searchActive=false;searchReady=false;searchClosing=false;searchQuery="";dataPanel=null; final int active = ++epoch; ready = false; preedit=""; generation=0;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
@@ -253,8 +255,9 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void dataRequest(JSONObject input,java.util.function.Consumer<JSONObject> done){
         if(privateSession||!ready||!layer.equals("data"))return;final int active=epoch;final LocalDataPanel owner=dataPanel;
-        worker.execute(()->{if(handle==0)return;JSONObject result;try{result=new JSONObject(NativeCore.request(handle,input.toString()));}catch(Exception error){result=new JSONObject();try{result.put("error","local_failure");}catch(JSONException ignored){}}final JSONObject value=result;
-            main.post(()->{if(epoch!=active||privateSession||dataPanel!=owner||!layer.equals("data"))return;if(!value.has("error")&&input.optString("op").equals("personal_commit"))apply(value,null);done.accept(value);});});
+        final boolean query=input.optString("op").equals("personal_query");final int serial=query?++dataQuerySerial:0;
+        (query?reader:worker).execute(()->{if(query?serial!=dataQuerySerial:handle==0)return;JSONObject result;try{result=new JSONObject(query?NativeCore.queryPersonal(new File(getFilesDir(),"zapime").getAbsolutePath(),input.toString()):NativeCore.request(handle,input.toString()));}catch(Exception error){result=new JSONObject();try{result.put("error","local_failure");}catch(JSONException ignored){}}final JSONObject value=result;
+            main.post(()->{if(epoch!=active||privateSession||dataPanel!=owner||!layer.equals("data")||(query&&serial!=dataQuerySerial))return;if(!value.has("error")&&input.optString("op").equals("personal_commit"))apply(value,null);done.accept(value);});});
     }
     private void captureClipboard(){
         if(privateSession||dataPanel==null||!layer.equals("data"))return;
@@ -280,6 +283,7 @@ public final class ZapInputMethodService extends InputMethodService {
         worker.execute(()->{closeSearchCore();main.post(()->{if(epoch!=active)return;if(!keep)searchQuery=searchBefore;searchActive=false;searchReady=false;searchClosing=false;preedit="";shift=false;layer="data";renderKeys();idleToolbar();refreshStatus();try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}});});
     }
     private void refreshSearchLabel(){if(searchLabel!=null)searchLabel.setText("查找："+searchQuery+(preedit.isEmpty()?"":"  "+preedit));}
+    private void clearDataSearch(){if(!searchActive||!searchReady||searchClosing)return;command("Cancel",null);final int active=epoch;worker.execute(()->main.post(()->{if(epoch==active&&searchActive){searchQuery="";refreshSearchLabel();}}));}
     private void appendQuery(String text){if(searchQuery.codePointCount(0,searchQuery.length())+text.codePointCount(0,text.length())>128){Toast.makeText(this,"搜索最多 128 字",Toast.LENGTH_SHORT).show();return;}searchQuery+=text;refreshSearchLabel();}
     private void deleteQuery(){if(searchQuery.isEmpty())return;android.icu.text.BreakIterator chars=android.icu.text.BreakIterator.getCharacterInstance(java.util.Locale.ROOT);chars.setText(searchQuery);searchQuery=searchQuery.substring(0,Math.max(0,chars.preceding(searchQuery.length())));refreshSearchLabel();}
     private void applySearch(JSONObject value,String fallback){
@@ -307,7 +311,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
     private void enter(InputConnection connection) { EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
-    @Override public void onFinishInput() { touches.cancel();++epoch; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
+    @Override public void onFinishInput() { touches.cancel();++epoch;++dataQuerySerial; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
     @Override public void onDestroy() {
         // InputMethodService.onDestroy invokes our onFinishInput. Keep the worker
         // accepting that final close before shutting it down; both closes are queued
@@ -317,6 +321,7 @@ public final class ZapInputMethodService extends InputMethodService {
         finally {
             worker.execute(() -> { closeSearchCore();if(handle!=0){NativeCore.close(handle);handle=0;} });
             worker.shutdown();
+            ++dataQuerySerial;reader.shutdownNow();
         }
     }
 }

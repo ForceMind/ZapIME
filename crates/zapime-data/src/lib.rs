@@ -7,6 +7,7 @@ use sha2::{Digest, Sha256};
 use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
+pub mod panel;
 pub mod schedule;
 pub mod sync;
 
@@ -194,6 +195,7 @@ impl Store {
             tx.execute_batch("INSERT OR IGNORE INTO sync_queue(operation_id) SELECT id FROM operations ORDER BY rowid;")?;
         }
         tx.execute_batch("PRAGMA user_version=2;")?;
+        panel::prepare_index(&tx)?;
         tx.commit()?;
         Ok(Self { db })
     }

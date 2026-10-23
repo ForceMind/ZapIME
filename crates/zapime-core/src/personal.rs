@@ -26,46 +26,10 @@ fn fields(content: &Content) -> Option<(&str, &str, &str, bool, u64)> {
 }
 impl InputSession {
     pub(super) fn query_personal(&mut self, request: &Value) -> Value {
-        let Some(store) = &self.store else {
+        let Some(store) = &mut self.store else {
             return json!({"error":"private_session"});
         };
-        let kind = request["kind"].as_str().unwrap_or("all");
-        let query = request["query"].as_str().unwrap_or("");
-        let limit = request["limit"].as_u64().unwrap_or(20);
-        let offset = request["offset"].as_u64().unwrap_or(0);
-        if !["all", "snippet", "favorite", "clipboard"].contains(&kind)
-            || query.len() > 512
-            || !(1..=40).contains(&limit)
-            || request.get("query").is_some_and(|v| !v.is_string())
-            || request.get("offset").is_some_and(|v| !v.is_u64())
-            || request.get("limit").is_some_and(|v| !v.is_u64())
-            || request.get("kind").is_some_and(|v| !v.is_string())
-        {
-            return json!({"error":"invalid_query"});
-        }
-        let Ok(records) = store.records(false) else {
-            return json!({"error":"personal_store_failed"});
-        };
-        let now = now_ms();
-        let needle = query.to_lowercase();
-        let mut rows: Vec<_> = records.iter().filter(|r| active(r, now)).filter_map(|r| {
-            let (record_kind, label, text, pinned, expires) = fields(&r.content)?;
-            let tags_match = matches!(&r.content, Content::Snippet { tags, .. } if tags.iter().any(|t|t.to_lowercase().contains(&needle)));
-            if (kind != "all" && kind != record_kind) || !(text.to_lowercase().contains(&needle) || label.to_lowercase().contains(&needle) || tags_match) { return None; }
-            Some((r, record_kind, label, text, pinned, expires))
-        }).collect();
-        rows.sort_by(|a, b| {
-            b.4.cmp(&a.4)
-                .then_with(|| a.1.cmp(b.1))
-                .then_with(|| b.5.cmp(&a.5))
-                .then_with(|| a.2.cmp(b.2))
-                .then_with(|| a.0.id.cmp(&b.0.id))
-        });
-        let total = rows.len();
-        let start = usize::try_from(offset).unwrap_or(usize::MAX).min(total);
-        let page: Vec<_> = rows.iter().skip(start).take(limit as usize).map(|(r, kind, label, text, pinned, expires)| json!({"id":r.id,"revision":r.revision,"type":kind,"label":label.chars().take(40).collect::<String>(),"preview":text.chars().take(96).collect::<String>(),"pinned":pinned,"expires_at_ms":expires})).collect();
-        let next = start + page.len();
-        json!({"items":page,"total":total,"offset":start,"next_offset":if next<total {Some(next)} else {None}})
+        query_store(store, request)
     }
     fn panel_record(&self, request: &Value) -> Result<Record, &'static str> {
         let store = self.store.as_ref().ok_or("private_session")?;
@@ -139,5 +103,27 @@ impl InputSession {
             .map_err(|e| e.to_string())?;
         self.personal = store.records(false).map_err(|e| e.to_string())?;
         Ok(KeyResult::handled())
+    }
+}
+
+/// A host may call this on a separate read worker without creating an engine.
+pub fn query_store(store: &mut Store, request: &Value) -> Value {
+    let kind = request["kind"].as_str().unwrap_or("all");
+    let query = request["query"].as_str().unwrap_or("");
+    let limit = request["limit"].as_u64().unwrap_or(20);
+    let offset = request["offset"].as_u64().unwrap_or(0);
+    if !["all", "snippet", "favorite", "clipboard"].contains(&kind)
+        || query.len() > 512
+        || !(1..=40).contains(&limit)
+        || request.get("query").is_some_and(|v| !v.is_string())
+        || request.get("offset").is_some_and(|v| !v.is_u64())
+        || request.get("limit").is_some_and(|v| !v.is_u64())
+        || request.get("kind").is_some_and(|v| !v.is_string())
+    {
+        return json!({"error":"invalid_query"});
+    }
+    match store.query_panel(kind, query, offset, limit as usize, now_ms()) {
+        Ok(page) => json!(page),
+        Err(_) => json!({"error":"personal_query_failed"}),
     }
 }
