@@ -20,7 +20,7 @@ public final class VoiceSettingsActivity extends Activity {
         page.addView(Ui.text(this,"录音和识别都在这台设备完成。\n录音不保存、不上传，识别后由你确认插入。",15,Ui.MUTED));
         LinearLayout model=Ui.card(page);model.addView(Ui.text(this,"中文与英文 · X-ASR",20,Ui.INK));model.addView(Ui.text(this,"2026-06-05 · 流式 INT8",12,Ui.MUTED));
         model.addView(Ui.text(this,"首次使用需导入配套模型 ZIP（解压约 169 MB）。仅接受本版本固定校验的模型；更换服务器不会影响已安装的离线模型。",14,Ui.MUTED));
-        status=Ui.text(this,VoiceModels.installed(this)?"模型已安装 · 录音前会重新校验":"尚未安装模型",14,Ui.BLUE);model.addView(status);
+        status=Ui.text(this,VoiceModels.installed(this)?"模型已安装 · 录音前会重新校验":VoiceModels.recoverable(this)?"检测到未完成导入 · 录音前将校验并尝试恢复":"尚未安装模型",14,Ui.BLUE);model.addView(status);
         choose=Ui.button(this,"导入离线模型 ZIP",Ui.BLUE,true);choose.setContentDescription("导入离线语音模型");choose.setOnClickListener(v->{if(busy)return;Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");try{startActivityForResult(intent,1);}catch(ActivityNotFoundException e){status.setText("此设备没有文件选择器");}});Ui.addButton(model,choose);
         Button permission=Ui.button(this,"允许使用麦克风",Ui.BG,false);permission.setOnClickListener(v->{if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED){status.setText("麦克风已允许 · 只在显式开始录音后使用");return;}requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},2);});Ui.addButton(page,permission);
         Button legal=Ui.button(this,"模型与语音组件许可",Ui.BG,false);legal.setOnClickListener(v->showLicenses());Ui.addButton(page,legal);

@@ -24,8 +24,14 @@ final class VoiceModels {
     }
     private static File root(Context context){return new File(context.getFilesDir(),"voice");}
     private static File model(Context context,JSONObject config)throws Exception{return new File(root(context),config.getString("id"));}
+    private static File incoming(Context context,JSONObject config)throws Exception{return new File(root(context),"incoming-"+config.getString("id"));}
+    private static File previous(Context context,JSONObject config)throws Exception{return new File(root(context),"previous-"+config.getString("id"));}
     static boolean installed(Context context){
         try{return new File(model(context,config(context)),"msime-model.json").isFile();}catch(Exception e){return false;}
+    }
+    // Metadata hint only; the worker must rehash every member before recovery.
+    static boolean recoverable(Context context){
+        try{JSONObject config=config(context);return new File(incoming(context,config),"msime-model.json").isFile()||new File(previous(context,config),"msime-model.json").isFile();}catch(Exception e){return false;}
     }
     private static void check(BooleanSupplier cancelled)throws IOException {if(cancelled.getAsBoolean())throw new IOException("cancelled");}
     private static String hex(byte[] digest){StringBuilder text=new StringBuilder();for(byte b:digest)text.append(String.format(Locale.ROOT,"%02x",b&255));return text.toString();}
@@ -36,7 +42,19 @@ final class VoiceModels {
         return hex(sha.digest()).equals(spec.getString("sha256"));
     }
     static synchronized File verified(Context context,BooleanSupplier cancelled)throws Exception {
-        JSONObject config=config(context),files=config.getJSONObject("files");File model=model(context,config);
+        JSONObject config=config(context);File parent=root(context),destination=model(context,config);
+        check(cancelled);if(Files.isSymbolicLink(parent.toPath())||!parent.isDirectory())throw new IOException("model_missing");
+        IOException original;
+        try{return verifyDirectory(destination,config,cancelled);}catch(IOException invalid){original=invalid;check(cancelled);}
+        File staging=incoming(context,config),backup=previous(context,config);
+        boolean staged=false;try{verifyDirectory(staging,config,cancelled);staged=true;}catch(IOException invalid){check(cancelled);}
+        if(staged){check(cancelled);publish(staging,destination,backup);return destination.getCanonicalFile();}
+        boolean saved=false;try{verifyDirectory(backup,config,cancelled);saved=true;}catch(IOException invalid){check(cancelled);}
+        if(saved){check(cancelled);remove(destination);Files.move(backup.toPath(),destination.toPath(),StandardCopyOption.ATOMIC_MOVE);return destination.getCanonicalFile();}
+        throw original;
+    }
+    private static File verifyDirectory(File model,JSONObject config,BooleanSupplier cancelled)throws Exception {
+        check(cancelled);JSONObject files=config.getJSONObject("files");
         if(Files.isSymbolicLink(model.toPath())||!model.isDirectory())throw new IOException("model_missing");
         Set<String> expected=new HashSet<>();Iterator<String> names=files.keys();
         while(names.hasNext()){String name=names.next();expected.add(name);if(!verifyFile(new File(model,name),files.getJSONObject(name),cancelled))throw new IOException("model_checksum");}
@@ -50,12 +68,24 @@ final class VoiceModels {
         // unchanged upstream Linux ancestor policy then sees real directories.
         return model.getCanonicalFile();
     }
+    private static void publish(File staging,File destination,File backup)throws IOException {
+        // staging was fully checked against the APK. A process death between
+        // these moves leaves it at its fixed known path for verified() to recover.
+        remove(backup);boolean displaced=false;
+        if(Files.exists(destination.toPath(),LinkOption.NOFOLLOW_LINKS)){Files.move(destination.toPath(),backup.toPath(),StandardCopyOption.ATOMIC_MOVE);displaced=true;}
+        try{Files.move(staging.toPath(),destination.toPath(),StandardCopyOption.ATOMIC_MOVE);}
+        catch(IOException failure){if(displaced&&!Files.exists(destination.toPath(),LinkOption.NOFOLLOW_LINKS))try{Files.move(backup.toPath(),destination.toPath(),StandardCopyOption.ATOMIC_MOVE);}catch(IOException restore){failure.addSuppressed(restore);}throw failure;}
+        remove(backup);
+    }
     static synchronized void importZip(Context context,InputStream incoming,BooleanSupplier cancelled)throws Exception {
         JSONObject config=config(context),files=config.getJSONObject("files");File parent=root(context);
         if(!parent.isDirectory()&&!parent.mkdirs())throw new IOException("model_storage");
         if(Files.isSymbolicLink(parent.toPath()))throw new IOException("model_storage");
-        File staging=new File(parent,"incoming-"+UUID.randomUUID());if(!staging.mkdir())throw new IOException("model_storage");
-        File destination=model(context,config),previous=new File(parent,"previous-"+UUID.randomUUID());boolean displaced=false;
+        // Recover a completed prior publication before replacing an incomplete
+        // staging directory. Cancelled/invalid imports still preserve the model.
+        try{verified(context,cancelled);}catch(IOException invalid){check(cancelled);}
+        File staging=incoming(context,config);remove(staging);if(!staging.mkdir())throw new IOException("model_storage");
+        File destination=model(context,config),backup=previous(context,config);boolean committing=false;
         try {
             Set<String> seen=new HashSet<>();byte[] buffer=new byte[65536];
             try(ZipInputStream zip=new ZipInputStream(incoming)){
@@ -78,15 +108,12 @@ final class VoiceModels {
             try(FileOutputStream out=new FileOutputStream(new File(staging,"msime-model.json"))){out.write(config.getJSONObject("manifest").toString().getBytes(StandardCharsets.UTF_8));out.getFD().sync();}
             check(cancelled);
             // Immutable model id: if already valid there is nothing to replace or reload.
-            try{verified(context,cancelled);return;}catch(IOException invalid){check(cancelled);}
-            if(destination.exists()){Files.move(destination.toPath(),previous.toPath(),StandardCopyOption.ATOMIC_MOVE);displaced=true;}
-            try{Files.move(staging.toPath(),destination.toPath(),StandardCopyOption.ATOMIC_MOVE);}
-            catch(Exception failure){if(displaced)Files.move(previous.toPath(),destination.toPath(),StandardCopyOption.ATOMIC_MOVE);throw failure;}
-            remove(previous);
-        } finally {remove(staging);}
+            try{verifyDirectory(destination,config,cancelled);return;}catch(IOException invalid){check(cancelled);}
+            committing=true;publish(staging,destination,backup);
+        } finally {if(!committing)remove(staging);}
     }
     private static void remove(File file)throws IOException {
         if(file.isDirectory()&&!Files.isSymbolicLink(file.toPath())){File[] children=file.listFiles();if(children==null)throw new IOException("model_storage");for(File child:children)remove(child);}
-        if(file.exists()&&!file.delete())throw new IOException("model_storage");
+        if(Files.exists(file.toPath(),LinkOption.NOFOLLOW_LINKS)&&!file.delete())throw new IOException("model_storage");
     }
 }
