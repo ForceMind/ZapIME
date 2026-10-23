@@ -1,0 +1,33 @@
+SERVICE org.zapime.android/.ZapInputMethodService c02fddd pid=2615 user=0
+  Client:
+    Input method service state for org.zapime.android.ZapInputMethodService@dde90e7:
+      mViewsCreated=true
+      mDecorViewVisible=true mDecorViewWasVisible=true mWindowVisible=true mInShowWindow=false
+      Configuration={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h640dp 160dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mMaxBounds=Rect(0, 0 - 320, 640) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.23 fontWeightAdjustment=0}
+      mToken=android.os.BinderProxy@10d3d56
+      mInputBinding=InputBinding{android.os.BinderProxy@5afbae2 / uid 10217 / pid 2650}
+      mInputConnection=RemoteInputConnection{idHash=#38f9e73}
+      mStartedInputConnection=RemoteInputConnection{idHash=#65fb130}
+      mInputStarted=true mInputViewStarted=true mCandidatesViewStarted=false
+      mInputEditorInfo:
+        inputType=0x1 imeOptions=0x8000005 privateImeOptions=null
+        actionLabel=null actionId=0
+        initialSelStart=0 initialSelEnd=0 initialToolType=0 initialCapsMode=0x0
+        hintText=试着输入一句问候 label=null
+        packageName=org.zapime.android.test autofillId=1073741824 fieldId=-1 fieldName=null
+        hintLocales=null
+        supportedHandwritingGestureTypes=SELECT|SELECT_RANGE|INSERT|DELETE|DELETE_RANGE|REMOVE_SPACE|JOIN_OR_SPLIT
+        supportedHandwritingGesturePreviewTypes=SELECT|SELECT_RANGE|DELETE|DELETE_RANGE
+        isStylusHandwritingEnabled=true
+        writingToolsEnabled=true
+        contentMimeTypes=null
+      mShowInputRequested=true mLastShowInputRequested=true mShowInputFlags=0x1
+      mCandidatesVisibility=4 mFullscreenApplied=true mIsFullscreen=false mExtractViewHidden=false
+      mExtractedText: null
+      mExtractedToken=0
+      mIsInputViewShown=true mStatusIcon=0
+      Last computed insets:
+        contentTopInsets=0 visibleTopInsets=0 touchableInsets=2 touchableRegion=SkRegion()
+      mSettingsObserver=SettingsObserver{mShowImeWithHardKeyboard=2}
+      mNavigationBarController={mImeDrawsImeNavBar=false mNavigationBarFrame=null mShouldShowImeSwitcherWhenImeIsShown=false mCustomImeSwitcherButtonRequestedVisible=false mAppearance=0x10 mDarkIntensity=0.0 mDrawLegacyNavigationBarBackground=false}
+      mCustomImeSwitcherButtonRequestedVisible=false

@@ -28,3 +28,9 @@ ECDICT (MIT), SCOWL (permissive notices), and other resource notices remain
 in assets/licenses and assets/dictionary/msime-scowl_Copyright.txt.
 See licenses/msime-engine-dictionary-NOTICE.md for source attribution.
 All embedded engine resource and dependency licenses are retained.
+
+On 2026-10-23 ZapIME adapted the pinned MSIME SelectionEchoTracker.java and
+SelectionEchoTrackerSmoke.java (GPL-3.0-only, respective MSIME contributors).
+Original comments and tests are retained; package/imports and Math bounds helpers
+were adapted. Upstream source paths and exact commit are in docs/LICENSE_AUDIT.md.
+The upstream repository and GPL text remain available with corresponding source.

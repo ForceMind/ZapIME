@@ -1,0 +1,17 @@
+{
+  "run": 40028157362,
+  "commit": "49d2c7b64a874105db8d90180c80d84235c9e781",
+  "job": 120672909846,
+  "artifact": 12533968153,
+  "zip_bytes": 901892,
+  "zip_sha256": "c9359484a97e054a1e507ecb1b71ab79967547e85e8c8ba5e67092bce5074d39",
+  "scope": "Synthetic dedicated GitHub API36 emulator; ci-* captured before instrumentation finish. Failure at launch missing 返回键盘; not proven same as composition restart.",
+  "files": {
+    "host-lifecycle.txt": "fc1a536b312f28407426b9aa6677f429e396347049e515c123761e1111c96fcf",
+    "hierarchy.txt": "b02ba3d55c846c8742829fcc2c83a680f1b0bd8868083fb99346fcfafa218b2e",
+    "ci-input-service.txt": "0c425fee7caaef75319d41216d74dda7283130d25399470cfde051580533abd3",
+    "instrumentation.log": "2acdc04bf10b29a60f1ae09fe1e0f450108f1b85920e497ce76859a9bd0fcb44",
+    "runtime-errors.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "last-anr.txt": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  }
+}

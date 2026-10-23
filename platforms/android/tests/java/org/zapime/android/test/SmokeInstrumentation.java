@@ -243,13 +243,26 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         throw new Exception("Missing IME-only text: "+text);
     }
-    private void restartComposition() throws Exception {
-        stage="restart_composition_before";waitImeText("ni");requireEditor("ni",stage);
+    private void restartNormalEditor() throws Exception {
         int previous=ProbeActivity.normalConnections.get();
         runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
-        stage="restart_composition_connection";
         for(int i=0;ProbeActivity.normalConnections.get()<=previous;i++){if(i==100)throw new Exception("Editor did not recreate connection");Thread.sleep(50);}
         automation.waitForIdle(200,3000);
+    }
+    private void rejectChangedRestartContext() throws Exception {
+        stage="restart_changed_context";
+        setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");requireEditor("ni",stage);
+        // A real application replaces the same-length text while preserving the
+        // exact composing geometry. Selection alone must not authorize reuse.
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();Editable text=a.normal.getText();text.replace(0,text.length(),"xx");BaseInputConnection.setComposingSpans(text);a.normal.setSelection(2);});
+        restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("xx",stage);
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","xx好","restart_changed_context_fresh_session");
+        setText("probe-normal","你好");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("你好","restart_regression_cleanup");
+    }
+    private void restartComposition() throws Exception {
+        stage="restart_composition_before";waitImeText("ni");requireEditor("ni",stage);
+        restartNormalEditor();
         stage="restart_composition_retained";waitImeText("ni");requireEditor("ni",stage);
     }
     @Override public void onStart() {
@@ -263,6 +276,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             if(Build.VERSION.SDK_INT>=30)restartComposition();
             for(char c:"hao".toCharArray())click(String.valueOf(c));
             waitFor("你好",true);screenshot("candidates.png");chooseCandidate("你好","你好","pinyin_commit");
+            if(Build.VERSION.SDK_INT>=30)rejectChangedRestartContext();
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
             click("⇧");click("a");requireEditor("你好qwA","shift_uppercase");click("⌫");
@@ -281,7 +295,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
             appearanceAcceptance(intent);
             localDataAcceptance();
-            screenshot("smoke.png");dumpHostLifecycle();result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
+            screenshot("smoke.png");dumpHostLifecycle();result.putString("stream","PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){}dumpCiState();result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }
