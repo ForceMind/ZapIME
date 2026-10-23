@@ -22,7 +22,11 @@ public final class ZapInputMethodService extends InputMethodService {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final KeyboardTouch touches=new KeyboardTouch(this,main);
     private KeyboardTheme theme;
-    private long handle, generation;
+    private long handle, searchHandle, generation;
+    private LocalDataPanel dataPanel;
+    private String dataKind="all", searchQuery="", searchBefore="";
+    private boolean searchActive, searchReady, searchClosing, searchChinese=true;
+    private TextView searchLabel;
     private int epoch;
     private boolean chinese = true, shift, sensitive, privateSession, ready, nineKey;
     private TextView status;
@@ -54,7 +58,7 @@ public final class ZapInputMethodService extends InputMethodService {
         String hint="",icon="";
         if(action.startsWith("t9-")){hint=action.substring(3);label=new String[]{"","","ABC","DEF","GHI","JKL","MNO","PQRS","TUV","WXYZ"}[Integer.parseInt(hint)];}
         if(action.equals("分词")){hint="1";label="分词";}
-        if(action.equals("⌫"))icon="back";if(action.equals("⇧"))icon="shift";if(action.equals("↵"))icon="enter";if(action.equals("表情"))icon="emoji";if(action.equals("空格")&&chinese&&nineKey&&layer.equals("letters"))icon="space";
+        if(action.equals("⌫"))icon="back";if(action.equals("⇧"))icon="shift";if(action.equals("↵"))icon="enter";if(action.equals("表情"))icon="emoji";if(action.equals("空格")&&chinese&&nineKey&&layer.equals("letters")&&!searchActive)icon="space";
         Button b=new KeyCap(this,label,hint,icon,special,theme);b.setContentDescription(action.startsWith("t9-")?"九键 "+hint:action);
         if(action.equals("⇧")&&shift)b.setBackground(Ui.shape(this,theme.accent,7));
         bind(b,()->press(action),action.equals("⌫"));return b;
@@ -77,20 +81,24 @@ public final class ZapInputMethodService extends InputMethodService {
         }else{String[] punctuation={"，","。","？","！"};for(int i=0;i<punctuation.length;i++){String text=punctuation[i];Button b=key(text,text,false);b.setElevation(0);b.setBackground(new RippleDrawable(ColorStateList.valueOf(theme.ripple),Ui.shape(this,theme.key,7),null));readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(i<3?44:45)));if(i<3){View line=new View(this);line.setBackgroundColor(theme.stroke);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(1));lp.setMargins(dp(8),0,dp(8),0);readingRail.addView(line,lp);}}}
     }
     private void addRow(String keys,int indent) {
+        boolean currentChinese=searchActive?searchChinese:chinese;
         LinearLayout row=new LinearLayout(this);row.setBaselineAligned(false);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(indent),0,dp(indent),0);
         for(String action:keys.split(" ")) {
-            String label=action.equals("空格")?(chinese?"拼音 · 空格":"English"):action.equals("中/英")?(chinese?"中/英":"英/中"):action.equals("返回")?"ABC":action;
+            String label=action.equals("空格")?(currentChinese?"拼音 · 空格":"English"):action.equals("中/英")?(currentChinese?"中/英":"英/中"):action.equals("返回")?"ABC":action;
             if(action.startsWith("t9-")){int digit=Integer.parseInt(action.substring(3));label=new String[]{"","","ABC","DEF","GHI","JKL","MNO","PQRS","TUV","WXYZ"}[digit]+"\n"+digit;}
             if(action.equals("分词"))label="分词\n’";
-            if(action.equals("空格")&&chinese&&nineKey&&layer.equals("letters"))label="空格";
+            if(action.equals("空格")&&chinese&&nineKey&&layer.equals("letters")&&!searchActive)label="空格";
             if(action.length()==1&&Character.isLetter(action.charAt(0)))label=shift?action.toUpperCase(java.util.Locale.ROOT):action;
             boolean special=action.equals("⇧")||action.equals("⌫")||action.equals("↵")||action.equals("123")||action.equals("中/英")||action.equals("返回");
-            Button b=key(label,action,special);if(action.startsWith("t9-")){b.setTextSize(17);b.setIncludeFontPadding(false);b.setGravity(Gravity.CENTER);b.setContentDescription("九键 "+action.substring(3));}float weight=chinese&&nineKey&&layer.equals("letters")?1:action.equals("空格")?3.5f:action.equals("↵")?1.5f:layer.equals("letters")&&(action.equals("⇧")||action.equals("⌫"))?1.3f:1;
+            Button b=key(label,action,special);if(action.startsWith("t9-")){b.setTextSize(17);b.setIncludeFontPadding(false);b.setGravity(Gravity.CENTER);b.setContentDescription("九键 "+action.substring(3));}float weight=chinese&&nineKey&&layer.equals("letters")&&!searchActive?1:action.equals("空格")?3.5f:action.equals("↵")?1.5f:layer.equals("letters")&&(action.equals("⇧")||action.equals("⌫"))?1.3f:1;
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(46),weight);p.setMargins(dp(3),dp(3),dp(3),dp(3));row.addView(b,p);
         }body.addView(row,new LinearLayout.LayoutParams(-1,dp(52)));
     }
     private void renderKeys() {
         if(body==null)return;touches.cancel();readingRail=null;body.removeAllViews();
+        searchLabel=null;
+        if(layer.equals("data")){buildDataPanel();return;}
+        if(searchActive){searchLabel=Ui.text(this,"",15,theme.ink);searchLabel.setSingleLine(true);searchLabel.setEllipsize(android.text.TextUtils.TruncateAt.END);searchLabel.setContentDescription("资料搜索内容");searchLabel.setPadding(dp(12),0,dp(12),0);body.addView(searchLabel,new LinearLayout.LayoutParams(-1,dp(36)));refreshSearchLabel();}
         body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
@@ -103,18 +111,20 @@ public final class ZapInputMethodService extends InputMethodService {
         if(layer.equals("edit")){addRow("← ↑ ↓ →",4);addRow("全选 复制 剪切 粘贴",4);addRow("， 。 ⌫ ↵",4);addRow("返回 空格",4);return;}
         if(layer.equals("numbers")){addRow("1 2 3 ⌫",20);addRow("4 5 6 +",20);addRow("7 8 9 -",20);addRow("返回 0 . ↵",20);return;}
         if(layer.equals("symbols")){addRow("， 。 ？ ！ ： ；",4);addRow("（ ） 【 】 《 》",4);addRow("@ # % & / ⌫",4);addRow("返回 ' , 空格 . ↵",4);return;}
-        if(chinese&&nineKey){nineKeys();return;}
+        if(chinese&&nineKey&&!searchActive){nineKeys();return;}
         addRow("q w e r t y u i o p",0);addRow("a s d f g h j k l",14);addRow("⇧ z x c v b n m ⌫",0);addRow("123 中/英 , 空格 . ↵",0);
     }
     private void open(Class<?> activity){startActivity(new Intent(this,activity).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
     private void idleToolbar(){
-        if(candidates==null)return;candidates.removeAllViews();String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","个人资料","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
-        for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){layer="edit";renderKeys();}if(index==4)open(PersonalDataActivity.class);if(index==5)requestHideSelf(0);},false);}
+        if(candidates==null)return;candidates.removeAllViews();
+        if(searchActive){for(String name:new String[]{"完成搜索","清空搜索","取消搜索"}){Button b=Ui.button(this,name,theme.toolbar,false);b.setTextColor(theme.ink);b.setTextSize(14);b.setContentDescription(name);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(name.equals("清空搜索")){searchQuery="";command("Cancel",null);refreshSearchLabel();}else finishDataSearch(name.equals("完成搜索"));},false);}return;}
+        String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","本机资料面板","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
+        for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
     }
     private void switchKeyboard(){if(sensitive||!ready)return;command("CommitRaw",null);nineKey=!nineKey;getSharedPreferences("keyboard",MODE_PRIVATE).edit().putBoolean("nine_key",nineKey).apply();chinese=true;shift=false;layer="letters";syncLayout();renderKeys();idleToolbar();}
-    private void syncLayout(){try{send(new JSONObject().put("op","layout").put("name",chinese&&nineKey?"nine_key":"qwerty"),null);}catch(JSONException ignored){}}
+    private void syncLayout(){try{send(new JSONObject().put("op","layout").put("name",chinese&&nineKey&&!searchActive?"nine_key":"qwerty"),null);}catch(JSONException ignored){}}
     @Override public void onStartInput(EditorInfo info, boolean restarting) {
-        super.onStartInput(info,restarting);touches.cancel(); final int active = ++epoch; ready = false; preedit=""; generation=0;
+        super.onStartInput(info,restarting);touches.cancel();searchActive=false;searchReady=false;searchClosing=false;searchQuery="";dataPanel=null; final int active = ++epoch; ready = false; preedit=""; generation=0;
         int variation = info.inputType & InputType.TYPE_MASK_VARIATION;
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
@@ -124,7 +134,7 @@ public final class ZapInputMethodService extends InputMethodService {
         final boolean useNine=chinese&&nineKey;
         refreshStatus();idleToolbar();
         worker.execute(() -> {
-            if(handle!=0) { NativeCore.close(handle); handle=0; }
+            closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; }
             try {
                 ResourceInstaller.prepare(this);
                 handle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(), privateMode);
@@ -138,19 +148,20 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void refreshStatus() {
         if(status==null)return;
+        if(searchActive){status.setText(preedit.isEmpty()?(searchReady?"搜索资料 · 本机":"正在准备搜索键盘…"):"搜索："+preedit);status.setContentDescription(searchReady?"搜索资料 · 本机":"正在准备搜索键盘…");status.setTextColor(theme.accent);return;}
         String state=privateSession?"隐私输入 · 不学习":ready?(chinese?"⚡ 闪电 · 离线":"⚡ ZapIME · English"):"正在准备离线词库…";
         status.setContentDescription(preedit.isEmpty()?state:preedit);
         status.setText(preedit.isEmpty()?(privateSession?"隐私输入 · 不学习":ready?"闪电输入法  /  "+(chinese?(nineKey?"九键拼音":"中文拼音"):"English")+"  ·  离线":"正在准备离线词库…"):preedit);
         status.setTextColor(preedit.isEmpty()?theme.muted:theme.accent);
     }
     private void send(JSONObject request, String fallback) {
-        final int active=epoch;
-        if(!ready)return;
+        final int active=epoch;final boolean toSearch=searchActive;
+        if(!ready||searchClosing||(toSearch&&!searchReady))return;
         worker.execute(() -> {
-            if(handle==0)return;
+            long target=toSearch?searchHandle:handle;if(target==0)return;
             try {
-                JSONObject result=new JSONObject(NativeCore.request(handle,request.toString()));
-                main.post(() -> { if(epoch==active)apply(result,fallback); });
+                JSONObject result=new JSONObject(NativeCore.request(target,request.toString()));
+                main.post(() -> { if(epoch==active){if(toSearch)applySearch(result,fallback);else apply(result,fallback);} });
             } catch (Exception error) { main.post(() -> { if(epoch==active && status!=null)status.setText("输入会话错误 · 请重新打开键盘"); }); }
         });
     }
@@ -175,6 +186,9 @@ public final class ZapInputMethodService extends InputMethodService {
             connection.finishComposingText();
         }
         refreshStatus();
+        renderResult(value);
+    }
+    private void renderResult(JSONObject value){
         // Readings replace the punctuation rail; all key hit targets stay fixed.
         JSONArray choices=value.optJSONArray("spellings");readingChoices=preedit.isEmpty()||choices==null?new JSONArray():choices;renderReadingRail();
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(preedit.isEmpty()){idleToolbar();return;}if(words==null)return;
@@ -183,6 +197,10 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void press(String key) {
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
+        if(searchClosing||(searchActive&&!searchReady))return;
+        final boolean toSearch=searchActive;
+        boolean inputChinese=toSearch?searchChinese:chinese;
+        if(toSearch&&key.equals("↵")){finishDataSearch(true);return;}
         if(key.equals("重输")){try{send(new JSONObject().put("op","reset"),null);}catch(JSONException ignored){}return;}
         if(key.equals("符")){layer="symbols";renderKeys();return;}
         if(key.equals("表情")){layer="emoji";renderKeys();return;}
@@ -196,16 +214,17 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("123")){layer="numbers";renderKeys();return;}
         if(key.equals("返回")){layer="letters";renderKeys();return;}
         if(key.equals("⇧")) { shift=!shift;renderKeys();return; }
-        if(key.equals("中/英")) { if(sensitive)return; command("CommitRaw",null); chinese=!chinese;shift=false;syncLayout();refreshStatus();renderKeys();return; }
+        if(key.equals("中/英")) { if(sensitive)return; command("CommitRaw",null);if(toSearch)searchChinese=!searchChinese;else chinese=!chinese;shift=false;syncLayout();refreshStatus();renderKeys();return; }
         if(key.startsWith("t9-")){try{send(new JSONObject().put("op","key").put("text",key.substring(3)),null);}catch(JSONException ignored){}return;}
         if(key.equals("分词")){try{send(new JSONObject().put("op","key").put("text","'"),null);}catch(JSONException ignored){}return;}
-        if(!chinese || key.equals("，") || key.equals("。") || key.equals("？") || key.equals("！") || (!layer.equals("letters")&&!key.equals("⌫")&&!key.equals("空格")&&!key.equals("↵")) || (shift&&key.length()==1&&Character.isLetter(key.charAt(0)))) {
-            if(chinese)command("CommitRaw",null);
+        if(!inputChinese || key.equals("，") || key.equals("。") || key.equals("？") || key.equals("！") || (!layer.equals("letters")&&!key.equals("⌫")&&!key.equals("空格")&&!key.equals("↵")) || (shift&&key.length()==1&&Character.isLetter(key.charAt(0)))) {
+            if(inputChinese)command("CommitRaw",null);
             final int active=epoch;
             final String text=key.equals("空格")?" ":(shift?key.toUpperCase(java.util.Locale.ROOT):key);
             Runnable insert=() -> {
                 if(epoch!=active)return;
                 InputConnection current=getCurrentInputConnection(); if(current==null)return;
+                if(toSearch){if(key.equals("⌫"))deleteQuery();else appendQuery(text);return;}
                 if(key.equals("⌫"))delete(current);
                 else if(key.equals("↵"))enter(current);
                 else current.commitText(text,1);
@@ -218,6 +237,56 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("空格")) { command("CommitCandidate"," "); return; }
         if(key.equals("↵")) { command("CommitRaw","↵"); return; }
         try { send(new JSONObject().put("op","key").put("text",key),key); } catch(JSONException ignored) {}
+    }
+    private void openDataPanel(){
+        if(privateSession){Toast.makeText(this,"隐私输入不读取本机资料",Toast.LENGTH_SHORT).show();return;}
+        if(!ready)return;command("CommitRaw",null);layer="data";searchQuery="";dataKind="all";renderKeys();
+    }
+    private void buildDataPanel(){
+        if(privateSession){layer="letters";renderKeys();return;}
+        dataPanel=new LocalDataPanel(this,theme,new LocalDataPanel.Host(){
+            public void request(JSONObject input,java.util.function.Consumer<JSONObject> done){dataRequest(input,done);}
+            public void search(){startDataSearch();}
+            public void capture(){captureClipboard();}
+            public void close(){dataPanel=null;layer="letters";renderKeys();try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}}
+        },dataKind,searchQuery);body.addView(dataPanel.view);dataPanel.load();
+    }
+    private void dataRequest(JSONObject input,java.util.function.Consumer<JSONObject> done){
+        if(privateSession||!ready||!layer.equals("data"))return;final int active=epoch;final LocalDataPanel owner=dataPanel;
+        worker.execute(()->{if(handle==0)return;JSONObject result;try{result=new JSONObject(NativeCore.request(handle,input.toString()));}catch(Exception error){result=new JSONObject();try{result.put("error","local_failure");}catch(JSONException ignored){}}final JSONObject value=result;
+            main.post(()->{if(epoch!=active||privateSession||dataPanel!=owner||!layer.equals("data"))return;if(!value.has("error")&&input.optString("op").equals("personal_commit"))apply(value,null);done.accept(value);});});
+    }
+    private void captureClipboard(){
+        if(privateSession||dataPanel==null||!layer.equals("data"))return;
+        android.content.ClipboardManager manager=(android.content.ClipboardManager)getSystemService(CLIPBOARD_SERVICE);
+        android.content.ClipData clip;
+        try{clip=manager.getPrimaryClip();}catch(SecurityException error){Toast.makeText(this,"系统暂不允许读取剪贴板，请稍后重试",Toast.LENGTH_SHORT).show();return;}
+        if(clip==null||clip.getItemCount()==0){Toast.makeText(this,"剪贴板没有可保存的文字",Toast.LENGTH_SHORT).show();return;}
+        android.os.PersistableBundle extras=clip.getDescription().getExtras();
+        if(extras!=null&&extras.getBoolean("android.content.extra.IS_SENSITIVE",false)){Toast.makeText(this,"敏感剪贴板不保存到历史",Toast.LENGTH_SHORT).show();return;}
+        CharSequence text=clip.getItemAt(0).getText();
+        if(text==null||text.length()==0||text.length()>65536){Toast.makeText(this,"仅支持保存不超过 64 KiB 的纯文字",Toast.LENGTH_SHORT).show();return;}
+        try{JSONObject input=new JSONObject().put("op","personal_edit").put("id",java.util.UUID.randomUUID().toString()).put("operation_id",java.util.UUID.randomUUID().toString()).put("expected_revision",0).put("content",new JSONObject().put("type","clipboard").put("text",text.toString()).put("expires_at_ms",System.currentTimeMillis()+7L*86400000).put("pinned",false));final LocalDataPanel owner=dataPanel;dataRequest(input,result->{if(!result.has("error")){Toast.makeText(this,"已保存到本机，7 天后过期；长期保留请转为收藏",Toast.LENGTH_LONG).show();owner.captured();}else Toast.makeText(this,"保存未完成，请检查文字长度",Toast.LENGTH_SHORT).show();});}catch(JSONException ignored){}
+    }
+    private void startDataSearch(){
+        if(privateSession||!ready||dataPanel==null)return;dataKind=dataPanel.kind;searchQuery=dataPanel.query;searchBefore=searchQuery;
+        command("CommitRaw",null);searchActive=true;searchReady=false;searchClosing=false;searchChinese=true;shift=false;layer="letters";renderKeys();idleToolbar();refreshStatus();final int active=epoch;
+        worker.execute(()->{closeSearchCore();try{searchHandle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(),true);if(searchHandle==0)throw new IOException();JSONObject initial=new JSONObject(NativeCore.request(searchHandle,new JSONObject().put("op","layout").put("name","qwerty").toString()));main.post(()->{if(epoch==active&&searchActive){searchReady=true;applySearch(initial,null);}});}catch(Exception|LinkageError error){main.post(()->{if(epoch==active){searchReady=false;status.setText("搜索键盘准备失败，请取消后重试");}});}});
+    }
+    private void closeSearchCore(){if(searchHandle!=0){NativeCore.close(searchHandle);searchHandle=0;}}
+    private void finishDataSearch(boolean keep){
+        if(!searchActive||searchClosing)return;
+        if(searchReady)command(keep?"CommitCandidate":"Cancel",null);searchClosing=true;final int active=epoch;
+        worker.execute(()->{closeSearchCore();main.post(()->{if(epoch!=active)return;if(!keep)searchQuery=searchBefore;searchActive=false;searchReady=false;searchClosing=false;preedit="";shift=false;layer="data";renderKeys();idleToolbar();refreshStatus();try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}});});
+    }
+    private void refreshSearchLabel(){if(searchLabel!=null)searchLabel.setText("查找："+searchQuery+(preedit.isEmpty()?"":"  "+preedit));}
+    private void appendQuery(String text){if(searchQuery.codePointCount(0,searchQuery.length())+text.codePointCount(0,text.length())>128){Toast.makeText(this,"搜索最多 128 字",Toast.LENGTH_SHORT).show();return;}searchQuery+=text;refreshSearchLabel();}
+    private void deleteQuery(){if(searchQuery.isEmpty())return;android.icu.text.BreakIterator chars=android.icu.text.BreakIterator.getCharacterInstance(java.util.Locale.ROOT);chars.setText(searchQuery);searchQuery=searchQuery.substring(0,Math.max(0,chars.preceding(searchQuery.length())));refreshSearchLabel();}
+    private void applySearch(JSONObject value,String fallback){
+        if(value.has("error")){status.setText("搜索输入未完成，请重试");return;}generation=value.optLong("generation");
+        if(!value.isNull("commit"))appendQuery(value.optString("commit"));
+        if(!value.optBoolean("handled")&&fallback!=null){if(fallback.equals("⌫"))deleteQuery();else appendQuery(fallback);}
+        preedit=value.optString("preedit","");refreshSearchLabel();refreshStatus();renderResult(value);
     }
     private void delete(InputConnection c){
         CharSequence selected=c.getSelectedText(0);
@@ -238,7 +307,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
     private void enter(InputConnection connection) { EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
-    @Override public void onFinishInput() { touches.cancel();++epoch; ready=false; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
+    @Override public void onFinishInput() { touches.cancel();++epoch; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
     @Override public void onDestroy() {
         // InputMethodService.onDestroy invokes our onFinishInput. Keep the worker
         // accepting that final close before shutting it down; both closes are queued
@@ -246,7 +315,7 @@ public final class ZapInputMethodService extends InputMethodService {
         touches.cancel();++epoch;ready=false;
         try { super.onDestroy(); }
         finally {
-            worker.execute(() -> { if(handle!=0){NativeCore.close(handle);handle=0;} });
+            worker.execute(() -> { closeSearchCore();if(handle!=0){NativeCore.close(handle);handle=0;} });
             worker.shutdown();
         }
     }
