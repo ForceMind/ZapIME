@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/zapime-core", "crates/zapime-data", "crates/zapime-crypto"]
+members = ["crates/zapime-core", "crates/zapime-data", "crates/zapime-crypto", "crates/zapime-sync"]
 exclude = ["vendor/msime"]
 resolver = "2"
 
