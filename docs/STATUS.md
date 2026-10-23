@@ -326,3 +326,5 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 产品新增 API30+ 初始快照严格匹配的同编辑器组字恢复，保留有序原生会话；迁移固定 MSIME 的有界选区回声跟踪，保留 GPL 来源与测试。拒绝隐私/未知位置/身份或选项变化/缺快照/文本变化。没有新增输入线程远端上下文读取。新增反例：应用把 ni 改成同长 xx 且保持 composing span，重启后必须放弃旧 ni，实际续输 hao/选词为 xx好。
 - 本地真实运行：产品21个Java源、独立编辑器2源、voice测试1源以JDK17/API36 jar编译；上游SelectionEchoTracker完整JVM回归；11项Python打包/CI隐私回归；shell语法及git diff检查。均通过，仅既有source8/deprecation警告；不是本地APK或设备验收。新修复的API28/35/36运行尚待CI。详见 ANDROID_COMPOSITION.md。
 - 下一步：保留基线失败现场，运行修复后的完整Android门禁；按相关验证及仓库规则完成依赖PR审查，再推进独立同步worker/账号和恢复流程。自然语音/ARM、Apple/Windows系统激活、四端宿主联网、用户真实R2与服务器、签名发布仍未完成。
+
+- 后续独立切片：修正CI诊断的UTF-8字节容量边界，普通失败文件及activity-errors均最多256KiB，截断不留下半个码点；ANR仍检查完整返回，不能因保存尾部漏掉早期应用ANR。新增中文/表情和首部ANR反例后，12项Python测试全部通过；只改变合成CI诊断，不改变产品或放宽失败断言。
