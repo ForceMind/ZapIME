@@ -34,11 +34,10 @@ jobs:
           cache-on-failure: true
       - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
       - name: Voice dependency and model packaging boundaries
-        run: python3 -m unittest discover -s scripts -p test_android_voice_tools.py -v
+        run: python3 -m unittest discover -s scripts -p 'test_android_*.py' -v
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
       - run: bash scripts/build_android_tests.sh
-      - run: bash scripts/build_android_voice_tests.sh
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -58,6 +57,8 @@ jobs:
       - name: Synthesize fixed Mandarin fixture
         run: |
           .venv-voice/bin/python scripts/voice_probe.py synthesize
+      - name: Build test-only APK with scoped-storage-safe synthetic assets
+        run: bash scripts/build_android_voice_tests.sh
       - name: Enable KVM for native input acceptance
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
@@ -83,10 +84,16 @@ jobs:
             target/device-smoke/
             target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
             target/voice-android/
+            target/ZapIME-XASR-model.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-Android-test-harness
+          path: |
             target/android-voice-tests/ZapIME-voice-tests.apk
             target/android-tests/ZapIME-tests.apk
             target/voice-probe/synthetic.wav
-            target/ZapIME-XASR-model.zip
           if-no-files-found: error
   modern:
     name: Android API ${{ matrix.api }} native acceptance
@@ -113,6 +120,10 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ZapIME-Android-development
+          path: target
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZapIME-Android-test-harness
           path: target
       - name: Verify exact development package inputs
         run: |

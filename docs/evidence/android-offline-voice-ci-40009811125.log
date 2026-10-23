@@ -1,0 +1,29 @@
+Source: 308085b76b6c3de8c34120f5ebfef833f764285a
+Run: https://github.com/ForceMind/ZapIME/actions/runs/40009811125
+Overall SUCCESS. Synthetic input/audio only; no phone/natural-speech claim.
+
+2026-10-23T19:16:14.4504534Z PASS pinned arm64-v8a voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-23T19:17:13.0306318Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T19:17:44.5159441Z PASS pinned x86_64 voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-23T19:18:15.9807003Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T19:19:29.3975211Z PASS pinned model archive and four inference file checksums
+2026-10-23T19:22:03.2776575Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T19:22:03.2782714Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T19:23:12.9437361Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T19:23:12.9440941Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T19:23:56.8550531Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T19:23:56.8551551Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:23:56.8552429Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T19:23:56.8553222Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:23:56.8554155Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T19:23:56.8555008Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:23:56.8555680Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T19:23:56.8556316Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:23:56.8557740Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T19:23:56.8559028Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:23:56.8559761Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T19:23:56.8560506Z INSTRUMENTATION_CODE: -1
+2026-10-23T19:23:56.8562561Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable
+2026-10-23T19:23:56.8564220Z INSTRUMENTATION_CODE: -1
+2026-10-23T19:23:56.8565074Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle
+2026-10-23T19:23:56.8946974Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 0}

@@ -9,6 +9,7 @@
 - Android 原生构建：ANDROID_SDK_ROOT 指向 API 36 / build-tools 35 / NDK 28.2.13676358；bash scripts/build_android.sh arm64-v8a。APK 构建通过不等于系统输入验证。
 - Android 独立 CI 为 .github/workflows/android.yml。双轮脚本只运行于临时 GitHub 模拟器，会清空两个合成测试包；本地使用 android_smoke.py 的专用设备入口。候选无障碍动作验收不能替代物理触摸布局/真机验收。
 - Android 每轮还需实际切回 AOSP IME、确认 ZapIME 服务退出并拒绝其运行时 fatal；只有输入 PASS 不足以通过。旧日志清空仅限受保护的临时 CI 模拟器，不能扩展到用户日常设备。父类 onDestroy 会调用 onFinishInput，必须在回调完成后才关闭 worker。
+- API28保留AOSP门禁；API35/36的Google镜像若没有AOSP，只允许选择pm list packages -s核实的其它预装系统IME，记录精确component/API/system证明，仍必须实际切换、等待ZapIME服务退出并拒绝fatal，不能任意选择第三方或跳过退出。现代测试素材从testOnly验收APK的assets读，不让ADB伪造App私有/Android-data目录所有权，不给产品加存储权限或debuggable。模型/PCM仅进入测试APK，产品APK继续单独模型导入；测试包须保留GPL及模型许可。
 - Git submodule update --init 后 python3 scripts/verify_upstream.py 核验来源。不要提交 target、凭据、私钥或真实用户文本。
 - 每个独立切片用分支和 PR，禁止强推。审查当前差异、跑对应检查，按仓库规则合并。
 - docs/STATUS.md 区分源码、编译、模拟器、真机及签名证据；更新时记录时间与可追溯提交。不得用定时任务代替开发。

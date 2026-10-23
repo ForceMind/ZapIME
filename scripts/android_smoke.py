@@ -7,6 +7,8 @@ import re
 import subprocess
 import sys
 import time
+import json
+from android_ci_device import system_keyboard
 
 adb, serial = sys.argv[1:3]
 root = Path(__file__).resolve().parents[1]
@@ -31,11 +33,10 @@ for name in ("smoke.png", "keyboard.png", "candidates.png", "tools.png", "number
 # Exercise the system's real service teardown, which calls onFinishInput from
 # InputMethodService.onDestroy. Only switch away on the dedicated CI emulator.
 if os.environ.get("GITHUB_ACTIONS") == "true" and re.fullmatch(r"emulator-[0-9]+", serial):
-    system_methods=[line.strip() for line in methods.stdout.splitlines() if line.strip().startswith("com.android.")]
-    if not system_methods:
-        raise SystemExit("AOSP keyboard required for teardown acceptance")
+    system_method, proof=system_keyboard(command)
+    (output/"system-keyboard.json").write_text(json.dumps(proof,indent=2)+"\n")
     for action in ("enable", "set"):
-        subprocess.run(command+["shell","ime",action,system_methods[0]],check=True)
+        subprocess.run(command+["shell","ime",action,system_method],check=True)
     for attempt in range(50):
         teardown=subprocess.run(command+["shell","dumpsys","activity","services","org.zapime.android"],text=True,capture_output=True,check=True)
         if "ZapInputMethodService" not in teardown.stdout:
