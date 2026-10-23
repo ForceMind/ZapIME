@@ -14,7 +14,9 @@ final class KeyboardTouch {
     private Binding active;
     KeyboardTouch(Context context,Handler handler){this.context=context;this.handler=handler;}
     private void feedback(View view) {
-        if(context.getSharedPreferences("keyboard",Context.MODE_PRIVATE).getBoolean("haptic",true))
+        boolean haptic=context.getSharedPreferences("keyboard",Context.MODE_PRIVATE).getBoolean("haptic",true);
+        view.setHapticFeedbackEnabled(haptic);
+        if(haptic)
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
         if(context.getSharedPreferences("keyboard",Context.MODE_PRIVATE).getBoolean("sound",false)) {
             view.setSoundEffectsEnabled(true);view.playSoundEffect(SoundEffectConstants.CLICK);view.setSoundEffectsEnabled(false);
@@ -23,6 +25,7 @@ final class KeyboardTouch {
     void cancel(){if(active!=null){Binding b=active;active=null;b.stop();}}
     void bind(Button button,Runnable action,boolean repeat,BooleanSupplier valid) {
         Binding binding=new Binding(button,action,repeat,valid);
+        button.setHapticFeedbackEnabled(context.getSharedPreferences("keyboard",Context.MODE_PRIVATE).getBoolean("haptic",true));
         button.setSoundEffectsEnabled(false);
         button.setOnClickListener(v->{if(!binding.touch)feedback(v);if(valid.getAsBoolean())action.run();});
         button.setOnTouchListener(binding);
