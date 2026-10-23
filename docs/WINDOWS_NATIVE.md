@@ -33,3 +33,19 @@ regsvr32.exe "C:\完整路径\ZapIMETsf.dll"
 编辑操作只在 TSF 同步读写 edit session 内执行；未取得编辑锁时不吞键。焦点变化重置原生会话并清理候选，迟到编辑不能向新 context 提交；系统拒绝旧 context 清理时需要后续真实应用验收进一步校准。尚未完成真机输入、失焦组合、应用重启与安装回滚验收，不能据此将 M1 标为完成。
 
 独立 CLSID `{D72EF286-C9D0-4AAE-B13A-18E84F59B765}`，Profile `{042DCDBD-B1DC-4A0D-931C-567221A172E8}`。注册只声明 keyboard category，不提前宣称尚未验证的 secure/comless/immersive/UIElement 能力。
+
+## 临时CI的系统profile探针（候选，结果待验收）
+
+新增独立 `ZapIMEWindowsProfileProbe.exe` 与 `scripts/windows_profile_smoke.py`，常规本机build/ctest不执行它。只有临时GitHub-hosted Windows runner且run/attempt为数字时，Python及EXE才允许执行；CI先用self-hosted环境验证EXE拒绝，再做实际探针。已有ZapIME当前用户COM/profile或LocalAppData目录时拒绝接管，不在个人Windows或自托管runner测试。
+
+探针调用真实DLL的注册导出，核对TSF profile身份/category/enabled及HKCU的精确DLL路径，并由系统COM注册解析创建processor。调用自身TSF thread manager，在当前线程匹配0804语言后，仅以FORPROCESS激活，要求S_OK以及GetActiveProfile精确返回本产品active状态；不使用FORSESSION、修改默认输入法或DONTCARECURRENTINPUTLANGUAGE的延迟激活来冒充成功。系统没有对应布局/语言或激活失败时报告原始HRESULT并明确失败，不自动下载语言包。
+
+正常及异常路径尝试恢复先前线程布局/profile、停thread manager、注销本产品并复查profile/COM消失，卸载本次新加载的布局并只删除本次创建的资料目录。清理失败或90秒超时同样失败；超时不宣称清理已完成。原始结果保存到产物profile-probe.log，守卫反例为profile-probe-guard.log。
+
+当前本地只有Linux：Python编译与实际拒绝执行通过；没有Windows SDK/MSVC，没有本地编译或注册/激活成功结果。真实Windows CI待跑，即使成功仍不是记事本/浏览器、真实TSF编辑锁与系统上屏验收。后续在独立原生编辑器完成输入闭环。
+
+接口依据：
+- https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofilemgr-activateprofile
+- https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofilemgr-getprofile
+- https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofilemgr-getactiveprofile
+- https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofilemgr-deactivateprofile

@@ -256,3 +256,10 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 7. 完成四端个人管理与同步、Apple/Windows 真实应用输入和安全字段、全设备丢失与空服务器重建演练，再做生产部署与签名发布。
 
 未完成项不会因文档、一次构建或一次合成测试而标作整体完成。不创建定时任务替代研发。
+
+## Windows 当前用户注册/进程激活的独立实验（候选）
+
+- 2026-10-23接续开发，在main f7ab2c27f85e12f933446fd7f57280b7a89cab29基线上新增真实TSF profile注册/系统COM解析/进程激活/恢复注销探针；不更改生产Windows DLL或注册逻辑，不改Android并行修复。常规本机编译不执行探针，GitHub临时Windows runner才在严格双重守卫下运行。
+- 拒绝已有本产品profile/COM或LocalAppData，恢复原线程布局/profile，不设默认/FORSESSION或延迟激活。精确检查本产品active，注销后复查本产品profile/COM消失；任何阶段或清理失败/超时均非零，不把DLL装载/注册返回当成实际输入。
+- 新增CI守卫反例及原始日志归档；本地Python语法编译及在Linux实际拒绝启动Windows可执行文件通过。没有本机MSVC/Windows SDK，C++编译、注册/激活/清理均待真实Windows CI，不预记通过。详见WINDOWS_NATIVE.md。
+- #39 Android已提交组字重启测试及修复候选5937311，修复前三API的现代35/36明确红灯、原28通过；相关断言和ZIP证据另在#39，不把本Windows切片当作其通过。四端真实App输入、联网、自然语音/ARM、真实R2服务器与签名发布仍未完成。

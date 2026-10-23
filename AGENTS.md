@@ -29,3 +29,5 @@
 - 宿主下载只用 zapime-sync::apply_encrypted_page，不能把原始服务 JSON 直接送进受信任的 apply_verified_pull。整页认证后才同事务应用记录/确认/收据/cursor；冲突整页回滚，不等于副本或解决。Record 来源 UUID 不等于服务器 device_id，外层作者/修订没有被现有 AEAD 独立签名。保留旧密钥、冻结请求和收据，禁止把旧操作改修订后重放墓碑；平台侧仍未接入。
 
 - Android 语音模型只接受 APK 固定白名单与逐项 SHA，包内清单不可信；失败不能覆盖已有有效模型。模型/录音和按键线程分开，不添加云端回退、录音落盘/上传或假识别文本。JNI 会话只在同一语音线程 start/feed/finish/close，跨线程只 cancel；capture 有 60 秒/960000 样本与全程有界队列，隐藏/失焦/光标移动/配置变化必须取消，确认前校验原连接/epoch/selection/有界上下文。实际合成 PCM 解码、模拟器静音 AudioRecord、独立 Editable UI 验收与自然语音/ARM 真机分别记证据。第二个 voice instrumentation 同签名且只在受保护临时 CI 撤销测试包录音权限；不在个人设备执行。
+
+- Windows系统profile探针只能在GITHUB_ACTIONS=true、RUNNER_ENVIRONMENT=github-hosted及数字run/attempt全部验证的临时Windows runner运行，Python/EXE双重拒绝普通本机与self-hosted。已有ZapIME COM/profile或LocalAppData目录必须拒绝接管；只修改本产品HKCU项/进程激活，不设置系统默认或FORSESSION，不使用deferred激活伪称成功；恢复旧线程布局/profile，注销并验证清理。常规本机build_windows/ctest仍不运行注册探针。注册/进程激活不等于真实应用输入。

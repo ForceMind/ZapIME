@@ -24,6 +24,10 @@ jobs:
       - name: Compile TSF DLL and test actual COM/native engine boundary
         shell: pwsh
         run: ./scripts/build_windows.ps1
+      - name: Ephemeral current-user TSF profile registration and process activation
+        timeout-minutes: 3
+        shell: pwsh
+        run: python scripts/windows_profile_smoke.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
