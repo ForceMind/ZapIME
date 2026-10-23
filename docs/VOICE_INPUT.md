@@ -4,7 +4,7 @@
 
 Android 新增真正九宫格拼音键盘，复用固定 MSIME 九键解码器。空闲工具栏可切换「九键 / 全键」并在本机保存；英文和密码字段仍用全键。增加读音选择、退格、分词、数字面板与本地词/短语匹配。读音/候选携带 generation，拒绝迟到点击；显式锁定的读音也约束个人词，不把 mihao 混入锁定 ni 的候选。九键置顶保存候选的完整拼音，与全键共享；不把数字同码的置顶越过已锁定的不同读音，部分前缀候选不冒充整段置顶。共享核心测试已通过；Android 系统验收见 STATUS.md，另外三端尚无九键界面。
 
-**Android 开发版已接入原生离线语音，PR #32 的 API28 模拟器门禁通过。** 包含模型导入、AudioRecord、独立解码线程、预览/停止/取消与确认插入；显式 RECORD_AUDIO 权限，仍没有 INTERNET 权限。真实 JNI 合成音、模拟器静音录音及独立 App UI 分别验证；尚不代表自然语音、ARM/三星、现代系统或四端语音已完成。下述旧探针数据继续保留来源与边界。
+**Android 开发版已接入原生离线语音，PR #32/#33 的 API28/35/36 模拟器门禁通过。** 包含模型导入、AudioRecord、独立解码线程、预览/停止/取消与确认插入；显式 RECORD_AUDIO 权限，仍没有 INTERNET 权限。真实 JNI 合成音、模拟器静音录音及独立 App UI 分别验证；尚不代表自然语音、ARM/三星、现代系统后台权限或四端语音已完成。下述旧探针数据继续保留来源与边界。
 
 ## Android 模型安装与使用（开发验证版）
 
@@ -91,6 +91,12 @@ offline-voice.yml 下载/合成后用 `sudo unshare --net` 禁止推理进程联
 
 同head其它检查也已success：三系统共享核/真实Apple构建/实际执行3项iOS模拟器测试40009810845，Windows40009810864，真实PG/S3/安装及灾备40009810903，独立断网CPU40009810833。仍不表示本功能已接Apple/Windows，也不表示四端联网完成。后续 [PR #33](https://github.com/ForceMind/ZapIME/pull/33) 扩展API35/36，同一APK/模型复用，未完成前不提前声称现代系统通过。
 
-自动审阅随后发现结束队列的尾块竞态，当前候选改为先观察完成再复核队列空，并增加稳定控制该时序的回归。上述308085b结果仍是该旧源的证据；尾块修正版另行跑完整CI，合并前不沿用旧成功。
+自动审阅随后发现结束队列的尾块竞态，bec1701aa6715d056bba89698a08f053f01febe3改为先观察完成再复核队列空，并增加稳定控制该时序的回归。40013177652在该修正版已完整success，包括尾块后才EOF的确定性断言及原有native/AudioRecord/独立Editable完整门禁；摘要android-voice-tail-ci-40013177652.log。三系统/Apple原生及实际3项iOS、Windows、服务和断网CPU其它workflow均success。原始图像/性能数据仍明确属于308085b，队列修正未改变GUI源码；新artifact12527976119的SHA256 683b81da72c5c02de95378ba85c617bdc4947764ad4daf3a5d9c1279c254ed70来自GitHub元数据，未再本地下载校验，不冒充新图。
 
 PR #33 现代验收的测试APK以testOnly标记，内置固定模型ZIP/合成PCM作为合法测试素材，避免ADB创建Android/data目录导致EACCES。产品APK仍不带权重，测试包素材不是麦克风或SAF交互证明；现代实际结果另记录，不因夹具改动预先宣称成功。
+
+### API35/36 实际结果
+
+运行时9ecdadf / [40015688960](https://github.com/ForceMind/ZapIME/actions/runs/40015688960)的API28、35、36三作业全部成功。API35/36各自两轮真实输入和服务退出、JNI合成中文、AudioRecord静音录制/停止及完整UI通过；原始报告/日志、下载后SHA校验证明见[evidence/API35](evidence/android-api35-40015688960/provenance.json)与[evidence/API36](evidence/android-api36-40015688960/provenance.json)。现代系统实际切换到经系统标记核实的Google预装VoiceInputMethodService并等待ZapIME真正退出，API28仍要求AOSP。
+
+这是x86_64模拟器及targetSDK28合成宿主的证据。AppOps静音/后台切换、真实自然语音到确认插入、SAF选择器、ARM/三星、蓝牙及现代手势仍未验收；不能把合成PCM或静音麦克风结果当作这些成功。模型SHA与动态库初始化不计入报告的recognizer_load_ms。

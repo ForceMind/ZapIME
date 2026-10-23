@@ -1,0 +1,18 @@
+{
+  "runtime_commit": "9ecdadf2567becd3264320d844140539a9afe1a2",
+  "run_id": 40015688960,
+  "artifact_id": 12528789257,
+  "artifact_sha256_download_verified": "c902164fbc3f7603088e3fc0cab4ea736ea2795612e0d055eff5b7b9df50b015",
+  "api_level": 35,
+  "source_directory": "voice-android",
+  "files": {
+    "native-report.json": "d3752077624aaa36ab4076f729ea0f356e7886c5c519d79ef92b75c8a3f8ba6d",
+    "combined-gates.json": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+    "system-keyboard.json": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+    "instrumentation.txt": "ff69da10e1e504fc7c79e7b672deaf0488e960519bd1838ad4d7687596b3de3e",
+    "ui-instrumentation.txt": "954c7c7f739375620c33b4ed5230d32e22f1f96830862bce330b6dc6b18a1d68",
+    "crash.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ime-teardown.txt": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+  },
+  "boundaries": "x86_64 Google APIs emulator; synthetic Mandarin PCM and silent microphone separately; legacy targetSDK28 probe host; no natural speech, ARM, AppOps/background, Bluetooth or gesture-navigation acceptance"
+}

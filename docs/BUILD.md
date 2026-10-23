@@ -43,7 +43,7 @@ Android 离线语音分支由 `build_android.sh` 调用 `build_android_voice.sh`
 
 Android 的独立 CI 位于 `.github/workflows/android.yml`，执行两个干净合成资料轮次。`scripts/android_smoke_repeat.py` 只允许临时 GitHub runner 的 emulator serial，清空 ZapIME/测试宿主资料前切回系统输入法，逐轮独立保存结果；本地单轮脚本保留原有资料。候选测试调用指定 Button 的无障碍动作，其他键和焦点走触屏；最终同时核对真实 Editable/组字状态和无障碍正文，不能用它证明候选物理命中稳定性或 ARM 真机表现。
 
-现代 Android 验收复用该轮真实构建的双 ABI APK、同证书测试包、固定模型 ZIP 和合成 WAV，在独立 API35/API36 Google APIs x86_64 模拟器执行相同输入/语音/真实服务退出门禁；每 API 单独归档。若 API28 门禁在构建完成后失败，现代门禁仍执行以收集独立证据；任意失败仍使整个工作流失败，前置产物缺失明确失败。新增 workflow 配置不等于这些系统已通过，实际结果见 STATUS/对应 PR；不代表三星/ARM、真实自然语音或手势导航验收。
+现代 Android 验收复用该轮真实构建的双 ABI APK、同证书测试包、固定模型 ZIP 和合成 WAV，在独立 API35/API36 Google APIs x86_64 模拟器执行相同输入/语音/真实服务退出门禁；每 API 单独归档。若 API28 门禁在构建完成后失败，现代门禁仍执行以收集独立证据；任意失败仍使整个工作流失败，前置产物缺失明确失败。实际9ecdadf / 40015688960的API28/35/36三作业已成功，原始报告与范围见 STATUS/对应 PR；不代表三星/ARM、真实自然语音或手势导航验收。
 
 现代镜像首轮实际因无AOSP键盘、ADB创建Android/data测试目录后App读取EACCES失败。API28继续要求AOSP；API35/36允许经`pm list packages -s`核实的其它预装系统键盘，保存精确组件/API证明并仍等待真实ZapIME服务退出，禁止任意第三方兜底。测试素材改为`android:testOnly`验收APK的assets，App自己创建结果目录；不变更产品的存储权限/调试标志。验收APK包含固定模型ZIP/合成PCM及GPL/模型通知，产品APK不含权重。大的测试包另在`ZapIME-Android-test-harness`归档，产品APK/模型下载仍在`ZapIME-Android-development`，避免把API28输出当作现代结果。
 ## Apple 原生构建
