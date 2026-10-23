@@ -50,10 +50,10 @@ try:
     result=run("shell","am","instrument","-w","-r","-e","voice_only","true","org.zapime.android.test/.SmokeInstrumentation",text=True,capture_output=True,timeout=600)
     (out/"ui-instrumentation.txt").write_text(result.stdout+result.stderr)
     print(result.stdout)
-    for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt"):
-        run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=name!="hierarchy.txt",stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     if "PASS ZapIME voice UI:" not in result.stdout:
         raise SystemExit("Voice keyboard UI acceptance failed")
+    for name in ("voice-recording.png","voice-stopped.png"):
+        run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name))
     methods=run("shell","ime","list","-a","-s",text=True,capture_output=True).stdout
     system_methods=[line.strip() for line in methods.splitlines() if line.strip().startswith("com.android.")]
     if not system_methods:raise SystemExit("AOSP IME required for actual voice-service teardown")
@@ -66,6 +66,10 @@ try:
     (out/"ime-teardown.txt").write_text(teardown)
     time.sleep(1)
 finally:
+    # A failed early UI assertion may not have reached either voice screenshot.
+    # Always retain its actual failure hierarchy/screenshot before checking fatals.
+    for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png"):
+        run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/native-report.json",str(out/"native-report.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
     (out / "crash.txt").write_text(log)

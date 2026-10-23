@@ -1,0 +1,30 @@
+Source: 77de9ea621c7b50cb46a489157ab0efaf81608fa
+Run: https://github.com/ForceMind/ZapIME/actions/runs/40007816332
+Overall FAILED. Both old input/teardown rounds and all native voice checks passed again.
+New paused-editor UI test could not locate Cancel; later voice UI assertions did not run.
+Failure diagnostic collection also stopped early on an absent later-stage screenshot.
+The next change keeps the 1800ms response assertion and targets only IME controls in the paused case;
+it also collects failure hierarchy/screenshots unconditionally. Suspected driver synchronization
+must not be described as a proven product fix or a passed UI gate.
+
+2026-10-23T19:05:08.3729322Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T19:05:08.3730831Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T19:06:10.0684045Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T19:06:10.0686320Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T19:06:59.4689724Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T19:06:59.4690364Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:06:59.4690842Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T19:06:59.4691575Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:06:59.4692152Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T19:06:59.4692676Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:06:59.4693095Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T19:06:59.4693499Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:06:59.4694146Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T19:06:59.4694714Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T19:06:59.4695258Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T19:06:59.4695650Z INSTRUMENTATION_CODE: -1
+2026-10-23T19:06:59.4696612Z INSTRUMENTATION_RESULT: stream=FAIL ZapIME native keyboard at voice slow-editor cancellation: Exception: Missing UI node: 取消
+2026-10-23T19:06:59.4697132Z INSTRUMENTATION_CODE: 0
+2026-10-23T19:06:59.4708082Z     raise CalledProcessError(retcode, process.args,
+2026-10-23T19:06:59.4709325Z subprocess.CalledProcessError: Command '['/usr/local/lib/android/sdk/platform-tools/adb', '-s', 'emulator-5554', 'pull', '/sdcard/Android/data/org.zapime.android.test/files/voice-recording.png', '/home/runner/work/ZapIME/ZapIME/target/voice-android/voice-recording.png']' returned non-zero exit status 1.
+2026-10-23T19:06:59.4815469Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 1}

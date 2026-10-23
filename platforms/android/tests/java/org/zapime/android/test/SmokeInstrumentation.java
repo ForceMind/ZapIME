@@ -207,11 +207,19 @@ public final class SmokeInstrumentation extends Instrumentation {
         for(int i=0;i<900;i++){if(find("正在聆听 · 最长 60 秒")!=null)return;if(find("麦克风不可用，请检查权限或重试")!=null||find("离线识别未完成，请检查模型或重试")!=null)throw new Exception("IME microphone or model unavailable");Thread.sleep(100);}throw new Exception("IME microphone start timeout");
     }
     private void startDictation()throws Exception{click("工具");click("离线语音");waitListening();}
+    private AccessibilityNodeInfo waitIme(String text,long timeout)throws Exception{
+        long end=SystemClock.uptimeMillis()+timeout;
+        do{for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){AccessibilityNodeInfo node=walk(window.getRoot(),text,true);if(node!=null)return node;}Thread.sleep(20);}while(SystemClock.uptimeMillis()<end);
+        throw new Exception("Missing IME-only control: "+text);
+    }
     private void voiceAcceptance()throws Exception{
         Intent intent=new Intent();intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity");intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);
         click("probe-normal");waitFor("⚡ 闪电 · 离线");setText("probe-normal","voice guard test");Thread.sleep(300);
         stage="voice slow-editor cancellation";ProbeActivity.contextEntered=new java.util.concurrent.CountDownLatch(1);ProbeActivity.contextRelease=new java.util.concurrent.CountDownLatch(1);ProbeActivity.delayNextContext.set(true);
-        try{click("工具");click("离线语音");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();click("取消");waitFor("工具",true);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
+        // In this deliberately paused App only, target IME accessibility actions
+        // directly: global touch/active-window synchronization may wait on that
+        // paused App and would measure the test driver instead of the IME.
+        try{click("工具");if(!waitIme("离线语音",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME voice action rejected");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();if(!waitIme("取消",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME Cancel accessibility action rejected");waitIme("工具",900);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
         finally{ProbeActivity.delayNextContext.set(false);ProbeActivity.contextRelease.countDown();}requireEditor("voice guard test","voice_slow_editor_cancel_preserves_text");
         stage="voice recording preview";startDictation();requireEditor("voice guard test","voice_preview_not_committed");screenshot("voice-recording.png");
         click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，请返回后重试")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");screenshot("voice-stopped.png");click("重新录音");waitListening();requireEditor("voice guard test","voice_retry_preserves_editor");click("取消");waitFor("工具",true);
