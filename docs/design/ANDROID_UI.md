@@ -26,3 +26,11 @@
 | ![拼音候选](../evidence/ui-android-39776837197/candidates.png) | ![工具面板](../evidence/ui-android-39776837197/tools.png) | ![设置首页](../evidence/ui-android-39776837197/home.png) |
 
 同一 CI artifact 含两轮各七张原始截图、arm64/x86_64 开发 APK、输入日志、服务退出和运行时日志；归档 SHA-256 为 1b29d34de5aabadc2cdf71e8f11bfcb57f0becdc4ddc2b90bf51b1e4c71b22cb。本页三张图片直接取自该归档，没有重绘或修改。
+
+## 九键实际画面 · 2026-10-23
+
+CI [39898390355](https://github.com/ForceMind/ZapIME/actions/runs/39898390355)，验证代码 b50fbbd6585f041abce3751fd27df93e9fd00ebb；双架构开发包和 API28 两轮九键/全键输入及服务退出通过。最新键位行取消混合文字/图标基线对齐，避免双行键帽裁切；读音行在九键中固定保留，候选刷新不移动按键。九键置顶记录完整拼音，与全键共享并尊重锁定读音。
+
+![Android 原生九键](../evidence/ui-nine-key-39898390355/nine-key.png)
+
+原始 320×640 模拟器截图：上半屏为独立合成测试 App，下半屏为真实 ZapIME 输入法；未重绘、未裁剪。候选仍用指定 Button 无障碍动作，普通键位/读音走触屏；不是 ARM 真机或全平台视觉验收。原始 artifact SHA256：1da24250166b3bf89ad4e8b94a433488add2af8f3503220b66a3c500957fe02d。

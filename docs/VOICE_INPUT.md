@@ -51,3 +51,7 @@ offline-voice.yml 下载/合成后用 `sudo unshare --net` 禁止推理进程联
 5. iOS 自定义键盘不能直接访问麦克风，需要主 App 录音/本地识别，再以 App Group 和显式返回键盘接力；存在切换成本，须当前系统真机验证。「完全访问」不能替代麦克风权限。Apple 文档：https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/CustomKeyboard.html 。
 
 真机门禁需包括冷/热启动、首字/尾字延迟、峰值内存、耗电、长短句、静音/噪声、蓝牙耳机、口音/方言、中英夹杂、金额/日期/数字、术语、拒绝/撤销权限及焦点切换；未验收前不承诺毫秒指标或同等准确率。
+
+## 最新断网证据
+
+[39898390340](https://github.com/ForceMind/ZapIME/actions/runs/39898390340) 在无网络 namespace 实际执行三个流式识别轮次，中文片段断言通过；源代码 b50fbbd6585f041abce3751fd27df93e9fd00ebb。完整原始报告见 evidence/offline-voice-ci-39898390340.json：CPU 2 线程、7.843 秒音频、加载 1.719 秒、中位计算 0.698 秒（RTF 0.089）。CI 输出仍出现「一转」而非「一段」，因此不能把片段通过说成整句完全准确，更不能推广为自然录音/方言/手机验收；准确率、断网边界、吞吐和交互延迟分别记录。
