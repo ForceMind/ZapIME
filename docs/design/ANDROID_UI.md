@@ -39,7 +39,7 @@ CI [39898390355](https://github.com/ForceMind/ZapIME/actions/runs/39898390355)�
 
 新增 KeyboardTheme / KeyCap / KeyboardTouch 与原生键盘反馈设置页；九键采用标点侧栏、上标数字、大字母键帽、右侧退格/重输/表情和五项底栏。空格宽度独立增加，保留空格含义，不用尚未集成的麦克风装饰。浅色白键/灰蓝操作键，深色炭黑底/灰色字母键。主题为键盘独立实例，主 App 仍为浅色，不虚称全 App 适配。
 
-工具栏提供工具、表情、布局、光标编辑、本机资料、收起；表情可实际上屏，编辑面板使用 InputConnection 光标和显式复制/剪切/粘贴，隐私会话禁止复制/剪切。复制不等于云剪贴板或自动采集历史。候选与读音仍保持代次检查，九键读音区域保留固定高度。
+工具栏提供工具、表情、布局、光标编辑、本机资料、收起；表情可实际上屏，编辑面板使用 InputConnection 光标和显式复制/剪切/粘贴，隐私会话禁止复制/剪切。复制不等于云剪贴板或自动采集历史。候选与读音仍保持代次检查，九键读音替换左侧标点侧栏并可纵向滚动，键位不因读音出现而移动；取消此前空闲时的空白读音条。
 
 此次参考项目：语燕 https://github.com/gurecn/YuyanIme （九键、单手、深色交互）、同文 https://github.com/osfans/trime （Rime 平台）、小企鹅 https://github.com/fcitx5-android/fcitx5-android 、HeliBoard https://github.com/HeliBorg/HeliBoard （按键反馈、可定制主题与显式剪贴板）。不将 GitHub star 当商店评分，不确定用户记忆中具体是哪款。只研究公开功能/交互，没有导入上述项目源码、资源或词库；后续移植必须逐组件审计，不能只看根许可证。
 

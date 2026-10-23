@@ -59,10 +59,10 @@ public final class SmokeInstrumentation extends Instrumentation {
     }
     private void requireEditor(String expected,String phase) throws Exception {
         stage=phase;
-        for(int i=0;i<100;i++) { AccessibilityNodeInfo editor=find("probe-normal"); if(editor!=null && expected.contentEquals(editor.getText()==null?"":editor.getText()))return; Thread.sleep(100); }
-        AccessibilityNodeInfo editor=find("probe-normal");
-        int length=editor==null?-1:(editor.getText()==null?0:editor.getText().length());
-        throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+length);
+        // Accessibility getText() may expose an empty EditText's hint as text.
+        // Read the independent Activity's real Editable for every assertion.
+        for(int i=0;i<100;i++){if(expected.equals(editorState().text))return;Thread.sleep(100);}
+        throw new Exception("Editor content assertion failed at "+phase+" expectedLength="+expected.length()+" actualLength="+editorState().text.length());
     }
     private static final class EditorState {
         String text, committed;

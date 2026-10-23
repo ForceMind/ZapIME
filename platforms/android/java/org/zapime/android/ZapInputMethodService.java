@@ -26,8 +26,8 @@ public final class ZapInputMethodService extends InputMethodService {
     private int epoch;
     private boolean chinese = true, shift, sensitive, privateSession, ready, nineKey;
     private TextView status;
-    private LinearLayout candidates, body, spellings;
-    private HorizontalScrollView spellingScroll;
+    private LinearLayout candidates, body, readingRail;
+    private JSONArray readingChoices=new JSONArray();
     private String layer="letters";
     private String preedit = "";
     private int dp(int n) { return (int)(n * getResources().getDisplayMetrics().density); }
@@ -39,7 +39,6 @@ public final class ZapInputMethodService extends InputMethodService {
         LinearLayout panel=Ui.column(this);panel.setPadding(dp(2),0,dp(2),dp(6));panel.setBackgroundColor(theme.deck);
         status=Ui.text(this,"",12,theme.muted);status.setGravity(Gravity.CENTER_VERTICAL);status.setPadding(dp(12),0,0,0);panel.addView(status,new LinearLayout.LayoutParams(-1,dp(22)));
         HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setFillViewport(true);scroll.setHorizontalScrollBarEnabled(false);scroll.setBackgroundColor(theme.toolbar);candidates=new LinearLayout(this);candidates.setGravity(Gravity.CENTER_VERTICAL);scroll.addView(candidates,new android.widget.FrameLayout.LayoutParams(-1,-1));panel.addView(scroll,new LinearLayout.LayoutParams(-1,dp(46)));
-        spellingScroll=new HorizontalScrollView(this);spellingScroll.setHorizontalScrollBarEnabled(false);spellings=new LinearLayout(this);spellingScroll.addView(spellings);spellingScroll.setVisibility(View.GONE);panel.addView(spellingScroll,new LinearLayout.LayoutParams(-1,dp(30)));
         nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false);
         body=Ui.column(this);body.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);panel.addView(body);layer="letters";renderKeys();refreshStatus();idleToolbar();return panel;
     }
@@ -63,14 +62,19 @@ public final class ZapInputMethodService extends InputMethodService {
     private void place(LinearLayout row,Button key,float weight,int height){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(height),weight);p.setMargins(dp(2),dp(3),dp(2),dp(3));row.addView(key,p);}
     private void nineKeys() {
         LinearLayout upper=new LinearLayout(this);upper.setBaselineAligned(false);upper.setPadding(dp(2),dp(3),dp(2),0);
-        LinearLayout rail=Ui.column(this);rail.setBackground(Ui.shape(this,theme.key,7));LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(0,dp(180),.82f);rp.setMargins(dp(2),dp(3),dp(2),dp(3));upper.addView(rail,rp);
-        String[] punctuation={"，","。","？","！"};
-        for(int i=0;i<punctuation.length;i++){String text=punctuation[i];Button b=key(text,text,false);b.setElevation(0);b.setBackground(new RippleDrawable(ColorStateList.valueOf(theme.ripple),Ui.shape(this,theme.key,7),null));rail.addView(b,new LinearLayout.LayoutParams(-1,0,1));if(i<3){View line=new View(this);line.setBackgroundColor(theme.stroke);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(1));lp.setMargins(dp(8),0,dp(8),0);rail.addView(line,lp);}}
+        ScrollView railScroll=new ScrollView(this);railScroll.setFillViewport(true);railScroll.setVerticalScrollBarEnabled(false);railScroll.setBackground(Ui.shape(this,theme.key,7));LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(0,dp(180),.82f);rp.setMargins(dp(2),dp(3),dp(2),dp(3));upper.addView(railScroll,rp);
+        readingRail=Ui.column(this);railScroll.addView(readingRail);renderReadingRail();
         LinearLayout grid=Ui.column(this);upper.addView(grid,new LinearLayout.LayoutParams(0,dp(186),3.3f));
         String[][] actions={{"分词","t9-2","t9-3"},{"t9-4","t9-5","t9-6"},{"t9-7","t9-8","t9-9"}};
         for(String[] rowActions:actions){LinearLayout row=new LinearLayout(this);row.setBaselineAligned(false);for(String action:rowActions)place(row,key("",action,false),1,56);grid.addView(row,new LinearLayout.LayoutParams(-1,dp(62)));}
         LinearLayout right=Ui.column(this);upper.addView(right,new LinearLayout.LayoutParams(0,dp(186),.82f));for(String action:new String[]{"⌫","重输","表情"}){Button b=key(action,action,true);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(56));lp.setMargins(dp(2),dp(3),dp(2),dp(3));right.addView(b,lp);}body.addView(upper);
         LinearLayout bottom=new LinearLayout(this);bottom.setBaselineAligned(false);bottom.setPadding(dp(2),0,dp(2),0);for(String action:new String[]{"符","中/英","空格","123","↵"})place(bottom,key(action,action,!action.equals("空格")),action.equals("空格")?1.5f:.85f,48);body.addView(bottom,new LinearLayout.LayoutParams(-1,dp(54)));
+    }
+    private void renderReadingRail() {
+        if(readingRail==null)return;readingRail.removeAllViews();
+        if(readingChoices.length()>0){final long shownGeneration=generation;
+            for(int i=0;i<readingChoices.length();i++){final int index=i;String spelling=readingChoices.optString(i);Button b=Ui.button(this,spelling,theme.key,false);b.setTextColor(theme.ink);b.setPadding(0,0,0,0);b.setTextSize(16);b.setContentDescription("九键读音 "+spelling);readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(45)));bind(b,()->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",shownGeneration),null);}catch(JSONException ignored){}},false);}
+        }else{String[] punctuation={"，","。","？","！"};for(int i=0;i<punctuation.length;i++){String text=punctuation[i];Button b=key(text,text,false);b.setElevation(0);b.setBackground(new RippleDrawable(ColorStateList.valueOf(theme.ripple),Ui.shape(this,theme.key,7),null));readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(i<3?44:45)));if(i<3){View line=new View(this);line.setBackgroundColor(theme.stroke);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(1));lp.setMargins(dp(8),0,dp(8),0);readingRail.addView(line,lp);}}}
     }
     private void addRow(String keys,int indent) {
         LinearLayout row=new LinearLayout(this);row.setBaselineAligned(false);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(indent),0,dp(indent),0);
@@ -86,8 +90,7 @@ public final class ZapInputMethodService extends InputMethodService {
         }body.addView(row,new LinearLayout.LayoutParams(-1,dp(52)));
     }
     private void renderKeys() {
-        if(body==null)return;touches.cancel();body.removeAllViews();
-        if(spellingScroll!=null)spellingScroll.setVisibility(chinese&&nineKey&&layer.equals("letters")?View.VISIBLE:View.GONE);
+        if(body==null)return;touches.cancel();readingRail=null;body.removeAllViews();
         body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
@@ -116,7 +119,7 @@ public final class ZapInputMethodService extends InputMethodService {
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
         privateSession = sensitive || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
-        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer="letters";if(spellings!=null)spellings.removeAllViews();renderKeys();
+        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer="letters";readingChoices=new JSONArray();renderKeys();
         final boolean privateMode = privateSession;
         final boolean useNine=chinese&&nineKey;
         refreshStatus();idleToolbar();
@@ -172,9 +175,8 @@ public final class ZapInputMethodService extends InputMethodService {
             connection.finishComposingText();
         }
         refreshStatus();
-        // Reserve the reading row throughout nine-key input so key hit targets
-        // do not move when the first digit arrives or a spelling gets locked.
-        if(spellings!=null){spellings.removeAllViews();JSONArray choices=value.optJSONArray("spellings");spellingScroll.setVisibility(chinese&&nineKey&&layer.equals("letters")?View.VISIBLE:View.GONE);if(choices!=null){final long spellingGeneration=generation;for(int i=0;i<choices.length();i++){final int index=i;String spelling=choices.optString(i);Button b=Ui.button(this,spelling,theme.deck,false);b.setTextColor(theme.ink);b.setTextSize(14);b.setPadding(dp(12),0,dp(12),0);b.setContentDescription("九键读音 "+spelling);spellings.addView(b,new LinearLayout.LayoutParams(-2,dp(30)));bind(b,()->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",spellingGeneration),null);}catch(JSONException ignored){}},false);}}}
+        // Readings replace the punctuation rail; all key hit targets stay fixed.
+        JSONArray choices=value.optJSONArray("spellings");readingChoices=preedit.isEmpty()||choices==null?new JSONArray():choices;renderReadingRail();
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(preedit.isEmpty()){idleToolbar();return;}if(words==null)return;
         final long shownGeneration=generation;
         for(int i=0;i<words.length();i++) { final int index=i; Button b=Ui.button(this,words.optString(i),theme.toolbar,false);b.setTextSize(21);b.setTextColor(i==0?theme.accent:theme.ink);b.setPadding(dp(16),0,dp(16),0);candidates.addView(b,new LinearLayout.LayoutParams(-2,dp(44))); bind(b,() -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} },false); b.setOnLongClickListener(v -> { if(privateSession)return false; try { send(new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration),null); return true; } catch(JSONException ignored) { return false; } }); }
