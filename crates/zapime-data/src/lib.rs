@@ -9,6 +9,7 @@ use uuid::Uuid;
 
 pub mod panel;
 pub mod pull;
+pub mod quarantine;
 pub mod schedule;
 pub mod sync;
 
@@ -49,6 +50,8 @@ pub enum Error {
     SyncHistory,
     #[error("sync_local_conflict")]
     SyncLocalConflict,
+    #[error("retained_pull_capacity_reached")]
+    RetainedFull,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -205,6 +208,7 @@ impl Store {
         }
         tx.execute_batch("PRAGMA user_version=2;")?;
         panel::prepare_index(&tx)?;
+        quarantine::prepare(&tx)?;
         tx.commit()?;
         Ok(Self { db })
     }

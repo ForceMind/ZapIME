@@ -1,0 +1,44 @@
+2026-10-23T20:55:06.8968667Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T20:55:06.8969513Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T20:56:04.3024200Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:06.3127716Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:08.3220224Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:10.3323915Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:12.3413769Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:14.3501534Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:56:51.8635668Z Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-23T20:58:12.8374879Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/home.png': No such file or directory
+2026-10-23T20:58:12.8630817Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/personal.png': No such file or directory
+2026-10-23T20:58:12.8699661Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key.png': No such file or directory
+2026-10-23T20:58:12.8784088Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-light.png': No such file or directory
+2026-10-23T20:58:12.8844217Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-dark.png': No such file or directory
+2026-10-23T20:58:12.8936826Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-dark-candidates.png': No such file or directory
+2026-10-23T20:58:12.8997871Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/feedback-settings.png': No such file or directory
+2026-10-23T20:58:12.9061306Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-data.png': No such file or directory
+2026-10-23T20:58:12.9167823Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-search.png': No such file or directory
+2026-10-23T20:58:12.9296280Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-clipboard.png': No such file or directory
+2026-10-23T20:58:12.9383751Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-favorites.png': No such file or directory
+2026-10-23T20:58:13.0796146Z Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-23T20:58:14.3696981Z FAIL ZapIME native keyboard at saved_shortcut_ui: Exception: Missing UI node: 个人资料 · 离线管理与备份
+2026-10-23T20:58:14.3698239Z Native keyboard instrumentation failed; inspect target/device-smoke
+2026-10-23T20:58:14.5133934Z     raise CalledProcessError(retcode, process.args,
+2026-10-23T20:58:14.5136103Z subprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/runner/work/ZapIME/ZapIME/scripts/android_smoke.py', '/usr/local/lib/android/sdk/platform-tools/adb', 'emulator-5554']' returned non-zero exit status 1.
+2026-10-23T20:59:00.0189049Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-23T20:59:00.0193411Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0194755Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T20:59:00.0195934Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0196908Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T20:59:00.0197801Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0198786Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T20:59:00.0199424Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0199916Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T20:59:00.0200396Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0201166Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T20:59:00.0201909Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:59:00.0202653Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T20:59:00.0203163Z INSTRUMENTATION_CODE: -1
+2026-10-23T20:59:00.0204444Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable
+2026-10-23T20:59:00.0206085Z INSTRUMENTATION_CODE: -1
+2026-10-23T20:59:00.0207435Z Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-23T20:59:01.2125984Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle
+2026-10-23T20:59:01.2710707Z ##[error]The process '/usr/bin/sh' failed with exit code 1

@@ -1,0 +1,57 @@
+2026-10-23T20:55:39.7690040Z   CACHE_ON_FAILURE: true
+2026-10-23T20:56:06.8205698Z   CACHE_ON_FAILURE: true
+2026-10-23T20:56:06.9811651Z PASS offline model bundle /tmp/tmpqsoylms0/first.zip 770
+2026-10-23T20:56:06.9812048Z PASS offline model bundle /tmp/tmpqsoylms0/second.zip 770
+2026-10-23T20:56:07.0009130Z   CACHE_ON_FAILURE: true
+2026-10-23T20:56:33.5934019Z PASS pinned arm64-v8a voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-23T20:56:37.8222313Z PASS voice dynamic dependency allowlist: libonnxruntime.so
+2026-10-23T20:56:37.8223147Z PASS voice dynamic dependency allowlist: libsherpa-onnx-c-api.so
+2026-10-23T20:56:37.8223832Z PASS voice dynamic dependency allowlist: libzapime_voice.so
+2026-10-23T20:57:05.3536094Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T20:57:05.3710319Z   CACHE_ON_FAILURE: true
+2026-10-23T20:57:28.4613974Z PASS pinned x86_64 voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-23T20:57:32.6378140Z PASS voice dynamic dependency allowlist: libonnxruntime.so
+2026-10-23T20:57:32.6378819Z PASS voice dynamic dependency allowlist: libsherpa-onnx-c-api.so
+2026-10-23T20:57:32.6379428Z PASS voice dynamic dependency allowlist: libzapime_voice.so
+2026-10-23T20:57:53.1361284Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T20:57:53.1523147Z   CACHE_ON_FAILURE: true
+2026-10-23T20:57:55.4882220Z   CACHE_ON_FAILURE: true
+2026-10-23T20:57:55.6190568Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:00.9766663Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:15.6475859Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:54.2917282Z PASS pinned model archive and four inference file checksums
+2026-10-23T20:58:54.2918758Z PASS offline model bundle target/ZapIME-XASR-model.zip 129097503
+2026-10-23T20:58:54.3145837Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:54.4657820Z PASS synthetic Mandarin fixture generated locally
+2026-10-23T20:58:54.4910687Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:58.2248329Z   CACHE_ON_FAILURE: true
+2026-10-23T20:58:58.2731727Z   CACHE_ON_FAILURE: true
+2026-10-23T21:01:13.7775264Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/hierarchy.txt': No such file or directory
+2026-10-23T21:01:14.9127482Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T21:01:14.9129439Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T21:02:17.6365386Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/hierarchy.txt': No such file or directory
+2026-10-23T21:02:18.7645900Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T21:02:18.7648249Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T21:04:17.2596057Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-23T21:04:17.2596874Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2597972Z INSTRUMENTATION_STATUS: stream=PASS recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)
+2026-10-23T21:04:17.2598963Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2599792Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T21:04:17.2600542Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2601692Z INSTRUMENTATION_STATUS: stream=PASS model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)
+2026-10-23T21:04:17.2602668Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2603580Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T21:04:17.2604003Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2604501Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T21:04:17.2604956Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2605318Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T21:04:17.2605676Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2606240Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T21:04:17.2607039Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T21:04:17.2607727Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T21:04:17.2608485Z INSTRUMENTATION_CODE: -1
+2026-10-23T21:04:17.2609255Z INSTRUMENTATION_RESULT: stream=FAIL ZapIME native keyboard at voice_preview_not_committed: Exception: voice stop timeout
+2026-10-23T21:04:17.2609711Z INSTRUMENTATION_CODE: 0
+2026-10-23T21:04:17.2798544Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 1}
+2026-10-23T21:04:17.9675648Z   CACHE_ON_FAILURE: true
+2026-10-23T21:04:25.5610724Z   CACHE_ON_FAILURE: true

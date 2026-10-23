@@ -1,0 +1,42 @@
+2026-10-23T20:36:16.2936176Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T20:36:16.2936954Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T20:37:14.1133810Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T20:37:44.0291413Z Verified system teardown keyboard: {'api_level': 35, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-23T20:38:15.4614235Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/keyboard.png': No such file or directory
+2026-10-23T20:38:15.4660873Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/candidates.png': No such file or directory
+2026-10-23T20:38:15.4751939Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/tools.png': No such file or directory
+2026-10-23T20:38:15.4851510Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/numbers.png': No such file or directory
+2026-10-23T20:38:15.4888312Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/home.png': No such file or directory
+2026-10-23T20:38:15.4920431Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/personal.png': No such file or directory
+2026-10-23T20:38:15.4952668Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key.png': No such file or directory
+2026-10-23T20:38:15.5019789Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-light.png': No such file or directory
+2026-10-23T20:38:15.5064652Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-dark.png': No such file or directory
+2026-10-23T20:38:15.5126235Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/nine-key-dark-candidates.png': No such file or directory
+2026-10-23T20:38:15.5880418Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/feedback-settings.png': No such file or directory
+2026-10-23T20:38:15.6027105Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-data.png': No such file or directory
+2026-10-23T20:38:15.6065610Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-search.png': No such file or directory
+2026-10-23T20:38:15.6633542Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-clipboard.png': No such file or directory
+2026-10-23T20:38:15.6674382Z adb: error: failed to stat remote object '/sdcard/Android/data/org.zapime.android.test/files/local-favorites.png': No such file or directory
+2026-10-23T20:38:15.7450399Z Verified system teardown keyboard: {'api_level': 35, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-23T20:38:16.9692461Z FAIL ZapIME native keyboard at launch: Exception: Missing UI node: probe-normal
+2026-10-23T20:38:16.9694018Z Native keyboard instrumentation failed; inspect target/device-smoke
+2026-10-23T20:38:17.1000017Z     raise CalledProcessError(retcode, process.args,
+2026-10-23T20:38:17.1001141Z subprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/runner/work/ZapIME/ZapIME/scripts/android_smoke.py', '/usr/local/lib/android/sdk/platform-tools/adb', 'emulator-5554']' returned non-zero exit status 1.
+2026-10-23T20:38:50.2993172Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-23T20:38:50.3016667Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3017636Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T20:38:50.3018430Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3019374Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T20:38:50.3020146Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3020824Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T20:38:50.3022002Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3022539Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T20:38:50.3023175Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3023946Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T20:38:50.3024773Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T20:38:50.3025317Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T20:38:50.3025949Z INSTRUMENTATION_CODE: -1
+2026-10-23T20:38:50.3026757Z INSTRUMENTATION_RESULT: stream=FAIL ZapIME native keyboard at launch: Exception: Missing UI node: probe-normal
+2026-10-23T20:38:50.3027494Z INSTRUMENTATION_CODE: 0
+2026-10-23T20:38:50.3028061Z Voice keyboard UI acceptance failed
+2026-10-23T20:38:50.3297895Z ##[error]The process '/usr/bin/sh' failed with exit code 1
