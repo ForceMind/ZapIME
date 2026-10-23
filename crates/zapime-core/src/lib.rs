@@ -80,10 +80,32 @@ impl InputSession {
             else {
                 return json!({"error":"invalid_candidate"});
             };
-            let Some((text, _)) = self.display_candidates().get(index).cloned() else {
+            let Some((text, engine_index)) = self.display_candidates().get(index).cloned() else {
                 return json!({"error":"invalid_candidate"});
             };
-            let code = self.engine.snapshot().editing_text;
+            let snapshot = self.engine.snapshot();
+            let mut code = snapshot.editing_text.clone();
+            if self.engine.grid_composing() {
+                if let Some(item) = engine_index.and_then(|n| snapshot.candidates.get(n)) {
+                    if item.pinyin.len() < snapshot.editing_text.len() {
+                        return json!({"error":"partial_candidate"});
+                    }
+                    if !item.canonical_pinyin.is_empty() {
+                        code = item.canonical_pinyin.replace('\'', "");
+                    }
+                } else if let Some(personal_code) = self.personal.iter().find_map(|record| {
+                    let (personal_code, personal_text) = match &record.content {
+                        Content::Dictionary { code, text, .. }
+                        | Content::CandidateRule { code, text, .. }
+                        | Content::Snippet { code, text, .. } => (code, text),
+                        _ => return None,
+                    };
+                    (personal_text == &text && nine_key_matches(personal_code, &snapshot.preedit))
+                        .then_some(personal_code)
+                }) {
+                    code = personal_code.clone();
+                }
+            }
             if code.is_empty() {
                 return json!({"error":"invalid_record"});
             }
@@ -245,9 +267,11 @@ impl InputSession {
             return rows;
         }
         let matches = |code: &str| {
-            code == snapshot.editing_text
-                || code == snapshot.normalized_segmentation
-                || (self.engine.grid_composing() && nine_key_matches(code, &snapshot.preedit))
+            if self.engine.grid_composing() {
+                nine_key_matches(code, &snapshot.preedit)
+            } else {
+                code == snapshot.editing_text || code == snapshot.normalized_segmentation
+            }
         };
         let mut additions = Vec::new();
         let mut rules = Vec::new();

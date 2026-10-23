@@ -368,3 +368,56 @@ fn nine_key_personal_words_respect_explicit_spelling_disambiguation() {
         session.request(&json!({"op":"reset"}));
     }
 }
+
+#[test]
+fn nine_key_pin_uses_real_pinyin_and_cannot_override_another_locked_reading() {
+    let (dir, _private) = fixture();
+    let mut session = InputSession::open(
+        &dir.path().join("resources"),
+        &dir.path().join("data"),
+        &dir.path().join("cache"),
+        false,
+    )
+    .unwrap();
+    session.request(&json!({"op":"layout","name":"nine_key"}));
+    let mut view = json!(null);
+    for key in "64426".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    let index = view["candidates"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|s| s == "拟好")
+        .unwrap();
+    view = session
+        .request(&json!({"op":"personal_pin","index":index,"generation":view["generation"]}));
+    assert_eq!(view["candidates"][0], "拟好");
+    assert_eq!(
+        session.request(&json!({"op":"personal_list"}))["records"][0]["content"]["code"],
+        "nihao"
+    );
+    session.request(&json!({"op":"reset"}));
+    session.request(&json!({"op":"key","text":"6"}));
+    view = session.request(&json!({"op":"key","text":"4"}));
+    let mi = view["spellings"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .position(|s| s == "mi")
+        .unwrap();
+    session.request(&json!({"op":"nine_spelling","index":mi,"generation":view["generation"]}));
+    for key in "426".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    assert!(!view["candidates"]
+        .as_array()
+        .unwrap()
+        .contains(&json!("拟好")));
+    session.request(&json!({"op":"reset"}));
+    session.request(&json!({"op":"layout","name":"qwerty"}));
+    for key in "nihao".chars() {
+        view = session.request(&json!({"op":"key","text":key.to_string()}));
+    }
+    assert_eq!(view["candidates"][0], "拟好");
+}
