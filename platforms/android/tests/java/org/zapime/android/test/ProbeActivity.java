@@ -17,6 +17,7 @@ public final class ProbeActivity extends Activity {
     static WeakReference<ProbeActivity> current = new WeakReference<>(null);
     EditText normal, password;
     private int focusRequest;
+    static final java.util.concurrent.atomic.AtomicInteger normalConnections=new java.util.concurrent.atomic.AtomicInteger();
     static final AtomicBoolean delayNextContext=new AtomicBoolean();
     static volatile CountDownLatch contextEntered=new CountDownLatch(0),contextRelease=new CountDownLatch(0);
     @Override public void onCreate(Bundle state) {
@@ -31,6 +32,7 @@ public final class ProbeActivity extends Activity {
             @Override public InputConnection onCreateInputConnection(EditorInfo info){
                 note("normal connection created; length="+length()+" selection="+getSelectionStart()+":"+getSelectionEnd()+" composing="+BaseInputConnection.getComposingSpanStart(getText())+":"+BaseInputConnection.getComposingSpanEnd(getText()));
                 InputConnection connection=super.onCreateInputConnection(info);if(connection==null)return null;
+                normalConnections.incrementAndGet();
                 return new InputConnectionWrapper(connection,false){
                     @Override public CharSequence getTextBeforeCursor(int length,int flags){
                         // Synthetic unresponsive-editor fixture. No IME API or

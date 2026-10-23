@@ -235,6 +235,23 @@ public final class SmokeInstrumentation extends Instrumentation {
         stage="voice back cancellation";startDictation();long down=SystemClock.uptimeMillis();for(int action:new int[]{KeyEvent.ACTION_DOWN,KeyEvent.ACTION_UP})if(!automation.injectInputEvent(new KeyEvent(down,SystemClock.uptimeMillis(),action,KeyEvent.KEYCODE_BACK,0,0,android.view.KeyCharacterMap.VIRTUAL_KEYBOARD,0,KeyEvent.FLAG_FROM_SYSTEM,InputDevice.SOURCE_KEYBOARD),true))throw new Exception("Back injection rejected");waitFor("工具",true);requireEditor("voice guard test","voice_back_preserves_editor");
         stage="voice hide cancellation";startDictation();click("收起语音键盘");boolean hidden=false;for(int i=0;i<50;i++){boolean shown=false;for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD)shown=true;if(!shown){hidden=true;break;}Thread.sleep(100);}if(!hidden)throw new Exception("IME did not actually hide");click("probe-show-keyboard",true);waitFor("⚡ 闪电 · 离线");waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("voice result survived keyboard hide");requireEditor("voice guard test","voice_hide_preserves_editor");startDictation();click("取消");waitFor("工具",true);
     }
+    private void waitImeText(String text) throws Exception {
+        for(int i=0;i<150;i++){
+            for(AccessibilityWindowInfo window:automation.getWindows())
+                if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD&&walk(window.getRoot(),text)!=null)return;
+            Thread.sleep(100);
+        }
+        throw new Exception("Missing IME-only text: "+text);
+    }
+    private void restartComposition() throws Exception {
+        stage="restart_composition_before";waitImeText("ni");requireEditor("ni",stage);
+        int previous=ProbeActivity.normalConnections.get();
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        stage="restart_composition_connection";
+        for(int i=0;ProbeActivity.normalConnections.get()<=previous;i++){if(i==100)throw new Exception("Editor did not recreate connection");Thread.sleep(50);}
+        automation.waitForIdle(200,3000);
+        stage="restart_composition_retained";waitImeText("ni");requireEditor("ni",stage);
+    }
     @Override public void onStart() {
         Bundle result=new Bundle();
         try {
@@ -242,7 +259,9 @@ public final class SmokeInstrumentation extends Instrumentation {
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));
+            for(char c:"ni".toCharArray())click(String.valueOf(c));
+            if(Build.VERSION.SDK_INT>=30)restartComposition();
+            for(char c:"hao".toCharArray())click(String.valueOf(c));
             waitFor("你好",true);screenshot("candidates.png");chooseCandidate("你好","你好","pinyin_commit");
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
