@@ -1,0 +1,10 @@
+# Selected failure excerpt, attempt 1; not a passing input test.
+Source: https://github.com/ForceMind/ZapIME/actions/runs/39984884112
+Source head: 0605292d9c57c776c431c88243375a71b974c7c3
+Both APKs compiled; emulator setup failed while downloading/installing Android API28.
+Only the failed workflow job was requested to rerun; result must be recorded separately.
+
+2026-10-23T16:20:55.4663609Z Warning: An error occurred while preparing SDK package Android SDK Platform 28: Error on ZipFile unknown archive.
+2026-10-23T16:20:55.8666908Z error: could not connect to TCP port 5554: Connection refused
+2026-10-23T16:20:55.8671733Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-23T16:20:55.8678972Z ##[error]The process '/usr/bin/sh' failed with exit code 1

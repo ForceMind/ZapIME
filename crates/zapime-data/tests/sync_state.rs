@@ -42,6 +42,223 @@ fn packet(store: &mut Store, profile: Uuid) -> UploadOperation {
 }
 
 #[test]
+fn coalescing_keeps_last_unstaged_per_record_and_preserves_history_and_replay() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("data.sqlite3");
+    let profile = Uuid::new_v4();
+    let mut store = Store::open(&path).unwrap();
+    store.bind_sync_profile(profile).unwrap();
+    let a = Uuid::new_v4();
+    let b = Uuid::new_v4();
+    let first = edit(&mut store, a, 0, "first");
+    let other = edit(&mut store, b, 0, "other");
+    let last = edit(&mut store, a, 1, "latest");
+    assert_eq!(store.coalesce_unstaged(profile, 4096).unwrap(), 1);
+    assert_eq!(store.coalesce_unstaged(profile, 4096).unwrap(), 0);
+    assert_eq!(store.pending_count().unwrap(), 2);
+    let pending = store.pending_operations(profile, 20).unwrap();
+    assert_eq!(
+        pending.iter().map(|p| p.operation_id).collect::<Vec<_>>(),
+        vec![other, last]
+    );
+    assert_eq!(pending[1].record.revision, 2);
+    assert_eq!(pending[1].server_revision, 0);
+    let device = store.device_id().unwrap();
+    let replay = store
+        .edit(
+            first,
+            a,
+            0,
+            device,
+            Content::Favorite {
+                title: "合成测试".into(),
+                text: "first".into(),
+            },
+            false,
+        )
+        .unwrap();
+    assert_eq!(replay.revision, 1);
+    assert_eq!(store.get(a).unwrap().unwrap().revision, 2);
+    assert_eq!(store.pending_count().unwrap(), 2);
+    let raw = rusqlite::Connection::open(&path).unwrap();
+    assert_eq!(
+        raw.query_row::<i64, _, _>("SELECT count(*) FROM operations", [], |r| r.get(0))
+            .unwrap(),
+        3
+    );
+    let saved: String = raw
+        .query_row(
+            "SELECT result FROM operations WHERE id=?1",
+            [first.to_string()],
+            |r| r.get(0),
+        )
+        .unwrap();
+    assert_eq!(
+        serde_json::from_str::<zapime_data::Record>(&saved)
+            .unwrap()
+            .content,
+        replay.content
+    );
+    drop(store);
+    let mut reopened = Store::open(&path).unwrap();
+    assert_eq!(
+        reopened
+            .pending_operations(profile, 20)
+            .unwrap()
+            .iter()
+            .map(|p| p.operation_id)
+            .collect::<Vec<_>>(),
+        vec![other, last]
+    );
+    assert_eq!(reopened.sync_cursor(profile).unwrap(), 0);
+}
+
+#[test]
+fn coalescing_never_rewrites_or_skips_a_frozen_request() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(&dir.path().join("data.sqlite3")).unwrap();
+    let profile = Uuid::new_v4();
+    let id = Uuid::new_v4();
+    store.bind_sync_profile(profile).unwrap();
+    let frozen = edit(&mut store, id, 0, "frozen");
+    let wire = packet(&mut store, profile);
+    let saved = store.stage_upload(profile, wire).unwrap();
+    edit(&mut store, id, 1, "middle");
+    let latest = edit(&mut store, id, 2, "last");
+    assert_eq!(store.coalesce_unstaged(profile, 4096).unwrap(), 1);
+    assert_eq!(store.pending_count().unwrap(), 2);
+    let mut replacement = packet(&mut store, profile);
+    replacement.envelope.nonce = "B".repeat(32);
+    replacement.key_id = Uuid::new_v4();
+    assert_eq!(
+        store
+            .stage_upload(profile, replacement)
+            .unwrap()
+            .to_wire()
+            .unwrap(),
+        saved.to_wire().unwrap()
+    );
+    store.acknowledge_upload(profile, frozen, 23).unwrap();
+    let pending = store.pending_operations(profile, 10).unwrap();
+    assert_eq!(pending.len(), 1);
+    assert_eq!(pending[0].operation_id, latest);
+    assert_eq!(pending[0].record.revision, 3);
+    assert_eq!(pending[0].server_revision, 23);
+    let upload = packet(&mut store, profile);
+    store.stage_upload(profile, upload).unwrap();
+    store.acknowledge_upload(profile, latest, 29).unwrap();
+    assert_eq!(store.pending_count().unwrap(), 0);
+    assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+}
+
+#[test]
+fn coalescing_retains_the_last_delete_tombstone_and_does_not_restore_it_by_replay() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(&dir.path().join("data.sqlite3")).unwrap();
+    let profile = Uuid::new_v4();
+    let id = Uuid::new_v4();
+    store.bind_sync_profile(profile).unwrap();
+    let first = edit(&mut store, id, 0, "temporary");
+    let device = store.device_id().unwrap();
+    let content = store.get(id).unwrap().unwrap().content;
+    let delete = Uuid::new_v4();
+    store
+        .edit(delete, id, 1, device, content.clone(), true)
+        .unwrap();
+    assert_eq!(store.coalesce_unstaged(profile, 4096).unwrap(), 1);
+    let pending = store.pending_operations(profile, 10).unwrap();
+    assert_eq!(pending.len(), 1);
+    assert_eq!(pending[0].operation_id, delete);
+    assert!(pending[0].record.deleted);
+    assert!(packet(&mut store, profile).deleted);
+    store.edit(first, id, 0, device, content, false).unwrap();
+    assert!(store.get(id).unwrap().unwrap().deleted);
+    assert_eq!(store.pending_count().unwrap(), 1);
+}
+
+#[test]
+fn coalescing_is_profile_checked_and_only_changes_the_bounded_window() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(&dir.path().join("data.sqlite3")).unwrap();
+    let profile = Uuid::new_v4();
+    let id = Uuid::new_v4();
+    store.bind_sync_profile(profile).unwrap();
+    let first = edit(&mut store, id, 0, "one");
+    edit(&mut store, id, 1, "two");
+    let last = edit(&mut store, id, 2, "three");
+    assert!(matches!(
+        store.coalesce_unstaged(Uuid::new_v4(), 4096),
+        Err(Error::SyncProfile)
+    ));
+    for limit in [0, 4097] {
+        assert!(matches!(
+            store.coalesce_unstaged(profile, limit),
+            Err(Error::Invalid)
+        ));
+    }
+    assert_eq!(store.pending_count().unwrap(), 3);
+    assert_eq!(store.coalesce_unstaged(profile, 1).unwrap(), 0);
+    assert_eq!(store.coalesce_unstaged(profile, 2).unwrap(), 1);
+    assert_eq!(store.pending_count().unwrap(), 2);
+    assert!(matches!(
+        store.acknowledge_upload(profile, first, 9),
+        Err(Error::SyncAck)
+    ));
+    assert_eq!(store.coalesce_unstaged(profile, 2).unwrap(), 1);
+    assert_eq!(
+        store.pending_operations(profile, 10).unwrap()[0].operation_id,
+        last
+    );
+}
+
+#[test]
+fn coalescing_after_a_snapshot_is_read_prevents_staging_that_superseded_snapshot() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("data.sqlite3");
+    let mut one = Store::open(&path).unwrap();
+    let mut two = Store::open(&path).unwrap();
+    let profile = Uuid::new_v4();
+    let id = Uuid::new_v4();
+    one.bind_sync_profile(profile).unwrap();
+    edit(&mut one, id, 0, "old");
+    let stale = packet(&mut one, profile);
+    let last = edit(&mut two, id, 1, "new");
+    two.coalesce_unstaged(profile, 4096).unwrap();
+    assert!(matches!(
+        one.stage_upload(profile, stale),
+        Err(Error::SyncOrder)
+    ));
+    assert_eq!(
+        one.pending_operations(profile, 1).unwrap()[0].operation_id,
+        last
+    );
+}
+
+#[test]
+fn a_hundred_offline_edits_can_prepare_one_upload_without_equating_revisions() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(&dir.path().join("data.sqlite3")).unwrap();
+    let profile = Uuid::new_v4();
+    let id = Uuid::new_v4();
+    store.bind_sync_profile(profile).unwrap();
+    let mut last = Uuid::nil();
+    for revision in 0..100 {
+        last = edit(&mut store, id, revision, &format!("version {revision}"));
+    }
+    assert_eq!(store.pending_count().unwrap(), 100);
+    assert_eq!(store.coalesce_unstaged(profile, 4096).unwrap(), 99);
+    assert_eq!(store.pending_count().unwrap(), 1);
+    let packet = packet(&mut store, profile);
+    assert_eq!(packet.operation_id, last);
+    assert_eq!(packet.base_revision, 0);
+    store.stage_upload(profile, packet).unwrap();
+    store.acknowledge_upload(profile, last, 1).unwrap();
+    assert_eq!(store.get(id).unwrap().unwrap().revision, 100);
+    assert_eq!(store.pending_count().unwrap(), 0);
+    assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+}
+
+#[test]
 fn crash_retry_keeps_exact_first_wire_nonce_and_key_version() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("data.sqlite3");
