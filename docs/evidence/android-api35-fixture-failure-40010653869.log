@@ -1,0 +1,13 @@
+Source: 4e559d7185448b1a39885f40539be8d3e8f7a810
+Workflow: https://github.com/ForceMind/ZapIME/actions/runs/40010653869
+API: 35
+Overall FAILED before modern input/recognition acceptance. Product APK content verification and installation succeeded.
+No AOSP namespace keyboard was found by the old fixture selector; raw inventory was not recorded, so another system provider must be verified before selection.
+ADB-created Android/data model fixture was unreadable by the target App (EACCES). This is not a passed SAF/model-import or modern speech test.
+
+2026-10-23T19:30:03.6007584Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T19:30:03.6008591Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T19:31:46.3692012Z AOSP system keyboard required for isolated fixture reset
+2026-10-23T19:31:50.9025390Z INSTRUMENTATION_RESULT: stream=FAIL Android voice at model boundary: FileNotFoundException /storage/emulated/0/Android/data/org.zapime.android/files/voice-fixtures/model.zip: open failed: EACCES (Permission denied)
+2026-10-23T19:31:50.9084313Z INSTRUMENTATION_CODE: 0
+2026-10-23T19:31:50.9572204Z Android gate exit codes: {"android_smoke_repeat.py": 1, "android_voice_smoke.py": 1}

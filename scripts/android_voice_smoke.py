@@ -7,6 +7,8 @@ import subprocess
 import sys
 import time
 import wave
+import json
+from android_ci_device import system_keyboard
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
     raise SystemExit("Ephemeral GitHub emulator required")
@@ -27,12 +29,11 @@ with wave.open(str(root / "target/voice-probe/synthetic.wav")) as source:
     if source.getnchannels() != 1 or source.getsampwidth() != 2 or source.getframerate() != 16000:
         raise SystemExit("Synthetic 16 kHz PCM16 mono fixture required")
     (out / "synthetic.pcm").write_bytes(source.readframes(source.getnframes()))
-run("install", "-r", str(root / "target/android-voice-tests/ZapIME-voice-tests.apk"))
+run("install", "-r", "-t", str(root / "target/android-voice-tests/ZapIME-voice-tests.apk"))
 # Revoke before instrumentation: revoking a runtime permission can kill its UID.
 run("shell", "pm", "revoke", "org.zapime.android", "android.permission.RECORD_AUDIO")
-run("shell", "mkdir", "-p", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures")
-for path, name in ((root / "target/ZapIME-XASR-model.zip", "model.zip"), (out / "synthetic.pcm", "synthetic.pcm")):
-    run("push", str(path), "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + name)
+# Test-only APK assets carry public model/synthetic PCM. Product storage grants
+# and Android/data ownership are never changed just to deliver CI fixtures.
 # App has no INTERNET permission. Also disconnect the emulator's network radios.
 run("shell", "svc", "wifi", "disable")
 run("shell", "svc", "data", "disable")
@@ -54,10 +55,9 @@ try:
         raise SystemExit("Voice keyboard UI acceptance failed")
     for name in ("voice-recording.png","voice-stopped.png"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name))
-    methods=run("shell","ime","list","-a","-s",text=True,capture_output=True).stdout
-    system_methods=[line.strip() for line in methods.splitlines() if line.strip().startswith("com.android.")]
-    if not system_methods:raise SystemExit("AOSP IME required for actual voice-service teardown")
-    for action in ("enable","set"):run("shell","ime",action,system_methods[0])
+    system_method,proof=system_keyboard([adb,"-s",serial])
+    (out/"system-keyboard.json").write_text(json.dumps(proof,indent=2)+"\n")
+    for action in ("enable","set"):run("shell","ime",action,system_method)
     for attempt in range(50):
         teardown=run("shell","dumpsys","activity","services","org.zapime.android",text=True,capture_output=True).stdout
         if "ZapInputMethodService" not in teardown:break

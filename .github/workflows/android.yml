@@ -34,11 +34,10 @@ jobs:
           cache-on-failure: true
       - run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
       - name: Voice dependency and model packaging boundaries
-        run: python3 -m unittest discover -s scripts -p test_android_voice_tools.py -v
+        run: python3 -m unittest discover -s scripts -p 'test_android_*.py' -v
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
       - run: bash scripts/build_android_tests.sh
-      - run: bash scripts/build_android_voice_tests.sh
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -58,6 +57,8 @@ jobs:
       - name: Synthesize fixed Mandarin fixture
         run: |
           .venv-voice/bin/python scripts/voice_probe.py synthesize
+      - name: Build test-only APK with scoped-storage-safe synthetic assets
+        run: bash scripts/build_android_voice_tests.sh
       - name: Enable KVM for native input acceptance
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
@@ -83,6 +84,88 @@ jobs:
             target/device-smoke/
             target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
             target/voice-android/
-            target/android-voice-tests/ZapIME-voice-tests.apk
             target/ZapIME-XASR-model.zip
           if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-Android-test-harness
+          path: |
+            target/android-voice-tests/ZapIME-voice-tests.apk
+            target/android-tests/ZapIME-tests.apk
+            target/voice-probe/synthetic.wav
+          if-no-files-found: error
+  modern:
+    name: Android API ${{ matrix.api }} native acceptance
+    needs: android
+    # Keep collecting independent modern-system evidence if the API 28 input
+    # gate failed after building complete artifacts. Either failure still makes
+    # this workflow fail; an incomplete artifact fails the preflight explicitly.
+    if: ${{ always() && !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [35, 36]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZapIME-Android-development
+          path: target
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZapIME-Android-test-harness
+          path: target
+      - name: Verify exact development package inputs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys, shutil
+          sys.path.insert(0, 'scripts')
+          from check_apk import check_contents
+          # The download also carries API28 evidence. Keep that immutable in its
+          # original artifact; modern gates must create fresh per-device output.
+          for directory in ('device-smoke', 'device-smoke-evidence', 'voice-android'):
+              path=Path('target')/directory
+              if path.exists():
+                  shutil.rmtree(path)
+          for abi in ('arm64-v8a', 'x86_64'):
+              check_contents(Path('target') / ('android-' + abi) / ('ZapIME-0.1.0-dev-' + abi + '.apk'))
+          for path in ('target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk', 'target/voice-probe/synthetic.wav', 'target/ZapIME-XASR-model.zip'):
+              assert Path(path).is_file() and Path(path).stat().st_size > 0, 'missing acceptance input: ' + path
+          PY
+      - name: Enable KVM on the dedicated modern emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Actual modern Android keyboard and offline voice
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: google_apis
+          ram-size: '4096M'
+          heap-size: '512M'
+          emulator-boot-timeout: 300
+          script: |
+            adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            python3 scripts/android_acceptance.py "$(command -v adb)" emulator-5554
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-Android-API-${{ matrix.api }}-acceptance
+          path: |
+            target/device-smoke/
+            target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
+            target/voice-android/
+          if-no-files-found: warn
