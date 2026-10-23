@@ -52,7 +52,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(action.equals("中/英"))b.setTextSize(12);b.setOnClickListener(v -> press(action));return b;
     }
     private void addRow(String keys,int indent) {
-        LinearLayout row=new LinearLayout(this);row.setPadding(dp(indent),0,dp(indent),0);
+        LinearLayout row=new LinearLayout(this);row.setBaselineAligned(false);row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(indent),0,dp(indent),0);
         for(String action:keys.split(" ")) {
             String label=action.equals("空格")?(chinese?"拼音 · 空格":"English"):action.equals("中/英")?(chinese?"中/英":"英/中"):action.equals("返回")?"ABC":action;
             if(action.startsWith("t9-")){int digit=Integer.parseInt(action.substring(3));label=new String[]{"","","ABC","DEF","GHI","JKL","MNO","PQRS","TUV","WXYZ"}[digit]+"\n"+digit;}
@@ -60,7 +60,7 @@ public final class ZapInputMethodService extends InputMethodService {
             if(action.equals("空格")&&chinese&&nineKey&&layer.equals("letters"))label="空格";
             if(action.length()==1&&Character.isLetter(action.charAt(0)))label=shift?action.toUpperCase(java.util.Locale.ROOT):action;
             boolean special=action.equals("⇧")||action.equals("⌫")||action.equals("↵")||action.equals("123")||action.equals("中/英")||action.equals("返回");
-            Button b=key(label,action,special);if(action.startsWith("t9-")){b.setTextSize(17);b.setContentDescription("九键 "+action.substring(3));}float weight=chinese&&nineKey&&layer.equals("letters")?1:action.equals("空格")?3.5f:action.equals("↵")?1.5f:layer.equals("letters")&&(action.equals("⇧")||action.equals("⌫"))?1.3f:1;
+            Button b=key(label,action,special);if(action.startsWith("t9-")){b.setTextSize(17);b.setIncludeFontPadding(false);b.setGravity(Gravity.CENTER);b.setContentDescription("九键 "+action.substring(3));}float weight=chinese&&nineKey&&layer.equals("letters")?1:action.equals("空格")?3.5f:action.equals("↵")?1.5f:layer.equals("letters")&&(action.equals("⇧")||action.equals("⌫"))?1.3f:1;
             LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(46),weight);p.setMargins(dp(3),dp(3),dp(3),dp(3));row.addView(b,p);
         }body.addView(row,new LinearLayout.LayoutParams(-1,dp(52)));
     }
