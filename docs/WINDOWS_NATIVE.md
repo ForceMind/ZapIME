@@ -77,3 +77,5 @@ dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，
 - https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofiles-getlanguagelist
 
 本次脚本尚无本地Windows执行证据；即使CI成功，仍不是正式安装器、语言包配置或记事本/浏览器上屏验收。
+
+夹具接受请求的zh-CN、完整zh-Hans-CN及New-WinUserLanguageList返回的规范标签，避免在实际语言已存在时因别名字符串差异误报；仍要求恰好一个匹配项，原列表恢复逐项精确比较不放宽。此调整是代码复核发现的潜在别名边界，新CI验证，不虚构7099a24的运行结论。

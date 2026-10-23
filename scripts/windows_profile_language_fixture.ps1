@@ -23,7 +23,10 @@ function Snapshot-Languages($Languages) {
 $original = Get-WinUserLanguageList
 if ($original.Count -lt 1 -or $original.Count -gt 32) { throw 'unexpected_original_language_count' }
 $before = Snapshot-Languages $original
-$hadChinese = @($original | Where-Object { $_.LanguageTag -eq 'zh-CN' }).Count -gt 0
+$chinese = New-WinUserLanguageList -Language 'zh-CN'
+# Accept the requested tag and the canonical tag returned by Windows.
+$targetTags = @('zh-CN', 'zh-Hans-CN', $chinese[0].LanguageTag)
+$hadChinese = @($original | Where-Object { $targetTags -contains $_.LanguageTag }).Count -gt 0
 $executable = Join-Path (Split-Path $PSScriptRoot -Parent) 'target/windows-native/Release/ZapIMEWindowsProfileProbe.exe'
 if (-not (Test-Path -LiteralPath $executable -PathType Leaf)) { throw 'missing_exact_profile_probe' }
 $modified = $false
@@ -35,13 +38,12 @@ try {
         $temporary = New-WinUserLanguageList -Language ($original[0].LanguageTag)
         $temporary.Clear()
         foreach ($entry in $original) { [void]$temporary.Add($entry) }
-        $chinese = New-WinUserLanguageList -Language 'zh-CN'
         [void]$temporary.Add($chinese[0])
         $modified = $true # Restore even after a partially failed setter.
         Set-WinUserLanguageList -LanguageList $temporary -Force
     }
     $current = Get-WinUserLanguageList
-    if (@($current | Where-Object { $_.LanguageTag -eq 'zh-CN' }).Count -ne 1) {
+    if (@($current | Where-Object { $targetTags -contains $_.LanguageTag }).Count -ne 1) {
         throw 'chinese_user_language_not_present_after_fixture'
     }
     Write-Output 'language_fixture chinese_user_language_present=1; no language-pack installation'
