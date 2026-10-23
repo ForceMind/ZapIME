@@ -78,7 +78,8 @@ def synthesize(output, espeak):
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as temporary:
         raw = Path(temporary) / "synthetic.wav"
-        subprocess.run([espeak, "-v", "cmn", "-s", "150", "-w", str(raw), SYNTHETIC_TEXT], check=True)
+        # cmn's Latin-as-English mode can pronounce dictionary pinyin as English.
+        subprocess.run([espeak, "-v", "cmn-latn-pinyin", "-s", "150", "-w", str(raw), SYNTHETIC_TEXT], check=True)
         with wave.open(str(raw)) as wav:
             if wav.getnchannels() != 1 or wav.getsampwidth() != 2:
                 raise ValueError("unexpected synthetic audio format")
@@ -95,7 +96,7 @@ def synthesize(output, espeak):
     print("PASS synthetic Mandarin fixture generated locally")
 
 
-def recognize(directory, audio, threads, runs, report, include_text):
+def recognize(directory, audio, threads, runs, report, include_text, expected_fragments):
     # This branch has no download/HTTP client calls. Missing or altered models fail.
     import numpy as np
     import sherpa_onnx
@@ -138,7 +139,8 @@ def recognize(directory, audio, threads, runs, report, include_text):
             raise ValueError("recognizer produced empty text")
         row = {"iteration": iteration+1, "decode_seconds": elapsed, "rtf": elapsed/(len(samples)/16000),
                "first_text_compute_seconds": first_compute, "first_text_audio_seconds": first_audio,
-               "text_characters": len(text), "text_sha256": hashlib.sha256(text.encode()).hexdigest()}
+               "text_characters": len(text), "text_sha256": hashlib.sha256(text.encode()).hexdigest(),
+               "expected_fragments_present": all(fragment in text for fragment in expected_fragments)}
         if include_text:
             row["text"] = text
         results.append(row)
@@ -147,10 +149,13 @@ def recognize(directory, audio, threads, runs, report, include_text):
               "audio_sha256": hashlib.file_digest(audio.open("rb"), "sha256").hexdigest(),
               "load_seconds": load_seconds, "median_decode_seconds": statistics.median(r["decode_seconds"] for r in results),
               "median_rtf": statistics.median(r["rtf"] for r in results), "runs": results,
+              "expected_fragments": expected_fragments,
               "scope": "CPU file-fed streaming probe; not handset latency, microphone or accuracy acceptance"}
     report.parent.mkdir(parents=True, exist_ok=True)
     report.write_text(json.dumps(result, ensure_ascii=False, indent=2)+"\n")
-    print("PASS local CPU ASR: nonempty transcript; model hashes verified; report:", report)
+    if not all(row["expected_fragments_present"] for row in results):
+        raise ValueError("known synthetic phrase mismatch; preserved report: " + str(report))
+    print("PASS local CPU ASR: model hashes, nonempty transcript and requested phrase checks; report:", report)
 
 
 def main():
@@ -168,13 +173,14 @@ def main():
     run.add_argument("--runs", type=int, choices=range(1, 11), default=3)
     run.add_argument("--report", type=Path, default=ROOT / "target/voice-probe/report.json")
     run.add_argument("--include-text", action="store_true", help="Only use for non-private synthetic fixtures")
+    run.add_argument("--expect-fragment", action="append", default=[], help="Optional known synthetic phrase assertion")
     args = parser.parse_args()
     if args.command == "prepare":
         prepare(args.directory)
     elif args.command == "synthesize":
         synthesize(args.output, args.espeak)
     else:
-        recognize(args.directory, args.wav, args.threads, args.runs, args.report, args.include_text)
+        recognize(args.directory, args.wav, args.threads, args.runs, args.report, args.include_text, args.expect_fragment)
 
 
 if __name__ == "__main__":
