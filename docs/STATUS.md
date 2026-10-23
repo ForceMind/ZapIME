@@ -288,6 +288,18 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 0cba4fc / 40024642427的API28/35通过，API36基础资料页切换仍无法显示目标控件，整体失败；API36的模型发布恢复、JNI/AudioRecord/完整语音UI独立通过。旧文案超时已修正，但不能据此将基础输入失败回改成功。
 - 已下载845856字节artifact12532243325并校验SHA256 e1e4c24bfa0bde81b1569912b540b2528d63fd644ab007bba3d919cbf942e71f；原文为evidence/android-model-combined-api36-failure-40024642427.log。其现场层级仍是Probe编辑器/键盘，而非期望的设置页；进程结束后外部快照中的MainActivity处于stopped，不能将其当成失败当时的完整状态。新组合带入49d2c7b的前台按钮、实际Insets显示判断和finish前诊断，不更改产品输入/模型代码，待新CI。
 
+## Android同步材料保护（最初候选记录，结果见下节）
+
+- 新增SyncSecrets本机保护原语：AndroidKeyStore AES256/GCM系统随机IV、账号/版本AAD、64KiB有界opaque材料、私有noBackup目录和AtomicFile更新，提交后重新解密核对。损坏/缺密钥明确拒绝，无明文回退或默默生成新key覆盖既有密文；只提供未来显式forget入口，没有生产UI/网络调用方。
+- 主线程检查在互斥锁之前，避免误调用等待后台密钥/文件操作；输入worker也不得调用。新增signed-target的真实Keystore往返/nonce/不可导出/篡改/账号隔离/模拟未完成写/持锁主线程拒绝/丢key不重建回归，只用随机测试账号与合成字节并清理自己的别名。
+- 本机产品20个Java、语音测试1个、独立编辑器2个源文件编译通过（JDK17.0.21/API36r02），11项Python资源与临时CI隐私边界通过；当时真实三API Keystore尚未运行；后续通过结果见下节，详细边界见ANDROID_SECRET_STORAGE.md；此候选后续按依赖接#36，不擅自把未验证源码合入main。
+- 没有接账号/HTTP、Rust密钥导入导出、配对/轮换、加密恢复UI或其它平台密钥库；设备保护密钥不可代替用户恢复材料，SQLite仍含明文业务记录。M4–M6保持未完成，阶段计数待主干顺序补记。
+
+## 同步材料原语的真实三API验收（候选基础）
+
+- 83c5c0a348b9c0291a40ebd0008ff02a1f97792b的五workflow全部success：Android40025714052（API28/35/36）、共享核/Apple40025714138、Windows40025714186、服务40025714146、断网CPU40025714122。三API实际AndroidKeyStore新回归通过：合成材料往返、不同随机nonce、保护key不可编码导出、篡改/账号交换拒绝、未完成AtomicFile写入恢复旧值、持锁时主线程快速拒绝、缺key读写不默默重建，最后清理自己随机测试账号的key/文件。原始摘录evidence/android-api28/35/36-sync-secrets-40025714052.log。
+- 模型状态恢复/原JNI/录音/完整UI、基础两轮及真实服务退出在该下游源也通过；不据此回改#35/#36较早API36失败。当前仅合入24e3d9b的测试宿主/诊断更新和其证据，生产SyncSecrets/输入/模型源码没有变化；组合CI另验，间歇失败继续由#38跟踪，仍未接真实账号/HTTP或恢复UI，不能称用户现在已经完成云端同步。
+
 ## 接续任务
 
 1. 认证拉取 #31 已验证合并；继续永久冲突副本、失败密文页隔离和归档恢复；不得把未接入宿主的共享模块当作已联网。依照 #27 继续键高/单手、横屏/大字号、常用手势/长按和真机反馈；资料面板已接通，M5 仍未完成。
@@ -326,6 +338,12 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 24e3d9b90787b1c0ad248e020c577b8183bc75f2 的五工作流全部成功：Android40028368471(API28/35/36)、development40028368520、service40028368415、Windows40028368424、offlineCPU40028368390。前述原生模型状态、JNI/录音、语音UI、双轮真实Editable及真实服务退出均保留；旧失败不重标。
 - 当前仅合入#35 ca791dc的UTF-8诊断字节修正、已验证原始失败现场和状态。实际git diff确认三组Android产品/voice测试/editor测试完全等同24e3d9b；新增12项Python边界源码等同已通过ca791dc。新组合工作流由CI确认，尚不称本新head全部通过。
 - #35仍待门禁，未合并/未改main；自然语音/ARM、真实断电/SAF、四端联网/恢复UI和生产部署仍未完成。
+
+## PR #37 最新完整门禁与基线合入
+
+- f7c4d963a53d810c701123d6778446cb949e8d26的全部五工作流success：Android40028689427(API28/35/36，实际Keystore/模型/语音/两轮原生/真实退出)、development40028689250、service40028689316、Windows40028689324、offlineCPU40028689395。83c5c0a的较早全绿与原始Keystore日志继续保留；不改写#35/#36旧失败。
+- 当前合入#36 ac54e15，仅带入#35的UTF-8诊断限制、12项脚本回归、原始失败现场和文档；实际比较Android产品/voice测试/editor测试完全等同已通过f7c4d96，没有对未修改Java重复制造本地验证结果。新组合门禁待CI。
+- 保护原语仍无生产账号/HTTP/UI调用，不等于已完成云同步或可恢复密钥体验；自然语音、ARM和真实用户R2/服务器仍未完成。接续#39确定性组字重启修复/真实红灯，再按依赖门禁合并。
 ## 第34次：有界失败密文页日志完成相关门禁
 
 - #35运行时ca791dcde2c14916c5884babded94de00648630c全部五工作流success：Android40031824174(API28作业120681663246、API35 120684926751、API36 120684926781)、development40031824204、service40031824230、Windows40031824166、offlineCPU40031824186。含真实双轮Editable/隐私/本机资料/系统IME退出、JNI合成中文/录音/语音UI、三系统Rust76集成+1索引单测/fmt/严格Clippy及Apple原生、真实PG/S3/race/容器/安装重跑/全新DB另一空桶和AEAD恢复。精确现代API日志摘录另存evidence/android-api35/36-journal-40031824174.log；摘录不冒充下载了完整artifact。
@@ -340,3 +358,15 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 旧失败日志不删除；没有真实断电/杀进程/SAF、自然语音或ARM承诺。后续继续#37本机保护材料与#39组字重启闭环。
 
 - b1d22a0的字段诊断候选推送时与已合并的主干状态/AGENTS冲突，GitHub未创建新的PR工作流；现合入main be02110并保留两边记录，解决该阻塞后重新进入真实CI。没有删除旧注册失败或放宽断言；Windows探针/自身workflow源码与b1d22a0完全一致，其新诊断尚未编译/执行。
+
+## 本机同步材料保护完成组合验收（第34次补充）
+
+- #35已合并c51a4c6，#36已合并be0211003b065b06f24656f9327dcd7889fd42c9。#37运行时4a7542aaf8062858116567d42dcaf9522e623c98全部五工作流success：Android40032429113(API28/35/36)、development40032428857、service40032428912、Windows40032428910、offlineCPU40032429070。三API真实Keystore和原模型/语音/两轮实际输入/隐私/系统退出均通过，原始摘录保留于同号sync-secrets日志。
+- 最后只合入已合并main的文档/证据与本结果；产品/测试/scripts/.github/crates均与4a7542a逐文件相同，不将末尾文档提交冒充新完整运行。按验证代码和无源码差异审查合并，merge SHA以GitHub为准。
+- 这是专用worker的保护原语，尚无生产账号/HTTP/UI调用；不生成E2EE根密钥，不代替用户恢复包，不是全库加密，也不证明硬件Keystore或真实断电。继续#39标记交接/组字恢复与#40系统profile实际定位，不把前者首轮失败改为成功。
+
+## Windows类别字段定位与专用成员验证（候选）
+
+- b42aaa6 / Windows40035305480实际MSVC编译成功，真实EXE在self-hosted反例中先拒绝；注册/GetProfile S_OK。字段原文为type1、lang0804、正确CLSID/profile、flags0x2(enabled)，catid全零；因此这轮失败明确是returned catid联合检查，不能称身份/启用失败或进程激活成功。注销/旧查询失效/COM清理通过，整体仍failure。原文另存windows-profile-category-diagnostics-40035305480.log，未下载完整artifact。
+- 新探针用TSF专用CategoryMgr有界枚举验证实际键盘类别成员：本产品GUID注册前不存在、注册后必须存在、注销后必须消失，并保留全部身份/启用/COM/active/cleanup断言。没有改生产注册逻辑；新的实际类别验证结果尚待CI，绝不把catid忽略后直接算成功。
+- 合入已合并main4f407fe的Keystore/文档基线以解决PR冲突；新增类别成员检查及GUID诊断的显式ASCII转换需要真实MSVC CI，本地没有Windows SDK。Python脚本逻辑未变。
