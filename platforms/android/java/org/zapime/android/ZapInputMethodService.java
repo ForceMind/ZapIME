@@ -66,6 +66,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void renderKeys() {
         if(body==null)return;body.removeAllViews();
+        if(spellingScroll!=null)spellingScroll.setVisibility(chinese&&nineKey&&layer.equals("letters")?View.VISIBLE:View.GONE);
         body.post(()->body.sendAccessibilityEvent(android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED));
         if(layer.equals("tools")) {
             LinearLayout tiles=new LinearLayout(this);tiles.setPadding(dp(8),dp(14),dp(8),0);
@@ -92,7 +93,7 @@ public final class ZapInputMethodService extends InputMethodService {
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
         privateSession = sensitive || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
-        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer="letters";renderKeys();if(spellingScroll!=null)spellingScroll.setVisibility(View.GONE);
+        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer="letters";if(spellings!=null)spellings.removeAllViews();renderKeys();
         final boolean privateMode = privateSession;
         final boolean useNine=chinese&&nineKey;
         refreshStatus();idleToolbar();
@@ -148,7 +149,9 @@ public final class ZapInputMethodService extends InputMethodService {
             connection.finishComposingText();
         }
         refreshStatus();
-        if(spellings!=null){spellings.removeAllViews();JSONArray choices=value.optJSONArray("spellings");spellingScroll.setVisibility(chinese&&nineKey&&!preedit.isEmpty()&&choices!=null&&choices.length()>0?View.VISIBLE:View.GONE);if(choices!=null){final long spellingGeneration=generation;for(int i=0;i<choices.length();i++){final int index=i;String spelling=choices.optString(i);Button b=Ui.button(this,spelling,Ui.KEYBOARD,false);b.setTextSize(14);b.setPadding(dp(12),0,dp(12),0);b.setContentDescription("九键读音 "+spelling);spellings.addView(b,new LinearLayout.LayoutParams(-2,dp(34)));b.setOnClickListener(v->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",spellingGeneration),null);}catch(JSONException ignored){}});}}}
+        // Reserve the reading row throughout nine-key input so key hit targets
+        // do not move when the first digit arrives or a spelling gets locked.
+        if(spellings!=null){spellings.removeAllViews();JSONArray choices=value.optJSONArray("spellings");spellingScroll.setVisibility(chinese&&nineKey&&layer.equals("letters")?View.VISIBLE:View.GONE);if(choices!=null){final long spellingGeneration=generation;for(int i=0;i<choices.length();i++){final int index=i;String spelling=choices.optString(i);Button b=Ui.button(this,spelling,Ui.KEYBOARD,false);b.setTextSize(14);b.setPadding(dp(12),0,dp(12),0);b.setContentDescription("九键读音 "+spelling);spellings.addView(b,new LinearLayout.LayoutParams(-2,dp(34)));b.setOnClickListener(v->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",spellingGeneration),null);}catch(JSONException ignored){}});}}}
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(preedit.isEmpty()){idleToolbar();return;}if(words==null)return;
         final long shownGeneration=generation;
         for(int i=0;i<words.length();i++) { final int index=i; Button b=Ui.button(this,words.optString(i),Ui.KEYBOARD,false);b.setTextSize(21);b.setTextColor(i==0?Ui.BLUE:Ui.INK);b.setPadding(dp(16),0,dp(16),0);candidates.addView(b,new LinearLayout.LayoutParams(-2,dp(44))); b.setOnClickListener(v -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} }); b.setOnLongClickListener(v -> { if(privateSession)return false; try { send(new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration),null); return true; } catch(JSONException ignored) { return false; } }); }
