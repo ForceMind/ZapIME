@@ -37,3 +37,5 @@
 - UI失败现场须由test-only宿主在Instrumentation.finish之前采集；finish后宿主可被系统终止，外部dumpsys不能冒充当时现场。CI全局诊断开关只由已验证脚本传数字run-attempt参数，不能默认用于普通设备。独立宿主从真实前台按钮正常打开产品设置，显示键盘先确认served editor及实际Insets可见状态；不强制shell前台、覆盖系统策略或减弱组字/真实正文断言。
 
 - Android模型发布恢复只接受当前APK固定模型的已知暂存/备份路径，所有白名单/逐项SHA/可信清单与取消检查仍在worker；UI存在提示不代表可信安装。不要把文件系统中断状态测试称为真实断电、杀进程或SAF验收，不跳过原JNI/录音/隐私/真实服务退出门禁。
+
+- Android同步保护材料只在专用同步worker使用SyncSecrets，主线程检查必须先于锁；不在输入worker运行Keystore/文件IO。禁止明文/SharedPreferences回退、缺key时覆盖既有密文或在日志/普通归档保存材料；返回数组由调用方清零。forget需未来显式用户流程，测试只能清除自己的随机账号别名。该原语未接账号/网络/恢复UI，不能称四端密钥托管已完成。

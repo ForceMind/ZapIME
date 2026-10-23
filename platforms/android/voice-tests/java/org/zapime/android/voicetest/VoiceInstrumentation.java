@@ -13,6 +13,9 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
 import java.util.function.BooleanSupplier;
 import java.util.zip.*;
+import java.util.UUID;
+import java.util.Arrays;
+import java.security.KeyStore;
 import org.json.JSONObject;
 
 /** Runs in the signed target UID. Only synthetic PCM is ever supplied to JNI. */
@@ -87,12 +90,39 @@ public final class VoiceInstrumentation extends Instrumentation {
         require(cancelled&&verified().equals(model),"cancelled verification changed installed model");
         pass("model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)");
     }
+    private byte[] vaultLoad(Class<?> vault,UUID profile)throws Exception{return (byte[])invoke(vault,"load",new Class<?>[]{Context.class,UUID.class},getTargetContext(),profile);}
+    private void vaultSave(Class<?> vault,UUID profile,byte[] material)throws Exception{invoke(vault,"save",new Class<?>[]{Context.class,UUID.class,byte[].class},getTargetContext(),profile,material);}
+    private void rejectVaultLoad(Class<?> vault,UUID profile)throws Exception{boolean rejected=false;try{byte[] data=vaultLoad(vault,profile);if(data!=null)Arrays.fill(data,(byte)0);}catch(InvocationTargetException expected){rejected=expected.getCause() instanceof IOException;}require(rejected,"unreadable sync material accepted");}
+    private void syncSecretStorage()throws Exception{
+        Class<?> vault=Class.forName("org.zapime.android.SyncSecrets",true,getTargetContext().getClassLoader());UUID a=UUID.randomUUID(),b=UUID.randomUUID();byte[] material=bytes("ZapIME synthetic material "+UUID.randomUUID()),other=bytes("other synthetic material");
+        try{
+            require(vaultLoad(vault,a)==null,"fresh sync profile not empty");vaultSave(vault,a,material);byte[] actual=vaultLoad(vault,a);try{require(Arrays.equals(material,actual),"Keystore material roundtrip");}finally{Arrays.fill(actual,(byte)0);}
+            File aFile=(File)invoke(vault,"file",new Class<?>[]{Context.class,UUID.class},getTargetContext(),a),bFile=(File)invoke(vault,"file",new Class<?>[]{Context.class,UUID.class},getTargetContext(),b);
+            require(aFile.getCanonicalFile().getParentFile().equals(getTargetContext().getNoBackupFilesDir().getCanonicalFile()),"material not in noBackup private directory");byte[] first=Files.readAllBytes(aFile.toPath());vaultSave(vault,a,material);byte[] second=Files.readAllBytes(aFile.toPath());require(!Arrays.equals(first,second),"AES-GCM nonce reused for repeated save");
+            KeyStore store=KeyStore.getInstance("AndroidKeyStore");store.load(null);String alias=(String)invoke(vault,"alias",new Class<?>[]{UUID.class},a);require(store.getKey(alias,null).getEncoded()==null,"wrapping key unexpectedly exportable");
+            boolean oversized=false;try{vaultSave(vault,a,new byte[65537]);}catch(InvocationTargetException expected){oversized=true;}require(oversized&&Arrays.equals(Files.readAllBytes(aFile.toPath()),second),"oversized material changed saved cipher");
+            byte[] bad=second.clone();bad[bad.length-1]^=1;Files.write(aFile.toPath(),bad);rejectVaultLoad(vault,a);Files.write(aFile.toPath(),second);
+            vaultSave(vault,b,other);byte[] bWire=Files.readAllBytes(bFile.toPath());Files.write(bFile.toPath(),second);rejectVaultLoad(vault,b);Files.write(bFile.toPath(),bWire);
+            // Emulate an unfinished AtomicFile write, not actual process/power loss.
+            android.util.AtomicFile atomic=new android.util.AtomicFile(aFile);FileOutputStream unfinished=atomic.startWrite();try{unfinished.write(new byte[]{1,2,3});unfinished.getFD().sync();}finally{unfinished.close();}
+            actual=vaultLoad(vault,a);try{require(Arrays.equals(material,actual),"unfinished atomic write lost previous material");}finally{Arrays.fill(actual,(byte)0);}
+            CountDownLatch held=new CountDownLatch(1),release=new CountDownLatch(1);Thread holder=new Thread(()->{synchronized(vault){held.countDown();try{release.await(5,TimeUnit.SECONDS);}catch(InterruptedException e){Thread.currentThread().interrupt();}}});AtomicBoolean rejectedMain=new AtomicBoolean();AtomicLong mainMillis=new AtomicLong();
+            try{holder.start();require(held.await(5,TimeUnit.SECONDS),"vault contention fixture unavailable");runOnMainSync(()->{long begin=SystemClock.uptimeMillis();try{byte[] unexpected=vaultLoad(vault,a);if(unexpected!=null)Arrays.fill(unexpected,(byte)0);}catch(InvocationTargetException expected){rejectedMain.set(expected.getCause() instanceof IOException&&"sync_material_requires_worker".equals(expected.getCause().getMessage()));}catch(Exception ignored){}mainMillis.set(SystemClock.uptimeMillis()-begin);});require(rejectedMain.get()&&mainMillis.get()<1800,"main-thread guard blocked behind vault I/O");}finally{release.countDown();holder.join(1000);}
+            store.deleteEntry(alias);rejectVaultLoad(vault,a);boolean replaced=false;try{vaultSave(vault,a,material);replaced=true;}catch(InvocationTargetException expected){}require(!replaced&&!store.containsAlias(alias),"missing key was silently recreated over saved material");
+            actual=vaultLoad(vault,b);try{require(Arrays.equals(other,actual),"key loss damaged other profile");}finally{Arrays.fill(actual,(byte)0);}
+        }finally{
+            Arrays.fill(material,(byte)0);Arrays.fill(other,(byte)0);
+            Exception cleanup=null;for(UUID profile:new UUID[]{a,b})try{invoke(vault,"forget",new Class<?>[]{Context.class,UUID.class},getTargetContext(),profile);}catch(Exception e){cleanup=e;}if(cleanup!=null)throw cleanup;
+        }
+        pass("actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)");
+    }
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
             nativeVoice=Class.forName("org.zapime.android.NativeVoice",true,getTargetContext().getClassLoader());models=Class.forName("org.zapime.android.VoiceModels",true,getTargetContext().getClassLoader());
             stage="ordered PCM completion";finalPcmRace();
             stage="recording policy state";recordingPolicyState();
+            stage="sync material Keystore";syncSecretStorage();
             fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
             if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
             stage="model boundary";rejectImport("../tokens.txt");rejectImport("msime-model.json");rejectImport("tokens.txt");
