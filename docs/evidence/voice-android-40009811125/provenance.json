@@ -1,0 +1,43 @@
+{
+  "source_commit": "308085b76b6c3de8c34120f5ebfef833f764285a",
+  "workflow_run": 40009811125,
+  "artifact_id": 12526721566,
+  "artifact_bytes": 233486804,
+  "artifact_sha256": "1f6170557d0967d5de741d3eabfb4f1420012330739effee3a809aa129b6e3cf",
+  "locally_verified_full_artifact": true,
+  "screenshots": "raw unchanged API28 emulator microphone-silence frames; not natural speech or ARM acceptance",
+  "files": {
+    "instrumentation.txt": {
+      "bytes": 821,
+      "sha256": "7a28bb2b7888b7f7738e3888e7a08c0098e21c422877f72ed80024f06d13cfc3"
+    },
+    "ime-teardown.txt": {
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+    },
+    "combined-gates.json": {
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552"
+    },
+    "ui-instrumentation.txt": {
+      "bytes": 282,
+      "sha256": "954c7c7f739375620c33b4ed5230d32e22f1f96830862bce330b6dc6b18a1d68"
+    },
+    "native-report.json": {
+      "bytes": 483,
+      "sha256": "840f506c140f34b66615b9a41a78dcca33cca3ec1e62391a64065e1d0b6e3c6f"
+    },
+    "voice-recording.png": {
+      "bytes": 35575,
+      "sha256": "2dc86db7f228fb39321316b916a5101f2754f942d61ef5253d579dc959e5235c"
+    },
+    "crash.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "voice-stopped.png": {
+      "bytes": 37618,
+      "sha256": "9546d3d0089b537772298735b8b833c372c11c13ee92c033b93b5546d3b6a4ac"
+    }
+  }
+}

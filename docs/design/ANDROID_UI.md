@@ -76,11 +76,13 @@
 | 触感与编辑 | 系统触感开关、可选声音、连续退格、显式编辑 | 真机马达/静音、其它 App/超长组合字符、滑动光标与长按弹窗 |
 | 表情 | 一组常用表情可插入 | 完整表情搜索与分类 |
 | 本机资料 | 管理与备份；键盘内搜索、插入、剪贴板置顶/转收藏/确认删除 | 历史容量/期限设置、大库/真机、其它三端管理和云端接入 |
-| 语音和云同步 | 独立推理原型、独立服务及上传准备层 | 键盘录音、四端联网客户端、设备配对和完整恢复 UI |
+| 语音和云同步 | Android离线模型导入/录音预览/确认，API28门禁；独立服务及同步准备层 | 自然语音/现代系统/真机、四端联网客户端、设备配对和完整恢复 UI |
 
 交互跟踪 [#27](https://github.com/ForceMind/ZapIME/issues/27)，语音 [#24](https://github.com/ForceMind/ZapIME/issues/24)，同步 [#8](https://github.com/ForceMind/ZapIME/issues/8)。这些缺口不因一次构建或截图被标作产品全部完成。
 
 ## 历史证据
+
+- Android 离线语音：[40009811125](https://github.com/ForceMind/ZapIME/actions/runs/40009811125)，源码308085b76b6c3de8c34120f5ebfef833f764285a；[原始录音界面](../evidence/voice-android-40009811125/voice-recording.png)、[原始停止界面](../evidence/voice-android-40009811125/voice-stopped.png)。这是模拟器静音录音，预览没有伪造识别正文。长按空格/重录、Back取消、显式收起后实际窗口消失/重开、切焦点/光标及独立真实Editable断言通过；暂停编辑器的取消响应用IME窗口内真实Button无障碍动作，不当作物理触屏命中证明。对应真实JNI合成音报告单独保存，详见 [VOICE_INPUT.md](../VOICE_INPUT.md)。
 
 - 2026-10-22 浅色全键：[39776837197](https://github.com/ForceMind/ZapIME/actions/runs/39776837197)，fa23f867870d556d3e9c20193bed0f6cb3d509a1，两轮输入及真实服务退出通过；[原始图片](../evidence/ui-android-39776837197/)，归档 SHA256 `1b29d34de5aabadc2cdf71e8f11bfcb57f0becdc4ddc2b90bf51b1e4c71b22cb`。
 - 2026-10-23 早期九键：[39898390355](https://github.com/ForceMind/ZapIME/actions/runs/39898390355)，b50fbbd6585f041abce3751fd27df93e9fd00ebb，九键/全键/读音/短语/数字/隐私/重启选区及退出通过；[原始图片](../evidence/ui-nine-key-39898390355/nine-key.png)，归档 SHA256 `1da24250166b3bf89ad4e8b94a433488add2af8f3503220b66a3c500957fe02d`。该版本的横向读音行已被本轮侧栏替换。
