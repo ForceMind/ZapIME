@@ -149,6 +149,45 @@ public final class SmokeInstrumentation extends Instrumentation {
         click("九键 6");click("九键 4");click("九键读音 ni");click("九键 4");click("九键 2");click("九键 6");waitFor("你好",true);screenshot("nine-key-dark-candidates.png");chooseCandidate("你好","你好","dark_theme_pinyin");
         click("切换全键");click("中/英");repeatAcceptance();
     }
+    private void queryText(String expected) throws Exception {
+        for(int i=0;i<100;i++){AccessibilityNodeInfo node=find("资料搜索内容");if(node!=null&&expected.contentEquals(node.getText()))return;Thread.sleep(100);}
+        throw new Exception("Local search text assertion failed at "+stage);
+    }
+    private void rowAction(String row,String action) throws Exception {
+        for(int i=0;i<30;i++){
+            AccessibilityNodeInfo item=waitFor(row,true),parent=item.getParent();
+            AccessibilityNodeInfo control=walk(parent,action,true);
+            if(control!=null&&control.performAction(AccessibilityNodeInfo.ACTION_CLICK)){Thread.sleep(250);return;}
+            Thread.sleep(100);
+        }
+        throw new Exception("Local row action rejected: "+action);
+    }
+    private void syntheticClipboard(String text,boolean sensitive) {
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();ClipData clip=ClipData.newPlainText("ZapIME synthetic test",text);PersistableBundle extras=new PersistableBundle();extras.putBoolean("android.content.extra.IS_SENSITIVE",sensitive);clip.getDescription().setExtras(extras);((ClipboardManager)a.getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(clip);});
+    }
+    private void localDataAcceptance() throws Exception {
+        stage="local_panel_insert";setText("probe-normal","");Thread.sleep(200);click("本机资料面板");click("快捷短语");waitFor("wx\nZapIME test snippet",true);screenshot("local-data.png");
+        click("wx\nZapIME test snippet");requireEditor("ZapIME test snippet","local_snippet_insert");
+        click("搜索");waitFor("搜索资料 · 本机");click("中/英");AccessibilityNodeInfo rapid=waitFor("w",true);for(int i=0;i<20;i++)rapid.performAction(AccessibilityNodeInfo.ACTION_CLICK);waitFor("清空搜索",true).performAction(AccessibilityNodeInfo.ACTION_CLICK);queryText("查找：");Thread.sleep(350);queryText("查找：");click("w");click("x");queryText("查找：wx");requireEditor("ZapIME test snippet","search_never_enters_editor");screenshot("local-search.png");
+        click("完成搜索");waitFor("本机 · 共 1 条 · 搜索：wx");click("wx\nZapIME test snippet");requireEditor("ZapIME test snippetZapIME test snippet","searched_snippet_insert");
+        stage="explicit_local_clipboard";syntheticClipboard("你好合成剪贴板",false);click("保存剪贴板");String clip="剪贴板\n你好合成剪贴板";waitFor(clip,true);waitFor("本机 · 共 1 条");screenshot("local-clipboard.png");
+        rowAction(clip,"置顶");waitFor("取消置顶",true);rowAction(clip,"取消置顶");waitFor("置顶",true);rowAction(clip,"转为收藏");
+        click("永久收藏");String favorite="你好合成剪贴板\n你好合成剪贴板";waitFor(favorite,true);screenshot("local-favorites.png");
+        click("本机剪贴板");rowAction(clip,"删除");rowAction(clip,"确认删除");waitFor("本机 · 共 0 条");
+        syntheticClipboard("sensitive synthetic clipboard",true);click("保存剪贴板");Thread.sleep(350);click("本机剪贴板");waitFor("本机 · 共 0 条");if(find("剪贴板\nsensitive synthetic clipboard",true)!=null)throw new Exception("Sensitive clipboard was saved");
+        click("永久收藏");waitFor(favorite,true);click("搜索");waitFor("搜索资料 · 本机");
+        for(char c:"nihao".toCharArray())click(String.valueOf(c));
+        // Search candidates belong to an isolated, non-learning native session.
+        boolean chosen=false;for(int i=0;i<20;i++){if(waitFor("你好",true).performAction(AccessibilityNodeInfo.ACTION_CLICK)){Thread.sleep(150);AccessibilityNodeInfo value=find("资料搜索内容");if(value!=null&&"查找：你好".contentEquals(value.getText())){chosen=true;break;}}}
+        if(!chosen)throw new Exception("Chinese local search candidate was not committed");queryText("查找：你好");requireEditor("ZapIME test snippetZapIME test snippet","chinese_search_isolation");click("完成搜索");waitFor("本机 · 共 1 条 · 搜索：你好");click(favorite);String expected="ZapIME test snippetZapIME test snippet你好合成剪贴板";requireEditor(expected,"favorite_survives_clipboard_delete");
+        stage="search_cancel_composition";click("搜索");waitFor("搜索资料 · 本机");click("清空搜索");click("n");click("i");click("取消搜索");waitFor("本机 · 共 1 条 · 搜索：你好");requireEditor(expected,"cancel_search_preserves_editor");
+        stage="search_focus_isolation";click("搜索");waitFor("搜索资料 · 本机");click("n");click("i");
+        final int[] passwordLength={0};runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();passwordLength[0]=a.password.length();a.password.requestFocus();});waitFor("隐私输入 · 不学习");Thread.sleep(400);
+        final boolean[] isolated={false};runOnMainSync(()->isolated[0]=ProbeActivity.current.get().password.length()==passwordLength[0]);if(!isolated[0])throw new Exception("Search leaked into next editor");click("本机资料面板");Thread.sleep(200);if(find("全部资料",true)!=null)throw new Exception("Private editor exposed local records");
+        click("probe-normal");waitFor("⚡ 闪电 · 离线");requireEditor(expected,"search_focus_preserves_editor");
+        final int[] options={0};runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();options[0]=a.normal.getImeOptions();a.normal.setImeOptions(options[0]|android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});waitFor("隐私输入 · 不学习");click("本机资料面板");Thread.sleep(200);if(find("全部资料",true)!=null)throw new Exception("No-learning editor exposed local records");
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setImeOptions(options[0]);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});waitFor("⚡ 闪电 · 离线");click("本机资料面板");click("永久收藏");waitFor(favorite,true);click("返回键盘");requireEditor(expected,"local_favorite_persists_after_restart");
+    }
     private void screenshot(String name) throws Exception {
         Thread.sleep(250);Bitmap bitmap=automation.takeScreenshot();if(bitmap==null)throw new IOException("Screenshot unavailable: "+name);
         try(OutputStream out=new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),name))){if(!bitmap.compress(Bitmap.CompressFormat.PNG,100,out))throw new IOException("Screenshot write failed");}finally{bitmap.recycle();}
@@ -188,7 +227,8 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("123");click("1");requireEditor("ZapIME test snippet你好ZapIME test snippet1","nine_numeric_literal");click("⌫");click("返回");
             click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
             appearanceAcceptance(intent);
-            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete\n"); finish(Activity.RESULT_OK,result);
+            localDataAcceptance();
+            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){} result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

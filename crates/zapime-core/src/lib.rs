@@ -9,6 +9,7 @@ use zapime_data::{Content, Record, Store};
 #[cfg(target_os = "android")]
 mod android;
 pub mod ffi;
+mod personal;
 
 pub struct InputSession {
     engine: Session,
@@ -244,6 +245,15 @@ impl InputSession {
                 self.personal = personal;
                 KeyResult::handled()
             }
+            "personal_query" => return self.query_personal(request),
+            "personal_commit" => match self.commit_personal(request) {
+                Ok(result) => result,
+                Err(error) => return json!({"error":error}),
+            },
+            "personal_action" => match self.act_personal(request) {
+                Ok(result) => result,
+                Err(error) => return json!({"error":error}),
+            },
             "personal_list" => return json!({"records":self.personal}),
             "reset" => self.engine.command(Command::Cancel),
             "view" => return self.view(KeyResult::handled()),

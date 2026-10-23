@@ -89,3 +89,33 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_close(
         })
     }));
 }
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_queryPersonal(
+    mut env: JNIEnv,
+    _: JClass,
+    root: JString,
+    input: JString,
+) -> jstring {
+    let response = catch_unwind(AssertUnwindSafe(|| {
+        let root: String = env.get_string(&root).map_err(|_| ())?.into();
+        let input: String = env.get_string(&input).map_err(|_| ())?.into();
+        if input.len() > 4096 {
+            return Err(());
+        }
+        let request: serde_json::Value = serde_json::from_str(&input).map_err(|_| ())?;
+        if request["op"] != "personal_query" {
+            return Err(());
+        }
+        let mut store =
+            zapime_data::Store::open_panel_reader(&Path::new(&root).join("data/personal.sqlite3"))
+                .map_err(|_| ())?;
+        Ok(super::personal::query_store(&mut store, &request).to_string())
+    }))
+    .ok()
+    .and_then(Result::<String, ()>::ok)
+    .unwrap_or_else(|| "{\"error\":\"personal_query_failed\"}".into());
+    env.new_string(response)
+        .map(JString::into_raw)
+        .unwrap_or(std::ptr::null_mut())
+}

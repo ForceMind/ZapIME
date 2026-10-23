@@ -1,0 +1,25 @@
+# ZapIME local-data native acceptance summary
+Source: https://github.com/ForceMind/ZapIME/actions/runs/39984560789
+Verified source: c8f99e06af6079d610b2a6c67600b342ec14cd48
+This file is a selected CI excerpt, not the complete job log.
+Artifact 12514973670 downloaded and locally SHA256 verified:
+ba09a728fbd6f6a1b8357f049b6ab3af1ea8eb8ce2da271d51e7c4bbf17b139e
+Original round-2 images and both rounds' runtime/teardown logs are preserved in ui-local-data-39984560789/.
+
+2026-10-23T16:14:47.4183524Z Native input clean round 1/2
+2026-10-23T16:15:59.2389438Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T16:15:59.2393599Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T16:15:59.3800941Z Native input clean round 2/2
+2026-10-23T16:17:10.1969375Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T16:17:10.1973061Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T16:17:23.0923695Z SHA256 digest of uploaded artifact zip is ba09a728fbd6f6a1b8357f049b6ab3af1ea8eb8ce2da271d51e7c4bbf17b139e
+
+Apple job 120520256363 / run 39984560785:
+2026-10-23T16:18:14.2726740Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.397 (1.408) seconds
+2026-10-23T16:18:14.3113690Z Test Suite 'All tests' passed at 2026-10-23 16:18:14.157.
+2026-10-23T16:18:14.3183810Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.397 (1.410) seconds
+
+Service run 39984560835 (synthetic environment only):
+2026-10-23T16:14:24.6888638Z No vulnerabilities found.
+2026-10-23T16:15:10.5763707Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-23T16:16:36.1653248Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
