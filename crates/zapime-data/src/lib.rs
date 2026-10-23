@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0-only
 //! 四端共享的本地个人数据。修订用于并发校验，时间不决定覆盖胜负。
 #![forbid(unsafe_code)]
-use rusqlite::{params, Connection, OptionalExtension};
+use rusqlite::{params, Connection, OptionalExtension, Transaction};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
 pub mod panel;
+pub mod pull;
 pub mod schedule;
 pub mod sync;
 
@@ -42,6 +43,12 @@ pub enum Error {
     SyncOrder,
     #[error("invalid_sync_acknowledgement")]
     SyncAck,
+    #[error("sync_cursor_mismatch")]
+    SyncCursor,
+    #[error("invalid_sync_history")]
+    SyncHistory,
+    #[error("sync_local_conflict")]
+    SyncLocalConflict,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -189,6 +196,8 @@ impl Store {
             CREATE TRIGGER IF NOT EXISTS queue_new_operation AFTER INSERT ON operations BEGIN INSERT INTO sync_queue(operation_id) VALUES(NEW.id); END;
             CREATE TABLE IF NOT EXISTS sync_uploads(operation_id TEXT PRIMARY KEY REFERENCES operations(id),wire TEXT NOT NULL,ack_revision INTEGER);
             CREATE TABLE IF NOT EXISTS sync_versions(record_id TEXT PRIMARY KEY,server_revision INTEGER NOT NULL);
+            CREATE TABLE IF NOT EXISTS sync_received(operation_id TEXT PRIMARY KEY,server_revision INTEGER UNIQUE NOT NULL,fingerprint TEXT NOT NULL);
+            CREATE INDEX IF NOT EXISTS sync_pending_record ON operations(pending,json_extract(result,'$.id'));
             ")?;
         // 只在旧库升级时回填；每次输入框重开都遍历历史会放大 IO，并使自增序列产生空洞。
         if version < 2 {
@@ -258,28 +267,7 @@ impl Store {
             return Ok(serde_json::from_str(&result)?);
         }
         if !deleted {
-            match &content {
-                Content::CandidateRule {
-                    scheme,
-                    code,
-                    text,
-                    position,
-                } => {
-                    let collision: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='candidate_rule' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND (json_extract(body,'$.content.position')=?4 OR json_extract(body,'$.content.text')=?5) LIMIT 1",params![id.to_string(),scheme,code,position,text],|row|row.get(0)).optional()?;
-                    if collision.is_some() {
-                        return Err(Error::PositionConflict);
-                    }
-                }
-                Content::Dictionary {
-                    scheme, code, text, ..
-                } => {
-                    let duplicate: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='dictionary' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND json_extract(body,'$.content.text')=?4 LIMIT 1",params![id.to_string(),scheme,code,text],|row|row.get(0)).optional()?;
-                    if duplicate.is_some() {
-                        return Err(Error::Duplicate);
-                    }
-                }
-                _ => {}
-            }
+            Self::validate_unique(&tx, id, &content)?;
         }
         let current: i64 = tx
             .query_row(
@@ -311,6 +299,31 @@ impl Store {
         )?;
         tx.commit()?;
         Ok(record)
+    }
+    fn validate_unique(tx: &Transaction<'_>, id: Uuid, content: &Content) -> Result<(), Error> {
+        match content {
+            Content::CandidateRule {
+                scheme,
+                code,
+                text,
+                position,
+            } => {
+                let collision: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='candidate_rule' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND (json_extract(body,'$.content.position')=?4 OR json_extract(body,'$.content.text')=?5) LIMIT 1",params![id.to_string(),scheme,code,position,text],|row|row.get(0)).optional()?;
+                if collision.is_some() {
+                    return Err(Error::PositionConflict);
+                }
+            }
+            Content::Dictionary {
+                scheme, code, text, ..
+            } => {
+                let duplicate: Option<i64> = tx.query_row("SELECT 1 FROM records WHERE id<>?1 AND json_extract(body,'$.deleted')=0 AND json_extract(body,'$.content.type')='dictionary' AND json_extract(body,'$.content.scheme')=?2 AND json_extract(body,'$.content.code')=?3 AND json_extract(body,'$.content.text')=?4 LIMIT 1",params![id.to_string(),scheme,code,text],|row|row.get(0)).optional()?;
+                if duplicate.is_some() {
+                    return Err(Error::Duplicate);
+                }
+            }
+            _ => {}
+        }
+        Ok(())
     }
     pub fn records(&self, include_deleted: bool) -> Result<Vec<Record>, Error> {
         let mut stmt = self.db.prepare("SELECT body FROM records ORDER BY id")?;

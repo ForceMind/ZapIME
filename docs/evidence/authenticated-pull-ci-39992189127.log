@@ -1,0 +1,45 @@
+# Authenticated pull: selected CI excerpts, not full logs
+Verified source/head: ec3deabd5276d6f9f37febfdb7194340a92583c1 (runtime source ff8ef3a7c6a384b2a5a16217e370d7270f56d1d7)
+13 new pull tests use real AEAD and independent local databases with a simulated operation stream; not HTTP/device cloud sync.
+
+Core run https://github.com/ForceMind/ZapIME/actions/runs/39992189127
+2026-10-23T17:06:18.6981901Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:18.7246051Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-23T17:06:18.8494364Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+2026-10-23T17:06:18.9483249Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+2026-10-23T17:06:18.9497615Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:21.6066764Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.66s
+2026-10-23T17:06:21.6133113Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.3097046Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.70s
+2026-10-23T17:06:22.3122119Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.3370482Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-23T17:06:22.4160303Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+2026-10-23T17:06:22.4173155Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.4349796Z test a_later_page_conflict_also_rolls_back_its_earlier_upload_acknowledgement ... ok
+2026-10-23T17:06:22.4392885Z test even_authenticated_replacement_ciphertext_cannot_ack_a_different_frozen_snapshot ... ok
+2026-10-23T17:06:22.5190170Z test two_databases_exchange_real_authenticated_snapshots_without_echo_uploads ... ok
+2026-10-23T17:06:22.5190817Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+2026-10-23T17:06:22.5447746Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.5681212Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.6183587Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-23T17:06:22.6421589Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+Apple native:
+2026-10-23T17:17:58.7880610Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 2.083 (2.092) seconds
+2026-10-23T17:17:58.7991130Z Test Suite 'All tests' passed at 2026-10-23 17:17:58.683.
+2026-10-23T17:17:58.8112480Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 2.083 (2.093) seconds
+
+Android https://github.com/ForceMind/ZapIME/actions/runs/39992189226
+2026-10-23T17:09:06.9622545Z Native input clean round 1/2
+2026-10-23T17:10:08.3042046Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T17:10:08.3199492Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T17:10:08.4080437Z Native input clean round 2/2
+2026-10-23T17:11:09.3186522Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T17:11:09.3188344Z PASS ZapIME native service teardown: no app fatal exception
+
+Service https://github.com/ForceMind/ZapIME/actions/runs/39992189155
+2026-10-23T17:09:28.4044920Z No vulnerabilities found.
+2026-10-23T17:10:16.0892077Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-23T17:12:00.6968338Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
+
+Windows 39992189015 and offline speech 39992189408 completed successfully. Raw UI images remain explicitly attributed to 39984560789; no new images are claimed.

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-//! 持久化待发快照与密文请求。尚未实现 HTTP、远端应用和冲突解决。
+//! 持久化待发快照与密文请求。事务下载应用见 pull；HTTP 与冲突解决尚未接入。
 use crate::{Error, Record, Store};
 use rusqlite::{params, OptionalExtension, Transaction, TransactionBehavior};
 use serde::{Deserialize, Serialize};
@@ -32,7 +32,7 @@ pub struct UploadOperation {
     pub envelope: CipherEnvelope,
 }
 impl UploadOperation {
-    fn validate(&self) -> Result<(), Error> {
+    pub(crate) fn validate(&self) -> Result<(), Error> {
         let base64url = |s: &str| {
             s.bytes()
                 .all(|c| c.is_ascii_alphanumeric() || c == b'_' || c == b'-')
@@ -69,7 +69,7 @@ impl UploadOperation {
     }
 }
 
-fn require_profile(tx: &Transaction<'_>, profile: Uuid) -> Result<(), Error> {
+pub(crate) fn require_profile(tx: &Transaction<'_>, profile: Uuid) -> Result<(), Error> {
     let value: Option<String> = tx
         .query_row(
             "SELECT value FROM metadata WHERE key='sync_profile'",
@@ -82,7 +82,7 @@ fn require_profile(tx: &Transaction<'_>, profile: Uuid) -> Result<(), Error> {
     }
     Ok(())
 }
-fn server_revision(tx: &Transaction<'_>, record: Uuid) -> Result<u64, Error> {
+pub(crate) fn server_revision(tx: &Transaction<'_>, record: Uuid) -> Result<u64, Error> {
     let revision: i64 = tx
         .query_row(
             "SELECT server_revision FROM sync_versions WHERE record_id=?1",
@@ -247,49 +247,61 @@ impl Store {
             .db
             .transaction_with_behavior(TransactionBehavior::Immediate)?;
         require_profile(&tx, profile)?;
-        let staged: Option<(String, Option<i64>)> = tx
-            .query_row(
-                "SELECT wire,ack_revision FROM sync_uploads WHERE operation_id=?1",
-                [operation.to_string()],
-                |r| Ok((r.get(0)?, r.get(1)?)),
-            )
-            .optional()?;
-        let Some((wire, acknowledged)) = staged else {
-            return Err(Error::SyncAck);
-        };
-        if let Some(old) = acknowledged {
-            return if old == revision as i64 {
-                Ok(())
-            } else {
-                Err(Error::SyncAck)
-            };
-        }
-        let upload: UploadOperation = serde_json::from_str(&wire)?;
-        let snapshot: String = tx.query_row(
-            "SELECT result FROM operations WHERE id=?1",
-            [operation.to_string()],
-            |r| r.get(0),
-        )?;
-        let record: Record = serde_json::from_str(&snapshot)?;
-        upload.matches_snapshot(operation, &record)?;
-        if revision <= upload.base_revision
-            || server_revision(&tx, upload.record_id)? != upload.base_revision
-        {
-            return Err(Error::SyncAck);
-        }
-        tx.execute("INSERT INTO sync_versions VALUES(?1,?2) ON CONFLICT(record_id) DO UPDATE SET server_revision=excluded.server_revision", params![upload.record_id.to_string(), revision as i64])?;
-        let count = tx.execute(
-            "UPDATE operations SET pending=0 WHERE id=?1 AND pending=1",
-            [operation.to_string()],
-        )?;
-        if count != 1 {
-            return Err(Error::SyncAck);
-        }
-        tx.execute(
-            "UPDATE sync_uploads SET ack_revision=?2 WHERE operation_id=?1",
-            params![operation.to_string(), revision as i64],
-        )?;
+        acknowledge_in_tx(&tx, operation, revision)?;
         tx.commit()?;
         Ok(())
     }
+}
+
+pub(crate) fn acknowledge_in_tx(
+    tx: &Transaction<'_>,
+    operation: Uuid,
+    revision: u64,
+) -> Result<(), Error> {
+    if operation.is_nil() || revision == 0 || revision > i64::MAX as u64 {
+        return Err(Error::SyncAck);
+    }
+    let staged: Option<(String, Option<i64>)> = tx
+        .query_row(
+            "SELECT wire,ack_revision FROM sync_uploads WHERE operation_id=?1",
+            [operation.to_string()],
+            |r| Ok((r.get(0)?, r.get(1)?)),
+        )
+        .optional()?;
+    let Some((wire, acknowledged)) = staged else {
+        return Err(Error::SyncAck);
+    };
+    if let Some(old) = acknowledged {
+        return if old == revision as i64 {
+            Ok(())
+        } else {
+            Err(Error::SyncAck)
+        };
+    }
+    let upload: UploadOperation = serde_json::from_str(&wire)?;
+    let snapshot: String = tx.query_row(
+        "SELECT result FROM operations WHERE id=?1",
+        [operation.to_string()],
+        |r| r.get(0),
+    )?;
+    let record: Record = serde_json::from_str(&snapshot)?;
+    upload.matches_snapshot(operation, &record)?;
+    if revision <= upload.base_revision
+        || server_revision(tx, upload.record_id)? != upload.base_revision
+    {
+        return Err(Error::SyncAck);
+    }
+    tx.execute("INSERT INTO sync_versions VALUES(?1,?2) ON CONFLICT(record_id) DO UPDATE SET server_revision=excluded.server_revision", params![upload.record_id.to_string(), revision as i64])?;
+    let count = tx.execute(
+        "UPDATE operations SET pending=0 WHERE id=?1 AND pending=1",
+        [operation.to_string()],
+    )?;
+    if count != 1 {
+        return Err(Error::SyncAck);
+    }
+    tx.execute(
+        "UPDATE sync_uploads SET ack_revision=?2 WHERE operation_id=?1",
+        params![operation.to_string(), revision as i64],
+    )?;
+    Ok(())
 }
