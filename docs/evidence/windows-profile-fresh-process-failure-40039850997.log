@@ -1,0 +1,33 @@
+Source: Actions run40039850997 job120708095905; head90cbbdc4d2691439ba59f2a02cfe676b1b5931ee. Exact selected job lines; full log/artifact remains in Actions. Captured 2026-10-23T23:32:46.073Z. Overall failure; not installation acceptance.
+
+2026-10-23T23:30:35.1102691Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-23T23:30:35.1642775Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-23T23:30:35.1643178Z profile_probe com_init hr=0x0
+2026-10-23T23:30:35.1643392Z profile_probe profiles hr=0x0
+2026-10-23T23:30:35.1643685Z profile_probe category_manager hr=0x0
+2026-10-23T23:30:35.1645111Z profile_probe category_before hr=0x0
+2026-10-23T23:30:35.1645334Z profile_probe local_appdata hr=0x0
+2026-10-23T23:30:35.1645535Z profile_probe register hr=0x0
+2026-10-23T23:30:35.1645848Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-23T23:30:35.1646203Z profile_probe child_com_init hr=0x0
+2026-10-23T23:30:35.1646411Z profile_probe child_profiles hr=0x0
+2026-10-23T23:30:35.1646614Z profile_probe child_categories hr=0x0
+2026-10-23T23:30:35.1646857Z profile_probe registry child_hkcu_com status=0 present=1
+2026-10-23T23:30:35.1647138Z profile_probe registry child_hklm_com status=2 present=0
+2026-10-23T23:30:35.1647403Z profile_probe registry child_hkcu_tip status=2 present=0
+2026-10-23T23:30:35.1647827Z profile_probe registry child_hklm_tip status=0 present=1
+2026-10-23T23:30:35.1648104Z profile_probe child_query_registered hr=0x80004005
+2026-10-23T23:30:35.1648374Z profile_probe child_keyboard_category hr=0x0
+2026-10-23T23:30:35.1648618Z profile_probe child_keyboard_member=1
+2026-10-23T23:30:35.1648829Z profile_probe child_read_only=FAIL
+2026-10-23T23:30:35.1649033Z profile_probe child_started=1 error=0
+2026-10-23T23:30:35.1649237Z profile_probe child_finished=1 exit=1
+2026-10-23T23:30:35.1649467Z profile_probe fresh_managers_after_register hr=0x0
+2026-10-23T23:30:35.1649872Z profile_probe query_registered hr=0x80004005
+2026-10-23T23:30:35.1650095Z profile_probe unregister hr=0x0
+2026-10-23T23:30:35.1650329Z profile_probe fresh_managers_after_unregister hr=0x0
+2026-10-23T23:30:35.1650819Z profile_probe query_after_unregister hr=0x80004005
+2026-10-23T23:30:35.1651074Z profile_probe query_category_after_unregister hr=0x0
+2026-10-23T23:30:35.1651307Z profile_probe cleanup=PASS
+2026-10-23T23:30:35.1651553Z FAIL profile_probe fresh_process_profile_and_category_visible
+2026-10-23T23:30:35.1709359Z TSF profile registration/activation/cleanup failed; inspect raw profile-probe.log

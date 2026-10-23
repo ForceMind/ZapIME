@@ -1,0 +1,16 @@
+# Exact raw selected job120702127466 lines; runtimeee32f526cb22c62771142251c9194b9b30b449f8; run40038009396. Failure retained; not an artifact download.
+2026-10-23T23:11:48.0961494Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-23T23:11:48.1307594Z profile_probe com_init hr=0x0
+2026-10-23T23:11:48.1308125Z profile_probe profiles hr=0x0
+2026-10-23T23:11:48.1309757Z profile_probe category_manager hr=0x0
+2026-10-23T23:11:48.1310306Z profile_probe category_before hr=0x0
+2026-10-23T23:11:48.1310910Z profile_probe local_appdata hr=0x0
+2026-10-23T23:11:48.1311653Z profile_probe register hr=0x0
+2026-10-23T23:11:48.1312095Z profile_probe fresh_managers_after_register hr=0x0
+2026-10-23T23:11:48.1312568Z profile_probe query_registered hr=0x80004005
+2026-10-23T23:11:48.1312982Z profile_probe unregister hr=0x0
+2026-10-23T23:11:48.1313385Z profile_probe fresh_managers_after_unregister hr=0x0
+2026-10-23T23:11:48.1313865Z profile_probe query_after_unregister hr=0x80004005
+2026-10-23T23:11:48.1314340Z profile_probe query_category_after_unregister hr=0x0
+2026-10-23T23:11:48.1314769Z profile_probe cleanup=PASS
+2026-10-23T23:11:48.1315102Z FAIL profile_probe query_registered
