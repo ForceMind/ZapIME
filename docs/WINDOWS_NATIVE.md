@@ -65,3 +65,15 @@ ee32f52 的 Windows CI 40038009396 实际编译成功，但重新创建的 COM �
 90cbbdc 的 Windows 40039850997 已实际编译及执行：session=2、visible_station=1、remote_session=0；子进程看到 HKCU COM、HKLM TIP 存在及键盘类别成员，但 GetProfile E_FAIL；新建父管理器同样失败，注销清理通过。整体仍失败，不能认定 headless 或无管理员权限是原因。这里也证实“COM 只写 HKCU”并不代表 TSF API 不写 HKLM：既有真实注册调用后本产品 HKLM TIP 项存在；新增诊断本身没有写入。
 
 下一候选继续只读本产品完整 language/profile 子项、合并的 HKCR COM 存在性，以及旧接口的描述存在性、启用状态和可用语言中是否包含0804；不输出描述、注册路径值或其它用户文本。接口结果不代替原 GetProfile/category/激活门禁，生产注册仍未改，结果待新 CI。
+
+## 中文用户语言的隔离CI夹具
+
+dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，旧接口能读到描述与enabled，类别存在；但系统 GetLanguageList 只有0409，不含0804，新接口 GetProfile E_FAIL。这是实际环境差异，不提前认定全部根因。
+
+新增 scripts/windows_profile_language_fixture.ps1 只在临时GitHub-hosted Windows且数字run/attempt通过时执行，守卫前不读取用户语言。复制原列表并在末尾追加zh-CN，保持原语言顺序；运行原EXE后finally恢复并逐项比对原语言/输入法/拼写/手写元数据。Python另用self-hosted环境实际验证PS脚本拒绝；总等待120秒，恢复不一致/超时/EXE失败均失败。只是当前用户语言列表，不安装语言包，不主动写HKLM COM或其它产品键、不修改生产注册或省略原身份/类别/激活门禁。原C++层仍只FORPROCESS激活并恢复原布局/profile，已有资料保护不变。
+
+微软接口依据：
+- https://learn.microsoft.com/en-us/powershell/module/international/set-winuserlanguagelist
+- https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofiles-getlanguagelist
+
+本次脚本尚无本地Windows执行证据；即使CI成功，仍不是正式安装器、语言包配置或记事本/浏览器上屏验收。

@@ -235,15 +235,68 @@ public final class SmokeInstrumentation extends Instrumentation {
         stage="voice back cancellation";startDictation();long down=SystemClock.uptimeMillis();for(int action:new int[]{KeyEvent.ACTION_DOWN,KeyEvent.ACTION_UP})if(!automation.injectInputEvent(new KeyEvent(down,SystemClock.uptimeMillis(),action,KeyEvent.KEYCODE_BACK,0,0,android.view.KeyCharacterMap.VIRTUAL_KEYBOARD,0,KeyEvent.FLAG_FROM_SYSTEM,InputDevice.SOURCE_KEYBOARD),true))throw new Exception("Back injection rejected");waitFor("工具",true);requireEditor("voice guard test","voice_back_preserves_editor");
         stage="voice hide cancellation";startDictation();click("收起语音键盘");boolean hidden=false;for(int i=0;i<50;i++){boolean shown=false;for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD)shown=true;if(!shown){hidden=true;break;}Thread.sleep(100);}if(!hidden)throw new Exception("IME did not actually hide");click("probe-show-keyboard",true);waitFor("⚡ 闪电 · 离线");waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("voice result survived keyboard hide");requireEditor("voice guard test","voice_hide_preserves_editor");startDictation();click("取消");waitFor("工具",true);
     }
+    private void waitImeText(String text) throws Exception {
+        for(int i=0;i<150;i++){
+            for(AccessibilityWindowInfo window:automation.getWindows())
+                if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD&&walk(window.getRoot(),text)!=null)return;
+            Thread.sleep(100);
+        }
+        throw new Exception("Missing IME-only text: "+text);
+    }
+    private void awaitServedConnectionCommand(int previous) throws Exception {
+        // Creation on the App thread precedes delivery to the IME. Observe its
+        // real operation on the newest wrapper before checking retained text.
+        for(int i=0;i<300;i++){
+            // Some created wrappers may never become the served connection.
+            // Require a real operation on a new wrapper, not on every created one.
+            if(ProbeActivity.normalCommandConnection.get()>previous)return;
+            Thread.sleep(50);
+        }
+        throw new Exception("No new served connection received an IME command; created="+ProbeActivity.normalConnections.get()+" commanded="+ProbeActivity.normalCommandConnection.get()+" previous="+previous);
+    }
+    private void restartNormalEditor() throws Exception {
+        int previous=ProbeActivity.normalConnections.get();
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        awaitServedConnectionCommand(previous);
+        automation.waitForIdle(200,3000);
+    }
+    private void rejectChangedRestartContext() throws Exception {
+        stage="restart_changed_context";
+        setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");requireEditor("ni",stage);
+        // A real application replaces the same-length text while preserving the
+        // exact composing geometry. Selection alone must not authorize reuse.
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();Editable text=a.normal.getText();text.replace(0,text.length(),"xx");BaseInputConnection.setComposingSpans(text);a.normal.setSelection(2);});
+        restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("xx",stage);
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","xx好","restart_changed_context_fresh_session");
+        stage="marker_removed_without_restart";setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");requireEditor("ni",stage);
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();BaseInputConnection.removeComposingSpans(a.normal.getText());((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).updateSelection(a.normal,2,2,-1,-1);});
+        waitImeText("⚡ 闪电 · 离线");requireEditor("ni","marker_loss_preserves_app_text");
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","ni好","marker_loss_resets_decoder_without_erasing_text");
+        stage="composition_cursor_move";setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
+        click("n");click("i");waitImeText("ni");runOnMainSync(()->ProbeActivity.current.get().normal.setSelection(0));
+        waitImeText("⚡ 闪电 · 离线");requireEditor("ni","cursor_move_preserves_old_text");
+        for(char c:"hao".toCharArray())click(String.valueOf(c));chooseCandidate("好","好ni","cursor_move_inserts_at_new_position");
+        setText("probe-normal","你好");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");requireEditor("你好","restart_regression_cleanup");
+    }
+    private void restartComposition() throws Exception {
+        stage="restart_composition_before";waitImeText("ni");requireEditor("ni",stage);
+        restartNormalEditor();
+        stage="restart_composition_retained";waitImeText("ni");requireEditor("ni",stage);
+    }
     @Override public void onStart() {
         Bundle result=new Bundle();
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
-            click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));
+            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
+            for(char c:"ni".toCharArray())click(String.valueOf(c));
+            if(Build.VERSION.SDK_INT>=30)restartComposition();
+            for(char c:"hao".toCharArray())click(String.valueOf(c));
             waitFor("你好",true);screenshot("candidates.png");chooseCandidate("你好","你好","pinyin_commit");
+            if(Build.VERSION.SDK_INT>=30)rejectChangedRestartContext();
             click("中/英"); for(char c:"qwe".toCharArray())click(String.valueOf(c)); requireEditor("你好qwe","english_append");
             click("⌫"); requireEditor("你好qw","backspace");
             click("⇧");click("a");requireEditor("你好qwA","shift_uppercase");click("⌫");
@@ -262,7 +315,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
             appearanceAcceptance(intent);
             localDataAcceptance();
-            screenshot("smoke.png");dumpHostLifecycle();result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
+            screenshot("smoke.png");dumpHostLifecycle();result.putString("stream","PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){}dumpCiState();result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

@@ -30,8 +30,6 @@
 
 - Android 语音模型只接受 APK 固定白名单与逐项 SHA，包内清单不可信；失败不能覆盖已有有效模型。模型/录音和按键线程分开，不添加云端回退、录音落盘/上传或假识别文本。JNI 会话只在同一语音线程 start/feed/finish/close，跨线程只 cancel；capture 有 60 秒/960000 样本与全程有界队列，隐藏/失焦/光标移动/配置变化必须取消，确认前校验原连接/epoch/selection/有界上下文。实际合成 PCM 解码、模拟器静音 AudioRecord、独立 Editable UI 验收与自然语音/ARM 真机分别记证据。第二个 voice instrumentation 同签名且只在受保护临时 CI 撤销测试包录音权限；不在个人设备执行。
 
-- Windows系统profile探针只能在GITHUB_ACTIONS=true、RUNNER_ENVIRONMENT=github-hosted及数字run/attempt全部验证的临时Windows runner运行，Python/EXE双重拒绝普通本机与self-hosted。已有ZapIME COM/profile或LocalAppData目录必须拒绝接管；只修改本产品HKCU项/进程激活，不设置系统默认或FORSESSION，不使用deferred激活伪称成功；恢复旧线程布局/profile，注销并验证清理。常规本机build_windows/ctest仍不运行注册探针。注册/进程激活不等于真实应用输入。
-
 - 失败页日志只在严格密文页形状/账号/连续修订通过后保存；Saved/NotEligible/Failed必须区分，禁止把回滚当保存成功。日志永不替代AEAD、cursor或冲突解决；8页/32MiB满额拒绝新页，不自动淘汰。导入/重试仍检查账号和原cursor并重新认证；旧records归档/恢复包不含此日志，需另导出及独立保留旧密钥。不要因独立辅助表而改变既有v2记录/队列或上屏线程路径。
 
 - 新增失败全局诊断只在GITHUB_ACTIONS+run/attempt数字+专用emulator序列全部验证后采集，每文件至多256KiB且有限超时；不得扩展到个人设备。主App或测试宿主ANR必须拒绝成功；系统Launcher启动ANR单独保留，不能删旧失败、虚构产品根因或跳过输入/退出断言。
@@ -41,3 +39,12 @@
 - Android模型发布恢复只接受当前APK固定模型的已知暂存/备份路径，所有白名单/逐项SHA/可信清单与取消检查仍在worker；UI存在提示不代表可信安装。不要把文件系统中断状态测试称为真实断电、杀进程或SAF验收，不跳过原JNI/录音/隐私/真实服务退出门禁。
 
 - Android同步保护材料只在专用同步worker使用SyncSecrets，主线程检查必须先于锁；不在输入worker运行Keystore/文件IO。禁止明文/SharedPreferences回退、缺key时覆盖既有密文或在日志/普通归档保存材料；返回数组由调用方清零。forget需未来显式用户流程，测试只能清除自己的随机账号别名。该原语未接账号/网络/恢复UI，不能称四端密钥托管已完成。
+
+- 同输入框重启保留组字必须验证 restarting、原编辑器身份/选项、可预测且完整折叠在组字尾的选区以及 API30+ EditorInfo 自带初始快照；缺快照/改变文本/隐私或身份变化一律重建。不要在输入线程新增 getTextBeforeCursor 等远端读取，也不要把该修复称为所有间歇失败根因。迁移的 SelectionEchoTracker 保留固定上游 GPL 来源，成功写入记预期，不能预测的写入失效化；API28 不假称已支持此快照路径。
+
+- 同位置组字标记丢失可能先于restartInput；只按固定上游有界100ms交接，重启取消待回报、新操作前结算。真正失去范围时提升epoch、异步reset解码器并原地finish标记，禁止在应用新正文/选区写空setComposingText；迟到结果不得上屏。Service诊断仅计数/固定原因码，不含正文、上下文或身份。
+- 异步结果在标记交接期间须按序有界暂存，不能让后来结果越过或写到未验证范围；新连接验证后按序释放，真正失去范围/新epoch丢弃，超限明确重输并保留应用正文。不要把短时内存缓冲称为持久队列。
+
+- Windows系统profile探针只能在GITHUB_ACTIONS=true、RUNNER_ENVIRONMENT=github-hosted及数字run/attempt全部验证的临时Windows runner运行，Python/EXE双重拒绝普通本机与self-hosted。已有ZapIME COM/profile或LocalAppData目录必须拒绝接管；COM仅写本产品HKCU项，既有TSF注册API实际会写本产品HKLM TIP，不主动写HKLM COM或其它产品项；仅进程激活，不设置系统默认或FORSESSION，不使用deferred激活伪称成功；恢复旧线程布局/profile，注销并验证清理。常规本机build_windows/ctest仍不运行注册探针。注册/进程激活不等于真实应用输入。
+
+- Windows语言夹具仅在GitHub-hosted临时runner执行，脚本自身也须在读取/修改用户语言前验证守卫并实际跑拒绝反例。原列表与输入方法/拼写/手写元数据留内存，追加中文后必须finally恢复并逐项校验；未恢复、超时或探针失败仍为失败。不在个人/自托管设备使用，不安装语言包，不把夹具成功当生产注册或真实App上屏成功。
