@@ -38,6 +38,19 @@ class SystemKeyboardTests(unittest.TestCase):
 class DiagnosticPrivacyTests(unittest.TestCase):
     ci = {"GITHUB_ACTIONS": "true", "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "1"}
 
+    def test_unicode_diagnostics_bound_bytes_and_anr_detection_reads_full_result(self):
+        with tempfile.TemporaryDirectory() as directory, patch.dict("os.environ", self.ci, clear=True):
+            output=Path(directory)
+            text="ANR in org.zapime.android (Activity)\n"+"字😀"*(80*1024)
+            with patch("android_ci_device.subprocess.run", return_value=SimpleNamespace(stdout=text, stderr="")):
+                collect_failure_state(["adb", "-s", "emulator-5554"], output)
+                with self.assertRaises(SystemExit):
+                    assert_no_app_anr(["adb", "-s", "emulator-5554"], output)
+            self.assertEqual(len(list(output.iterdir())),6)
+            for path in output.iterdir():
+                self.assertLessEqual(path.stat().st_size,256*1024)
+                self.assertTrue(path.read_text(encoding="utf-8").endswith("字😀"))
+
     def test_diagnostics_never_read_global_logs_from_local_or_physical_devices(self):
         with tempfile.TemporaryDirectory() as directory, patch("android_ci_device.subprocess.run") as run:
             for environment, serial in [({}, "emulator-5554"), (self.ci, "real-phone"), ({"GITHUB_ACTIONS": "true"}, "emulator-5554")]:

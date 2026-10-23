@@ -37,8 +37,14 @@ def diagnostic_args(command):
     return ["-e", "zapime_ci_diagnostics", os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]]
 
 
+def write_diagnostic(path, value):
+    # Limit UTF-8 bytes, not Python characters (CJK/emoji can be 3/4 bytes).
+    # Drop a partial first codepoint so saved files remain readable UTF-8.
+    path.write_text(value.encode("utf-8", errors="replace")[-256 * 1024:].decode("utf-8", errors="ignore"), encoding="utf-8")
+
+
 def collect_failure_state(command, output):
-    """Synthetic CI only: preserve state BEFORE switching away from a failed UI."""
+    """CI post-instrumentation state; only host ci-* files precede finish()."""
     if not dedicated_ci(command):
         return
     probes = {
@@ -54,13 +60,13 @@ def collect_failure_state(command, output):
             text = result.stdout + result.stderr
         except (OSError, subprocess.TimeoutExpired) as error:
             text = "diagnostic_unavailable: " + type(error).__name__
-        (output / name).write_text(text[-256 * 1024:])
+        write_diagnostic(output / name, text)
 
 
 def assert_no_app_anr(command, output):
     if not dedicated_ci(command):
         return
     result = subprocess.run(command + ["logcat", "-d", "-v", "threadtime", "-s", "ActivityManager:E"], text=True, capture_output=True, timeout=10, check=True)
-    (output / "activity-errors.txt").write_text(result.stdout)
+    write_diagnostic(output / "activity-errors.txt", result.stdout)
     if re.search(r"ANR in org\.zapime\.android(?:\.|\s|\(|$)", result.stdout):
         raise SystemExit("ZapIME/test host ANR; inspect activity-errors.txt")
