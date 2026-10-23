@@ -95,6 +95,32 @@ fn server_revision(tx: &Transaction<'_>, record: Uuid) -> Result<u64, Error> {
 }
 
 impl Store {
+    /// Best-effort net-change compaction before encryption/staging. Within the
+    /// oldest bounded window, only the last unstaged operation per record stays
+    /// pending. Frozen requests and all immutable snapshots remain untouched.
+    /// The transport MUST stage every operation before any network attempt.
+    pub fn coalesce_unstaged(&mut self, profile: Uuid, limit: usize) -> Result<usize, Error> {
+        if !(1..=4096).contains(&limit) {
+            return Err(Error::Invalid);
+        }
+        let tx = self
+            .db
+            .transaction_with_behavior(TransactionBehavior::Immediate)?;
+        require_profile(&tx, profile)?;
+        let changed = tx.execute(
+            "WITH window AS MATERIALIZED (
+                SELECT o.id AS operation_id,json_extract(o.result,'$.id') AS record_id,q.sequence
+                FROM sync_queue q JOIN operations o ON o.id=q.operation_id
+                WHERE o.pending=1 AND NOT EXISTS(SELECT 1 FROM sync_uploads s WHERE s.operation_id=o.id)
+                ORDER BY q.sequence LIMIT ?1
+             ), ranked AS (
+                SELECT operation_id,row_number() OVER(PARTITION BY record_id ORDER BY sequence DESC) AS position FROM window
+             ) UPDATE operations SET pending=0 WHERE id IN(SELECT operation_id FROM ranked WHERE position>1)",
+            [limit as i64],
+        )?;
+        tx.commit()?;
+        Ok(changed)
+    }
     /// 同一资料库只绑定一个账号。换服务器可保留账号 UUID，换账号须显式迁移到新库。
     pub fn bind_sync_profile(&mut self, profile: Uuid) -> Result<(), Error> {
         if profile.is_nil() {
