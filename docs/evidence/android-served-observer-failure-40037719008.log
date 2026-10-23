@@ -1,0 +1,13 @@
+# Exact selected raw job120701178041 lines; runtime4bc3a86dd39447eaf429602778bc418861a51b39; run40037719008. Base API28 FAILED; native/voice passing is independent.
+2026-10-23T23:12:24.6954654Z FAIL ZapIME native keyboard at launch: Exception: Newest served connection did not receive an IME command
+2026-10-23T23:13:11.0969049Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-23T23:13:11.0972272Z INSTRUMENTATION_STATUS: stream=PASS recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)
+2026-10-23T23:13:11.0975033Z INSTRUMENTATION_STATUS: stream=PASS actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)
+2026-10-23T23:13:11.0977132Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T23:13:11.0978685Z INSTRUMENTATION_STATUS: stream=PASS model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)
+2026-10-23T23:13:11.0980089Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T23:13:11.0981303Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T23:13:11.0982392Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T23:13:11.0983600Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T23:13:11.0984725Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T23:13:11.0986449Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable
