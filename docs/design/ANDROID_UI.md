@@ -34,3 +34,13 @@ CI [39898390355](https://github.com/ForceMind/ZapIME/actions/runs/39898390355)�
 ![Android 原生九键](../evidence/ui-nine-key-39898390355/nine-key.png)
 
 原始 320×640 模拟器截图：上半屏为独立合成测试 App，下半屏为真实 ZapIME 输入法；未重绘、未裁剪。候选仍用指定 Button 无障碍动作，普通键位/读音走触屏；不是 ARM 真机或全平台视觉验收。原始 artifact SHA256：1da24250166b3bf89ad4e8b94a433488add2af8f3503220b66a3c500957fe02d。
+
+## 用户截图参考改造 · 2026-10-23（验证中）
+
+新增 KeyboardTheme / KeyCap / KeyboardTouch 与原生键盘反馈设置页；九键采用标点侧栏、上标数字、大字母键帽、右侧退格/重输/表情和五项底栏。空格宽度独立增加，保留空格含义，不用尚未集成的麦克风装饰。浅色白键/灰蓝操作键，深色炭黑底/灰色字母键。主题为键盘独立实例，主 App 仍为浅色，不虚称全 App 适配。
+
+工具栏提供工具、表情、布局、光标编辑、本机资料、收起；表情可实际上屏，编辑面板使用 InputConnection 光标和显式复制/剪切/粘贴，隐私会话禁止复制/剪切。复制不等于云剪贴板或自动采集历史。候选与读音仍保持代次检查，九键读音区域保留固定高度。
+
+此次参考项目：语燕 https://github.com/gurecn/YuyanIme （九键、单手、深色交互）、同文 https://github.com/osfans/trime （Rime 平台）、小企鹅 https://github.com/fcitx5-android/fcitx5-android 、HeliBoard https://github.com/HeliBorg/HeliBoard （按键反馈、可定制主题与显式剪贴板）。不将 GitHub star 当商店评分，不确定用户记忆中具体是哪款。只研究公开功能/交互，没有导入上述项目源码、资源或词库；后续移植必须逐组件审计，不能只看根许可证。
+
+新增原生回归覆盖主题设置与持久震动关闭、浅/深九键截图、重输、标点、表情上屏、显式复制粘贴，以及退格连续删除/取消/移出/失焦/Unicode/选区。尚待真实 CI，不把源码或截图测试清单写成已通过。三星真机触感、候选物理触摸、横屏/大字号与其余平台仍需专项验收。

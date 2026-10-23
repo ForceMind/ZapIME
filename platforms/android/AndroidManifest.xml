@@ -4,6 +4,7 @@
     <activity android:name=".MainActivity" android:exported="true">
       <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
     </activity>
+    <activity android:name=".KeyboardSettingsActivity" android:exported="false"/>
     <activity android:name=".PersonalDataActivity" android:exported="false"/>
     <service android:name=".ZapInputMethodService" android:label="闪电输入法" android:permission="android.permission.BIND_INPUT_METHOD" android:exported="true">
       <intent-filter><action android:name="android.view.InputMethod"/></intent-filter>
