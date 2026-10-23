@@ -125,6 +125,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         String after=editorState().text;if(after.length()>23||!"abcdefghijklmnopqrstuvwxyz".startsWith(after))throw new Exception("Long delete did not repeat safely");Thread.sleep(500);requireEditor(after,"cancel_stops_delete");
         down=SystemClock.uptimeMillis();touchAt(MotionEvent.ACTION_DOWN,down,r.centerX(),r.centerY());touchAt(MotionEvent.ACTION_MOVE,down,0,0);Thread.sleep(250);String moved=editorState().text;Thread.sleep(600);requireEditor(moved,"move_out_stops_delete");touchAt(MotionEvent.ACTION_UP,down,0,0);
         setText("probe-normal","abc😀");Thread.sleep(200);click("⌫");requireEditor("abc","delete_whole_unicode");
+        for(String cluster:new String[]{"❤️","👍🏽","🇨🇳","👨‍👩‍👧‍👦","e\u0301"}){setText("probe-normal","abc"+cluster);Thread.sleep(150);click("⌫");requireEditor("abc","delete_grapheme_"+cluster.codePointCount(0,cluster.length()));}
         stage="selected_delete";runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0,a.normal.length());});click("⌫");requireEditor("","delete_selection");
         setText("probe-normal","focus safe text");Thread.sleep(200);down=SystemClock.uptimeMillis();touchAt(MotionEvent.ACTION_DOWN,down,r.centerX(),r.centerY());
         runOnMainSync(()->ProbeActivity.current.get().password.requestFocus());Thread.sleep(700);touchAt(MotionEvent.ACTION_CANCEL,down,r.centerX(),r.centerY());waitFor("隐私输入 · 不学习");click("a");Thread.sleep(600);
@@ -141,7 +142,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 light",false);click("按键震动开关",false);waitFor("返回",true);click("返回");
         probe.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("切换九键");waitFor("九键 6",true);requireKeyColor(0xffffffff);screenshot("nine-key-light.png");
         click("九键 6");click("九键 4");click("重输");requireEditor("","nine_key_retype");click("，");click("。");click("？");click("！");requireEditor("，。？！","punctuation_rail");
-        click("表情");click("😀");requireEditor("，。？！😀","emoji_commit");click("⌫");requireEditor("，。？！","emoji_delete");click("返回");
+        click("表情");click("😀");requireEditor("，。？！😀","emoji_commit");click("⌫");requireEditor("，。？！","emoji_delete");click("❤️");requireEditor("，。？！❤️","heart_commit");click("⌫");requireEditor("，。？！","delete_heart_grapheme");click("返回");
         click("光标编辑");click("全选");click("复制");click("→");click("粘贴");requireEditor("，。？！，。？！","explicit_copy_paste");click("返回");
         getContext().startActivity(home);Thread.sleep(300);reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 dark",false);if(waitFor("按键震动开关").isChecked())throw new Exception("Haptic preference did not persist disabled");screenshot("feedback-settings.png");click("返回");
         getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);requireKeyColor(0xff4d4d50);screenshot("nine-key-dark.png");
@@ -187,7 +188,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("123");click("1");requireEditor("ZapIME test snippet你好ZapIME test snippet1","nine_numeric_literal");click("⌫");click("返回");
             click("probe-password");waitFor("隐私输入 · 不学习");click("a");click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);click("切换全键");waitFor("q",true);
             appearanceAcceptance(intent);
-            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode and selected delete\n"); finish(Activity.RESULT_OK,result);
+            screenshot("smoke.png"); result.putString("stream","PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete\n"); finish(Activity.RESULT_OK,result);
         } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){} result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

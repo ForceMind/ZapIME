@@ -219,7 +219,23 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("↵")) { command("CommitRaw","↵"); return; }
         try { send(new JSONObject().put("op","key").put("text",key),key); } catch(JSONException ignored) {}
     }
-    private void delete(InputConnection c){CharSequence selected=c.getSelectedText(0);if(selected!=null&&selected.length()>0)c.commitText("",1);else c.deleteSurroundingTextInCodePoints(1,0);}
+    private void delete(InputConnection c){
+        CharSequence selected=c.getSelectedText(0);
+        if(selected!=null&&selected.length()>0){c.commitText("",1);return;}
+        // ICU character boundaries keep variation selectors, modifiers, ZWJ
+        // sequences, regional-indicator flags and combining marks together.
+        final int limit=1024;
+        CharSequence before=c.getTextBeforeCursor(limit,0);
+        if(before==null||before.length()==0){c.deleteSurroundingTextInCodePoints(1,0);return;}
+        String text=before.toString();
+        android.icu.text.BreakIterator characters=android.icu.text.BreakIterator.getCharacterInstance(java.util.Locale.ROOT);
+        characters.setText(text);int start=characters.preceding(text.length());
+        boolean uncertain=start<=0&&text.length()==limit;
+        // A truncated run of regional indicators has unknown pairing parity.
+        if(text.length()==limit){int pos=text.length();while(pos>0){int cp=text.codePointBefore(pos);if(cp<0x1f1e6||cp>0x1f1ff)break;pos-=Character.charCount(cp);}uncertain|=pos==0;}
+        if(uncertain){c.sendKeyEvent(new android.view.KeyEvent(0,android.view.KeyEvent.KEYCODE_DEL));c.sendKeyEvent(new android.view.KeyEvent(1,android.view.KeyEvent.KEYCODE_DEL));return;}
+        c.deleteSurroundingText(text.length()-Math.max(0,start),0);
+    }
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
     private void enter(InputConnection connection) { EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
     @Override public void onFinishInput() { touches.cancel();++epoch; ready=false; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
