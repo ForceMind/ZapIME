@@ -247,11 +247,12 @@ public final class SmokeInstrumentation extends Instrumentation {
         // Creation on the App thread precedes delivery to the IME. Observe its
         // real operation on the newest wrapper before checking retained text.
         for(int i=0;i<300;i++){
-            int created=ProbeActivity.normalConnections.get();
-            if(created>previous&&ProbeActivity.normalCommandConnection.get()>=created)return;
+            // Some created wrappers may never become the served connection.
+            // Require a real operation on a new wrapper, not on every created one.
+            if(ProbeActivity.normalCommandConnection.get()>previous)return;
             Thread.sleep(50);
         }
-        throw new Exception("Newest served connection did not receive an IME command");
+        throw new Exception("No new served connection received an IME command; created="+ProbeActivity.normalConnections.get()+" commanded="+ProbeActivity.normalCommandConnection.get()+" previous="+previous);
     }
     private void restartNormalEditor() throws Exception {
         int previous=ProbeActivity.normalConnections.get();

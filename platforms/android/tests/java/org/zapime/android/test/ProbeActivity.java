@@ -37,6 +37,7 @@ public final class ProbeActivity extends Activity {
                 if(android.os.Build.VERSION.SDK_INT>=30)note("initial snapshot before length="+InitialInfo.beforeLength(info));
                 return new InputConnectionWrapper(connection,false){
                     private void observed(String operation){normalCommandConnection.accumulateAndGet(serial,Math::max);note("IME command on connection="+serial+" operation="+operation);}
+                    @Override public boolean endBatchEdit(){boolean result=super.endBatchEdit();observed("batch-end");return result;}
                     @Override public boolean setComposingText(CharSequence text,int cursor){boolean result=super.setComposingText(text,cursor);observed("compose");return result;}
                     @Override public boolean setComposingRegion(int start,int end){boolean result=super.setComposingRegion(start,end);observed("region");return result;}
                     @Override public boolean finishComposingText(){boolean result=super.finishComposingText();observed("finish");return result;}

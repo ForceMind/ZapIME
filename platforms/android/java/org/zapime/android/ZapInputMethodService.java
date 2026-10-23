@@ -195,7 +195,11 @@ public final class ZapInputMethodService extends InputMethodService {
         // for context on the input/UI thread.
         if(!InitialContext.matches(info,preedit))return rejectRestart("initial_context_mismatch");
         InputConnection connection=getCurrentInputConnection();
-        if(connection==null||!connection.setComposingRegion(info.initialSelEnd-preedit.length(),info.initialSelEnd))return rejectRestart("region_rejected");
+        if(connection==null)return rejectRestart("region_rejected");
+        boolean restored=false;connection.beginBatchEdit();
+        try{restored=connection.setComposingRegion(info.initialSelEnd-preedit.length(),info.initialSelEnd);}
+        finally{connection.endBatchEdit();}
+        if(!restored)return rejectRestart("region_rejected");
         selectionStart=info.initialSelStart;selectionEnd=info.initialSelEnd;
         restartDecision="retained";refreshStatus();drainInputReplies();return true;
     }
@@ -272,6 +276,8 @@ public final class ZapInputMethodService extends InputMethodService {
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
         generation=value.optLong("generation");
         final String previousPreedit=preedit;
+        connection.beginBatchEdit();
+        try {
         boolean wroteText=!value.isNull("commit");
         if(wroteText)trackCommit(connection,value.optString("commit"));
         if(!value.optBoolean("handled") && fallback!=null) {
@@ -288,6 +294,7 @@ public final class ZapInputMethodService extends InputMethodService {
             if(connection.finishComposingText())selectionEcho.finish();else selectionEcho.invalidate();
             selectionEcho.expect();
         }
+        } finally { connection.endBatchEdit(); }
         refreshStatus();
         renderResult(value);
     }
