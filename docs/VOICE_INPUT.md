@@ -100,3 +100,11 @@ PR #33 现代验收的测试APK以testOnly标记，内置固定模型ZIP/合成P
 运行时9ecdadf / [40015688960](https://github.com/ForceMind/ZapIME/actions/runs/40015688960)的API28、35、36三作业全部成功。API35/36各自两轮真实输入和服务退出、JNI合成中文、AudioRecord静音录制/停止及完整UI通过；原始报告/日志、下载后SHA校验证明见[evidence/API35](evidence/android-api35-40015688960/provenance.json)与[evidence/API36](evidence/android-api36-40015688960/provenance.json)。现代系统实际切换到经系统标记核实的Google预装VoiceInputMethodService并等待ZapIME真正退出，API28仍要求AOSP。
 
 这是x86_64模拟器及targetSDK28合成宿主的证据。AppOps静音/后台切换、真实自然语音到确认插入、SAF选择器、ARM/三星、蓝牙及现代手势仍未验收；不能把合成PCM或静音麦克风结果当作这些成功。模型SHA与动态库初始化不计入报告的recognizer_load_ms。
+
+### 系统暂停录音的处理（候选，待CI）
+
+API29+在startRecording之前注册AudioRecord自身的录音配置回调，并在采音线程检查初始及每500ms配置；只按本次audio session识别框架的isClientSilenced。被系统静音时结束采音/识别、拒绝确认、清除本次结果并提示用户检查权限或麦克风占用后重录；不修改系统策略，不自动云回退。回调只做有界状态变更和JNI cancel，解码/关闭仍由语音线程拥有；注销前排空已有状态事件，避免迟到回调影响完成会话。API28保留原权限/录音错误路径，不调用API29方法。
+
+来源：[Sharing audio input](https://developer.android.com/media/platform/sharing-audio-input#configuration_changes)、[isClientSilenced](https://developer.android.com/reference/android/media/AudioRecordingConfiguration#isClientSilenced())。不能靠PCM全零判断系统静音，因为安静环境也可能产生零采样。
+
+新增确定性状态回归和现代模拟器实际AudioRecord配置正向测试仍待CI。它们不等于真实AppOps拒绝/竞争录音、蓝牙、后台/真机限制的负向验收；这些仍需独立实验。

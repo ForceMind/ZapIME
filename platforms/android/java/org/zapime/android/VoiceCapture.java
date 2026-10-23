@@ -29,7 +29,13 @@ final class VoiceCapture {
     void start(){VoiceWorker.EXECUTOR.execute(this::run);}
     void stop(){if(recording)stopping.set(true);else cancel();}
     void cancel(){cancelled.set(true);stopping.set(true);long id=handle;if(id!=0)NativeVoice.cancel(id);}
-    private void update(String state,String text){main.post(()->{if(!cancelled.get())listener.update(state,text);});}
+    private void update(String state,String text){main.post(()->{if(!cancelled.get()&&(captureFailure==null||state.startsWith("microphone_")))listener.update(state,text);});}
+    private synchronized void captureFailed(String reason){
+        if(cancelled.get()||captureFailure!=null)return;
+        captureFailure=reason;stopping.set(true);
+        long id=handle;if(id!=0)NativeVoice.cancel(id);
+    }
+    private void checkCapture()throws IOException{if(captureFailure!=null)throw new IOException("microphone_failure");}
     private JSONObject result(byte[] bytes)throws Exception {
         JSONObject result=NativeVoice.result(bytes);if(result.has("error"))throw new IOException("voice_failure");return result;
     }
@@ -46,12 +52,13 @@ final class VoiceCapture {
             while(!cancelled.get()){
                 short[] chunk=audio.next(cancelled);
                 if(chunk==null)break;
-                if(chunk!=null){try{String partial=result(NativeVoice.accept(handle,chunk,chunk.length)).optString("text");long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",partial);}}finally{Arrays.fill(chunk,(short)0);}}
+                try{checkCapture();String partial=result(NativeVoice.accept(handle,chunk,chunk.length)).optString("text");long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",partial);}}finally{Arrays.fill(chunk,(short)0);}
             }
-            if(cancelled.get())return;if(captureFailure!=null)throw new IOException("microphone_failure");
+            if(cancelled.get())return;checkCapture();
             update("decoding","");String text=result(NativeVoice.finish(handle)).getString("text");
+            checkCapture();
             if(!cancelled.get())update(text.trim().isEmpty()?"empty":"result",text);
-        } catch(Exception|LinkageError failure){if(!cancelled.get())update(captureFailure!=null?"microphone_error":"error","");}
+        } catch(Exception|LinkageError failure){if(!cancelled.get())update(captureFailure!=null?captureFailure:"error","");}
         finally {
             stopping.set(true);
             if(capture!=null){boolean interrupted=false;while(capture.isAlive())try{capture.join(200);}catch(InterruptedException e){interrupted=true;}if(interrupted)Thread.currentThread().interrupt();}
@@ -61,26 +68,31 @@ final class VoiceCapture {
         }
     }
     private void capture(){
-        AudioRecord recorder=null;short[] block=new short[CHUNK];int filled=0,total=0;long progress=SystemClock.uptimeMillis();
+        AudioRecord recorder=null;VoiceRecordingMonitor monitor=null;short[] block=new short[CHUNK];int filled=0,total=0;long progress=SystemClock.uptimeMillis();
         try {
             int minimum=AudioRecord.getMinBufferSize(16000,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT);
             if(minimum<=0)throw new IOException();
             recorder=new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,16000,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT,Math.max(minimum,CHUNK*4));
             if(recorder.getState()!=AudioRecord.STATE_INITIALIZED||cancelled.get())throw new IOException();
+            monitor=VoiceRecordingMonitor.create(recorder,()->captureFailed("microphone_silenced"));
             recorder.startRecording();if(recorder.getRecordingState()!=AudioRecord.RECORDSTATE_RECORDING)throw new IOException();
-            recording=true;long started=SystemClock.elapsedRealtime();update("recording","");
+            monitor.check();checkCapture();recording=true;long started=SystemClock.elapsedRealtime(),checked=started;update("recording","");
             while(!stopping.get()&&!cancelled.get()&&total<MAX_SAMPLES&&SystemClock.elapsedRealtime()-started<60000){
+                // Initial configuration may be unavailable until capture is active.
+                // Poll only on the capture thread, also covering delayed callbacks.
+                long now=SystemClock.elapsedRealtime();if(now-checked>=500){checked=now;monitor.check();checkCapture();}
                 int count=recorder.read(block,filled,Math.min(CHUNK-filled,MAX_SAMPLES-total),AudioRecord.READ_NON_BLOCKING);
                 if(count<0)throw new IOException();
                 if(count==0){if(SystemClock.uptimeMillis()-progress>3000)throw new IOException();Thread.sleep(10);continue;}
                 progress=SystemClock.uptimeMillis();filled+=count;total+=count;
                 if(filled==CHUNK){if(!audio.offer(block))throw new IOException();block=new short[CHUNK];filled=0;}
             }
-            if(filled>0&&!cancelled.get()&&!audio.offer(Arrays.copyOf(block,filled)))throw new IOException();
-        } catch(Exception failure){if(!cancelled.get())captureFailure="microphone_unavailable";}
+            if(filled>0&&!cancelled.get()&&captureFailure==null&&!audio.offer(Arrays.copyOf(block,filled)))throw new IOException();
+        } catch(Exception failure){captureFailed("microphone_error");}
         finally {
             recording=false;Arrays.fill(block,(short)0);
-            if(recorder!=null){try{recorder.stop();}catch(RuntimeException ignored){}try{recorder.release();}catch(RuntimeException failure){if(!cancelled.get())captureFailure="microphone_unavailable";}}
+            if(monitor!=null)try{monitor.close();}catch(RuntimeException failure){captureFailed("microphone_error");}
+            if(recorder!=null){try{recorder.stop();}catch(RuntimeException ignored){}try{recorder.release();}catch(RuntimeException failure){captureFailed("microphone_error");}}
             audio.finish();
         }
     }
