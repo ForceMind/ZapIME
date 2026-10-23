@@ -37,6 +37,15 @@ jobs:
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
       - run: bash scripts/build_android_tests.sh
+      - run: bash scripts/build_android_voice_tests.sh
+      - name: Prepare checksum-verified offline model and synthetic voice fixture
+        run: |
+          python3 -m venv .venv-voice
+          .venv-voice/bin/pip install -r scripts/requirements-voice-probe.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y espeak-ng
+          .venv-voice/bin/python scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
+          .venv-voice/bin/python scripts/voice_probe.py synthesize
       - name: Enable KVM for native input acceptance
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
@@ -52,6 +61,7 @@ jobs:
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
             python3 scripts/android_smoke_repeat.py "$(command -v adb)" emulator-5554
+            python3 scripts/android_voice_smoke.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -61,4 +71,7 @@ jobs:
             target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
             target/device-smoke/
             target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
+            target/voice-android/
+            target/android-voice-tests/ZapIME-voice-tests.apk
+            target/ZapIME-XASR-model.zip
           if-no-files-found: error
