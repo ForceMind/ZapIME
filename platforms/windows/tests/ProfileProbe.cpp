@@ -16,6 +16,7 @@ namespace fs=std::filesystem;
 using Registration=HRESULT(__stdcall *)();
 static void require(bool value,const char *phase){if(!value)throw std::runtime_error(phase);}
 static void result(const char *phase,HRESULT hr){std::cout<<"profile_probe "<<phase<<" hr=0x"<<std::hex<<static_cast<unsigned long>(hr)<<std::dec<<"\n";}
+static std::string guidText(REFGUID guid){wchar_t text[40]{};int length=StringFromGUID2(guid,text,40);return length>0?std::string(text,text+length-1):"unavailable";}
 static void checked(const char *phase,HRESULT hr){result(phase,hr);require(hr==S_OK,phase);}
 static std::wstring env(const wchar_t *key){wchar_t value[256]{};DWORD n=GetEnvironmentVariableW(key,value,256);return n>0&&n<256?std::wstring(value,n):L"";}
 static bool digits(const std::wstring &s){return !s.empty()&&s.find_first_not_of(L"0123456789")==std::wstring::npos;}
@@ -65,7 +66,10 @@ int main(){
         // Own cleanup before calling an installer that can partially fail.
         probe.owned=true;checked("register",install());
         TF_INPUTPROCESSORPROFILE registered{};checked("query_registered",probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&registered));
-        require(registered.clsid==ZapClsid&&registered.guidProfile==ZapProfile&&registered.catid==GUID_TFCAT_TIP_KEYBOARD&&(registered.dwFlags&TF_IPP_FLAG_ENABLED)!=0,"registered_identity_category_enabled");
+        std::cout<<"profile_probe queried type="<<registered.dwProfileType<<" lang=0x"<<std::hex<<registered.langid<<" flags=0x"<<registered.dwFlags<<std::dec<<" clsid="<<guidText(registered.clsid)<<" profile="<<guidText(registered.guidProfile)<<" category="<<guidText(registered.catid)<<"\n";
+        require(registered.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&registered.langid==ZapLanguage&&registered.clsid==ZapClsid&&registered.guidProfile==ZapProfile,"registered_identity");
+        require(registered.catid==GUID_TFCAT_TIP_KEYBOARD,"registered_keyboard_category");
+        require((registered.dwFlags&TF_IPP_FLAG_ENABLED)!=0,"registered_enabled");
         wchar_t registeredPath[MAX_PATH]{};DWORD pathBytes=sizeof(registeredPath);
         require(RegGetValueW(HKEY_CURRENT_USER,(probe.key+L"\\InprocServer32").c_str(),nullptr,RRF_RT_REG_SZ,nullptr,registeredPath,&pathBytes)==ERROR_SUCCESS&&fs::equivalent(fs::path(registeredPath),path),"registered_com_path_is_exact_dll");
         ComPtr<ITfTextInputProcessorEx> registeredProcessor;checked("registered_com_object",CoCreateInstance(ZapClsid,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&registeredProcessor)));registeredProcessor.Reset();

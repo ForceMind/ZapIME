@@ -263,3 +263,9 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 拒绝已有本产品profile/COM或LocalAppData，恢复原线程布局/profile，不设默认/FORSESSION或延迟激活。精确检查本产品active，注销后复查本产品profile/COM消失；任何阶段或清理失败/超时均非零，不把DLL装载/注册返回当成实际输入。
 - 新增CI守卫反例及原始日志归档；本地Python语法编译及在Linux实际拒绝启动Windows可执行文件通过。没有本机MSVC/Windows SDK，C++编译、注册/激活/清理均待真实Windows CI，不预记通过。详见WINDOWS_NATIVE.md。
 - #39 Android已提交组字重启测试及修复候选5937311，修复前三API的现代35/36明确红灯、原28通过；相关断言和ZIP证据另在#39，不把本Windows切片当作其通过。四端真实App输入、联网、自然语音/ARM、真实R2服务器与签名发布仍未完成。
+
+## Windows profile实验首轮真实失败（继续定位）
+
+- #40 / 52884deeeded911ac5306ecccf313956bf05b867，Windows40033265710，作业120686462541：MSVC编译新探针、原DLL/COM/真实词库门禁通过；临时runner EXE拒绝self-hosted反例通过后，实际CoInitialize/profile manager/本机目录/注册与GetProfile均S_OK，但registered_identity_category_enabled联合断言失败。尚未进入进程激活。
+- 异常路径真实UnregisterServer S_OK，之后GetProfile为E_FAIL且本产品HKCU项消失，cleanup=PASS；整体工作流仍failure，不把清理成功当作系统集成成功。精确选取原始作业日志保存在windows-profile-failure-40033265710.log，未下载完整artifact。
+- 当前只补profile类型/语言/flags/GUID的诊断并拆开全部原断言，额外要求profile type及LANGID精确，不减弱category/enabled检查，也不改生产注册代码。需要真实字段后才判断类别缓存、启用状态或其它根因；Windows CI待跑。

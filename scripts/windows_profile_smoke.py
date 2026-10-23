@@ -20,6 +20,7 @@ def main():
     (directory / "profile-probe-guard.log").write_text(refused.stdout + refused.stderr, encoding="utf-8")
     if refused.returncode != 1 or "dedicated_github_hosted_runner_required" not in refused.stderr:
         raise SystemExit("Executable did not reject the self-hosted environment before registry access")
+    print("PASS actual executable refusal in self-hosted environment before registry access", flush=True)
     try:
         result = subprocess.run([str(executable)], cwd=directory, capture_output=True, text=True, timeout=90)
     except subprocess.TimeoutExpired as error:
