@@ -79,3 +79,13 @@ dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，
 本次脚本尚无本地Windows执行证据；即使CI成功，仍不是正式安装器、语言包配置或记事本/浏览器上屏验收。
 
 夹具接受请求的zh-CN、完整zh-Hans-CN及New-WinUserLanguageList返回的规范标签，避免在实际语言已存在时因别名字符串差异误报；仍要求恰好一个匹配项，原列表恢复逐项精确比较不放宽。此调整是代码复核发现的潜在别名边界，新CI验证，不虚构7099a24的运行结论。
+
+## 实际运行布局的窗口前置条件
+
+7099a24 /40040986359 两层守卫和语言恢复通过，但在标签检查失败，未进入C++；f38d6ce /40041268992 规范标签检查通过、C++已执行，用户列表有中文而TSF GetLanguageList仍只有英文，GetProfile继续E_FAIL，注册注销及语言恢复通过。两轮整体仍FAIL，精确选段均保留。
+
+微软 LoadKeyboardLayout 文档明确Windows8+要求调用进程拥有键盘焦点窗口，且加载影响系统运行时布局，不能把它笼统称为只改当前线程。新增只属于本进程的测试窗口/空EDIT，普通SetForegroundWindow/SetFocus后严格核对实际焦点，最多2秒消息泵；系统拒绝焦点即失败，不AttachThreadInput、不强制前台或注入按键。把已有thread manager/原profile保存/中文布局加载与当前线程0804校验移到注册和新进程查询之前。
+
+清理仍恢复原布局/profile并关闭自有窗口、恢复先前仍存在的前台窗口；只卸载本轮真正新加载的HKL。修正LoadKeyboardLayout回退为已有默认布局时不能标成新加载并卸载原布局的边界。不新增语言包下载或更改生产DLL，门禁仍须真实新进程查询/COM解析/FORPROCESS激活；结果待CI。
+
+接口依据：https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadkeyboardlayoutw 。

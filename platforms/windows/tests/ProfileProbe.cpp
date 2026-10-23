@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <stdexcept>
 #include "../Identity.h"
 using Microsoft::WRL::ComPtr;
@@ -104,6 +105,36 @@ static bool queryFreshProcess(){
 }
 struct Probe {
     bool com=false,owned=false,threadActive=false,activationAttempted=false,loadedLayout=false,haveBefore=false,ownsData=false;
+    HWND focusWindow=nullptr,focusEdit=nullptr,priorForeground=nullptr;
+    bool windowClassRegistered=false;
+    static constexpr const wchar_t *focusClass=L"ZapIMEIsolatedProfileProbe";
+    void createFocusWindow(){
+        priorForeground=GetForegroundWindow();
+        WNDCLASSW windowClass{};windowClass.lpfnWndProc=DefWindowProcW;windowClass.hInstance=GetModuleHandleW(nullptr);windowClass.lpszClassName=focusClass;
+        require(RegisterClassW(&windowClass)!=0,"register_owned_focus_class");windowClassRegistered=true;
+        focusWindow=CreateWindowExW(0,focusClass,L"ZapIME isolated profile probe",WS_OVERLAPPEDWINDOW|WS_VISIBLE,CW_USEDEFAULT,CW_USEDEFAULT,600,260,nullptr,nullptr,windowClass.hInstance,nullptr);
+        require(focusWindow!=nullptr,"create_owned_focus_window");
+        focusEdit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,20,30,540,100,focusWindow,nullptr,windowClass.hInstance,nullptr);
+        require(focusEdit!=nullptr,"create_owned_focus_editor");
+        ShowWindow(focusWindow,SW_SHOWNORMAL);SetForegroundWindow(focusWindow);SetFocus(focusEdit);
+        ULONGLONG deadline=GetTickCount64()+2000;
+        while(GetTickCount64()<deadline&&(GetForegroundWindow()!=focusWindow||GetFocus()!=focusEdit)){
+            MSG message{};for(int count=0;count<64&&PeekMessageW(&message,nullptr,0,0,PM_REMOVE);++count){require(message.message!=WM_QUIT,"owned_focus_window_quit");TranslateMessage(&message);DispatchMessageW(&message);}
+            MsgWaitForMultipleObjectsEx(0,nullptr,20,QS_ALLINPUT,MWMO_INPUTAVAILABLE);
+        }
+        require(GetForegroundWindow()==focusWindow&&GetFocus()==focusEdit,"owned_window_keyboard_focus_required");
+        std::cout<<"profile_probe owned_window_keyboard_focus=PASS; no injected input\n";
+    }
+    bool closeFocusWindow() noexcept {
+        bool ok=true;
+        if(focusWindow){ok=DestroyWindow(focusWindow)!=FALSE&&ok;focusWindow=nullptr;focusEdit=nullptr;}
+        if(windowClassRegistered){ok=UnregisterClassW(focusClass,GetModuleHandleW(nullptr))!=FALSE&&ok;windowClassRegistered=false;}
+        if(priorForeground&&IsWindow(priorForeground)){
+            if(GetForegroundWindow()!=priorForeground)SetForegroundWindow(priorForeground);
+            ok=GetForegroundWindow()==priorForeground&&ok;
+        }
+        priorForeground=nullptr;return ok;
+    }
     HMODULE dll=nullptr;
     HKL beforeLayout=nullptr,chineseLayout=nullptr;
     Registration unregisterProfile=nullptr;
@@ -135,6 +166,7 @@ struct Probe {
             owned=false;
         }
         profiles.Reset();categories.Reset();
+        bool focusRestored=closeFocusWindow();std::cout<<"profile_probe owned_window_cleanup="<<(focusRestored?"PASS":"FAIL")<<"\n";ok=focusRestored&&ok;
         if(dll){FreeLibrary(dll);dll=nullptr;}
         if(com){CoFreeUnusedLibrariesEx(0,0);CoUninitialize();com=false;}
         if(loadedLayout&&chineseLayout){ok=UnloadKeyboardLayout(chineseLayout)!=FALSE&&ok;loadedLayout=false;}
@@ -165,6 +197,18 @@ int main(int argc,char **argv){
         fs::path path=fs::path(module).parent_path()/L"ZapIMETsf.dll";
         probe.dll=LoadLibraryExW(path.c_str(),nullptr,LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR|LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);require(probe.dll!=nullptr,"load_exact_sibling_dll");
         auto install=reinterpret_cast<Registration>(GetProcAddress(probe.dll,"DllRegisterServer"));probe.unregisterProfile=reinterpret_cast<Registration>(GetProcAddress(probe.dll,"DllUnregisterServer"));require(install&&probe.unregisterProfile,"registration_exports");
+        // Windows 8+ LoadKeyboardLayout requires a window with keyboard focus.
+        // Prepare the real runtime locale before querying the new profile.
+        probe.beforeLayout=GetKeyboardLayout(0);require(probe.beforeLayout!=nullptr,"initial_thread_layout");
+        probe.createFocusWindow();
+        checked("thread_manager",CoCreateInstance(CLSID_TF_ThreadMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.threads)));TfClientId client=TF_CLIENTID_NULL;checked("thread_activate",probe.threads->Activate(&client));probe.threadActive=true;
+        HRESULT beforeHr=probe.profiles->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD,&probe.before);result("query_previous",beforeHr);probe.haveBefore=beforeHr==S_OK;
+        int count=GetKeyboardLayoutList(0,nullptr);require(count>0&&count<=256,"keyboard_layout_count");std::vector<HKL> layouts(static_cast<size_t>(count));require(GetKeyboardLayoutList(count,layouts.data())==count,"keyboard_layout_snapshot");
+        for(HKL layout:layouts)if(LOWORD(reinterpret_cast<ULONG_PTR>(layout))==ZapLanguage){probe.chineseLayout=layout;break;}
+        if(!probe.chineseLayout){probe.chineseLayout=LoadKeyboardLayoutW(L"00000804",KLF_NOTELLSHELL);probe.loadedLayout=probe.chineseLayout!=nullptr&&std::find(layouts.begin(),layouts.end(),probe.chineseLayout)==layouts.end();}
+        require(probe.chineseLayout!=nullptr&&LOWORD(reinterpret_cast<ULONG_PTR>(probe.chineseLayout))==ZapLanguage,"chinese_layout_available");
+        require(ActivateKeyboardLayout(probe.chineseLayout,0)!=nullptr&&LOWORD(reinterpret_cast<ULONG_PTR>(GetKeyboardLayout(0)))==ZapLanguage,"thread_language_matches");
+        std::cout<<"profile_probe chinese_runtime_layout_ready=PASS newly_loaded="<<(probe.loadedLayout?1:0)<<"\n";
         // Own cleanup before calling an installer that can partially fail.
         probe.owned=true;checked("register",install());
         // Registration ran through different COM instances inside the DLL.
@@ -184,14 +228,6 @@ int main(int argc,char **argv){
         require(RegGetValueW(HKEY_CURRENT_USER,(probe.key+L"\\InprocServer32").c_str(),nullptr,RRF_RT_REG_SZ,nullptr,registeredPath,&pathBytes)==ERROR_SUCCESS&&fs::equivalent(fs::path(registeredPath),path),"registered_com_path_is_exact_dll");
         ComPtr<ITfTextInputProcessorEx> registeredProcessor;checked("registered_com_object",CoCreateInstance(ZapClsid,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&registeredProcessor)));registeredProcessor.Reset();
         std::cout<<"profile_probe registered_identity_category_enabled=PASS\n";
-        checked("thread_manager",CoCreateInstance(CLSID_TF_ThreadMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.threads)));TfClientId client=TF_CLIENTID_NULL;checked("thread_activate",probe.threads->Activate(&client));probe.threadActive=true;
-        HRESULT beforeHr=probe.profiles->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD,&probe.before);result("query_previous",beforeHr);probe.haveBefore=beforeHr==S_OK;
-        probe.beforeLayout=GetKeyboardLayout(0);require(probe.beforeLayout!=nullptr,"initial_thread_layout");
-        int count=GetKeyboardLayoutList(0,nullptr);require(count>0&&count<=256,"keyboard_layout_count");std::vector<HKL> layouts(static_cast<size_t>(count));require(GetKeyboardLayoutList(count,layouts.data())==count,"keyboard_layout_snapshot");
-        for(HKL layout:layouts)if(LOWORD(reinterpret_cast<ULONG_PTR>(layout))==ZapLanguage){probe.chineseLayout=layout;break;}
-        if(!probe.chineseLayout){probe.chineseLayout=LoadKeyboardLayoutW(L"00000804",KLF_NOTELLSHELL);probe.loadedLayout=probe.chineseLayout!=nullptr;}
-        require(probe.chineseLayout!=nullptr&&LOWORD(reinterpret_cast<ULONG_PTR>(probe.chineseLayout))==ZapLanguage,"chinese_layout_available");
-        require(ActivateKeyboardLayout(probe.chineseLayout,0)!=nullptr&&LOWORD(reinterpret_cast<ULONG_PTR>(GetKeyboardLayout(0)))==ZapLanguage,"thread_language_matches");
         // No FORSESSION / default-profile update / deferred activation flag.
         probe.ownsData=true;probe.activationAttempted=true;checked("activate_for_process",probe.profiles->ActivateProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,TF_IPPMF_FORPROCESS));
         TF_INPUTPROCESSORPROFILE active{};checked("query_active",probe.profiles->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD,&active));
