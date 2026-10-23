@@ -118,9 +118,15 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import sys
+          import sys, shutil
           sys.path.insert(0, 'scripts')
           from check_apk import check_contents
+          # The download also carries API28 evidence. Keep that immutable in its
+          # original artifact; modern gates must create fresh per-device output.
+          for directory in ('device-smoke', 'device-smoke-evidence', 'voice-android'):
+              path=Path('target')/directory
+              if path.exists():
+                  shutil.rmtree(path)
           for abi in ('arm64-v8a', 'x86_64'):
               check_contents(Path('target') / ('android-' + abi) / ('ZapIME-0.1.0-dev-' + abi + '.apk'))
           for path in ('target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk', 'target/voice-probe/synthetic.wav', 'target/ZapIME-XASR-model.zip'):
