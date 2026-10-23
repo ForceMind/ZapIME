@@ -1,0 +1,27 @@
+Source: 1242cfbfdcd6c8db301d6bd86e8e9ee56ea015a1
+Run: https://github.com/ForceMind/ZapIME/actions/runs/40003124204
+Overall FAILED. Both old input rounds and all native voice assertions passed.
+UI preview/stop/retry/long-space/selection/focus passed; Back/hide stage failed.
+Failure hierarchy still showed an actively listening IME; the test had not proved the keyboard actually hid.
+Downloaded artifact 12524555064, locally verified SHA256 147b6b91ad38e0e890fa8be22757491c981d422463e70bb25477b6cfff6fb048.
+Raw preview screenshots are emulator microphone silence, not natural speech quality or a passed full UI gate.
+
+2026-10-23T18:37:57.6718159Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T18:37:57.6722075Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T18:39:08.9721145Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-23T18:39:08.9729420Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T18:40:09.5656847Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-23T18:40:09.5657959Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T18:40:09.5658638Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-23T18:40:09.5659272Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T18:40:09.5660013Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-23T18:40:09.5660676Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T18:40:09.5661213Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-23T18:40:09.5661715Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T18:40:09.5662456Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-23T18:40:09.5663120Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-23T18:40:09.5663604Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-23T18:40:09.5664070Z INSTRUMENTATION_CODE: -1
+2026-10-23T18:40:09.5665012Z INSTRUMENTATION_RESULT: stream=FAIL ZapIME native keyboard at voice hide cancellation: Exception: Missing UI node: 工具
+2026-10-23T18:40:09.5665605Z INSTRUMENTATION_CODE: 0
+2026-10-23T18:40:09.6077577Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 1}

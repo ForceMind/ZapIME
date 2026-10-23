@@ -18,14 +18,14 @@ public final class VoiceSettingsActivity extends Activity {
         super.onCreate(state);LinearLayout page=Ui.page(this);
         page.addView(Ui.text(this,"离线语音",30,Ui.INK));
         page.addView(Ui.text(this,"录音和识别都在这台设备完成。\n录音不保存、不上传，识别后由你确认插入。",15,Ui.MUTED));
-        LinearLayout model=Ui.card(page);model.addView(Ui.text(this,"中文与英文 · X-ASR",20,Ui.INK));
+        LinearLayout model=Ui.card(page);model.addView(Ui.text(this,"中文与英文 · X-ASR",20,Ui.INK));model.addView(Ui.text(this,"2026-06-05 · 流式 INT8",12,Ui.MUTED));
         model.addView(Ui.text(this,"首次使用需导入配套模型 ZIP（解压约 169 MB）。仅接受本版本固定校验的模型；更换服务器不会影响已安装的离线模型。",14,Ui.MUTED));
         status=Ui.text(this,VoiceModels.installed(this)?"模型已安装 · 录音前会重新校验":"尚未安装模型",14,Ui.BLUE);model.addView(status);
         choose=Ui.button(this,"导入离线模型 ZIP",Ui.BLUE,true);choose.setContentDescription("导入离线语音模型");choose.setOnClickListener(v->{if(busy)return;Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT).addCategory(Intent.CATEGORY_OPENABLE).setType("*/*");try{startActivityForResult(intent,1);}catch(ActivityNotFoundException e){status.setText("此设备没有文件选择器");}});Ui.addButton(model,choose);
         Button permission=Ui.button(this,"允许使用麦克风",Ui.BG,false);permission.setOnClickListener(v->{if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED){status.setText("麦克风已允许 · 只在显式开始录音后使用");return;}requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},2);});Ui.addButton(page,permission);
         Button legal=Ui.button(this,"模型与语音组件许可",Ui.BG,false);legal.setOnClickListener(v->showLicenses());Ui.addButton(page,legal);
         Button download=Ui.button(this,"查看项目与模型下载说明",Ui.BG,false);download.setOnClickListener(v->{try{startActivity(new Intent(Intent.ACTION_VIEW,android.net.Uri.parse("https://github.com/ForceMind/ZapIME/blob/main/docs/VOICE_INPUT.md")));}catch(ActivityNotFoundException e){status.setText("请在浏览器打开 github.com/ForceMind/ZapIME");}});Ui.addButton(page,download);
-        page.addView(Ui.text(this,"设备性能会影响首次加载和识别速度。当前为开发验证功能，模型下载后可断网使用。",12,Ui.MUTED));
+        page.addView(Ui.text(this,"安装后，长按键盘空格开始语音；轻点仍是空格与选词。也可在键盘工具中打开离线语音。\n设备性能会影响首次加载和识别速度。当前为开发验证功能，模型下载后可断网使用。",12,Ui.MUTED));
         Ui.showPage(this,page);
     }
     @Override protected void onActivityResult(int request,int result,Intent data){

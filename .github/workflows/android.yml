@@ -39,13 +39,24 @@ jobs:
       - run: bash scripts/build_android.sh x86_64
       - run: bash scripts/build_android_tests.sh
       - run: bash scripts/build_android_voice_tests.sh
-      - name: Prepare checksum-verified offline model and synthetic voice fixture
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Prepare synthetic voice fixture Python runtime
+        timeout-minutes: 5
         run: |
           python3 -m venv .venv-voice
-          .venv-voice/bin/pip install -r scripts/requirements-voice-probe.txt
-          sudo apt-get update -qq
+          .venv-voice/bin/pip install --only-binary=:all: -r scripts/requirements-voice-fixture.txt
+      - name: Prepare local synthetic speech tool
+        timeout-minutes: 5
+        run: |
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 update -qq
           sudo apt-get install -y espeak-ng
-          .venv-voice/bin/python scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
+      - name: Build checksum-verified offline import model
+        timeout-minutes: 10
+        run: python3 scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
+      - name: Synthesize fixed Mandarin fixture
+        run: |
           .venv-voice/bin/python scripts/voice_probe.py synthesize
       - name: Enable KVM for native input acceptance
         run: |

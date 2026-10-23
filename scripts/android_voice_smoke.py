@@ -43,6 +43,7 @@ try:
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
+    run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/native-report.json",str(out/"native-report.json"))
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)
@@ -65,6 +66,7 @@ try:
     (out/"ime-teardown.txt").write_text(teardown)
     time.sleep(1)
 finally:
+    run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/native-report.json",str(out/"native-report.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
     (out / "crash.txt").write_text(log)
     if "org.zapime.android" in log and ("FATAL EXCEPTION" in log or "Fatal signal" in log):

@@ -41,7 +41,9 @@ public final class ZapInputMethodService extends InputMethodService {
     private InputConnection voiceTarget;
     private String voiceBefore,voiceAfter,voiceState="",voiceText="";
     private TextView voiceLabel,voicePreview;
+    private ScrollView voiceScroll;
     private Button voiceStop,voiceInsert;
+    private boolean voiceBack;
     private int dp(int n) { return (int)(n * getResources().getDisplayMetrics().density); }
 
     @Override public View onCreateInputView() {
@@ -127,7 +129,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void open(Class<?> activity){startActivity(new Intent(this,activity).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
     private void idleToolbar(){
         if(candidates==null)return;candidates.removeAllViews();
-        if(layer.equals("voice")){TextView hint=Ui.text(this,"离线语音 · 确认后插入",14,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(-1,dp(46)));return;}
+        if(layer.equals("voice")){TextView hint=Ui.text(this,"离线语音 · 确认后插入",14,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button hide=Ui.button(this,"",theme.toolbar,false);hide.setContentDescription("收起语音键盘");hide.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,"hide",theme.ink),null,null);candidates.addView(hide,new LinearLayout.LayoutParams(dp(52),dp(46)));bind(hide,()->{cancelVoice(true);requestHideSelf(0);},false);return;}
         if(searchActive){TextView hint=Ui.text(this,searchChinese?"中文搜索 · 仅本机":"English 搜索 · 仅本机",13,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button clear=Ui.button(this,"清空搜索",theme.toolbar,false);clear.setTextColor(theme.ink);clear.setTextSize(14);clear.setContentDescription("清空搜索");candidates.addView(clear,new LinearLayout.LayoutParams(dp(90),dp(46)));bind(clear,()->clearDataSearch(),false);return;}
         String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","本机资料面板","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
         for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
@@ -310,21 +312,26 @@ public final class ZapInputMethodService extends InputMethodService {
         worker.execute(()->main.post(()->{
             if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
             InputConnection target=getCurrentInputConnection();
-            if(target==null||!preedit.isEmpty()){cancelVoice(true);return;}
-            String[] context=voiceContext(target);
-            if(context==null||selectionStart<0||selectionStart!=selectionEnd){cancelVoice(true);Toast.makeText(this,"请将光标放在可输入的位置再开始",Toast.LENGTH_SHORT).show();return;}
-            voiceTarget=target;voiceSelection=selectionVersion;voiceBefore=context[0];voiceAfter=context[1];
-            voice=new VoiceCapture(this,(state,text)->{
-                if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
-                if(state.equals("recording")&&voiceState.equals("decoding"))return;
-                voiceState=state;voiceText=text;updateVoicePanel();
-            });voice.start();
+            if(target==null||!preedit.isEmpty()||selectionStart<0||selectionStart!=selectionEnd){cancelVoice(true);return;}
+            voiceTarget=target;voiceSelection=selectionVersion;final int selected=voiceSelection;
+            // Remote editor queries can wait seconds. Keep Cancel and the IME
+            // main looper responsive even when the other App is not responding.
+            VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
+                if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
+                if(context==null||target!=getCurrentInputConnection()||selected!=selectionVersion){cancelVoice(true);Toast.makeText(this,"输入位置不可用，请重试",Toast.LENGTH_SHORT).show();return;}
+                voiceBefore=context[0];voiceAfter=context[1];
+                voice=new VoiceCapture(this,(state,text)->{
+                    if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+                    if(state.equals("recording")&&voiceState.equals("decoding"))return;
+                    voiceState=state;voiceText=text;updateVoicePanel();
+                });voice.start();
+            });});
         }));
     }
     private void buildVoicePanel(){
         body.setPadding(0,0,0,0);
-        voiceLabel=Ui.text(this,"",15,theme.accent);voiceLabel.setPadding(dp(16),dp(10),dp(16),dp(6));body.addView(voiceLabel,new LinearLayout.LayoutParams(-1,dp(40)));
-        ScrollView scroll=new ScrollView(this);voicePreview=Ui.text(this,"",18,theme.ink);voicePreview.setPadding(dp(16),dp(6),dp(16),dp(6));voicePreview.setContentDescription("语音识别预览");scroll.addView(voicePreview);body.addView(scroll,new LinearLayout.LayoutParams(-1,dp(100)));
+        voiceLabel=Ui.text(this,"",15,theme.accent);voiceLabel.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);voiceLabel.setPadding(dp(16),dp(10),dp(16),dp(6));body.addView(voiceLabel,new LinearLayout.LayoutParams(-1,dp(40)));
+        voiceScroll=new ScrollView(this);voicePreview=Ui.text(this,"",18,theme.ink);voicePreview.setPadding(dp(16),dp(6),dp(16),dp(6));voicePreview.setContentDescription("语音识别预览");voiceScroll.addView(voicePreview);body.addView(voiceScroll,new LinearLayout.LayoutParams(-1,dp(100)));
         LinearLayout controls=new LinearLayout(this);
         Button cancel=Ui.button(this,"取消",theme.special,false);cancel.setPadding(0,0,0,0);cancel.setTextColor(theme.ink);place(controls,cancel,1,48);bind(cancel,()->cancelVoice(true),false);
         voiceStop=Ui.button(this,"停止录音",theme.special,false);voiceStop.setPadding(0,0,0,0);voiceStop.setTextColor(theme.ink);place(controls,voiceStop,1,48);bind(voiceStop,()->{if(voiceState.equals("recording")&&voice!=null){voice.stop();voiceState="decoding";updateVoicePanel();}else if(voiceTerminal())startVoice();},false);
@@ -336,27 +343,37 @@ public final class ZapInputMethodService extends InputMethodService {
         String label="正在校验并加载离线模型…";
         if(voiceState.equals("recording"))label="正在聆听 · 最长 60 秒";
         if(voiceState.equals("decoding"))label="录音已停止 · 正在整理文字…";
+        if(voiceState.equals("checking"))label="正在核对输入位置…";
         if(voiceState.equals("result"))label="识别完成 · 确认后插入";
         if(voiceState.equals("empty"))label="没有识别到文字，请返回后重试";
         if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
         if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";
-        voiceLabel.setText(label);voicePreview.setText(voiceText.isEmpty()?"录音不保存、不上传":voiceText);
+        if(!label.contentEquals(voiceLabel.getText()))voiceLabel.setText(label);
+        String preview=voiceText.isEmpty()?"录音不保存、不上传":voiceText;
+        if(!preview.contentEquals(voicePreview.getText())){boolean bottom=voicePreview.getHeight()-voiceScroll.getHeight()-voiceScroll.getScrollY()<=dp(24);voicePreview.setText(preview);if(bottom){final ScrollView scroll=voiceScroll;scroll.post(()->{if(scroll.isAttachedToWindow())scroll.fullScroll(View.FOCUS_DOWN);});}}
         voiceStop.setText(voiceTerminal()?"重新录音":"停止录音");voiceStop.setEnabled(voiceState.equals("recording")||voiceTerminal());voiceStop.setAlpha(voiceStop.isEnabled()?1f:.4f);voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());voiceInsert.setAlpha(voiceInsert.isEnabled()?1f:.4f);
     }
     private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("microphone_error");}
     private void insertVoice(){
         if(!voiceState.equals("result")||voiceText.trim().isEmpty())return;
-        InputConnection target=getCurrentInputConnection();boolean valid=target!=null&&target==voiceTarget&&voiceSelection==selectionVersion&&!privateSession&&preedit.isEmpty();
-        if(valid){String[] context=voiceContext(target);valid=context!=null&&voiceBefore.equals(context[0])&&voiceAfter.equals(context[1])&&selectionStart>=0&&selectionStart==selectionEnd;}
-        String text=voiceText;cancelVoice(true);
-        if(valid){boolean accepted=false;try{accepted=target.commitText(text,1);}catch(RuntimeException ignored){}if(!accepted)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();}
-        else Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
+        final InputConnection target=getCurrentInputConnection();
+        if(target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||!preedit.isEmpty()){cancelVoice(true);return;}
+        final int ticket=voiceTicket,active=epoch,selected=voiceSelection;voiceState="checking";updateVoicePanel();
+        VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
+            if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+            boolean valid=target==getCurrentInputConnection()&&target==voiceTarget&&selected==selectionVersion&&!privateSession&&preedit.isEmpty()&&selectionStart>=0&&selectionStart==selectionEnd&&context!=null&&voiceBefore.equals(context[0])&&voiceAfter.equals(context[1]);
+            String text=voiceText;cancelVoice(true);
+            if(valid){boolean accepted=false;try{accepted=target.commitText(text,1);}catch(RuntimeException ignored){}if(!accepted)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();}
+            else Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
+        });});
     }
     private String[] voiceContext(InputConnection target){try{CharSequence before=target.getTextBeforeCursor(128,0),after=target.getTextAfterCursor(128,0);return before==null||after==null||before.length()>128||after.length()>128?null:new String[]{before.toString(),after.toString()};}catch(RuntimeException unavailable){return null;}}
     private void cancelVoice(boolean restore){
-        ++voiceTicket;if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceStop=null;voiceInsert=null;
+        ++voiceTicket;voiceBack=false;if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceScroll=null;voiceStop=null;voiceInsert=null;
         if(layer.equals("voice")){layer="letters";if(restore&&body!=null){renderKeys();idleToolbar();refreshStatus();}}
     }
+    @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}
+    @Override public boolean onKeyUp(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK&&voiceBack){voiceBack=false;return true;}return super.onKeyUp(code,event);}
     @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);if(VoiceWorker.nativeLoaded)VoiceWorker.EXECUTOR.execute(()->NativeVoice.release(0));}}
     private void delete(InputConnection c){
         CharSequence selected=c.getSelectedText(0);

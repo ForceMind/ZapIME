@@ -11,12 +11,12 @@ Android 新增真正九宫格拼音键盘，复用固定 MSIME 九键解码器�
 1. 取得同一构建的 ARM64 开发 APK 与 `ZapIME-XASR-model.zip`。Android Actions 成功产物 `ZapIME-Android-development` 包含 APK、离线模型包与合成测试证据；GitHub 产物有保留期限，后续可从固定源码重新构建。当前不是正式签名发布。
 2. 在主 App 打开「离线语音 · 模型与权限」，显式选择 ZIP，等待逐文件校验完成，再允许麦克风。模型只导入到本 App 私有目录，不要求输入服务器地址。
 3. 返回普通输入框，完成已有拼音组字，长按空格或在键盘「工具 → 离线语音」开始录音。轻点空格仍是原来的空格/选词。停止后查看文字，点击「确认插入」才会写入正文；可直接重新录音，取消会丢弃这一轮。密码/禁止学习字段不开放此入口。
-4. 隐藏键盘、切换输入框、移动光标、配置变化都会取消当前语音。录音结束到确认期间也重新检查连接、选区代次和有界上下文；上下文不可读时拒绝开始。不支持把旧识别结果自动写到新位置。
+4. Back 先取消语音回到键盘；语音工具栏可显式收起。隐藏键盘、切换输入框、移动光标、配置变化都会取消当前语音。录音结束到确认期间也重新检查连接、选区代次和有界上下文；上下文不可读时拒绝开始。不支持把旧识别结果自动写到新位置。
 
-可复现模型包：先安装下述探针 Python 依赖，然后运行：
+可复现模型包仅使用 Python 3.11+ 标准库，无需安装 Python 推理运行库：
 
 ```sh
-.venv-voice/bin/python scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
+python3 scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
 ```
 
 此次本地实际生成 ZIP 129,097,503 字节，SHA256 `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1`。ZIP 压缩字节可能受 zlib 版本影响；**App 信任 APK 内固定的每成员长度/SHA，不依赖此整包哈希**。四个推理文件总计 169,227,953 字节，另附 LICENSE/NOTICE；安装需要足够的暂存空间，重导入期间旧有效模型保留到新包校验完成。清除 App 数据/卸载会删除模型，模型可重新导入；本模型不是个人资料或 E2EE 恢复包。
@@ -27,6 +27,7 @@ Android 新增真正九宫格拼音键盘，复用固定 MSIME 九键解码器�
 
 - 固定未改动的 MSIME `LocalAsr.cpp`，C++17 JNI；sherpa-onnx 1.13.8、ONNX Runtime 1.28.2 两个 ABI 逐库锁哈希，校验 ELF 架构、16 KiB LOAD 对齐和动态依赖白名单。依赖完整通知随 APK，模型不内置；默认不使用热词或远程润色。
 - 模型逐项复核和原生解码在独立语音 worker，不阻塞 Rust 按键队列/SQLite reader。录音另有 capture 线程：16 kHz 单声道 PCM16、100 ms 块、有界全程内存队列；最长 60 秒墙钟与 960,000 样本，识别采用 2 个 CPU 线程。
+- 开始/确认时的有界编辑器上下文查询也在语音 worker；不把可能等待数秒的跨进程读取放在键盘 UI。界面保持可取消，返回主线程后再次核对 ticket/epoch/选区。依据 [Android InputConnection 文档](https://developer.android.com/reference/android/view/inputmethod/InputConnection#getTextBeforeCursor(int,int)) 和 [AOSP AnyThread 远程读取实现](https://android.googlesource.com/platform/frameworks/base/+/70908ddf269e69d3a177f0c873cddc48a79d6f78/core/java/android/inputmethodservice/RemoteInputConnection.java)，不把 EditorInfo 初始缓存当作当前确认位置。
 - 不写录音文件，不上传音频/文字，不自动学习语音正文，不做云端回退；正文只保留在当前预览内存，取消后释放。模型缓存闲置约两分钟后释放，内存紧张时取消并释放未使用模型。并非对低内存设备的峰值内存/耗电验收。
 - JNI 分配前就建立取消句柄，限制最多 4 个；start/feed/finish/close 必须同一所有者线程，跨线程只允许 cancel。生命周期取消不等待模型加载或解码完成，迟到回调由独立 ticket/输入 epoch 拒绝。
 - 模拟器 JNI 合成 PCM 识别、实际 AudioRecord 静音录制、键盘预览/焦点保护是不同验收。合成 PCM 直接进入原生解码器，不冒充通过手机麦克风说话；静音结果也不能证明自然语音质量。SAF 文件选择、现代系统后台麦克风/AppOps、蓝牙、ARM/三星和真实口音仍需真机验收。
