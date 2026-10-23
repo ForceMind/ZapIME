@@ -168,7 +168,7 @@ public final class SmokeInstrumentation extends Instrumentation {
     private void localDataAcceptance() throws Exception {
         stage="local_panel_insert";setText("probe-normal","");Thread.sleep(200);click("本机资料面板");click("快捷短语");waitFor("wx\nZapIME test snippet",true);screenshot("local-data.png");
         click("wx\nZapIME test snippet");requireEditor("ZapIME test snippet","local_snippet_insert");
-        click("搜索");waitFor("搜索资料 · 本机");click("中/英");click("w");click("x");queryText("查找：wx");requireEditor("ZapIME test snippet","search_never_enters_editor");screenshot("local-search.png");
+        click("搜索");waitFor("搜索资料 · 本机");click("中/英");AccessibilityNodeInfo rapid=waitFor("w",true);for(int i=0;i<20;i++)rapid.performAction(AccessibilityNodeInfo.ACTION_CLICK);waitFor("清空搜索",true).performAction(AccessibilityNodeInfo.ACTION_CLICK);queryText("查找：");Thread.sleep(350);queryText("查找：");click("w");click("x");queryText("查找：wx");requireEditor("ZapIME test snippet","search_never_enters_editor");screenshot("local-search.png");
         click("完成搜索");waitFor("本机 · 共 1 条 · 搜索：wx");click("wx\nZapIME test snippet");requireEditor("ZapIME test snippetZapIME test snippet","searched_snippet_insert");
         stage="explicit_local_clipboard";syntheticClipboard("你好合成剪贴板",false);click("保存剪贴板");String clip="剪贴板\n你好合成剪贴板";waitFor(clip,true);waitFor("本机 · 共 1 条");screenshot("local-clipboard.png");
         rowAction(clip,"置顶");waitFor("取消置顶",true);rowAction(clip,"取消置顶");waitFor("置顶",true);rowAction(clip,"转为收藏");
