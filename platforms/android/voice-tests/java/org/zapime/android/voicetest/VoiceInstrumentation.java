@@ -2,6 +2,7 @@
 package org.zapime.android.voicetest;
 import android.app.*;
 import android.content.*;
+import android.media.*;
 import android.os.*;
 import java.io.*;
 import java.lang.reflect.*;
@@ -52,11 +53,27 @@ public final class VoiceInstrumentation extends Instrumentation {
         finally{cancelled.set(true);backing.resume.countDown();consumer.interrupt();consumer.join(1000);}
         pass("deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF");
     }
+    private void recordingPolicyState()throws Exception{
+        Class<?> type=Class.forName("org.zapime.android.VoiceRecordingState",true,getTargetContext().getClassLoader());
+        Constructor<?> constructor=type.getDeclaredConstructor(int.class,Runnable.class);constructor.setAccessible(true);
+        Method observe=type.getDeclaredMethod("observe",int.class,boolean.class),close=type.getDeclaredMethod("close");observe.setAccessible(true);close.setAccessible(true);
+        AtomicInteger calls=new AtomicInteger();Object state=constructor.newInstance(17,(Runnable)calls::incrementAndGet);
+        observe.invoke(state,18,true);observe.invoke(state,17,false);require(calls.get()==0,"foreign/unmuted recording treated as silenced");
+        observe.invoke(state,17,true);observe.invoke(state,17,false);observe.invoke(state,17,true);require(calls.get()==1,"recording silence must be terminal and delivered once");
+        Object closed=constructor.newInstance(17,(Runnable)calls::incrementAndGet);close.invoke(closed);observe.invoke(closed,17,true);require(calls.get()==1,"late callback after close");
+        CountDownLatch entered=new CountDownLatch(1),release=new CountDownLatch(1),closing=new CountDownLatch(1),done=new CountDownLatch(1);AtomicReference<Throwable> failure=new AtomicReference<>();
+        Object racing=constructor.newInstance(17,(Runnable)()->{entered.countDown();try{if(!release.await(5,TimeUnit.SECONDS))throw new AssertionError("silence race fixture timeout");}catch(InterruptedException e){throw new AssertionError(e);}});
+        Thread event=new Thread(()->{try{observe.invoke(racing,17,true);}catch(Throwable e){failure.set(e);}}),closer=new Thread(()->{closing.countDown();try{close.invoke(racing);}catch(Throwable e){failure.set(e);}finally{done.countDown();}});
+        try{event.start();require(entered.await(5,TimeUnit.SECONDS),"silence race not entered");closer.start();require(closing.await(5,TimeUnit.SECONDS),"close race not entered");require(!done.await(100,TimeUnit.MILLISECONDS),"close returned before active callback drained");release.countDown();require(done.await(5,TimeUnit.SECONDS),"close stalled");require(failure.get()==null,"silence close race failed");}
+        finally{release.countDown();event.join(1000);if(closer.getState()!=Thread.State.NEW)closer.join(1000);}
+        pass("recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)");
+    }
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
             nativeVoice=Class.forName("org.zapime.android.NativeVoice",true,getTargetContext().getClassLoader());models=Class.forName("org.zapime.android.VoiceModels",true,getTargetContext().getClassLoader());
             stage="ordered PCM completion";finalPcmRace();
+            stage="recording policy state";recordingPolicyState();
             fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
             if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
             stage="model boundary";rejectImport("../tokens.txt");rejectImport("msime-model.json");rejectImport("tokens.txt");
@@ -73,16 +90,29 @@ public final class VoiceInstrumentation extends Instrumentation {
             long decodeMillis=SystemClock.elapsedRealtime()-decodeStart;JSONObject report=new JSONObject().put("synthetic",true).put("platform","Android emulator").put("api_level",Build.VERSION.SDK_INT).put("abi",Build.SUPPORTED_ABIS[0]).put("model","x-asr-streaming-int8-2026-06-05").put("configured_cpu_threads",2).put("audio_samples",samples).put("audio_seconds",samples/16000.0).put("recognizer_load_ms",loadMillis).put("decode_with_jni_ms",decodeMillis).put("rtf",decodeMillis/(samples/16.0)).put("recognized_codepoints",text.codePointCount(0,text.length())).put("expected_fragments_passed",true).put("capture","synthetic PCM fed without real-time pacing; not microphone or end-to-end latency");Files.write(new File(fixtures,"native-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
             stage="duration and cancellation";handle=allocate();require(start(handle,model).optBoolean("ready"),"native reload");short[] silence=new short[1600];for(int i=0;i<600;i++)require(!accept(handle,silence,silence.length).has("error"),"bounded silence stream");require("audio_limit".equals(accept(handle,new short[1],1).optString("error")),"60 second sample bound ignored");nativeCall("cancel",new Class<?>[]{long.class},handle);require("cancelled".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"decode cancellation ignored");require(close(handle),"close cancelled decode");pass("actual 60 second PCM bound and cancellation");
             stage="microphone lifecycle";Activity activity=startActivitySync(new Intent().setClassName(getTargetContext(),"org.zapime.android.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-            capture(false);getUiAutomation().grantRuntimePermission("org.zapime.android",android.Manifest.permission.RECORD_AUDIO);capture(true);runOnMainSync(activity::finish);
+            capture(false);getUiAutomation().grantRuntimePermission("org.zapime.android",android.Manifest.permission.RECORD_AUDIO);capture(true);if(Build.VERSION.SDK_INT>=29)liveRecordingMonitor();runOnMainSync(activity::finish);
             nativeCall("release",new Class<?>[]{long.class},0L);pass("permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)");
             result.putString("stream","PASS Android offline voice native acceptance\n");finish(Activity.RESULT_OK,result);
         }catch(Throwable failure){result.putString("stream","FAIL Android voice at "+stage+": "+failure.getClass().getSimpleName()+" "+failure.getMessage()+"\n");finish(Activity.RESULT_CANCELED,result);}
+    }
+    private void liveRecordingMonitor()throws Exception{
+        Class<?> type=Class.forName("org.zapime.android.VoiceRecordingMonitor",true,getTargetContext().getClassLoader());
+        Method create=type.getDeclaredMethod("create",AudioRecord.class,Runnable.class),check=type.getDeclaredMethod("check"),close=type.getDeclaredMethod("close");create.setAccessible(true);check.setAccessible(true);close.setAccessible(true);
+        int minimum=AudioRecord.getMinBufferSize(16000,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT);
+        AudioRecord recorder=new AudioRecord(MediaRecorder.AudioSource.VOICE_RECOGNITION,16000,AudioFormat.CHANNEL_IN_MONO,AudioFormat.ENCODING_PCM_16BIT,Math.max(minimum,6400));Object monitor=null;AtomicBoolean silenced=new AtomicBoolean();short[] pcm=new short[160];
+        try{
+            require(recorder.getState()==AudioRecord.STATE_INITIALIZED,"live monitor recorder unavailable");monitor=create.invoke(null,recorder,(Runnable)()->silenced.set(true));recorder.startRecording();
+            AudioRecordingConfiguration configuration=null;long deadline=SystemClock.elapsedRealtime()+5000;int samples=0;
+            while(SystemClock.elapsedRealtime()<deadline){check.invoke(monitor);configuration=recorder.getActiveRecordingConfiguration();int count=recorder.read(pcm,0,pcm.length,AudioRecord.READ_NON_BLOCKING);require(count>=0,"live monitor PCM read");samples+=count;java.util.Arrays.fill(pcm,(short)0);if(configuration!=null&&samples>0)break;Thread.sleep(10);}
+            require(configuration!=null&&configuration.getClientAudioSessionId()==recorder.getAudioSessionId(),"missing own active recording configuration");require(!configuration.isClientSilenced()&&!silenced.get(),"foreground test microphone policy unexpectedly silenced");require(samples>0,"no live monitor PCM");
+        }finally{java.util.Arrays.fill(pcm,(short)0);try{if(monitor!=null)close.invoke(monitor);}finally{try{recorder.stop();}catch(RuntimeException ignored){}recorder.release();}}
+        pass("API29+ production recording monitor with actual own active unsilenced configuration and emulator PCM (silence); no policy override");
     }
     private void capture(boolean permitted)throws Exception{
         ClassLoader loader=getTargetContext().getClassLoader();Class<?> capture=Class.forName("org.zapime.android.VoiceCapture",true,loader),listener=Class.forName("org.zapime.android.VoiceCapture$Listener",true,loader);
         CountDownLatch done=new CountDownLatch(1);AtomicReference<String> terminal=new AtomicReference<>();AtomicReference<Object> instance=new AtomicReference<>();AtomicBoolean heard=new AtomicBoolean();
         Method stop=capture.getDeclaredMethod("stop");stop.setAccessible(true);
-        Object callback=Proxy.newProxyInstance(loader,new Class<?>[]{listener},(proxy,method,args)->{if(method.getName().equals("update")){String state=(String)args[0];if(state.equals("recording")&&heard.compareAndSet(false,true)){new Handler(Looper.getMainLooper()).postDelayed(()->{try{stop.invoke(instance.get());}catch(Exception e){terminal.set("stop_error");done.countDown();}},350);}if(state.equals("result")||state.equals("empty")||state.equals("error")||state.equals("microphone_error")){terminal.set(state);done.countDown();}}return null;});
+        Object callback=Proxy.newProxyInstance(loader,new Class<?>[]{listener},(proxy,method,args)->{if(method.getName().equals("update")){String state=(String)args[0];if(state.equals("recording")&&heard.compareAndSet(false,true)){new Handler(Looper.getMainLooper()).postDelayed(()->{try{stop.invoke(instance.get());}catch(Exception e){terminal.set("stop_error");done.countDown();}},350);}if(state.equals("result")||state.equals("empty")||state.equals("error")||state.equals("microphone_error")||state.equals("microphone_silenced")){terminal.set(state);done.countDown();}}return null;});
         Constructor<?> ctor=capture.getDeclaredConstructor(Context.class,listener);ctor.setAccessible(true);Object value=ctor.newInstance(getTargetContext(),callback);instance.set(value);Method start=capture.getDeclaredMethod("start");start.setAccessible(true);start.invoke(value);
         require(done.await(90,TimeUnit.SECONDS),"microphone timeout");Method cancel=capture.getDeclaredMethod("cancel");cancel.setAccessible(true);cancel.invoke(value);
         require(permitted?heard.get()&&(terminal.get().equals("empty")||terminal.get().equals("result")):"microphone_error".equals(terminal.get())&&!heard.get(),"microphone permission/stop state");
