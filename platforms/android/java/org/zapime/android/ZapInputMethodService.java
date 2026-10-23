@@ -199,7 +199,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("中/英")) { if(sensitive)return; command("CommitRaw",null); chinese=!chinese;shift=false;syncLayout();refreshStatus();renderKeys();return; }
         if(key.startsWith("t9-")){try{send(new JSONObject().put("op","key").put("text",key.substring(3)),null);}catch(JSONException ignored){}return;}
         if(key.equals("分词")){try{send(new JSONObject().put("op","key").put("text","'"),null);}catch(JSONException ignored){}return;}
-        if(!chinese || key.equals("，") || key.equals("。") || (!layer.equals("letters")&&!key.equals("⌫")&&!key.equals("空格")&&!key.equals("↵")) || (shift&&key.length()==1&&Character.isLetter(key.charAt(0)))) {
+        if(!chinese || key.equals("，") || key.equals("。") || key.equals("？") || key.equals("！") || (!layer.equals("letters")&&!key.equals("⌫")&&!key.equals("空格")&&!key.equals("↵")) || (shift&&key.length()==1&&Character.isLetter(key.charAt(0)))) {
             if(chinese)command("CommitRaw",null);
             final int active=epoch;
             final String text=key.equals("空格")?" ":(shift?key.toUpperCase(java.util.Locale.ROOT):key);
