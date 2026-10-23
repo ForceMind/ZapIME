@@ -18,6 +18,7 @@ public final class ProbeActivity extends Activity {
     EditText normal, password;
     private int focusRequest;
     static final java.util.concurrent.atomic.AtomicInteger normalConnections=new java.util.concurrent.atomic.AtomicInteger();
+    static final java.util.concurrent.atomic.AtomicInteger normalCommandConnection=new java.util.concurrent.atomic.AtomicInteger();
     static final AtomicBoolean delayNextContext=new AtomicBoolean();
     static volatile CountDownLatch contextEntered=new CountDownLatch(0),contextRelease=new CountDownLatch(0);
     @Override public void onCreate(Bundle state) {
@@ -32,9 +33,14 @@ public final class ProbeActivity extends Activity {
             @Override public InputConnection onCreateInputConnection(EditorInfo info){
                 note("normal connection created; length="+length()+" selection="+getSelectionStart()+":"+getSelectionEnd()+" composing="+BaseInputConnection.getComposingSpanStart(getText())+":"+BaseInputConnection.getComposingSpanEnd(getText()));
                 InputConnection connection=super.onCreateInputConnection(info);if(connection==null)return null;
-                normalConnections.incrementAndGet();
+                final int serial=normalConnections.incrementAndGet();
                 if(android.os.Build.VERSION.SDK_INT>=30)note("initial snapshot before length="+InitialInfo.beforeLength(info));
                 return new InputConnectionWrapper(connection,false){
+                    private void observed(String operation){normalCommandConnection.accumulateAndGet(serial,Math::max);note("IME command on connection="+serial+" operation="+operation);}
+                    @Override public boolean setComposingText(CharSequence text,int cursor){boolean result=super.setComposingText(text,cursor);observed("compose");return result;}
+                    @Override public boolean setComposingRegion(int start,int end){boolean result=super.setComposingRegion(start,end);observed("region");return result;}
+                    @Override public boolean finishComposingText(){boolean result=super.finishComposingText();observed("finish");return result;}
+                    @Override public boolean commitText(CharSequence text,int cursor){boolean result=super.commitText(text,cursor);observed("commit");return result;}
                     @Override public CharSequence getTextBeforeCursor(int length,int flags){
                         // Synthetic unresponsive-editor fixture. No IME API or
                         // recognition text is injected by this test host.

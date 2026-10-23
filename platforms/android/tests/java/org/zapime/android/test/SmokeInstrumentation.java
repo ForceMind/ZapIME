@@ -243,10 +243,20 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         throw new Exception("Missing IME-only text: "+text);
     }
+    private void awaitServedConnectionCommand(int previous) throws Exception {
+        // Creation on the App thread precedes delivery to the IME. Observe its
+        // real operation on the newest wrapper before checking retained text.
+        for(int i=0;i<300;i++){
+            int created=ProbeActivity.normalConnections.get();
+            if(created>previous&&ProbeActivity.normalCommandConnection.get()>=created)return;
+            Thread.sleep(50);
+        }
+        throw new Exception("Newest served connection did not receive an IME command");
+    }
     private void restartNormalEditor() throws Exception {
         int previous=ProbeActivity.normalConnections.get();
         runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
-        for(int i=0;ProbeActivity.normalConnections.get()<=previous;i++){if(i==100)throw new Exception("Editor did not recreate connection");Thread.sleep(50);}
+        awaitServedConnectionCommand(previous);
         automation.waitForIdle(200,3000);
     }
     private void rejectChangedRestartContext() throws Exception {
@@ -280,7 +290,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
-            click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
+            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
             for(char c:"ni".toCharArray())click(String.valueOf(c));
             if(Build.VERSION.SDK_INT>=30)restartComposition();
             for(char c:"hao".toCharArray())click(String.valueOf(c));
