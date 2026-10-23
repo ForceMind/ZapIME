@@ -1,0 +1,40 @@
+name: Offline speech CPU probe
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: voice-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Prepare inference runtime and synthetic speech tool
+        run: |
+          python -m venv .venv-voice
+          .venv-voice/bin/pip install -r scripts/requirements-voice-probe.txt
+          sudo apt-get update -qq
+          sudo apt-get install -y espeak-ng
+      - name: Verify pinned model files and synthesize Mandarin fixture
+        run: |
+          .venv-voice/bin/python scripts/voice_probe.py prepare
+          .venv-voice/bin/python scripts/voice_probe.py synthesize
+      - name: Real CPU streaming recognition with networking disabled
+        run: |
+          sudo unshare --net "$PWD/.venv-voice/bin/python" scripts/voice_probe.py recognize --wav target/voice-probe/synthetic.wav --report target/voice-probe/report.json --include-text --expect-fragment '你好' --expect-fragment '离线语音输入测试' --expect-fragment '三点开会'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-offline-voice-probe
+          path: |
+            target/voice-probe/report.json
+            target/voice-probe/synthetic.wav

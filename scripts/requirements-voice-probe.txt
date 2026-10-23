@@ -1,0 +1,4 @@
+# Development probe only; not Android or server runtime dependencies.
+sherpa-onnx==1.13.8
+sherpa-onnx-core==1.13.8
+numpy==2.5.4

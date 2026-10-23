@@ -1,0 +1,14 @@
+Selected log lines, not the full job log
+Run: https://github.com/ForceMind/ZapIME/actions/runs/39898390355
+Verified code head: b50fbbd6585f041abce3751fd27df93e9fd00ebb
+APK artifact SHA256: 1da24250166b3bf89ad4e8b94a433488add2af8f3503220b66a3c500957fe02d
+
+2026-10-23T04:07:28.1893645Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-23T04:07:28.1894472Z SHA256 e495d6e1876348d886f8267938eef2e54528637ecde17d57fb29d6825f91f16b
+2026-10-23T04:08:16.9634039Z APK package, native IME, notices and no-INTERNET checks passed
+2026-10-23T04:08:16.9634839Z SHA256 16646ab9a1d45a0e01f2de714946fa1a7f37aef25dac40c259a517efd71e5505
+2026-10-23T04:10:02.6898415Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching
+2026-10-23T04:10:02.6900799Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T04:10:31.5812786Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching
+2026-10-23T04:10:31.5815924Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T04:10:35.6987664Z SHA256 digest of uploaded artifact zip is 1da24250166b3bf89ad4e8b94a433488add2af8f3503220b66a3c500957fe02d

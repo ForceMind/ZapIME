@@ -38,3 +38,9 @@ Apple/Windows 最小宿主参考固定 MSIME 的系统集成约束，保留 GPL 
 ## R2 服务依赖补充
 
 AWS SDK for Go v2（核心 v1.47.3、credentials v1.20.9、S3 v1.114.4）及 smithy-go v1.28.5 采用 Apache-2.0，按 go.mod/go.sum 固定。运行时依赖通知工具已收集 19 个模块的 LICENSE/NOTICE/PATENTS 并随容器打包。Docker/PostgreSQL/Caddy 由其上游镜像提供；MinIO AGPL-3.0 源码 9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a（RELEASE.2025-10-15T17-29-55Z）由 CI 独立构建，只用于隔离的 S3 协议测试，不随 ZapIME 生产容器分发，不把兼容测试说成 Cloudflare 实际账号验收。
+
+## 九键与离线语音原型（2026-10-23）
+
+九键复用固定 GPL-3.0-only 引擎，无上游更新。开发 CPU 探针使用 sherpa-onnx / sherpa-onnx-core 1.13.8（Apache-2.0，内含 ONNX Runtime 须按其 MIT 及第三方 notices 审计）和 NumPy 2.5.4（BSD），未打包进 APK/服务。X-ASR 来源 Gilgamesh-J/X-ASR（Apache-2.0），模型归档及实际四成员 SHA/长度固定；保留 X-ASR-Apache-2.0.txt，下载目录附 LICENSE/NOTICE，不在 Git 分发权重。eSpeak NG 仅开发工具，用于本地合成固定测试句，未捆绑产品。
+
+SenseVoiceSmall 转换权重按固定上游记录适用 FunASR Model License v1.1，含保留出处/作者/模型名、行为与后续条款修订等独立条件，不等同框架 Apache/MIT；当前未引入。Fun-ASR-Nano 的具体模型/解码器须重新逐项审查，不泛化同一家项目的许可。模型性能和其他模型卡的许可证标签不能替代权重版本本身的授权核查。正式语音发行仍需补齐完整 native 运行库、模型与资源清单。
