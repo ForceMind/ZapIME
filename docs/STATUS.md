@@ -258,6 +258,13 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 实际下载599015字节artifact12530749096并核验SHA256 0f355c0f4fa13fc92b0fb7522dd2c4b523613fba9c60cd34397cd00dda41086c；原始层级只有状态栏，截图全黑，根因尚未确定。失败原文/层级保留evidence/android-api36-journal-failure-40021371732.log和同号hierarchy.txt，不能断言只是按钮滚动问题或已修复产品。
 - 新候选合入已验证main f7ab2c2的录音监测，测试入口明确CLEAR_TOP并滚动寻找资料页；失败时在切换输入法前收集有界Activity/window/lastANR/系统日志（严格临时CI保护），另拒绝ZapIME或测试宿主ANR。没有跳过或减少实际Editable、双轮、隐私、语音/真实退出断言；本机11项Python资源/设备/隐私边界、语法及新版独立editor测试Java编译通过（JDK17.0.21/API36r02，不是APK或设备验收），仍待新CI。
 
+## API36重复失败与宿主诊断修正（候选待复验）
+
+- e638abc / 40024147085：API28、API35通过；API36基础输入找不到你好候选，原始层级显示独立编辑器正文nihao而IME组字ao；语音独立完整通过。系统lastANR报告本次启动以来无ANR，不能由此推定没有生命周期重置或产品已修复。下载697721字节artifact12533225477并验证SHA256 e87cba2546b163d0f5934846820008993fd0c35b0110d525eee60667bb5defac，选存原文与逐文件provenance于evidence/android-api36-40024147085/。
+- 复核发现外部dumpsys发生在Instrumentation.finish已经退出测试宿主之后；仍保留这些证据并标注时序限制。新夹具在finish前采集有界Activity/window/IME服务/系统日志，并记录只含事件/长度/组字范围的测试宿主生命周期；全局采集仍须受保护脚本传入数字run-attempt标记，不向普通本机设备传递。
+- 测试宿主仅在自己的编辑器已served且IME尚不可见时请求显示，避免旧重试在键盘已显示后重复请求；资料页由独立宿主真实Button在前台Activity内正常启动，不用后台Context直接拉起，也不通过shell强制前台或改系统策略。原有按键时序、真实Editable/候选/双轮/隐私/语音/服务退出及ANR拒绝保持；不是已证明的产品组字修复。新版editor测试Java、11项Python/语法/差异检查通过，实际三API尚待新CI。
+- 下游PR #37运行时83c5c0a在40025714052的API28/35/36及其它四workflow全部success，含真实Keystore新回归；这仍是该下游源的独立成功，不回改#35的失败历史。后续按依赖保留测试和文档再合并，M4–M6保持未完成。
+
 ## 模型发布恢复与设置说明（独立候选，等待验证）
 
 - PR #34已合并main f7ab2c27f85e12f933446fd7f57280b7a89cab29。新切片保留系统录音监测，改为已知固定模型暂存/备份路径：录音worker完整重验APK白名单/SHA/清单后，目标无效时恢复完整暂存，否则尝试有效备份；正常有效目标优先，损坏/取消不得发布。移动中断留下已校验暂存供下次再次验证；不修改权限、vendor或模型固定版本。
@@ -276,12 +283,22 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - 原文保留evidence/android-model-recovery-failure-40022433152.log。新候选同时合入PR #35 e638abc的失败页持久模块、显式资料页测试目标和严格CI的窗口/ANR失败诊断；仍分别跟踪#35/#36，不把尚未通过的候选并入main。
 - 已按官方GitHub release SHA256安装本机JDK17.0.21，按Google SDK清单校验API36r02；原4ca三组Java（产品19文件、语音测试1、独立编辑器2）编译通过。合并/文字修正后三组Java再次编译通过，本机11项Python资源/CI隐私门禁及差异检查通过；只记Java编译，不冒充完整APK、模拟器或真机。运行时模型/权重/vendor许可不变。
 
-## Android同步材料保护（独立候选，未运行设备验收）
+## 模型恢复组合候选的API36复验（补充保留）
+
+- 0cba4fc / 40024642427的API28/35通过，API36基础资料页切换仍无法显示目标控件，整体失败；API36的模型发布恢复、JNI/AudioRecord/完整语音UI独立通过。旧文案超时已修正，但不能据此将基础输入失败回改成功。
+- 已下载845856字节artifact12532243325并校验SHA256 e1e4c24bfa0bde81b1569912b540b2528d63fd644ab007bba3d919cbf942e71f；原文为evidence/android-model-combined-api36-failure-40024642427.log。其现场层级仍是Probe编辑器/键盘，而非期望的设置页；进程结束后外部快照中的MainActivity处于stopped，不能将其当成失败当时的完整状态。新组合带入49d2c7b的前台按钮、实际Insets显示判断和finish前诊断，不更改产品输入/模型代码，待新CI。
+
+## Android同步材料保护（最初候选记录，结果见下节）
 
 - 新增SyncSecrets本机保护原语：AndroidKeyStore AES256/GCM系统随机IV、账号/版本AAD、64KiB有界opaque材料、私有noBackup目录和AtomicFile更新，提交后重新解密核对。损坏/缺密钥明确拒绝，无明文回退或默默生成新key覆盖既有密文；只提供未来显式forget入口，没有生产UI/网络调用方。
 - 主线程检查在互斥锁之前，避免误调用等待后台密钥/文件操作；输入worker也不得调用。新增signed-target的真实Keystore往返/nonce/不可导出/篡改/账号隔离/模拟未完成写/持锁主线程拒绝/丢key不重建回归，只用随机测试账号与合成字节并清理自己的别名。
-- 本机产品20个Java、语音测试1个、独立编辑器2个源文件编译通过（JDK17.0.21/API36r02），11项Python资源与临时CI隐私边界通过；真实三API Keystore尚未运行，不能先称通过。详细边界见ANDROID_SECRET_STORAGE.md；此候选后续按依赖接#36，不擅自把未验证源码合入main。
+- 本机产品20个Java、语音测试1个、独立编辑器2个源文件编译通过（JDK17.0.21/API36r02），11项Python资源与临时CI隐私边界通过；当时真实三API Keystore尚未运行；后续通过结果见下节，详细边界见ANDROID_SECRET_STORAGE.md；此候选后续按依赖接#36，不擅自把未验证源码合入main。
 - 没有接账号/HTTP、Rust密钥导入导出、配对/轮换、加密恢复UI或其它平台密钥库；设备保护密钥不可代替用户恢复材料，SQLite仍含明文业务记录。M4–M6保持未完成，阶段计数待主干顺序补记。
+
+## 同步材料原语的真实三API验收（候选基础）
+
+- 83c5c0a348b9c0291a40ebd0008ff02a1f97792b的五workflow全部success：Android40025714052（API28/35/36）、共享核/Apple40025714138、Windows40025714186、服务40025714146、断网CPU40025714122。三API实际AndroidKeyStore新回归通过：合成材料往返、不同随机nonce、保护key不可编码导出、篡改/账号交换拒绝、未完成AtomicFile写入恢复旧值、持锁时主线程快速拒绝、缺key读写不默默重建，最后清理自己随机测试账号的key/文件。原始摘录evidence/android-api28/35/36-sync-secrets-40025714052.log。
+- 模型状态恢复/原JNI/录音/完整UI、基础两轮及真实服务退出在该下游源也通过；不据此回改#35/#36较早API36失败。当前仅合入24e3d9b的测试宿主/诊断更新和其证据，生产SyncSecrets/输入/模型源码没有变化；组合CI另验，间歇失败继续由#38跟踪，仍未接真实账号/HTTP或恢复UI，不能称用户现在已经完成云端同步。
 
 ## 接续任务
 

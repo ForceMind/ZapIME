@@ -14,6 +14,6 @@ AndroidKeyStore生成256位AES保护密钥，GCM使用系统生成的随机IV、
 
 signed-target测试只使用两个随机测试账号及合成字节，最后清除自己的文件/别名。新增真实AndroidKeyStore往返、重复保存nonce变化、保护密钥不可编码导出、标签/账号交换拒绝、模拟未完成AtomicFile更新后旧值恢复、后台持锁时主线程快速拒绝、密钥删除后读/写拒绝静默替换。模拟未完成文件不等于真实断电或杀进程；软件模拟器不证明硬件密钥实现。
 
-本机JDK17.0.21/API36r02产品与两个测试源集编译、11项Python资源/设备隐私边界通过。实际三API Keystore测试尚待CI，不预记通过。
+本机JDK17.0.21/API36r02产品与两个测试源集编译、11项Python资源/设备隐私边界通过。83c5c0a / [40025714052](https://github.com/ForceMind/ZapIME/actions/runs/40025714052)的API28/35/36实际Keystore回归与完整原生门禁已通过，其余四workflow也全部成功，原始摘录见evidence/android-api28/35/36-sync-secrets-40025714052.log。后续测试宿主/诊断调整的组合另行跑CI；生产保护原语尚无账号/HTTP/UI调用方。
 
 官方接口依据：[Android Keystore](https://developer.android.com/privacy-and-security/keystore)、[KeyGenParameterSpec](https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec)、[AtomicFile](https://developer.android.com/reference/android/util/AtomicFile)。

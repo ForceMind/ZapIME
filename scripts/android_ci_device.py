@@ -31,6 +31,12 @@ def dedicated_ci(command):
             and re.fullmatch(r"emulator-[0-9]+", command[2]) is not None)
 
 
+def diagnostic_args(command):
+    if not dedicated_ci(command):
+        return []
+    return ["-e", "zapime_ci_diagnostics", os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]]
+
+
 def collect_failure_state(command, output):
     """Synthetic CI only: preserve state BEFORE switching away from a failed UI."""
     if not dedicated_ci(command):

@@ -5,7 +5,7 @@ from pathlib import Path
 from types import SimpleNamespace
 import subprocess
 from unittest.mock import patch
-from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr
+from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args
 
 
 class SystemKeyboardTests(unittest.TestCase):
@@ -44,6 +44,7 @@ class DiagnosticPrivacyTests(unittest.TestCase):
                 with patch.dict("os.environ", environment, clear=True):
                     collect_failure_state(["adb", "-s", serial], Path(directory))
                     assert_no_app_anr(["adb", "-s", serial], Path(directory))
+                    self.assertEqual(diagnostic_args(["adb", "-s", serial]), [])
             run.assert_not_called()
             self.assertEqual(list(Path(directory).iterdir()), [])
 
