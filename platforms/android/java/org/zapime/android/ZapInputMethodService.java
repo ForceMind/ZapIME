@@ -131,14 +131,23 @@ public final class ZapInputMethodService extends InputMethodService {
         if(value.has("error")){ if(status!=null)status.setText("操作未完成，请在个人资料中检查候选规则。"); return; }
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
         generation=value.optLong("generation");
-        if(!value.isNull("commit"))connection.commitText(value.optString("commit"),1);
+        final String previousPreedit=preedit;
+        boolean wroteText=!value.isNull("commit");
+        if(wroteText)connection.commitText(value.optString("commit"),1);
         if(!value.optBoolean("handled") && fallback!=null) {
             if(fallback.equals("⌫")) connection.deleteSurroundingTextInCodePoints(1,0);
             else if(fallback.equals("↵"))enter(connection);
-            else connection.commitText(fallback,1);
+            else {connection.commitText(fallback,1);wroteText=true;}
         }
-        preedit=value.optString("preedit",""); connection.setComposingText(preedit,1);
-        if(preedit.isEmpty())connection.finishComposingText(); refreshStatus();
+        preedit=value.optString("preedit","");
+        if(!preedit.isEmpty())connection.setComposingText(preedit,1);
+        else {
+            // Empty layout/view replies must not replace an editor selection.
+            // Only clear a composition that this IME actually owns and cancelled.
+            if(!wroteText&&!previousPreedit.isEmpty())connection.setComposingText("",1);
+            connection.finishComposingText();
+        }
+        refreshStatus();
         if(spellings!=null){spellings.removeAllViews();JSONArray choices=value.optJSONArray("spellings");spellingScroll.setVisibility(chinese&&nineKey&&!preedit.isEmpty()&&choices!=null&&choices.length()>0?View.VISIBLE:View.GONE);if(choices!=null){final long spellingGeneration=generation;for(int i=0;i<choices.length();i++){final int index=i;String spelling=choices.optString(i);Button b=Ui.button(this,spelling,Ui.KEYBOARD,false);b.setTextSize(14);b.setPadding(dp(12),0,dp(12),0);b.setContentDescription("九键读音 "+spelling);spellings.addView(b,new LinearLayout.LayoutParams(-2,dp(34)));b.setOnClickListener(v->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",spellingGeneration),null);}catch(JSONException ignored){}});}}}
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(preedit.isEmpty()){idleToolbar();return;}if(words==null)return;
         final long shownGeneration=generation;
