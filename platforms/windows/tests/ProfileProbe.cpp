@@ -40,6 +40,11 @@ struct Probe {
     TF_INPUTPROCESSORPROFILE before{};
     fs::path data;
     const std::wstring key=std::wstring(L"Software\\Classes\\CLSID\\")+ZapClsidText;
+    HRESULT reopenManagers() noexcept {
+        profiles.Reset();categories.Reset();CoFreeUnusedLibrariesEx(0,0);
+        HRESULT hr=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&profiles));if(hr!=S_OK)return hr;
+        return CoCreateInstance(CLSID_TF_CategoryMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&categories));
+    }
     bool cleanup() noexcept {
         bool ok=true;
         if(activationAttempted&&profiles){HRESULT hr=profiles->DeactivateProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,TF_IPPMF_FORPROCESS);result("deactivate",hr);ok=SUCCEEDED(hr)&&ok;activationAttempted=false;}
@@ -47,7 +52,15 @@ struct Probe {
         if(haveBefore&&profiles){HRESULT hr=profiles->ActivateProfile(before.dwProfileType,before.langid,before.clsid,before.guidProfile,before.hkl,TF_IPPMF_FORPROCESS);result("restore_previous",hr);ok=hr==S_OK&&ok;haveBefore=false;}
         if(threadActive&&threads){HRESULT hr=threads->Deactivate();result("thread_deactivate",hr);ok=hr==S_OK&&ok;threadActive=false;}
         threads.Reset();
-        if(owned&&unregisterProfile){HRESULT hr=unregisterProfile();result("unregister",hr);ok=hr==S_OK&&ok;TF_INPUTPROCESSORPROFILE removed{};hr=profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&removed);result("query_after_unregister",hr);ok=hr!=S_OK&&absentKey(key)&&ok;bool categoryPresent=false;HRESULT categoryHr=keyboardCategory(categories.Get(),categoryPresent);result("query_category_after_unregister",categoryHr);ok=categoryHr==S_OK&&!categoryPresent&&ok;owned=false;}
+        if(owned&&unregisterProfile){
+            HRESULT hr=unregisterProfile();result("unregister",hr);ok=hr==S_OK&&ok;
+            HRESULT fresh=reopenManagers();result("fresh_managers_after_unregister",fresh);ok=fresh==S_OK&&ok;
+            if(fresh==S_OK){
+                TF_INPUTPROCESSORPROFILE removed{};hr=profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&removed);result("query_after_unregister",hr);ok=hr!=S_OK&&absentKey(key)&&ok;
+                bool categoryPresent=false;HRESULT categoryHr=keyboardCategory(categories.Get(),categoryPresent);result("query_category_after_unregister",categoryHr);ok=categoryHr==S_OK&&!categoryPresent&&ok;
+            }
+            owned=false;
+        }
         profiles.Reset();categories.Reset();
         if(dll){FreeLibrary(dll);dll=nullptr;}
         if(com){CoFreeUnusedLibrariesEx(0,0);CoUninitialize();com=false;}
@@ -76,6 +89,9 @@ int main(){
         auto install=reinterpret_cast<Registration>(GetProcAddress(probe.dll,"DllRegisterServer"));probe.unregisterProfile=reinterpret_cast<Registration>(GetProcAddress(probe.dll,"DllUnregisterServer"));require(install&&probe.unregisterProfile,"registration_exports");
         // Own cleanup before calling an installer that can partially fail.
         probe.owned=true;checked("register",install());
+        // Registration ran through different COM instances inside the DLL.
+        // Query with fresh managers after releasing prior enumerator caches.
+        checked("fresh_managers_after_register",probe.reopenManagers());
         TF_INPUTPROCESSORPROFILE registered{};checked("query_registered",probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&registered));
         std::cout<<"profile_probe queried type="<<registered.dwProfileType<<" lang=0x"<<std::hex<<registered.langid<<" flags=0x"<<registered.dwFlags<<std::dec<<" clsid="<<guidText(registered.clsid)<<" profile="<<guidText(registered.guidProfile)<<" category="<<guidText(registered.catid)<<"\n";
         require(registered.dwProfileType==TF_PROFILETYPE_INPUTPROCESSOR&&registered.langid==ZapLanguage&&registered.clsid==ZapClsid&&registered.guidProfile==ZapProfile,"registered_identity");

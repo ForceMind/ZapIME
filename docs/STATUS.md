@@ -370,3 +370,9 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - b42aaa6 / Windows40035305480实际MSVC编译成功，真实EXE在self-hosted反例中先拒绝；注册/GetProfile S_OK。字段原文为type1、lang0804、正确CLSID/profile、flags0x2(enabled)，catid全零；因此这轮失败明确是returned catid联合检查，不能称身份/启用失败或进程激活成功。注销/旧查询失效/COM清理通过，整体仍failure。原文另存windows-profile-category-diagnostics-40035305480.log，未下载完整artifact。
 - 新探针用TSF专用CategoryMgr有界枚举验证实际键盘类别成员：本产品GUID注册前不存在、注册后必须存在、注销后必须消失，并保留全部身份/启用/COM/active/cleanup断言。没有改生产注册逻辑；新的实际类别验证结果尚待CI，绝不把catid忽略后直接算成功。
 - 合入已合并main4f407fe的Keystore/文档基线以解决PR冲突；新增类别成员检查及GUID诊断的显式ASCII转换需要真实MSVC CI，本地没有Windows SDK。Python脚本逻辑未变。
+
+## Windows类别实际枚举仍失败：检查COM实例寿命（候选）
+
+- a78ba70 / Windows40036406478作业120696859850：真实EXE守卫、编译、Register/GetProfile及身份/启用均通过；EnumItemsInCategory本身S_OK但没有发现本产品GUID，registered_keyboard_category_membership失败，尚未进入进程激活。Unregister与类别/COM清理通过，整体仍failure。精确原始作业摘录保存到windows-profile-category-result-40036406478.log，不把SDK调用成功当作成员已存在。
+- 预检在注册前枚举了类别，DLL注册用另一个COM实例。现在在注册之后、注销之后分别释放所有profile/category管理器和可卸载COM缓存，再创建新的管理器进行同样的成员查询。缓存只是待验证假设，不宣称根因或已修复。仍保留注册前不存在/注册后必须存在/注销后必须消失，身份/enabled/active/清理断言不减弱，生产注册源码未改。
+- 当前计算环境断连，不能本地编译/操作Windows；改动通过仓库远端接口保存，MSVC及原生结果由新CI确认，未预记通过。

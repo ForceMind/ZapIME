@@ -51,3 +51,5 @@ regsvr32.exe "C:\完整路径\ZapIMETsf.dll"
 - https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofilemgr-deactivateprofile
 
 首轮40033265710和字段诊断40035305480均实际编译/注册成功但整体失败。后者返回type1/lang0804/正确CLSID及profile/flags0x2，catid却为GUID_NULL；启用或身份错误不是该轮已证实根因。现在保留字段原文，通过ITfCategoryMgr.EnumItemsInCategory对键盘类别直接检查本产品GUID的成员资格：注册前不存在、注册后必须存在、注销后必须消失；不能仅凭未填catid判定不存在，也不会跳过真实类别断言。新方式的执行仍待CI，不能预记注册/激活全通过。接口依据：https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfcategorymgr-enumitemsincategory 。
+
+后续a78ba70的专用EnumItemsInCategory也未找到本产品，不能据此前一轮catid为零就认定只是未填字段。新增候选在注册/注销后释放并重新创建profile/category COM管理器再执行相同检查，以区分对象寿命或缓存与实际持久化；这仍是待验收假设，不改生产注册或忽略成员断言。
