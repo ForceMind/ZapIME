@@ -44,7 +44,11 @@ final class VoiceModels {
         if(actual==null||!expected.equals(new HashSet<>(Arrays.asList(actual))))throw new IOException("model_members");
         File manifest=new File(model,"msime-model.json");byte[] trusted=config.getJSONObject("manifest").toString().getBytes(StandardCharsets.UTF_8);
         JSONObject manifestSpec=new JSONObject().put("size",trusted.length).put("sha256",hex(MessageDigest.getInstance("SHA-256").digest(trusted)));
-        if(!verifyFile(manifest,manifestSpec,cancelled))throw new IOException("model_manifest");check(cancelled);return model;
+        if(!verifyFile(manifest,manifestSpec,cancelled))throw new IOException("model_manifest");check(cancelled);
+        // Android's /data/user/0 alias is system-owned but its parent may be uid
+        // 1000. Resolve it only after hashing our fixed app-private model; the
+        // unchanged upstream Linux ancestor policy then sees real directories.
+        return model.getCanonicalFile();
     }
     static synchronized void importZip(Context context,InputStream incoming,BooleanSupplier cancelled)throws Exception {
         JSONObject config=config(context),files=config.getJSONObject("files");File parent=root(context);

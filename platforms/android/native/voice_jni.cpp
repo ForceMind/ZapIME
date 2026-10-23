@@ -76,6 +76,8 @@ JNIEXPORT jbyteArray JNICALL Java_org_zapime_android_NativeVoice_start(JNIEnv* e
     if (!path(env, model, model_path) || !path(env, runtime, runtime_path))
       return env->ExceptionCheck() ? nullptr : error(env, "invalid_path");
     msime::voice::set_sherpa_library_path(runtime_path);
+    if (!msime::voice::is_local_model_dir(model_path)) return error(env, "model_path_rejected");
+    if (!msime::voice::sherpa_runtime_available()) return error(env, "runtime_unavailable");
     msime::voice::LocalAsrOptions options;
     options.model_dir = model_path; options.language = "auto"; options.threads = 2;
     const std::weak_ptr<State> weak = value;
