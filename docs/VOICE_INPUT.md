@@ -4,7 +4,33 @@
 
 Android 新增真正九宫格拼音键盘，复用固定 MSIME 九键解码器。空闲工具栏可切换「九键 / 全键」并在本机保存；英文和密码字段仍用全键。增加读音选择、退格、分词、数字面板与本地词/短语匹配。读音/候选携带 generation，拒绝迟到点击；显式锁定的读音也约束个人词，不把 mihao 混入锁定 ni 的候选。九键置顶保存候选的完整拼音，与全键共享；不把数字同码的置顶越过已锁定的不同读音，部分前缀候选不冒充整段置顶。共享核心测试已通过；Android 系统验收见 STATUS.md，另外三端尚无九键界面。
 
-**语音是独立推理原型，尚未接入 APK 麦克风或四端宿主。** 当前包仍不申请录音或网络权限；不把上游已有代码、CPU 探针当成产品语音已完成。
+**Android 开发版已接入原生离线语音，PR #32 的 API28 模拟器门禁通过。** 包含模型导入、AudioRecord、独立解码线程、预览/停止/取消与确认插入；显式 RECORD_AUDIO 权限，仍没有 INTERNET 权限。真实 JNI 合成音、模拟器静音录音及独立 App UI 分别验证；尚不代表自然语音、ARM/三星、现代系统或四端语音已完成。下述旧探针数据继续保留来源与边界。
+
+## Android 模型安装与使用（开发验证版）
+
+1. 取得同一构建的 ARM64 开发 APK 与 `ZapIME-XASR-model.zip`。Android Actions 成功产物 `ZapIME-Android-development` 包含 APK、离线模型包与合成测试证据；GitHub 产物有保留期限，后续可从固定源码重新构建。当前不是正式签名发布。
+2. 在主 App 打开「离线语音 · 模型与权限」，显式选择 ZIP，等待逐文件校验完成，再允许麦克风。模型只导入到本 App 私有目录，不要求输入服务器地址。
+3. 返回普通输入框，完成已有拼音组字，长按空格或在键盘「工具 → 离线语音」开始录音。轻点空格仍是原来的空格/选词。停止后查看文字，点击「确认插入」才会写入正文；可直接重新录音，取消会丢弃这一轮。密码/禁止学习字段不开放此入口。
+4. Back 先取消语音回到键盘；语音工具栏可显式收起。隐藏键盘、切换输入框、移动光标、配置变化都会取消当前语音。录音结束到确认期间也重新检查连接、选区代次和有界上下文；上下文不可读时拒绝开始。不支持把旧识别结果自动写到新位置。
+
+可复现模型包仅使用 Python 3.11+ 标准库，无需安装 Python 推理运行库：
+
+```sh
+python3 scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
+```
+
+此次本地实际生成 ZIP 129,097,503 字节，SHA256 `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1`。ZIP 压缩字节可能受 zlib 版本影响；**App 信任 APK 内固定的每成员长度/SHA，不依赖此整包哈希**。四个推理文件总计 169,227,953 字节，另附 LICENSE/NOTICE；安装需要足够的暂存空间，重导入期间旧有效模型保留到新包校验完成。清除 App 数据/卸载会删除模型，模型可重新导入；本模型不是个人资料或 E2EE 恢复包。
+
+模型目录不在用户资料 JSON 备份中，也不上传 R2。导入拒绝未知名称、目录、路径穿越、重复成员、截断、超长及校验不符；不执行包内清单，最后写入 APK 可信清单。校验失败不覆盖已有模型；发布前后的目录移动使用同文件系统 atomic move，但突然断电/进程终止的两次目录移动之间仍可能需要重新导入，尚未做断电恢复验收。
+
+## Android 执行边界
+
+- 固定未改动的 MSIME `LocalAsr.cpp`，C++17 JNI；sherpa-onnx 1.13.8、ONNX Runtime 1.28.2 两个 ABI 逐库锁哈希，校验 ELF 架构、16 KiB LOAD 对齐和动态依赖白名单。依赖完整通知随 APK，模型不内置；默认不使用热词或远程润色。
+- 模型逐项复核和原生解码在独立语音 worker，不阻塞 Rust 按键队列/SQLite reader。录音另有 capture 线程：16 kHz 单声道 PCM16、100 ms 块、有界全程内存队列；最长 60 秒墙钟与 960,000 样本，识别采用 2 个 CPU 线程。
+- 开始/确认时的有界编辑器上下文查询也在语音 worker；不把可能等待数秒的跨进程读取放在键盘 UI。界面保持可取消，返回主线程后再次核对 ticket/epoch/选区。依据 [Android InputConnection 文档](https://developer.android.com/reference/android/view/inputmethod/InputConnection#getTextBeforeCursor(int,int)) 和 [AOSP AnyThread 远程读取实现](https://android.googlesource.com/platform/frameworks/base/+/70908ddf269e69d3a177f0c873cddc48a79d6f78/core/java/android/inputmethodservice/RemoteInputConnection.java)，不把 EditorInfo 初始缓存当作当前确认位置。
+- 不写录音文件，不上传音频/文字，不自动学习语音正文，不做云端回退；正文只保留在当前预览内存，取消后释放。模型缓存闲置约两分钟后释放，内存紧张时取消并释放未使用模型。并非对低内存设备的峰值内存/耗电验收。
+- JNI 分配前就建立取消句柄，限制最多 4 个；start/feed/finish/close 必须同一所有者线程，跨线程只允许 cancel。生命周期取消不等待模型加载或解码完成，迟到回调由独立 ticket/输入 epoch 拒绝。
+- 模拟器 JNI 合成 PCM 识别、实际 AudioRecord 静音录制、键盘预览/焦点保护是不同验收。合成 PCM 直接进入原生解码器，不冒充通过手机麦克风说话；静音结果也不能证明自然语音质量。SAF 文件选择、现代系统后台麦克风/AppOps、蓝牙、ARM/三星和真实口音仍需真机验收。
 
 ## 模型与许可（2026-10-23）
 
@@ -52,6 +78,17 @@ offline-voice.yml 下载/合成后用 `sudo unshare --net` 禁止推理进程联
 
 真机门禁需包括冷/热启动、首字/尾字延迟、峰值内存、耗电、长短句、静音/噪声、蓝牙耳机、口音/方言、中英夹杂、金额/日期/数字、术语、拒绝/撤销权限及焦点切换；未验收前不承诺毫秒指标或同等准确率。
 
-## 最新断网证据
+## Linux 断网探针证据
 
 [39898390340](https://github.com/ForceMind/ZapIME/actions/runs/39898390340) 在无网络 namespace 实际执行三个流式识别轮次，中文片段断言通过；源代码 b50fbbd6585f041abce3751fd27df93e9fd00ebb。完整原始报告见 evidence/offline-voice-ci-39898390340.json：CPU 2 线程、7.843 秒音频、加载 1.719 秒、中位计算 0.698 秒（RTF 0.089）。CI 输出仍出现「一转」而非「一段」，因此不能把片段通过说成整句完全准确，更不能推广为自然录音/方言/手机验收；准确率、断网边界、吞吐和交互延迟分别记录。
+
+
+## Android 原生与 UI 最新证据
+
+源码 `308085b76b6c3de8c34120f5ebfef833f764285a` 的 [40009811125](https://github.com/ForceMind/ZapIME/actions/runs/40009811125) 已整体 success：双 ABI 原生/APK与最终包逐库哈希；API28原有两轮全键/九键/资料/隐私/真实退出；真实JNI合成中文片段、600块/60秒样本上限、所有者/取消、拒绝权限和实际AudioRecord静音录制/停止。独立 App 的真实 Editable 验证预览不自动上屏、重录、长按空格、光标/焦点、Back取消、显式隐藏窗口真正消失后重开/复录，并实际切回AOSP等待服务退出及拒绝fatal。暂停宿主的1800ms取消响应使用IME窗口内真实按钮的无障碍动作；其它普通语音操作是触屏，不混为物理布局证明。
+
+[原始报告与图像](evidence/voice-android-40009811125/) 未重绘/裁剪。已下载完整233486804字节artifact，实际SHA256 `1f6170557d0967d5de741d3eabfb4f1420012330739effee3a809aa129b6e3cf`；逐文件校验在 provenance.json。JNI合成125490样本/7.843125秒，CPU配置2线程，recognizer加载1431ms，含JNI的计算1215ms（RTF0.155）；这不含模型逐项SHA/原生库初始化，不按真实时间采音，不是手机冷启动、首字或端到端延迟。UI图片来自静音，识别准确率仅固定合成片段断言，未冒充自然语音或豆包同等质量。
+
+同head其它检查也已success：三系统共享核/真实Apple构建/实际执行3项iOS模拟器测试40009810845，Windows40009810864，真实PG/S3/安装及灾备40009810903，独立断网CPU40009810833。仍不表示本功能已接Apple/Windows，也不表示四端联网完成。后续 [PR #33](https://github.com/ForceMind/ZapIME/pull/33) 扩展API35/36，同一APK/模型复用，未完成前不提前声称现代系统通过。
+
+自动审阅随后发现结束队列的尾块竞态，bec1701aa6715d056bba89698a08f053f01febe3改为先观察完成再复核队列空，并增加稳定控制该时序的回归。40013177652在该修正版已完整success，包括尾块后才EOF的确定性断言及原有native/AudioRecord/独立Editable完整门禁；摘要android-voice-tail-ci-40013177652.log。三系统/Apple原生及实际3项iOS、Windows、服务和断网CPU其它workflow均success。原始图像/性能数据仍明确属于308085b，队列修正未改变GUI源码；新artifact12527976119的SHA256 683b81da72c5c02de95378ba85c617bdc4947764ad4daf3a5d9c1279c254ed70来自GitHub元数据，未再本地下载校验，不冒充新图。

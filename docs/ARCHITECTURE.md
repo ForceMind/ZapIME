@@ -40,3 +40,9 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 共享调度策略默认关闭，只在启用/前台/联网/授权时返回后台工作；编辑防抖、空增量检查放缓、在途请求共享及退避均独立于持久队列。发送准备前可在 SQLite 事务中合并未暂存的重复编辑，仅保留窗口内最后一条为待发；历史快照和已冻结请求不变。策略与合并接口均尚未被平台调用，不代表已接通网络或已降低实际 R2 用量。见 [SYNC_EFFICIENCY.md](SYNC_EFFICIENCY.md)。
 
 共享下载验证及事务边界见 [AUTHENTICATED_PULL.md](AUTHENTICATED_PULL.md)。不会对已有本地待发编辑静默覆盖，也不把发送方本地修订写成自己的修订；下载不创建回声上传。
+
+## Android 离线语音（PR #32 验收中）
+
+固定 GPL LocalAsr 通过所有者线程受限的 JNI 使用固定 Sherpa/ONNX CPU 库。模型由显式 SAF 导入，按 APK 内白名单逐项校验后生成可信清单，保存在 App 私有目录；加载前重新校验。模型导入、加载、解码及缓存释放共用独立语音 worker，AudioRecord 由 capture 线程喂给有界内存队列，Rust 按键队列不等待语音。
+
+语音预览与正文分离，显式确认才 commitText，录音不上网/不落盘。epoch/ticket、InputConnection、选区版本和有界前后文共同防止迟到插入；隐藏、焦点/光标变化或内存压力取消。具体版本、安装和未验收边界见 [VOICE_INPUT.md](VOICE_INPUT.md)，不将 Android 合成音测试推广成四端语音完成。

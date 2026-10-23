@@ -13,7 +13,14 @@ Corresponding source, build scripts and license texts must accompany binary dist
 The engine includes chinese-ime-lm reference/ (Apache-2.0).
 See licenses/chinese-ime-lm-NOTICE.txt and licenses/chinese-ime-lm-Apache-2.0.txt.
 This development package does not bundle neural model weights, n-gram files,
-voice SDKs, third-party cloud services, or unlicensed dictionary inputs.
+third-party cloud services, or unlicensed dictionary inputs.
+
+Android includes the fixed MSIME shared/voice/LocalAsr.cpp implementation (GPL-3.0-only)
+and sherpa-onnx 1.13.8 / ONNX Runtime native CPU libraries. Artifact and per-library
+hashes plus source identity are in android-voice-lock.json. The AAR has no notices;
+Sherpa Apache-2.0, ONNX MIT/ThirdPartyNotices, nlohmann-json MIT and NDK notices
+are copied into assets/voice-licenses. Model weights are not bundled. This native
+bridge alone is not microphone or voice-input UI acceptance.
 
 Pinyin and English dictionaries: metasequoiaime/msime-dictionary dict-v2.0.24.
 Their manifest states includes_unlicensed_inputs=false. rime-ice (GPL-3.0),

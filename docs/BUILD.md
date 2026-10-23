@@ -33,6 +33,10 @@ bash scripts/build_android.sh x86_64
 
 Android 开发包还包含逐包 Rust 依赖许可清单。发现无许可文件的新依赖时构建会中止，先核对精确版本及原始来源，不能直接补一个不含版权归属的通用许可证。
 
+Android 离线语音分支由 `build_android.sh` 调用 `build_android_voice.sh`，构建未修改的固定 MSIME LocalAsr 和自有 JNI；构建时校验固定 AAR、两个 ABI 原生库和 nlohmann JSON。NDK 仍固定 28.2.13676358；C++17 静态 libc++、16KiB 对齐及动态依赖允许列表必须通过，许可复制到 assets/voice-licenses。模型 ZIP 单独生成/导入，见 [本地语音](VOICE_INPUT.md)，不把 169MB 权重装进 APK。
+
+`build_android_voice_tests.sh` 构建同开发证书签名、targetPackage 为 IME App 的第二个 instrumentation 包。`android_voice_smoke.py` 只在临时 GitHub emulator 运行：导入固定模型、JNI 识别合成 PCM、测试拒绝权限/AudioRecord 停止，随后从独立测试 App 操作实际语音键盘并读取真实 Editable。执行前会撤销这个合成 App 的录音权限，禁止在个人日常设备运行；正常双轮输入和真实服务退出门禁继续保留。开发签名每个新 runner 独立生成，不能把不同 CI APK 当作可无损覆盖升级的正式签名包，卸载前须导出个人资料。
+
 ## 专用设备自动验收
 
 先构建 x86_64 开发包及 `scripts/build_android_tests.sh`，再在专用 API 28 模拟器上运行 `scripts/android_smoke.py <adb-path> <serial>`。该脚本会设置专用设备的默认输入法，不用于日常使用中的设备。测试宿主是独立包 org.zapime.android.test，避免 instrumentation 重启 IME；保存截图、结果和 InputMethodManager 状态以区分产品问题与测试环境问题。

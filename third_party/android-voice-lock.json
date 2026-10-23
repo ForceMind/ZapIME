@@ -1,0 +1,55 @@
+{
+  "runtime": {
+    "version": "1.13.8",
+    "source": "https://github.com/k2-fsa/sherpa-onnx",
+    "source_commit": "11afbd009a7f8c08f4bcf2fc1b265d0df4670fbf",
+    "license": "Apache-2.0"
+  },
+  "archive": {
+    "name": "sherpa-onnx-1.13.8.aar",
+    "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.8/sherpa-onnx-1.13.8.aar",
+    "sha256": "633c24321e06b1fe79feafa03ea16cbc0f8a286641e2da3559bac91bdb13bd96",
+    "size": 50129134,
+    "archive": "none",
+    "libraries": [],
+    "tree": null
+  },
+  "libraries": {
+    "arm64-v8a": {
+      "libonnxruntime.so": {
+        "size": 22249560,
+        "sha256": "33847ad43bffe204699fd4a27f7f3603452a8cdaf2f9a44983a0bc31ffcf2da1"
+      },
+      "libsherpa-onnx-c-api.so": {
+        "size": 4465168,
+        "sha256": "c85e2382e2ca12b0513826be926eaccfea896b4cbf568182e287671ba526f80d"
+      }
+    },
+    "x86_64": {
+      "libonnxruntime.so": {
+        "size": 25581120,
+        "sha256": "087e84297cad64acb823c3d901d6e0cc934e91add7cdb20da802cd1c0bea5c3e"
+      },
+      "libsherpa-onnx-c-api.so": {
+        "size": 4927096,
+        "sha256": "631ca2828e47b61d8afe4b3c75a157423cbafaba6f8c0db89c27d21f1b173d9a"
+      }
+    }
+  },
+  "json": {
+    "version": "3.12.0",
+    "url": "https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz",
+    "size": 114576,
+    "sha256": "42f6e95cad6ec532fd372391373363b62a14af6d771056dbfc86160e6dfff7aa",
+    "files": {
+      "single_include/nlohmann/json.hpp": {
+        "size": 953436,
+        "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63"
+      },
+      "LICENSE.MIT": {
+        "size": 1076,
+        "sha256": "46a65cffd1ea955132d95a8dd921640714a8d6b537d2e4e482d31145ae95b603"
+      }
+    }
+  }
+}

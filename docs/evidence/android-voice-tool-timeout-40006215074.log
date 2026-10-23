@@ -1,0 +1,17 @@
+Source: 9eacdb3fc09e5ca42fc2f4bad853d52899307776
+Run: https://github.com/ForceMind/ZapIME/actions/runs/40006215074
+Both product ABIs, packaged native hashes/catalog and both instrumentation APK builds passed.
+FAILED at synthetic speech tool installation, before model/emulator tests. Not voice UI acceptance.
+
+2026-10-23T18:49:55.0020232Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-23T18:50:55.2703730Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-23T18:51:26.5190359Z   espeak-ng-data libasyncns0 libespeak-ng1 libflac12t64 libmp3lame0
+2026-10-23T18:51:26.5419652Z   espeak-ng espeak-ng-data libasyncns0 libespeak-ng1 libflac12t64 libmp3lame0
+2026-10-23T18:52:39.6340383Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 espeak-ng-data amd64 1.51+dfsg-12build1 [4538 kB]
+2026-10-23T18:54:42.2119719Z Ign:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 espeak-ng-data amd64 1.51+dfsg-12build1
+2026-10-23T18:55:17.7066953Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 espeak-ng-data amd64 1.51+dfsg-12build1 [4538 kB]
+2026-10-23T18:56:11.9881450Z Selecting previously unselected package espeak-ng-data:amd64.
+2026-10-23T18:56:12.0008527Z Preparing to unpack .../10-espeak-ng-data_1.51+dfsg-12build1_amd64.deb ...
+2026-10-23T18:56:12.0015851Z Unpacking espeak-ng-data:amd64 (1.51+dfsg-12build1) ...
+2026-10-23T18:56:12.2790713Z Setting up espeak-ng-data:amd64 (1.51+dfsg-12build1) ...
+2026-10-23T18:56:14.0297358Z ##[error]The action 'Prepare local synthetic speech tool' has timed out after 5 minutes.

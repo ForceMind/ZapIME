@@ -4,7 +4,7 @@
 - vendor/msime 固定提交，禁止未审计更新；上游版权、许可证和 NOTICE 原样保留。修改该子模块前阅读其中 AGENTS.md。不要复制 msime-cloud 实现。
 - 输入线程不等网络。个人数据默认本地；云上传需显式开启。密码及 NO_PERSONALIZED_LEARNING 字段不学习。测试数据必须合成。
 - 工程默认 Rust 1.97.1；从根运行 cargo test --workspace、cargo fmt --all --check、cargo clippy --workspace --all-targets -- -D warnings。
-- 同步准备层保留不可变操作快照和首次密文请求；本地 revision、服务器 revision、拉取 cursor 分开。上传确认不得覆盖后续编辑或推进拉取 cursor；远端应用和冲突解决尚未实现。
+- 同步准备层保留不可变操作快照和首次密文请求；本地 revision、服务器 revision、拉取 cursor 分开。上传确认不得覆盖后续编辑或推进拉取 cursor；认证远端应用已有共享模块，永久冲突副本/解决和宿主联网尚未实现。
 - Go 服务使用 go.mod 固定工具链。在 services/sync 运行 go test -race -count=1 -v ./...；事务验收必须配置真实 PostgreSQL 的 ZAPIME_TEST_DATABASE_URL 和 ZAPIME_REQUIRE_DATABASE=1。显式 SKIP 不等于数据库测试通过；容器灾备入口为 scripts/sync_service_smoke.py。
 - Android 原生构建：ANDROID_SDK_ROOT 指向 API 36 / build-tools 35 / NDK 28.2.13676358；bash scripts/build_android.sh arm64-v8a。APK 构建通过不等于系统输入验证。
 - Android 独立 CI 为 .github/workflows/android.yml。双轮脚本只运行于临时 GitHub 模拟器，会清空两个合成测试包；本地使用 android_smoke.py 的专用设备入口。候选无障碍动作验收不能替代物理触摸布局/真机验收。
@@ -26,3 +26,5 @@
 - 同步策略仅是进程内调度，不得将其内存标记视作持久队列或服务器确认。所有 HTTP 尝试前必须 stage_upload；未暂存合并仅改变有界窗口的 pending 标记，保留历史快照/最后墓碑，绝不跳过冻结或冲突请求。pending=0 不等于已上传，确认看 ack_revision；平台密钥托管和宿主网络编排仍需单独接入。
 
 - 宿主下载只用 zapime-sync::apply_encrypted_page，不能把原始服务 JSON 直接送进受信任的 apply_verified_pull。整页认证后才同事务应用记录/确认/收据/cursor；冲突整页回滚，不等于副本或解决。Record 来源 UUID 不等于服务器 device_id，外层作者/修订没有被现有 AEAD 独立签名。保留旧密钥、冻结请求和收据，禁止把旧操作改修订后重放墓碑；平台侧仍未接入。
+
+- Android 语音模型只接受 APK 固定白名单与逐项 SHA，包内清单不可信；失败不能覆盖已有有效模型。模型/录音和按键线程分开，不添加云端回退、录音落盘/上传或假识别文本。JNI 会话只在同一语音线程 start/feed/finish/close，跨线程只 cancel；capture 有 60 秒/960000 样本与全程有界队列，隐藏/失焦/光标移动/配置变化必须取消，确认前校验原连接/epoch/selection/有界上下文。实际合成 PCM 解码、模拟器静音 AudioRecord、独立 Editable UI 验收与自然语音/ARM 真机分别记证据。第二个 voice instrumentation 同签名且只在受保护临时 CI 撤销测试包录音权限；不在个人设备执行。

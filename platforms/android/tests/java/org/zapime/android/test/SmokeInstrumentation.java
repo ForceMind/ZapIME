@@ -17,7 +17,8 @@ import java.io.*;
 public final class SmokeInstrumentation extends Instrumentation {
     private UiAutomation automation;
     private String stage="launch";
-    @Override public void onCreate(Bundle args) { super.onCreate(args); start(); }
+    private boolean voiceOnly;
+    @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only")); start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
         if(node==null || !node.refresh())return null;
@@ -202,10 +203,36 @@ public final class SmokeInstrumentation extends Instrumentation {
         Bundle args=new Bundle();args.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,value);
         if(!waitFor(label).performAction(AccessibilityNodeInfo.ACTION_SET_TEXT,args))throw new Exception("Set text rejected");
     }
+    private void waitListening()throws Exception{
+        for(int i=0;i<900;i++){if(find("正在聆听 · 最长 60 秒")!=null)return;if(find("麦克风不可用，请检查权限或重试")!=null||find("离线识别未完成，请检查模型或重试")!=null)throw new Exception("IME microphone or model unavailable");Thread.sleep(100);}throw new Exception("IME microphone start timeout");
+    }
+    private void startDictation()throws Exception{click("工具");click("离线语音");waitListening();}
+    private AccessibilityNodeInfo waitIme(String text,long timeout)throws Exception{
+        long end=SystemClock.uptimeMillis()+timeout;
+        do{for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){AccessibilityNodeInfo node=walk(window.getRoot(),text,true);if(node!=null)return node;}Thread.sleep(20);}while(SystemClock.uptimeMillis()<end);
+        throw new Exception("Missing IME-only control: "+text);
+    }
+    private void voiceAcceptance()throws Exception{
+        Intent intent=new Intent();intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity");intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);
+        click("probe-normal");waitFor("⚡ 闪电 · 离线");setText("probe-normal","voice guard test");Thread.sleep(300);
+        stage="voice slow-editor cancellation";ProbeActivity.contextEntered=new java.util.concurrent.CountDownLatch(1);ProbeActivity.contextRelease=new java.util.concurrent.CountDownLatch(1);ProbeActivity.delayNextContext.set(true);
+        // In this deliberately paused App only, target IME accessibility actions
+        // directly: global touch/active-window synchronization may wait on that
+        // paused App and would measure the test driver instead of the IME.
+        try{click("工具");if(!waitIme("离线语音",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME voice action rejected");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();if(!waitIme("取消",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME Cancel accessibility action rejected");waitIme("工具",900);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
+        finally{ProbeActivity.delayNextContext.set(false);ProbeActivity.contextRelease.countDown();}requireEditor("voice guard test","voice_slow_editor_cancel_preserves_text");
+        stage="voice recording preview";startDictation();requireEditor("voice guard test","voice_preview_not_committed");screenshot("voice-recording.png");
+        click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，请返回后重试")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");screenshot("voice-stopped.png");click("重新录音");waitListening();requireEditor("voice guard test","voice_retry_preserves_editor");click("取消");waitFor("工具",true);
+        stage="voice selection guard";if(!waitFor("空格",true).performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK))throw new Exception("voice long-space rejected");waitListening();requireEditor("voice guard test","voice_long_space_no_extra_space");runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0);});waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("stale voice retained after cursor move");requireEditor("voice guard test","voice_cursor_move_preserves_editor");
+        stage="voice focus guard";startDictation();click("probe-password");waitFor("隐私输入 · 不学习");if(find("确认插入",true)!=null)throw new Exception("voice result crossed editor");requireEditor("voice guard test","voice_focus_preserves_editor");click("probe-normal");waitFor("⚡ 闪电 · 离线");
+        stage="voice back cancellation";startDictation();long down=SystemClock.uptimeMillis();for(int action:new int[]{KeyEvent.ACTION_DOWN,KeyEvent.ACTION_UP})if(!automation.injectInputEvent(new KeyEvent(down,SystemClock.uptimeMillis(),action,KeyEvent.KEYCODE_BACK,0,0,android.view.KeyCharacterMap.VIRTUAL_KEYBOARD,0,KeyEvent.FLAG_FROM_SYSTEM,InputDevice.SOURCE_KEYBOARD),true))throw new Exception("Back injection rejected");waitFor("工具",true);requireEditor("voice guard test","voice_back_preserves_editor");
+        stage="voice hide cancellation";startDictation();click("收起语音键盘");boolean hidden=false;for(int i=0;i<50;i++){boolean shown=false;for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD)shown=true;if(!shown){hidden=true;break;}Thread.sleep(100);}if(!hidden)throw new Exception("IME did not actually hide");click("probe-show-keyboard",true);waitFor("⚡ 闪电 · 离线");waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("voice result survived keyboard hide");requireEditor("voice guard test","voice_hide_preserves_editor");startDictation();click("取消");waitFor("工具",true);
+    }
     @Override public void onStart() {
         Bundle result=new Bundle();
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
+            if(voiceOnly){voiceAcceptance();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));
@@ -217,9 +244,9 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
             for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");click("工具");click("符号");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
-            Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);waitFor("个人资料 · 离线管理与备份",true);screenshot("home.png");click("个人资料 · 离线管理与备份");
+            stage="saved_shortcut_ui";Intent manager=new Intent();manager.setClassName("org.zapime.android","org.zapime.android.MainActivity");manager.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(manager);waitFor("个人资料 · 离线管理与备份",true);screenshot("home.png");click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");screenshot("personal.png");
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
+            stage="shortcut_focus_return";intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");
             stage="restart_selection";runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0,a.normal.length());((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});Thread.sleep(300);waitFor("⚡ 闪电 · 离线");requireEditor("ZapIME test snippet","restart_preserves_selected_text");runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(a.normal.length());});
             stage="nine_key";click("切换九键");waitFor("九键 6",true);click("九键 6");click("九键 4");click("九键读音 ni");click("九键 4");click("九键 2");click("九键 6");waitFor("你好",true);screenshot("nine-key.png");chooseCandidate("你好","ZapIME test snippet你好","nine_key_commit");
             click("九键 6");click("⌫");requireEditor("ZapIME test snippet你好","nine_key_backspace");
