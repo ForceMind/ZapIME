@@ -1,0 +1,18 @@
+ZapIME Android UI acceptance — synthetic data only
+Verified source: 0544a557d3f99f5c1fc4e10c0fdca5736a64a66a
+CI: https://github.com/ForceMind/ZapIME/actions/runs/39966378186
+Artifact SHA256: 8f2b7202105f997303d94452eb298377641c076c7d1db13956a9831beae33a82
+Original screenshots are byte-identical to round 2 in the archive.
+
+Successful run excerpts:
+2026-10-23T14:07:41.1412095Z Native input clean round 1/2
+2026-10-23T14:08:29.0795355Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode and selected delete
+2026-10-23T14:08:29.0801126Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-23T14:08:29.2157842Z Native input clean round 2/2
+2026-10-23T14:09:16.8730983Z PASS ZapIME native keyboard: offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode and selected delete
+2026-10-23T14:09:16.8732981Z PASS ZapIME native service teardown: no app fatal exception
+
+Earlier failure excerpts (not successes):
+2026-10-23T13:43:31.1219544Z FAIL ZapIME native keyboard at appearance_settings: Exception: Missing UI node: 键盘与反馈设置
+2026-10-23T13:52:20.1849932Z FAIL ZapIME native keyboard at nine_key_retype: Exception: Editor content assertion failed at nine_key_retype expectedLength=0 actualLength=8
+2026-10-23T14:01:19.6967662Z FAIL ZapIME native keyboard at punctuation_rail: Exception: Editor content assertion failed at punctuation_rail expectedLength=4 actualLength=2
