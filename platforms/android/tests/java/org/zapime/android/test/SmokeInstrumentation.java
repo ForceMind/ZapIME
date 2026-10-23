@@ -105,6 +105,15 @@ public final class SmokeInstrumentation extends Instrumentation {
         }
         requireEditor(expected,phase);
     }
+    private AccessibilityNodeInfo scrollable(AccessibilityNodeInfo node) {
+        if(node==null)return null;if(node.isScrollable())return node;
+        for(int i=0;i<node.getChildCount();i++){AccessibilityNodeInfo found=scrollable(node.getChild(i));if(found!=null)return found;}return null;
+    }
+    private void reveal(String text) throws Exception {
+        for(int i=0;i<12;i++){AccessibilityNodeInfo node=find(text);if(node!=null&&node.isVisibleToUser())return;
+            AccessibilityNodeInfo scroll=scrollable(automation.getRootInActiveWindow());if(scroll!=null)scroll.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);Thread.sleep(200);}
+        throw new Exception("Cannot reveal UI control: "+text);
+    }
     private void touchAt(int action,long down,int x,int y) throws Exception {
         MotionEvent event=MotionEvent.obtain(down,SystemClock.uptimeMillis(),action,x,y,0);event.setSource(InputDevice.SOURCE_TOUCHSCREEN);
         try{if(!automation.injectInputEvent(event,true))throw new Exception("Touch injection rejected");}finally{event.recycle();}
@@ -122,16 +131,20 @@ public final class SmokeInstrumentation extends Instrumentation {
         final boolean[] safe={false};runOnMainSync(()->safe[0]=ProbeActivity.current.get().password.length()==1);if(!safe[0])throw new Exception("Delete repeated into next focused field");
         click("probe-normal");waitFor("⚡ 闪电 · 离线");
     }
+    private void requireKeyColor(int expected) throws Exception {
+        Rect r=bounds("九键 2");Bitmap bitmap=automation.takeScreenshot();if(bitmap==null)throw new Exception("Palette screenshot unavailable");
+        try{int color=bitmap.getPixel(r.left+8,r.top+8);for(int shift:new int[]{0,8,16})if(Math.abs(((color>>shift)&255)-((expected>>shift)&255))>5)throw new Exception("Keyboard palette did not change");}finally{bitmap.recycle();}
+    }
     private void appearanceAcceptance(Intent probe) throws Exception {
         stage="appearance_settings";
-        Intent home=new Intent();home.setClassName("org.zapime.android","org.zapime.android.MainActivity");home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);getContext().startActivity(home);
-        click("键盘与反馈设置");click("键盘主题 light",false);click("按键震动开关",false);waitFor("返回",true);click("返回");
-        probe.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("切换九键");waitFor("九键 6",true);screenshot("nine-key-light.png");
+        Intent home=new Intent();home.setClassName("org.zapime.android","org.zapime.android.MainActivity");home.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);getContext().startActivity(home);Thread.sleep(350);
+        reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 light",false);click("按键震动开关",false);waitFor("返回",true);click("返回");
+        probe.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("切换九键");waitFor("九键 6",true);requireKeyColor(0xffffffff);screenshot("nine-key-light.png");
         click("九键 6");click("九键 4");click("重输");requireEditor("","nine_key_retype");click("，");click("。");click("？");click("！");requireEditor("，。？！","punctuation_rail");
         click("表情");click("😀");requireEditor("，。？！😀","emoji_commit");click("⌫");requireEditor("，。？！","emoji_delete");click("返回");
         click("光标编辑");click("全选");click("复制");click("→");click("粘贴");requireEditor("，。？！，。？！","explicit_copy_paste");click("返回");
-        getContext().startActivity(home);click("键盘与反馈设置");click("键盘主题 dark",false);if(waitFor("按键震动开关").isChecked())throw new Exception("Haptic preference did not persist disabled");screenshot("feedback-settings.png");click("返回");
-        getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);screenshot("nine-key-dark.png");
+        getContext().startActivity(home);Thread.sleep(300);reveal("键盘与反馈设置");click("键盘与反馈设置");click("键盘主题 dark",false);if(waitFor("按键震动开关").isChecked())throw new Exception("Haptic preference did not persist disabled");screenshot("feedback-settings.png");click("返回");
+        getContext().startActivity(probe);click("probe-normal");waitFor("⚡ 闪电 · 离线");waitFor("九键 6",true);requireKeyColor(0xff4d4d50);screenshot("nine-key-dark.png");
         click("九键 6");click("九键 4");click("九键读音 ni");click("九键 4");click("九键 2");click("九键 6");waitFor("你好",true);screenshot("nine-key-dark-candidates.png");chooseCandidate("你好","你好","dark_theme_pinyin");
         click("切换全键");click("中/英");repeatAcceptance();
     }
