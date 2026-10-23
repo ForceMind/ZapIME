@@ -1,0 +1,13 @@
+{
+  "runtime_commit": "e638abc652420a1304820f711a6b23a994109b37",
+  "run_id": 40024147085,
+  "artifact_id": 12533225477,
+  "artifact_bytes": 697721,
+  "artifact_sha256_download_verified": "e87cba2546b163d0f5934846820008993fd0c35b0110d525eee60667bb5defac",
+  "files": {
+    "hierarchy.txt": "bf2bc4bb2343395f0bf2df070763017c86a2ca5304040187c7dd7ee87cae0a74",
+    "activity-errors.txt": "b896a7c03aae2544bc77a88beb4d6e55910fa7d87c528f8f4086d650309cc7a9",
+    "last-anr.txt": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  },
+  "scope": "API36 failure, editor nihao vs IME ao; no ANR reported; shell snapshots were after instrumentation finished, before IME switch, so do not prove live failed-activity state"
+}
