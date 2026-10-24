@@ -9,3 +9,7 @@ docs/evidence/android-voice-touch-40106347773/api-35/native-keyboard-round-1.log
 docs/evidence/android-voice-touch-40106347773/api-35/native-keyboard-round-2.log -text -whitespace
 docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-1.log -text -whitespace
 docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-2.log -text -whitespace
+
+# Retain original successful instrumentation logs, including final blank lines.
+docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-1.log -text -whitespace
+docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-2.log -text -whitespace

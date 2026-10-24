@@ -1,0 +1,64 @@
+{
+  "source": "host-lifecycle.txt original bounded trace",
+  "retained_driver_entries": 64,
+  "retained_complete_physical_pairs": [
+    {
+      "control": "voice_entry",
+      "down_uptime_ms": 301274,
+      "result_uptime_ms": 301344,
+      "down_to_return_elapsed_ms": 70
+    },
+    {
+      "control": "voice_tools",
+      "down_uptime_ms": 308730,
+      "result_uptime_ms": 308811,
+      "down_to_return_elapsed_ms": 81
+    },
+    {
+      "control": "voice_entry",
+      "down_uptime_ms": 309637,
+      "result_uptime_ms": 309713,
+      "down_to_return_elapsed_ms": 76
+    },
+    {
+      "control": "voice_tools",
+      "down_uptime_ms": 312022,
+      "result_uptime_ms": 312096,
+      "down_to_return_elapsed_ms": 74
+    },
+    {
+      "control": "voice_entry",
+      "down_uptime_ms": 312860,
+      "result_uptime_ms": 312944,
+      "down_to_return_elapsed_ms": 84
+    },
+    {
+      "control": "voice_tools",
+      "down_uptime_ms": 314758,
+      "result_uptime_ms": 314845,
+      "down_to_return_elapsed_ms": 87
+    },
+    {
+      "control": "voice_entry",
+      "down_uptime_ms": 315842,
+      "result_uptime_ms": 315927,
+      "down_to_return_elapsed_ms": 85
+    },
+    {
+      "control": "voice_tools",
+      "down_uptime_ms": 318283,
+      "result_uptime_ms": 318361,
+      "down_to_return_elapsed_ms": 78
+    },
+    {
+      "control": "voice_entry",
+      "down_uptime_ms": 319217,
+      "result_uptime_ms": 319294,
+      "down_to_return_elapsed_ms": 77
+    }
+  ],
+  "observed_tools_panel_postconditions": 4,
+  "observed_ime_animation_prepare_and_end": true,
+  "product_tools_open_event_dump_in_success_artifact": false,
+  "scope": "Only the retained last 64 driver entries were checked; no complete beginning-of-test trace or product event timestamps are invented. Down-to-return intervals include injection overhead and are not exact UP event timestamps."
+}

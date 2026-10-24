@@ -2,7 +2,7 @@
 
 2026-10-24，源码`8a612c888ca9e288c0ce7673a6f4d406abda1074`的Android工作流`40106347773`中，API28成功；API35/36的两轮主键盘输入门禁成功，随后独立语音UI门禁在`voice recording preview`阶段因找不到“离线语音”按钮失败。整条工作流仍为失败，不能用已通过的输入、JNI或方法测试抵消。
 
-本报告保存原始失败，说明新的测试驱动修正。**具体那两次触摸是否使用了移动前坐标仍属推断**；新日志与公开框架源码提供了可验证的时序依据，不将未运行的新CI提前写成成功。
+本报告保存原始失败，说明新的测试驱动修正。**具体那两次触摸是否使用了移动前坐标仍属推断**；新日志与公开框架源码提供了可验证的时序依据，以下前半部分记录修正提交时的事实；后续实际验收见文末。
 
 ## 实际下载与原始时序
 
@@ -55,10 +55,16 @@
 
 已实际完成：两份原始ZIP大小/SHA及24份选定原文件逐字节保存；JDK17使用`-source 8 -target 8`和API36的`android.jar`编译完整test host Java，退出0，仅有既有API/source8常规警告；源码差异检查通过。
 
-尚需新CI在API28/35/36运行完整输入及独立语音门禁，并检查新动画/bounds轨迹与原始截图。上述本地编译不等于APK打包、模拟器、自然语音或真机通过。旧失败保留，不能仅重跑旧失败挑选一次成功。
+在修正提交时，仍需新CI在API28/35/36运行完整输入及独立语音门禁，并检查新动画/bounds轨迹与原始截图；后续完成结果如下。上述本地编译不等于APK打包、模拟器、自然语音或真机通过。旧失败保留，不能仅重跑旧失败挑选一次成功。
 
 一手源码：
 
 - [Android16 UiAutomation默认注入行为](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-16.0.0_r1/core/java/android/app/UiAutomation.java)
 - [Android16注入前后窗口同步](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-16.0.0_r1/core/java/android/app/UiAutomationConnection.java)
 - [Android15同一连接实现](https://github.com/aosp-mirror/platform_frameworks_base/blob/android-15.0.0_r1/core/java/android/app/UiAutomationConnection.java)
+
+## 后续实际验收（2026-10-25）
+
+最终源`ca0dc35c1fcfc2bb66573a5882f1b178f4c6744b`的[Android40108971495](https://github.com/ForceMind/ZapIME/actions/runs/40108971495)已实际完成success，API28/35/36均通过两轮主键盘、独立语音UI及真实服务退出。另四工作流也已success，#48合并`347a995`；研究源a2a178b/d4abc5e纳入相同测试驱动后各五工作流亦success。
+
+实际核验的[API36成功证据](evidence/android-voice-touch-success-40108971495/README.md)保留14份原文件、3张原图、精确成功摘录和作业元数据。保留trace中的动画版本、稳定几何、9组物理触摸返回和4次工具双控件后置条件支持新驱动真实执行；独立语音UI、两主轮及真正切回系统IME退出均通过。成功包无产品panelEvents快照、早期driver部分已环淘汰，故不声称完整动作时序或旧失败唯一原因；模拟器静音录音和合成PCM不代表自然语音、ARM/三星真机、触感或英语翻译完成。
