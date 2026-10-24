@@ -19,6 +19,8 @@ public final class SmokeInstrumentation extends Instrumentation {
     private String stage="launch";
     private boolean voiceOnly;
     private boolean ciDiagnostics;
+    private final java.util.ArrayDeque<String> driverEvents=new java.util.ArrayDeque<>();
+    private void noteDriver(String code){if(driverEvents.size()==64)driverEvents.removeFirst();driverEvents.addLast(SystemClock.uptimeMillis()+":"+code);}
     @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only"));String ci=args==null?null:args.getString("zapime_ci_diagnostics");ciDiagnostics=ci!=null&&ci.matches("[0-9]+-[0-9]+");start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
@@ -47,11 +49,14 @@ public final class SmokeInstrumentation extends Instrumentation {
             AccessibilityNodeInfo node=waitFor(text,button);
             Rect bounds=new Rect();node.getBoundsInScreen(bounds);
             if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
+                String control=text.equals("工具")?"tools":text.equals("返回键盘")?"tools_return":"other";
+                noteDriver(control+"_touch_attempt");
                 long now=SystemClock.uptimeMillis();
                 MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
                 MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
                 down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
                 boolean sent=automation.injectInputEvent(down,true) && automation.injectInputEvent(up,true);down.recycle();up.recycle();
+                noteDriver(control+(sent?"_touch_sent":"_touch_rejected"));
                 if(sent) { Thread.sleep(200);return; }
             } else if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {Thread.sleep(200);return;}
             // 候选更新会替换节点；重新获取，而不是点击已经脱离窗口的节点。
@@ -199,7 +204,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         out.write(depth+" | "+node.getClassName()+" | "+node.getText()+" | "+node.getContentDescription()+" | "+node.isVisibleToUser()+" | "+bounds+"\n");
         for(int i=0;i<node.getChildCount();i++)dumpNode(node.getChild(i),out,depth+1);
     }
-    private void dumpHostLifecycle(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"host-lifecycle.txt")),"UTF-8")){out.write(ProbeActivity.lifecycle());}catch(Exception ignored){}}
+    private void dumpHostLifecycle(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"host-lifecycle.txt")),"UTF-8")){out.write(ProbeActivity.lifecycle());out.write("Driver fixed events:\n"+String.join("\n",driverEvents)+"\n");}catch(Exception ignored){}}
     private void dumpHierarchy(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"hierarchy.txt")),"UTF-8")){for(AccessibilityWindowInfo window:automation.getWindows())dumpNode(window.getRoot(),out,0);}catch(Exception ignored){}dumpHostLifecycle();}
     private void dumpCiState(){
         if(!ciDiagnostics||automation==null)return;
@@ -260,6 +265,33 @@ public final class SmokeInstrumentation extends Instrumentation {
         awaitServedConnectionCommand(previous);
         automation.waitForIdle(200,3000);
     }
+    private void toolsRestartAcceptance() throws Exception {
+        stage="tools_open";click("工具");waitFor("返回键盘",true);
+        // Deterministic real App restart while the non-text panel is open.
+        // No IME method or editor text is injected by the test.
+        stage="tools_empty_editor_restart";noteDriver("tools_restart_requested");restartNormalEditor();
+        waitFor("⚡ 闪电 · 离线");waitFor("返回键盘",true);requireToolsPanelStable();requireEditor("","tools_restart_preserves_empty_editor");screenshot("tools.png");
+        final int[] options={0};int previous=ProbeActivity.normalConnections.get();
+        stage="tools_privacy_restart";
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();options[0]=a.normal.getImeOptions();a.normal.setImeOptions(options[0]|android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        awaitServedConnectionCommand(previous);waitFor("隐私输入 · 不学习");
+        if(find("返回键盘",true)!=null)throw new Exception("Tools retained across changed privacy options");
+        requireEditor("","tools_privacy_restart_preserves_editor");
+        previous=ProbeActivity.normalConnections.get();
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setImeOptions(options[0]);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        awaitServedConnectionCommand(previous);waitFor("⚡ 闪电 · 离线");
+        stage="tools_close";click("工具");waitFor("返回键盘",true);click("返回键盘");waitFor("n",true);
+    }
+    private void requireToolsPanelStable() throws Exception {
+        for(int i=0;i<10;i++){
+            boolean back=false,letters=false;
+            for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
+                AccessibilityNodeInfo root=window.getRoot();back|=walk(root,"返回键盘",true)!=null;letters|=walk(root,"n",true)!=null;
+            }
+            if(!back||letters)throw new Exception("Tools panel changed after served restart");
+            Thread.sleep(50);
+        }
+    }
     private void rejectChangedRestartContext() throws Exception {
         stage="restart_changed_context";
         setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
@@ -291,7 +323,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
-            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
+            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");toolsRestartAcceptance();
             for(char c:"ni".toCharArray())click(String.valueOf(c));
             if(Build.VERSION.SDK_INT>=30)restartComposition();
             for(char c:"hao".toCharArray())click(String.valueOf(c));

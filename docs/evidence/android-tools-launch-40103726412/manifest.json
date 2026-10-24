@@ -1,0 +1,130 @@
+{
+  "repository": "ForceMind/ZapIME",
+  "source_commit": "6a1ea9ef6a619cb5c3fa5ae15d84d24f0a5342e3",
+  "pull_request": 48,
+  "workflow_run_id": 40103726412,
+  "run_attempt": 1,
+  "job_id": 120902675009,
+  "platform": "Android API 36 dedicated GitHub emulator",
+  "artifact": {
+    "id": 12564147483,
+    "name": "ZapIME-Android-API-36-acceptance",
+    "bytes": 922563,
+    "sha256": "ba98096ef6245e071570f3179f389156a8b686f2d14277ef1d096fa59c7e8dd6",
+    "github_metadata_digest_matched_downloaded_zip": true,
+    "actually_downloaded_and_read": true
+  },
+  "observations": {
+    "original_native_keyboard_result": "FAIL at launch: Missing UI node: 返回键盘",
+    "pinyin_commit_gate_reached": false,
+    "tools_png_observation": "ordinary QWERTY keyboard, not a rendered tools panel",
+    "failure_time_test_host": "ProbeActivity resumed and focused, InputMethodService view shown",
+    "ime_lifecycle": "starts=3 restarts=1 decision=no_bounded_composition",
+    "runtime_errors_log_bytes": 0,
+    "last_anr": "no ANR has occurred since boot",
+    "new_learning_method_probe": "PASS later in the same job; does not replace failed native keyboard gate"
+  },
+  "diagnosis_scope": "Original startup cause is not uniquely determined. A panel-reset lifecycle race is consistent with the evidence, but event timestamps/order are insufficient to exclude touch retry or accessibility timing. Not classified as a pure infrastructure failure or proof of a commit-provenance regression.",
+  "new_repair_validation": "Separate candidate adds bounded fixed-code events and explicit real-editor restart/NPL counterexample; no new CI success claimed by this evidence bundle.",
+  "recorded_at_utc": "2026-10-24T15:13:23.075295+00:00",
+  "recording_clock": "container clock for bundle creation only, not a reconstruction of original UI event ordering",
+  "files": [
+    {
+      "path": "keyboard.png",
+      "bytes": 47470,
+      "sha256": "afa781b7f55462bd7795e1fbffc898aca7296b37d4aae1fce51727bb4b1d2edc",
+      "artifact_member": "device-smoke/keyboard.png",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/keyboard.png",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false
+    },
+    {
+      "path": "tools.png",
+      "bytes": 47136,
+      "sha256": "96861fb93a95b6d4342c371927386c2abc12bf9689b0ebad66edc22d026a3075",
+      "artifact_member": "device-smoke/tools.png",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/tools.png",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false
+    },
+    {
+      "path": "smoke.png",
+      "bytes": 47069,
+      "sha256": "754d9f17682d583d69cbcc5bb20a104924a192c476da542abe19378b26859c40",
+      "artifact_member": "device-smoke/smoke.png",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/smoke.png",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false
+    },
+    {
+      "path": "hierarchy.txt",
+      "bytes": 7281,
+      "sha256": "310b3881a16b9e89174482721263db19733609ad7597c53ff41be9362dffbb76",
+      "artifact_member": "device-smoke/hierarchy.txt",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/hierarchy.txt",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "host-lifecycle.txt",
+      "bytes": 450,
+      "sha256": "69ef9b463572ab3da7b40c886fabeab37962dd71e60c2020002a1be89a9dc573",
+      "artifact_member": "device-smoke/host-lifecycle.txt",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/host-lifecycle.txt",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "ci-input-service.txt",
+      "bytes": 2573,
+      "sha256": "81b6eb657cad557270425fe9a75c10f795e39c967c2b1fd4be1a6720e47dbcb7",
+      "artifact_member": "device-smoke/ci-input-service.txt",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/ci-input-service.txt",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "ci-activity-state.txt",
+      "bytes": 30157,
+      "sha256": "4cc0cddb633e9eb2dc6d2d7100eaea8434500bb8d63c2afec4bb161f4050d312",
+      "artifact_member": "device-smoke/ci-activity-state.txt",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/ci-activity-state.txt",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "last-anr.txt",
+      "bytes": 88,
+      "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+      "artifact_member": "device-smoke/last-anr.txt",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/last-anr.txt",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "artifact_member": "device-smoke/runtime-errors.log",
+      "round_1_artifact_member": "device-smoke-evidence/40103726412-1/round-1/runtime-errors.log",
+      "current_and_round_1_bytes_identical": true,
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "workflow-job-excerpt.log",
+      "bytes": 6156,
+      "sha256": "94355e623785c7644e4f9d6b2d7676adcf54b29e8eef75c6dcd5aae1e8faa2d3",
+      "source": "decoded GitHub job log 120902675009; exact contiguous lines around original launch failure and subsequent target-method PASS",
+      "scope": "excerpt only, not complete job log"
+    }
+  ]
+}

@@ -140,6 +140,19 @@ final class LearningHostProbe {
                 check(!(Boolean)allows.invoke(null, info, false), "declared search eligible");
                 info.imeOptions = EditorInfo.IME_ACTION_SEND | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
                 check(!(Boolean)allows.invoke(null, info, false), "no-learning field eligible");
+                // Panel preservation must never inherit a different editor's UI.
+                info.packageName="synthetic.package";info.fieldId=41;
+                info.inputType=InputType.TYPE_CLASS_TEXT;info.imeOptions=EditorInfo.IME_ACTION_SEND;
+                set(service,"editorPackage",info.packageName);set(service,"editorField",info.fieldId);
+                set(service,"editorType",info.inputType);set(service,"editorOptions",info.imeOptions);
+                set(service,"layer","tools");set(service,"preedit","");
+                check((Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"same editor tools not eligible");
+                info.fieldId++;
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"different field kept tools");
+                info.fieldId--;set(service,"preedit","ni");
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"composition kept tools");
+                set(service,"preedit","");set(service,"privateSession",true);
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"private editor kept tools");
             } catch (Throwable error) { failure[0] = error; }
             finally {
                 // This fixture was never attached/activated as a system Service.
