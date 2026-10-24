@@ -54,9 +54,43 @@ static void environmentSummary(){
              <<" visible_station="<<(station&&(flags.dwFlags&WSF_VISIBLE)?1:0)
              <<" remote_session="<<GetSystemMetrics(SM_REMOTESESSION)<<"\n";
 }
+struct OwnedFocusWindow {
+    HWND focusWindow=nullptr,focusEdit=nullptr,priorForeground=nullptr;
+    bool windowClassRegistered=false;
+    static constexpr const wchar_t *focusClass=L"ZapIMEIsolatedProfileProbe";
+    void createFocusWindow(){
+        priorForeground=GetForegroundWindow();
+        WNDCLASSW windowClass{};windowClass.lpfnWndProc=DefWindowProcW;windowClass.hInstance=GetModuleHandleW(nullptr);windowClass.lpszClassName=focusClass;
+        require(RegisterClassW(&windowClass)!=0,"register_owned_focus_class");windowClassRegistered=true;
+        focusWindow=CreateWindowExW(0,focusClass,L"ZapIME isolated profile probe",WS_OVERLAPPEDWINDOW|WS_VISIBLE,CW_USEDEFAULT,CW_USEDEFAULT,600,260,nullptr,nullptr,windowClass.hInstance,nullptr);
+        require(focusWindow!=nullptr,"create_owned_focus_window");
+        focusEdit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,20,30,540,100,focusWindow,nullptr,windowClass.hInstance,nullptr);
+        require(focusEdit!=nullptr,"create_owned_focus_editor");
+        ShowWindow(focusWindow,SW_SHOWNORMAL);SetForegroundWindow(focusWindow);SetFocus(focusEdit);
+        ULONGLONG deadline=GetTickCount64()+2000;
+        while(GetTickCount64()<deadline&&(GetForegroundWindow()!=focusWindow||GetFocus()!=focusEdit)){
+            MSG message{};for(int count=0;count<64&&PeekMessageW(&message,nullptr,0,0,PM_REMOVE);++count){require(message.message!=WM_QUIT,"owned_focus_window_quit");TranslateMessage(&message);DispatchMessageW(&message);}
+            MsgWaitForMultipleObjectsEx(0,nullptr,20,QS_ALLINPUT,MWMO_INPUTAVAILABLE);
+        }
+        require(GetForegroundWindow()==focusWindow&&GetFocus()==focusEdit,"owned_window_keyboard_focus_required");
+        std::cout<<"profile_probe owned_window_keyboard_focus=PASS; no injected input\n";
+    }
+    bool closeFocusWindow() noexcept {
+        bool ok=true;
+        if(focusWindow){ok=DestroyWindow(focusWindow)!=FALSE&&ok;focusWindow=nullptr;focusEdit=nullptr;}
+        if(windowClassRegistered){ok=UnregisterClassW(focusClass,GetModuleHandleW(nullptr))!=FALSE&&ok;windowClassRegistered=false;}
+        if(priorForeground&&IsWindow(priorForeground)){
+            if(GetForegroundWindow()!=priorForeground)SetForegroundWindow(priorForeground);
+            ok=GetForegroundWindow()==priorForeground&&ok;
+        }
+        priorForeground=nullptr;return ok;
+    }
+    ~OwnedFocusWindow(){closeFocusWindow();}
+};
 // Independent-process runtime setup. It never registers profiles, loads a
 // new HKL, edits the user language list, or explicitly activates ZapIME.
 struct QueryRuntime {
+    OwnedFocusWindow focus;
     ComPtr<ITfThreadMgr> threads;
     ComPtr<ITfInputProcessorProfiles> languages;
     HKL beforeLayout=nullptr;
@@ -64,6 +98,8 @@ struct QueryRuntime {
     bool active=false,languageAttempted=false,finished=false;
     HRESULT begin(){
         beforeLayout=GetKeyboardLayout(0);if(!beforeLayout)return E_FAIL;
+        try{focus.createFocusWindow();std::cout<<"profile_probe child_runtime_focus=PASS\n";}
+        catch(const std::exception &error){std::cerr<<"profile_probe child_runtime_focus_failed="<<error.what()<<"\n";return E_FAIL;}
         HRESULT hr=CoCreateInstance(CLSID_TF_ThreadMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&threads));result("child_runtime_thread_manager",hr);if(hr!=S_OK)return hr;
         TfClientId client=TF_CLIENTID_NULL;hr=threads->Activate(&client);result("child_runtime_thread_activate",hr);active=SUCCEEDED(hr);if(hr!=S_OK)return hr;
         hr=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&languages));result("child_runtime_languages",hr);if(hr!=S_OK)return hr;
@@ -81,7 +117,7 @@ struct QueryRuntime {
         if(languageAttempted&&languages){HRESULT hr=languages->ChangeCurrentLanguage(beforeLanguage);result("child_runtime_restore_language",hr);ok=hr==S_OK&&ok;}
         if(beforeLayout){ok=ActivateKeyboardLayout(beforeLayout,0)!=nullptr&&GetKeyboardLayout(0)==beforeLayout&&ok;beforeLayout=nullptr;}
         if(active&&threads){HRESULT hr=threads->Deactivate();result("child_runtime_thread_deactivate",hr);ok=hr==S_OK&&ok;active=false;}
-        languages.Reset();threads.Reset();std::cout<<"profile_probe child_runtime_cleanup="<<(ok?"PASS":"FAIL")<<"\n";return ok;
+        languages.Reset();threads.Reset();ok=focus.closeFocusWindow()&&ok;std::cout<<"profile_probe child_runtime_cleanup="<<(ok?"PASS":"FAIL")<<"\n";return ok;
     }
     ~QueryRuntime(){finish();}
 };
@@ -146,8 +182,21 @@ static bool queryFreshProcess(){
     PROCESS_INFORMATION child{};std::cout.flush();std::cerr.flush();
     BOOL created=CreateProcessW(executable,command.data(),nullptr,nullptr,TRUE,CREATE_NO_WINDOW,nullptr,nullptr,&start,&child);
     std::cout<<"profile_probe child_started="<<(created?1:0)<<" error="<<(created?0:GetLastError())<<"\n";if(!created)return false;
-    CloseHandle(child.hThread);DWORD waited=WaitForSingleObject(child.hProcess,15000),exitCode=1;
-    bool finished=waited==WAIT_OBJECT_0&&GetExitCodeProcess(child.hProcess,&exitCode);
+    CloseHandle(child.hThread);DWORD exitCode=1;bool finished=false,quit=false;
+    ULONGLONG deadline=GetTickCount64()+15000;
+    while(GetTickCount64()<deadline){
+        ULONGLONG now=GetTickCount64();if(now>=deadline)break;
+        DWORD remaining=static_cast<DWORD>(deadline-now);if(remaining>250)remaining=250;
+        DWORD waited=MsgWaitForMultipleObjectsEx(1,&child.hProcess,remaining,QS_ALLINPUT,MWMO_INPUTAVAILABLE);
+        if(waited==WAIT_OBJECT_0){finished=GetExitCodeProcess(child.hProcess,&exitCode)!=FALSE;break;}
+        if(waited==WAIT_FAILED)break;
+        // The parent owns a window. Dispatch its bounded message batches while
+        // the independent child requests ordinary foreground/focus transitions.
+        MSG message{};for(int count=0;count<64&&PeekMessageW(&message,nullptr,0,0,PM_REMOVE);++count){
+            if(message.message==WM_QUIT){quit=true;break;}TranslateMessage(&message);DispatchMessageW(&message);
+        }
+        if(quit)break;
+    }
     // The child cannot mutate profiles. Terminating this bounded read-only query
     // does not bypass the parent's mandatory registration rollback.
     if(!finished){TerminateProcess(child.hProcess,1);WaitForSingleObject(child.hProcess,2000);}
@@ -155,36 +204,7 @@ static bool queryFreshProcess(){
 }
 struct Probe {
     bool com=false,owned=false,threadActive=false,activationAttempted=false,loadedLayout=false,haveBefore=false,ownsData=false;
-    HWND focusWindow=nullptr,focusEdit=nullptr,priorForeground=nullptr;
-    bool windowClassRegistered=false;
-    static constexpr const wchar_t *focusClass=L"ZapIMEIsolatedProfileProbe";
-    void createFocusWindow(){
-        priorForeground=GetForegroundWindow();
-        WNDCLASSW windowClass{};windowClass.lpfnWndProc=DefWindowProcW;windowClass.hInstance=GetModuleHandleW(nullptr);windowClass.lpszClassName=focusClass;
-        require(RegisterClassW(&windowClass)!=0,"register_owned_focus_class");windowClassRegistered=true;
-        focusWindow=CreateWindowExW(0,focusClass,L"ZapIME isolated profile probe",WS_OVERLAPPEDWINDOW|WS_VISIBLE,CW_USEDEFAULT,CW_USEDEFAULT,600,260,nullptr,nullptr,windowClass.hInstance,nullptr);
-        require(focusWindow!=nullptr,"create_owned_focus_window");
-        focusEdit=CreateWindowExW(WS_EX_CLIENTEDGE,L"EDIT",L"",WS_CHILD|WS_VISIBLE|WS_TABSTOP|ES_AUTOHSCROLL,20,30,540,100,focusWindow,nullptr,windowClass.hInstance,nullptr);
-        require(focusEdit!=nullptr,"create_owned_focus_editor");
-        ShowWindow(focusWindow,SW_SHOWNORMAL);SetForegroundWindow(focusWindow);SetFocus(focusEdit);
-        ULONGLONG deadline=GetTickCount64()+2000;
-        while(GetTickCount64()<deadline&&(GetForegroundWindow()!=focusWindow||GetFocus()!=focusEdit)){
-            MSG message{};for(int count=0;count<64&&PeekMessageW(&message,nullptr,0,0,PM_REMOVE);++count){require(message.message!=WM_QUIT,"owned_focus_window_quit");TranslateMessage(&message);DispatchMessageW(&message);}
-            MsgWaitForMultipleObjectsEx(0,nullptr,20,QS_ALLINPUT,MWMO_INPUTAVAILABLE);
-        }
-        require(GetForegroundWindow()==focusWindow&&GetFocus()==focusEdit,"owned_window_keyboard_focus_required");
-        std::cout<<"profile_probe owned_window_keyboard_focus=PASS; no injected input\n";
-    }
-    bool closeFocusWindow() noexcept {
-        bool ok=true;
-        if(focusWindow){ok=DestroyWindow(focusWindow)!=FALSE&&ok;focusWindow=nullptr;focusEdit=nullptr;}
-        if(windowClassRegistered){ok=UnregisterClassW(focusClass,GetModuleHandleW(nullptr))!=FALSE&&ok;windowClassRegistered=false;}
-        if(priorForeground&&IsWindow(priorForeground)){
-            if(GetForegroundWindow()!=priorForeground)SetForegroundWindow(priorForeground);
-            ok=GetForegroundWindow()==priorForeground&&ok;
-        }
-        priorForeground=nullptr;return ok;
-    }
+    OwnedFocusWindow focus;
     HMODULE dll=nullptr;
     HKL beforeLayout=nullptr,chineseLayout=nullptr;
     Registration unregisterProfile=nullptr;
@@ -216,7 +236,7 @@ struct Probe {
             owned=false;
         }
         profiles.Reset();categories.Reset();
-        bool focusRestored=closeFocusWindow();std::cout<<"profile_probe owned_window_cleanup="<<(focusRestored?"PASS":"FAIL")<<"\n";ok=focusRestored&&ok;
+        bool focusRestored=focus.closeFocusWindow();std::cout<<"profile_probe owned_window_cleanup="<<(focusRestored?"PASS":"FAIL")<<"\n";ok=focusRestored&&ok;
         if(dll){FreeLibrary(dll);dll=nullptr;}
         if(com){CoFreeUnusedLibrariesEx(0,0);CoUninitialize();com=false;}
         if(loadedLayout&&chineseLayout){ok=UnloadKeyboardLayout(chineseLayout)!=FALSE&&ok;loadedLayout=false;}
@@ -251,7 +271,7 @@ int main(int argc,char **argv){
         // Windows 8+ LoadKeyboardLayout requires a window with keyboard focus.
         // Prepare the real runtime locale before querying the new profile.
         probe.beforeLayout=GetKeyboardLayout(0);require(probe.beforeLayout!=nullptr,"initial_thread_layout");
-        probe.createFocusWindow();
+        probe.focus.createFocusWindow();
         checked("thread_manager",CoCreateInstance(CLSID_TF_ThreadMgr,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&probe.threads)));TfClientId client=TF_CLIENTID_NULL;checked("thread_activate",probe.threads->Activate(&client));probe.threadActive=true;
         HRESULT beforeHr=probe.profiles->GetActiveProfile(GUID_TFCAT_TIP_KEYBOARD,&probe.before);result("query_previous",beforeHr);probe.haveBefore=beforeHr==S_OK;
         int count=GetKeyboardLayoutList(0,nullptr);require(count>0&&count<=256,"keyboard_layout_count");std::vector<HKL> layouts(static_cast<size_t>(count));require(GetKeyboardLayoutList(count,layouts.data())==count,"keyboard_layout_snapshot");

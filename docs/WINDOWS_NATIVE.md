@@ -107,3 +107,11 @@ dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，
 新增在注册后立即记录系统CoCreateInstance解析本产品的HRESULT，随后仍在原COM门禁要求S_OK，避免前面的子进程失败遮住关键解析证据。只多读当前进程TokenElevation布尔值以及固定系统策略EnableLUA的DWORD；不输出Token、SID、用户或凭据，不修改权限、UAC或HKLM COM。两种子进程模式和主流程仍先通过临时GitHub-hosted守卫才读取这些元数据。
 
 微软HKCR文档明确管理员且UAC关闭时COM运行时忽略HKCU配置；这只是待核对条件，不提前认定当前故障根因，尤其HKCR合并项存在不等于系统COM可实际解析。依据：https://learn.microsoft.com/en-us/windows/win32/sysinfo/hkey-classes-root-key 。新候选仍待CI。
+
+## 前台窗口与独立进程消息循环（候选）
+
+3597ecf /40042896277 已实际验证系统CoCreateInstance解析本产品S_OK，TokenElevation=true且EnableLUA=1；微软“管理员且UAC关闭会忽略HKCU”的前提不成立，不能据此扩写HKLM COM。父进程profile查询S_OK，后台子进程ChangeCurrentLanguage仍E_FAIL，整体失败，旧状态清理全部通过。
+
+本候选复用同一个OwnedFocusWindow实现，让独立子进程同样创建自己的空EDIT并核对真实前台/键盘焦点；普通焦点请求失败即拒绝，不强制前台、AttachThreadInput或发送输入。父进程等待子进程时以有界消息循环处理自身窗口消息，防止跨窗口焦点通知被阻塞；15秒期限不延长，超时/WM_QUIT仍失败。子进程关闭自己的窗口、还原父进程前台及原语言/HKL，父进程之后保留全部独立查询/COM/FORPROCESS/清理门禁。
+
+这验证真实前台TSF上下文，不再把--query-runtime称作无窗口纯只读进程；--query-only仍保留原纯查询基线。产品注册源码未改，不安装语言组件或修改安全策略；结果待真实CI。
