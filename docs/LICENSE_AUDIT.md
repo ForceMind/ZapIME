@@ -72,3 +72,7 @@ APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPa
 ### 可选翻译研究预处理（2026-10-24）
 
 独立开发探针显式下载Moses固定提交08e782040189e0abb3b43a4ec9245e6179e39eca中的replace-unicode-punctuation.perl、remove-non-printing-char.perl与COPYING到ignored target；两脚本文件头为LGPL-2.1-or-later，逐项SHA/大小核验并保留源文件与COPYING。没有复制脚本或其许可文本到产品、没有新运行库或模型随APK分发。ZapIME适配/测试脚本为本项目GPL-3.0-only，OPUS原权重CC-BY-4.0与CT2 MIT仍分别记录。未来实际发行helper/模型/运行库须另审查源码和署名义务，不将本次开发下载审计当移动端分发完成。详情ENGLISH_TRANSLATION_PREPROCESSING.md及其原始manifest。
+
+### Qwen独立CPU研究（2026-10-24）
+
+官方Qwen/Qwen3-0.6B-GGUF revision23749fefcc72300e3a2ad315e1317431b06b590a的Q8_0原始权重以发布者LFS SHA校验，精确revision完整LICENSE为Apache-2.0。固定llama.cpp b11669 CPU发布包以GitHub资产digest校验，对应620d2225cc436ab0b001e3200e590e3b286ef9ab主许可MIT。Git仅保留研究脚本、两完整主许可和合成结果；权重/二进制/审查过的C++源及缓存不进Git/APK。官方模型许可原CRLF字节以精确路径Git属性保留，不重写原文。CPU包仍有RPC及系统OpenSSL/libgomp/libstdc++依赖；不是无网络能力声明，也不是客户端完整分发依赖审计。详细固定来源、SHA和未通过本配置教学判断的事实见ENGLISH_TRANSLATION_QWEN_PROBE.md。

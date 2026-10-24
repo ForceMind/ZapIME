@@ -1,0 +1,97 @@
+{
+  "recorded_at_container_utc": "2026-10-24T14:47:14.278876+00:00",
+  "synthetic_text_only": true,
+  "download_and_prepare": {
+    "initial_model_and_runtime_download_method": "explicit curl --fail/--location/HTTPS-only to ignored target, followed by full size/SHA checks before extraction or inference",
+    "new_prepare_entry": "python3 scripts/qwen_translation_probe/prepare.py",
+    "prepare_exit_code": 0,
+    "all_eight_public_assets_verified": true,
+    "full_reproduce_shell_executed_from_empty_directory": false,
+    "runtime_binaries_or_weights_committed": false,
+    "preparer_missing_asset_streaming_size_hash_atomic_path_tested_with_pinned_runtime_license": true
+  },
+  "actual_inference_commands": [
+    {
+      "command": "python3 scripts/qwen_translation_probe/run.py",
+      "exit_code": 0,
+      "examples": 38
+    },
+    {
+      "command": "python3 scripts/qwen_translation_probe/run.py --offline",
+      "exit_code": 0,
+      "examples": 38
+    }
+  ],
+  "comparison": {
+    "command": "python3 scripts/qwen_translation_probe/compare.py",
+    "exit_code": 0,
+    "complete_pairs_identical": 38
+  },
+  "checks": {
+    "python_compile": "python3 -m py_compile scripts/qwen_translation_probe/*.py",
+    "python_compile_exit_code": 0,
+    "unit_test_command": "python3 scripts/qwen_translation_probe/test_probe.py",
+    "unit_tests": 6,
+    "unit_test_exit_code": 0,
+    "reproduction_shell_syntax_command": "bash -n scripts/qwen_translation_probe/reproduce.sh",
+    "reproduction_shell_syntax_exit_code": 0
+  },
+  "independent_read_only_review": "Another agent checked official release/model metadata, hashes, pinned runtime extraction, template branch, 6 tests and the 38 paired outputs without repeating model inference.",
+  "exact_repository_scripts": [
+    {
+      "path": "scripts/qwen_translation_probe/assets.py",
+      "bytes": 3012,
+      "sha256": "3ce07ef2a252468b8f526bae0b78a825bd67804b5faf6b39dfcadec092ea2eaf"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/compare.py",
+      "bytes": 3804,
+      "sha256": "c3e6e00b8083793d3c20ff4ad406c682d17c94751c0d533a91fe64b3f432a529"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/environment.py",
+      "bytes": 833,
+      "sha256": "28d28989347c78e642e09835379c17b9c690be613769ef9f15488995d871da34"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/network.py",
+      "bytes": 2466,
+      "sha256": "7dfde627b37556312a9df0ac0c5651f26f1758371d99ba14d4be5a0194b811fa"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/prepare.py",
+      "bytes": 4116,
+      "sha256": "b4693ef32e8e318e452d0c6273dee0d787fd03affc30f32e6fd65e61b1eb6ba4"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/prompts.py",
+      "bytes": 1573,
+      "sha256": "4573e37d08ba821e44b9efae2168d04c5fc5ef8d9d7816dc686261181e2e548b"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/reproduce.sh",
+      "bytes": 395,
+      "sha256": "db7daacf38d5eddfa893098823d29a31f6ebb68355e3c85f1fb6501984ea0949"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/run.py",
+      "bytes": 5098,
+      "sha256": "037ccae59e20abd0319926787acc9bedf62509b8da4455c65308ca103afed03f"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/test_probe.py",
+      "bytes": 2402,
+      "sha256": "3c7720dc6c44d53ec5a2ede50980df5e5fae402978385c806c157775c151a5ba"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/worker.py",
+      "bytes": 3797,
+      "sha256": "c2242b68739ee6d45761554a9e16ddcedbb5b68a1ba0e62f57cdd6d32283c118"
+    }
+  ],
+  "runtime_template_api_used": false,
+  "template_branch": "Manual rendering of pinned official two-message/no-tool enable_thinking=False branch; full official template and full prompts preserved in every grouped run.",
+  "product_integration": false,
+  "teaching_configuration_accepted": false,
+  "quality_scope": "Only this temperature-zero, non-thinking, two-system-prompt configuration was observed. Qwen recommends non-thinking sampling; no conclusion about every model or decoding configuration."
+}
