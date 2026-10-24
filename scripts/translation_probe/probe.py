@@ -14,6 +14,8 @@ import platform
 import socket
 import time
 
+from preprocessing import OpusSimple, archive_postprocess
+
 ROOT = Path(os.environ.get("ZAPIME_TRANSLATION_WORKDIR", Path(__file__).resolve().parents[2] / "target" / "translation-probe")).resolve()
 for name in ("OMP_NUM_THREADS", "OMP_THREAD_LIMIT", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"):
     os.environ[name] = "1"
@@ -74,6 +76,9 @@ def main():
     parser.add_argument("mode", choices=["convert", "infer"])
     parser.add_argument("--offline", action="store_true")
     parser.add_argument("--daily", action="store_true", help="also run every additional synthetic daily-language example")
+    parser.add_argument("--preprocessing", choices=["sentencepiece", "opus-simple"], default="sentencepiece")
+    parser.add_argument("--beam-size", type=int, choices=[1, 6], default=1, help="6 matches the archive's beam width, not full Marian runtime equivalence")
+    parser.add_argument("--contrast", action="store_true", help="include additional synthetic meaning/punctuation examples; implies --daily")
     args = parser.parse_args()
     network = deny_network() if args.offline else {"method": "network not isolated during this pass"}
     import ctranslate2
@@ -91,22 +96,32 @@ def main():
 
     source = sentencepiece.SentencePieceProcessor(model_file=str(ROOT / "raw/source.spm"))
     target = sentencepiece.SentencePieceProcessor(model_file=str(ROOT / "raw/target.spm"))
+    preprocessing = OpusSimple(ROOT) if args.preprocessing == "opus-simple" else None
     started = time.perf_counter()
     translator = ctranslate2.Translator(str(ROOT / "ct2-int8"), device="cpu", compute_type="int8", inter_threads=1, intra_threads=1)
     load_seconds = time.perf_counter() - started
     examples = []
     texts = ["明天见。", "我正在学习英语。", "谢谢你的帮助。"]
-    if args.daily:
+    if args.daily or args.contrast:
         texts += ["我一会儿就到。", "今天有点堵车。", "我已经在路上了。", "我没听清楚，你能再说一遍吗？", "我们改天再约吧。", "这个方案还需要进一步讨论。", "先这样吧。"]
+    if args.contrast:
+        texts += ["我没说你做错了。", "不是不想去，是今天没时间。", "请在下午３：３０之前回复。", "她说：“明天见！”", "今天气温是２５℃。", "我正在学习英语．", "  我   已经在路上了。", "我已经\t在路上了。", "我已经在路上了。\u200b"]
     for text in texts:
         started = time.perf_counter()
-        tokens = source.encode(text, out_type=str)
-        translated = translator.translate_batch([tokens], beam_size=1, max_decoding_length=64)
+        normalized = preprocessing(text) if preprocessing else text
+        tokens = source.encode(normalized, out_type=str)
+        translated = translator.translate_batch([tokens], beam_size=args.beam_size, length_penalty=1, max_decoding_length=64)
         english = target.decode(translated[0].hypotheses[0])
         elapsed = time.perf_counter() - started
-        examples.append({"source": text, "translation": english, "seconds_including_sentencepiece": elapsed, "source_tokens": len(tokens), "output_tokens": len(translated[0].hypotheses[0])})
-    result = {"mode": "inference", "synthetic_text_only": True, "versions": versions, "platform": platform.platform(), "python": platform.python_version(), "device": "cpu", "compute_type_requested": "int8", "compute_type_actual": getattr(translator, "compute_type", "not exposed"), "inter_threads": 1, "intra_threads": 1, "beam_size": 1, "max_decoding_length": 64, "preprocessing": "bundled SentencePiece only; external Moses punctuation/control-character preprocessing in archive not applied", "load_seconds": load_seconds, "network": network, "examples": examples, "model_files": [{"name": str(p.relative_to(ROOT / "ct2-int8")), "bytes": p.stat().st_size, "sha256": hash_file(p)} for p in sorted((ROOT / "ct2-int8").rglob("*")) if p.is_file()], "limitations": "Single cloud-container x86-64 CPU probe, not translation quality evaluation, mobile latency/memory/battery, keyboard integration, or four-platform acceptance."}
+        examples.append({"source": text, "normalized_source": normalized, "translation": english, "archive_sed_translation_untrimmed": archive_postprocess(translated[0].hypotheses[0]), "seconds_including_preprocessing_and_sentencepiece": elapsed, "source_tokens": len(tokens), "output_tokens": len(translated[0].hypotheses[0])})
+    result = {"mode": "inference", "synthetic_text_only": True, "versions": versions, "platform": platform.platform(), "python": platform.python_version(), "device": "cpu", "compute_type_requested": "int8", "compute_type_actual": getattr(translator, "compute_type", "not exposed"), "inter_threads": 1, "intra_threads": 1, "beam_size": args.beam_size, "length_penalty": 1, "max_decoding_length": 64, "preprocessing": preprocessing.description() if preprocessing else "bundled SentencePiece only; external Moses punctuation/control-character preprocessing in archive not applied", "postprocessing": "translation uses SentencePiece.decode for controlled comparisons; raw archive sed result recorded separately, including leading space", "load_seconds": load_seconds, "network": network, "examples": examples, "model_files": [{"name": str(p.relative_to(ROOT / "ct2-int8")), "bytes": p.stat().st_size, "sha256": hash_file(p)} for p in sorted((ROOT / "ct2-int8").rglob("*")) if p.is_file()], "limitations": "Single cloud-container x86-64 CPU probe, not a scored quality benchmark, Marian-decoder numeric equivalence, mobile latency/memory/battery, keyboard integration, or four-platform acceptance. Control-character fixtures test normalization only, not product field eligibility."}
     output = ROOT / (("inference-daily-offline.json" if args.offline else "inference-daily-online-capable.json") if args.daily else ("inference-offline.json" if args.offline else "inference-online-capable.json"))
+    if args.contrast or args.preprocessing != "sentencepiece" or args.beam_size != 1:
+        output = ROOT / ("contrast-" + args.preprocessing + "-beam" + str(args.beam_size) + ("-offline" if args.offline else "-online-capable") + ".json")
+    if platform.system() == "Linux":
+        import resource
+        result["peak_process_rss_kib"] = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        result["memory_measurement_scope"] = "Linux ru_maxrss of this fresh Python inference process, including imports/model/all examples; excludes separate Perl children and is not model-only or mobile RSS"
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2))
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

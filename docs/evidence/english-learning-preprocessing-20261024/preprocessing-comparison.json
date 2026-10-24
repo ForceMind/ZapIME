@@ -1,0 +1,111 @@
+{
+  "synthetic_text_only": true,
+  "runs": [
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 1,
+      "offline": false,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.083151815997553,
+      "peak_process_rss_kib": 172796,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 1,
+      "offline": true,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.6758278549968963,
+      "peak_process_rss_kib": 173288,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 6,
+      "offline": false,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.7620242240009247,
+      "peak_process_rss_kib": 179424,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 6,
+      "offline": true,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.553916864002531,
+      "peak_process_rss_kib": 180232,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 1,
+      "offline": false,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.1478822819990455,
+      "peak_process_rss_kib": 173068,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 1,
+      "offline": true,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.0518970300036017,
+      "peak_process_rss_kib": 173208,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 6,
+      "offline": false,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.943662846002553,
+      "peak_process_rss_kib": 179092,
+      "stderr": ""
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 6,
+      "offline": true,
+      "exit_code": 0,
+      "examples": 19,
+      "whole_subprocess_wall_seconds": 2.804818023003463,
+      "peak_process_rss_kib": 179624,
+      "stderr": ""
+    }
+  ],
+  "online_offline_matches": [
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 1,
+      "source_normalization_translation_and_model_files_identical_online_offline": true
+    },
+    {
+      "preprocessing": "sentencepiece",
+      "beam_size": 6,
+      "source_normalization_translation_and_model_files_identical_online_offline": true
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 1,
+      "source_normalization_translation_and_model_files_identical_online_offline": true
+    },
+    {
+      "preprocessing": "opus-simple",
+      "beam_size": 6,
+      "source_normalization_translation_and_model_files_identical_online_offline": true
+    }
+  ],
+  "original_ten_baseline_source_translation_pairs_match_previous_evidence": true,
+  "archive_shell_executed": false,
+  "quantitative_quality_score": null,
+  "limitations": "Controlled qualitative contrasts only; timings follow warmed file cache and are single passes, not latency statistics. No native Marian, mobile, energy, typing-contention or teaching-quality acceptance."
+}
