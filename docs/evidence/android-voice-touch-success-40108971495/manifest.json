@@ -1,0 +1,172 @@
+{
+  "repository": "ForceMind/ZapIME",
+  "pull_request": 48,
+  "source_commit": "ca0dc35c1fcfc2bb66573a5882f1b178f4c6744b",
+  "workflow_run_id": 40108971495,
+  "attempt": 1,
+  "job_id": 120918560872,
+  "api": 36,
+  "abi": "x86_64 emulator",
+  "artifact": {
+    "id": 12566670697,
+    "name": "ZapIME-Android-API-36-acceptance",
+    "zip_bytes": 2436255,
+    "zip_sha256": "66902516879645e28d1880625a69691acd78e831f142a58ff629f7570ae0c09b",
+    "actual_download_size_and_sha_match_github_metadata": true
+  },
+  "download_scope": "Only the approximately 2.4MB API36 acceptance ZIP was downloaded; no product APK/model/test-harness ZIP or other API artifact download.",
+  "actual_results": {
+    "native_keyboard_clean_rounds_passed": 2,
+    "independent_voice_ui": "PASS including real emulator microphone preview/stop/retry, cancellation/focus/cursor/hide and unchanged synthetic Editable",
+    "combined_gate_exit_codes": {
+      "android_smoke_repeat.py": 0,
+      "android_voice_smoke.py": 0
+    },
+    "service_teardown": "actual switch to verified system IME, then no ZapInputMethodService in services output",
+    "native_runtime_and_crash_logs_empty": true
+  },
+  "trace_limits": {
+    "driver_ring_capacity": 64,
+    "beginning_of_voice_test_entries_evicted": true,
+    "product_panel_event_dump_not_captured_on_success": true,
+    "tools_open_correlated_by_observed_ui_postconditions_not_product_event_timestamp": true,
+    "old_coordinate_miss_root_cause_not_uniquely_proven": true
+  },
+  "not_claimed": [
+    "natural speech accuracy",
+    "ARM or Samsung real device acceptance",
+    "full end-to-end translation feature",
+    "all intermittent input races resolved",
+    "unique retrospective cause for old failed touches"
+  ],
+  "recorded_at_utc": "2026-10-24T16:15:48.643848+00:00",
+  "recording_clock": "container bundle creation clock only; original event correlation uses preserved monotonic uptime",
+  "files": [
+    {
+      "path": "host-lifecycle.txt",
+      "artifact_member": "voice-android/host-lifecycle.txt",
+      "bytes": 6065,
+      "sha256": "8193dc6110e7b583830448e0f35f2576c7e9229399ba295c704a6978348261a8",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "ui-instrumentation.txt",
+      "artifact_member": "voice-android/ui-instrumentation.txt",
+      "bytes": 282,
+      "sha256": "954c7c7f739375620c33b4ed5230d32e22f1f96830862bce330b6dc6b18a1d68",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "instrumentation.txt",
+      "artifact_member": "voice-android/instrumentation.txt",
+      "bytes": 2079,
+      "sha256": "566897b6e7917bbd6720c3e963e97421457bb59797f36c740b06dd2545046aaf",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "native-report.json",
+      "artifact_member": "voice-android/native-report.json",
+      "bytes": 483,
+      "sha256": "722ad0c91709ccfadc6c9d4d784146741e4391c5178e87b1de30eccd1140b583",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "combined-gates.json",
+      "artifact_member": "voice-android/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "ime-teardown.txt",
+      "artifact_member": "voice-android/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "system-keyboard.json",
+      "artifact_member": "voice-android/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "crash.txt",
+      "artifact_member": "voice-android/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "voice-recording.png",
+      "artifact_member": "voice-android/voice-recording.png",
+      "bytes": 40251,
+      "sha256": "e9e95402d7fda5fd93102ef6b100480693f2613bf3e28c68dd3325211dfe2920",
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false
+    },
+    {
+      "path": "voice-stopped.png",
+      "artifact_member": "voice-android/voice-stopped.png",
+      "bytes": 42064,
+      "sha256": "d8b3371892700ad926bc210e26b54538a5fcd270b608a891208f0aa085a969a7",
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false
+    },
+    {
+      "path": "native-keyboard-round-1.log",
+      "artifact_member": "device-smoke-evidence/40108971495-1/round-1/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "native-keyboard-round-2.log",
+      "artifact_member": "device-smoke-evidence/40108971495-1/round-2/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "native-tools-restart.png",
+      "artifact_member": "device-smoke-evidence/40108971495-1/round-2/tools.png",
+      "bytes": 40232,
+      "sha256": "5b982134874f82d0d161f7d236a212331c81957dbbba5101d748de289d54fe39",
+      "copied_original_bytes_without_edit": true,
+      "width": 320,
+      "height": 640,
+      "repainted_cropped_or_resized": false,
+      "same_bytes_as_current_device_smoke_tools": true
+    },
+    {
+      "path": "native-runtime-errors.log",
+      "artifact_member": "device-smoke-evidence/40108971495-1/round-2/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "copied_original_bytes_without_edit": true
+    },
+    {
+      "path": "retained-sequence-check.json",
+      "bytes": 1872,
+      "sha256": "2812ac2d117e7ec1af118db287adf242c781159ebbeb35591e53225ec0f66c0b",
+      "source": "derived check of exact preserved host trace"
+    },
+    {
+      "path": "workflow-job-success-lines.log",
+      "bytes": 2049,
+      "sha256": "9bd4a8e59fe80878523cac90a4ca9313d09c1fd3e1dda394066186e2cba2c89b",
+      "source": "exact selected original GitHub job lines in original order, not complete log"
+    },
+    {
+      "path": "workflow-jobs.json",
+      "bytes": 402,
+      "sha256": "dc81e71e363556cf6619e0ff9f72a1ce269dd9b4d7cfe13cfdaf9fe11ea9fb30",
+      "source": "GitHub workflow job metadata snapshot"
+    }
+  ]
+}

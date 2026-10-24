@@ -1,0 +1,46 @@
+{
+  "command": [
+    "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+    "-m",
+    "jdk.compiler/com.sun.tools.javac.Main",
+    "-source",
+    "8",
+    "-target",
+    "8",
+    "-encoding",
+    "UTF-8",
+    "-classpath",
+    "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+    "-d",
+    "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix/target/voice-touch-test-compile/classes",
+    "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix/platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+    "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix/platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\n1 warning\n",
+  "seconds": 1.3205004279952846,
+  "source_sha_before": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "5d1577086111a50e29079b5a7124f82b9f25177f8d4ad817ef2f44edc8e5170b"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "2af3e2134c9fe8cda429f719852b33d7548edc7867a3e858ee33c32bd8e5ea71"
+    }
+  ],
+  "source_sha_after": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "5d1577086111a50e29079b5a7124f82b9f25177f8d4ad817ef2f44edc8e5170b"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "2af3e2134c9fe8cda429f719852b33d7548edc7867a3e858ee33c32bd8e5ea71"
+    }
+  ],
+  "unchanged_during_compile": true,
+  "class_files": 11,
+  "scope": "Test-only public Insets-animation observer and single physical voice-entry touch; Java compilation only, no APK or device assertion."
+}

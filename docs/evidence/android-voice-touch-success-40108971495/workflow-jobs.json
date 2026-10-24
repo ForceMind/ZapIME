@@ -1,0 +1,20 @@
+[
+  {
+    "id": 120916485829,
+    "name": "Android development APK",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  {
+    "id": 120918560859,
+    "name": "Android API 35 native acceptance",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  {
+    "id": 120918560872,
+    "name": "Android API 36 native acceptance",
+    "status": "completed",
+    "conclusion": "success"
+  }
+]

@@ -1,0 +1,33 @@
+SERVICE org.zapime.android/.ZapInputMethodService 270fe75 pid=5488 user=0
+  Client:
+    Input method service state for org.zapime.android.ZapInputMethodService@d264189:
+      mViewsCreated=true
+      mDecorViewVisible=true mDecorViewWasVisible=true mWindowVisible=true mInShowWindow=false
+      Configuration={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h640dp 160dpi nrml long port finger qwerty/v/v -nav/h winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mMaxBounds=Rect(0, 0 - 320, 640) mDisplayRotation=ROTATION_0 mWindowingMode=fullscreen mActivityType=undefined mAlwaysOnTop=undefined mRotation=ROTATION_0} as.2 s.20 fontWeightAdjustment=0}
+      mToken=android.os.BinderProxy@a84743
+      mInputBinding=InputBinding{android.os.BinderProxy@8de4d7d / uid 10210 / pid 5514}
+      mInputConnection=RemoteInputConnection{idHash=#df14472}
+      mStartedInputConnection=RemoteInputConnection{idHash=#4c110c3}
+      mInputStarted=true mInputViewStarted=true mCandidatesViewStarted=false
+      mInputEditorInfo:
+        inputType=0x1 imeOptions=0x8000005 privateImeOptions=null
+        actionLabel=null actionId=0
+        initialSelStart=16 initialSelEnd=16 initialToolType=0 initialCapsMode=0x1000
+        hintText=试着输入一句问候 label=null
+        packageName=org.zapime.android.test autofillId=1073741824 fieldId=-1 fieldName=null
+        hintLocales=null
+        supportedHandwritingGestureTypes=SELECT|SELECT_RANGE|INSERT|DELETE|DELETE_RANGE|REMOVE_SPACE|JOIN_OR_SPLIT
+        supportedHandwritingGesturePreviewTypes=SELECT|SELECT_RANGE|DELETE|DELETE_RANGE
+        isStylusHandwritingEnabled=false
+        contentMimeTypes=null
+      mShowInputRequested=true mLastShowInputRequested=true mShowInputFlags=0x1
+      mCandidatesVisibility=4 mFullscreenApplied=true mIsFullscreen=false mExtractViewHidden=false
+      mExtractedText: null
+      mExtractedToken=0
+      mIsInputViewShown=true mStatusIcon=0
+      Last computed insets:
+        contentTopInsets=0 visibleTopInsets=0 touchableInsets=2 touchableRegion=SkRegion()
+      mSettingsObserver=SettingsObserver{mShowImeWithHardKeyboard=2}
+      mNavigationBarController={mImeDrawsImeNavBar=false mNavigationBarFrame=null mShouldShowImeSwitcherWhenImeIsShown=true mAppearance=0x0 mDarkIntensity=0.0 mDrawLegacyNavigationBarBackground=false}
+    ZapIME lifecycle: starts=3 restarts=1 decision=no_bounded_composition pendingMarkerLoss=false heldReplies=0
+    ZapIME panel events (uptime-ms:fixed-code): [263929:input_new, 264748:input_new, 264749:view_letters, 265707:input_restart, 266074:tools_open]
