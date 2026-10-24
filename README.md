@@ -6,9 +6,9 @@
 
 ## 当前状态
 
-开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；Android 双架构开发包已构建，API 28 基础原生输入已在模拟器验证。已增加共享 SQLite 个人数据、持久上传准备层、认证加密恢复模块，以及 Android 离线管理、候选置顶和明文备份入口。其余三端仍在原生验收中；独立 Go/PostgreSQL 密文服务已通过实际数据库、容器与空库恢复测试，四端云同步、配对及完整恢复体验尚未完成。完整证据见[项目状态](docs/STATUS.md)。
+开发中，尚未发布完整产品。已固定 MSIME 共享源码，新增离线 Rust 会话适配与独立 Android 原生键盘；Android 双架构开发包已构建，API28/35/36 模拟器两轮输入、独立离线语音与真实服务退出已通过；同编辑器组字重启回归已接入，交接期间快速输入及真机仍需验证。已增加共享 SQLite 个人数据、持久上传准备层、认证加密恢复模块，以及 Android 离线管理、候选置顶和明文备份入口。其余三端仍在原生验收中；独立 Go/PostgreSQL 密文服务已通过实际数据库、容器与空库恢复测试，四端云同步、配对及完整恢复体验尚未完成。完整证据见[项目状态](docs/STATUS.md)。
 
-macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建/桥接证据；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主也已加入源码与原生 CI，验证边界见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
+macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建/桥接证据；构建方式和验证边界见 [Apple 开发宿主](docs/APPLE_NATIVE.md)。Windows 最小 TSF 宿主已有源码及 DLL/COM/词库基线通过；独立进程系统 profile 验收仍失败，见 [Windows 开发宿主](docs/WINDOWS_NATIVE.md) 和[本轮系统验收](docs/WINDOWS_ACCEPTANCE_REPORT.md)。仓库按用户授权保持公开，签名与用户私密资料不进入源码。
 
 Android 已有九键/全键、明暗配色、遵循系统的按键反馈、连续退格、常用表情和显式光标/剪贴板编辑。原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。开发版已接入离线语音模型导入、录音预览/停止/重录及确认插入，API28/35/36模拟器完整门禁与录音尾块竞态回归已通过；范围、安装与真实原始证据见 [九键与本地语音](docs/VOICE_INPUT.md)。自然语音、ARM/三星、现代系统后台权限及另外三端仍需验收。
 
