@@ -1,0 +1,73 @@
+Source: Actions40042896277 job120717835154; head3597ecfb3d23a4f0c84b8214cf6143f9e76603e5. Exact selected job lines; full logs remain in Actions. Captured 2026-10-24T00:07:57.272Z. Overall FAILURE; COM resolution success alone is not profile activation or typing acceptance.
+
+2026-10-24T00:04:59.4913269Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-24T00:05:01.3698955Z PASS actual language-fixture refusal in self-hosted environment before language settings access
+2026-10-24T00:05:03.6864336Z language_fixture original_count=1 chinese_present=0
+2026-10-24T00:05:03.6869084Z language_fixture chinese_user_language_present=1; no language-pack installation
+2026-10-24T00:05:03.6869813Z profile_probe com_security token_known=1 token_status=0 elevated=1 enable_lua_status=0 enable_lua=1
+2026-10-24T00:05:03.6870552Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-24T00:05:03.6871066Z profile_probe com_init hr=0x0
+2026-10-24T00:05:03.6871364Z profile_probe profiles hr=0x0
+2026-10-24T00:05:03.6871642Z profile_probe category_manager hr=0x0
+2026-10-24T00:05:03.6871979Z profile_probe category_before hr=0x0
+2026-10-24T00:05:03.6872284Z profile_probe local_appdata hr=0x0
+2026-10-24T00:05:03.6872680Z profile_probe owned_window_keyboard_focus=PASS; no injected input
+2026-10-24T00:05:03.6873109Z profile_probe thread_manager hr=0x0
+2026-10-24T00:05:03.6873407Z profile_probe thread_activate hr=0x0
+2026-10-24T00:05:03.6873709Z profile_probe query_previous hr=0x0
+2026-10-24T00:05:03.6874078Z profile_probe chinese_runtime_layout_ready=PASS newly_loaded=0
+2026-10-24T00:05:03.6874422Z profile_probe register hr=0x0
+2026-10-24T00:05:03.6874689Z profile_probe registered_com_resolution hr=0x0
+2026-10-24T00:05:03.6875163Z profile_probe com_security token_known=1 token_status=0 elevated=1 enable_lua_status=0 enable_lua=1
+2026-10-24T00:05:03.6875765Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-24T00:05:03.6876186Z profile_probe child_com_init hr=0x0
+2026-10-24T00:05:03.6876464Z profile_probe child_runtime_thread_manager hr=0x0
+2026-10-24T00:05:03.6876794Z profile_probe child_runtime_thread_activate hr=0x0
+2026-10-24T00:05:03.6877118Z profile_probe child_runtime_languages hr=0x0
+2026-10-24T00:05:03.6877439Z profile_probe child_runtime_original_language hr=0x0
+2026-10-24T00:05:03.6877789Z profile_probe child_runtime_change_language hr=0x80004005
+2026-10-24T00:05:03.6878138Z profile_probe child_mode_prepared=1 runtime_ready=0
+2026-10-24T00:05:03.6878427Z profile_probe child_profiles hr=0x0
+2026-10-24T00:05:03.6878675Z profile_probe child_categories hr=0x0
+2026-10-24T00:05:03.6878971Z profile_probe registry child_hkcu_com status=0 present=1
+2026-10-24T00:05:03.6879319Z profile_probe registry child_hklm_com status=2 present=0
+2026-10-24T00:05:03.6879658Z profile_probe registry child_hkcu_tip status=2 present=0
+2026-10-24T00:05:03.6879994Z profile_probe registry child_hklm_tip status=0 present=1
+2026-10-24T00:05:03.6880371Z profile_probe registry child_hkcu_language_profile status=2 present=0
+2026-10-24T00:05:03.6880811Z profile_probe registry child_hklm_language_profile status=0 present=1
+2026-10-24T00:05:03.6881207Z profile_probe registry child_merged_com status=0 present=1
+2026-10-24T00:05:03.6881527Z profile_probe child_legacy_profiles hr=0x0
+2026-10-24T00:05:03.6881801Z profile_probe child_current_language hr=0x0
+2026-10-24T00:05:03.6883884Z profile_probe child_current_language_id=0x409
+2026-10-24T00:05:03.6884275Z profile_probe child_legacy_description hr=0x0
+2026-10-24T00:05:03.6884577Z profile_probe child_description_nonempty=1
+2026-10-24T00:05:03.6884852Z profile_probe child_legacy_enabled hr=0x0
+2026-10-24T00:05:03.6885126Z profile_probe child_legacy_enabled_value=1
+2026-10-24T00:05:03.6885387Z profile_probe child_language_list hr=0x0
+2026-10-24T00:05:03.6885738Z profile_probe child_language_count=1 bounded=1 target_language_present=0
+2026-10-24T00:05:03.6886135Z profile_probe child_query_registered hr=0x80004005
+2026-10-24T00:05:03.6886453Z profile_probe child_keyboard_category hr=0x0
+2026-10-24T00:05:03.6886727Z profile_probe child_keyboard_member=1
+2026-10-24T00:05:03.6887008Z profile_probe child_runtime_restore_language hr=0x0
+2026-10-24T00:05:03.6887342Z profile_probe child_runtime_thread_deactivate hr=0x0
+2026-10-24T00:05:03.6888198Z profile_probe child_runtime_cleanup=PASS
+2026-10-24T00:05:03.6888475Z profile_probe child_query_result=FAIL
+2026-10-24T00:05:03.6888728Z profile_probe child_started=1 error=0
+2026-10-24T00:05:03.6888979Z profile_probe child_finished=1 exit=1
+2026-10-24T00:05:03.6889252Z profile_probe fresh_managers_after_register hr=0x0
+2026-10-24T00:05:03.6889542Z profile_probe query_registered hr=0x0
+2026-10-24T00:05:03.6889791Z profile_probe restore_previous hr=0x0
+2026-10-24T00:05:03.6890049Z profile_probe thread_deactivate hr=0x0
+2026-10-24T00:05:03.6890321Z profile_probe unregister hr=0x0
+2026-10-24T00:05:03.6890612Z profile_probe fresh_managers_after_unregister hr=0x0
+2026-10-24T00:05:03.6890948Z profile_probe query_after_unregister hr=0x80004005
+2026-10-24T00:05:03.6891301Z profile_probe query_category_after_unregister hr=0x0
+2026-10-24T00:05:03.6891613Z profile_probe owned_window_cleanup=PASS
+2026-10-24T00:05:03.6891879Z profile_probe cleanup=PASS
+2026-10-24T00:05:03.6893286Z FAIL profile_probe fresh_process_profile_and_category_visible
+2026-10-24T00:05:03.6893650Z profile_probe_failed_after_fixture_restore exit=1
+2026-10-24T00:05:03.6894086Z At D:\a\ZapIME\ZapIME\scripts\windows_profile_language_fixture.ps1:59 char:25
+2026-10-24T00:05:03.6894581Z + ... de -ne 0) { throw ("profile_probe_failed_after_fixture_restore exit={ ...
+2026-10-24T00:05:03.6895493Z     + CategoryInfo          : OperationStopped: (profile_probe_f..._restore exit=1:String) [], RuntimeException
+2026-10-24T00:05:03.6896097Z     + FullyQualifiedErrorId : profile_probe_failed_after_fixture_restore exit=1
+2026-10-24T00:05:03.7992598Z ##[error]Process completed with exit code 1.

@@ -1,0 +1,19 @@
+# Exact selected job120693187472 lines, runtimeb42aaa612684b0d071ffaff8c0a45ccf7b9aa908, run40035305480. Not a downloaded artifact.
+2026-10-23T22:45:00.5481430Z   CACHE_ON_FAILURE: true
+2026-10-23T22:46:36.6252447Z   ProfileProbe.cpp
+2026-10-23T22:46:38.0182582Z   (compiling source file '../../platforms/windows/tests/ProfileProbe.cpp')
+2026-10-23T22:46:38.0185097Z           D:\a\ZapIME\ZapIME\platforms\windows\tests\ProfileProbe.cpp(19,130):
+2026-10-23T22:46:38.0198909Z               D:\a\ZapIME\ZapIME\platforms\windows\tests\ProfileProbe.cpp(19,103):
+2026-10-23T22:46:45.6619588Z   CACHE_ON_FAILURE: true
+2026-10-23T22:46:46.0186293Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-23T22:46:46.0503702Z profile_probe com_init hr=0x0
+2026-10-23T22:46:46.0504048Z profile_probe profiles hr=0x0
+2026-10-23T22:46:46.0504348Z profile_probe local_appdata hr=0x0
+2026-10-23T22:46:46.0504950Z profile_probe register hr=0x0
+2026-10-23T22:46:46.0505205Z profile_probe query_registered hr=0x0
+2026-10-23T22:46:46.0506078Z profile_probe queried type=1 lang=0x804 flags=0x2 clsid={D72EF286-C9D0-4AAE-B13A-18E84F59B765} profile={042DCDBD-B1DC-4A0D-931C-567221A172E8} category={00000000-0000-0000-0000-000000000000}
+2026-10-23T22:46:46.0506850Z profile_probe unregister hr=0x0
+2026-10-23T22:46:46.0507139Z profile_probe query_after_unregister hr=0x80004005
+2026-10-23T22:46:46.0507446Z profile_probe cleanup=PASS
+2026-10-23T22:46:46.0507715Z FAIL profile_probe registered_keyboard_category
+2026-10-23T22:46:46.1912591Z   CACHE_ON_FAILURE: true
