@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import java.lang.reflect.*;
 import java.util.concurrent.ExecutorService;
+import org.json.JSONObject;
 
 /** Same-UID synthetic service-method probe, separate from real system IME/Editable tests. */
 final class LearningHostProbe {
@@ -95,6 +96,28 @@ final class LearningHostProbe {
                         && call(session, "takeReady", new Class<?>[]{long.class}, Long.MAX_VALUE) == null,
                         "external selection did not clear sentence");
 
+                Class<?>[] coreCommitSignature = {InputConnection.class, JSONObject.class, ticketType};
+                for (Object source : new Object[]{"engine", "saved_data", "none", "future-source", JSONObject.NULL, 17, null}) {
+                    call(session, "beginEditor", new Class<?>[]{boolean.class}, true);
+                    ticket = call(session, "capture", none);
+                    call(service, "trackCommit", commitSignature, editor, "前半", ticket);
+                    JSONObject reply = new JSONObject().put("commit", "核心合成。");
+                    if (source != null) reply.put("commit_source", source);
+                    int previousLength = acceptedText.length();
+                    call(service, "trackCoreCommit", coreCommitSignature, editor, reply, ticket);
+                    check(acceptedText.substring(previousLength).equals("核心合成。"),
+                            "provenance filter changed the editor commit");
+                    request = call(session, "takeReady", new Class<?>[]{long.class}, Long.MAX_VALUE);
+                    if ("engine".equals(source)) {
+                        check(request != null && "前半核心合成。".equals(call(request, "source", none)),
+                                "explicit engine commit not assembled");
+                        call(session, "complete", new Class<?>[]{request.getClass(), String.class}, request, null);
+                    } else {
+                        check(request == null && call(session, "capture", none) != ticket,
+                                "saved/missing/unknown provenance entered learning");
+                    }
+                }
+
                 Class<?> policy = Class.forName("org.zapime.android.EnglishLearningEligibility", true, loader);
                 Method allows = policy.getDeclaredMethod("allows", EditorInfo.class, boolean.class); allows.setAccessible(true);
                 EditorInfo info = new EditorInfo(); info.inputType = InputType.TYPE_CLASS_TEXT;
@@ -117,6 +140,19 @@ final class LearningHostProbe {
                 check(!(Boolean)allows.invoke(null, info, false), "declared search eligible");
                 info.imeOptions = EditorInfo.IME_ACTION_SEND | EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
                 check(!(Boolean)allows.invoke(null, info, false), "no-learning field eligible");
+                // Panel preservation must never inherit a different editor's UI.
+                info.packageName="synthetic.package";info.fieldId=41;
+                info.inputType=InputType.TYPE_CLASS_TEXT;info.imeOptions=EditorInfo.IME_ACTION_SEND;
+                set(service,"editorPackage",info.packageName);set(service,"editorField",info.fieldId);
+                set(service,"editorType",info.inputType);set(service,"editorOptions",info.imeOptions);
+                set(service,"layer","tools");set(service,"preedit","");
+                check((Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"same editor tools not eligible");
+                info.fieldId++;
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"different field kept tools");
+                info.fieldId--;set(service,"preedit","ni");
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"composition kept tools");
+                set(service,"preedit","");set(service,"privateSession",true);
+                check(!(Boolean)call(service,"canKeepTools",new Class<?>[]{EditorInfo.class},info),"private editor kept tools");
             } catch (Throwable error) { failure[0] = error; }
             finally {
                 // This fixture was never attached/activated as a system Service.

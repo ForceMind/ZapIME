@@ -50,6 +50,8 @@ public final class ZapInputMethodService extends InputMethodService {
     private int replyUnits;
     private String restartDecision="none";
     private int inputStarts,inputRestarts;
+    private final java.util.ArrayDeque<String> panelEvents=new java.util.ArrayDeque<>();
+    private void notePanel(String code){if(panelEvents.size()==16)panelEvents.removeFirst();panelEvents.addLast(android.os.SystemClock.uptimeMillis()+":"+code);}
     private VoiceCapture voice;
     private int voiceTicket,selectionVersion,voiceSelection,selectionStart=-1,selectionEnd=-1;
     private InputConnection voiceTarget;
@@ -61,6 +63,8 @@ public final class ZapInputMethodService extends InputMethodService {
     private int dp(int n) { return (int)(n * getResources().getDisplayMetrics().density); }
 
     @Override public View onCreateInputView() {
+        final boolean keepTools=canKeepTools(getCurrentInputEditorInfo());
+        notePanel(keepTools?"view_keep_tools":"view_letters");
         learning.suspend();cancelVoice(false);touches.cancel();theme=KeyboardTheme.load(this);
         getWindow().getWindow().setNavigationBarColor(theme.deck);
         View decor=getWindow().getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(theme.dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
@@ -68,7 +72,7 @@ public final class ZapInputMethodService extends InputMethodService {
         status=Ui.text(this,"",12,theme.muted);status.setGravity(Gravity.CENTER_VERTICAL);status.setPadding(dp(12),0,0,0);panel.addView(status,new LinearLayout.LayoutParams(-1,dp(22)));
         HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setFillViewport(true);scroll.setHorizontalScrollBarEnabled(false);scroll.setBackgroundColor(theme.toolbar);candidates=new LinearLayout(this);candidates.setGravity(Gravity.CENTER_VERTICAL);scroll.addView(candidates,new android.widget.FrameLayout.LayoutParams(-1,-1));panel.addView(scroll,new LinearLayout.LayoutParams(-1,dp(46)));
         nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false);
-        body=Ui.column(this);body.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);panel.addView(body);layer="letters";renderKeys();refreshStatus();idleToolbar();return panel;
+        body=Ui.column(this);body.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);panel.addView(body);layer=keepTools?"tools":"letters";renderKeys();refreshStatus();idleToolbar();return panel;
     }
     private void refreshTheme() {
         if(body!=null&&theme.dark!=KeyboardTheme.load(this).dark){setInputView(onCreateInputView());try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}}
@@ -113,6 +117,7 @@ public final class ZapInputMethodService extends InputMethodService {
     @Override public void dump(java.io.FileDescriptor fd,java.io.PrintWriter writer,String[] args){
         super.dump(fd,writer,args);
         writer.println("ZapIME lifecycle: starts="+inputStarts+" restarts="+inputRestarts+" decision="+restartDecision+" pendingMarkerLoss="+(pendingMarkerLoss!=null)+" heldReplies="+inputReplies.size());
+        writer.println("ZapIME panel events (uptime-ms:fixed-code): "+panelEvents);
         // Counts/reason codes only. No input, context, package, key or token.
     }
     private void bind(Button button,Runnable action,boolean repeat){touches.bind(button,action,repeat,()->getCurrentInputConnection()!=null);}
@@ -168,7 +173,7 @@ public final class ZapInputMethodService extends InputMethodService {
             String[] labels={"个人资料","离线语音","符号","输入设置"};String[] icons={"book","mic","keys","settings"};
             for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,labels[i],theme.key,false);b.setTextColor(theme.ink);b.setTextSize(13);b.setPadding(0,dp(16),0,dp(10));b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],theme.accent),null,null);b.setCompoundDrawablePadding(dp(10));LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(0,dp(88),1);p.setMargins(dp(4),0,dp(4),0);tiles.addView(b,p);bind(b,()->{if(index==0)open(PersonalDataActivity.class);if(index==1)startVoice();if(index==2){layer="symbols";renderKeys();}if(index==3)open(KeyboardSettingsActivity.class);},false);}
             body.addView(tiles);TextView note=Ui.text(this,"资料保存在本机 · 长按候选可置顶",12,theme.muted);note.setGravity(Gravity.CENTER);body.addView(note,new LinearLayout.LayoutParams(-1,dp(46)));
-            Button back=Ui.button(this,"返回键盘",theme.special,false);back.setTextColor(theme.ink);back.setContentDescription("返回键盘");back.setOnClickListener(v->{layer="letters";renderKeys();});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(44));p.setMargins(dp(12),dp(8),dp(12),dp(8));body.addView(back,p);return;
+            Button back=Ui.button(this,"返回键盘",theme.special,false);back.setTextColor(theme.ink);back.setContentDescription("返回键盘");back.setOnClickListener(v->{notePanel("tools_return");layer="letters";renderKeys();});LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,dp(44));p.setMargins(dp(12),dp(8),dp(12),dp(8));body.addView(back,p);return;
         }
         if(layer.equals("emoji")){addRow("😀 😂 😊 😍 🥰 😎",2);addRow("👍 👏 🙏 💪 ❤️ 🎉",2);addRow("😭 😅 🤔 🙃 ✨ ✅",2);addRow("返回 ， 。 空格 ⌫ ↵",2);return;}
         if(layer.equals("edit")){addRow("← ↑ ↓ →",4);addRow("全选 复制 剪切 粘贴",4);addRow("， 。 ⌫ ↵",4);addRow("返回 空格",4);return;}
@@ -183,17 +188,18 @@ public final class ZapInputMethodService extends InputMethodService {
         if(layer.equals("voice")){TextView hint=Ui.text(this,"离线语音 · 确认后插入",14,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button hide=Ui.button(this,"",theme.toolbar,false);hide.setContentDescription("收起语音键盘");hide.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,"hide",theme.ink),null,null);candidates.addView(hide,new LinearLayout.LayoutParams(dp(52),dp(46)));bind(hide,()->{cancelVoice(true);requestHideSelf(0);},false);return;}
         if(searchActive){TextView hint=Ui.text(this,searchChinese?"中文搜索 · 仅本机":"English 搜索 · 仅本机",13,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button clear=Ui.button(this,"清空搜索",theme.toolbar,false);clear.setTextColor(theme.ink);clear.setTextSize(14);clear.setContentDescription("清空搜索");candidates.addView(clear,new LinearLayout.LayoutParams(dp(90),dp(46)));bind(clear,()->clearDataSearch(),false);return;}
         String[] labels={"工具","表情",nineKey?"切换全键":"切换九键","光标编辑","本机资料面板","收起键盘"};String[] icons={"bolt","emoji","keys","cursor","clipboard","hide"};
-        for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){learning.invalidate();layer=layer.equals("tools")?"letters":"tools";renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){learning.invalidate();layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
+        for(int i=0;i<labels.length;i++){final int index=i;Button b=Ui.button(this,"",theme.toolbar,false);b.setContentDescription(labels[i]);b.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,icons[i],i==0?theme.accent:theme.ink),null,null);candidates.addView(b,new LinearLayout.LayoutParams(0,dp(46),1));bind(b,()->{if(index==0){learning.invalidate();layer=layer.equals("tools")?"letters":"tools";notePanel(layer.equals("tools")?"tools_open":"tools_toggle_close");renderKeys();}if(index==1){layer="emoji";renderKeys();}if(index==2)switchKeyboard();if(index==3){learning.invalidate();layer="edit";renderKeys();}if(index==4)openDataPanel();if(index==5)requestHideSelf(0);},false);}
     }
     private void switchKeyboard(){if(sensitive||!ready)return;command("CommitRaw",null);nineKey=!nineKey;getSharedPreferences("keyboard",MODE_PRIVATE).edit().putBoolean("nine_key",nineKey).apply();chinese=true;shift=false;layer="letters";syncLayout();renderKeys();idleToolbar();}
     private void syncLayout(){try{send(new JSONObject().put("op","layout").put("name",chinese&&nineKey&&!searchActive?"nine_key":"qwerty"),null);}catch(JSONException ignored){}}
     private boolean rejectRestart(String reason){restartDecision=reason;return false;}
+    private boolean sameEditor(EditorInfo info){return info!=null&&editorPackage!=null&&editorPackage.equals(info.packageName)&&editorField==info.fieldId&&editorType==info.inputType&&editorOptions==info.imeOptions;}
+    private boolean canKeepTools(EditorInfo info){return layer.equals("tools")&&preedit.isEmpty()&&!privateSession&&!searchActive&&!searchClosing&&sameEditor(info);}
     private boolean retainRestartedComposition(EditorInfo info) {
         if(android.os.Build.VERSION.SDK_INT<30)return rejectRestart("api_before_30");
         if(!ready||!chinese||privateSession||searchActive||searchClosing)return rejectRestart("inactive_or_private");
         if(preedit.isEmpty()||preedit.length()>128)return rejectRestart("no_bounded_composition");
-        if(info==null||editorPackage==null||!editorPackage.equals(info.packageName)||editorField!=info.fieldId
-                ||editorType!=info.inputType||editorOptions!=info.imeOptions)return rejectRestart("editor_changed");
+        if(!sameEditor(info))return rejectRestart("editor_changed");
         if(!selectionEcho.matchesRestartComposition(info.initialSelStart,info.initialSelEnd,preedit.length()))return rejectRestart("selection_not_owned");
         // EditorInfo carries this bounded snapshot; never query the remote App
         // for context on the input/UI thread.
@@ -211,6 +217,9 @@ public final class ZapInputMethodService extends InputMethodService {
         static boolean matches(EditorInfo info,String text){CharSequence before=info.getInitialTextBeforeCursor(text.length(),0);return before!=null&&text.contentEquals(before);}
     }
     @Override public void onStartInput(EditorInfo info, boolean restarting) {
+        final boolean keepTools=restarting&&canKeepTools(info);
+        notePanel(restarting?"input_restart":"input_new");
+        if(keepTools)notePanel("restart_keep_tools");
         learning.beginEditor(false); // Before the retained-composition early return, on EVERY restart.
         cancelMarkerLoss();++inputStarts;if(restarting)++inputRestarts;else restartDecision="new_editor";
         cancelVoice(false);super.onStartInput(info,restarting);touches.cancel();
@@ -224,7 +233,7 @@ public final class ZapInputMethodService extends InputMethodService {
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
         privateSession = sensitive || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
-        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer="letters";readingChoices=new JSONArray();renderKeys();
+        chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer=keepTools?"tools":"letters";readingChoices=new JSONArray();renderKeys();
         final boolean privateMode = privateSession;
         final boolean useNine=chinese&&nineKey;
         refreshStatus();idleToolbar();
@@ -287,7 +296,7 @@ public final class ZapInputMethodService extends InputMethodService {
         connection.beginBatchEdit();
         try {
         boolean wroteText=!value.isNull("commit");
-        if(wroteText)trackCommit(connection,value.optString("commit"),learningTicket);
+        if(wroteText)trackCoreCommit(connection,value,learningTicket);
         if(!value.optBoolean("handled") && fallback!=null) {
             if(fallback.equals("⌫")) delete(connection);
             else if(fallback.equals("↵"))enter(connection);
@@ -308,6 +317,13 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private EnglishLearningSession.Ticket captureLearning(){
         return !privateSession&&!searchActive&&(layer.equals("letters")||layer.equals("symbols")||layer.equals("numbers")||layer.equals("emoji"))?learning.capture():null;
+    }
+    private void trackCoreCommit(InputConnection connection,JSONObject result,EnglishLearningSession.Ticket ticket){
+        // Only a current core reply with explicit engine provenance is eligible.
+        // Personal candidate extensions share select/CommitCandidate operations,
+        // so the request name alone cannot distinguish saved text from typing.
+        Object source=result.opt("commit_source");
+        trackCommit(connection,result.optString("commit"),source instanceof String&&source.equals("engine")?ticket:null);
     }
     private void trackCommit(InputConnection connection,String text,EnglishLearningSession.Ticket ticket){
         boolean accepted=false;

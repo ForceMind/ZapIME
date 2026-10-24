@@ -1,8 +1,8 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-24 22:28:37 +0800；第 50 次记录汇报；距第 49 次记录约 4.3 分钟。次数按仓库状态记录累计。
+更新时间：2026-10-24 23:15:54 +0800；第 53 次记录汇报；距独立研究PR #49第 52 次记录约 24.5 分钟。次数按仓库各提交记录累计；第52次在#49分支。
 
-本轮基线main b85e328；Android宿主接缝源b9afa679f98164be7370b6402963456c59c66a26已保存PR #46，仍待新CI。此叠加候选仅补开发探针、19句对照与许可/原始证据；当前模型仍不通过教学质量判断，不进入APK。
+main已合并#46 93d5ea4及#47 f0464b2，二者实际head五条CI全部success。#48源6a1ea9e的API28/35通过，API36在启动工具面板等待返回按钮失败；该整体FAIL保留，源码与现场还不足唯一确定时序根因。本候选追加空编辑器同字段tools保留、显式restart/NPL反例及有界诊断，新设备CI尚待。
 
 ## 仓库与提交
 
@@ -422,3 +422,22 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - “堵车”和“改天再约”局部改善；“没听清楚”仍错为没在听，“不是不想去”在规范化后反转否定意图，beam6仍未修复。“先这样吧”也可能添加不耐烦语气。无准确率评分，不接受为默认英语学习模型。规范化还会拆ZWJ表情；不是产品文本处理决定。
 - 新Linux Python推理进程暖文件缓存、单次观测RSS约169–176MiB（包含导入/模型/19句，不含Perl子进程），整进程约2.05–2.94秒；没有手机/iOS扩展、冷启动统计、耗电或按键竞争验收。受限仅特定socket系统调用EPERM，不是通用网络沙箱。
 - 本切片不改Android/Rust/服务/工作流，接续#43比较许可清楚的其它可运行候选、扩大否定/时态/语用检查，再决定实际客户端推理。PR #46的宿主接缝门禁仍独立等待；完整翻译UI/续词联想/收藏与原P0交付缺口继续保留。
+
+## 第51次：普通候选与个人扩展的来源隔离（候选）
+
+- 检查发现select/CommitCandidate还可能展开个人词库/短语/新增规则，仅靠请求名不能满足资料排除。共享核心新增请求内CommitSource，JSON非空提交标engine或saved_data，无/空提交标none；错误及非输入查询原形状不改。原正文/候选映射/顺序/generation及FFI ABI不变，不缓存上次来源。仅重排既有引擎行仍保留engine；个人None映射及personal_commit标saved_data，包括同文字的词库覆盖。
+- Android核心commit严格核对字符串engine后才传入捕获ticket，资料/none/未知/null/非字符串/缺字段都正常提交正文，但清空伴学。手打标点/fallback保留独立路径。target方法探针新增这些真实产品方法分支的合成断言，未声称已跑新设备门禁。
+- 本地新安装固定Rust1.97.1于ignored target；实际workspace 77项集成+1索引计划单测全部PASS。补活跃Cancel断言后core22项重新PASS；fmt、全workspace all-targets严格Clippy、两项JVM和差异检查通过；MSIME固定97d652a核验通过，Cargo.lock及子模块SHA未改。测试含个人短语/词库/规则、同文字覆盖、select+空格选词、错误/取消/view来源不残留和随后正常引擎恢复。
+- PR #46 b9afa679的Android40102484046 attempt1：API35 job120898387509、API36 job120898387494完整success，含两轮独立Editable系统IME、合成Service接受/拒绝/隐私方法、语音/Keystore及真实退出/fatal拒绝。API28 job120897298716双架构与测试APK编译通过，但SDK Emulator ZIP unknown archive，未启动模拟器，不计设备输入成功；精确失败摘录保留。两现代作业完成后已仅重跑失败job（attempt2 job120900036137），结果仍待真实完成，不挑一次绿掩盖失败。
+- 同b9afa679通用40102484183、服务40102483979、Windows基线40102484029、语音CPU40102483966全success。Windows仍不等于#40/#41系统profile实际输入通过；新来源契约不能借这些旧运行代替编译/设备结果。
+- 翻译仍默认关闭、无模型/worker/英语条/启用UI。#43、新候选模型质量、续词联想/收藏及全部原P0/真机/签名/用户服务器部署边界继续保留；不以本切片宣称英语伴学已可用或M4–M6完成。
+
+## 第53次：保留启动失败与空编辑器工具面板修复候选（#50）
+
+- #46已合并93d5ea4305932002456d2ad89c83c5184887dbd4，实际b9afa679五条CI全success。Android40102484046原API28 SDK ZIP失败保留，attempt2 API28 job120900036137、API35 job120901944857、API36 job120901944889完整success。#47已合并f0464b20fa566c44b26c11f5b2aa4f732ab62266，e50e4e7五条CI全部success；只研究脚本/证据，不称翻译已接产品。
+- #48源6a1ea9e的40103726412 API28 job120900976169与API35 job120902675022通过，API36 job120902675009整体FAIL。新来源方法/语音通过不抵消launch Missing UI node 返回键盘。下载artifact12564147483、922563B、SHA ba98096ef6245e071570f3179f389156a8b686f2d14277ef1d096fa59c7e8dd6，根与独立审查实际检查原图/现场，关键文件与round1字节一致，已随候选保存原字节PNG/诊断/日志。
+- 现场App前台有焦点、IME可见、正文/组字空，无现场ANR/fatal；tools.png却已回普通字母，service starts3/rests1/decision=no_bounded_composition。额外重启/视图重建与现象相容，但无旧时序不能唯一排除触摸注入或无障碍旧节点，不能认定纯基础设施或提交来源已证实回归。#50独立跟踪，旧#38全部间歇问题仍不宣称解决。
+- 新纯面板保留仅相同package/field/type/options、非私密/无搜索、preedit空且已打开tools；same-editor restarting或同编辑器重建view保留tools。引擎重建、epoch及每次learning session失效照常执行。新焦点/隐私字段变化不带旧面板；组字继续走原有验证路径，本改动不扩大组字保留条件。
+- 独立App新增真实restartInput后观察新served连接命令，再要求tools在500ms窗口持续可见且无字母键；改NO_PERSONALIZED_LEARNING须关闭tools且独立Editable仍空，恢复后继续旧完整门禁。产品只加16条uptime毫秒计数+固定原因码，test driver64条固定触摸尝试/返回，不含正文/身份/密钥；失败现场仍在Instrumentation.finish前采集。
+- 本地使用Google官方API36 r2 ZIP（官方SHA1及观察SHA256核实）只提取android.jar；JDK17 source8/target8编译产品24源42class、测试2源8class、voice/learning测试2源4class全部exit0。之后新增稳定窗口测试，测试组已单独再编译exit0；其余当前源SHA仍匹配原成功编译记录。只有bootstrap/deprecation警告，不称APK/JNI/设备通过。新完整CI须实跑，不无改动重跑挑绿。
+- #49已保存4f0df7c的Qwen固定配置研究（第52次记录在其分支）；本工具修复不接翻译模型/worker/英语条/启用开关，当前仍默认不捕获。另独立2021 OPUS研究已完成待审查保存，全部原P0/四端同步/真实设备/签名/用户服务器部署未完成边界继续保留。

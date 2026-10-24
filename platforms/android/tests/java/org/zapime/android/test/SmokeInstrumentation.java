@@ -19,6 +19,8 @@ public final class SmokeInstrumentation extends Instrumentation {
     private String stage="launch";
     private boolean voiceOnly;
     private boolean ciDiagnostics;
+    private final java.util.ArrayDeque<String> driverEvents=new java.util.ArrayDeque<>();
+    private void noteDriver(String code){if(driverEvents.size()==64)driverEvents.removeFirst();driverEvents.addLast(SystemClock.uptimeMillis()+":"+code);}
     @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only"));String ci=args==null?null:args.getString("zapime_ci_diagnostics");ciDiagnostics=ci!=null&&ci.matches("[0-9]+-[0-9]+");start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
@@ -47,11 +49,14 @@ public final class SmokeInstrumentation extends Instrumentation {
             AccessibilityNodeInfo node=waitFor(text,button);
             Rect bounds=new Rect();node.getBoundsInScreen(bounds);
             if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
+                String control=text.equals("工具")?"tools":text.equals("返回键盘")?"tools_return":"other";
+                noteDriver(control+"_touch_attempt");
                 long now=SystemClock.uptimeMillis();
                 MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
                 MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
                 down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
                 boolean sent=automation.injectInputEvent(down,true) && automation.injectInputEvent(up,true);down.recycle();up.recycle();
+                noteDriver(control+(sent?"_touch_sent":"_touch_rejected"));
                 if(sent) { Thread.sleep(200);return; }
             } else if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {Thread.sleep(200);return;}
             // 候选更新会替换节点；重新获取，而不是点击已经脱离窗口的节点。
@@ -199,7 +204,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         out.write(depth+" | "+node.getClassName()+" | "+node.getText()+" | "+node.getContentDescription()+" | "+node.isVisibleToUser()+" | "+bounds+"\n");
         for(int i=0;i<node.getChildCount();i++)dumpNode(node.getChild(i),out,depth+1);
     }
-    private void dumpHostLifecycle(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"host-lifecycle.txt")),"UTF-8")){out.write(ProbeActivity.lifecycle());}catch(Exception ignored){}}
+    private void dumpHostLifecycle(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"host-lifecycle.txt")),"UTF-8")){out.write(ProbeActivity.lifecycle());out.write("Driver fixed events:\n"+String.join("\n",driverEvents)+"\n");}catch(Exception ignored){}}
     private void dumpHierarchy(){try(Writer out=new OutputStreamWriter(new FileOutputStream(new File(getTargetContext().getExternalFilesDir(null),"hierarchy.txt")),"UTF-8")){for(AccessibilityWindowInfo window:automation.getWindows())dumpNode(window.getRoot(),out,0);}catch(Exception ignored){}dumpHostLifecycle();}
     private void dumpCiState(){
         if(!ciDiagnostics||automation==null)return;
@@ -213,7 +218,82 @@ public final class SmokeInstrumentation extends Instrumentation {
     private void waitListening()throws Exception{
         for(int i=0;i<900;i++){if(find("正在聆听 · 最长 60 秒")!=null)return;if(find("麦克风不可用，请检查权限或重试")!=null||find("系统已暂停麦克风，请检查权限或占用后重试")!=null||find("离线识别未完成，请检查模型或重试")!=null)throw new Exception("IME microphone or model unavailable");Thread.sleep(100);}throw new Exception("IME microphone start timeout");
     }
-    private void startDictation()throws Exception{click("工具");click("离线语音");waitListening();}
+    private static final class ImeTarget {
+        final int windowId;final Rect windowBounds,buttonBounds;
+        ImeTarget(int id,Rect window,Rect button){windowId=id;windowBounds=new Rect(window);buttonBounds=new Rect(button);}
+        boolean sameGeometry(ImeTarget other){return other!=null&&windowId==other.windowId&&windowBounds.equals(other.windowBounds)&&buttonBounds.equals(other.buttonBounds);}
+        String fixedGeometry(){return "w="+windowId+" window="+windowBounds.toShortString()+" button="+buttonBounds.toShortString();}
+    }
+    private ImeTarget imeTarget(String label){
+        for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
+            AccessibilityNodeInfo node=walk(window.getRoot(),label,true);if(node==null||!node.isVisibleToUser())continue;
+            Rect frame=new Rect(),button=new Rect();window.getBoundsInScreen(frame);node.getBoundsInScreen(button);
+            if(!frame.isEmpty()&&!button.isEmpty()&&frame.contains(button.centerX(),button.centerY()))return new ImeTarget(window.getId(),frame,button);
+        }
+        return null;
+    }
+    private boolean toolsPanelVisible(){
+        ImeTarget back=imeTarget("返回键盘"),voiceEntry=imeTarget("离线语音");
+        return back!=null&&voiceEntry!=null&&back.windowId==voiceEntry.windowId;
+    }
+    private ImeTarget stableImeTarget(String label,String fixedCode,boolean requireTools)throws Exception{
+        // Called only before the paused-editor fixture or after its finally release.
+        // Accessibility idle alone is insufficient: IME resize can move a button
+        // after its bounds were read but before injectInputEvent waits for surfaces.
+        automation.waitForIdle(200,3000);
+        long deadline=SystemClock.uptimeMillis()+8000,stableSince=-1;
+        ImeTarget previous=null;ProbeActivity previousHost=null;int previousVersion=-1;
+        String lastObservation=null;
+        while(SystemClock.uptimeMillis()<deadline){
+            final ProbeActivity[] host={null};final int[] counts={-1,-1};final boolean[] focused={false};
+            runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();host[0]=a;if(a!=null){counts[0]=a.activeImeAnimations;counts[1]=a.imeAnimationVersion;focused[0]=a.normal.hasFocus()&&a.normal.hasWindowFocus();}});
+            ImeTarget target=imeTarget(label);boolean panelReady=!requireTools||toolsPanelVisible();
+            String observation=(target==null?"absent":target.fixedGeometry())+" animations="+counts[0]+" version="+counts[1]+" focused="+focused[0]+" panel="+panelReady;
+            if(!observation.equals(lastObservation)){noteDriver(fixedCode+"_geometry "+observation);lastObservation=observation;}
+            boolean ready=host[0]!=null&&focused[0]&&counts[0]==0&&target!=null&&panelReady;
+            long now=SystemClock.uptimeMillis();
+            if(!ready||!target.sameGeometry(previous)||host[0]!=previousHost||counts[1]!=previousVersion){stableSince=ready?now:-1;}
+            else if(stableSince>=0&&now-stableSince>=300){
+                // Reacquire after the stable interval; never inject stored old bounds.
+                ImeTarget fresh=imeTarget(label);
+                if(fresh!=null&&fresh.sameGeometry(target)&&(!requireTools||toolsPanelVisible())){
+                    noteDriver(fixedCode+"_geometry_stable "+fresh.fixedGeometry());return fresh;
+                }
+                stableSince=-1;
+            }
+            previous=target;previousHost=host[0];previousVersion=counts[1];Thread.sleep(50);
+        }
+        throw new Exception("IME geometry did not settle for "+fixedCode);
+    }
+    private void touchImeOnce(ImeTarget target,String fixedCode)throws Exception{
+        noteDriver(fixedCode+"_physical_down "+target.fixedGeometry());
+        long downTime=SystemClock.uptimeMillis();boolean downSent,upSent;
+        MotionEvent down=MotionEvent.obtain(downTime,downTime,MotionEvent.ACTION_DOWN,target.buttonBounds.centerX(),target.buttonBounds.centerY(),0);
+        down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try{downSent=automation.injectInputEvent(down,true);}finally{down.recycle();}
+        Thread.sleep(50); // Real hold time, not a future timestamp on an immediate UP.
+        MotionEvent up=MotionEvent.obtain(downTime,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,target.buttonBounds.centerX(),target.buttonBounds.centerY(),0);
+        up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try{upSent=automation.injectInputEvent(up,true);}finally{up.recycle();}
+        noteDriver(fixedCode+"_physical_result down="+downSent+" up="+upSent);
+        if(!downSent||!upSent)throw new Exception("IME physical touch was not accepted for "+fixedCode);
+    }
+    private void ensureToolsOpen()throws Exception{
+        if(toolsPanelVisible()){
+            stableImeTarget("离线语音","voice_tools_already_open",true);noteDriver("voice_tools_already_open_no_toggle");return;
+        }
+        ImeTarget tools=stableImeTarget("工具","voice_tools",false);
+        // An already-open panel must not be toggled shut while layouts settle.
+        if(toolsPanelVisible()){
+            stableImeTarget("离线语音","voice_tools_already_open",true);noteDriver("voice_tools_already_open_no_toggle");return;
+        }
+        touchImeOnce(tools,"voice_tools");
+        stableImeTarget("离线语音","voice_tools_open_postcondition",true);
+        noteDriver("voice_tools_open_postcondition_verified");
+    }
+    private void startDictation()throws Exception{
+        ensureToolsOpen();touchImeOnce(stableImeTarget("离线语音","voice_entry",true),"voice_entry");waitListening();
+    }
     private AccessibilityNodeInfo waitIme(String text,long timeout)throws Exception{
         long end=SystemClock.uptimeMillis()+timeout;
         do{for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){AccessibilityNodeInfo node=walk(window.getRoot(),text,true);if(node!=null)return node;}Thread.sleep(20);}while(SystemClock.uptimeMillis()<end);
@@ -222,11 +302,12 @@ public final class SmokeInstrumentation extends Instrumentation {
     private void voiceAcceptance()throws Exception{
         Intent intent=new Intent();intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity");intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);
         click("probe-normal");waitFor("⚡ 闪电 · 离线");setText("probe-normal","voice guard test");Thread.sleep(300);
+        stage="voice slow-editor preparation";ensureToolsOpen();
         stage="voice slow-editor cancellation";ProbeActivity.contextEntered=new java.util.concurrent.CountDownLatch(1);ProbeActivity.contextRelease=new java.util.concurrent.CountDownLatch(1);ProbeActivity.delayNextContext.set(true);
         // In this deliberately paused App only, target IME accessibility actions
         // directly: global touch/active-window synchronization may wait on that
         // paused App and would measure the test driver instead of the IME.
-        try{click("工具");if(!waitIme("离线语音",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME voice action rejected");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();if(!waitIme("取消",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME Cancel accessibility action rejected");waitIme("工具",900);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
+        try{if(!waitIme("离线语音",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME voice action rejected");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();if(!waitIme("取消",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME Cancel accessibility action rejected");waitIme("工具",900);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
         finally{ProbeActivity.delayNextContext.set(false);ProbeActivity.contextRelease.countDown();}requireEditor("voice guard test","voice_slow_editor_cancel_preserves_text");
         stage="voice recording preview";startDictation();requireEditor("voice guard test","voice_preview_not_committed");screenshot("voice-recording.png");
         click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，可重新录音")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");screenshot("voice-stopped.png");click("重新录音");waitListening();requireEditor("voice guard test","voice_retry_preserves_editor");click("取消");waitFor("工具",true);
@@ -260,6 +341,33 @@ public final class SmokeInstrumentation extends Instrumentation {
         awaitServedConnectionCommand(previous);
         automation.waitForIdle(200,3000);
     }
+    private void toolsRestartAcceptance() throws Exception {
+        stage="tools_open";click("工具");waitFor("返回键盘",true);
+        // Deterministic real App restart while the non-text panel is open.
+        // No IME method or editor text is injected by the test.
+        stage="tools_empty_editor_restart";noteDriver("tools_restart_requested");restartNormalEditor();
+        waitFor("⚡ 闪电 · 离线");waitFor("返回键盘",true);requireToolsPanelStable();requireEditor("","tools_restart_preserves_empty_editor");screenshot("tools.png");
+        final int[] options={0};int previous=ProbeActivity.normalConnections.get();
+        stage="tools_privacy_restart";
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();options[0]=a.normal.getImeOptions();a.normal.setImeOptions(options[0]|android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        awaitServedConnectionCommand(previous);waitFor("隐私输入 · 不学习");
+        if(find("返回键盘",true)!=null)throw new Exception("Tools retained across changed privacy options");
+        requireEditor("","tools_privacy_restart_preserves_editor");
+        previous=ProbeActivity.normalConnections.get();
+        runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setImeOptions(options[0]);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
+        awaitServedConnectionCommand(previous);waitFor("⚡ 闪电 · 离线");
+        stage="tools_close";click("工具");waitFor("返回键盘",true);click("返回键盘");waitFor("n",true);
+    }
+    private void requireToolsPanelStable() throws Exception {
+        for(int i=0;i<10;i++){
+            boolean back=false,letters=false;
+            for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
+                AccessibilityNodeInfo root=window.getRoot();back|=walk(root,"返回键盘",true)!=null;letters|=walk(root,"n",true)!=null;
+            }
+            if(!back||letters)throw new Exception("Tools panel changed after served restart");
+            Thread.sleep(50);
+        }
+    }
     private void rejectChangedRestartContext() throws Exception {
         stage="restart_changed_context";
         setText("probe-normal","");restartNormalEditor();waitImeText("⚡ 闪电 · 离线");
@@ -291,7 +399,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
-            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");click("工具");waitFor("返回键盘",true);screenshot("tools.png");click("返回键盘");
+            click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");toolsRestartAcceptance();
             for(char c:"ni".toCharArray())click(String.valueOf(c));
             if(Build.VERSION.SDK_INT>=30)restartComposition();
             for(char c:"hao".toCharArray())click(String.valueOf(c));

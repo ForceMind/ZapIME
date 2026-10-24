@@ -1,0 +1,46 @@
+{
+  "command": [
+    "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+    "-m",
+    "jdk.compiler/com.sun.tools.javac.Main",
+    "-source",
+    "8",
+    "-target",
+    "8",
+    "-encoding",
+    "UTF-8",
+    "-classpath",
+    "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+    "-d",
+    "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-final-tests/classes",
+    "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix/platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+    "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix/platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\n1 warning\n",
+  "seconds": 1.140222376998281,
+  "source_sha_before": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "bc86941714e7e6d728ebc2fca2d389a920c74f5347337298f6ed1da88b60cc22"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "45fc8f54f37a8c1639ca6527d60b1f5ddb8a793aa126f9e6fcc6f41865a8a07d"
+    }
+  ],
+  "source_sha_after": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "bc86941714e7e6d728ebc2fca2d389a920c74f5347337298f6ed1da88b60cc22"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "45fc8f54f37a8c1639ca6527d60b1f5ddb8a793aa126f9e6fcc6f41865a8a07d"
+    }
+  ],
+  "source_unchanged_during_compile": true,
+  "prior_record_sha256": "6501942f405349cdbffa963095cca04789a5e309d87b15b218357ddc98ccc199",
+  "scope": "Final changed SmokeInstrumentation source group compiled after adding stable-panel observation; product and voice source hashes still match the separate prior successful compilation. Java only, not APK/JNI/device."
+}

@@ -1,0 +1,41 @@
+Source: ForceMind/ZapIME PR #46, b9afa679f98164be7370b6402963456c59c66a26
+Run: 40102484046 attempt 1, job 120897298716
+Scope: exact excerpt; emulator SDK archive failure before input/device gate, not a product-test result.
+2026-10-24T14:30:40.4727586Z enable hardware keyboard: false
+2026-10-24T14:30:40.4728294Z Channel: 0 (stable)
+2026-10-24T14:30:40.4730471Z Script:
+2026-10-24T14:30:40.4731094Z adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+2026-10-24T14:30:40.4732045Z python3 scripts/android_acceptance.py "$(command -v adb)" emulator-5554
+2026-10-24T14:30:40.4732536Z Pre emulator launch script:
+2026-10-24T14:30:40.4732994Z ##[endgroup]
+2026-10-24T14:30:40.4733720Z ##[group]Install Android SDK
+2026-10-24T14:30:40.4786589Z [command]/usr/bin/sh -c \yes | sdkmanager --licenses > /dev/null
+2026-10-24T14:30:42.3641427Z Warning: This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+2026-10-24T14:30:43.8462297Z Installing latest build tools, platform tools, and platform.
+2026-10-24T14:30:43.8487543Z [command]/usr/bin/sh -c \sdkmanager --install 'build-tools;37.0.0' platform-tools 'platforms;android-28'> /dev/null
+2026-10-24T14:30:44.4920649Z Warning: This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+2026-10-24T14:30:49.5023046Z Installing latest emulator.
+2026-10-24T14:30:49.5040209Z [command]/usr/bin/sh -c \sdkmanager --install emulator --channel=0 > /dev/null
+2026-10-24T14:30:50.1473492Z Warning: This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+2026-10-24T14:30:53.4071176Z Warning: An error occurred while preparing SDK package Android Emulator: Error on ZipFile unknown archive.
+2026-10-24T14:30:53.4408191Z ##[endgroup]
+2026-10-24T14:30:53.4412286Z ##[group]Terminate Emulator
+2026-10-24T14:30:53.4429299Z [command]/usr/local/lib/android/sdk/platform-tools/adb -s emulator-5554 emu kill
+2026-10-24T14:30:53.6836269Z error: could not connect to TCP port 5554: Connection refused
+2026-10-24T14:30:53.6846052Z The process '/usr/local/lib/android/sdk/platform-tools/adb' failed with exit code 1
+2026-10-24T14:30:53.6847210Z ##[endgroup]
+2026-10-24T14:30:53.6854745Z ##[error]The process '/usr/bin/sh' failed with exit code 1
+2026-10-24T14:30:53.6975635Z ##[group]Run actions/upload-artifact@v4
+2026-10-24T14:30:53.6975931Z with:
+2026-10-24T14:30:53.6976141Z   name: ZapIME-Android-development
+2026-10-24T14:30:53.6977054Z   path: target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+target/device-smoke/
+target/device-smoke-evidence/40102484046-1/
+target/voice-android/
+target/ZapIME-XASR-model.zip
+
+2026-10-24T14:30:53.6978303Z   if-no-files-found: error
+2026-10-24T14:30:53.6978558Z   compression-level: 6
+2026-10-24T14:30:53.6978770Z   overwrite: false
+2026-10-24T14:30:53.6978977Z   include-hidden-files: false

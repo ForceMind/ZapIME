@@ -1,0 +1,62 @@
+2026-10-24T14:54:08.5492472Z /sdcard/Android/data/org.zapime.android.test/files/host-lifecycle.txt: 1 file pulled, 0 skipped. 0.9 MB/s (450 bytes in 0.000s)
+2026-10-24T14:54:08.7435976Z Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+2026-10-24T14:54:08.7613603Z Input method com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService: now enabled for user #0
+2026-10-24T14:54:08.7844779Z Input method com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService selected for user #0
+2026-10-24T14:54:09.9534269Z FAIL ZapIME native keyboard at launch: Exception: Missing UI node: 返回键盘
+2026-10-24T14:54:09.9537759Z 
+2026-10-24T14:54:09.9537782Z 
+2026-10-24T14:54:09.9538378Z Native keyboard instrumentation failed; inspect target/device-smoke
+2026-10-24T14:54:10.0235538Z Traceback (most recent call last):
+2026-10-24T14:54:10.0238715Z   File "/home/runner/work/ZapIME/ZapIME/scripts/android_smoke_repeat.py", line 45, in <module>
+2026-10-24T14:54:10.0239654Z     subprocess.run([sys.executable, str(root / "scripts/android_smoke.py"), adb, serial],
+2026-10-24T14:54:10.0240333Z   File "/usr/lib/python3.12/subprocess.py", line 571, in run
+2026-10-24T14:54:10.0240860Z     raise CalledProcessError(retcode, process.args,
+2026-10-24T14:54:10.0242333Z subprocess.CalledProcessError: Command '['/usr/bin/python3', '/home/runner/work/ZapIME/ZapIME/scripts/android_smoke.py', '/usr/local/lib/android/sdk/platform-tools/adb', 'emulator-5554']' returned non-zero exit status 1.
+2026-10-24T14:54:10.9285894Z Performing Streamed Install
+2026-10-24T14:54:10.9289112Z Success
+2026-10-24T14:54:30.0569222Z /sdcard/Android/data/org.zapime.android/files/voice-fixtures/native-report.json: 1 file pulled, 0 skipped. 0.1 MB/s (482 bytes in 0.004s)
+2026-10-24T14:54:30.0825580Z Input method org.zapime.android/.ZapInputMethodService: already enabled for user #0
+2026-10-24T14:54:30.1062272Z Input method org.zapime.android/.ZapInputMethodService selected for user #0
+2026-10-24T14:54:44.5060034Z /sdcard/Android/data/org.zapime.android.test/files/voice-recording.png: 1 file pulled, 0 skipped. 16.1 MB/s (39740 bytes in 0.002s)
+2026-10-24T14:54:44.5245392Z /sdcard/Android/data/org.zapime.android.test/files/voice-stopped.png: 1 file pulled, 0 skipped. 43.3 MB/s (41423 bytes in 0.001s)
+2026-10-24T14:54:44.6272168Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-24T14:54:44.6272582Z 
+2026-10-24T14:54:44.6272721Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6273540Z INSTRUMENTATION_STATUS: stream=PASS recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)
+2026-10-24T14:54:44.6274339Z 
+2026-10-24T14:54:44.6274561Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6275647Z INSTRUMENTATION_STATUS: stream=PASS actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)
+2026-10-24T14:54:44.6276378Z 
+2026-10-24T14:54:44.6276501Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6277545Z INSTRUMENTATION_STATUS: stream=PASS learning service-method synthetic accepted/rejected/excluded commits, no editor reads and declared-field privacy allowlist (not active translation UI)
+2026-10-24T14:54:44.6278326Z 
+2026-10-24T14:54:44.6278497Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6279372Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-24T14:54:44.6279981Z 
+2026-10-24T14:54:44.6280174Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6281242Z INSTRUMENTATION_STATUS: stream=PASS model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)
+2026-10-24T14:54:44.6282103Z 
+2026-10-24T14:54:44.6282294Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6282927Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-24T14:54:44.6283248Z 
+2026-10-24T14:54:44.6283366Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6283874Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-24T14:54:44.6284229Z 
+2026-10-24T14:54:44.6284345Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6284735Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-24T14:54:44.6285001Z 
+2026-10-24T14:54:44.6285120Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6285971Z INSTRUMENTATION_STATUS: stream=PASS API29+ production recording monitor with actual own active unsilenced configuration and emulator PCM (silence); no policy override
+2026-10-24T14:54:44.6286834Z 
+2026-10-24T14:54:44.6287037Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6288191Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-24T14:54:44.6288876Z 
+2026-10-24T14:54:44.6289043Z INSTRUMENTATION_STATUS_CODE: 0
+2026-10-24T14:54:44.6289591Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-24T14:54:44.6289958Z 
+2026-10-24T14:54:44.6290114Z INSTRUMENTATION_CODE: -1
+2026-10-24T14:54:44.6290305Z 
+2026-10-24T14:54:44.6291664Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable
+2026-10-24T14:54:44.6293044Z 
+2026-10-24T14:54:44.6324350Z INSTRUMENTATION_CODE: -1
+2026-10-24T14:54:44.6324553Z 

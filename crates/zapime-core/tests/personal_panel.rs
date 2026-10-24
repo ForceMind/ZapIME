@@ -126,11 +126,13 @@ fn latest_store_revision_controls_full_body_insertion_and_deleted_rejection() {
         "composition_active"
     );
     s.request(&json!({"op":"reset"}));
-    assert_eq!(
-        s.request(&json!({"op":"personal_commit","id":id,"expected_revision":changed.revision}))
-            ["commit"],
-        full
-    );
+    let committed =
+        s.request(&json!({"op":"personal_commit","id":id,"expected_revision":changed.revision}));
+    assert_eq!(committed["commit"], full);
+    assert_eq!(committed["commit_source"], "saved_data");
+    let idle = s.request(&json!({"op":"view"}));
+    assert!(idle["commit"].is_null());
+    assert_eq!(idle["commit_source"], "none");
     store
         .edit(
             Uuid::new_v4(),
@@ -200,11 +202,10 @@ fn pin_favorite_and_delete_are_revision_checked_and_persisted() {
         false,
     )
     .unwrap();
-    assert_eq!(
-        reopened.request(&json!({"op":"personal_commit","id":favorite_id,"expected_revision":1}))
-            ["commit"],
-        "保留内容"
-    );
+    let committed =
+        reopened.request(&json!({"op":"personal_commit","id":favorite_id,"expected_revision":1}));
+    assert_eq!(committed["commit"], "保留内容");
+    assert_eq!(committed["commit_source"], "saved_data");
 }
 #[test]
 fn private_sessions_cannot_query_commit_or_mutate_saved_data() {
