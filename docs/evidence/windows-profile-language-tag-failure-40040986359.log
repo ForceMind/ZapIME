@@ -1,0 +1,9 @@
+Source: Actions40040986359 job120711754930; head7099a241d98474f9739f7dea2fbddd095c65d944. Exact selected job lines; full logs remain in Actions. Captured 2026-10-23T23:50:23.037Z. Overall FAILURE; not profile/typing acceptance.
+
+2026-10-23T23:43:02.6122527Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-23T23:43:04.4456219Z PASS actual language-fixture refusal in self-hosted environment before language settings access
+2026-10-23T23:43:06.5355895Z language_fixture original_count=1 chinese_present=0
+2026-10-23T23:43:06.5362226Z At D:\a\ZapIME\ZapIME\scripts\windows_profile_language_fixture.ps1:45 char:9
+2026-10-23T23:43:06.5364529Z     + FullyQualifiedErrorId : chinese_user_language_not_present_after_fixture
+2026-10-23T23:43:06.5400746Z TSF profile registration/activation/cleanup failed; inspect raw profile-probe.log
+2026-10-23T23:43:06.6633602Z ##[error]Process completed with exit code 1.

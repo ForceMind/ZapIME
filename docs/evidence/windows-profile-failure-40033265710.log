@@ -1,0 +1,23 @@
+# Exact selected job120686462541 log lines, run40033265710, runtime52884deeeded911ac5306ecccf313956bf05b867. Not a downloaded artifact.
+2026-10-23T22:24:52.3244152Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://win.rustup.rs/x86_64 --output 'D:\a\_temp\rustup-init.exe'[0m
+2026-10-23T22:25:03.7792079Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-10-23T22:25:16.8342105Z   CACHE_ON_FAILURE: true
+2026-10-23T22:26:23.6048815Z   ProfileProbe.cpp
+2026-10-23T22:26:24.9896021Z   ZapIMEWindowsProfileProbe.vcxproj -> D:\a\ZapIME\ZapIME\target\windows-native\Release\ZapIMEWindowsProfileProbe.exe
+2026-10-23T22:26:30.0627312Z   CACHE_ON_FAILURE: true
+2026-10-23T22:26:30.3200239Z profile_probe com_init hr=0x0
+2026-10-23T22:26:30.3200473Z profile_probe profiles hr=0x0
+2026-10-23T22:26:30.3200627Z profile_probe local_appdata hr=0x0
+2026-10-23T22:26:30.3200783Z profile_probe register hr=0x0
+2026-10-23T22:26:30.3200929Z profile_probe query_registered hr=0x0
+2026-10-23T22:26:30.3201948Z profile_probe unregister hr=0x0
+2026-10-23T22:26:30.3202168Z profile_probe query_after_unregister hr=0x80004005
+2026-10-23T22:26:30.3202353Z profile_probe cleanup=PASS
+2026-10-23T22:26:30.3202523Z FAIL profile_probe registered_identity_category_enabled
+2026-10-23T22:26:30.3249478Z TSF profile registration/activation/cleanup failed; inspect raw profile-probe.log
+2026-10-23T22:26:30.4048815Z ##[error]Process completed with exit code 1.
+2026-10-23T22:26:30.4192395Z   CACHE_ON_FAILURE: true
+2026-10-23T22:26:31.5291492Z (node:4292) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-23T22:26:34.9428353Z Post job cleanup.
+2026-10-23T22:26:35.0917193Z Post job cleanup.
+

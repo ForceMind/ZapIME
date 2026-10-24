@@ -1,0 +1,16 @@
+# Exact selected raw job120696859850 log; runtimea78ba70a10cf3bfdfae8b0e7404ae4dccdbe5970, run40036406478. No downloaded artifact claim.
+2026-10-23T22:55:13.8634914Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-23T22:55:13.8904058Z profile_probe com_init hr=0x0
+2026-10-23T22:55:13.8904308Z profile_probe profiles hr=0x0
+2026-10-23T22:55:13.8904466Z profile_probe category_manager hr=0x0
+2026-10-23T22:55:13.8904628Z profile_probe category_before hr=0x0
+2026-10-23T22:55:13.8904790Z profile_probe local_appdata hr=0x0
+2026-10-23T22:55:13.8905011Z profile_probe register hr=0x0
+2026-10-23T22:55:13.8905158Z profile_probe query_registered hr=0x0
+2026-10-23T22:55:13.8905624Z profile_probe queried type=1 lang=0x804 flags=0x2 clsid={D72EF286-C9D0-4AAE-B13A-18E84F59B765} profile={042DCDBD-B1DC-4A0D-931C-567221A172E8} category={00000000-0000-0000-0000-000000000000}
+2026-10-23T22:55:13.8906099Z profile_probe enumerate_keyboard_category hr=0x0
+2026-10-23T22:55:13.8906276Z profile_probe unregister hr=0x0
+2026-10-23T22:55:13.8906448Z profile_probe query_after_unregister hr=0x80004005
+2026-10-23T22:55:13.8906667Z profile_probe query_category_after_unregister hr=0x0
+2026-10-23T22:55:13.8906861Z profile_probe cleanup=PASS
+2026-10-23T22:55:13.8907036Z FAIL profile_probe registered_keyboard_category_membership
