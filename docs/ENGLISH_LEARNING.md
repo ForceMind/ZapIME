@@ -89,3 +89,5 @@
 首片生命周期策略已由PR #44合并（5fd582b），运行代码c391931的五工作流全部通过。独立CPU探针不代表宿主/英语条已接入；当前探针缺完整预处理并有语义问题，暂不作为默认英语学习流水线。
 
 2026-10-24新增验证：本地同一JDK17/--release8入口通过Gate及Session合成回归；Android目标UID测试新增未attach的Service方法探针，使用合成BaseInputConnection接受/拒绝、排除插入、选区回声/外部变化及EditorInfo声明白名单。后者必须由新CI真实编译执行；与独立Editable中的真实系统IME输入测试分开，不称已启用翻译端到端验收。
+
+固定模型的第二轮[预处理/解码对照](ENGLISH_TRANSLATION_PREPROCESSING.md)已完成：实际补上模型包启用的PRE=simple，并独立对照beam1/6，19句×四配置×在线/受限共8新进程。存在局部改善和否定含义倒转，不将更顺口或更大beam视为教学质量通过；Moses类别C规范化还会拆开ZWJ表情，不能直接复制成产品文本策略。

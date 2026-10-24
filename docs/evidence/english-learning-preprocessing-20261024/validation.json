@@ -1,0 +1,108 @@
+{
+  "synthetic_text_only": true,
+  "full_baseline_reproduction": {
+    "command": "bash scripts/translation_probe/reproduce.sh",
+    "source_commit": "b85e32831955622115d63663a39a9d8ef1b9c7af",
+    "started_without_work_directory": true,
+    "exit_code": 0,
+    "four_hash_pinned_wheels_downloaded_and_installed": true,
+    "fixed_archive_downloaded_verified_and_extracted": true,
+    "conversion_and_all_four_inference_invocations_completed": true,
+    "raw_terminal_transcript_saved": false,
+    "source_files": [
+      {
+        "path": "scripts/translation_probe/probe.py",
+        "bytes": 6924,
+        "sha256": "bb9a808c2f1acde4ba77b305b15a087b6ffc46acf0341bdcc2f9edaced765118"
+      },
+      {
+        "path": "scripts/translation_probe/prepare_model.py",
+        "bytes": 2259,
+        "sha256": "1d650d8707d96de77ee3cdde6ec037789f03a15730899a5a9c79f8c235563226"
+      },
+      {
+        "path": "scripts/translation_probe/reproduce.sh",
+        "bytes": 2126,
+        "sha256": "7ee8e06ed30b68fdfe12419301a351a4dc4a689b3e19f8b146e959e75e97f0d3"
+      },
+      {
+        "path": "scripts/translation_probe/requirements-linux-py312.txt",
+        "bytes": 510,
+        "sha256": "99bc070cda43036c70f3a65da18f000312b4ea2e9951395341b80af00547e9d0"
+      }
+    ]
+  },
+  "preprocessing_contrasts": {
+    "prepare_command": "python3 scripts/translation_probe/prepare_preprocessing.py",
+    "contrast_command": "target/translation-probe/venv/bin/python scripts/translation_probe/compare_preprocessing.py",
+    "exit_code": 0,
+    "fresh_inference_processes": 8,
+    "synthetic_examples_per_process": 19,
+    "network_restricted_processes": 4,
+    "all_four_online_offline_outputs_match": true,
+    "semantic_quality_accepted": false,
+    "native_marian_equivalence_claimed": false,
+    "scope": "Selected final compare_preprocessing.py run after the source review fix; earlier exploratory runs are not included in these 8 process metrics."
+  },
+  "python_compile": {
+    "command": "python3 -m py_compile scripts/translation_probe/probe.py scripts/translation_probe/prepare_preprocessing.py scripts/translation_probe/preprocessing.py scripts/translation_probe/compare_preprocessing.py",
+    "exit_code": 0
+  },
+  "preprocessing_tests": {
+    "command": "python3 scripts/translation_probe/test_preprocessing.py",
+    "tests": 7,
+    "exit_code": 0
+  },
+  "modified_repository_script_files": [
+    {
+      "path": "scripts/translation_probe/probe.py",
+      "bytes": 9035,
+      "sha256": "ef11b4eef096ea3817abadfd89fab9159c77e95c5b523b207eef8985d6abee95"
+    },
+    {
+      "path": "scripts/translation_probe/prepare_model.py",
+      "bytes": 2259,
+      "sha256": "1d650d8707d96de77ee3cdde6ec037789f03a15730899a5a9c79f8c235563226"
+    },
+    {
+      "path": "scripts/translation_probe/reproduce.sh",
+      "bytes": 2126,
+      "sha256": "7ee8e06ed30b68fdfe12419301a351a4dc4a689b3e19f8b146e959e75e97f0d3"
+    },
+    {
+      "path": "scripts/translation_probe/requirements-linux-py312.txt",
+      "bytes": 510,
+      "sha256": "99bc070cda43036c70f3a65da18f000312b4ea2e9951395341b80af00547e9d0"
+    },
+    {
+      "path": "scripts/translation_probe/prepare_preprocessing.py",
+      "bytes": 3463,
+      "sha256": "fcfa232192332a0184cf9149ef3634c81d8c1e1853f2cd85fc7e75557e937720"
+    },
+    {
+      "path": "scripts/translation_probe/preprocessing.py",
+      "bytes": 3204,
+      "sha256": "a976003244a1b0cdd1c2a22b7a49830fc088e4ae8b9da4d7d71406886ef28f95"
+    },
+    {
+      "path": "scripts/translation_probe/compare_preprocessing.py",
+      "bytes": 3296,
+      "sha256": "38331c24e5fba84b195fdb858045fe3d6bc9ee1d85e844e9588640bbbc5ec4cf"
+    },
+    {
+      "path": "scripts/translation_probe/test_preprocessing.py",
+      "bytes": 2099,
+      "sha256": "8d2691b74accbddc899777ae540a071debe1025096eb492f7546872166db3b85"
+    }
+  ],
+  "downloaded_helpers_and_weights_committed": false,
+  "product_changes": false,
+  "limits": "No signed publisher checksums, no score, no native Marian or mobile runtime, no keyboard model integration, no energy or input-contention measurements. Peak RSS includes fresh Python process imports/model/all 19 examples but excludes Perl child processes. Timing file cache warmed by prior conversion and probe passes.",
+  "recorded_at_container_utc": "2026-10-24T14:26:41.370985+00:00",
+  "timestamp_clock": "Container system clock only; not cross-checked with GitHub service time.",
+  "independent_review": {
+    "archive_postprocess_internal_ascii_space_fix": true,
+    "regression_assertion_added": true,
+    "all_eight_final_source_processes_rerun_after_fix": true
+  }
+}

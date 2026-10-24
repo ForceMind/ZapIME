@@ -68,3 +68,7 @@ APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPa
 开发探针使用官方模型卡所链接zho-eng/opus-2020-07-17.zip，已核实整个归档SHA/大小及其内部LICENSE明确为CC-BY-4.0；保留原文/README在third_party/notices。数据仓库根的训练数据NC许可不直接套到具有单独声明的此包，HF转换版声明也不代替原包实际检查。权重和运行库二进制均未提交；本次观测hash不是独立审计的发布者签名。可复现步骤、全部合成译文与运行库分发待审项见ENGLISH_TRANSLATION_PROBE.md。
 
 原始LICENSE包含行尾空白与末尾空行，按原字节/SHA保留；仅对这一文件关闭Git文本换行转换与空白告警，不修改许可文本或放宽其它源码检查。
+
+### 可选翻译研究预处理（2026-10-24）
+
+独立开发探针显式下载Moses固定提交08e782040189e0abb3b43a4ec9245e6179e39eca中的replace-unicode-punctuation.perl、remove-non-printing-char.perl与COPYING到ignored target；两脚本文件头为LGPL-2.1-or-later，逐项SHA/大小核验并保留源文件与COPYING。没有复制脚本或其许可文本到产品、没有新运行库或模型随APK分发。ZapIME适配/测试脚本为本项目GPL-3.0-only，OPUS原权重CC-BY-4.0与CT2 MIT仍分别记录。未来实际发行helper/模型/运行库须另审查源码和署名义务，不将本次开发下载审计当移动端分发完成。详情ENGLISH_TRANSLATION_PREPROCESSING.md及其原始manifest。

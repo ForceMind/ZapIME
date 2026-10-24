@@ -58,3 +58,5 @@ target/translation-probe/venv/bin/python scripts/translation_probe/probe.py infe
 脚本不执行包内preprocess/postprocess shell文件。固定归档SHA/大小/许可核验、安全成员提取和转换已在原探针分别实际运行；仓库入口又实际重跑了归档核验/提取、hash约束wheel解析、网络受限十句推理，结果与原记录一致。`py_compile`和`bash -n`通过。**整条复现shell没有再次从空目录完整下载执行**，不冒充该额外测试。
 
 证据见[本轮原始目录](evidence/english-learning-cpu-20261024/README.md)，包括完整十句、原先三句、来源/许可/模型和wheel SHA、原探针脚本文本及仓库入口复验。没有提交模型或二进制。
+
+后续实际补齐预处理和beam对照、从空目录重跑原入口与未筛选19句输出见[第二轮报告](ENGLISH_TRANSLATION_PREPROCESSING.md)。原始三句/十句失败证据保持不覆盖，当前流水线仍不作为默认教学模型。

@@ -1,0 +1,28 @@
+{
+  "upstream": "https://github.com/moses-smt/mosesdecoder",
+  "revision": "08e782040189e0abb3b43a4ec9245e6179e39eca",
+  "license": "LGPL-2.1-or-later, file headers and repository COPYING; original source and COPYING retained in ignored work directory",
+  "hashes": "observed HTTPS source hashes locked after review, not independent publisher-signed checksums",
+  "files": [
+    {
+      "name": "replace-unicode-punctuation.perl",
+      "upstream_path": "scripts/tokenizer/replace-unicode-punctuation.perl",
+      "bytes": 872,
+      "sha256": "2a4bf9b58a66fd58931ce54b89b6e9912e3177552b6bfedf3d7ce8a89aaa71de"
+    },
+    {
+      "name": "remove-non-printing-char.perl",
+      "upstream_path": "scripts/tokenizer/remove-non-printing-char.perl",
+      "bytes": 549,
+      "sha256": "a725fcee901f14658a8a6e90ea5ea20d988932a8091ee0f43e1a5f0fbb74c2b7"
+    },
+    {
+      "name": "COPYING",
+      "upstream_path": "COPYING",
+      "bytes": 24426,
+      "sha256": "83a9cdbbac61c1fa33b055dafcb6f0b0aa4379d70f7c1ce15b660d1df05b4696"
+    }
+  ],
+  "archive_shell_executed": false,
+  "client_integration": false
+}
