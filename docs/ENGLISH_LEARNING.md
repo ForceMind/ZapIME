@@ -97,3 +97,5 @@
 核心候选选择不必都是普通解码文本：个人短语、词库或新增规则也可能通过同一个select/CommitCandidate上屏。新JSON `commit_source`采用请求内来源，非空提交分为`engine`与`saved_data`，无提交/空串为`none`；错误保留原错误形状，没有上次来源。None引擎索引的个人扩展（即使与引擎同文字）及personal_commit标为saved_data；仅重排既有引擎行的规则仍保留engine映射。字段不改变正文、排序、generation或FFI ABI，旧宿主可忽略它。
 
 Android核心提交仅接受严格字符串engine的当前ticket；缺字段、null、错误类型、未知来源及saved_data仍正常上屏，但清空伴学上下文。直接手打fallback/标点独立保留原有来源。这样可以排除经候选展开的个人资料，而不仅是资料面板插入。字段是本地受信任核心提供的来源提示，不是密码学证明。实际模型/worker/启用UI仍未接入。
+
+第二种模型的[Qwen固定配置探针](ENGLISH_TRANSLATION_QWEN_PROBE.md)已完成：官方Q8模型/CPU包校验、两种提示各19句在线及受限复跑，共76个原生进程。当前温度0/禁思考配置有语法/语义错误，未采用为默认；未测试的官方推荐采样不能被这组结果代替。所有结果/原stdout与资源边界均保存，仍无产品provider。

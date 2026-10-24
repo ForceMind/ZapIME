@@ -1,0 +1,33 @@
+{
+  "synthetic_text_only": true,
+  "distinct_source_cases": 19,
+  "fixed_system_prompts": 2,
+  "native_processes": 76,
+  "network_restricted_native_processes": 38,
+  "all_source_full_prompt_raw_stdout_stderr_eog_exit_and_shape_pairs_identical": true,
+  "all_exit_codes_zero": true,
+  "all_native_eog_envelopes_observed": true,
+  "all_restricted_workers_rejected_ipv4_and_ipv6_socket_creation": true,
+  "peak_native_process_rss_kib_range": [
+    802720,
+    804344
+  ],
+  "whole_native_process_wall_seconds_range": [
+    1.967895542999031,
+    7.896962631995848
+  ],
+  "source_complete_runs": [
+    {
+      "name": "qwen-network-capable.json",
+      "bytes": 107468,
+      "sha256": "34def23a8316ba3eb7df70d41981b0ca547299aef25547ffe1785443ece9e6e6"
+    },
+    {
+      "name": "qwen-offline.json",
+      "bytes": 131058,
+      "sha256": "0d38cc39f657b2153a007d8d36fec65dd2b042b63c812144ed767c3eee3ecb3d"
+    }
+  ],
+  "quality_accepted": false,
+  "scope": "structural checks and paired text equality, not a quality score. This temperature-zero/two-prompt/non-thinking configuration is not selected as default teaching output; no conclusion about every model or decoding configuration."
+}
