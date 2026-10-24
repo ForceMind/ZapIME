@@ -1,0 +1,50 @@
+name: macOS system input probe
+on:
+  pull_request:
+    paths:
+      - 'platforms/macos/**'
+      - 'platforms/common/**'
+      - 'crates/zapime-core/**'
+      - 'scripts/*macos*'
+      - '.github/workflows/macos-input.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'platforms/macos/**'
+      - 'platforms/common/**'
+      - 'crates/zapime-core/**'
+      - 'scripts/*macos*'
+      - '.github/workflows/macos-input.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: macos-input-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  cocoa-input:
+    runs-on: macos-15-intel
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@1.97.1
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: macos-input-intel
+          cache-on-failure: true
+      - run: bash scripts/build_macos.sh
+      - name: Register source and type in independent Cocoa editor
+        timeout-minutes: 3
+        shell: bash
+        run: |
+          mkdir -p target/macos-test
+          set -euo pipefail
+          bash scripts/macos_input_smoke.sh 2>&1 | tee target/macos-test/system-input.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: macOS-system-input-probe
+          path: target/macos-test/system-input.log
+          if-no-files-found: warn
