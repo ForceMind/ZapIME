@@ -114,7 +114,16 @@ struct QueryRuntime {
     }
     bool finish() noexcept {
         if(finished)return true;finished=true;bool ok=true;
-        if(languageAttempted&&languages){HRESULT hr=languages->ChangeCurrentLanguage(beforeLanguage);result("child_runtime_restore_language",hr);ok=hr==S_OK&&ok;}
+        if(languageAttempted&&languages){
+            LANGID current=0;HRESULT query=languages->GetCurrentLanguage(&current);result("child_runtime_language_before_restore",query);
+            if(query==S_OK&&current==beforeLanguage){
+                std::cout<<"profile_probe child_runtime_language_already_original=PASS\n";
+            }else{
+                HRESULT hr=languages->ChangeCurrentLanguage(beforeLanguage);result("child_runtime_restore_language",hr);
+                current=0;query=languages->GetCurrentLanguage(&current);result("child_runtime_language_after_restore",query);
+                ok=hr==S_OK&&query==S_OK&&current==beforeLanguage&&ok;
+            }
+        }
         if(beforeLayout){ok=ActivateKeyboardLayout(beforeLayout,0)!=nullptr&&GetKeyboardLayout(0)==beforeLayout&&ok;beforeLayout=nullptr;}
         if(active&&threads){HRESULT hr=threads->Deactivate();result("child_runtime_thread_deactivate",hr);ok=hr==S_OK&&ok;active=false;}
         languages.Reset();threads.Reset();ok=focus.closeFocusWindow()&&ok;std::cout<<"profile_probe child_runtime_cleanup="<<(ok?"PASS":"FAIL")<<"\n";return ok;
@@ -203,7 +212,7 @@ static bool queryFreshProcess(){
     CloseHandle(child.hProcess);std::cout<<"profile_probe child_finished="<<(finished?1:0)<<" exit="<<exitCode<<"\n";return finished&&exitCode==0;
 }
 struct Probe {
-    bool com=false,owned=false,threadActive=false,activationAttempted=false,loadedLayout=false,haveBefore=false,ownsData=false,machineComOwned=false;
+    bool com=false,owned=false,threadActive=false,activationAttempted=false,loadedLayout=false,haveBefore=false,ownsData=false;
     OwnedFocusWindow focus;
     HMODULE dll=nullptr;
     HKL beforeLayout=nullptr,chineseLayout=nullptr;
@@ -214,30 +223,6 @@ struct Probe {
     TF_INPUTPROCESSORPROFILE before{};
     fs::path data;
     const std::wstring key=std::wstring(L"Software\\Classes\\CLSID\\")+ZapClsidText;
-    // Counterfactual diagnostic ONLY on this already-guarded disposable VM.
-    // The original product registration result remains the mandatory gate.
-    HRESULT mirrorMachineCom(const fs::path &path){
-        if(!absentAt(HKEY_LOCAL_MACHINE,key))return HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS);
-        std::wstring dllPath=path.wstring();HKEY root=nullptr;DWORD disposition=0;
-        LSTATUS error=RegCreateKeyExW(HKEY_LOCAL_MACHINE,key.c_str(),0,nullptr,0,KEY_WRITE,nullptr,&root,&disposition);
-        if(error!=ERROR_SUCCESS)return HRESULT_FROM_WIN32(error);
-        if(disposition!=REG_CREATED_NEW_KEY){RegCloseKey(root);return HRESULT_FROM_WIN32(ERROR_ALREADY_EXISTS);}
-        machineComOwned=true;HKEY inproc=nullptr;
-        error=RegCreateKeyExW(root,L"InprocServer32",0,nullptr,0,KEY_WRITE,nullptr,&inproc,nullptr);
-        if(error==ERROR_SUCCESS){
-            error=RegSetValueExW(inproc,nullptr,0,REG_SZ,reinterpret_cast<const BYTE *>(dllPath.c_str()),static_cast<DWORD>((dllPath.size()+1)*sizeof(wchar_t)));
-            if(error==ERROR_SUCCESS)error=RegSetValueExW(inproc,L"ThreadingModel",0,REG_SZ,reinterpret_cast<const BYTE *>(L"Apartment"),sizeof(L"Apartment"));
-            RegCloseKey(inproc);
-        }
-        RegCloseKey(root);return error==ERROR_SUCCESS?S_OK:HRESULT_FROM_WIN32(error);
-    }
-    bool removeMachineCom() noexcept {
-        if(!machineComOwned)return true;
-        LSTATUS error=RegDeleteTreeW(HKEY_LOCAL_MACHINE,key.c_str());
-        bool ok=(error==ERROR_SUCCESS||error==ERROR_FILE_NOT_FOUND||error==ERROR_PATH_NOT_FOUND)&&absentAt(HKEY_LOCAL_MACHINE,key);
-        std::cout<<"profile_probe machine_com_diagnostic_cleanup="<<(ok?"PASS":"FAIL")<<"\n";
-        if(ok)machineComOwned=false;return ok;
-    }
     HRESULT reopenManagers() noexcept {
         profiles.Reset();categories.Reset();CoFreeUnusedLibrariesEx(0,0);
         HRESULT hr=CoCreateInstance(CLSID_TF_InputProcessorProfiles,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&profiles));if(hr!=S_OK)return hr;
@@ -252,7 +237,6 @@ struct Probe {
         threads.Reset();
         if(owned&&unregisterProfile){
             HRESULT hr=unregisterProfile();result("unregister",hr);ok=hr==S_OK&&ok;
-            ok=removeMachineCom()&&ok;
             HRESULT fresh=reopenManagers();result("fresh_managers_after_unregister",fresh);ok=fresh==S_OK&&ok;
             if(fresh==S_OK){
                 TF_INPUTPROCESSORPROFILE removed{};hr=profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&removed);result("query_after_unregister",hr);ok=hr!=S_OK&&absentKey(key)&&ok;
@@ -260,7 +244,6 @@ struct Probe {
             }
             owned=false;
         }
-        ok=removeMachineCom()&&ok;
         profiles.Reset();categories.Reset();
         bool focusRestored=focus.closeFocusWindow();std::cout<<"profile_probe owned_window_cleanup="<<(focusRestored?"PASS":"FAIL")<<"\n";ok=focusRestored&&ok;
         if(dll){FreeLibrary(dll);dll=nullptr;}
@@ -316,12 +299,6 @@ int main(int argc,char **argv){
         // Registration ran through different COM instances inside the DLL.
         // Query with fresh managers after releasing prior enumerator caches.
         bool childVisible=queryFreshProcess();
-        if(!childVisible){
-            HRESULT mirror=probe.mirrorMachineCom(path);result("machine_com_scope_experiment",mirror);
-            bool counterfactualVisible=mirror==S_OK&&queryFreshProcess();
-            std::cout<<"profile_probe machine_com_scope_child_visible="<<(counterfactualVisible?1:0)
-                     <<"; original_product_child_visible="<<(childVisible?1:0)<<"; original gate retained\n";
-        }
         checked("fresh_managers_after_register",probe.reopenManagers());
         TF_INPUTPROCESSORPROFILE registered{};HRESULT registeredHr=probe.profiles->GetProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,&registered);result("query_registered",registeredHr);
         require(childVisible,"fresh_process_profile_and_category_visible");require(registeredHr==S_OK,"query_registered");

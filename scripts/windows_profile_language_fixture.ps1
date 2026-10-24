@@ -20,6 +20,16 @@ function Snapshot-Languages($Languages) {
     })
     ConvertTo-Json -InputObject $values -Depth 6 -Compress
 }
+# Read-only environment inventory; never install components or start/stop services.
+try {
+    $basic = @(Get-WindowsCapability -Online -Name 'Language.Basic~~~zh-CN~0.0.1.0' -ErrorAction Stop)
+    if ($basic.Count -eq 1) {
+        Write-Output ("language_fixture chinese_basic_known=1 state={0}" -f $basic[0].State)
+    } else { Write-Output 'language_fixture chinese_basic_known=0; unexpected inventory count' }
+} catch { Write-Output 'language_fixture chinese_basic_known=0; capability inventory unavailable' }
+$session = [System.Diagnostics.Process]::GetCurrentProcess().SessionId
+$monitors = @(Get-Process -Name 'ctfmon' -ErrorAction SilentlyContinue | Where-Object { $_.SessionId -eq $session })
+Write-Output ("language_fixture current_session_ctfmon_count={0}" -f $monitors.Count)
 $original = Get-WinUserLanguageList
 if ($original.Count -lt 1 -or $original.Count -gt 32) { throw 'unexpected_original_language_count' }
 $before = Snapshot-Languages $original
@@ -46,7 +56,7 @@ try {
     if (@($current | Where-Object { $targetTags -contains $_.LanguageTag }).Count -ne 1) {
         throw 'chinese_user_language_not_present_after_fixture'
     }
-    Write-Output 'language_fixture chinese_user_language_present=1; no language-pack installation'
+    Write-Output 'language_fixture chinese_user_language_present=1; no language-pack installer invoked'
     & $executable
     $probeCode = $LASTEXITCODE
 }
