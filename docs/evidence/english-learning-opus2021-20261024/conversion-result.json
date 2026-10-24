@@ -1,0 +1,29 @@
+{
+  "elapsed_seconds": 2.705151839007158,
+  "device_for_later_inference": "cpu",
+  "quantization": "int8",
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  },
+  "files": [
+    {
+      "name": "config.json",
+      "bytes": 221,
+      "sha256": "152eb448f1020eb55f90971d7b95f61896abee8415d555ca51ae7897ac0a0e68"
+    },
+    {
+      "name": "model.bin",
+      "bytes": 82713357,
+      "sha256": "d0deac7c66d2daa430dc081d6ef08e4700eae54b11918fe438917fa4e1b7ef83"
+    },
+    {
+      "name": "shared_vocabulary.json",
+      "bytes": 1303421,
+      "sha256": "a71b9965455e287b890e965bcb4d5f3c52f1fe5fa7bd9019787d4a3dd1c37acc"
+    }
+  ],
+  "runtime_dependency": "official fixed CTranslate2 OpusMTConverter/MarianConverter; no Torch or archive shell"
+}

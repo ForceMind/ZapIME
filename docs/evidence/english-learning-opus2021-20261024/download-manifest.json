@@ -1,0 +1,138 @@
+{
+  "url": "https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2021-02-18.zip",
+  "archive_bytes": 288551434,
+  "observed_archive_sha256": "cdef260995db149d7d519d930bd30c9515e56848ec6ea58388c5f5d647239e69",
+  "independent_publisher_checksum_or_signature_audited": false,
+  "license": "archive LICENSE is CC-BY-4.0; exact bytes match existing third_party notice",
+  "member_inventory_scope": "the ten verified fixed allowlisted members only; not every file in the working directory",
+  "members": [
+    {
+      "name": "README.md",
+      "bytes": 780,
+      "sha256": "ee8a32d0a07ad7b1b25df0075fa6c3ef6e1073adc39722f9f9d92762e38f78fd"
+    },
+    {
+      "name": "LICENSE",
+      "bytes": 18652,
+      "sha256": "945fbcb37deca05bccd7c3ca0e261679f1f5373515504fdbad68f6f3cf6f49b9"
+    },
+    {
+      "name": "opus.spm32k-spm32k.transformer.model1.npz.best-perplexity.npz",
+      "bytes": 309987327,
+      "sha256": "18c0b66ce89e0ab47d3f0b889903bee596e1d25f545e3ddfae4d5c3834a14914"
+    },
+    {
+      "name": "opus.spm32k-spm32k.vocab.yml",
+      "bytes": 1070591,
+      "sha256": "aad63d601d67e246aea7570ea062cb4e2360caf3b2ab5251781e5ac192daeca7"
+    },
+    {
+      "name": "source.spm",
+      "bytes": 804374,
+      "sha256": "72600ea476b3e3b76763919c3a30ef5104d9b473b19567d45251f56034264f54"
+    },
+    {
+      "name": "target.spm",
+      "bytes": 806320,
+      "sha256": "06f8a99ad82348acc6a046695cb8d659fbb587d61de1e0fde928956d34008178"
+    },
+    {
+      "name": "decoder.yml",
+      "bytes": 259,
+      "sha256": "aec96eb0d7bb8fe173121f3e53bc50306bd6233cb008cac9aab4f561fed43057"
+    },
+    {
+      "name": "preprocess.sh",
+      "bytes": 1265,
+      "sha256": "0590b23a47f5c7651a75a0cfe579e7cffe1f4b567a803a2c47b866111ebc0508"
+    },
+    {
+      "name": "postprocess.sh",
+      "bytes": 80,
+      "sha256": "039cec87f6d037fa216e918f3b0a7d4fd46517e54f4d422e73e0b4d6fc27ac0d"
+    },
+    {
+      "name": "config.mk",
+      "bytes": 563,
+      "sha256": "8c72d56b3cd886ba72ed5ed7cc34e04376b4a8d3406ef225da6a5bc10f58a0cc"
+    }
+  ],
+  "decoder": {
+    "relative-paths": true,
+    "models": [
+      "opus.spm32k-spm32k.transformer.model1.npz.best-perplexity.npz"
+    ],
+    "vocabs": [
+      "opus.spm32k-spm32k.vocab.yml",
+      "opus.spm32k-spm32k.vocab.yml"
+    ],
+    "beam-size": 6,
+    "normalize": 1,
+    "word-penalty": 0,
+    "mini-batch": 1,
+    "maxi-batch": 1,
+    "maxi-batch-sort": "src"
+  },
+  "npz_config": {
+    "bert-train-type-embeddings": true,
+    "bert-type-vocab-size": 2,
+    "dec-cell": "gru",
+    "dec-cell-base-depth": 2,
+    "dec-cell-high-depth": 1,
+    "dec-depth": 6,
+    "dim-emb": 512,
+    "dim-rnn": 1024,
+    "dim-vocabs": [
+      65000,
+      65000
+    ],
+    "enc-cell": "gru",
+    "enc-cell-depth": 1,
+    "enc-depth": 6,
+    "enc-type": "bidirectional",
+    "input-types": [],
+    "layer-normalization": false,
+    "lemma-dim-emb": 0,
+    "right-left": false,
+    "skip": false,
+    "tied-embeddings": false,
+    "tied-embeddings-all": true,
+    "tied-embeddings-src": false,
+    "transformer-aan-activation": "swish",
+    "transformer-aan-depth": 2,
+    "transformer-aan-nogate": false,
+    "transformer-decoder-autoreg": "self-attention",
+    "transformer-dim-aan": 2048,
+    "transformer-dim-ffn": 2048,
+    "transformer-ffn-activation": "swish",
+    "transformer-ffn-depth": 2,
+    "transformer-guided-alignment-layer": "last",
+    "transformer-heads": 8,
+    "transformer-no-projection": false,
+    "transformer-postprocess": "dan",
+    "transformer-postprocess-emb": "d",
+    "transformer-preprocess": "",
+    "transformer-tied-layers": [],
+    "transformer-train-position-embeddings": false,
+    "type": "transformer",
+    "ulr": false,
+    "ulr-dim-emb": 0,
+    "ulr-trainable-transformation": false,
+    "version": "v1.9.25; 50ce630 2020-06-19 10:28:45 -0700"
+  },
+  "npz_allow_pickle": false,
+  "npz_array_count": 255,
+  "vocabulary_entries": 65000,
+  "sentencepiece_sizes": {
+    "source.spm": 32000,
+    "target.spm": 32000
+  },
+  "vocabulary_count_method": "fixed CTranslate2 Marian load_vocab parser, the same parser used by conversion",
+  "archive_shell_executed": false,
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  }
+}
