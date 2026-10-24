@@ -99,3 +99,11 @@ dc457ed /40040289549 实际发现：本产品完整HKLM语言profile已存在，
 父进程在起始已证明ZapIME数据目录不存在后即接管本轮临时目录的清理责任，覆盖系统隐式默认服务激活或后续失败；不会接管起始已有用户目录。仍仅受GitHub-hosted保护的临时runner使用，不影响常规build/ctest。新进程查询必须成功且清理通过才继续父进程原COM与FORPROCESS门禁。此候选尚待实际CI，不先判根因已解决。
 
 接口依据：https://learn.microsoft.com/en-us/windows/win32/api/msctf/nf-msctf-itfinputprocessorprofiles-changecurrentlanguage （该接口要求调用线程已创建thread manager）。
+
+## 系统COM解析与权限元数据（候选）
+
+1546673 /40042421336 实际编译/守卫/窗口/中文HKL通过；独立子进程系统thread manager激活S_OK，但ChangeCurrentLanguage(0804)返回E_FAIL，profile查询仍失败；子进程及父进程旧语言/HKL/profile/注册/窗口、PowerShell语言列表恢复全部通过。整体仍失败，未实际显式激活产品或输入。
+
+新增在注册后立即记录系统CoCreateInstance解析本产品的HRESULT，随后仍在原COM门禁要求S_OK，避免前面的子进程失败遮住关键解析证据。只多读当前进程TokenElevation布尔值以及固定系统策略EnableLUA的DWORD；不输出Token、SID、用户或凭据，不修改权限、UAC或HKLM COM。两种子进程模式和主流程仍先通过临时GitHub-hosted守卫才读取这些元数据。
+
+微软HKCR文档明确管理员且UAC关闭时COM运行时忽略HKCU配置；这只是待核对条件，不提前认定当前故障根因，尤其HKCR合并项存在不等于系统COM可实际解析。依据：https://learn.microsoft.com/en-us/windows/win32/sysinfo/hkey-classes-root-key 。新候选仍待CI。

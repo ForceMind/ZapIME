@@ -37,8 +37,19 @@ static void registryPresence(const char *phase,HKEY root,const std::wstring &key
     std::cout<<"profile_probe registry "<<phase<<" status="<<status<<" present="<<(status==ERROR_SUCCESS?1:0)<<"\n";
 }
 static void environmentSummary(){
+    HANDLE token=nullptr;TOKEN_ELEVATION elevation{};DWORD bytes=0,tokenStatus=ERROR_SUCCESS;BOOL tokenKnown=FALSE;
+    if(OpenProcessToken(GetCurrentProcess(),TOKEN_QUERY,&token)){
+        tokenKnown=GetTokenInformation(token,TokenElevation,&elevation,sizeof(elevation),&bytes);
+        if(!tokenKnown)tokenStatus=GetLastError();CloseHandle(token);
+    }else tokenStatus=GetLastError();
+    DWORD enableLua=2,luaBytes=sizeof(enableLua);
+    LSTATUS luaStatus=RegGetValueW(HKEY_LOCAL_MACHINE,L"Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System",L"EnableLUA",RRF_RT_REG_DWORD,nullptr,&enableLua,&luaBytes);
+    std::cout<<"profile_probe com_security token_known="<<(tokenKnown?1:0)<<" token_status="<<tokenStatus
+             <<" elevated="<<(tokenKnown?elevation.TokenIsElevated:2)<<" enable_lua_status="<<luaStatus
+             <<" enable_lua="<<(luaStatus==ERROR_SUCCESS?enableLua:2)<<"\n";
+
     DWORD session=0;BOOL known=ProcessIdToSessionId(GetCurrentProcessId(),&session);
-    USEROBJECTFLAGS flags{};DWORD bytes=0;BOOL station=GetUserObjectInformationW(GetProcessWindowStation(),UOI_FLAGS,&flags,sizeof(flags),&bytes);
+    USEROBJECTFLAGS flags{};bytes=0;BOOL station=GetUserObjectInformationW(GetProcessWindowStation(),UOI_FLAGS,&flags,sizeof(flags),&bytes);
     std::cout<<"profile_probe environment session_known="<<(known?1:0)<<" session="<<session
              <<" visible_station="<<(station&&(flags.dwFlags&WSF_VISIBLE)?1:0)
              <<" remote_session="<<GetSystemMetrics(SM_REMOTESESSION)<<"\n";
@@ -251,6 +262,11 @@ int main(int argc,char **argv){
         std::cout<<"profile_probe chinese_runtime_layout_ready=PASS newly_loaded="<<(probe.loadedLayout?1:0)<<"\n";
         // Own cleanup before calling an installer that can partially fail.
         probe.owned=true;checked("register",install());
+        // Diagnose actual system COM resolution before a later profile-query
+        // failure can hide it. Still require this result at the original gate.
+        ComPtr<ITfTextInputProcessorEx> systemProcessor;
+        HRESULT systemComHr=CoCreateInstance(ZapClsid,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&systemProcessor));
+        result("registered_com_resolution",systemComHr);systemProcessor.Reset();
         // Registration ran through different COM instances inside the DLL.
         // Query with fresh managers after releasing prior enumerator caches.
         bool childVisible=queryFreshProcess();
@@ -266,7 +282,7 @@ int main(int argc,char **argv){
         require((registered.dwFlags&TF_IPP_FLAG_ENABLED)!=0,"registered_enabled");
         wchar_t registeredPath[MAX_PATH]{};DWORD pathBytes=sizeof(registeredPath);
         require(RegGetValueW(HKEY_CURRENT_USER,(probe.key+L"\\InprocServer32").c_str(),nullptr,RRF_RT_REG_SZ,nullptr,registeredPath,&pathBytes)==ERROR_SUCCESS&&fs::equivalent(fs::path(registeredPath),path),"registered_com_path_is_exact_dll");
-        ComPtr<ITfTextInputProcessorEx> registeredProcessor;checked("registered_com_object",CoCreateInstance(ZapClsid,nullptr,CLSCTX_INPROC_SERVER,IID_PPV_ARGS(&registeredProcessor)));registeredProcessor.Reset();
+        checked("registered_com_object",systemComHr);
         std::cout<<"profile_probe registered_identity_category_enabled=PASS\n";
         // No FORSESSION / default-profile update / deferred activation flag.
         probe.activationAttempted=true;checked("activate_for_process",probe.profiles->ActivateProfile(TF_PROFILETYPE_INPUTPROCESSOR,ZapLanguage,ZapClsid,ZapProfile,nullptr,TF_IPPMF_FORPROCESS));
