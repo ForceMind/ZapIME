@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-only
+"""Verify the measured official archive and extract a fixed safe allowlist."""
+import hashlib
+import json
+import os
+from pathlib import Path
+import zipfile
+
+ROOT = Path(os.environ.get("ZAPIME_TRANSLATION_WORKDIR", Path(__file__).resolve().parents[2] / "target" / "translation-probe")).resolve()
+URL = "https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2020-07-17.zip"
+SHA256 = "9749101f963f552a270ff4de0c8b69c88f51c358d6b4cc87760aff2cffcf4067"
+SIZE = 288654138
+FILES = ["README.md", "LICENSE", "opus.spm32k-spm32k.transformer.model1.npz.best-perplexity.npz", "opus.spm32k-spm32k.vocab.yml", "source.spm", "target.spm", "decoder.yml", "preprocess.sh", "postprocess.sh", "config.mk"]
+
+
+def main():
+    path = ROOT / "opus-2020-07-17.zip"
+    with path.open("rb") as stream:
+        digest = hashlib.file_digest(stream, "sha256").hexdigest()
+    if path.stat().st_size != SIZE or digest != SHA256:
+        raise RuntimeError("archive differs from the measured research artifact")
+    output = ROOT / "raw"
+    output.mkdir(exist_ok=True)
+    manifest = []
+    with zipfile.ZipFile(path) as archive:
+        for name in FILES:
+            info = archive.getinfo(name)
+            if "/" in name or "\\" in name or info.is_dir() or info.file_size > 350_000_000:
+                raise RuntimeError("unexpected allowlisted member")
+            data = archive.read(name)
+            if name == "LICENSE" and hashlib.sha256(data).hexdigest() != "945fbcb37deca05bccd7c3ca0e261679f1f5373515504fdbad68f6f3cf6f49b9":
+                raise RuntimeError("archive license differs")
+            (output / name).write_bytes(data)
+            manifest.append({"name": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()})
+    result = {"url": URL, "archive_bytes": SIZE, "archive_sha256_measured": digest, "upstream_independent_checksum_audited": False, "license": "CC-BY-4.0 from the archive's own LICENSE; not inherited from training-data repository root", "members": manifest}
+    (ROOT / "download-manifest.json").write_text(json.dumps(result, indent=2))
+    print("PASS measured archive SHA/size, fixed-member extraction, and package license")
+
+
+if __name__ == "__main__":
+    main()

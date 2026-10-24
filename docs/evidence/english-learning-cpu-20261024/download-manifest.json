@@ -1,0 +1,59 @@
+{
+  "url": "https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2020-07-17.zip",
+  "archive_bytes": 288654138,
+  "archive_sha256_measured": "9749101f963f552a270ff4de0c8b69c88f51c358d6b4cc87760aff2cffcf4067",
+  "upstream_independent_checksum_audited": false,
+  "license": "CC-BY-4.0 from the archive's own LICENSE; not inherited from training-data repository root",
+  "members": [
+    {
+      "name": "README.md",
+      "bytes": 789,
+      "sha256": "0c3f28720fa95c3abede9934f4782c63f127917d470ad883d60a7b94841e9b13"
+    },
+    {
+      "name": "LICENSE",
+      "bytes": 18652,
+      "sha256": "945fbcb37deca05bccd7c3ca0e261679f1f5373515504fdbad68f6f3cf6f49b9"
+    },
+    {
+      "name": "opus.spm32k-spm32k.transformer.model1.npz.best-perplexity.npz",
+      "bytes": 309987327,
+      "sha256": "5503d03131638d4817d7ec996c1c543ed4bba91abad74844c8ea5a07ccef7e41"
+    },
+    {
+      "name": "opus.spm32k-spm32k.vocab.yml",
+      "bytes": 1070985,
+      "sha256": "1d74c418c6c1b4cdff3e4494f0c6ba176b032e92f3ca79b08909f13250241ea5"
+    },
+    {
+      "name": "source.spm",
+      "bytes": 804677,
+      "sha256": "e27a3a1b539f4959ec72ea60e453f49156289f95d4e6000b29332efc45616203"
+    },
+    {
+      "name": "target.spm",
+      "bytes": 806530,
+      "sha256": "6a881f4717cd7265f53fea54fd3dc689c767c05338fac7a4590f3088cb2d7855"
+    },
+    {
+      "name": "decoder.yml",
+      "bytes": 259,
+      "sha256": "aec96eb0d7bb8fe173121f3e53bc50306bd6233cb008cac9aab4f561fed43057"
+    },
+    {
+      "name": "preprocess.sh",
+      "bytes": 844,
+      "sha256": "6383c597263f4e7249bda87de1c06791a7d0a140f73c05ebc3ea2dddeb796ffd"
+    },
+    {
+      "name": "postprocess.sh",
+      "bytes": 80,
+      "sha256": "039cec87f6d037fa216e918f3b0a7d4fd46517e54f4d422e73e0b4d6fc27ac0d"
+    },
+    {
+      "name": "config.mk",
+      "bytes": 545,
+      "sha256": "c023a795f06ad05caa5eb117beefd2d2d75f6dacc7be841db851dd09663b367e"
+    }
+  ]
+}

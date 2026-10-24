@@ -1,0 +1,11 @@
+{
+  "mode": "convert",
+  "elapsed_seconds": 1.103519807002158,
+  "output": "/workspace/scratch/99fcacf9684b/ZapIME/target/translation-probe/ct2-int8",
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  }
+}

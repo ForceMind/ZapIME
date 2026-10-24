@@ -1,0 +1,21 @@
+{
+  "scope": "Repository-path adaptation of original probe; fresh process, same local model, no model/host/UI integration",
+  "source_sha256": {
+    "probe.py": "bb9a808c2f1acde4ba77b305b15a087b6ffc46acf0341bdcc2f9edaced765118",
+    "prepare_model.py": "1d650d8707d96de77ee3cdde6ec037789f03a15730899a5a9c79f8c235563226",
+    "reproduce.sh": "7ee8e06ed30b68fdfe12419301a351a4dc4a689b3e19f8b146e959e75e97f0d3",
+    "requirements-linux-py312.txt": "99bc070cda43036c70f3a65da18f000312b4ea2e9951395341b80af00547e9d0"
+  },
+  "syntax_checks": [
+    "python3 -m py_compile scripts/translation_probe/probe.py scripts/translation_probe/prepare_model.py",
+    "bash -n scripts/translation_probe/reproduce.sh"
+  ],
+  "actual_command": "target/translation-probe/venv/bin/python scripts/translation_probe/probe.py infer --daily --offline",
+  "offline_results_match_original_all_10": true,
+  "full_reproduction_shell_rerun": false,
+  "limitations": "Individual preparation/conversion/inference steps ran in original probe; repository inference CLI reran. No second whole-archive download or complete shell replay.",
+  "fixed_archive_prepare_replayed": true,
+  "replayed_manifest_equals_preserved_original": true,
+  "pinned_wheel_resolver_check": "PASS pip --isolated download --no-index --find-links ... --only-binary=:all: --require-hashes -r requirements-linux-py312.txt (all four wheels)",
+  "published_license_original_bytes_retained": true
+}

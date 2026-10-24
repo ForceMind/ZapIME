@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-3.0-only
+# Run only from a disposable copy of this probe directory; ~1GB working disk.
+set -euo pipefail
+probe_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+mkdir -p "$probe_root/tmp" "$probe_root/wheels" "$probe_root/pip-cache" "$probe_root/cache"
+export TMPDIR="$probe_root/tmp"
+export PIP_CACHE_DIR="$probe_root/pip-cache"
+export XDG_CACHE_HOME="$probe_root/cache"
+python3 -m venv "$probe_root/venv"
+probe_python="$probe_root/venv/bin/python"
+"$probe_python" -m pip download --index-url https://pypi.org/simple --only-binary=:all: --dest "$probe_root/wheels" ctranslate2==4.8.3 numpy==2.5.4 sentencepiece==0.2.2 pyyaml==6.0.3
+"$probe_python" -m pip install --no-index --find-links "$probe_root/wheels" ctranslate2==4.8.3 numpy==2.5.4 sentencepiece==0.2.2 pyyaml==6.0.3
+if [[ ! -f "$probe_root/opus-2020-07-17.zip" ]]; then
+  curl --fail --location --max-time 180 --max-filesize 600000000 --limit-rate 20M --proto '=https' --tlsv1.2 --output "$probe_root/opus-2020-07-17.zip" https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2020-07-17.zip
+fi
+"$probe_python" "$probe_root/prepare_model.py"
+if [[ -e "$probe_root/ct2-int8" ]]; then
+  echo 'Model output already exists; refusing to overwrite. Use a fresh disposable probe copy.' >&2
+  exit 1
+fi
+"$probe_python" "$probe_root/probe.py" convert
+"$probe_python" "$probe_root/probe.py" infer
+"$probe_python" "$probe_root/probe.py" infer --offline
+"$probe_python" "$probe_root/probe.py" infer --daily
+"$probe_python" "$probe_root/probe.py" infer --daily --offline

@@ -1,0 +1,2 @@
+# Preserve the publisher's license bytes/SHA, including original whitespace.
+third_party/notices/opus-mt-zho-eng-20200717-CC-BY-4.0.txt -text -whitespace
