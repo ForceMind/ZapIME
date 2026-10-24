@@ -125,9 +125,17 @@ public final class EnglishLearningGate {
                 && pair.session == session && pair.revision == revision;
     }
 
+    static boolean validFragment(String text) {
+        return validText(text, MAX_SOURCE_UNITS, false);
+    }
+
     private static boolean validText(String text, int limit) {
+        return validText(text, limit, true);
+    }
+
+    private static boolean validText(String text, int limit, boolean requireContent) {
         if (text == null || text.isEmpty() || text.length() > limit) return false;
-        boolean content = false;
+        boolean content = false, spacing = false;
         for (int i = 0; i < text.length();) {
             char first = text.charAt(i);
             if (Character.isLowSurrogate(first)) return false;
@@ -137,12 +145,13 @@ public final class EnglishLearningGate {
             if (Character.isISOControl(cp) || cp == 0x061c || cp == 0x200e || cp == 0x200f
                     || (cp >= 0x202a && cp <= 0x202e) || (cp >= 0x2066 && cp <= 0x2069)) return false;
             int type = Character.getType(cp);
+            spacing |= Character.isWhitespace(cp) || Character.isSpaceChar(cp);
             content |= !Character.isWhitespace(cp) && !Character.isSpaceChar(cp)
                     && type != Character.FORMAT && type != Character.NON_SPACING_MARK
                     && type != Character.ENCLOSING_MARK && type != Character.COMBINING_SPACING_MARK;
             i += Character.charCount(cp);
         }
-        return content;
+        return content || (!requireContent && spacing);
     }
 
     private static boolean hasHan(String text) {
@@ -154,7 +163,7 @@ public final class EnglishLearningGate {
         return false;
     }
 
-    private static boolean sentenceEnd(String text) {
+    static boolean sentenceEnd(String text) {
         int end = text.length();
         while (end > 0) {
             int cp = text.codePointBefore(end);

@@ -123,6 +123,8 @@ public final class VoiceInstrumentation extends Instrumentation {
             stage="ordered PCM completion";finalPcmRace();
             stage="recording policy state";recordingPolicyState();
             stage="sync material Keystore";syncSecretStorage();
+            stage="learning accepted-commit service method";LearningHostProbe.run(this);
+            pass("learning service-method synthetic accepted/rejected/excluded commits, no editor reads and declared-field privacy allowlist (not active translation UI)");
             fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
             if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
             stage="model boundary";rejectImport("../tokens.txt");rejectImport("msime-model.json");rejectImport("tokens.txt");
