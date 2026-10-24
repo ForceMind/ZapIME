@@ -46,3 +46,7 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 固定 GPL LocalAsr 通过所有者线程受限的 JNI 使用固定 Sherpa/ONNX CPU 库。模型由显式 SAF 导入，按 APK 内白名单逐项校验后生成可信清单，保存在 App 私有目录；加载前重新校验。模型导入、加载、解码及缓存释放共用独立语音 worker，AudioRecord 由 capture 线程喂给有界内存队列，Rust 按键队列不等待语音。
 
 语音预览与正文分离，显式确认才 commitText，录音不上网/不落盘。epoch/ticket、InputConnection、选区版本和有界前后文共同防止迟到插入；隐藏、焦点/光标变化或内存压力取消。具体版本、安装和未验收边界见 [VOICE_INPUT.md](VOICE_INPUT.md)，不将 Android 合成音测试推广成四端语音完成。
+
+## 可选英语伴学接缝
+
+Android手打请求在入队时捕获独立学习ticket，随交接缓冲传递，commitText接受后交给有界EnglishLearningSession，再进入EnglishLearningGate。引擎epoch、学习context与翻译revision分开；每次编辑器重启都更换学习context。资料插入/搜索/语音和观察到的外部编辑不进入该路径。生产默认关闭、无模型，没有原文缓存、网络或资料写入。推理worker/英语条/显式收藏尚未接入，见ENGLISH_LEARNING.md。
