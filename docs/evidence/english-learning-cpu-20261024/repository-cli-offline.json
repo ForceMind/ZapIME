@@ -1,0 +1,135 @@
+{
+  "mode": "inference",
+  "synthetic_text_only": true,
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  },
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "device": "cpu",
+  "compute_type_requested": "int8",
+  "compute_type_actual": "int8_float32",
+  "inter_threads": 1,
+  "intra_threads": 1,
+  "beam_size": 1,
+  "max_decoding_length": 64,
+  "preprocessing": "bundled SentencePiece only; external Moses punctuation/control-character preprocessing in archive not applied",
+  "load_seconds": 0.11921314399660332,
+  "network": {
+    "method": "Linux libseccomp filter with no_new_privs, installed before ML imports",
+    "blocked_syscalls": [
+      "socket",
+      "socketpair",
+      "connect",
+      "accept",
+      "accept4",
+      "bind",
+      "listen",
+      "sendto",
+      "sendmsg",
+      "sendmmsg",
+      "recvfrom",
+      "recvmsg",
+      "recvmmsg",
+      "shutdown"
+    ],
+    "socket_creation_rejected": [
+      "AF_INET",
+      "AF_INET6"
+    ],
+    "scope": "this process and future threads only; not a device airplane-mode test"
+  },
+  "examples": [
+    {
+      "source": "明天见。",
+      "translation": "See you tomorrow.",
+      "seconds_including_sentencepiece": 0.0331979480033624,
+      "source_tokens": 3,
+      "output_tokens": 4
+    },
+    {
+      "source": "我正在学习英语。",
+      "translation": "I'm learning English.",
+      "seconds_including_sentencepiece": 0.039017909999529365,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "谢谢你的帮助。",
+      "translation": "Thank you for your help.",
+      "seconds_including_sentencepiece": 0.03616850300022634,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "我一会儿就到。",
+      "translation": "I'll be there in a minute.",
+      "seconds_including_sentencepiece": 0.06275034099962795,
+      "source_tokens": 5,
+      "output_tokens": 9
+    },
+    {
+      "source": "今天有点堵车。",
+      "translation": "A little traffic today.",
+      "seconds_including_sentencepiece": 0.039377284003421664,
+      "source_tokens": 5,
+      "output_tokens": 5
+    },
+    {
+      "source": "我已经在路上了。",
+      "translation": "I'm on my way.",
+      "seconds_including_sentencepiece": 0.04662700400513131,
+      "source_tokens": 5,
+      "output_tokens": 7
+    },
+    {
+      "source": "我没听清楚，你能再说一遍吗？",
+      "translation": "I'm not listening. Could you repeat that?",
+      "seconds_including_sentencepiece": 0.06308772799820872,
+      "source_tokens": 9,
+      "output_tokens": 11
+    },
+    {
+      "source": "我们改天再约吧。",
+      "translation": "We'll see you later.",
+      "seconds_including_sentencepiece": 0.046519832001649775,
+      "source_tokens": 7,
+      "output_tokens": 7
+    },
+    {
+      "source": "这个方案还需要进一步讨论。",
+      "translation": "This option requires further discussion.",
+      "seconds_including_sentencepiece": 0.036637826000514906,
+      "source_tokens": 5,
+      "output_tokens": 6
+    },
+    {
+      "source": "先这样吧。",
+      "translation": "Let's do this.",
+      "seconds_including_sentencepiece": 0.04088979300286155,
+      "source_tokens": 4,
+      "output_tokens": 6
+    }
+  ],
+  "model_files": [
+    {
+      "name": "config.json",
+      "bytes": 221,
+      "sha256": "152eb448f1020eb55f90971d7b95f61896abee8415d555ca51ae7897ac0a0e68"
+    },
+    {
+      "name": "model.bin",
+      "bytes": 82713357,
+      "sha256": "c66ca93eaa07e094903e1ea8278282ba17a9e2f1eb7de454b7b7ce5ff112664b"
+    },
+    {
+      "name": "shared_vocabulary.json",
+      "bytes": 1303998,
+      "sha256": "acbf13516c56af2bb78ebdb770c2e4648fd8232ddd17af75298119cbfa7ee33d"
+    }
+  ],
+  "limitations": "Single cloud-container x86-64 CPU probe, not translation quality evaluation, mobile latency/memory/battery, keyboard integration, or four-platform acceptance."
+}

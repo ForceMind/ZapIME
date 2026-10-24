@@ -59,6 +59,12 @@ APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPa
 
 后续一并适配该固定MSIME `MSIMEInputService.java` 的pendingCompositionMarkerLoss衔接：暂缓100ms的同位置标记丢失回报、重启取消及新按键前结算。原源码/贡献者/GPL保持可追溯；ZapIME使用异步worker重置解码器且不向应用新选区写空组字，仍不复制其UI线程getTextBeforeCursor路径。
 
-## 英语伴学候选（仅调研，未引入）
+## 英语伴学候选（开发研究，未引入客户端）
 
-2026-10-24核对Helsinki-NLP/opus-mt-zh-en官方模型卡：权重为CC-BY-4.0，不是Apache-2.0；CTranslate2与ONNX Runtime运行库分别为MIT。当前没有下载、转换、打包这些权重或增加SDK，不能把许可调研当成发行审计完成。正式引入须固定revision/SHA，保留作者/模型来源/许可证和量化转换说明，验证分词与各平台运行包；详见ENGLISH_LEARNING.md及其中官方来源。语音模型或拼音候选模型的既有许可不能覆盖此翻译模型。
+2026-10-24核对Helsinki-NLP/opus-mt-zh-en官方模型卡：权重为CC-BY-4.0，不是Apache-2.0；CTranslate2与ONNX Runtime运行库分别为MIT。产品没有打包这些权重或增加SDK；开发研究已另行下载并转换一个固定原始模型包，不能把许可调研/研究探针当成客户端发行审计完成。正式引入须固定revision/SHA，保留作者/模型来源/许可证和量化转换说明，验证分词与各平台运行包；详见ENGLISH_LEARNING.md及其中官方来源。语音模型或拼音候选模型的既有许可不能覆盖此翻译模型。
+
+### 独立CPU探针的实际包内许可核查
+
+开发探针使用官方模型卡所链接zho-eng/opus-2020-07-17.zip，已核实整个归档SHA/大小及其内部LICENSE明确为CC-BY-4.0；保留原文/README在third_party/notices。数据仓库根的训练数据NC许可不直接套到具有单独声明的此包，HF转换版声明也不代替原包实际检查。权重和运行库二进制均未提交；本次观测hash不是独立审计的发布者签名。可复现步骤、全部合成译文与运行库分发待审项见ENGLISH_TRANSLATION_PROBE.md。
+
+原始LICENSE包含行尾空白与末尾空行，按原字节/SHA保留；仅对这一文件关闭Git文本换行转换与空白告警，不修改许可文本或放宽其它源码检查。

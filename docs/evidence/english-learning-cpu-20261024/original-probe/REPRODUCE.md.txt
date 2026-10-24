@@ -1,0 +1,78 @@
+# Independent Chinese-English CPU feasibility probe
+
+This is an isolated Linux x86-64 research probe. It does not enable a ZapIME
+feature, integrate a keyboard model, or establish mobile speed or accuracy.
+
+Only the public official archive is downloaded:
+
+https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2020-07-17.zip
+
+The measured archive is 288654138 bytes, SHA-256
+`9749101f963f552a270ff4de0c8b69c88f51c358d6b4cc87760aff2cffcf4067`.
+This is a locally measured pin after HTTPS retrieval, not an independently
+audited publisher checksum. The archive's own `LICENSE` is **CC-BY-4.0**,
+SHA-256 `945fbcb37deca05bccd7c3ca0e261679f1f5373515504fdbad68f6f3cf6f49b9`.
+Its README SHA is
+`0c3f28720fa95c3abede9934f4782c63f127917d470ad883d60a7b94841e9b13`.
+The Tatoeba-Challenge repository's training-data license is not applied to these
+weights; the artifact includes its own license. Keep that license and author
+attribution, and identify the CTranslate2 INT8 conversion when distributing an
+audited derived model pack. No model pack is integrated or submitted here.
+
+The archive link appears in the publisher's model card:
+https://huggingface.co/Helsinki-NLP/opus-mt-zh-en
+
+Use an empty, disposable copy of this probe directory with Python 3.12, curl,
+about 1GB working disk, ordinary PyPI/archive access, and Linux libseccomp.
+Copy `probe.py`, `prepare_model.py`, and `reproduce.sh`, then run:
+
+```sh
+bash reproduce.sh
+```
+
+The helper installs only pinned CPU inference/conversion dependencies from
+official PyPI (CT2 4.8.3, NumPy 2.5.4, SentencePiece 0.2.2, PyYAML 6.0.3),
+then installs those downloaded wheels with `--no-index`. It does not install
+Torch or CUDA dependencies. Wheel hashes from the actual run are preserved in
+`wheel-manifest.json`; CTranslate2's prebuilt wheel feature set and complete
+shipping dependency licenses still need a separate distribution audit.
+
+The official OPUS-MT converter loads the bundled Marian NPZ/config/vocabulary;
+no pickle parser is written and no bundled shell preprocessing script is run.
+Only SentencePiece is applied in the inference probe. The archive's external
+Moses punctuation/control-character pipeline is not reproduced, so these small
+results do not establish a production preprocessing/quality contract.
+
+`probe.py` sets CPU thread limits before importing ML libraries. Requested INT8
+was actually `int8_float32`, with one inter/intra CPU thread and greedy beam 1.
+Model load timing is constructor elapsed time after filesystem caches were
+warmed by conversion; it excludes process startup/imports and is not cold-start
+or phone latency. Every synthetic example and observed output is retained;
+there are no accuracy scores or hand-picked success-only results.
+
+The offline pass is a separate process. Before ML imports it sets
+`no_new_privs` and uses the already-installed Linux libseccomp to reject the
+listed socket/connect/send/receive syscalls with EPERM. Both IPv4 and IPv6 socket
+creation are actually checked to fail. Future threads inherit the restriction.
+This is process-level network syscall denial, not a device airplane-mode test
+or a general-purpose security sandbox. `unshare --net -- true` was attempted
+without elevation and rejected by the container; no privilege escalation was
+requested. The local-only outputs match the network-capable baseline.
+
+Results:
+
+- `download-manifest.json`: artifact/member hashes and package license.
+- `conversion-result.json`: actual conversion result.
+- `inference-online-capable.json`, `inference-offline.json`: all first three examples.
+- `inference-daily-online-capable.json`, `inference-daily-offline.json`: all ten examples.
+- `wheel-manifest.json`: actual official PyPI wheel hashes.
+- `probe-summary.json`: compact combined evidence and important quality limitations.
+
+Several daily-language outputs are misleading or underspecified. In particular,
+the observed "I'm not listening" changes the intended sense of not hearing
+clearly, and "Let's do this" does not safely capture "先这样吧". Do not present
+the model as a reliable teaching authority or silently treat its output as the
+only correct English expression.
+
+Keep weights, wheels, venv, caches, and raw model files under `target/`; they must
+not be committed. Source scripts and JSON evidence can be reviewed separately.

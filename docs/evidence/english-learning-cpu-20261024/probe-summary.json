@@ -1,0 +1,250 @@
+{
+  "created_at_utc": "2026-10-24T10:55:06.747114+00:00",
+  "kind": "independent synthetic Linux x86-64 CPU feasibility probe; not product acceptance",
+  "artifact": {
+    "url": "https://object.pouta.csc.fi/Tatoeba-MT-models/zho-eng/opus-2020-07-17.zip",
+    "archive_bytes": 288654138,
+    "archive_sha256_measured": "9749101f963f552a270ff4de0c8b69c88f51c358d6b4cc87760aff2cffcf4067",
+    "upstream_independent_checksum_audited": false,
+    "license": "CC-BY-4.0 from the archive's own LICENSE; not inherited from training-data repository root",
+    "members": [
+      {
+        "name": "README.md",
+        "bytes": 789,
+        "sha256": "0c3f28720fa95c3abede9934f4782c63f127917d470ad883d60a7b94841e9b13"
+      },
+      {
+        "name": "LICENSE",
+        "bytes": 18652,
+        "sha256": "945fbcb37deca05bccd7c3ca0e261679f1f5373515504fdbad68f6f3cf6f49b9"
+      },
+      {
+        "name": "opus.spm32k-spm32k.transformer.model1.npz.best-perplexity.npz",
+        "bytes": 309987327,
+        "sha256": "5503d03131638d4817d7ec996c1c543ed4bba91abad74844c8ea5a07ccef7e41"
+      },
+      {
+        "name": "opus.spm32k-spm32k.vocab.yml",
+        "bytes": 1070985,
+        "sha256": "1d74c418c6c1b4cdff3e4494f0c6ba176b032e92f3ca79b08909f13250241ea5"
+      },
+      {
+        "name": "source.spm",
+        "bytes": 804677,
+        "sha256": "e27a3a1b539f4959ec72ea60e453f49156289f95d4e6000b29332efc45616203"
+      },
+      {
+        "name": "target.spm",
+        "bytes": 806530,
+        "sha256": "6a881f4717cd7265f53fea54fd3dc689c767c05338fac7a4590f3088cb2d7855"
+      },
+      {
+        "name": "decoder.yml",
+        "bytes": 259,
+        "sha256": "aec96eb0d7bb8fe173121f3e53bc50306bd6233cb008cac9aab4f561fed43057"
+      },
+      {
+        "name": "preprocess.sh",
+        "bytes": 844,
+        "sha256": "6383c597263f4e7249bda87de1c06791a7d0a140f73c05ebc3ea2dddeb796ffd"
+      },
+      {
+        "name": "postprocess.sh",
+        "bytes": 80,
+        "sha256": "039cec87f6d037fa216e918f3b0a7d4fd46517e54f4d422e73e0b4d6fc27ac0d"
+      },
+      {
+        "name": "config.mk",
+        "bytes": 545,
+        "sha256": "c023a795f06ad05caa5eb117beefd2d2d75f6dacc7be841db851dd09663b367e"
+      }
+    ]
+  },
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  },
+  "conversion_seconds": 1.103519807002158,
+  "converted_model_files": [
+    {
+      "name": "config.json",
+      "bytes": 221,
+      "sha256": "152eb448f1020eb55f90971d7b95f61896abee8415d555ca51ae7897ac0a0e68"
+    },
+    {
+      "name": "model.bin",
+      "bytes": 82713357,
+      "sha256": "c66ca93eaa07e094903e1ea8278282ba17a9e2f1eb7de454b7b7ce5ff112664b"
+    },
+    {
+      "name": "shared_vocabulary.json",
+      "bytes": 1303998,
+      "sha256": "acbf13516c56af2bb78ebdb770c2e4648fd8232ddd17af75298119cbfa7ee33d"
+    }
+  ],
+  "inference_asset_bytes_including_spm_license_readme_excluding_runtime": 85648224,
+  "cpu": {
+    "device": "cpu",
+    "inter_threads": 1,
+    "intra_threads": 1,
+    "requested_compute_type": "int8",
+    "actual_compute_type": "int8_float32",
+    "beam_size": 1,
+    "max_decoding_length": 64,
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+    "python": "3.12.14"
+  },
+  "first_three_results_file": "inference-online-capable.json",
+  "first_three_offline_results_file": "inference-offline.json",
+  "all_ten_results_file": "inference-daily-online-capable.json",
+  "all_ten_offline_results_file": "inference-daily-offline.json",
+  "all_ten_offline_results": [
+    {
+      "source": "明天见。",
+      "translation": "See you tomorrow.",
+      "seconds_including_sentencepiece": 0.042454053000255954,
+      "source_tokens": 3,
+      "output_tokens": 4
+    },
+    {
+      "source": "我正在学习英语。",
+      "translation": "I'm learning English.",
+      "seconds_including_sentencepiece": 0.0544521820047521,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "谢谢你的帮助。",
+      "translation": "Thank you for your help.",
+      "seconds_including_sentencepiece": 0.045738778993836604,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "我一会儿就到。",
+      "translation": "I'll be there in a minute.",
+      "seconds_including_sentencepiece": 0.06336196500342339,
+      "source_tokens": 5,
+      "output_tokens": 9
+    },
+    {
+      "source": "今天有点堵车。",
+      "translation": "A little traffic today.",
+      "seconds_including_sentencepiece": 0.035603118005383294,
+      "source_tokens": 5,
+      "output_tokens": 5
+    },
+    {
+      "source": "我已经在路上了。",
+      "translation": "I'm on my way.",
+      "seconds_including_sentencepiece": 0.05154915599996457,
+      "source_tokens": 5,
+      "output_tokens": 7
+    },
+    {
+      "source": "我没听清楚，你能再说一遍吗？",
+      "translation": "I'm not listening. Could you repeat that?",
+      "seconds_including_sentencepiece": 0.0791541220023646,
+      "source_tokens": 9,
+      "output_tokens": 11
+    },
+    {
+      "source": "我们改天再约吧。",
+      "translation": "We'll see you later.",
+      "seconds_including_sentencepiece": 0.04590261900011683,
+      "source_tokens": 7,
+      "output_tokens": 7
+    },
+    {
+      "source": "这个方案还需要进一步讨论。",
+      "translation": "This option requires further discussion.",
+      "seconds_including_sentencepiece": 0.04649538599915104,
+      "source_tokens": 5,
+      "output_tokens": 6
+    },
+    {
+      "source": "先这样吧。",
+      "translation": "Let's do this.",
+      "seconds_including_sentencepiece": 0.04188196400355082,
+      "source_tokens": 4,
+      "output_tokens": 6
+    }
+  ],
+  "offline_recheck": {
+    "method": {
+      "method": "Linux libseccomp filter with no_new_privs, installed before ML imports",
+      "blocked_syscalls": [
+        "socket",
+        "socketpair",
+        "connect",
+        "accept",
+        "accept4",
+        "bind",
+        "listen",
+        "sendto",
+        "sendmsg",
+        "sendmmsg",
+        "recvfrom",
+        "recvmsg",
+        "recvmmsg",
+        "shutdown"
+      ],
+      "socket_creation_rejected": [
+        "AF_INET",
+        "AF_INET6"
+      ],
+      "scope": "this process and future threads only; not a device airplane-mode test"
+    },
+    "first_three_same_outputs": true,
+    "all_ten_same_outputs": true,
+    "unshare_attempt": {
+      "command": "unshare --net -- true",
+      "exit_code": 1,
+      "stderr": "unshare: unshare failed: Operation not permitted",
+      "no_escalation_requested": true
+    }
+  },
+  "preprocessing": "bundled SentencePiece only; external Moses punctuation/control-character preprocessing in archive not applied",
+  "quality_observations_not_scores": [
+    {
+      "source": "我没听清楚，你能再说一遍吗？",
+      "observed_translation": "I'm not listening. Could you repeat that?",
+      "observation": "Changes not hearing clearly into not listening; misleading for learning."
+    },
+    {
+      "source": "我们改天再约吧。",
+      "observed_translation": "We'll see you later.",
+      "observation": "Does not preserve the rescheduling/arranging nuance."
+    },
+    {
+      "source": "先这样吧。",
+      "observed_translation": "Let's do this.",
+      "observation": "Context-dependent phrase rendered as an action proposal; can mislead."
+    },
+    {
+      "source": "今天有点堵车。",
+      "observed_translation": "A little traffic today.",
+      "observation": "Fragmentary daily-language expression; no unique reference translation imposed."
+    }
+  ],
+  "timing_limitations": "Constructor elapsed excludes Python process/import startup; filesystem caches warmed by prior conversion. Single pass of few synthetic examples, not statistical benchmark.",
+  "no_torch_or_cuda_dependencies_installed": true,
+  "runtime_distribution_audit_completed": false,
+  "mobile_or_four_platform_acceptance": false,
+  "model_or_runtime_integrated_into_ZapIME": false,
+  "source_sha256": {
+    "probe.py": "d33c607ea7bc2659f34405cbe9a3377dc556f235510cfc00c3349a9dc11d64d1",
+    "prepare_model.py": "46cd206f9f6437844636f873ba1d79e2a0a03f36dde135f48f4344e1707c463b",
+    "reproduce.sh": "d6480e32c31a6ad94c96747de53a5dee1e3ae9b2cdbee2df4f2478cc0bdecd4f",
+    "REPRODUCE.md": "822241943800e56b324be960e66f3bb2c14fbbf8f20252858fae865932b469e6"
+  },
+  "wheel_manifest_file": "wheel-manifest.json",
+  "all_artifacts_under_ignored_target": true,
+  "no_credentials_or_real_user_text_used": true,
+  "publisher": "University of Helsinki Language Technology Research Group / Helsinki-NLP",
+  "official_model_card": "https://huggingface.co/Helsinki-NLP/opus-mt-zh-en",
+  "model_identity": "Original zho-eng opus-2020-07-17 Marian archive",
+  "derived_model_change": "CTranslate2 4.8.3 OPUS converter, INT8 serialization; source weights/model vocab retained in local-only working directory"
+}
