@@ -39,6 +39,7 @@ fn offline_pinyin_selects_and_clears_composition() {
     let commit =
         session.request(&json!({"op":"select","index":index,"generation":view["generation"]}));
     assert_eq!(commit["commit"], "你好");
+    assert_eq!(commit["commit_source"], "engine");
     assert_eq!(commit["preedit"], "");
 }
 
@@ -82,10 +83,9 @@ fn backspace_raw_commit_and_focus_reset() {
     session.request(&json!({"op":"key","text":"n"}));
     session.request(&json!({"op":"key","text":"i"}));
     session.request(&json!({"op":"command","name":"Backspace"}));
-    assert_eq!(
-        session.request(&json!({"op":"command","name":"CommitRaw"}))["commit"],
-        "n"
-    );
+    let raw = session.request(&json!({"op":"command","name":"CommitRaw"}));
+    assert_eq!(raw["commit"], "n");
+    assert_eq!(raw["commit_source"], "engine");
     session.request(&json!({"op":"key","text":"h"}));
     session.request(&json!({"op":"reset"}));
     assert_eq!(session.request(&json!({"op":"view"}))["preedit"], "");
@@ -107,10 +107,93 @@ fn persisted_user_candidate_rule_changes_selection_and_survives_reopen() {
         view = session.request(&json!({"op":"key","text":c.to_string()}));
     }
     assert_eq!(view["candidates"][0], "拟好");
-    assert_eq!(
-        session.request(&json!({"op":"command","name":"CommitCandidate"}))["commit"],
-        "拟好"
-    );
+    let reordered = session.request(&json!({"op":"command","name":"CommitCandidate"}));
+    assert_eq!(reordered["commit"], "拟好");
+    // Reordering a real engine row does not turn it into injected saved text.
+    assert_eq!(reordered["commit_source"], "engine");
+}
+
+#[test]
+fn saved_candidate_provenance_covers_select_space_and_does_not_leak_to_later_replies() {
+    for content in [
+        json!({"type":"snippet","code":"nihao","text":"合成快捷短语","tags":[]}),
+        json!({"type":"dictionary","scheme":"pinyin","code":"nihao","text":"合成个人词库","weight":100}),
+        json!({"type":"candidate_rule","scheme":"pinyin","code":"nihao","text":"合成新增规则","position":1}),
+        // Equal text is still saved data when a dictionary replaces the engine
+        // row with a personal extension; provenance is not string equality.
+        json!({"type":"dictionary","scheme":"pinyin","code":"nihao","text":"你好","weight":100}),
+    ] {
+        let (dir, _private) = fixture();
+        let mut session = InputSession::open(
+            &dir.path().join("resources"),
+            &dir.path().join("data"),
+            &dir.path().join("cache"),
+            false,
+        )
+        .unwrap();
+        let text = content["text"].clone();
+        let edited = session.request(&json!({"op":"personal_edit","id":uuid::Uuid::new_v4(),"operation_id":uuid::Uuid::new_v4(),"expected_revision":0,"content":content}));
+        assert!(edited.get("error").is_none(), "{edited}");
+        assert_eq!(edited["commit_source"], "none");
+        for select in [true, false] {
+            let mut view = json!(null);
+            for c in "nihao".chars() {
+                view = session.request(&json!({"op":"key","text":c.to_string()}));
+                assert!(view["commit"].is_null());
+                assert_eq!(view["commit_source"], "none");
+            }
+            assert_eq!(view["candidates"][0], text);
+            let generation = view["generation"].as_u64().unwrap();
+            let committed = if select {
+                session.request(&json!({"op":"select","index":0,"generation":generation}))
+            } else {
+                session.request(&json!({"op":"command","name":"CommitCandidate"}))
+            };
+            assert_eq!(committed["commit"], text);
+            assert_eq!(committed["commit_source"], "saved_data");
+            assert_eq!(committed["preedit"], "");
+            assert_eq!(committed["generation"], generation + 1);
+            let idle = session.request(&json!({"op":"view"}));
+            assert!(idle["commit"].is_null());
+            assert_eq!(idle["commit_source"], "none");
+            assert_eq!(idle["generation"], committed["generation"]);
+            let stale = session.request(&json!({"op":"select","index":0,"generation":generation}));
+            assert_eq!(stale["error"], "stale_generation");
+            assert!(stale.get("commit").is_none());
+            assert!(stale.get("commit_source").is_none());
+            let composing = session.request(&json!({"op":"key","text":"n"}));
+            assert!(!composing["preedit"].as_str().unwrap().is_empty());
+            let cancelled = session.request(&json!({"op":"command","name":"Cancel"}));
+            assert_eq!(cancelled["preedit"], "");
+            assert!(cancelled["commit"].is_null());
+            assert_eq!(cancelled["commit_source"], "none");
+            let cancelled = session.request(&json!({"op":"reset"}));
+            assert!(cancelled["commit"].is_null());
+            assert_eq!(cancelled["commit_source"], "none");
+        }
+        // The same session subsequently selects another real engine row.
+        let mut view = json!(null);
+        for c in "nihao".chars() {
+            view = session.request(&json!({"op":"key","text":c.to_string()}));
+        }
+        let engine_index = view["candidates"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .position(|candidate| candidate == "拟好")
+            .unwrap();
+        let engine = session
+            .request(&json!({"op":"select","index":engine_index,"generation":view["generation"]}));
+        assert_eq!(engine["commit"], "拟好");
+        assert_eq!(engine["commit_source"], "engine");
+        assert_eq!(
+            session.request(&json!({"op":"command","name":"Cancel"}))["commit_source"],
+            "none"
+        );
+        let invalid = session.request(&json!({"op":"command","name":"Invalid"}));
+        assert_eq!(invalid["error"], "invalid_command");
+        assert!(invalid.get("commit_source").is_none());
+    }
 }
 
 #[test]

@@ -50,3 +50,5 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 ## 可选英语伴学接缝
 
 Android手打请求在入队时捕获独立学习ticket，随交接缓冲传递，commitText接受后交给有界EnglishLearningSession，再进入EnglishLearningGate。引擎epoch、学习context与翻译revision分开；每次编辑器重启都更换学习context。资料插入/搜索/语音和观察到的外部编辑不进入该路径。生产默认关闭、无模型，没有原文缓存、网络或资料写入。推理worker/英语条/显式收藏尚未接入，见ENGLISH_LEARNING.md。
+
+核心JSON追加commit_source，仅区分此请求的engine/saved_data/none；Android伴学只接显式engine，缺/未知字段保守排除但不改变上屏。个人候选扩展和面板资料的来源由共享核心判定，不靠请求名或正文相等推测，详见ENGLISH_LEARNING.md。

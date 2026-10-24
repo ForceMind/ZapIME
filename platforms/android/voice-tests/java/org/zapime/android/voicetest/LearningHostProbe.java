@@ -9,6 +9,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import java.lang.reflect.*;
 import java.util.concurrent.ExecutorService;
+import org.json.JSONObject;
 
 /** Same-UID synthetic service-method probe, separate from real system IME/Editable tests. */
 final class LearningHostProbe {
@@ -94,6 +95,28 @@ final class LearningHostProbe {
                 check(call(session, "capture", none) != ticket
                         && call(session, "takeReady", new Class<?>[]{long.class}, Long.MAX_VALUE) == null,
                         "external selection did not clear sentence");
+
+                Class<?>[] coreCommitSignature = {InputConnection.class, JSONObject.class, ticketType};
+                for (Object source : new Object[]{"engine", "saved_data", "none", "future-source", JSONObject.NULL, 17, null}) {
+                    call(session, "beginEditor", new Class<?>[]{boolean.class}, true);
+                    ticket = call(session, "capture", none);
+                    call(service, "trackCommit", commitSignature, editor, "前半", ticket);
+                    JSONObject reply = new JSONObject().put("commit", "核心合成。");
+                    if (source != null) reply.put("commit_source", source);
+                    int previousLength = acceptedText.length();
+                    call(service, "trackCoreCommit", coreCommitSignature, editor, reply, ticket);
+                    check(acceptedText.substring(previousLength).equals("核心合成。"),
+                            "provenance filter changed the editor commit");
+                    request = call(session, "takeReady", new Class<?>[]{long.class}, Long.MAX_VALUE);
+                    if ("engine".equals(source)) {
+                        check(request != null && "前半核心合成。".equals(call(request, "source", none)),
+                                "explicit engine commit not assembled");
+                        call(session, "complete", new Class<?>[]{request.getClass(), String.class}, request, null);
+                    } else {
+                        check(request == null && call(session, "capture", none) != ticket,
+                                "saved/missing/unknown provenance entered learning");
+                    }
+                }
 
                 Class<?> policy = Class.forName("org.zapime.android.EnglishLearningEligibility", true, loader);
                 Method allows = policy.getDeclaredMethod("allows", EditorInfo.class, boolean.class); allows.setAccessible(true);

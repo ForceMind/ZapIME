@@ -48,3 +48,5 @@
 - Windows系统注册实验仍为草稿PR #40，最新实际代码c11b95d；独立进程profile门禁未通过。接续先读docs/WINDOWS_ACCEPTANCE_REPORT.md，不能省略失败、把清理PASS视为输入成功，或把临时作用域对照复制成产品安装逻辑。
 
 - 英语伴学已有策略/有界组装与宿主提交接缝，默认关闭且无模型时不捕获，未接推理worker/UI/收藏；不能用测试英文充当译文或添加无能力开关。未来每次onStartInput都重开独立学习session，排除私密/搜索及非确认提交，单独worker且实际停止后完成回调；不扫描App全文、自动记历史、云回退或逐次翻译写R2。仅显式收藏保留所见不可变中英对，OPUS权重与运行库分开审计许可。
+
+- 伴学核心commit必须严格核对本请求commit_source=engine；saved_data/none/缺字段/未知类型仍正常上屏但不进入学习。个人None引擎索引扩展及personal_commit标saved_data，规则只重排既有引擎行不改其来源；不缓存上次来源、不改变候选/正文/generation。直接手打fallback与核心commit分开。

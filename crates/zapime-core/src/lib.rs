@@ -20,6 +20,13 @@ pub struct InputSession {
     personal: Vec<Record>,
 }
 
+/// Provenance of this reply only; never retained across requests or errors.
+#[derive(Clone, Copy)]
+enum CommitSource {
+    Engine,
+    SavedData,
+}
+
 impl InputSession {
     /// 调用方在后台准备资源后创建；返回后按键处理无网络与资源下载。
     pub fn open(
@@ -116,6 +123,7 @@ impl InputSession {
                 .unwrap_or((Uuid::new_v4(), 0));
             return self.request(&json!({"op":"personal_edit","id":id,"operation_id":Uuid::new_v4(),"expected_revision":revision,"content":{"type":"candidate_rule","scheme":"pinyin","code":code,"text":text,"position":1}}));
         }
+        let mut commit_source = CommitSource::Engine;
         let result = match request["op"].as_str().unwrap_or("") {
             "layout" => {
                 let enabled = match request["name"].as_str() {
@@ -166,7 +174,9 @@ impl InputSession {
                     return json!({"error":"invalid_command"});
                 };
                 if command == Command::CommitCandidate && !self.display_candidates().is_empty() {
-                    self.select_display(0)
+                    let (result, source) = self.select_display(0);
+                    commit_source = source;
+                    result
                 } else {
                     self.engine.command(command)
                 }
@@ -184,7 +194,9 @@ impl InputSession {
                 if index >= self.display_candidates().len() {
                     return json!({"error":"invalid_candidate"});
                 }
-                self.select_display(index)
+                let (result, source) = self.select_display(index);
+                commit_source = source;
+                result
             }
             "personal_edit" => {
                 let Some(store) = self.store.as_mut() else {
@@ -247,7 +259,10 @@ impl InputSession {
             }
             "personal_query" => return self.query_personal(request),
             "personal_commit" => match self.commit_personal(request) {
-                Ok(result) => result,
+                Ok(result) => {
+                    commit_source = CommitSource::SavedData;
+                    result
+                }
                 Err(error) => return json!({"error":error}),
             },
             "personal_action" => match self.act_personal(request) {
@@ -256,11 +271,11 @@ impl InputSession {
             },
             "personal_list" => return json!({"records":self.personal}),
             "reset" => self.engine.command(Command::Cancel),
-            "view" => return self.view(KeyResult::handled()),
+            "view" => return self.view(KeyResult::handled(), CommitSource::Engine),
             _ => return json!({"error":"unknown_operation"}),
         };
         self.generation += 1;
-        self.view(result)
+        self.view(result, commit_source)
     }
 
     // 自定义条目只在整段编码精确匹配时覆盖；其余拼音解码继续走原引擎。
@@ -324,23 +339,37 @@ impl InputSession {
         rows.truncate(40);
         rows
     }
-    fn select_display(&mut self, index: usize) -> KeyResult {
+    fn select_display(&mut self, index: usize) -> (KeyResult, CommitSource) {
         match self.display_candidates().get(index).cloned() {
-            Some((_, Some(engine_index))) => self.engine.select(engine_index),
+            Some((_, Some(engine_index))) => {
+                (self.engine.select(engine_index), CommitSource::Engine)
+            }
             Some((text, None)) => {
                 self.engine.command(Command::Cancel);
-                KeyResult::committed(text)
+                (KeyResult::committed(text), CommitSource::SavedData)
             }
-            None => KeyResult::unhandled(),
+            None => (KeyResult::unhandled(), CommitSource::Engine),
         }
     }
 
-    fn view(&self, result: KeyResult) -> Value {
+    fn view(&self, result: KeyResult, source: CommitSource) -> Value {
         let snapshot = self.engine.snapshot();
+        // A candidate rule may only reorder an existing engine row. Keep that
+        // row's engine identity; injected dictionary/snippet/rule text has no
+        // engine index and is saved data, even if its text happens to match.
+        let commit_source = if result.commit.as_ref().is_some_and(|text| !text.is_empty()) {
+            match source {
+                CommitSource::Engine => "engine",
+                CommitSource::SavedData => "saved_data",
+            }
+        } else {
+            "none"
+        };
         json!({
             "generation": self.generation,
             "handled": result.handled,
             "commit": result.commit,
+            "commit_source": commit_source,
             "preedit": snapshot.preedit,
             "candidates": self.display_candidates().into_iter().map(|row|row.0).collect::<Vec<_>>(),
             "code": snapshot.editing_text,

@@ -91,3 +91,9 @@
 2026-10-24新增验证：本地同一JDK17/--release8入口通过Gate及Session合成回归；Android目标UID测试新增未attach的Service方法探针，使用合成BaseInputConnection接受/拒绝、排除插入、选区回声/外部变化及EditorInfo声明白名单。后者必须由新CI真实编译执行；与独立Editable中的真实系统IME输入测试分开，不称已启用翻译端到端验收。
 
 固定模型的第二轮[预处理/解码对照](ENGLISH_TRANSLATION_PREPROCESSING.md)已完成：实际补上模型包启用的PRE=simple，并独立对照beam1/6，19句×四配置×在线/受限共8新进程。存在局部改善和否定含义倒转，不将更顺口或更大beam视为教学质量通过；Moses类别C规范化还会拆开ZWJ表情，不能直接复制成产品文本策略。
+
+### 共享核心提交来源契约（接续候选）
+
+核心候选选择不必都是普通解码文本：个人短语、词库或新增规则也可能通过同一个select/CommitCandidate上屏。新JSON `commit_source`采用请求内来源，非空提交分为`engine`与`saved_data`，无提交/空串为`none`；错误保留原错误形状，没有上次来源。None引擎索引的个人扩展（即使与引擎同文字）及personal_commit标为saved_data；仅重排既有引擎行的规则仍保留engine映射。字段不改变正文、排序、generation或FFI ABI，旧宿主可忽略它。
+
+Android核心提交仅接受严格字符串engine的当前ticket；缺字段、null、错误类型、未知来源及saved_data仍正常上屏，但清空伴学上下文。直接手打fallback/标点独立保留原有来源。这样可以排除经候选展开的个人资料，而不仅是资料面板插入。字段是本地受信任核心提供的来源提示，不是密码学证明。实际模型/worker/启用UI仍未接入。

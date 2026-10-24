@@ -1,0 +1,25 @@
+Source: PR #46 b9afa679f98164be7370b6402963456c59c66a26
+Run 40102484046 attempt 1, Android API 35, job 120898387509
+Exact selected log lines only; full job is in GitHub Actions. Synthetic method probe is separate from actual system IME/Editable and shutdown acceptance.
+2026-10-24T14:31:27.7724356Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-24T14:31:27.7725201Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-24T14:34:48.4780071Z PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-24T14:34:48.4784022Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-24T14:36:08.1709819Z PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-24T14:36:08.1714651Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-24T14:36:48.2047813Z INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+2026-10-24T14:36:48.2051562Z INSTRUMENTATION_STATUS: stream=PASS recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)
+2026-10-24T14:36:48.2055961Z INSTRUMENTATION_STATUS: stream=PASS actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)
+2026-10-24T14:36:48.2060609Z INSTRUMENTATION_STATUS: stream=PASS learning service-method synthetic accepted/rejected/excluded commits, no editor reads and declared-field privacy allowlist (not active translation UI)
+2026-10-24T14:36:48.2063602Z INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+2026-10-24T14:36:48.2067261Z INSTRUMENTATION_STATUS: stream=PASS model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)
+2026-10-24T14:36:48.2070225Z INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+2026-10-24T14:36:48.2072905Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-24T14:36:48.2075484Z INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+2026-10-24T14:36:48.2112455Z INSTRUMENTATION_STATUS: stream=PASS API29+ production recording monitor with actual own active unsilenced configuration and emulator PCM (silence); no policy override
+2026-10-24T14:36:48.2123454Z INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+2026-10-24T14:36:48.2126006Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-24T14:36:48.2127121Z INSTRUMENTATION_CODE: -1
+2026-10-24T14:36:48.2130441Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable
+2026-10-24T14:36:48.2131874Z INSTRUMENTATION_CODE: -1
+2026-10-24T14:36:49.4587033Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle

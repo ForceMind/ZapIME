@@ -287,7 +287,7 @@ public final class ZapInputMethodService extends InputMethodService {
         connection.beginBatchEdit();
         try {
         boolean wroteText=!value.isNull("commit");
-        if(wroteText)trackCommit(connection,value.optString("commit"),learningTicket);
+        if(wroteText)trackCoreCommit(connection,value,learningTicket);
         if(!value.optBoolean("handled") && fallback!=null) {
             if(fallback.equals("⌫")) delete(connection);
             else if(fallback.equals("↵"))enter(connection);
@@ -308,6 +308,13 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private EnglishLearningSession.Ticket captureLearning(){
         return !privateSession&&!searchActive&&(layer.equals("letters")||layer.equals("symbols")||layer.equals("numbers")||layer.equals("emoji"))?learning.capture():null;
+    }
+    private void trackCoreCommit(InputConnection connection,JSONObject result,EnglishLearningSession.Ticket ticket){
+        // Only a current core reply with explicit engine provenance is eligible.
+        // Personal candidate extensions share select/CommitCandidate operations,
+        // so the request name alone cannot distinguish saved text from typing.
+        Object source=result.opt("commit_source");
+        trackCommit(connection,result.optString("commit"),source instanceof String&&source.equals("engine")?ticket:null);
     }
     private void trackCommit(InputConnection connection,String text,EnglishLearningSession.Ticket ticket){
         boolean accepted=false;
