@@ -1,0 +1,75 @@
+Source: Actions40043429539 job120719532486; head9d54d2ac90f27211182742dd168f60e7c4b23a9f. Exact selected job lines; full logs remain in Actions. Captured 2026-10-24T00:14:35.884Z. Overall FAILURE. Child runtime cleanup FAILED; parent cleanup and language-list restoration are separate results.
+
+2026-10-24T00:10:46.5988298Z PASS actual executable refusal in self-hosted environment before registry access
+2026-10-24T00:10:48.6154533Z PASS actual language-fixture refusal in self-hosted environment before language settings access
+2026-10-24T00:10:51.3666041Z language_fixture original_count=1 chinese_present=0
+2026-10-24T00:10:51.3671176Z language_fixture chinese_user_language_present=1; no language-pack installation
+2026-10-24T00:10:51.3671884Z profile_probe com_security token_known=1 token_status=0 elevated=1 enable_lua_status=0 enable_lua=1
+2026-10-24T00:10:51.3672597Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-24T00:10:51.3673108Z profile_probe com_init hr=0x0
+2026-10-24T00:10:51.3673387Z profile_probe profiles hr=0x0
+2026-10-24T00:10:51.3673685Z profile_probe category_manager hr=0x0
+2026-10-24T00:10:51.3673987Z profile_probe category_before hr=0x0
+2026-10-24T00:10:51.3674281Z profile_probe local_appdata hr=0x0
+2026-10-24T00:10:51.3674668Z profile_probe owned_window_keyboard_focus=PASS; no injected input
+2026-10-24T00:10:51.3675075Z profile_probe thread_manager hr=0x0
+2026-10-24T00:10:51.3675376Z profile_probe thread_activate hr=0x0
+2026-10-24T00:10:51.3676071Z profile_probe query_previous hr=0x0
+2026-10-24T00:10:51.3676459Z profile_probe chinese_runtime_layout_ready=PASS newly_loaded=0
+2026-10-24T00:10:51.3676800Z profile_probe register hr=0x0
+2026-10-24T00:10:51.3677059Z profile_probe registered_com_resolution hr=0x0
+2026-10-24T00:10:51.3677520Z profile_probe com_security token_known=1 token_status=0 elevated=1 enable_lua_status=0 enable_lua=1
+2026-10-24T00:10:51.3678115Z profile_probe environment session_known=1 session=2 visible_station=1 remote_session=0
+2026-10-24T00:10:51.3678546Z profile_probe child_com_init hr=0x0
+2026-10-24T00:10:51.3678870Z profile_probe owned_window_keyboard_focus=PASS; no injected input
+2026-10-24T00:10:51.3679219Z profile_probe child_runtime_focus=PASS
+2026-10-24T00:10:51.3679514Z profile_probe child_runtime_thread_manager hr=0x0
+2026-10-24T00:10:51.3679838Z profile_probe child_runtime_thread_activate hr=0x0
+2026-10-24T00:10:51.3680144Z profile_probe child_runtime_languages hr=0x0
+2026-10-24T00:10:51.3680451Z profile_probe child_runtime_original_language hr=0x0
+2026-10-24T00:10:51.3680800Z profile_probe child_runtime_change_language hr=0x80004005
+2026-10-24T00:10:51.3681134Z profile_probe child_mode_prepared=1 runtime_ready=0
+2026-10-24T00:10:51.3681422Z profile_probe child_profiles hr=0x0
+2026-10-24T00:10:51.3681674Z profile_probe child_categories hr=0x0
+2026-10-24T00:10:51.3681975Z profile_probe registry child_hkcu_com status=0 present=1
+2026-10-24T00:10:51.3682317Z profile_probe registry child_hklm_com status=2 present=0
+2026-10-24T00:10:51.3682663Z profile_probe registry child_hkcu_tip status=2 present=0
+2026-10-24T00:10:51.3682995Z profile_probe registry child_hklm_tip status=0 present=1
+2026-10-24T00:10:51.3683378Z profile_probe registry child_hkcu_language_profile status=2 present=0
+2026-10-24T00:10:51.3683817Z profile_probe registry child_hklm_language_profile status=0 present=1
+2026-10-24T00:10:51.3684218Z profile_probe registry child_merged_com status=0 present=1
+2026-10-24T00:10:51.3686561Z profile_probe child_legacy_profiles hr=0x0
+2026-10-24T00:10:51.3686962Z profile_probe child_current_language hr=0x0
+2026-10-24T00:10:51.3687253Z profile_probe child_current_language_id=0x0
+2026-10-24T00:10:51.3687545Z profile_probe child_legacy_description hr=0x0
+2026-10-24T00:10:51.3687835Z profile_probe child_description_nonempty=1
+2026-10-24T00:10:51.3688127Z profile_probe child_legacy_enabled hr=0x0
+2026-10-24T00:10:51.3688401Z profile_probe child_legacy_enabled_value=1
+2026-10-24T00:10:51.3688674Z profile_probe child_language_list hr=0x0
+2026-10-24T00:10:51.3689252Z profile_probe child_language_count=1 bounded=1 target_language_present=0
+2026-10-24T00:10:51.3689654Z profile_probe child_query_registered hr=0x80004005
+2026-10-24T00:10:51.3689958Z profile_probe child_keyboard_category hr=0x0
+2026-10-24T00:10:51.3690240Z profile_probe child_keyboard_member=1
+2026-10-24T00:10:51.3690547Z profile_probe child_runtime_restore_language hr=0x80004005
+2026-10-24T00:10:51.3690902Z profile_probe child_runtime_thread_deactivate hr=0x0
+2026-10-24T00:10:51.3691207Z profile_probe child_runtime_cleanup=FAIL
+2026-10-24T00:10:51.3691468Z profile_probe child_query_result=FAIL
+2026-10-24T00:10:51.3691713Z profile_probe child_started=1 error=0
+2026-10-24T00:10:51.3691963Z profile_probe child_finished=1 exit=1
+2026-10-24T00:10:51.3692236Z profile_probe fresh_managers_after_register hr=0x0
+2026-10-24T00:10:51.3692523Z profile_probe query_registered hr=0x0
+2026-10-24T00:10:51.3692766Z profile_probe restore_previous hr=0x0
+2026-10-24T00:10:51.3693023Z profile_probe thread_deactivate hr=0x0
+2026-10-24T00:10:51.3693282Z profile_probe unregister hr=0x0
+2026-10-24T00:10:51.3693558Z profile_probe fresh_managers_after_unregister hr=0x0
+2026-10-24T00:10:51.3693874Z profile_probe query_after_unregister hr=0x80004005
+2026-10-24T00:10:51.3694191Z profile_probe query_category_after_unregister hr=0x0
+2026-10-24T00:10:51.3694493Z profile_probe owned_window_cleanup=PASS
+2026-10-24T00:10:51.3694778Z profile_probe cleanup=PASS
+2026-10-24T00:10:51.3696548Z FAIL profile_probe fresh_process_profile_and_category_visible
+2026-10-24T00:10:51.3696901Z profile_probe_failed_after_fixture_restore exit=1
+2026-10-24T00:10:51.3697308Z At D:\a\ZapIME\ZapIME\scripts\windows_profile_language_fixture.ps1:59 char:25
+2026-10-24T00:10:51.3697788Z + ... de -ne 0) { throw ("profile_probe_failed_after_fixture_restore exit={ ...
+2026-10-24T00:10:51.3698723Z     + CategoryInfo          : OperationStopped: (profile_probe_f..._restore exit=1:String) [], RuntimeException
+2026-10-24T00:10:51.3699346Z     + FullyQualifiedErrorId : profile_probe_failed_after_fixture_restore exit=1
+2026-10-24T00:10:51.4835087Z ##[error]Process completed with exit code 1.

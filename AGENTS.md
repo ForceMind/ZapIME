@@ -45,6 +45,6 @@
 - 同位置组字标记丢失可能先于restartInput；只按固定上游有界100ms交接，重启取消待回报、新操作前结算。真正失去范围时提升epoch、异步reset解码器并原地finish标记，禁止在应用新正文/选区写空setComposingText；迟到结果不得上屏。Service诊断仅计数/固定原因码，不含正文、上下文或身份。
 - 异步结果在标记交接期间须按序有界暂存，不能让后来结果越过或写到未验证范围；新连接验证后按序释放，真正失去范围/新epoch丢弃，超限明确重输并保留应用正文。不要把短时内存缓冲称为持久队列。
 
-- Windows系统profile探针只能在GITHUB_ACTIONS=true、RUNNER_ENVIRONMENT=github-hosted及数字run/attempt全部验证的临时Windows runner运行，Python/EXE双重拒绝普通本机与self-hosted。已有ZapIME COM/profile或LocalAppData目录必须拒绝接管；COM仅写本产品HKCU项，既有TSF注册API实际会写本产品HKLM TIP，不主动写HKLM COM或其它产品项；仅进程激活，不设置系统默认或FORSESSION，不使用deferred激活伪称成功；恢复旧线程布局/profile，注销并验证清理。常规本机build_windows/ctest仍不运行注册探针。注册/进程激活不等于真实应用输入。
+- Windows系统profile探针只能在GITHUB_ACTIONS=true、RUNNER_ENVIRONMENT=github-hosted及数字run/attempt全部验证的临时Windows runner运行，Python/EXE双重拒绝普通本机与self-hosted。已有ZapIME COM/profile或LocalAppData目录必须拒绝接管；生产DLL的COM仍仅写本产品HKCU项，既有TSF API会写本产品HKLM TIP；仅受保护临时CI允许单独HKLM同CLSID作用域对照，必须先确认根不存在、只取得新建根所有权、结束删除并验证，且对照成功不得覆盖原产品门禁失败；不改其它产品项，仅进程激活，不设置系统默认或FORSESSION，不使用deferred激活伪称成功；恢复旧线程布局/profile，注销并验证清理。常规本机build_windows/ctest仍不运行注册探针。注册/进程激活不等于真实应用输入。
 
 - Windows语言夹具仅在GitHub-hosted临时runner执行，脚本自身也须在读取/修改用户语言前验证守卫并实际跑拒绝反例。原列表与输入方法/拼写/手写元数据留内存，追加中文后必须finally恢复并逐项校验；未恢复、超时或探针失败仍为失败。不在个人/自托管设备使用，不安装语言包，不把夹具成功当生产注册或真实App上屏成功。
