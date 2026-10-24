@@ -1,0 +1,221 @@
+{
+  "repository": "ForceMind/ZapIME",
+  "pull_request": 48,
+  "source_commit": "8a612c888ca9e288c0ce7673a6f4d406abda1074",
+  "workflow_run_id": 40106347773,
+  "attempt": 1,
+  "artifacts": [
+    {
+      "api": 35,
+      "job_id": 120910589337,
+      "artifact_id": 12565316028,
+      "artifact_name": "ZapIME-Android-API-35-acceptance",
+      "zip_bytes": 2483902,
+      "zip_sha256": "497c47da0dfb765f7be5d458c9bef7304badda71bf42e1fbc42b7fb5717d2620",
+      "downloaded_zip_matches_github_metadata": true,
+      "native_keyboard_clean_rounds_passed": 2,
+      "combined_gates": {
+        "android_smoke_repeat.py": 0,
+        "android_voice_smoke.py": 1
+      },
+      "independent_voice_ui_result": "FAIL voice recording preview: Missing UI node: 离线语音",
+      "files": [
+        {
+          "path": "api-35/smoke.png",
+          "artifact_member": "voice-android/smoke.png",
+          "bytes": 41107,
+          "sha256": "96fcea0d4e25df7027d895672621fe1861c4168070ec5bea98e8fd5e44b533de",
+          "original_bytes_copied_without_edit": true,
+          "width": 320,
+          "height": 640,
+          "repainted_cropped_or_resized": false
+        },
+        {
+          "path": "api-35/host-lifecycle.txt",
+          "artifact_member": "voice-android/host-lifecycle.txt",
+          "bytes": 815,
+          "sha256": "e2de2b101870e7ab0a8c32ea0700a18d2b945855c1eec2401b8102305acc6f85",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/ci-input-service.txt",
+          "artifact_member": "voice-android/ci-input-service.txt",
+          "bytes": 2590,
+          "sha256": "31e6dd1d07158de0fe6c2e94918a7e253561ef61f3ea2588b1b1ea4267cccd63",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/hierarchy.txt",
+          "artifact_member": "voice-android/hierarchy.txt",
+          "bytes": 7026,
+          "sha256": "1eac4387bb13c04112abbff77e3ec094630f5a44ed6d3861d16b2b17856778d5",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/ui-instrumentation.txt",
+          "artifact_member": "voice-android/ui-instrumentation.txt",
+          "bytes": 153,
+          "sha256": "caaa36f7b1c73b524a4ae3ee034d4ab6b8ee6ab26de3faef295caa14760c4ede",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/combined-gates.json",
+          "artifact_member": "voice-android/combined-gates.json",
+          "bytes": 66,
+          "sha256": "6ba183546f55bd32acbde7258b7cd87667ac5bbdd8d47d57ee8dde9e78b1c8e3",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/last-anr.txt",
+          "artifact_member": "voice-android/last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/crash.txt",
+          "artifact_member": "voice-android/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/ci-activity-state.txt",
+          "artifact_member": "voice-android/ci-activity-state.txt",
+          "bytes": 30762,
+          "sha256": "c512f86a97b52b6378b06c46dd8c130f8e9e9368b6d14cefb0152a6a0208fd48",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/voice-native-methods.log",
+          "artifact_member": "voice-android/instrumentation.txt",
+          "bytes": 2079,
+          "sha256": "566897b6e7917bbd6720c3e963e97421457bb59797f36c740b06dd2545046aaf",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/native-keyboard-round-1.log",
+          "artifact_member": "device-smoke-evidence/40106347773-1/round-1/instrumentation.log",
+          "bytes": 644,
+          "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-35/native-keyboard-round-2.log",
+          "artifact_member": "device-smoke-evidence/40106347773-1/round-2/instrumentation.log",
+          "bytes": 644,
+          "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+          "original_bytes_copied_without_edit": true
+        }
+      ]
+    },
+    {
+      "api": 36,
+      "job_id": 120910589323,
+      "artifact_id": 12565346772,
+      "artifact_name": "ZapIME-Android-API-36-acceptance",
+      "zip_bytes": 2474821,
+      "zip_sha256": "30938b724abde572f9c0c717c54d555be39b65484c74571383f746fc3e08689f",
+      "downloaded_zip_matches_github_metadata": true,
+      "native_keyboard_clean_rounds_passed": 2,
+      "combined_gates": {
+        "android_smoke_repeat.py": 0,
+        "android_voice_smoke.py": 1
+      },
+      "independent_voice_ui_result": "FAIL voice recording preview: Missing UI node: 离线语音",
+      "files": [
+        {
+          "path": "api-36/smoke.png",
+          "artifact_member": "voice-android/smoke.png",
+          "bytes": 40951,
+          "sha256": "e572c6ea868fd4ab722d2546edf57e7a36a92c764d6cf6bf26209aed692bca1e",
+          "original_bytes_copied_without_edit": true,
+          "width": 320,
+          "height": 640,
+          "repainted_cropped_or_resized": false
+        },
+        {
+          "path": "api-36/host-lifecycle.txt",
+          "artifact_member": "voice-android/host-lifecycle.txt",
+          "bytes": 815,
+          "sha256": "e24c8b807e2b654ee5a17bcf22117a1d6f41035d7a5990b85ba40abe30732248",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/ci-input-service.txt",
+          "artifact_member": "voice-android/ci-input-service.txt",
+          "bytes": 2723,
+          "sha256": "064b2705730db17d5167ebef2333a8d0dae7d8e0624416388d2893115f5b34ce",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/hierarchy.txt",
+          "artifact_member": "voice-android/hierarchy.txt",
+          "bytes": 7030,
+          "sha256": "d6f2e32e6bd7b8cfd9447d26e885e3cce3a563dbe472159eeef84894019509da",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/ui-instrumentation.txt",
+          "artifact_member": "voice-android/ui-instrumentation.txt",
+          "bytes": 153,
+          "sha256": "caaa36f7b1c73b524a4ae3ee034d4ab6b8ee6ab26de3faef295caa14760c4ede",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/combined-gates.json",
+          "artifact_member": "voice-android/combined-gates.json",
+          "bytes": 66,
+          "sha256": "6ba183546f55bd32acbde7258b7cd87667ac5bbdd8d47d57ee8dde9e78b1c8e3",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/last-anr.txt",
+          "artifact_member": "voice-android/last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/crash.txt",
+          "artifact_member": "voice-android/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/ci-activity-state.txt",
+          "artifact_member": "voice-android/ci-activity-state.txt",
+          "bytes": 30553,
+          "sha256": "481457af0ac17aaa9b6cbeb0612232680663a10346ee68e0a344dcee2ece9da7",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/voice-native-methods.log",
+          "artifact_member": "voice-android/instrumentation.txt",
+          "bytes": 2079,
+          "sha256": "566897b6e7917bbd6720c3e963e97421457bb59797f36c740b06dd2545046aaf",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/native-keyboard-round-1.log",
+          "artifact_member": "device-smoke-evidence/40106347773-1/round-1/instrumentation.log",
+          "bytes": 644,
+          "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+          "original_bytes_copied_without_edit": true
+        },
+        {
+          "path": "api-36/native-keyboard-round-2.log",
+          "artifact_member": "device-smoke-evidence/40106347773-1/round-2/instrumentation.log",
+          "bytes": 644,
+          "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+          "original_bytes_copied_without_edit": true
+        }
+      ]
+    }
+  ],
+  "diagnosis": "Both drivers acknowledge a second tools touch after slow-editor cancellation, but the product fixed event trace records no second tools_open or tools_toggle_close and no subsequent input restart/view recreation. Coordinates were not recorded in this source, so the precise missed touch geometry remains an inference, not a directly observed fact.",
+  "new_harness_fix": "Public API30+ insets animation observation and bounded fresh geometry stability before a single physical touch pair with real hold time and explicit tools-panel postconditions; no product Service change; new CI not yet claimed.",
+  "recorded_at_utc": "2026-10-24T15:50:15.644404+00:00",
+  "recording_clock": "container bundle creation time only; original event ordering uses preserved monotonic uptime fields"
+}

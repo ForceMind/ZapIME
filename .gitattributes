@@ -2,3 +2,10 @@
 third_party/notices/opus-mt-zho-eng-20200717-CC-BY-4.0.txt -text -whitespace
 docs/evidence/english-learning-qwen-20261024/model-LICENSE.txt -text -whitespace
 docs/evidence/android-tools-launch-40103726412/workflow-job-excerpt.log -text -whitespace
+
+# Retain exact bytes in selected raw CI failure files, including trailing spaces.
+docs/evidence/android-voice-touch-40106347773/api-35/ci-activity-state.txt -text -whitespace
+docs/evidence/android-voice-touch-40106347773/api-35/native-keyboard-round-1.log -text -whitespace
+docs/evidence/android-voice-touch-40106347773/api-35/native-keyboard-round-2.log -text -whitespace
+docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-1.log -text -whitespace
+docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-2.log -text -whitespace

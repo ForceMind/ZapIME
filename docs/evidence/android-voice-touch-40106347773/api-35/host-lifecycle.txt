@@ -1,0 +1,21 @@
+264147:create
+264167:resume
+264740:window focus=true
+264740:normal connection created; length=0 selection=0:0 composing=-1:-1
+264741:initial snapshot before length=0
+264744:show request; attempt=0 sent=true
+264747:normal connection created; length=0 selection=0:0 composing=-1:-1
+264748:initial snapshot before length=0
+265578:IME command on connection=1 operation=finish
+265578:IME command on connection=1 operation=batch-end
+265706:IME command on connection=1 operation=finish
+265706:IME command on connection=1 operation=batch-end
+265741:IME command on connection=1 operation=finish
+265741:IME command on connection=1 operation=batch-end
+Driver fixed events:
+264780:other_touch_attempt
+264812:other_touch_sent
+266044:tools_touch_attempt
+266073:tools_touch_sent
+267008:tools_touch_attempt
+267041:tools_touch_sent
