@@ -1,0 +1,51 @@
+{
+  "runs": [
+    {
+      "beam_size": 1,
+      "offline": false,
+      "exit_code": 0,
+      "whole_subprocess_wall_seconds": 2.5614781879994553,
+      "peak_process_rss_kib": 171592,
+      "stderr": ""
+    },
+    {
+      "beam_size": 1,
+      "offline": true,
+      "exit_code": 0,
+      "whole_subprocess_wall_seconds": 2.561034723003104,
+      "peak_process_rss_kib": 172088,
+      "stderr": ""
+    },
+    {
+      "beam_size": 6,
+      "offline": false,
+      "exit_code": 0,
+      "whole_subprocess_wall_seconds": 3.0857028780010296,
+      "peak_process_rss_kib": 179688,
+      "stderr": ""
+    },
+    {
+      "beam_size": 6,
+      "offline": true,
+      "exit_code": 0,
+      "whole_subprocess_wall_seconds": 3.1135346119990572,
+      "peak_process_rss_kib": 179952,
+      "stderr": ""
+    }
+  ],
+  "online_offline_matches": [
+    {
+      "beam_size": 1,
+      "all_sources_normalizations_translations_and_model_files_identical": true
+    },
+    {
+      "beam_size": 6,
+      "all_sources_normalizations_translations_and_model_files_identical": true
+    }
+  ],
+  "synthetic_sentences_per_process": 19,
+  "quality_score": null,
+  "default_model_accepted": false,
+  "archive_shell_executed": false,
+  "limitations": "Complete four-process qualitative contrast, not statistical timing/teaching/mobile acceptance"
+}

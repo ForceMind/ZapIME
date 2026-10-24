@@ -1,0 +1,54 @@
+{
+  "checked_utc": "2026-10-24T15:07:22.312472+00:00",
+  "archive_download": "Complete official HTTPS download, exact size and observed full SHA verified; not an independently publisher-signed checksum",
+  "final_preparation": "Final prepare.py executed with fresh raw/output directories and the same preplaced verified archive; only ten ZIP-allowlisted members in the manifest",
+  "fresh_preparation_conversion_files_identical_to_actual_inference_inputs": true,
+  "inference_processes": 4,
+  "synthetic_examples_per_process": 19,
+  "same_sources_and_normalized_text_as_previous_2020_contrast": true,
+  "python_syntax_and_bash_n": true,
+  "normalization_tests": 6,
+  "final_original_archive_raw_and_converted_sha_recheck": true,
+  "full_empty_workdir_reproduce_shell_executed": false,
+  "post_inference_source_changes": "Only Linux/x86-64/Py3.12 measurement guard and ZIP-allowlist preparation-manifest scope; no normalization/translation algorithm changes. Final guard/hash verification rerun; four inference processes not repeated.",
+  "license_matches_existing_exact_notice": "third_party/notices/opus-mt-zho-eng-20200717-CC-BY-4.0.txt",
+  "model_licence": "CC-BY-4.0",
+  "product_or_cloud_integration": false,
+  "default_model_accepted": false,
+  "source_scripts": [
+    {
+      "path": "scripts/translation_probe_2021/assets.py",
+      "sha256": "4040db8e23af30dc216eb334a232017a990e50da692fe2a51c4ddd42b281bf46"
+    },
+    {
+      "path": "scripts/translation_probe_2021/compare.py",
+      "sha256": "44088bd2f83feaff0bc53ddd102093d2ffe45c819e06040c3fc9f78e35bab0b4"
+    },
+    {
+      "path": "scripts/translation_probe_2021/prepare.py",
+      "sha256": "65236268f532b09d7099a26dce886b36dbcdc87c573841634493b2d811168c2d"
+    },
+    {
+      "path": "scripts/translation_probe_2021/preprocessing.py",
+      "sha256": "c15adc204b3d342919c4b8b256eba8eb5f5ae084607769e0beddd8262dbee9e1"
+    },
+    {
+      "path": "scripts/translation_probe_2021/reproduce.sh",
+      "sha256": "8e71478f196fed14a335a31ad0d81e5d126451a86d924cfb2ef2ad501edc79c1"
+    },
+    {
+      "path": "scripts/translation_probe_2021/run.py",
+      "sha256": "53ae5eddf0cd51b86085330d8118bb3427f8b066941d2e79d305bb304fde9aca"
+    },
+    {
+      "path": "scripts/translation_probe_2021/test_preprocessing.py",
+      "sha256": "15b40b3cc5e1b11944dedc609ee7a7947149c394db814575b9f2f1a47d5c59de"
+    }
+  ],
+  "reused_network_helper": {
+    "path": "scripts/qwen_translation_probe/network.py",
+    "sha256": "7dfde627b37556312a9df0ac0c5651f26f1758371d99ba14d4be5a0194b811fa"
+  },
+  "final_prepare_verify_existing_executed": true,
+  "vocabulary_count_verified_with_converter_parser": 65000
+}

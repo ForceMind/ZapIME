@@ -1,0 +1,13 @@
+{
+  "root_review_at_utc": "2026-10-24T15:25:56.007627+00:00",
+  "python_compile_exit": 0,
+  "normalization_tests": 6,
+  "normalization_tests_exit": 0,
+  "bash_syntax_exit": 0,
+  "final_prepare_verify_existing_exit": 0,
+  "additional_final_source_beam6_offline_examples": 19,
+  "additional_run_source_normalization_translation_and_model_files_match_preserved_evidence": true,
+  "additional_run_not_included_in_original_four_process_timing_or_rss": true,
+  "recorded_final_repository_script_sha256_verified": true,
+  "no_product_or_mobile_acceptance": true
+}

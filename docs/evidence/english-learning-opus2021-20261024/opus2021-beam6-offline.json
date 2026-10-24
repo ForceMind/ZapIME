@@ -1,0 +1,250 @@
+{
+  "synthetic_text_only": true,
+  "source_archive_sha256": "cdef260995db149d7d519d930bd30c9515e56848ec6ea58388c5f5d647239e69",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "python": "3.12.14",
+  "versions": {
+    "ctranslate2": "4.8.3",
+    "numpy": "2.5.4",
+    "sentencepiece": "0.2.2",
+    "PyYAML": "6.0.3"
+  },
+  "device": "cpu",
+  "compute_type_requested": "int8",
+  "compute_type_actual": "int8_float32",
+  "inter_threads": 1,
+  "intra_threads": 1,
+  "beam_size": 6,
+  "length_penalty": 1,
+  "max_decoding_length": 64,
+  "preprocessing": {
+    "method": "reviewed 2021 embedded sed substitutions, fixed Perl Unicode-category-C replacement, ASCII-space collapse/trim, bundled SPM",
+    "archive_shell_executed": false,
+    "perl": "/usr/bin/perl",
+    "perl_version": "v5.38.2",
+    "known_archive_behavior": [
+      "fullwidth １ becomes a quote",
+      "category-C normalization replaces valid emoji ZWJ too",
+      "one synthetic line per subprocess; original newline is also replaced"
+    ]
+  },
+  "postprocessing": "SentencePiece.decode main field; original archive sed untrimmed string retained separately",
+  "load_seconds_after_asset_verification_warmed_cache": 0.11641651399986586,
+  "peak_process_rss_kib": 179952,
+  "memory_scope": "Linux fresh Python process including imports/model/19 examples; excludes separate Perl children, not model-only or mobile RSS",
+  "network": {
+    "method": "Linux libseccomp plus no_new_privs, installed before ML imports",
+    "blocked_syscalls": [
+      "socket",
+      "socketpair",
+      "connect",
+      "accept",
+      "accept4",
+      "bind",
+      "listen",
+      "sendto",
+      "sendmsg",
+      "sendmmsg",
+      "recvfrom",
+      "recvmsg",
+      "recvmmsg",
+      "shutdown"
+    ],
+    "socket_creation_rejected": [
+      "AF_INET",
+      "AF_INET6"
+    ],
+    "scope": "this Python process, future threads and fixed Perl child; specific socket syscalls, not inherited-fd/io_uring paths, a full sandbox or device airplane mode"
+  },
+  "examples": [
+    {
+      "source": "明天见。",
+      "normalized_source": "明天见.",
+      "translation": "See you tomorrow.",
+      "archive_sed_translation_untrimmed": " See you tomorrow.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.08139503499842249,
+      "source_tokens": 3,
+      "output_tokens": 4
+    },
+    {
+      "source": "我正在学习英语。",
+      "normalized_source": "我正在学习英语.",
+      "translation": "I'm learning English.",
+      "archive_sed_translation_untrimmed": " I'm learning English.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.08680482499767095,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "谢谢你的帮助。",
+      "normalized_source": "谢谢你的帮助.",
+      "translation": "Thank you for your help.",
+      "archive_sed_translation_untrimmed": " Thank you for your help.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.07198319400049513,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "我一会儿就到。",
+      "normalized_source": "我一会儿就到.",
+      "translation": "I'll be there in a minute.",
+      "archive_sed_translation_untrimmed": " I'll be there in a minute.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.1127613620046759,
+      "source_tokens": 5,
+      "output_tokens": 9
+    },
+    {
+      "source": "今天有点堵车。",
+      "normalized_source": "今天有点堵车.",
+      "translation": "There's a traffic jam today.",
+      "archive_sed_translation_untrimmed": " There's a traffic jam today.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.11191596799471881,
+      "source_tokens": 5,
+      "output_tokens": 8
+    },
+    {
+      "source": "我已经在路上了。",
+      "normalized_source": "我已经在路上了.",
+      "translation": "I'm on my way.",
+      "archive_sed_translation_untrimmed": " I'm on my way.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.10472964500513626,
+      "source_tokens": 5,
+      "output_tokens": 7
+    },
+    {
+      "source": "我没听清楚，你能再说一遍吗？",
+      "normalized_source": "我没听清楚,你能再说一遍吗?",
+      "translation": "I didn't hear you. Can you say that again?",
+      "archive_sed_translation_untrimmed": " I didn't hear you. Can you say that again?",
+      "seconds_including_preprocessing_and_sentencepiece": 0.13860583399946336,
+      "source_tokens": 9,
+      "output_tokens": 13
+    },
+    {
+      "source": "我们改天再约吧。",
+      "normalized_source": "我们改天再约吧.",
+      "translation": "Let's make another appointment.",
+      "archive_sed_translation_untrimmed": " Let's make another appointment.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.11837181699957,
+      "source_tokens": 7,
+      "output_tokens": 7
+    },
+    {
+      "source": "这个方案还需要进一步讨论。",
+      "normalized_source": "这个方案还需要进一步讨论.",
+      "translation": "This proposal needs further discussion.",
+      "archive_sed_translation_untrimmed": " This proposal needs further discussion.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.08294360499712639,
+      "source_tokens": 5,
+      "output_tokens": 6
+    },
+    {
+      "source": "先这样吧。",
+      "normalized_source": "先这样吧.",
+      "translation": "Let's do this.",
+      "archive_sed_translation_untrimmed": " Let's do this.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.09495321699796477,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "我没说你做错了。",
+      "normalized_source": "我没说你做错了.",
+      "translation": "I didn't say you did it wrong.",
+      "archive_sed_translation_untrimmed": " I didn't say you did it wrong.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.17531749000045238,
+      "source_tokens": 5,
+      "output_tokens": 10
+    },
+    {
+      "source": "不是不想去，是今天没时间。",
+      "normalized_source": "不是不想去,是今天没时间.",
+      "translation": "It's not that I don't want to, it's that we don't have time for today.",
+      "archive_sed_translation_untrimmed": " It's not that I don't want to, it's that we don't have time for today.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.32391399699554313,
+      "source_tokens": 8,
+      "output_tokens": 25
+    },
+    {
+      "source": "请在下午３：３０之前回复。",
+      "normalized_source": "请在下午3:30之前回复.",
+      "translation": "Please respond by 3.30 p.m.",
+      "archive_sed_translation_untrimmed": " Please respond by 3.30 p.m.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.11520211300376104,
+      "source_tokens": 9,
+      "output_tokens": 8
+    },
+    {
+      "source": "她说：“明天见！”",
+      "normalized_source": "她说:\"明天见!\"",
+      "translation": "She said, \"See you tomorrow!\"",
+      "archive_sed_translation_untrimmed": " She said, \"See you tomorrow!\"",
+      "seconds_including_preprocessing_and_sentencepiece": 0.10137446600128897,
+      "source_tokens": 7,
+      "output_tokens": 8
+    },
+    {
+      "source": "今天气温是２５℃。",
+      "normalized_source": "今天气温是25℃.",
+      "translation": "Today's temperature is 25 degrees C.",
+      "archive_sed_translation_untrimmed": " Today's temperature is 25 degrees C.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.1158928150034626,
+      "source_tokens": 7,
+      "output_tokens": 9
+    },
+    {
+      "source": "我正在学习英语．",
+      "normalized_source": "我正在学习英语.",
+      "translation": "I'm learning English.",
+      "archive_sed_translation_untrimmed": " I'm learning English.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.07865627600403968,
+      "source_tokens": 4,
+      "output_tokens": 6
+    },
+    {
+      "source": "  我   已经在路上了。",
+      "normalized_source": "我 已经在路上了.",
+      "translation": "I'm on my way.",
+      "archive_sed_translation_untrimmed": " I'm on my way.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.09606917999917641,
+      "source_tokens": 6,
+      "output_tokens": 7
+    },
+    {
+      "source": "我已经\t在路上了。",
+      "normalized_source": "我已经 在路上了.",
+      "translation": "I'm already on my way.",
+      "archive_sed_translation_untrimmed": " I'm already on my way.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.0966046940011438,
+      "source_tokens": 5,
+      "output_tokens": 8
+    },
+    {
+      "source": "我已经在路上了。​",
+      "normalized_source": "我已经在路上了.",
+      "translation": "I'm on my way.",
+      "archive_sed_translation_untrimmed": " I'm on my way.",
+      "seconds_including_preprocessing_and_sentencepiece": 0.10325893200206337,
+      "source_tokens": 5,
+      "output_tokens": 7
+    }
+  ],
+  "model_files": [
+    {
+      "name": "config.json",
+      "bytes": 221,
+      "sha256": "152eb448f1020eb55f90971d7b95f61896abee8415d555ca51ae7897ac0a0e68"
+    },
+    {
+      "name": "model.bin",
+      "bytes": 82713357,
+      "sha256": "d0deac7c66d2daa430dc081d6ef08e4700eae54b11918fe438917fa4e1b7ef83"
+    },
+    {
+      "name": "shared_vocabulary.json",
+      "bytes": 1303421,
+      "sha256": "a71b9965455e287b890e965bcb4d5f3c52f1fe5fa7bd9019787d4a3dd1c37acc"
+    }
+  ],
+  "limitations": "Single passes after file verification/warmed cache; no native Marian numeric equivalence, cold-start/statistical latency, quality score, mobile/energy/keyboard contention, client integration or default-model acceptance"
+}

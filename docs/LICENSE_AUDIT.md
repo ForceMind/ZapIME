@@ -76,3 +76,7 @@ APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPa
 ### Qwen独立CPU研究（2026-10-24）
 
 官方Qwen/Qwen3-0.6B-GGUF revision23749fefcc72300e3a2ad315e1317431b06b590a的Q8_0原始权重以发布者LFS SHA校验，精确revision完整LICENSE为Apache-2.0。固定llama.cpp b11669 CPU发布包以GitHub资产digest校验，对应620d2225cc436ab0b001e3200e590e3b286ef9ab主许可MIT。Git仅保留研究脚本、两完整主许可和合成结果；权重/二进制/审查过的C++源及缓存不进Git/APK。官方模型许可原CRLF字节以精确路径Git属性保留，不重写原文。CPU包仍有RPC及系统OpenSSL/libgomp/libstdc++依赖；不是无网络能力声明，也不是客户端完整分发依赖审计。详细固定来源、SHA和未通过本配置教学判断的事实见ENGLISH_TRANSLATION_QWEN_PROBE.md。
+
+### OPUS 2021独立CPU研究（2026-10-24）
+
+官方原始zho-eng/opus-2021-02-18.zip完整下载核验288,551,434字节，观察SHA256 cdef260995db149d7d519d930bd30c9515e56848ec6ea58388c5f5d647239e69；包内LICENSE为CC-BY-4.0且与既有完整许可原文945fbcb…f49b9逐字节相同，来源/模型README和转换/量化改动见ENGLISH_TRANSLATION_OPUS_2021_PROBE.md。十固定成员及安全NPZ/词表/SPM核验不执行包内shell；权重/词表/原始包/运行库仍仅开发target，不进入Git或APK。CT2 MIT与权重CC-BY-4.0分开，不因新版就改称Apache，也不宣称分发客户端模型许可或质量已完成。
