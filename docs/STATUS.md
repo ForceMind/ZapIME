@@ -1,8 +1,8 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-10-24 22:42:13 +0800；第 51 次记录汇报；距第 50 次记录约 13.6 分钟。次数按仓库状态记录累计。
+更新时间：2026-10-24 23:15:54 +0800；第 53 次记录汇报；距独立研究PR #49第 52 次记录约 24.5 分钟。次数按仓库各提交记录累计；第52次在#49分支。
 
-实时main仍为b85e328。PR #46源b9afa679已通过四条非Android工作流及API35/36；API28因Emulator ZIP解压失败在测试前中止，失败原文已保存，现只重跑该失败作业。PR #47源e50e4e7为独立预处理研究。本候选追加共享核心commit_source与Android严格来源过滤，真实本地Rust/JVM检查通过，新跨平台CI尚待执行。
+main已合并#46 93d5ea4及#47 f0464b2，二者实际head五条CI全部success。#48源6a1ea9e的API28/35通过，API36在启动工具面板等待返回按钮失败；该整体FAIL保留，源码与现场还不足唯一确定时序根因。本候选追加空编辑器同字段tools保留、显式restart/NPL反例及有界诊断，新设备CI尚待。
 
 ## 仓库与提交
 
@@ -431,3 +431,13 @@ M0 来源与许可基线已建立，正式发行仍需复核。M1 四端都有�
 - PR #46 b9afa679的Android40102484046 attempt1：API35 job120898387509、API36 job120898387494完整success，含两轮独立Editable系统IME、合成Service接受/拒绝/隐私方法、语音/Keystore及真实退出/fatal拒绝。API28 job120897298716双架构与测试APK编译通过，但SDK Emulator ZIP unknown archive，未启动模拟器，不计设备输入成功；精确失败摘录保留。两现代作业完成后已仅重跑失败job（attempt2 job120900036137），结果仍待真实完成，不挑一次绿掩盖失败。
 - 同b9afa679通用40102484183、服务40102483979、Windows基线40102484029、语音CPU40102483966全success。Windows仍不等于#40/#41系统profile实际输入通过；新来源契约不能借这些旧运行代替编译/设备结果。
 - 翻译仍默认关闭、无模型/worker/英语条/启用UI。#43、新候选模型质量、续词联想/收藏及全部原P0/真机/签名/用户服务器部署边界继续保留；不以本切片宣称英语伴学已可用或M4–M6完成。
+
+## 第53次：保留启动失败与空编辑器工具面板修复候选（#50）
+
+- #46已合并93d5ea4305932002456d2ad89c83c5184887dbd4，实际b9afa679五条CI全success。Android40102484046原API28 SDK ZIP失败保留，attempt2 API28 job120900036137、API35 job120901944857、API36 job120901944889完整success。#47已合并f0464b20fa566c44b26c11f5b2aa4f732ab62266，e50e4e7五条CI全部success；只研究脚本/证据，不称翻译已接产品。
+- #48源6a1ea9e的40103726412 API28 job120900976169与API35 job120902675022通过，API36 job120902675009整体FAIL。新来源方法/语音通过不抵消launch Missing UI node 返回键盘。下载artifact12564147483、922563B、SHA ba98096ef6245e071570f3179f389156a8b686f2d14277ef1d096fa59c7e8dd6，根与独立审查实际检查原图/现场，关键文件与round1字节一致，已随候选保存原字节PNG/诊断/日志。
+- 现场App前台有焦点、IME可见、正文/组字空，无现场ANR/fatal；tools.png却已回普通字母，service starts3/rests1/decision=no_bounded_composition。额外重启/视图重建与现象相容，但无旧时序不能唯一排除触摸注入或无障碍旧节点，不能认定纯基础设施或提交来源已证实回归。#50独立跟踪，旧#38全部间歇问题仍不宣称解决。
+- 新纯面板保留仅相同package/field/type/options、非私密/无搜索、preedit空且已打开tools；same-editor restarting或同编辑器重建view保留tools。引擎重建、epoch及每次learning session失效照常执行。新焦点/隐私字段变化不带旧面板；组字继续走原有验证路径，本改动不扩大组字保留条件。
+- 独立App新增真实restartInput后观察新served连接命令，再要求tools在500ms窗口持续可见且无字母键；改NO_PERSONALIZED_LEARNING须关闭tools且独立Editable仍空，恢复后继续旧完整门禁。产品只加16条uptime毫秒计数+固定原因码，test driver64条固定触摸尝试/返回，不含正文/身份/密钥；失败现场仍在Instrumentation.finish前采集。
+- 本地使用Google官方API36 r2 ZIP（官方SHA1及观察SHA256核实）只提取android.jar；JDK17 source8/target8编译产品24源42class、测试2源8class、voice/learning测试2源4class全部exit0。之后新增稳定窗口测试，测试组已单独再编译exit0；其余当前源SHA仍匹配原成功编译记录。只有bootstrap/deprecation警告，不称APK/JNI/设备通过。新完整CI须实跑，不无改动重跑挑绿。
+- #49已保存4f0df7c的Qwen固定配置研究（第52次记录在其分支）；本工具修复不接翻译模型/worker/英语条/启用开关，当前仍默认不捕获。另独立2021 OPUS研究已完成待审查保存，全部原P0/四端同步/真实设备/签名/用户服务器部署未完成边界继续保留。

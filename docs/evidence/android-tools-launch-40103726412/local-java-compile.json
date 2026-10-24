@@ -1,0 +1,343 @@
+{
+  "timestamp_container_utc": "2026-10-24T15:11:35.292365+00:00",
+  "worktree": "/workspace/scratch/99fcacf9684b/ZapIME-lifecycle-fix",
+  "worktree_head": "6a1ea9ef6a619cb5c3fa5ae15d84d24f0a5342e3",
+  "jdk_version": "openjdk version \"17.0.20\" 2026-07-21\nOpenJDK Runtime Environment (build 17.0.20+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 17.0.20+8-1-24.04-Ubuntu, mixed mode, sharing)\n",
+  "jdk_binary_sha256": "4976918b29ece3fe634bdbcf1377676e42af429b5311ba234f6f95039117d4d4",
+  "sdk": {
+    "official_metadata_url": "https://dl.google.com/android/repository/repository2-3.xml",
+    "official_metadata_bytes": 423137,
+    "official_metadata_sha256": "f2bc624c8e1dc14c320fdf17e49a5501c35934948e46a444df8b36a138a03e1e",
+    "package": "platforms;android-36",
+    "revision": 2,
+    "extension_level": 17,
+    "official_archive_url": "https://dl.google.com/android/repository/platform-36_r02.zip",
+    "official_archive_size": 65878410,
+    "official_archive_sha1": "2c1a80dd4d9f7d0e6dd336ec603d9b5c55a6f576",
+    "observed_archive_sha256": "37607369a28c5b640b3a7998868d45898ebcb777565a0e85f9acf36f29631d2e",
+    "android_jar_archive_member": "android-36/android.jar",
+    "android_jar_bytes": 27768026,
+    "observed_android_jar_sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+    "extraction_scope": "only the single android.jar, no other SDK files extracted"
+  },
+  "results": [
+    {
+      "group": "product",
+      "source_directory": "platforms/android/java",
+      "source_files": 24,
+      "class_files": 42,
+      "exit_code": 0,
+      "seconds": 2.1542414810028276,
+      "source_sha_before": [
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningEligibility.java",
+          "sha256": "2bb04d0213ed3ec9c116ae57cc0c733996fe779383bee286fe53492e4cc00087"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningGate.java",
+          "sha256": "165f40f156eddb809b2d31bfb87b6446d9862776a4060e837460755b2fc8fb7e"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningSession.java",
+          "sha256": "51fee1a35e187564e4555bc5834e464fe0a77d6b1923031c6ebfb4b922c60629"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyCap.java",
+          "sha256": "eb76101642160a991e2071e290a5ac44fc27730d6a9e4005c9c1281e498bd2f8"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardSettingsActivity.java",
+          "sha256": "4601fd69785c82cb16923155b4b464435d32e87bf0b1be2ba39ff1134c4f63be"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardTheme.java",
+          "sha256": "254832e2dd979f7e7307e317af386b585962fd793d88e0dfcb2254279394b9cb"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardTouch.java",
+          "sha256": "c4ba33bad965715885dea9ab4f63eb54fa47ddd10dd37e968c82d5cc9f785ebb"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/LocalDataPanel.java",
+          "sha256": "03e62f9e2479a08aaa104d157f67429f3939bf35f32c0007058bf77c868b171d"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/MainActivity.java",
+          "sha256": "b2b62c301cd5614c96b6f0a78633dbb64306b31e38b4b38b29c1a7c8bce5dc34"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/NativeCore.java",
+          "sha256": "d7780084f5155fb433b99ca8b1896d71563af01baf0f49a2909c214a68f305cc"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/NativeVoice.java",
+          "sha256": "10bc0a2898327f62bb214e49e061fbac7563a28860fe61ce83cbebe31631b7d3"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/PersonalDataActivity.java",
+          "sha256": "a5441041e1f66ad95aff348f7adeea13e8c227ec07da1dac87100a2373f73b02"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/ResourceInstaller.java",
+          "sha256": "bf92bc2a8091880fef205baf78e077d2957b9f6cc5bc71bcd73b104cb6583a04"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/SelectionEchoTracker.java",
+          "sha256": "489997b8115def1b17b5cc0d0d18c3e6db64e780f67f4029886707da13a9d20e"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/SyncSecrets.java",
+          "sha256": "65c81df9058ad39697cfa2402f891b916dc2db2e268889f0eb80e6c92b8c95cd"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/Ui.java",
+          "sha256": "c29d36765fd4b6435d705938ef80b177df07938eff40656b85c485968d0fc075"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceCapture.java",
+          "sha256": "a3f7b1d7e75eb0ea2554029aa21c3e4b5d55a9fb105dce32a65a7f0eff95d984"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceModels.java",
+          "sha256": "0829d08dcc164617f3dc38c19c3c8c8cc179848781c1ce81cef853dc6c576159"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoicePcmQueue.java",
+          "sha256": "745c2f5b12761ccb24d79509cfc03d7b6c008760f1b3abeddc617b5dd659f579"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceRecordingMonitor.java",
+          "sha256": "b04d47f3d45612da4f1f5f410245449519c3c45feccae17ae80008bc60e4b855"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceRecordingState.java",
+          "sha256": "035185cc084173e180ec979b849daa1dac01035749636ffef07e0b8b80c45cbe"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceSettingsActivity.java",
+          "sha256": "38c245dd10a0b28b4c5d21205b550307a6cf95a57bce68fe73b51b9368e7164f"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceWorker.java",
+          "sha256": "3364d152f01a07e32f8bef79550f2da276b49a66cfbc064a19642f4cfe4a39aa"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+          "sha256": "53808292670f32bb4046d8a86557c1c8a8ea230a2b30b1623ab8f4761d70be8d"
+        }
+      ],
+      "source_sha_after": [
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningEligibility.java",
+          "sha256": "2bb04d0213ed3ec9c116ae57cc0c733996fe779383bee286fe53492e4cc00087"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningGate.java",
+          "sha256": "165f40f156eddb809b2d31bfb87b6446d9862776a4060e837460755b2fc8fb7e"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/EnglishLearningSession.java",
+          "sha256": "51fee1a35e187564e4555bc5834e464fe0a77d6b1923031c6ebfb4b922c60629"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyCap.java",
+          "sha256": "eb76101642160a991e2071e290a5ac44fc27730d6a9e4005c9c1281e498bd2f8"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardSettingsActivity.java",
+          "sha256": "4601fd69785c82cb16923155b4b464435d32e87bf0b1be2ba39ff1134c4f63be"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardTheme.java",
+          "sha256": "254832e2dd979f7e7307e317af386b585962fd793d88e0dfcb2254279394b9cb"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/KeyboardTouch.java",
+          "sha256": "c4ba33bad965715885dea9ab4f63eb54fa47ddd10dd37e968c82d5cc9f785ebb"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/LocalDataPanel.java",
+          "sha256": "03e62f9e2479a08aaa104d157f67429f3939bf35f32c0007058bf77c868b171d"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/MainActivity.java",
+          "sha256": "b2b62c301cd5614c96b6f0a78633dbb64306b31e38b4b38b29c1a7c8bce5dc34"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/NativeCore.java",
+          "sha256": "d7780084f5155fb433b99ca8b1896d71563af01baf0f49a2909c214a68f305cc"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/NativeVoice.java",
+          "sha256": "10bc0a2898327f62bb214e49e061fbac7563a28860fe61ce83cbebe31631b7d3"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/PersonalDataActivity.java",
+          "sha256": "a5441041e1f66ad95aff348f7adeea13e8c227ec07da1dac87100a2373f73b02"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/ResourceInstaller.java",
+          "sha256": "bf92bc2a8091880fef205baf78e077d2957b9f6cc5bc71bcd73b104cb6583a04"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/SelectionEchoTracker.java",
+          "sha256": "489997b8115def1b17b5cc0d0d18c3e6db64e780f67f4029886707da13a9d20e"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/SyncSecrets.java",
+          "sha256": "65c81df9058ad39697cfa2402f891b916dc2db2e268889f0eb80e6c92b8c95cd"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/Ui.java",
+          "sha256": "c29d36765fd4b6435d705938ef80b177df07938eff40656b85c485968d0fc075"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceCapture.java",
+          "sha256": "a3f7b1d7e75eb0ea2554029aa21c3e4b5d55a9fb105dce32a65a7f0eff95d984"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceModels.java",
+          "sha256": "0829d08dcc164617f3dc38c19c3c8c8cc179848781c1ce81cef853dc6c576159"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoicePcmQueue.java",
+          "sha256": "745c2f5b12761ccb24d79509cfc03d7b6c008760f1b3abeddc617b5dd659f579"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceRecordingMonitor.java",
+          "sha256": "b04d47f3d45612da4f1f5f410245449519c3c45feccae17ae80008bc60e4b855"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceRecordingState.java",
+          "sha256": "035185cc084173e180ec979b849daa1dac01035749636ffef07e0b8b80c45cbe"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceSettingsActivity.java",
+          "sha256": "38c245dd10a0b28b4c5d21205b550307a6cf95a57bce68fe73b51b9368e7164f"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/VoiceWorker.java",
+          "sha256": "3364d152f01a07e32f8bef79550f2da276b49a66cfbc064a19642f4cfe4a39aa"
+        },
+        {
+          "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+          "sha256": "53808292670f32bb4046d8a86557c1c8a8ea230a2b30b1623ab8f4761d70be8d"
+        }
+      ],
+      "source_files_unchanged_during_compile": true,
+      "command": [
+        "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+        "-m",
+        "jdk.compiler/com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+        "-d",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/product/classes",
+        "@/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/product/sources.txt"
+      ],
+      "stdout": "",
+      "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\n1 warning\n"
+    },
+    {
+      "group": "tests",
+      "source_directory": "platforms/android/tests/java",
+      "source_files": 2,
+      "class_files": 8,
+      "exit_code": 0,
+      "seconds": 1.1981238889929955,
+      "source_sha_before": [
+        {
+          "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+          "sha256": "bc86941714e7e6d728ebc2fca2d389a920c74f5347337298f6ed1da88b60cc22"
+        },
+        {
+          "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+          "sha256": "328b9da6aa706016f83e427822459e4ad49a05eab6983e4203d8749401df1e48"
+        }
+      ],
+      "source_sha_after": [
+        {
+          "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+          "sha256": "bc86941714e7e6d728ebc2fca2d389a920c74f5347337298f6ed1da88b60cc22"
+        },
+        {
+          "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+          "sha256": "328b9da6aa706016f83e427822459e4ad49a05eab6983e4203d8749401df1e48"
+        }
+      ],
+      "source_files_unchanged_during_compile": true,
+      "command": [
+        "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+        "-m",
+        "jdk.compiler/com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+        "-d",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/tests/classes",
+        "@/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/tests/sources.txt"
+      ],
+      "stdout": "",
+      "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\n1 warning\n"
+    },
+    {
+      "group": "voice-tests",
+      "source_directory": "platforms/android/voice-tests/java",
+      "source_files": 2,
+      "class_files": 4,
+      "exit_code": 0,
+      "seconds": 1.3035249669992481,
+      "source_sha_before": [
+        {
+          "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java",
+          "sha256": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+        },
+        {
+          "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+          "sha256": "f3e364b1a8d3c7a36effa59c7af8ca7339592dddd8ad17f340fd4fae07cad223"
+        }
+      ],
+      "source_sha_after": [
+        {
+          "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java",
+          "sha256": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+        },
+        {
+          "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+          "sha256": "f3e364b1a8d3c7a36effa59c7af8ca7339592dddd8ad17f340fd4fae07cad223"
+        }
+      ],
+      "source_files_unchanged_during_compile": true,
+      "command": [
+        "/usr/lib/jvm/java-17-openjdk-amd64/bin/java",
+        "-m",
+        "jdk.compiler/com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+        "-d",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/voice-tests/classes",
+        "@/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/lifecycle-fix-20261024T151130Z/voice-tests/sources.txt"
+      ],
+      "stdout": "",
+      "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\n1 warning\n"
+    }
+  ],
+  "scope": "JDK Java compilation only against official API36 android.jar, source8/target8 matching CI flags; no aapt2/resources, d8/dex, JNI/native build, APK/signing, emulator/instrumentation or device acceptance."
+}

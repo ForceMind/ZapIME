@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class ProbeActivity extends Activity {
     private static final java.util.ArrayDeque<String> lifecycle=new java.util.ArrayDeque<>();
-    private static synchronized void note(String event){if(lifecycle.size()==128)lifecycle.removeFirst();lifecycle.addLast(event);}
+    private static synchronized void note(String event){if(lifecycle.size()==128)lifecycle.removeFirst();lifecycle.addLast(android.os.SystemClock.uptimeMillis()+":"+event);}
     static synchronized String lifecycle(){return String.join("\n",lifecycle)+"\n";}
     static WeakReference<ProbeActivity> current = new WeakReference<>(null);
     EditText normal, password;

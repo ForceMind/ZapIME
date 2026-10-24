@@ -1,0 +1,12 @@
+create
+resume
+window focus=true
+normal connection created; length=0 selection=0:0 composing=-1:-1
+initial snapshot before length=0
+show request; attempt=0 sent=true
+normal connection created; length=0 selection=0:0 composing=-1:-1
+initial snapshot before length=0
+IME command on connection=1 operation=finish
+IME command on connection=1 operation=batch-end
+IME command on connection=1 operation=finish
+IME command on connection=1 operation=batch-end
