@@ -16,6 +16,7 @@ public final class ProbeActivity extends Activity {
     static synchronized String lifecycle(){return String.join("\n",lifecycle)+"\n";}
     static WeakReference<ProbeActivity> current = new WeakReference<>(null);
     EditText normal, password;
+    volatile int activeImeAnimations, imeAnimationVersion;
     private int focusRequest;
     static final java.util.concurrent.atomic.AtomicInteger normalConnections=new java.util.concurrent.atomic.AtomicInteger();
     static final java.util.concurrent.atomic.AtomicInteger normalCommandConnection=new java.util.concurrent.atomic.AtomicInteger();
@@ -55,11 +56,12 @@ public final class ProbeActivity extends Activity {
         Button show=new Button(this);show.setText("显示键盘");show.setContentDescription("probe-show-keyboard");show.setOnClickListener(v->{normal.requestFocus();requestKeyboard(++focusRequest,0);});panel.addView(show);
         Button settings=new Button(this);settings.setText("打开闪电设置");settings.setContentDescription("probe-open-settings");settings.setOnClickListener(v->{note("settings click from foreground Activity");startActivity(new android.content.Intent().setClassName("org.zapime.android","org.zapime.android.MainActivity").addFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP));});panel.addView(settings);
         setContentView(panel); current=new WeakReference<>(this); normal.requestFocus();
+        if(android.os.Build.VERSION.SDK_INT>=30)ImeAnimations.observe(this);
     }
     @Override public void onResume(){super.onResume();note("resume");}
     @Override public void onPause(){note("pause");super.onPause();}
     @Override public void onStop(){note("stop");super.onStop();}
-    @Override public void onDestroy() { note("destroy");++focusRequest;if(current.get()==this)current.clear(); super.onDestroy(); }
+    @Override public void onDestroy() { note("destroy");++focusRequest;if(android.os.Build.VERSION.SDK_INT>=30)ImeAnimations.clear(this);if(current.get()==this)current.clear(); super.onDestroy(); }
     @Override public void onWindowFocusChanged(boolean focused) {
         super.onWindowFocusChanged(focused);
         note("window focus="+focused);
@@ -83,5 +85,27 @@ public final class ProbeActivity extends Activity {
     private static final class InitialInfo {static int beforeLength(EditorInfo info){CharSequence before=info.getInitialTextBeforeCursor(128,0);return before==null?-1:before.length();}}
     private static final class ImeVisibility {
         static boolean visible(android.view.View view){android.view.WindowInsets insets=view.getRootWindowInsets();return insets!=null&&insets.isVisible(android.view.WindowInsets.Type.ime());}
+    }
+    // Kept in an independently loaded class: API28 never resolves these API30 types.
+    private static final class ImeAnimations {
+        static void observe(ProbeActivity owner){
+            owner.getWindow().getDecorView().setWindowInsetsAnimationCallback(new android.view.WindowInsetsAnimation.Callback(android.view.WindowInsetsAnimation.Callback.DISPATCH_MODE_CONTINUE_ON_SUBTREE){
+                private final java.util.Set<android.view.WindowInsetsAnimation> running=java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<android.view.WindowInsetsAnimation,Boolean>());
+                @Override public void onPrepare(android.view.WindowInsetsAnimation animation){
+                    if((animation.getTypeMask()&android.view.WindowInsets.Type.ime())!=0&&running.add(animation)){
+                        owner.activeImeAnimations=running.size();++owner.imeAnimationVersion;
+                        note("ime_animation_prepare active="+owner.activeImeAnimations);
+                    }
+                }
+                @Override public android.view.WindowInsets onProgress(android.view.WindowInsets insets,java.util.List<android.view.WindowInsetsAnimation> animations){return insets;}
+                @Override public void onEnd(android.view.WindowInsetsAnimation animation){
+                    if(running.remove(animation)){
+                        owner.activeImeAnimations=running.size();++owner.imeAnimationVersion;
+                        note("ime_animation_end active="+owner.activeImeAnimations);
+                    }
+                }
+            });
+        }
+        static void clear(ProbeActivity owner){owner.getWindow().getDecorView().setWindowInsetsAnimationCallback(null);owner.activeImeAnimations=0;++owner.imeAnimationVersion;}
     }
 }
