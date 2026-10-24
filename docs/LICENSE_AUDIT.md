@@ -58,3 +58,7 @@ APK 保留固定上游的 Sherpa Apache-2.0、ONNX Runtime MIT 与完整 ThirdPa
 从既有固定 MSIME 97d652a49cabb0887355b84186af2aa9032d3814 迁移 `platforms/android/java/app/msime/android/core/SelectionEchoTracker.java` 及 `platforms/android/tests/core/SelectionEchoTrackerSmoke.java`。上游根 GPL-3.0-only 适用，原文件没有单独版权头；保留完整原始说明/测试，新增来源、贡献者归属及修改日期头。仅改包/import，并用 Math.min/max 替换同义 BoundsPolicy 调用；未更新/改写 vendor 子模块。宿主的重启处理独立适配 API30 EditorInfo 初始快照，不复制上游 UI 线程远端上下文读取。对应源码、根 GPL 文本及本 NOTICE 随既有分发义务继续提供。
 
 后续一并适配该固定MSIME `MSIMEInputService.java` 的pendingCompositionMarkerLoss衔接：暂缓100ms的同位置标记丢失回报、重启取消及新按键前结算。原源码/贡献者/GPL保持可追溯；ZapIME使用异步worker重置解码器且不向应用新选区写空组字，仍不复制其UI线程getTextBeforeCursor路径。
+
+## 英语伴学候选（仅调研，未引入）
+
+2026-10-24核对Helsinki-NLP/opus-mt-zh-en官方模型卡：权重为CC-BY-4.0，不是Apache-2.0；CTranslate2与ONNX Runtime运行库分别为MIT。当前没有下载、转换、打包这些权重或增加SDK，不能把许可调研当成发行审计完成。正式引入须固定revision/SHA，保留作者/模型来源/许可证和量化转换说明，验证分词与各平台运行包；详见ENGLISH_LEARNING.md及其中官方来源。语音模型或拼音候选模型的既有许可不能覆盖此翻译模型。
