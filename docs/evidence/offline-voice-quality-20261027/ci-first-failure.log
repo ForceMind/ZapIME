@@ -1,0 +1,14 @@
+2026-10-27T06:59:15.6400015Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 espeak-ng-data amd64 1.51+dfsg-12build1 [4538 kB]
+2026-10-27T06:59:21.2121172Z Preparing to unpack .../10-espeak-ng-data_1.51+dfsg-12build1_amd64.deb ...
+2026-10-27T06:59:21.2128828Z Unpacking espeak-ng-data:amd64 (1.51+dfsg-12build1) ...
+2026-10-27T06:59:21.4768598Z Setting up espeak-ng-data:amd64 (1.51+dfsg-12build1) ...
+2026-10-27T06:59:24.0323826Z Ran 16 tests in 0.142s
+2026-10-27T06:59:24.0324370Z OK
+2026-10-27T07:00:04.5376249Z PASS pinned model archive and four inference file checksums
+2026-10-27T07:00:05.1248023Z COMPLETE fixed synthetic fixtures: 12
+2026-10-27T07:00:08.8589575Z PASS local CPU ASR: model hashes, nonempty transcript and requested phrase checks; report: target/voice-probe/report.json
+2026-10-27T07:00:23.3359203Z COMPLETE synthetic diagnostics; no accuracy acceptance: target/voice-quality-report.json
+2026-10-27T07:00:23.3361274Z [{"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}, {"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}, {"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}]
+2026-10-27T07:00:23.9703314Z ##[error]An error has occurred while creating the zip file for upload
+2026-10-27T07:00:23.9712230Z Error: EACCES: permission denied, open '/home/runner/work/ZapIME/ZapIME/target/voice-quality-report.json'
+2026-10-27T07:00:23.9767822Z Error: An error has occurred during zip creation for the artifact

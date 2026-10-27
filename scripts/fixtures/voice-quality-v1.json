@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "id": "synthetic-espeak-v1",
+  "kind": "synthetic",
+  "scope": "Fixed diagnostic fixtures authored before inference; not natural speech or a representative accuracy benchmark.",
+  "cases": [
+    {"id": "greeting", "category": "ordinary", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "你好，今天下午三点开会。"},
+    {"id": "negation", "category": "negation", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "我不是不想去，只是今天没有时间。"},
+    {"id": "amount", "category": "numbers", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "这笔订单一共三百二十五元。"},
+    {"id": "date", "category": "numbers", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "二零二六年十月二十七日。"},
+    {"id": "short", "category": "short", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "好的，收到。"},
+    {"id": "question", "category": "ordinary", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "请问这个文件保存在哪里？"},
+    {"id": "names", "category": "names", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "林小雨和陈向阳约好明天见面。"},
+    {"id": "code-switch", "category": "code-switch", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "请打开WiFi，然后检查USB连接。"},
+    {"id": "english", "category": "english", "voice": "en-us", "speed": 150, "reference": "Please send me the file tomorrow."},
+    {"id": "slow", "category": "rate", "voice": "cmn-latn-pinyin", "speed": 120, "reference": "请把会议安排改到明天下午。"},
+    {"id": "fast", "category": "rate", "voice": "cmn-latn-pinyin", "speed": 180, "reference": "请把会议安排改到明天下午。"},
+    {"id": "self-correction", "category": "self-correction", "voice": "cmn-latn-pinyin", "speed": 150, "reference": "不是周三，是周四上午十点。"}
+  ]
+}

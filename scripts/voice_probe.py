@@ -74,13 +74,13 @@ def prepare(directory):
     print("PASS pinned model archive and four inference file checksums")
 
 
-def synthesize(output, espeak):
+def synthesize(output, espeak, text=SYNTHETIC_TEXT, voice="cmn-latn-pinyin", speed=150):
     import numpy as np
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory() as temporary:
         raw = Path(temporary) / "synthetic.wav"
         # cmn's Latin-as-English mode can pronounce dictionary pinyin as English.
-        subprocess.run([espeak, "-v", "cmn-latn-pinyin", "-s", "150", "-w", str(raw), SYNTHETIC_TEXT], check=True)
+        subprocess.run([espeak, "-v", voice, "-s", str(speed), "-w", str(raw), text], check=True)
         with wave.open(str(raw)) as wav:
             if wav.getnchannels() != 1 or wav.getsampwidth() != 2:
                 raise ValueError("unexpected synthetic audio format")
@@ -97,49 +97,68 @@ def synthesize(output, espeak):
     print("PASS synthetic Mandarin fixture generated locally")
 
 
-def recognize(directory, audio, threads, runs, report, include_text, expected_fragments):
-    # This branch has no download/HTTP client calls. Missing or altered models fail.
+def read_audio(audio, max_seconds=120):
     import numpy as np
+    with wave.open(str(audio)) as wav:
+        if (wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) != (1, 2, 16000):
+            raise ValueError("expected mono 16 kHz PCM16 WAV")
+        if not 0 < wav.getnframes() <= max_seconds*16000:
+            raise ValueError("audio duration exceeds probe bound")
+        frames = wav.getnframes()
+        raw = wav.readframes(frames)
+        if len(raw) != frames*2:
+            raise ValueError("truncated PCM payload")
+        return np.frombuffer(raw, dtype="<i2").astype(np.float32)/32768
+
+
+def create_recognizer(directory, threads):
     import sherpa_onnx
     for name, spec in LOCK["files"].items():
         if not verified(directory / name, spec):
             raise ValueError("model integrity check failed: " + name)
-    with wave.open(str(audio)) as wav:
-        if (wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) != (1, 2, 16000):
-            raise ValueError("expected mono 16 kHz PCM16 WAV")
-        if not 0 < wav.getnframes() <= 120*16000:
-            raise ValueError("audio duration must be within 120 seconds")
-        samples = np.frombuffer(wav.readframes(wav.getnframes()), dtype="<i2").astype(np.float32)/32768
     initialized = time.perf_counter()
     recognizer = sherpa_onnx.OnlineRecognizer.from_transducer(
         tokens=str(directory / "tokens.txt"), encoder=str(directory / "encoder.int8.onnx"),
         decoder=str(directory / "decoder.onnx"), joiner=str(directory / "joiner.int8.onnx"),
         num_threads=threads, sample_rate=16000, decoding_method="greedy_search",
         model_type="zipformer2", provider="cpu")
-    load_seconds = time.perf_counter() - initialized
-    results = []
-    for iteration in range(runs):
-        stream = recognizer.create_stream()
-        started = time.perf_counter()
-        first_compute, first_audio = None, None
-        # No sleeps: throughput and audio position at first text, not live latency.
-        for start in range(0, len(samples), 1600):
-            stream.accept_waveform(16000, samples[start:start+1600])
-            while recognizer.is_ready(stream):
-                recognizer.decode_stream(stream)
-            if first_audio is None and recognizer.get_result(stream).strip():
-                first_audio = min(start+1600, len(samples))/16000
-                first_compute = time.perf_counter()-started
-        stream.accept_waveform(16000, np.zeros(16000, dtype=np.float32))
-        stream.input_finished()
+    return recognizer, time.perf_counter() - initialized
+
+
+def decode_audio(recognizer, samples):
+    """Same unpaced 100ms CPU path for the legacy gate and whole-sentence probe."""
+    import numpy as np
+    stream = recognizer.create_stream()
+    started = time.perf_counter()
+    first_compute, first_audio = None, None
+    for start in range(0, len(samples), 1600):
+        stream.accept_waveform(16000, samples[start:start+1600])
         while recognizer.is_ready(stream):
             recognizer.decode_stream(stream)
-        elapsed = time.perf_counter()-started
-        text = recognizer.get_result(stream).strip()
+        if first_audio is None and recognizer.get_result(stream).strip():
+            first_audio = min(start+1600, len(samples))/16000
+            first_compute = time.perf_counter()-started
+    stream.accept_waveform(16000, np.zeros(16000, dtype=np.float32))
+    stream.input_finished()
+    while recognizer.is_ready(stream):
+        recognizer.decode_stream(stream)
+    elapsed = time.perf_counter()-started
+    return recognizer.get_result(stream).strip(), {
+        "decode_seconds": elapsed, "rtf": elapsed/(len(samples)/16000),
+        "first_text_compute_seconds": first_compute, "first_text_audio_seconds": first_audio}
+
+
+def recognize(directory, audio, threads, runs, report, include_text, expected_fragments):
+    # This branch has no download/HTTP client calls. Missing or altered models fail.
+    import sherpa_onnx
+    samples = read_audio(audio)
+    recognizer, load_seconds = create_recognizer(directory, threads)
+    results = []
+    for iteration in range(runs):
+        text, timing = decode_audio(recognizer, samples)
         if not text:
             raise ValueError("recognizer produced empty text")
-        row = {"iteration": iteration+1, "decode_seconds": elapsed, "rtf": elapsed/(len(samples)/16000),
-               "first_text_compute_seconds": first_compute, "first_text_audio_seconds": first_audio,
+        row = {"iteration": iteration+1, **timing,
                "text_characters": len(text), "text_sha256": hashlib.sha256(text.encode()).hexdigest(),
                "expected_fragments_present": all(fragment in text for fragment in expected_fragments)}
         if include_text:
