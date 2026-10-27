@@ -1,0 +1,126 @@
+{
+  "source_commit": "7a8667a746c5d500bd4984407300ba27e7ddefc8",
+  "code_pr": 60,
+  "code_merge": "7df6f76dc217b690193f29321116137039b6282c",
+  "workflow_runs": [
+    {
+      "id": 40517361393,
+      "name": "Windows native TSF development",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 179,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361393/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361393/logs",
+      "workflow_id": 392037100
+    },
+    {
+      "id": 40517361250,
+      "name": "Offline speech CPU probe",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 127,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361250/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361250/logs",
+      "workflow_id": 393617199
+    },
+    {
+      "id": 40517361276,
+      "name": "Independent ciphertext sync service",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 171,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361276/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361276/logs",
+      "workflow_id": 392053540
+    },
+    {
+      "id": 40517361507,
+      "name": "Android native input acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 152,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361507/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361507/logs",
+      "workflow_id": 392138455
+    },
+    {
+      "id": 40517361436,
+      "name": "ZapIME development checks",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 210,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361436/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40517361436/logs",
+      "workflow_id": 390189548
+    }
+  ],
+  "android_jobs": [
+    {
+      "id": 122234795761,
+      "name": "Android development APK",
+      "top_level_status_as_returned": "in_progress",
+      "top_level_conclusion_as_returned": null,
+      "complete_job_step": {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 49,
+        "started_at": "2026-10-27T14:11:03Z",
+        "completed_at": "2026-10-27T14:11:03Z"
+      }
+    },
+    {
+      "id": 122239280103,
+      "name": "Android API 36 native acceptance",
+      "top_level_status_as_returned": "completed",
+      "top_level_conclusion_as_returned": "success",
+      "complete_job_step": {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21,
+        "started_at": "2026-10-27T14:17:36Z",
+        "completed_at": "2026-10-27T14:17:36Z"
+      }
+    },
+    {
+      "id": 122239280154,
+      "name": "Android API 35 native acceptance",
+      "top_level_status_as_returned": "completed",
+      "top_level_conclusion_as_returned": "success",
+      "complete_job_step": {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21,
+        "started_at": "2026-10-27T14:17:10Z",
+        "completed_at": "2026-10-27T14:17:10Z"
+      }
+    }
+  ],
+  "downloaded_artifacts": [
+    {
+      "id": 12742465377,
+      "name": "ZapIME-Android-API-36-acceptance",
+      "bytes": 2437862,
+      "digest": "sha256:1d0fa8d94e9d8c00c671c5f612143ac72a028b3de1f1d4962d082c7a2438e73b",
+      "source_commit": "7a8667a746c5d500bd4984407300ba27e7ddefc8"
+    },
+    {
+      "id": 12742010264,
+      "name": "ZapIME-Android-API-35-acceptance",
+      "bytes": 2436968,
+      "digest": "sha256:dd2c411158471931191abb738a2475a66862aee5b541c23c2a732e3bf4fd2f83",
+      "source_commit": "7a8667a746c5d500bd4984407300ba27e7ddefc8"
+    },
+    {
+      "id": 12740756313,
+      "name": "ZapIME-Android-development",
+      "bytes": 233591377,
+      "digest": "sha256:8e96e0866617b85199a82698e764bb75a17aefadb8828c1c895ef62793ab689d",
+      "source_commit": "7a8667a746c5d500bd4984407300ba27e7ddefc8"
+    }
+  ],
+  "scope": "Exact-source PR runs; raw artifact members preserved separately. Future docs/main runs are independent. Synthetic real-JNI text with production transaction and real Android Editable, not activated-IME nonempty confirmation or natural speech.",
+  "status_note": "Run is completed/success and all three Complete job steps are completed/success. The jobs collection still returns API28 top-level in_progress/null; retained verbatim, not rewritten as completed."
+}

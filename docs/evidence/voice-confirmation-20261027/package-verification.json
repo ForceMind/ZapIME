@@ -1,0 +1,23 @@
+{
+  "source_commit": "7a8667a746c5d500bd4984407300ba27e7ddefc8",
+  "run_id": 40517361507,
+  "artifact_id": 12740756313,
+  "artifact_zip_bytes": 233591377,
+  "artifact_zip_sha256": "8e96e0866617b85199a82698e764bb75a17aefadb8828c1c895ef62793ab689d",
+  "full_zip_size_sha_verified": true,
+  "arm64_apk": {
+    "bytes": 50958904,
+    "sha256": "be032fdb0bd16fd2189bf79ddf1f31e9cfcb2f26868638f1e959b2ecaa1511b9"
+  },
+  "model_zip": {
+    "bytes": 129097503,
+    "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+    "members_checked_against_pinned_apk_config": 6
+  },
+  "license_assets_present": true,
+  "no_embedded_model_or_synthetic_pcm": true,
+  "test_probe_descriptor_absent_from_product_dex": true,
+  "scope": "ZIP/file hashes and packaging inspected locally; signing/16KiB alignment checked by CI. Development signing only, not ARM handset execution or production release.",
+  "production_transaction_descriptors_present": true,
+  "product_dex_sha256": "5b2be19f60c767372b4fd21b24b6491b16359fb46d044fa507f21f2e8ddd33f3"
+}
