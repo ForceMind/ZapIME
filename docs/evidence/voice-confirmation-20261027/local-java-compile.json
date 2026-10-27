@@ -1,0 +1,53 @@
+{
+  "created_at": "2026-10-27T14:01:31.941805+00:00",
+  "scope": "Java source compilation only; no APK, JNI inference or emulator execution",
+  "jdk": "openjdk version \"17.0.20\" 2026-07-21\nOpenJDK Runtime Environment (build 17.0.20+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 17.0.20+8-1-24.04-Ubuntu, mixed mode, sharing)",
+  "android_api": 36,
+  "android_jar_sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+  "compilations": [
+    {
+      "scope": "product",
+      "source_count": 25,
+      "class_count": 45,
+      "return_code": 0,
+      "source_sha256": {
+        "platforms/android/java/org/zapime/android/MainActivity.java": "b2b62c301cd5614c96b6f0a78633dbb64306b31e38b4b38b29c1a7c8bce5dc34",
+        "platforms/android/java/org/zapime/android/VoiceModels.java": "0829d08dcc164617f3dc38c19c3c8c8cc179848781c1ce81cef853dc6c576159",
+        "platforms/android/java/org/zapime/android/VoiceSettingsActivity.java": "38c245dd10a0b28b4c5d21205b550307a6cf95a57bce68fe73b51b9368e7164f",
+        "platforms/android/java/org/zapime/android/KeyboardTheme.java": "254832e2dd979f7e7307e317af386b585962fd793d88e0dfcb2254279394b9cb",
+        "platforms/android/java/org/zapime/android/LocalDataPanel.java": "03e62f9e2479a08aaa104d157f67429f3939bf35f32c0007058bf77c868b171d",
+        "platforms/android/java/org/zapime/android/Ui.java": "c29d36765fd4b6435d705938ef80b177df07938eff40656b85c485968d0fc075",
+        "platforms/android/java/org/zapime/android/NativeVoice.java": "10bc0a2898327f62bb214e49e061fbac7563a28860fe61ce83cbebe31631b7d3",
+        "platforms/android/java/org/zapime/android/NativeCore.java": "d7780084f5155fb433b99ca8b1896d71563af01baf0f49a2909c214a68f305cc",
+        "platforms/android/java/org/zapime/android/ResourceInstaller.java": "bf92bc2a8091880fef205baf78e077d2957b9f6cc5bc71bcd73b104cb6583a04",
+        "platforms/android/java/org/zapime/android/EnglishLearningEligibility.java": "2bb04d0213ed3ec9c116ae57cc0c733996fe779383bee286fe53492e4cc00087",
+        "platforms/android/java/org/zapime/android/VoiceRecordingState.java": "035185cc084173e180ec979b849daa1dac01035749636ffef07e0b8b80c45cbe",
+        "platforms/android/java/org/zapime/android/VoiceWorker.java": "3364d152f01a07e32f8bef79550f2da276b49a66cfbc064a19642f4cfe4a39aa",
+        "platforms/android/java/org/zapime/android/KeyCap.java": "eb76101642160a991e2071e290a5ac44fc27730d6a9e4005c9c1281e498bd2f8",
+        "platforms/android/java/org/zapime/android/SelectionEchoTracker.java": "489997b8115def1b17b5cc0d0d18c3e6db64e780f67f4029886707da13a9d20e",
+        "platforms/android/java/org/zapime/android/ZapInputMethodService.java": "282f0c0c6186709a01c5672b4b8b1ea60736c47d20fe32bd84e29ff63dc76525",
+        "platforms/android/java/org/zapime/android/VoiceCapture.java": "a3f7b1d7e75eb0ea2554029aa21c3e4b5d55a9fb105dce32a65a7f0eff95d984",
+        "platforms/android/java/org/zapime/android/PersonalDataActivity.java": "a5441041e1f66ad95aff348f7adeea13e8c227ec07da1dac87100a2373f73b02",
+        "platforms/android/java/org/zapime/android/VoiceRecordingMonitor.java": "b04d47f3d45612da4f1f5f410245449519c3c45feccae17ae80008bc60e4b855",
+        "platforms/android/java/org/zapime/android/SyncSecrets.java": "65c81df9058ad39697cfa2402f891b916dc2db2e268889f0eb80e6c92b8c95cd",
+        "platforms/android/java/org/zapime/android/KeyboardSettingsActivity.java": "4601fd69785c82cb16923155b4b464435d32e87bf0b1be2ba39ff1134c4f63be",
+        "platforms/android/java/org/zapime/android/EnglishLearningGate.java": "165f40f156eddb809b2d31bfb87b6446d9862776a4060e837460755b2fc8fb7e",
+        "platforms/android/java/org/zapime/android/EnglishLearningSession.java": "51fee1a35e187564e4555bc5834e464fe0a77d6b1923031c6ebfb4b922c60629",
+        "platforms/android/java/org/zapime/android/VoiceCommitTransaction.java": "09a9330ed83f23898ed8ad543e7c1805ada8491aa23f439cd661583e0ff0922a",
+        "platforms/android/java/org/zapime/android/KeyboardTouch.java": "c4ba33bad965715885dea9ab4f63eb54fa47ddd10dd37e968c82d5cc9f785ebb",
+        "platforms/android/java/org/zapime/android/VoicePcmQueue.java": "745c2f5b12761ccb24d79509cfc03d7b6c008760f1b3abeddc617b5dd659f579"
+      }
+    },
+    {
+      "scope": "target-tests",
+      "source_count": 3,
+      "class_count": 8,
+      "return_code": 0,
+      "source_sha256": {
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceCommitProbe.java": "403cd5d804b04fa634d1f67f9f7cd80a0fb0848146accbae8741c128a5d1eb5f",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "b976158b6adb444fc4e28d288edd2650fc8cbf9492bd8f289a7d0fb8fb8375b0"
+      }
+    }
+  ]
+}

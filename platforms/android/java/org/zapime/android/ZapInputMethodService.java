@@ -53,7 +53,8 @@ public final class ZapInputMethodService extends InputMethodService {
     private final java.util.ArrayDeque<String> panelEvents=new java.util.ArrayDeque<>();
     private void notePanel(String code){if(panelEvents.size()==16)panelEvents.removeFirst();panelEvents.addLast(android.os.SystemClock.uptimeMillis()+":"+code);}
     private VoiceCapture voice;
-    private int voiceTicket,selectionVersion,voiceSelection,selectionStart=-1,selectionEnd=-1;
+    private int voiceTicket,selectionVersion,voiceSelection,voiceCursor=-1,selectionStart=-1,selectionEnd=-1;
+    private VoiceCommitTransaction voiceCommit;
     private InputConnection voiceTarget;
     private String voiceBefore,voiceAfter,voiceState="",voiceText="";
     private TextView voiceLabel,voicePreview;
@@ -446,7 +447,7 @@ public final class ZapInputMethodService extends InputMethodService {
             if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
             InputConnection target=getCurrentInputConnection();
             if(target==null||!preedit.isEmpty()||selectionStart<0||selectionStart!=selectionEnd){cancelVoice(true);return;}
-            voiceTarget=target;voiceSelection=selectionVersion;final int selected=voiceSelection;
+            voiceTarget=target;voiceSelection=selectionVersion;voiceCursor=selectionStart;final int selected=voiceSelection;
             // Remote editor queries can wait seconds. Keep Cancel and the IME
             // main looper responsive even when the other App is not responding.
             VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
@@ -455,6 +456,7 @@ public final class ZapInputMethodService extends InputMethodService {
                 voiceBefore=context[0];voiceAfter=context[1];
                 voice=new VoiceCapture(this,(state,text)->{
                     if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+                    if(voiceCommit!=null)return;
                     if(state.equals("recording")&&voiceState.equals("decoding"))return;
                     voiceState=state;voiceText=text;updateVoicePanel();
                 });voice.start();
@@ -489,21 +491,27 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("microphone_error")||voiceState.equals("microphone_silenced");}
     private void insertVoice(){
-        if(!voiceState.equals("result")||voiceText.trim().isEmpty())return;
+        if(voiceCommit!=null||!voiceState.equals("result")||voiceText.trim().isEmpty())return;
         final InputConnection target=getCurrentInputConnection();
-        if(target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||!preedit.isEmpty()){cancelVoice(true);return;}
-        final int ticket=voiceTicket,active=epoch,selected=voiceSelection;voiceState="checking";updateVoicePanel();
+        if(target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||searchActive||!ready||!preedit.isEmpty()
+                ||voiceCursor<0||selectionStart!=voiceCursor||selectionEnd!=voiceCursor||voiceBefore==null||voiceAfter==null){cancelVoice(true);return;}
+        final int ticket=voiceTicket,active=epoch;
+        final VoiceCommitTransaction request=new VoiceCommitTransaction(
+                new VoiceCommitTransaction.Editor(target,ticket,active,voiceSelection,voiceCursor,voiceCursor,true),
+                voiceBefore,voiceAfter,voiceText);
+        voiceCommit=request;voiceState="checking";updateVoicePanel();
         VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
-            if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
-            boolean valid=target==getCurrentInputConnection()&&target==voiceTarget&&selected==selectionVersion&&!privateSession&&preedit.isEmpty()&&selectionStart>=0&&selectionStart==selectionEnd&&context!=null&&voiceBefore.equals(context[0])&&voiceAfter.equals(context[1]);
-            String text=voiceText;cancelVoice(true);
-            if(valid){boolean accepted=false;try{selectionEcho.invalidate();accepted=target.commitText(text,1);}catch(RuntimeException ignored){}if(!accepted)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();}
-            else Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
+            if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice")||voiceCommit!=request)return;
+            VoiceCommitTransaction.Editor current=new VoiceCommitTransaction.Editor(getCurrentInputConnection(),voiceTicket,epoch,
+                    selectionVersion,selectionStart,selectionEnd,ready&&!privateSession&&!searchActive&&preedit.isEmpty()&&target==voiceTarget);
+            VoiceCommitTransaction.Outcome outcome=request.finish(current,context,()->{selectionEcho.invalidate();cancelVoice(true);});
+            if(outcome==VoiceCommitTransaction.Outcome.REJECTED)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();
+            else if(outcome==VoiceCommitTransaction.Outcome.INVALID)Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
         });});
     }
     private String[] voiceContext(InputConnection target){try{CharSequence before=target.getTextBeforeCursor(128,0),after=target.getTextAfterCursor(128,0);return before==null||after==null||before.length()>128||after.length()>128?null:new String[]{before.toString(),after.toString()};}catch(RuntimeException unavailable){return null;}}
     private void cancelVoice(boolean restore){
-        ++voiceTicket;voiceBack=false;if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceScroll=null;voiceStop=null;voiceInsert=null;
+        ++voiceTicket;voiceBack=false;if(voiceCommit!=null){voiceCommit.cancel();voiceCommit=null;}if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceCursor=-1;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceScroll=null;voiceStop=null;voiceInsert=null;
         if(layer.equals("voice")){layer="letters";if(restore&&body!=null){renderKeys();idleToolbar();refreshStatus();}}
     }
     @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}
