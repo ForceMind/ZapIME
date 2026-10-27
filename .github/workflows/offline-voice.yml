@@ -32,10 +32,11 @@ jobs:
           .venv-voice/bin/python scripts/voice_quality.py synthesize
       - name: Real CPU streaming recognition with networking disabled
         run: |
-          sudo unshare --net "$PWD/.venv-voice/bin/python" scripts/voice_probe.py recognize --wav target/voice-probe/synthetic.wav --report target/voice-probe/report.json --include-text --expect-fragment '你好' --expect-fragment '离线语音输入测试' --expect-fragment '三点开会'
+          sudo unshare --net --setgid="$(id -g)" --setuid="$(id -u)" "$PWD/.venv-voice/bin/python" scripts/voice_probe.py recognize --wav target/voice-probe/synthetic.wav --report target/voice-probe/report.json --include-text --expect-fragment '你好' --expect-fragment '离线语音输入测试' --expect-fragment '三点开会'
       - name: Whole-sentence synthetic CER diagnostics (not natural speech acceptance)
         run: |
-          sudo unshare --net "$PWD/.venv-voice/bin/python" scripts/voice_quality.py evaluate --report target/voice-quality-report.json --include-text
+          sudo unshare --net --setgid="$(id -g)" --setuid="$(id -u)" "$PWD/.venv-voice/bin/python" scripts/voice_quality.py evaluate --report target/voice-quality-report.json --include-text
+          test -r target/voice-quality-report.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

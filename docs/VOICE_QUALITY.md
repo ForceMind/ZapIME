@@ -36,7 +36,7 @@ target/voice-quality-venv/bin/python scripts/voice_quality.py synthesize
 target/voice-quality-venv/bin/python scripts/voice_quality.py evaluate
 ```
 
-评测进程在导入numpy/sherpa、加载模型之前必须安装Linux libseccomp socket系统调用拒绝策略，实际验证IPv4/IPv6 socket返回EPERM；失败不回退到联网运行。复用已审计的开发探针过滤器，不是通用沙箱，不保证封闭继承文件描述符/io_uring通路，也不等于手机飞行模式。CI在此基础上额外使用`unshare --net`网络命名空间。
+评测进程在导入numpy/sherpa、加载模型之前必须安装Linux libseccomp socket系统调用拒绝策略，实际验证IPv4/IPv6 socket返回EPERM；失败不回退到联网运行。复用已审计的开发探针过滤器，不是通用沙箱，不保证封闭继承文件描述符/io_uring通路，也不等于手机飞行模式。CI在此基础上额外使用`unshare --net`网络命名空间，在创建命名空间后降回runner的实际UID/GID；原子报告维持0600，不为归档改成全局可读。
 
 默认报告不写参考/识别正文，仅有固定case ID、SHA和指标；这不是匿名化承诺。仅对该非私密固定合成集显式加`--include-text`才归档中英文原文及全部坏例。没有任意录音输入、麦克风采集或上传能力。每轮完成即原子写入部分报告，只有全部轮次结束才`complete=true`；新运行开始先清除旧成功标记，失败只记录异常类型，不能残留旧完整结果冒充本次成功。
 
