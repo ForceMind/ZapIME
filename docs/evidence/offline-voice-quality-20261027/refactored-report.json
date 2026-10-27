@@ -1,0 +1,53 @@
+{
+  "model": "X-ASR-zh-en 480ms streaming INT8 2026-06-05",
+  "runtime": "1.13.8",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "threads": 2,
+  "audio_seconds": 7.7218125,
+  "audio_sha256": "ab033448aff85b37dfeeac1042d317ce1e8c096e15a04c3f64cb09f97137d734",
+  "load_seconds": 1.687130815000046,
+  "median_decode_seconds": 0.576241170000003,
+  "median_rtf": 0.07462511813126814,
+  "runs": [
+    {
+      "iteration": 1,
+      "decode_seconds": 0.576241170000003,
+      "rtf": 0.07462511813126814,
+      "first_text_compute_seconds": 0.11587380699984351,
+      "first_text_audio_seconds": 1.6,
+      "text_characters": 26,
+      "text_sha256": "8b20f9b1562b34c5adb2b4dd04d8ea73df97a38c81e44a2177cadd312992fa33",
+      "expected_fragments_present": true,
+      "text": "你好， 这是一段离线语音输入测试， 今天下午三点开会"
+    },
+    {
+      "iteration": 2,
+      "decode_seconds": 0.6310288629999832,
+      "rtf": 0.08172030374992699,
+      "first_text_compute_seconds": 0.10304551400008677,
+      "first_text_audio_seconds": 1.6,
+      "text_characters": 26,
+      "text_sha256": "8b20f9b1562b34c5adb2b4dd04d8ea73df97a38c81e44a2177cadd312992fa33",
+      "expected_fragments_present": true,
+      "text": "你好， 这是一段离线语音输入测试， 今天下午三点开会"
+    },
+    {
+      "iteration": 3,
+      "decode_seconds": 0.5636339479999606,
+      "rtf": 0.07299244160615925,
+      "first_text_compute_seconds": 0.10559764200002064,
+      "first_text_audio_seconds": 1.6,
+      "text_characters": 26,
+      "text_sha256": "8b20f9b1562b34c5adb2b4dd04d8ea73df97a38c81e44a2177cadd312992fa33",
+      "expected_fragments_present": true,
+      "text": "你好， 这是一段离线语音输入测试， 今天下午三点开会"
+    }
+  ],
+  "expected_fragments": [
+    "你好",
+    "离线语音输入测试",
+    "三点开会"
+  ],
+  "scope": "CPU file-fed streaming probe; not handset latency, microphone or accuracy acceptance"
+}

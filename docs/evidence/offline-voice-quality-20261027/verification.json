@@ -1,0 +1,23 @@
+{
+  "all_ci_wav_bytes_and_frame_counts_verified": 12,
+  "local_and_ci_completed_rounds_each": 3,
+  "cases_per_round": 12,
+  "independent_full_matrix_distance_checks": 144,
+  "all_references_equal_committed_definition": true,
+  "all_source_files_match_tested_report_hashes": true,
+  "all_counts_and_weighted_aggregates_recomputed": true,
+  "actual_ipv4_ipv6_eperm_in_both_reports": true,
+  "audio_sha_different_between_generators": [
+    "greeting.wav",
+    "negation.wav",
+    "amount.wav",
+    "date.wav",
+    "question.wav",
+    "names.wav",
+    "code-switch.wav",
+    "slow.wav",
+    "fast.wav",
+    "self-correction.wav"
+  ],
+  "scope": "Both fixed synthetic suites only; repetitions do not add independent samples; no natural/device accuracy claim"
+}

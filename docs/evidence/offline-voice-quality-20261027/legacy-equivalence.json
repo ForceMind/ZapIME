@@ -1,0 +1,35 @@
+{
+  "source_commit": "68f4cd2f90e3d77e4382e47e1bc178473178d062",
+  "legacy_source_sha256": "96e43ddc12eb85c997cbfffea952fc8be7eba385451bff3dd98c324bf9741b8f",
+  "refactored_source_sha256": "84fb04af6b3a8f4324df9060409da02c00f65be0a8be886162b063c26bc3d738",
+  "network_restriction": {
+    "method": "no_new_privs plus Linux libseccomp, before spawning the native runtime; inherited across exec",
+    "blocked_syscalls": [
+      "socket",
+      "socketpair",
+      "connect",
+      "accept",
+      "accept4",
+      "bind",
+      "listen",
+      "sendto",
+      "sendmsg",
+      "sendmmsg",
+      "recvfrom",
+      "recvmsg",
+      "recvmmsg",
+      "shutdown"
+    ],
+    "socket_creation_rejected": [
+      "AF_INET",
+      "AF_INET6"
+    ],
+    "scope": "this worker and its native child only; specific socket syscalls, not all inherited-fd/io_uring paths, device airplane mode, or general sandbox"
+  },
+  "same_audio_sha256": "ab033448aff85b37dfeeac1042d317ce1e8c096e15a04c3f64cb09f97137d734",
+  "legacy_runs": 3,
+  "refactored_runs": 3,
+  "all_transcript_sha256_equal": true,
+  "all_original_fragment_gates_passed": true,
+  "scope": "One identical locally synthesized phrase, same pinned model and process; not natural-speech, general behavioral equivalence or mobile acceptance"
+}
