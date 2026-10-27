@@ -1,0 +1,11 @@
+2026-10-27T12:45:26.7067986Z PASS exact-zero PCM policy: empty/zero simulated text suppressed, valid prefix only, +/-1 and int16 extremes retained, trailing quiet and session isolation
+2026-10-27T12:51:28.3158087Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-27T12:52:41.6390553Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-27T12:53:36.3653620Z INSTRUMENTATION_STATUS: stream=PASS actual JNI empty/zero PCM returns empty partial/final text; valid count prefix, +/-1 LSB, trailing quiet and repeat-finish boundaries
+2026-10-27T12:53:36.3655973Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-27T12:53:36.3662656Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked=true
+2026-10-27T12:53:37.5470862Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle
+2026-10-27T12:53:47.6307844Z SHA256 digest of uploaded artifact zip is 2f64a7e6efb52399f3ae64ad6f5bd51bd4092155ce7242328d5cf37380c9b8fc
+2026-10-27T12:53:48.1577301Z Artifact ZapIME-Android-development.zip successfully finalized. Artifact ID 12736190208
+2026-10-27T12:53:53.0419958Z SHA256 digest of uploaded artifact zip is 61c8e5a31191186fe0bc1a59bff413802061def67fc459d377f5ad9bce0deaf0
+2026-10-27T12:53:53.6114349Z Artifact ZapIME-Android-test-harness.zip successfully finalized. Artifact ID 12736160354

@@ -1,0 +1,8 @@
+2026-10-27T13:00:39.7190161Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-27T13:01:51.3682448Z PASS ZapIME native service teardown: no app fatal exception
+2026-10-27T13:02:28.1406202Z INSTRUMENTATION_STATUS: stream=PASS actual JNI empty/zero PCM returns empty partial/final text; valid count prefix, +/-1 LSB, trailing quiet and repeat-finish boundaries
+2026-10-27T13:02:28.1407962Z INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+2026-10-27T13:02:28.1417131Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked=true
+2026-10-27T13:02:29.3127306Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle
+2026-10-27T13:02:31.7324395Z SHA256 digest of uploaded artifact zip is 341103e5c59c4932f22d698054b76bb0923ca1bd647c1d0a11a1622a3bee556b
+2026-10-27T13:02:32.1725299Z Artifact ZapIME-Android-API-35-acceptance.zip successfully finalized. Artifact ID 12736047182
