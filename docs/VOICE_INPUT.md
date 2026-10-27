@@ -32,7 +32,7 @@ python3 scripts/build_voice_model.py --output target/ZapIME-XASR-model.zip
 - 开始/确认时的有界编辑器上下文查询也在语音 worker；不把可能等待数秒的跨进程读取放在键盘 UI。界面保持可取消，返回主线程后再次核对 ticket/epoch/选区。依据 [Android InputConnection 文档](https://developer.android.com/reference/android/view/inputmethod/InputConnection#getTextBeforeCursor(int,int)) 和 [AOSP AnyThread 远程读取实现](https://android.googlesource.com/platform/frameworks/base/+/70908ddf269e69d3a177f0c873cddc48a79d6f78/core/java/android/inputmethodservice/RemoteInputConnection.java)，不把 EditorInfo 初始缓存当作当前确认位置。
 - 不写录音文件，不上传音频/文字，不自动学习语音正文，不做云端回退；正文只保留在当前预览内存，取消后释放。模型缓存闲置约两分钟后释放，内存紧张时取消并释放未使用模型。并非对低内存设备的峰值内存/耗电验收。
 - JNI 分配前就建立取消句柄，限制最多 4 个；start/feed/finish/close 必须同一所有者线程，跨线程只允许 cancel。生命周期取消不等待模型加载或解码完成，迟到回调由独立 ticket/输入 epoch 拒绝。
-- 新增候选边界：未成功接受任何PCM，或已接受的PCM16前缀全部恰为0时，部分/最终文字均为空，结束不调用模型尾部解码；仅接受成功的有效count前缀累计非零标记，±1 LSB也保留。它不判断真人讲话、自然环境安静或系统静音，也不设置能量/VAD门槛；系统`isClientSilenced`、权限、取消及焦点检查继续独立执行。C++主机合成策略回归已通过，实际JNI/三API与空预览确认禁用的新门禁待本候选CI，不借旧运行预记成功。
+- 无样本/全零边界：未成功接受任何PCM，或已接受的PCM16前缀全部恰为0时，部分/最终文字均为空，结束不调用模型尾部解码；仅接受成功的有效count前缀累计非零标记，±1 LSB也保留。它不判断真人讲话、自然环境安静或系统静音，也不设置能量/VAD门槛；系统`isClientSilenced`、权限、取消及焦点检查继续独立执行。PR #57最终源59c9e8e的C++主机策略、真实JNI六类会话、API28/35/36空预览确认禁用及独立Editable不变断言均已实际通过；原合成中文、两轮输入与真实系统IME退出也通过，见[原始证据](evidence/voice-empty-pcm-20261027/README.md)。这不代表真人识别率提升或完整静音检测。
 - 模拟器 JNI 合成 PCM 识别、实际 AudioRecord 静音录制、键盘预览/焦点保护是不同验收。合成 PCM 直接进入原生解码器，不冒充通过手机麦克风说话；静音结果也不能证明自然语音质量。SAF 文件选择、现代系统后台麦克风/AppOps、蓝牙、ARM/三星和真实口音仍需真机验收。
 
 ## 模型与许可（2026-10-23）
