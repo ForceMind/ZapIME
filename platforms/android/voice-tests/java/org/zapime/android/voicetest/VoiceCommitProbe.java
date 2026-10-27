@@ -132,7 +132,14 @@ final class VoiceCommitProbe {
         String[] checked=context(editor);
         if(id.equals("cursor_changed_identical_context"))check(Arrays.equals(original,checked),"repeated-text fixture must retain identical bounded context");
         Object current=state(connection,ticket,epoch,version,start,end,allowed);
-        int[] ended={0};Runnable endSession=()->{++ended[0];try{invoke(transaction,"cancel",new Class<?>[0]);}catch(Exception e){throw new IllegalStateException("synthetic_end_session",e);}};
+        int[] ended={0};Runnable endSession=()->{
+            ++ended[0];
+            // A UI restoration can synchronously change focus/selection. If
+            // restoration ever moves before commit, the real Editable would
+            // receive the JNI text at the wrong position and this case fails.
+            if(id.equals("commit_once"))editor.edit.setSelection(0);
+            try{invoke(transaction,"cancel",new Class<?>[0]);}catch(Exception e){throw new IllegalStateException("synthetic_end_session",e);}
+        };
         if(id.equals("worker_thread_rejected")){
             boolean rejected=reader.submit(()->{try{finish(transaction,current,checked,endSession);return false;}catch(IllegalStateException expected){return "voice_confirmation_requires_main".equals(expected.getMessage());}}).get(10,TimeUnit.SECONDS);
             check(rejected,"worker-thread confirmation was not rejected");
