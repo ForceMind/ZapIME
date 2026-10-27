@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "kind": "synthetic",
+  "definition_sha256": "e9b1fa6232e9e0bc5f95fb27bb098f188884ed1fb9d9b9f59dc4ccdbdb4daeb7",
+  "generator": "eSpeak NG text-to-speech: 1.51  Data at: /usr/lib/x86_64-linux-gnu/espeak-ng-data",
+  "files": {
+    "greeting.wav": {
+      "size": 122522,
+      "sha256": "fdf0efb3cf6c5dd30acdb712f8b5696f34add989f0f4412d20a2bc2416481f87",
+      "samples": 61239
+    },
+    "negation.wav": {
+      "size": 160702,
+      "sha256": "240cb0838eeb06f9603dac448881d94efd9a1d38a98d8271ddf247ae41e80e63",
+      "samples": 80329
+    },
+    "amount.wav": {
+      "size": 129640,
+      "sha256": "173fea88d60a7ec5b95533ba95e02c8310844dc0e8082566a2d00da4e9b58b8e",
+      "samples": 64798
+    },
+    "date.wav": {
+      "size": 111392,
+      "sha256": "4aad2d075436f1e8ec138151538c1232fbea83cba589adfea78aaea5b6cbf91a",
+      "samples": 55674
+    },
+    "short.wav": {
+      "size": 52534,
+      "sha256": "3290cc31b32f7f65272e91f28584850886adfec0e125165503eca7dfd8e20a26",
+      "samples": 26245
+    },
+    "question.wav": {
+      "size": 125038,
+      "sha256": "1a3e7c324dcd4c7f136eed6e1196759046f4365f23597962951962dc17c05ad6",
+      "samples": 62497
+    },
+    "names.wav": {
+      "size": 149174,
+      "sha256": "b04d7cfa6b1fd154f454f1ceedf4a1f3d4290e4507e1131dedd7ef904b0990e4",
+      "samples": 74565
+    },
+    "code-switch.wav": {
+      "size": 157676,
+      "sha256": "9d25b95f3b3c28a08171442b28ded24cd9dd884003d30aca4ea883815fcceb56",
+      "samples": 78816
+    },
+    "english.wav": {
+      "size": 76838,
+      "sha256": "120f6d03c8ebc628bce6b522bae736cfdd58acc742b76b250acc7ce0f1c80daa",
+      "samples": 38397
+    },
+    "slow.wav": {
+      "size": 166744,
+      "sha256": "ddc8b4165c85e6cd93096b5ba662261ad20bca9c2b8cdf7abb2fc6886b449314",
+      "samples": 83350
+    },
+    "fast.wav": {
+      "size": 103744,
+      "sha256": "b30de27fb9aca498783fb0d37cc1ab917210d518aed1281bcc6e15193afbc466",
+      "samples": 51850
+    },
+    "self-correction.wav": {
+      "size": 130752,
+      "sha256": "192e90033faed86a7726f93affbb536251ca221bac00c8f4ee1f3aed566bb50c",
+      "samples": 65354
+    }
+  }
+}

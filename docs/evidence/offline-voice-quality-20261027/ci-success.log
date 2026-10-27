@@ -1,0 +1,9 @@
+2026-10-27T07:03:54.6038938Z Ran 16 tests in 0.143s
+2026-10-27T07:03:54.6043447Z OK
+2026-10-27T07:04:35.5071092Z COMPLETE fixed synthetic fixtures: 12
+2026-10-27T07:04:39.2525771Z PASS local CPU ASR: model hashes, nonempty transcript and requested phrase checks; report: target/voice-probe/report.json
+2026-10-27T07:04:53.7905738Z COMPLETE synthetic diagnostics; no accuracy acceptance: target/voice-quality-report.json
+2026-10-27T07:04:53.7908226Z [{"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}, {"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}, {"reference_characters": 153, "substitutions": 23, "deletions": 10, "insertions": 0, "errors": 33, "cer": 0.21568627450980393}]
+2026-10-27T07:04:55.2174496Z SHA256 digest of uploaded artifact zip is 5f0063c278e14a21d94d0d4a0b2169fb2e340c9d2be7ccda8bfa2e7ec0541409
+2026-10-27T07:04:55.6667201Z Artifact ZapIME-offline-voice-probe.zip successfully finalized. Artifact ID 12715648227
+2026-10-27T07:04:55.6668896Z Artifact ZapIME-offline-voice-probe has been successfully uploaded! Final size is 1295759 bytes. Artifact ID is 12715648227

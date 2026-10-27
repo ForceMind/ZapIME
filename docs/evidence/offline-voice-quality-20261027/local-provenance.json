@@ -1,0 +1,60 @@
+{
+  "fixed_case_source_commit": "3bcfb54192432696b7fd685910848e16c1d74ec1",
+  "evaluation_source_commit": "8f78ad8b8998893392fb641e2d87e38228905b05",
+  "espeak": {
+    "upstream": "https://github.com/espeak-ng/espeak-ng",
+    "tag": "1.52.0",
+    "commit": "4870adfa25b1a32b4361592f1be8a40337c58d6c",
+    "source_tracked_diff_clean": true,
+    "binary_sha256": "c910a39c94852f14d8049f96aa981b85b67035aa875618f7febaedaa28f3c255",
+    "build": "CMake 3.31.6, Ninja 1.13.0, Release; USE_LIBSONIC/LIBPCAUDIO/MBROLA/ASYNC=OFF; espeak-ng-bin and data targets, jobs=2",
+    "sonic_fetched_fixed_commit": "fbf75c3d6d846bad3bb3d456cbc5d07d9fd8c104",
+    "sonic_feature_enabled": false,
+    "scope": "Development synthesizer only, source/data/binary in ignored target; no new runtime shipped in APK"
+  },
+  "runtime": {
+    "sherpa_onnx": "1.13.8",
+    "numpy": "2.5.4",
+    "python": "Python 3.12.14"
+  },
+  "local_scope": "Linux x86_64 CPU, seccomp socket EPERM for IPv4/6; actual synthesized fixtures, not microphone/natural speech/handset acceptance",
+  "first_ci": {
+    "commit": "3bcfb54192432696b7fd685910848e16c1d74ec1",
+    "run": 40464319995,
+    "job": 122055991826,
+    "conclusion": "failure",
+    "recognition_steps": "completed successfully before artifact ZIP EACCES; whole workflow remains failure",
+    "speech_v1_reference_characters_per_round": 153,
+    "speech_v1_errors_per_round": 33,
+    "speech_v1_cer_per_round": 0.21568627450980393,
+    "fixture_espeak_package": "Ubuntu 1.51+dfsg-12build1",
+    "full_json_artifact_downloaded": false
+  },
+  "files": [
+    {
+      "path": "ci-first-failure.log",
+      "bytes": 1669,
+      "sha256": "a2f8a62846fab4c376f71fa2f6e267f1752b31179567bec00f6273a737ea0f35"
+    },
+    {
+      "path": "legacy-equivalence.json",
+      "bytes": 1283,
+      "sha256": "65d3c2029fc0873a83341b971f45d8d37d2e3622ec004cf3b16a0f35d6c84e24"
+    },
+    {
+      "path": "legacy-report.json",
+      "bytes": 2004,
+      "sha256": "3134c78aba32406adadbf87d403455b62a7ac82a0ccffe0f78392b0dead43ed6"
+    },
+    {
+      "path": "local-espeak152-report.json",
+      "bytes": 61960,
+      "sha256": "4e9ee9335108fd0fb3d131caea4266becec77d3afd3fa370504422584de4764b"
+    },
+    {
+      "path": "refactored-report.json",
+      "bytes": 2004,
+      "sha256": "3081df8e6ae1f915d007aed05f051ec4235647a483141f7ff221b67f8a690deb"
+    }
+  ]
+}

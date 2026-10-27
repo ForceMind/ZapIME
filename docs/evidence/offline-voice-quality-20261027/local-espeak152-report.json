@@ -1,0 +1,1835 @@
+{
+  "schema_version": 1,
+  "kind": "synthetic",
+  "suite_id": "synthetic-espeak-v1",
+  "definition_sha256": "e9b1fa6232e9e0bc5f95fb27bb098f188884ed1fb9d9b9f59dc4ccdbdb4daeb7",
+  "fixtures": {
+    "schema_version": 1,
+    "kind": "synthetic",
+    "definition_sha256": "e9b1fa6232e9e0bc5f95fb27bb098f188884ed1fb9d9b9f59dc4ccdbdb4daeb7",
+    "generator": "eSpeak NG text-to-speech: 1.52.0  Data at: /workspace/scratch/99fcacf9684b/ZapIME/target/voice-espeak/build/espeak-ng-data",
+    "files": {
+      "greeting.wav": {
+        "size": 118162,
+        "sha256": "5ae7fa283dbd8ea1bd6656d49779f32f0135e5d9e6bea1af2a32107ba8d90438",
+        "samples": 59059
+      },
+      "negation.wav": {
+        "size": 158366,
+        "sha256": "168b22abe65806c6162167e5549dce5666fdb2d96cb8413a7abe195be09a7913",
+        "samples": 79161
+      },
+      "amount.wav": {
+        "size": 128520,
+        "sha256": "7aec6e975935c3cef403e2c0f68570ee1f49c800b17eb76cee3a3bda6309959f",
+        "samples": 64238
+      },
+      "date.wav": {
+        "size": 113824,
+        "sha256": "0e065d799e47234d7759c8ec820d161099a87abbde95ea2090878c9f48a78b49",
+        "samples": 56890
+      },
+      "short.wav": {
+        "size": 52534,
+        "sha256": "3290cc31b32f7f65272e91f28584850886adfec0e125165503eca7dfd8e20a26",
+        "samples": 26245
+      },
+      "question.wav": {
+        "size": 118126,
+        "sha256": "ff59095d73c1bbae560e264558d79b2cd195a41963796977133f639032511b51",
+        "samples": 59041
+      },
+      "names.wav": {
+        "size": 153326,
+        "sha256": "ea824f1785712b98ad9104c2eb4c0fadb3cae54f30ca88d136266a29d9204e7f",
+        "samples": 76641
+      },
+      "code-switch.wav": {
+        "size": 144792,
+        "sha256": "5d304f665c58856b03a4cfe7ff172af17a272c44c2f2d8292fbe3a4e9c990ad3",
+        "samples": 72374
+      },
+      "english.wav": {
+        "size": 76838,
+        "sha256": "120f6d03c8ebc628bce6b522bae736cfdd58acc742b76b250acc7ce0f1c80daa",
+        "samples": 38397
+      },
+      "slow.wav": {
+        "size": 165612,
+        "sha256": "461c9f17cc96b292bc90c0eaad9007e56d411fbf158428cea6ab195f41111ddb",
+        "samples": 82784
+      },
+      "fast.wav": {
+        "size": 103332,
+        "sha256": "841267ca8d5746df55fb26bfef3ab91778c2e8e110af69af9661a7eba10d6182",
+        "samples": 51644
+      },
+      "self-correction.wav": {
+        "size": 128104,
+        "sha256": "c3f8c2974d3980a27a02dbb62a8ea18ab6a07e1f9c2c2d6153476594f63f8059",
+        "samples": 64030
+      }
+    }
+  },
+  "model": "X-ASR-zh-en 480ms streaming INT8 2026-06-05",
+  "model_files": {
+    "encoder.int8.onnx": {
+      "size": 155278641,
+      "sha256": "908596dcc137a73b95be908ca55e88caa1b3dbbe8027c171615f4b0609c5eb1e"
+    },
+    "decoder.onnx": {
+      "size": 11309084,
+      "sha256": "a1cbc9eac2d5e3fb6617a218c67ad6daaa7f4e0fd225f08b2c22ab0413c8c257"
+    },
+    "joiner.int8.onnx": {
+      "size": 2581422,
+      "sha256": "aedb7fa697b2ab43f20499826fff7c997eea7d67db77be97769aeeeb726e63b3"
+    },
+    "tokens.txt": {
+      "size": 58806,
+      "sha256": "b818a60878b9aae978cbb8ad594acbd403d76d1af2e31ef4197c84e2dbdba27c"
+    }
+  },
+  "runtime": "1.13.8",
+  "numpy": "2.5.4",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "threads": 2,
+  "network_restriction": {
+    "method": "no_new_privs plus Linux libseccomp, before spawning the native runtime; inherited across exec",
+    "blocked_syscalls": [
+      "socket",
+      "socketpair",
+      "connect",
+      "accept",
+      "accept4",
+      "bind",
+      "listen",
+      "sendto",
+      "sendmsg",
+      "sendmmsg",
+      "recvfrom",
+      "recvmsg",
+      "recvmmsg",
+      "shutdown"
+    ],
+    "socket_creation_rejected": [
+      "AF_INET",
+      "AF_INET6"
+    ],
+    "scope": "evaluation process and native threads; specific socket syscalls, not inherited-fd/io_uring isolation, a general sandbox or device airplane mode"
+  },
+  "recognizer_load_seconds": 1.6969661000000542,
+  "rounds": [
+    {
+      "iteration": 1,
+      "cases": [
+        {
+          "id": "greeting",
+          "category": "ordinary",
+          "audio_seconds": 3.6911875,
+          "reference_sha256": "5324faf8e710a75d93ec9973e8a575b2207b6cb4cc89011c6ef97933284a12af",
+          "hypothesis_sha256": "167d246a562380c8b38a384e6ae24684820971289f62b298d433426b41f8e19c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 10,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.325899249000031,
+          "rtf": 0.08829116618975086,
+          "first_text_compute_seconds": 0.11974609799995051,
+          "first_text_audio_seconds": 1.6,
+          "reference": "你好，今天下午三点开会。",
+          "hypothesis": "你好今天下午三点开会"
+        },
+        {
+          "id": "negation",
+          "category": "negation",
+          "audio_seconds": 4.9475625,
+          "reference_sha256": "ddf702e5e041067862382e25eb317c185f7ae69c1f0dd042c52c4abf0028859e",
+          "hypothesis_sha256": "703edc6f8dc67b4d8870537aad717de784d73c7910ff642fa0bf13f425e107d1",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 16,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.125
+            },
+            "speech-v1": {
+              "reference_characters": 14,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.4119509559998278,
+          "rtf": 0.083263416278183,
+          "first_text_compute_seconds": 0.07495824499983428,
+          "first_text_audio_seconds": 1.2,
+          "reference": "我不是不想去，只是今天没有时间。",
+          "hypothesis": "我不是不想去， 只是今天没有时间"
+        },
+        {
+          "id": "amount",
+          "category": "numbers",
+          "audio_seconds": 4.014875,
+          "reference_sha256": "ed57dea042ffd25bac76fd3a2b6ae21bb098a762a27825895692927d32d72343",
+          "hypothesis_sha256": "bafe69c2233bdcf4a3cffaba1ab7ff10b76d644b422b3f3ed36772bd973ee8a5",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.38461538461538464
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.3616805359999944,
+          "rtf": 0.09008512992309708,
+          "first_text_compute_seconds": 0.07723305399986202,
+          "first_text_audio_seconds": 1.2,
+          "reference": "这笔订单一共三百二十五元。",
+          "hypothesis": "这比被安一个三百二十五元"
+        },
+        {
+          "id": "date",
+          "category": "numbers",
+          "audio_seconds": 3.555625,
+          "reference_sha256": "2b3f7de45dcaabed7b223ef927c04a0cec5fca4777ba2abe507d94932e4b1c7c",
+          "hypothesis_sha256": "f7bc23e3a9cdd9ecffbbd9362a360268b23361f52cd3dcb3a783bfe646d712bb",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 1,
+              "errors": 1,
+              "cer": 0.09090909090909091
+            }
+          },
+          "decode_seconds": 0.34198156999991625,
+          "rtf": 0.09618043803829601,
+          "first_text_compute_seconds": 0.08249173600006543,
+          "first_text_audio_seconds": 1.2,
+          "reference": "二零二六年十月二十七日。",
+          "hypothesis": "二零二六年十一月二十七日"
+        },
+        {
+          "id": "short",
+          "category": "short",
+          "audio_seconds": 1.6403125,
+          "reference_sha256": "489652f53a6a69feb0affcaf1f17dbbc7a1d65b4cd53838e98b93d61bef531be",
+          "hypothesis_sha256": "8f0de51b8dbf92497d76a587000f81d64e22f73493fd1a59568bfe19318ea9be",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 6,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.3333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 4,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.1688695650000227,
+          "rtf": 0.10294963002478046,
+          "first_text_compute_seconds": 0.10208430500006216,
+          "first_text_audio_seconds": 1.6,
+          "reference": "好的，收到。",
+          "hypothesis": "好的收到"
+        },
+        {
+          "id": "question",
+          "category": "ordinary",
+          "audio_seconds": 3.6900625,
+          "reference_sha256": "57bb8fa6b8b0bbd5e8a4acde00072f305f1cf18ce1caaed6c0b4b99cf781e107",
+          "hypothesis_sha256": "f4c241c695c652baae3b311cf080e612da42c38eb5e86fcefc46c8fec632452d",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.08333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.27914989900000364,
+          "rtf": 0.07564909781338491,
+          "first_text_compute_seconds": 0.0962945399999171,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请问这个文件保存在哪里？",
+          "hypothesis": "请问这个文件保存在哪里"
+        },
+        {
+          "id": "names",
+          "category": "names",
+          "audio_seconds": 4.7900625,
+          "reference_sha256": "6fe905dc515e6ce4cd7d176bd8ff4f06cc1479c0e9087ca22e372e146d59dbfa",
+          "hypothesis_sha256": "2dad67bca98d381b97183013488ccc5ad92f6df9a48013f1a26462989dadba25",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 14,
+              "substitutions": 6,
+              "deletions": 3,
+              "insertions": 0,
+              "errors": 9,
+              "cer": 0.6428571428571429
+            },
+            "speech-v1": {
+              "reference_characters": 13,
+              "substitutions": 6,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 8,
+              "cer": 0.6153846153846154
+            }
+          },
+          "decode_seconds": 0.39643733100001555,
+          "rtf": 0.08276245476964351,
+          "first_text_compute_seconds": 0.09742500900006235,
+          "first_text_audio_seconds": 1.6,
+          "reference": "林小雨和陈向阳约好明天见面。",
+          "hypothesis": "小雨和神下娘曰民间见面"
+        },
+        {
+          "id": "code-switch",
+          "category": "code-switch",
+          "audio_seconds": 4.523375,
+          "reference_sha256": "65cf013c41f578ae59ec89d758d9a966284211ef0629783e89ac86f427215466",
+          "hypothesis_sha256": "8ab00692b819ef1405ecca83d15528c0c3e90db8e6022021609eb829725f4668",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 18,
+              "substitutions": 11,
+              "deletions": 0,
+              "insertions": 2,
+              "errors": 13,
+              "cer": 0.7222222222222222
+            },
+            "speech-v1": {
+              "reference_characters": 16,
+              "substitutions": 6,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.375
+            }
+          },
+          "decode_seconds": 0.39625750999994125,
+          "rtf": 0.0876021797883088,
+          "first_text_compute_seconds": 0.10586726699989413,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请打开WiFi，然后检查USB连接。",
+          "hypothesis": "T Riwifi 然后天叉 USB 连天"
+        },
+        {
+          "id": "english",
+          "category": "english",
+          "audio_seconds": 2.3998125,
+          "reference_sha256": "9d3b77e58da4f1192399206c1dde6953f471cbb1e70f856a3e8ebb4394d11522",
+          "hypothesis_sha256": "c4273a65ccd7ef483e89bc3a5316c30cfe99f0518d97f5cd9fc01a4b4bfa3c32",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 33,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.030303030303030304
+            },
+            "speech-v1": {
+              "reference_characters": 27,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.20818040500012103,
+          "rtf": 0.08674861265208055,
+          "first_text_compute_seconds": 0.06795026100007817,
+          "first_text_audio_seconds": 1.2,
+          "reference": "Please send me the file tomorrow.",
+          "hypothesis": "Please send me the file tomorrow"
+        },
+        {
+          "id": "slow",
+          "category": "rate",
+          "audio_seconds": 5.174,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "08595224ce968422079901989a117771f3d924b0e7146435afd807dfff343192",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 5,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.46153846153846156
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 5,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.4166666666666667
+            }
+          },
+          "decode_seconds": 0.41052553199983777,
+          "rtf": 0.07934393737917235,
+          "first_text_compute_seconds": 0.10372747699989304,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "秦大会议安排带到民间下午"
+        },
+        {
+          "id": "fast",
+          "category": "rate",
+          "audio_seconds": 3.22775,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "eec96d0eef82fcadcfdf90b0c22c4e64070ca03d39f3fd7a9c6ef3a76ec729dd",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3076923076923077
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.25273371100001896,
+          "rtf": 0.07830027449462287,
+          "first_text_compute_seconds": 0.06443719200001397,
+          "first_text_audio_seconds": 1.2,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "先把会议安排打到民间下午。"
+        },
+        {
+          "id": "self-correction",
+          "category": "self-correction",
+          "audio_seconds": 4.001875,
+          "reference_sha256": "eeaf4d3bb8fcd894998ee1de50ed467b5284f17b57e0ebf52d36cb889e42bf50",
+          "hypothesis_sha256": "5d756ec67bee973b4f3d4f29f700583911ecf27089df71991516a4d77a23f37c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.15384615384615385
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.2918609959999685,
+          "rtf": 0.07293106256441506,
+          "first_text_compute_seconds": 0.062358332000030714,
+          "first_text_audio_seconds": 1.2,
+          "reference": "不是周三，是周四上午十点。",
+          "hypothesis": "不是周三， 是周四上午十点"
+        }
+      ],
+      "aggregate": {
+        "verbatim": {
+          "reference_characters": 175,
+          "substitutions": 30,
+          "deletions": 14,
+          "insertions": 5,
+          "errors": 49,
+          "cer": 0.28
+        },
+        "speech-v1": {
+          "reference_characters": 153,
+          "substitutions": 25,
+          "deletions": 2,
+          "insertions": 1,
+          "errors": 28,
+          "cer": 0.1830065359477124
+        }
+      },
+      "by_category": {
+        "code-switch": {
+          "verbatim": {
+            "reference_characters": 18,
+            "substitutions": 11,
+            "deletions": 0,
+            "insertions": 2,
+            "errors": 13,
+            "cer": 0.7222222222222222
+          },
+          "speech-v1": {
+            "reference_characters": 16,
+            "substitutions": 6,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 6,
+            "cer": 0.375
+          }
+        },
+        "english": {
+          "verbatim": {
+            "reference_characters": 33,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 1,
+            "cer": 0.030303030303030304
+          },
+          "speech-v1": {
+            "reference_characters": 27,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "names": {
+          "verbatim": {
+            "reference_characters": 14,
+            "substitutions": 6,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.6428571428571429
+          },
+          "speech-v1": {
+            "reference_characters": 13,
+            "substitutions": 6,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 8,
+            "cer": 0.6153846153846154
+          }
+        },
+        "negation": {
+          "verbatim": {
+            "reference_characters": 16,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 14,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "numbers": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 4,
+            "deletions": 2,
+            "insertions": 1,
+            "errors": 7,
+            "cer": 0.28
+          },
+          "speech-v1": {
+            "reference_characters": 23,
+            "substitutions": 4,
+            "deletions": 0,
+            "insertions": 1,
+            "errors": 5,
+            "cer": 0.21739130434782608
+          }
+        },
+        "ordinary": {
+          "verbatim": {
+            "reference_characters": 24,
+            "substitutions": 0,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 3,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 21,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "rate": {
+          "verbatim": {
+            "reference_characters": 26,
+            "substitutions": 9,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 10,
+            "cer": 0.38461538461538464
+          },
+          "speech-v1": {
+            "reference_characters": 24,
+            "substitutions": 9,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.375
+          }
+        },
+        "self-correction": {
+          "verbatim": {
+            "reference_characters": 13,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.15384615384615385
+          },
+          "speech-v1": {
+            "reference_characters": 11,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "short": {
+          "verbatim": {
+            "reference_characters": 6,
+            "substitutions": 0,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 2,
+            "cer": 0.3333333333333333
+          },
+          "speech-v1": {
+            "reference_characters": 4,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        }
+      },
+      "total_audio_seconds": 45.6565,
+      "total_decode_seconds": 3.845527259999699,
+      "median_clip_rtf": 0.08500601446513177
+    },
+    {
+      "iteration": 2,
+      "cases": [
+        {
+          "id": "greeting",
+          "category": "ordinary",
+          "audio_seconds": 3.6911875,
+          "reference_sha256": "5324faf8e710a75d93ec9973e8a575b2207b6cb4cc89011c6ef97933284a12af",
+          "hypothesis_sha256": "167d246a562380c8b38a384e6ae24684820971289f62b298d433426b41f8e19c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 10,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.314355771999999,
+          "rtf": 0.08516385905619776,
+          "first_text_compute_seconds": 0.09036202399988724,
+          "first_text_audio_seconds": 1.6,
+          "reference": "你好，今天下午三点开会。",
+          "hypothesis": "你好今天下午三点开会"
+        },
+        {
+          "id": "negation",
+          "category": "negation",
+          "audio_seconds": 4.9475625,
+          "reference_sha256": "ddf702e5e041067862382e25eb317c185f7ae69c1f0dd042c52c4abf0028859e",
+          "hypothesis_sha256": "703edc6f8dc67b4d8870537aad717de784d73c7910ff642fa0bf13f425e107d1",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 16,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.125
+            },
+            "speech-v1": {
+              "reference_characters": 14,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.47257001499997386,
+          "rtf": 0.09551572415709228,
+          "first_text_compute_seconds": 0.07786732599993229,
+          "first_text_audio_seconds": 1.2,
+          "reference": "我不是不想去，只是今天没有时间。",
+          "hypothesis": "我不是不想去， 只是今天没有时间"
+        },
+        {
+          "id": "amount",
+          "category": "numbers",
+          "audio_seconds": 4.014875,
+          "reference_sha256": "ed57dea042ffd25bac76fd3a2b6ae21bb098a762a27825895692927d32d72343",
+          "hypothesis_sha256": "bafe69c2233bdcf4a3cffaba1ab7ff10b76d644b422b3f3ed36772bd973ee8a5",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.38461538461538464
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.3505144860000655,
+          "rtf": 0.08730395989914144,
+          "first_text_compute_seconds": 0.07340761900013604,
+          "first_text_audio_seconds": 1.2,
+          "reference": "这笔订单一共三百二十五元。",
+          "hypothesis": "这比被安一个三百二十五元"
+        },
+        {
+          "id": "date",
+          "category": "numbers",
+          "audio_seconds": 3.555625,
+          "reference_sha256": "2b3f7de45dcaabed7b223ef927c04a0cec5fca4777ba2abe507d94932e4b1c7c",
+          "hypothesis_sha256": "f7bc23e3a9cdd9ecffbbd9362a360268b23361f52cd3dcb3a783bfe646d712bb",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 1,
+              "errors": 1,
+              "cer": 0.09090909090909091
+            }
+          },
+          "decode_seconds": 0.3103508819999661,
+          "rtf": 0.08728448078747508,
+          "first_text_compute_seconds": 0.06764382799997293,
+          "first_text_audio_seconds": 1.2,
+          "reference": "二零二六年十月二十七日。",
+          "hypothesis": "二零二六年十一月二十七日"
+        },
+        {
+          "id": "short",
+          "category": "short",
+          "audio_seconds": 1.6403125,
+          "reference_sha256": "489652f53a6a69feb0affcaf1f17dbbc7a1d65b4cd53838e98b93d61bef531be",
+          "hypothesis_sha256": "8f0de51b8dbf92497d76a587000f81d64e22f73493fd1a59568bfe19318ea9be",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 6,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.3333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 4,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.19532678200016562,
+          "rtf": 0.11907900598219279,
+          "first_text_compute_seconds": 0.1118378340001982,
+          "first_text_audio_seconds": 1.6,
+          "reference": "好的，收到。",
+          "hypothesis": "好的收到"
+        },
+        {
+          "id": "question",
+          "category": "ordinary",
+          "audio_seconds": 3.6900625,
+          "reference_sha256": "57bb8fa6b8b0bbd5e8a4acde00072f305f1cf18ce1caaed6c0b4b99cf781e107",
+          "hypothesis_sha256": "f4c241c695c652baae3b311cf080e612da42c38eb5e86fcefc46c8fec632452d",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.08333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.36445215499998085,
+          "rtf": 0.09876584881691865,
+          "first_text_compute_seconds": 0.12509742700012794,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请问这个文件保存在哪里？",
+          "hypothesis": "请问这个文件保存在哪里"
+        },
+        {
+          "id": "names",
+          "category": "names",
+          "audio_seconds": 4.7900625,
+          "reference_sha256": "6fe905dc515e6ce4cd7d176bd8ff4f06cc1479c0e9087ca22e372e146d59dbfa",
+          "hypothesis_sha256": "2dad67bca98d381b97183013488ccc5ad92f6df9a48013f1a26462989dadba25",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 14,
+              "substitutions": 6,
+              "deletions": 3,
+              "insertions": 0,
+              "errors": 9,
+              "cer": 0.6428571428571429
+            },
+            "speech-v1": {
+              "reference_characters": 13,
+              "substitutions": 6,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 8,
+              "cer": 0.6153846153846154
+            }
+          },
+          "decode_seconds": 0.38209903000006307,
+          "rtf": 0.07976911157214818,
+          "first_text_compute_seconds": 0.10541477900005702,
+          "first_text_audio_seconds": 1.6,
+          "reference": "林小雨和陈向阳约好明天见面。",
+          "hypothesis": "小雨和神下娘曰民间见面"
+        },
+        {
+          "id": "code-switch",
+          "category": "code-switch",
+          "audio_seconds": 4.523375,
+          "reference_sha256": "65cf013c41f578ae59ec89d758d9a966284211ef0629783e89ac86f427215466",
+          "hypothesis_sha256": "8ab00692b819ef1405ecca83d15528c0c3e90db8e6022021609eb829725f4668",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 18,
+              "substitutions": 11,
+              "deletions": 0,
+              "insertions": 2,
+              "errors": 13,
+              "cer": 0.7222222222222222
+            },
+            "speech-v1": {
+              "reference_characters": 16,
+              "substitutions": 6,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.375
+            }
+          },
+          "decode_seconds": 0.3645692559998679,
+          "rtf": 0.08059673496003933,
+          "first_text_compute_seconds": 0.09797531999993225,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请打开WiFi，然后检查USB连接。",
+          "hypothesis": "T Riwifi 然后天叉 USB 连天"
+        },
+        {
+          "id": "english",
+          "category": "english",
+          "audio_seconds": 2.3998125,
+          "reference_sha256": "9d3b77e58da4f1192399206c1dde6953f471cbb1e70f856a3e8ebb4394d11522",
+          "hypothesis_sha256": "c4273a65ccd7ef483e89bc3a5316c30cfe99f0518d97f5cd9fc01a4b4bfa3c32",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 33,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.030303030303030304
+            },
+            "speech-v1": {
+              "reference_characters": 27,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.2073964819999219,
+          "rtf": 0.08642195254834363,
+          "first_text_compute_seconds": 0.06764715700001034,
+          "first_text_audio_seconds": 1.2,
+          "reference": "Please send me the file tomorrow.",
+          "hypothesis": "Please send me the file tomorrow"
+        },
+        {
+          "id": "slow",
+          "category": "rate",
+          "audio_seconds": 5.174,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "08595224ce968422079901989a117771f3d924b0e7146435afd807dfff343192",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 5,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.46153846153846156
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 5,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.4166666666666667
+            }
+          },
+          "decode_seconds": 0.4374288230001184,
+          "rtf": 0.0845436457286661,
+          "first_text_compute_seconds": 0.11071867500004373,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "秦大会议安排带到民间下午"
+        },
+        {
+          "id": "fast",
+          "category": "rate",
+          "audio_seconds": 3.22775,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "eec96d0eef82fcadcfdf90b0c22c4e64070ca03d39f3fd7a9c6ef3a76ec729dd",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3076923076923077
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.29454369399991265,
+          "rtf": 0.09125356486714047,
+          "first_text_compute_seconds": 0.0784961580000072,
+          "first_text_audio_seconds": 1.2,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "先把会议安排打到民间下午。"
+        },
+        {
+          "id": "self-correction",
+          "category": "self-correction",
+          "audio_seconds": 4.001875,
+          "reference_sha256": "eeaf4d3bb8fcd894998ee1de50ed467b5284f17b57e0ebf52d36cb889e42bf50",
+          "hypothesis_sha256": "5d756ec67bee973b4f3d4f29f700583911ecf27089df71991516a4d77a23f37c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.15384615384615385
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.3489649119999285,
+          "rtf": 0.08720035283459092,
+          "first_text_compute_seconds": 0.06807300899981783,
+          "first_text_audio_seconds": 1.2,
+          "reference": "不是周三，是周四上午十点。",
+          "hypothesis": "不是周三， 是周四上午十点"
+        }
+      ],
+      "aggregate": {
+        "verbatim": {
+          "reference_characters": 175,
+          "substitutions": 30,
+          "deletions": 14,
+          "insertions": 5,
+          "errors": 49,
+          "cer": 0.28
+        },
+        "speech-v1": {
+          "reference_characters": 153,
+          "substitutions": 25,
+          "deletions": 2,
+          "insertions": 1,
+          "errors": 28,
+          "cer": 0.1830065359477124
+        }
+      },
+      "by_category": {
+        "code-switch": {
+          "verbatim": {
+            "reference_characters": 18,
+            "substitutions": 11,
+            "deletions": 0,
+            "insertions": 2,
+            "errors": 13,
+            "cer": 0.7222222222222222
+          },
+          "speech-v1": {
+            "reference_characters": 16,
+            "substitutions": 6,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 6,
+            "cer": 0.375
+          }
+        },
+        "english": {
+          "verbatim": {
+            "reference_characters": 33,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 1,
+            "cer": 0.030303030303030304
+          },
+          "speech-v1": {
+            "reference_characters": 27,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "names": {
+          "verbatim": {
+            "reference_characters": 14,
+            "substitutions": 6,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.6428571428571429
+          },
+          "speech-v1": {
+            "reference_characters": 13,
+            "substitutions": 6,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 8,
+            "cer": 0.6153846153846154
+          }
+        },
+        "negation": {
+          "verbatim": {
+            "reference_characters": 16,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 14,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "numbers": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 4,
+            "deletions": 2,
+            "insertions": 1,
+            "errors": 7,
+            "cer": 0.28
+          },
+          "speech-v1": {
+            "reference_characters": 23,
+            "substitutions": 4,
+            "deletions": 0,
+            "insertions": 1,
+            "errors": 5,
+            "cer": 0.21739130434782608
+          }
+        },
+        "ordinary": {
+          "verbatim": {
+            "reference_characters": 24,
+            "substitutions": 0,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 3,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 21,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "rate": {
+          "verbatim": {
+            "reference_characters": 26,
+            "substitutions": 9,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 10,
+            "cer": 0.38461538461538464
+          },
+          "speech-v1": {
+            "reference_characters": 24,
+            "substitutions": 9,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.375
+          }
+        },
+        "self-correction": {
+          "verbatim": {
+            "reference_characters": 13,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.15384615384615385
+          },
+          "speech-v1": {
+            "reference_characters": 11,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "short": {
+          "verbatim": {
+            "reference_characters": 6,
+            "substitutions": 0,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 2,
+            "cer": 0.3333333333333333
+          },
+          "speech-v1": {
+            "reference_characters": 4,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        }
+      },
+      "total_audio_seconds": 45.6565,
+      "total_decode_seconds": 4.042572288999963,
+      "median_clip_rtf": 0.08724241681103301
+    },
+    {
+      "iteration": 3,
+      "cases": [
+        {
+          "id": "greeting",
+          "category": "ordinary",
+          "audio_seconds": 3.6911875,
+          "reference_sha256": "5324faf8e710a75d93ec9973e8a575b2207b6cb4cc89011c6ef97933284a12af",
+          "hypothesis_sha256": "167d246a562380c8b38a384e6ae24684820971289f62b298d433426b41f8e19c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 10,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.3068955090000145,
+          "rtf": 0.08314275798777887,
+          "first_text_compute_seconds": 0.09933461300011004,
+          "first_text_audio_seconds": 1.6,
+          "reference": "你好，今天下午三点开会。",
+          "hypothesis": "你好今天下午三点开会"
+        },
+        {
+          "id": "negation",
+          "category": "negation",
+          "audio_seconds": 4.9475625,
+          "reference_sha256": "ddf702e5e041067862382e25eb317c185f7ae69c1f0dd042c52c4abf0028859e",
+          "hypothesis_sha256": "703edc6f8dc67b4d8870537aad717de784d73c7910ff642fa0bf13f425e107d1",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 16,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.125
+            },
+            "speech-v1": {
+              "reference_characters": 14,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.3991523679999318,
+          "rtf": 0.08067656911861787,
+          "first_text_compute_seconds": 0.06897379199995157,
+          "first_text_audio_seconds": 1.2,
+          "reference": "我不是不想去，只是今天没有时间。",
+          "hypothesis": "我不是不想去， 只是今天没有时间"
+        },
+        {
+          "id": "amount",
+          "category": "numbers",
+          "audio_seconds": 4.014875,
+          "reference_sha256": "ed57dea042ffd25bac76fd3a2b6ae21bb098a762a27825895692927d32d72343",
+          "hypothesis_sha256": "bafe69c2233bdcf4a3cffaba1ab7ff10b76d644b422b3f3ed36772bd973ee8a5",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.38461538461538464
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.39042411499985974,
+          "rtf": 0.09724440113325065,
+          "first_text_compute_seconds": 0.06826431199988292,
+          "first_text_audio_seconds": 1.2,
+          "reference": "这笔订单一共三百二十五元。",
+          "hypothesis": "这比被安一个三百二十五元"
+        },
+        {
+          "id": "date",
+          "category": "numbers",
+          "audio_seconds": 3.555625,
+          "reference_sha256": "2b3f7de45dcaabed7b223ef927c04a0cec5fca4777ba2abe507d94932e4b1c7c",
+          "hypothesis_sha256": "f7bc23e3a9cdd9ecffbbd9362a360268b23361f52cd3dcb3a783bfe646d712bb",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.16666666666666666
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 1,
+              "errors": 1,
+              "cer": 0.09090909090909091
+            }
+          },
+          "decode_seconds": 0.34964107299992975,
+          "rtf": 0.09833463118296495,
+          "first_text_compute_seconds": 0.08119523499999559,
+          "first_text_audio_seconds": 1.2,
+          "reference": "二零二六年十月二十七日。",
+          "hypothesis": "二零二六年十一月二十七日"
+        },
+        {
+          "id": "short",
+          "category": "short",
+          "audio_seconds": 1.6403125,
+          "reference_sha256": "489652f53a6a69feb0affcaf1f17dbbc7a1d65b4cd53838e98b93d61bef531be",
+          "hypothesis_sha256": "8f0de51b8dbf92497d76a587000f81d64e22f73493fd1a59568bfe19318ea9be",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 6,
+              "substitutions": 0,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 2,
+              "cer": 0.3333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 4,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.16244847600000867,
+          "rtf": 0.09903507776719903,
+          "first_text_compute_seconds": 0.09768308600018827,
+          "first_text_audio_seconds": 1.6,
+          "reference": "好的，收到。",
+          "hypothesis": "好的收到"
+        },
+        {
+          "id": "question",
+          "category": "ordinary",
+          "audio_seconds": 3.6900625,
+          "reference_sha256": "57bb8fa6b8b0bbd5e8a4acde00072f305f1cf18ce1caaed6c0b4b99cf781e107",
+          "hypothesis_sha256": "f4c241c695c652baae3b311cf080e612da42c38eb5e86fcefc46c8fec632452d",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 12,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.08333333333333333
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.29434147400002075,
+          "rtf": 0.07976598607747722,
+          "first_text_compute_seconds": 0.09852993100003005,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请问这个文件保存在哪里？",
+          "hypothesis": "请问这个文件保存在哪里"
+        },
+        {
+          "id": "names",
+          "category": "names",
+          "audio_seconds": 4.7900625,
+          "reference_sha256": "6fe905dc515e6ce4cd7d176bd8ff4f06cc1479c0e9087ca22e372e146d59dbfa",
+          "hypothesis_sha256": "2dad67bca98d381b97183013488ccc5ad92f6df9a48013f1a26462989dadba25",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 14,
+              "substitutions": 6,
+              "deletions": 3,
+              "insertions": 0,
+              "errors": 9,
+              "cer": 0.6428571428571429
+            },
+            "speech-v1": {
+              "reference_characters": 13,
+              "substitutions": 6,
+              "deletions": 2,
+              "insertions": 0,
+              "errors": 8,
+              "cer": 0.6153846153846154
+            }
+          },
+          "decode_seconds": 0.3587101770001482,
+          "rtf": 0.07488632496969469,
+          "first_text_compute_seconds": 0.09756965900010073,
+          "first_text_audio_seconds": 1.6,
+          "reference": "林小雨和陈向阳约好明天见面。",
+          "hypothesis": "小雨和神下娘曰民间见面"
+        },
+        {
+          "id": "code-switch",
+          "category": "code-switch",
+          "audio_seconds": 4.523375,
+          "reference_sha256": "65cf013c41f578ae59ec89d758d9a966284211ef0629783e89ac86f427215466",
+          "hypothesis_sha256": "8ab00692b819ef1405ecca83d15528c0c3e90db8e6022021609eb829725f4668",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 18,
+              "substitutions": 11,
+              "deletions": 0,
+              "insertions": 2,
+              "errors": 13,
+              "cer": 0.7222222222222222
+            },
+            "speech-v1": {
+              "reference_characters": 16,
+              "substitutions": 6,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.375
+            }
+          },
+          "decode_seconds": 0.378370797000116,
+          "rtf": 0.08364789498993916,
+          "first_text_compute_seconds": 0.1129926680000608,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请打开WiFi，然后检查USB连接。",
+          "hypothesis": "T Riwifi 然后天叉 USB 连天"
+        },
+        {
+          "id": "english",
+          "category": "english",
+          "audio_seconds": 2.3998125,
+          "reference_sha256": "9d3b77e58da4f1192399206c1dde6953f471cbb1e70f856a3e8ebb4394d11522",
+          "hypothesis_sha256": "c4273a65ccd7ef483e89bc3a5316c30cfe99f0518d97f5cd9fc01a4b4bfa3c32",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 33,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 1,
+              "cer": 0.030303030303030304
+            },
+            "speech-v1": {
+              "reference_characters": 27,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.22451146799994603,
+          "rtf": 0.09355375388699994,
+          "first_text_compute_seconds": 0.07582486100000096,
+          "first_text_audio_seconds": 1.2,
+          "reference": "Please send me the file tomorrow.",
+          "hypothesis": "Please send me the file tomorrow"
+        },
+        {
+          "id": "slow",
+          "category": "rate",
+          "audio_seconds": 5.174,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "08595224ce968422079901989a117771f3d924b0e7146435afd807dfff343192",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 5,
+              "deletions": 1,
+              "insertions": 0,
+              "errors": 6,
+              "cer": 0.46153846153846156
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 5,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 5,
+              "cer": 0.4166666666666667
+            }
+          },
+          "decode_seconds": 0.34788330299988957,
+          "rtf": 0.0672368192887301,
+          "first_text_compute_seconds": 0.08589654599995811,
+          "first_text_audio_seconds": 1.6,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "秦大会议安排带到民间下午"
+        },
+        {
+          "id": "fast",
+          "category": "rate",
+          "audio_seconds": 3.22775,
+          "reference_sha256": "dee05356e35f561f63a79e2e1a565dabe4390465e9d0759d4bb5042a01c42b7e",
+          "hypothesis_sha256": "eec96d0eef82fcadcfdf90b0c22c4e64070ca03d39f3fd7a9c6ef3a76ec729dd",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3076923076923077
+            },
+            "speech-v1": {
+              "reference_characters": 12,
+              "substitutions": 4,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 4,
+              "cer": 0.3333333333333333
+            }
+          },
+          "decode_seconds": 0.2556033099999695,
+          "rtf": 0.0791893145379814,
+          "first_text_compute_seconds": 0.06480568899996797,
+          "first_text_audio_seconds": 1.2,
+          "reference": "请把会议安排改到明天下午。",
+          "hypothesis": "先把会议安排打到民间下午。"
+        },
+        {
+          "id": "self-correction",
+          "category": "self-correction",
+          "audio_seconds": 4.001875,
+          "reference_sha256": "eeaf4d3bb8fcd894998ee1de50ed467b5284f17b57e0ebf52d36cb889e42bf50",
+          "hypothesis_sha256": "5d756ec67bee973b4f3d4f29f700583911ecf27089df71991516a4d77a23f37c",
+          "metrics": {
+            "verbatim": {
+              "reference_characters": 13,
+              "substitutions": 0,
+              "deletions": 1,
+              "insertions": 1,
+              "errors": 2,
+              "cer": 0.15384615384615385
+            },
+            "speech-v1": {
+              "reference_characters": 11,
+              "substitutions": 0,
+              "deletions": 0,
+              "insertions": 0,
+              "errors": 0,
+              "cer": 0.0
+            }
+          },
+          "decode_seconds": 0.3088403010001457,
+          "rtf": 0.07717389998441873,
+          "first_text_compute_seconds": 0.0595265310000741,
+          "first_text_audio_seconds": 1.2,
+          "reference": "不是周三，是周四上午十点。",
+          "hypothesis": "不是周三， 是周四上午十点"
+        }
+      ],
+      "aggregate": {
+        "verbatim": {
+          "reference_characters": 175,
+          "substitutions": 30,
+          "deletions": 14,
+          "insertions": 5,
+          "errors": 49,
+          "cer": 0.28
+        },
+        "speech-v1": {
+          "reference_characters": 153,
+          "substitutions": 25,
+          "deletions": 2,
+          "insertions": 1,
+          "errors": 28,
+          "cer": 0.1830065359477124
+        }
+      },
+      "by_category": {
+        "code-switch": {
+          "verbatim": {
+            "reference_characters": 18,
+            "substitutions": 11,
+            "deletions": 0,
+            "insertions": 2,
+            "errors": 13,
+            "cer": 0.7222222222222222
+          },
+          "speech-v1": {
+            "reference_characters": 16,
+            "substitutions": 6,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 6,
+            "cer": 0.375
+          }
+        },
+        "english": {
+          "verbatim": {
+            "reference_characters": 33,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 1,
+            "cer": 0.030303030303030304
+          },
+          "speech-v1": {
+            "reference_characters": 27,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "names": {
+          "verbatim": {
+            "reference_characters": 14,
+            "substitutions": 6,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.6428571428571429
+          },
+          "speech-v1": {
+            "reference_characters": 13,
+            "substitutions": 6,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 8,
+            "cer": 0.6153846153846154
+          }
+        },
+        "negation": {
+          "verbatim": {
+            "reference_characters": 16,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 14,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "numbers": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 4,
+            "deletions": 2,
+            "insertions": 1,
+            "errors": 7,
+            "cer": 0.28
+          },
+          "speech-v1": {
+            "reference_characters": 23,
+            "substitutions": 4,
+            "deletions": 0,
+            "insertions": 1,
+            "errors": 5,
+            "cer": 0.21739130434782608
+          }
+        },
+        "ordinary": {
+          "verbatim": {
+            "reference_characters": 24,
+            "substitutions": 0,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 3,
+            "cer": 0.125
+          },
+          "speech-v1": {
+            "reference_characters": 21,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "rate": {
+          "verbatim": {
+            "reference_characters": 26,
+            "substitutions": 9,
+            "deletions": 1,
+            "insertions": 0,
+            "errors": 10,
+            "cer": 0.38461538461538464
+          },
+          "speech-v1": {
+            "reference_characters": 24,
+            "substitutions": 9,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 9,
+            "cer": 0.375
+          }
+        },
+        "self-correction": {
+          "verbatim": {
+            "reference_characters": 13,
+            "substitutions": 0,
+            "deletions": 1,
+            "insertions": 1,
+            "errors": 2,
+            "cer": 0.15384615384615385
+          },
+          "speech-v1": {
+            "reference_characters": 11,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        },
+        "short": {
+          "verbatim": {
+            "reference_characters": 6,
+            "substitutions": 0,
+            "deletions": 2,
+            "insertions": 0,
+            "errors": 2,
+            "cer": 0.3333333333333333
+          },
+          "speech-v1": {
+            "reference_characters": 4,
+            "substitutions": 0,
+            "deletions": 0,
+            "insertions": 0,
+            "errors": 0,
+            "cer": 0.0
+          }
+        }
+      },
+      "total_audio_seconds": 45.6565,
+      "total_decode_seconds": 3.77682237099998,
+      "median_clip_rtf": 0.08190966355319837
+    }
+  ],
+  "complete": true,
+  "source_sha256": {
+    "scripts/voice_quality.py": "d13347694afb1038c8b7721bd8ea8eea12c26dd39f4e25eeb8e06477f8f577d8",
+    "scripts/voice_quality_metrics.py": "adb0f956e05d8dafa5094d8ac2fe92fae137bb7fc958ac6501a9822281baf61f",
+    "scripts/voice_probe.py": "84fb04af6b3a8f4324df9060409da02c00f65be0a8be886162b063c26bc3d738",
+    "scripts/qwen_translation_probe/network.py": "7dfde627b37556312a9df0ac0c5651f26f1758371d99ba14d4be5a0194b811fa",
+    "third_party/voice-probe-lock.json": "4fcd57a70d8db1310e9fbd69e42cd2a7d92140847162108ee60366e263b4c996"
+  },
+  "metric": {
+    "unit": "Unicode codepoint, including English letters; not WER",
+    "formula": "(substitutions + deletions + insertions) / reference characters",
+    "aggregation": "sum counts per round/category, not mean sentence CER",
+    "verbatim": "exact codepoints, including punctuation, spaces and case",
+    "speech-v1": "NFKC, lowercase, remove Unicode P* punctuation and whitespace; retain symbols, digits and Chinese numeral differences; no traditional/simplified conversion",
+    "tie_break": "equal-distance substitution, deletion, insertion in that order",
+    "empty_reference_cer": null,
+    "cer_not_capped_at_one": true
+  },
+  "scope": "Fixed synthetic eSpeak diagnostics only; no natural speech, representative corpus score, phone/microphone/latency/energy acceptance. Repeated rounds reuse the same clips and do not add independent samples.",
+  "requested_rounds": 3,
+  "transcripts_equal_across_rounds": true,
+  "evaluation_elapsed_seconds": 13.576467733999834,
+  "process_peak_rss_kib": 324492,
+  "resource_scope": "Linux Python evaluation process including imports/model; recognizer load excludes prior file hashing; unpaced decoding includes one second zero tail; no handset or end-to-end timing"
+}
