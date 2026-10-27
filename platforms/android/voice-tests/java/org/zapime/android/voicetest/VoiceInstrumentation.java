@@ -181,6 +181,8 @@ public final class VoiceInstrumentation extends Instrumentation {
             // first no-sample case also follows real nonzero speech, so a fresh
             // handle must not inherit PCM evidence from a previous session.
             stage="empty PCM result boundary";emptyPcmResults(model);
+            stage="nonempty confirmation transaction";VoiceCommitProbe.run(this,text,fixtures);
+            pass("production voice confirmation with real JNI text and Android Editable: one commit, reentrancy/cancel, editor/selection/context guards, rejected writes and main-thread ownership (synthetic method probe; not active IME confirmation)");
             stage="duration and cancellation";handle=allocate();require(start(handle,model).optBoolean("ready"),"native reload");short[] silence=new short[1600];for(int i=0;i<600;i++)require(!accept(handle,silence,silence.length).has("error"),"bounded silence stream");require("audio_limit".equals(accept(handle,new short[1],1).optString("error")),"60 second sample bound ignored");nativeCall("cancel",new Class<?>[]{long.class},handle);require("cancelled".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"decode cancellation ignored");require(close(handle),"close cancelled decode");pass("actual 60 second PCM bound and cancellation");
             stage="microphone lifecycle";Activity activity=startActivitySync(new Intent().setClassName(getTargetContext(),"org.zapime.android.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             capture(false);getUiAutomation().grantRuntimePermission("org.zapime.android",android.Manifest.permission.RECORD_AUDIO);capture(true);if(Build.VERSION.SDK_INT>=29)liveRecordingMonitor();runOnMainSync(activity::finish);
