@@ -1,0 +1,73 @@
+{
+  "jdk": "openjdk 17.0.20 2026-07-21\nOpenJDK Runtime Environment (build 17.0.20+8-1-24.04-Ubuntu)\nOpenJDK 64-Bit Server VM (build 17.0.20+8-1-24.04-Ubuntu, mixed mode, sharing)\n",
+  "api36_jar_sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+  "records": [
+    {
+      "group": "voice-target",
+      "exit_code": 0,
+      "command": [
+        "java",
+        "-m",
+        "jdk.compiler/com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+        "-d",
+        "target/android-compile/voice-target",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java"
+      ],
+      "stdout": "",
+      "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\n1 warning\n",
+      "elapsed_seconds": 1.1742707010016602,
+      "source_sha_before": {
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "a27f3e298ec45c989acbf73d038e78b42729dc40bfd77b9fc247e0de956eca0e",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+      },
+      "source_sha_after": {
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "a27f3e298ec45c989acbf73d038e78b42729dc40bfd77b9fc247e0de956eca0e",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+      },
+      "class_files": 4
+    },
+    {
+      "group": "input-test-host",
+      "exit_code": 0,
+      "command": [
+        "java",
+        "-m",
+        "jdk.compiler/com.sun.tools.javac.Main",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+        "-d",
+        "target/android-compile/input-test-host",
+        "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+        "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java"
+      ],
+      "stdout": "",
+      "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\nNote: Some input files use or override a deprecated API.\nNote: Recompile with -Xlint:deprecation for details.\n1 warning\n",
+      "elapsed_seconds": 1.103309647001879,
+      "source_sha_before": {
+        "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java": "5d1577086111a50e29079b5a7124f82b9f25177f8d4ad817ef2f44edc8e5170b",
+        "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java": "f250b93a43e3b18c35c84eddebb4d5949878a88458dd3ca0f587cda89b7c9ba3"
+      },
+      "source_sha_after": {
+        "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java": "5d1577086111a50e29079b5a7124f82b9f25177f8d4ad817ef2f44edc8e5170b",
+        "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java": "f250b93a43e3b18c35c84eddebb4d5949878a88458dd3ca0f587cda89b7c9ba3"
+      },
+      "class_files": 11
+    }
+  ],
+  "scope": "Actual test-only Java compilation against pinned official API36 jar; not product APK/JNI/DEX or emulator execution"
+}

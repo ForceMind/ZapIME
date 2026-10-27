@@ -1,0 +1,33 @@
+{
+  "command": [
+    "java",
+    "-m",
+    "jdk.compiler/com.sun.tools.javac.Main",
+    "-source",
+    "8",
+    "-target",
+    "8",
+    "-encoding",
+    "UTF-8",
+    "-classpath",
+    "/workspace/scratch/99fcacf9684b/ZapIME/target/android-compile/android.jar",
+    "-d",
+    "target/android-compile/timing-order-target",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "warning: [options] bootstrap class path not set in conjunction with -source 8\n1 warning\n",
+  "elapsed_seconds": 1.3234747870010324,
+  "sources_before": {
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "a1e41017e3677ca7fd72f176c4ab5cb5ea7d881f60326c4c8f8eb9e84825c21f",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+  },
+  "sources_after": {
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "a1e41017e3677ca7fd72f176c4ab5cb5ea7d881f60326c4c8f8eb9e84825c21f",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/LearningHostProbe.java": "ab173fd8cb70d64bb1060339feac0c1d54ab3e09fcff2ec2d901edb07bdacea8"
+  },
+  "classes": 4,
+  "scope": "Actual test-target Java compilation after ordering-only correction; not new JNI/APK/device results"
+}

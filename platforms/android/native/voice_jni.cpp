@@ -2,6 +2,7 @@
 // ZapIME JNI ownership boundary over the pinned MSIME LocalAsr implementation.
 #include <jni.h>
 #include "LocalAsr.h"
+#include "VoicePcmEvidence.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <atomic>
@@ -22,6 +23,7 @@ struct State {
   std::mutex partial_mutex;
   std::string partial;
   std::size_t samples = 0;
+  VoicePcmEvidence pcm_evidence;
   bool finished = false;
 };
 std::mutex handles_mutex;
@@ -103,8 +105,11 @@ JNIEXPORT jbyteArray JNICALL Java_org_zapime_android_NativeVoice_accept(JNIEnv* 
     std::vector<float> floats(samples.size());
     for (std::size_t i = 0; i < samples.size(); ++i) floats[i] = static_cast<float>(samples[i]) / 32768.0f;
     value->session->accept(floats.data(), floats.size()); value->samples += samples.size();
+    // Commit evidence only after successful acceptance of the validated prefix.
+    value->pcm_evidence.accepted(samples.data(), samples.size());
     std::lock_guard<std::mutex> lock(value->partial_mutex);
-    return output(env, json{{"text", value->partial}});
+    return output(env, json{{"text", value->pcm_evidence.visible_text(value->partial)},
+                            {"has_nonzero_pcm", value->pcm_evidence.has_nonzero_pcm()}});
   } catch (...) { return error(env, value->cancelled->load() ? "cancelled" : "decode_failure"); }
 }
 JNIEXPORT jbyteArray JNICALL Java_org_zapime_android_NativeVoice_finish(JNIEnv* env, jclass, jlong handle) {
@@ -113,9 +118,12 @@ JNIEXPORT jbyteArray JNICALL Java_org_zapime_android_NativeVoice_finish(JNIEnv* 
   if (!value->session || value->finished) return error(env, "invalid_session");
   try {
     if (value->cancelled->load()) return error(env, "cancelled");
-    const auto text = value->session->finish(); value->finished = true;
+    // With no nonzero input there is no acoustic evidence to justify model
+    // text. Do not decode an artificial zero tail in this terminal path.
+    const auto text = value->pcm_evidence.has_nonzero_pcm() ? value->session->finish() : std::string{};
+    value->finished = true;
     if (text.size() > 65536) return error(env, "text_limit");
-    return output(env, json{{"text", text}});
+    return output(env, json{{"text", text}, {"has_nonzero_pcm", value->pcm_evidence.has_nonzero_pcm()}});
   } catch (...) { return error(env, value->cancelled->load() ? "cancelled" : "decode_failure"); }
 }
 JNIEXPORT void JNICALL Java_org_zapime_android_NativeVoice_cancel(JNIEnv*, jclass, jlong handle) {

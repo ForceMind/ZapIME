@@ -116,6 +116,43 @@ public final class VoiceInstrumentation extends Instrumentation {
         }
         pass("actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)");
     }
+    private void emptyPcmResults(File model)throws Exception{
+        org.json.JSONArray cases=new org.json.JSONArray();
+        for(String name:new String[]{"no_samples","all_zero","ignored_tail","positive_lsb","negative_lsb","cancelled_empty"}){
+            long handle=allocate();require(handle!=0,"PCM evidence allocation");
+            boolean expected=name.equals("positive_lsb")||name.equals("negative_lsb");int samples=0;
+            try{
+                require(start(handle,model).optBoolean("ready"),"PCM evidence model load");
+                if(name.equals("cancelled_empty")){
+                    nativeCall("cancel",new Class<?>[]{long.class},handle);
+                    require("cancelled".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"empty fast finish bypassed cancellation");
+                    cases.put(new JSONObject().put("id",name).put("accepted_samples",0).put("cancelled_before_finish",true).put("passed",true));continue;
+                }
+                if(!name.equals("no_samples")){
+                    short[] pcm=name.equals("all_zero")?new short[1600]:new short[]{0,(short)(name.equals("negative_lsb")?-1:1)};
+                    int count=name.equals("ignored_tail")?1:pcm.length;samples+=count;
+                    JSONObject partial=accept(handle,pcm,count);
+                    require(!partial.has("error")&&partial.has("has_nonzero_pcm")&&partial.getBoolean("has_nonzero_pcm")==expected,"PCM evidence valid-prefix classification");
+                    if(!expected)require(partial.getString("text").isEmpty(),"zero-only partial text escaped");
+                    // Trailing exact zero samples must neither create evidence nor
+                    // remove a prior +/-1 sample. Rejected counts must not add it.
+                    require("invalid_audio".equals(accept(handle,new short[]{1},2).optString("error")),"evidence count overrun accepted");
+                    partial=accept(handle,new short[1600],1600);samples+=1600;
+                    require(!partial.has("error")&&partial.has("has_nonzero_pcm")&&partial.getBoolean("has_nonzero_pcm")==expected,"trailing zero changed PCM evidence");
+                    if(!expected)require(partial.getString("text").isEmpty(),"trailing zero-only partial text escaped");
+                }
+                JSONObject complete=json(nativeCall("finish",new Class<?>[]{long.class},handle));
+                require(!complete.has("error")&&complete.has("has_nonzero_pcm")&&complete.getBoolean("has_nonzero_pcm")==expected,"final PCM evidence mismatch");
+                if(!expected)require(complete.getString("text").isEmpty(),"zero/no-sample final text escaped");
+                require("invalid_session".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"empty finish reusable");
+                require("invalid_session".equals(accept(handle,new short[]{1},1).optString("error")),"finished empty session accepted audio");
+                cases.put(new JSONObject().put("id",name).put("accepted_samples",samples).put("has_nonzero_pcm",expected).put("empty_required",!expected).put("passed",true));
+            }finally{require(close(handle),"close PCM evidence session");}
+        }
+        JSONObject report=new JSONObject().put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("abi",Build.SUPPORTED_ABIS[0]).put("cases",cases).put("scope","Real JNI and pinned model with synthetic exact-zero/prefix/one-LSB PCM; not VAD, system-mute inference, microphone speech or accuracy acceptance");
+        Files.write(new File(fixtures,"empty-pcm-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
+        pass("actual JNI empty/zero PCM returns empty partial/final text; valid count prefix, +/-1 LSB, trailing quiet and repeat-finish boundaries");
+    }
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
@@ -139,7 +176,11 @@ public final class VoiceInstrumentation extends Instrumentation {
             stage="real native synthetic recognition";handle=allocate();require(model.getAbsolutePath().equals(model.getCanonicalPath()),"model path not canonical");long loadStart=SystemClock.elapsedRealtime();JSONObject started=start(handle,model);long loadMillis=SystemClock.elapsedRealtime()-loadStart;require(started.optBoolean("ready"),"native model load: "+started.optString("error"));require("invalid_audio".equals(accept(handle,new short[1601],1601).optString("error")),"oversized PCM accepted");require("invalid_audio".equals(accept(handle,new short[1],2).optString("error")),"PCM count overrun accepted");
             long decodeStart=SystemClock.elapsedRealtime();int samples=0;try(InputStream in=getContext().getAssets().open("voice-fixtures/synthetic.pcm")){byte[] buffer=new byte[3200];while(true){int n=0,count;while(n<buffer.length&&(count=in.read(buffer,n,buffer.length-n))!=-1)n+=count;if(n==0)break;require(n%2==0,"invalid synthetic PCM");short[] pcm=new short[n/2];ByteBuffer.wrap(buffer,0,n).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(pcm);require(!accept(handle,pcm,pcm.length).has("error"),"native stream decode");samples+=pcm.length;}}
             String text=json(nativeCall("finish",new Class<?>[]{long.class},handle)).getString("text");for(String fragment:new String[]{"你好","离线语音输入测试","三点开会"})require(text.contains(fragment),"synthetic recognition fragment missing");require(samples>16000&&samples<16000*60,"fixture duration");require("invalid_session".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"finished session reused");require(close(handle),"close decoded session");pass("actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged");
-            long decodeMillis=SystemClock.elapsedRealtime()-decodeStart;JSONObject report=new JSONObject().put("synthetic",true).put("platform","Android emulator").put("api_level",Build.VERSION.SDK_INT).put("abi",Build.SUPPORTED_ABIS[0]).put("model","x-asr-streaming-int8-2026-06-05").put("configured_cpu_threads",2).put("audio_samples",samples).put("audio_seconds",samples/16000.0).put("recognizer_load_ms",loadMillis).put("decode_with_jni_ms",decodeMillis).put("rtf",decodeMillis/(samples/16.0)).put("recognized_codepoints",text.codePointCount(0,text.length())).put("expected_fragments_passed",true).put("capture","synthetic PCM fed without real-time pacing; not microphone or end-to-end latency");Files.write(new File(fixtures,"native-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
+            long decodeMillis=SystemClock.elapsedRealtime()-decodeStart;JSONObject report=new JSONObject().put("synthetic",true).put("platform","Android emulator").put("api_level",Build.VERSION.SDK_INT).put("abi",Build.SUPPORTED_ABIS[0]).put("model","x-asr-streaming-int8-2026-06-05").put("configured_cpu_threads",2).put("audio_samples",samples).put("audio_seconds",samples/16000.0).put("recognizer_load_ms",loadMillis).put("recognizer_load_scope","start(handle) after model verification and native class loading; empty-PCM cases run later; not end-to-end or handset cold-start latency").put("decode_with_jni_ms",decodeMillis).put("rtf",decodeMillis/(samples/16.0)).put("recognized_codepoints",text.codePointCount(0,text.length())).put("expected_fragments_passed",true).put("capture","synthetic PCM fed without real-time pacing; not microphone or end-to-end latency");Files.write(new File(fixtures,"native-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
+            // Keep the prior timing sample ahead of extra cache users. The
+            // first no-sample case also follows real nonzero speech, so a fresh
+            // handle must not inherit PCM evidence from a previous session.
+            stage="empty PCM result boundary";emptyPcmResults(model);
             stage="duration and cancellation";handle=allocate();require(start(handle,model).optBoolean("ready"),"native reload");short[] silence=new short[1600];for(int i=0;i<600;i++)require(!accept(handle,silence,silence.length).has("error"),"bounded silence stream");require("audio_limit".equals(accept(handle,new short[1],1).optString("error")),"60 second sample bound ignored");nativeCall("cancel",new Class<?>[]{long.class},handle);require("cancelled".equals(json(nativeCall("finish",new Class<?>[]{long.class},handle)).optString("error")),"decode cancellation ignored");require(close(handle),"close cancelled decode");pass("actual 60 second PCM bound and cancellation");
             stage="microphone lifecycle";Activity activity=startActivitySync(new Intent().setClassName(getTargetContext(),"org.zapime.android.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             capture(false);getUiAutomation().grantRuntimePermission("org.zapime.android",android.Manifest.permission.RECORD_AUDIO);capture(true);if(Build.VERSION.SDK_INT>=29)liveRecordingMonitor();runOnMainSync(activity::finish);
