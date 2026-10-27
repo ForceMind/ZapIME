@@ -1,0 +1,634 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-27T13:31:23.799234+00:00",
+  "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+  "self_excluded": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5653,
+      "sha256": "56827a5d9b6db2ff6334fc6dfe62f2487c2de562cac1fd8573cc032df287db6c",
+      "kind": "derived record",
+      "origin": "Final evidence documentation; scope described in README"
+    },
+    {
+      "path": "final-api-28/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "6a6feb5580359b5cc047c3f88d833aa5695d2007418fa9655e2778ff5a9d712b",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/activity-errors.txt"
+      }
+    },
+    {
+      "path": "final-api-28/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/combined-gates.json"
+      }
+    },
+    {
+      "path": "final-api-28/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/crash.txt"
+      }
+    },
+    {
+      "path": "final-api-28/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "b83e7bf8a33bcb27492e10b93ef8408fad9ceeecaa0824518e6dedcdb4fadb7b",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/empty-pcm-report.json"
+      }
+    },
+    {
+      "path": "final-api-28/host-lifecycle.txt",
+      "bytes": 5609,
+      "sha256": "bc132fee3ac4dd992ed4b6475b5b4c51cce79a2bf5e2340d44007f7f2b6e5e29",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/host-lifecycle.txt"
+      }
+    },
+    {
+      "path": "final-api-28/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/ime-teardown.txt"
+      }
+    },
+    {
+      "path": "final-api-28/instrumentation.txt",
+      "bytes": 2082,
+      "sha256": "48734e9e49714bae78945d2d9980caadf3a4e55c1990986f18b92976f12c11a2",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-28/native-report.json",
+      "bytes": 650,
+      "sha256": "747e006bc771005c1a2abd205809762237ec831cf9418c0dda0d62d07f668cbc",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/native-report.json"
+      }
+    },
+    {
+      "path": "final-api-28/system-keyboard.json",
+      "bytes": 169,
+      "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/system-keyboard.json"
+      }
+    },
+    {
+      "path": "final-api-28/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/ui-instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-28/voice-stopped.png",
+      "bytes": 38896,
+      "sha256": "bd453ceb855c499818eac13fe0db98b7e9760201d90c8f7aaab712ebf2ec1179",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737401857,
+        "job_id": 122207352743,
+        "member": "voice-android/voice-stopped.png"
+      }
+    },
+    {
+      "path": "final-api-35/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "76fdde525437db145b903cc4d5839159a34848ec753638cef65f57a88ea80afe",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/activity-errors.txt"
+      }
+    },
+    {
+      "path": "final-api-35/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/combined-gates.json"
+      }
+    },
+    {
+      "path": "final-api-35/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/crash.txt"
+      }
+    },
+    {
+      "path": "final-api-35/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "dcdf30236750a00bc0e43416d05bda563115de2f5710157c4d1e4e52e9e259d2",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/empty-pcm-report.json"
+      }
+    },
+    {
+      "path": "final-api-35/host-lifecycle.txt",
+      "bytes": 5980,
+      "sha256": "4f6132540453a8cd22ee2f3415a290882dc2ba7d6f23269caa7e0d99f334026c",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/host-lifecycle.txt"
+      }
+    },
+    {
+      "path": "final-api-35/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/ime-teardown.txt"
+      }
+    },
+    {
+      "path": "final-api-35/instrumentation.txt",
+      "bytes": 2281,
+      "sha256": "294ab7ea73b08c2a1fd8c287157c84476b58576dce02a2eb293c438792f64eca",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-35/native-report.json",
+      "bytes": 650,
+      "sha256": "0497d03abc289b56edcaa9f494f38f4fe4af57dfaf4a111179d1255c689e4dd2",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/native-report.json"
+      }
+    },
+    {
+      "path": "final-api-35/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/system-keyboard.json"
+      }
+    },
+    {
+      "path": "final-api-35/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/ui-instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-35/voice-stopped.png",
+      "bytes": 41954,
+      "sha256": "ccdec19350f37814f1f108e8120ebaf9568290504ac43510a6240b6f64cf8fa3",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12737822222,
+        "job_id": 122213385991,
+        "member": "voice-android/voice-stopped.png"
+      }
+    },
+    {
+      "path": "final-api-36/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "c27c83e7c0db4b41cebd47ea23f10219e6a97711b8919b00ecdca664cafaa0ed",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/activity-errors.txt"
+      }
+    },
+    {
+      "path": "final-api-36/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/combined-gates.json"
+      }
+    },
+    {
+      "path": "final-api-36/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/crash.txt"
+      }
+    },
+    {
+      "path": "final-api-36/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "f2ce8f95c4d3a54fdffe6872d4c2a535034321a765dae7a5cb27e4867a6aa634",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/empty-pcm-report.json"
+      }
+    },
+    {
+      "path": "final-api-36/host-lifecycle.txt",
+      "bytes": 5980,
+      "sha256": "5244f208a97431aef6528b6108d8004a1df2cd177eb8e2c004e0dfd4d34b4a55",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/host-lifecycle.txt"
+      }
+    },
+    {
+      "path": "final-api-36/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/ime-teardown.txt"
+      }
+    },
+    {
+      "path": "final-api-36/instrumentation.txt",
+      "bytes": 2281,
+      "sha256": "294ab7ea73b08c2a1fd8c287157c84476b58576dce02a2eb293c438792f64eca",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-36/native-report.json",
+      "bytes": 649,
+      "sha256": "fbec7ea39e595fbb7e952ed853f03ba8fb8877256da4019df3de86baeae182f2",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/native-report.json"
+      }
+    },
+    {
+      "path": "final-api-36/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/system-keyboard.json"
+      }
+    },
+    {
+      "path": "final-api-36/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/ui-instrumentation.txt"
+      }
+    },
+    {
+      "path": "final-api-36/voice-stopped.png",
+      "bytes": 41637,
+      "sha256": "b5ed35fdbecefb5906046d99c62eae7ab200ad43cf2316ea4bdab260ae8caed7",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "artifact_id": 12738700215,
+        "job_id": 122213385769,
+        "member": "voice-android/voice-stopped.png"
+      }
+    },
+    {
+      "path": "final-api28-success.log",
+      "bytes": 3051,
+      "sha256": "94eaaadf716bd453a5baf0710e13c4019d385f2a223949d3b607820d1de82dcb",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "job_id": 122207352743
+      }
+    },
+    {
+      "path": "final-api35-success.log",
+      "bytes": 2495,
+      "sha256": "2a47e748151fa9efd00e7e421d403da7daf0d407d659d8cc338b31a4278309a7",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "job_id": 122213385991
+      }
+    },
+    {
+      "path": "final-api36-success.log",
+      "bytes": 2495,
+      "sha256": "7dc32066a73411763a5cd63cf1609e92dc79483f3a3b8a3804b580f865d128b5",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+        "job_id": 122213385769
+      }
+    },
+    {
+      "path": "final-ci-summary.json",
+      "bytes": 3646,
+      "sha256": "1eedfc03947117645f9d3315cf0268d9a6ce95e23bf7dc6f8d538724cf157d96",
+      "kind": "derived record",
+      "origin": "Final evidence documentation; scope described in README"
+    },
+    {
+      "path": "final-package-verification.json",
+      "bytes": 1006,
+      "sha256": "d860c0b0319d84e244bdce1362da1e84e6289db94461081a3190a03a9e1738a9",
+      "kind": "derived record",
+      "origin": "Final evidence documentation; scope described in README"
+    },
+    {
+      "path": "initial-api-28/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/activity-errors.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/combined-gates.json"
+      }
+    },
+    {
+      "path": "initial-api-28/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/crash.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "b83e7bf8a33bcb27492e10b93ef8408fad9ceeecaa0824518e6dedcdb4fadb7b",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/empty-pcm-report.json"
+      }
+    },
+    {
+      "path": "initial-api-28/host-lifecycle.txt",
+      "bytes": 5609,
+      "sha256": "1e2a61fcf1d24e78ecbf4f604f4be5d01df6f37c5523f1d3725e2a7e8de3f231",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/host-lifecycle.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/ime-teardown.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/instrumentation.txt",
+      "bytes": 2082,
+      "sha256": "5e6be33d3da8ab34b5053400194848790e1ce56134bcbc18a994064d525cf954",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/instrumentation.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/native-report.json",
+      "bytes": 479,
+      "sha256": "a6667fb4d1bed696ba8a127103e4b445cfd80b8d3093fed674d0b20f7e4ec3df",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/native-report.json"
+      }
+    },
+    {
+      "path": "initial-api-28/system-keyboard.json",
+      "bytes": 169,
+      "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/system-keyboard.json"
+      }
+    },
+    {
+      "path": "initial-api-28/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/ui-instrumentation.txt"
+      }
+    },
+    {
+      "path": "initial-api-28/voice-stopped.png",
+      "bytes": 39121,
+      "sha256": "d0f2529f3ce0784f1a371d7c1b200642aa747cd353bde4306a87680c88aac5eb",
+      "kind": "raw artifact member",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "artifact_id": 12736190208,
+        "member": "voice-android/voice-stopped.png"
+      }
+    },
+    {
+      "path": "initial-api28-success.log",
+      "bytes": 1675,
+      "sha256": "526d247fe6f88d12fede8575800a7155ea934aa1ce343935c0462eef5afa6e59",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "job_id": 122195795301
+      }
+    },
+    {
+      "path": "initial-api35-success.log",
+      "bytes": 1242,
+      "sha256": "3f4e7535cb262c9d5eee21131119cbdfffc015c0cf206244df0b0335d7b7bf6b",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "job_id": 122200206354
+      }
+    },
+    {
+      "path": "initial-api36-success.log",
+      "bytes": 1242,
+      "sha256": "29ce28e283cc0ff8c78e6575dba307a31990389e8014a3acefbb9d89ca0e09d6",
+      "kind": "selected original job lines",
+      "origin": {
+        "source_commit": "4db849ca34dc54962e9e94c63746fa3e67424dcc",
+        "job_id": 122200206316
+      }
+    },
+    {
+      "path": "local-cpp-policy.json",
+      "bytes": 1386,
+      "sha256": "cb874ca7ad705801579c3c8183f67c71af3eabcad98f34382e1a39354b629020",
+      "kind": "local synthetic validation record",
+      "origin": "Host C++ or Java compilation only; no device inference"
+    },
+    {
+      "path": "local-java-test-compile.json",
+      "bytes": 3628,
+      "sha256": "0bf46b975e057f7acd9e00de75857233b37a9ea46c7ec06e762db00e234284ba",
+      "kind": "local synthetic validation record",
+      "origin": "Host C++ or Java compilation only; no device inference"
+    },
+    {
+      "path": "local-java-timing-order-compile.json",
+      "bytes": 1532,
+      "sha256": "74ba9803c786de7e953cf80c2ba1b2036e5728915ed2d7b5e5fd76f2c656fa0e",
+      "kind": "local synthetic validation record",
+      "origin": "Host C++ or Java compilation only; no device inference"
+    },
+    {
+      "path": "package-verification.json",
+      "bytes": 1006,
+      "sha256": "47a5b469392926bb0c6c5fd895d9d503a9d5b4e873c48eb8d68a90cd2b67253c",
+      "kind": "derived record",
+      "origin": "Final evidence documentation; scope described in README"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+INSTRUMENTATION_STATUS: stream=PASS deterministic timed-out-poll/final-PCM/completion race preserves tail then EOF
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS recording policy state: own-session only, terminal silence, late-event rejection and close drains callback (deterministic; not real AppOps)
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS actual AndroidKeyStore AES-GCM material roundtrip, nonce freshness, non-exportable wrapping key, tamper/account isolation, unfinished AtomicFile rollback, worker guard and key-loss fail-closed (synthetic only)
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS learning service-method synthetic accepted/rejected/excluded commits, no editor reads and declared-field privacy allowlist (not active translation UI)
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS verified import, traversal/config/checksum/cancellation rejection and preservation
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS model publication filesystem-state recovery: rehashed staging, valid backup, tamper rejection and cancellation (not power-loss acceptance)
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS bounded handles, wrong-thread/stale ownership and load cancellation
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS actual Android JNI streaming recognition of synthetic Mandarin; no transcript logged
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS actual JNI empty/zero PCM returns empty partial/final text; valid count prefix, +/-1 LSB, trailing quiet and repeat-finish boundaries
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS actual 60 second PCM bound and cancellation
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_STATUS: stream=PASS permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)
+
+INSTRUMENTATION_STATUS_CODE: 0
+INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+
+INSTRUMENTATION_CODE: -1

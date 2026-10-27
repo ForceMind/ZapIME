@@ -12,6 +12,8 @@ macOS InputMethodKit 和 iOS 原生键盘扩展已有独立宿主及原生构建
 
 Android 已有九键/全键、明暗配色、遵循系统的按键反馈、连续退格、常用表情和显式光标/剪贴板编辑。原生界面的布局、实际模拟器截图与验证边界见 [Android UI](docs/design/ANDROID_UI.md)。开发版已接入离线语音模型导入、录音预览/停止/重录及确认插入，API28/35/36模拟器完整门禁与录音尾块竞态回归已通过；范围、安装与真实原始证据见 [九键与本地语音](docs/VOICE_INPUT.md)。新增[整句质量诊断](docs/VOICE_QUALITY.md)保存合成语音的全部错误；真人识别率、ARM/三星、现代系统后台权限及另外三端仍需验收。
 
+需要试用 Android 开发版时，请按[固定构建下载与安装指南](docs/ANDROID_TRYOUT.md)取得 APK 和离线语音模型；指南列出对应源码、文件校验值、启用步骤及开发签名的升级限制。
+
 键盘内可搜索本机短语、收藏和显式保存的剪贴板，直接插入完整内容，并置顶、转收藏或确认删除。搜索词与聊天正文隔离，密码/禁止学习字段拒绝访问；全部使用本机数据。详见 [本机资料面板](docs/LOCAL_DATA_PANEL.md)。
 
 规划中的[英语伴学](docs/ENGLISH_LEARNING.md)将在中文上屏后展示参考英译，并通过主动收藏积累中英对照。请求生命周期策略已有基线；Android增加接受提交来源隔离与有界短句组装，生产默认不捕获，仍无可用翻译开关；已完成[OPUS 2020预处理对照](docs/ENGLISH_TRANSLATION_PREPROCESSING.md)、[Qwen固定配置CPU研究](docs/ENGLISH_TRANSLATION_QWEN_PROBE.md)和[OPUS 2021研究](docs/ENGLISH_TRANSLATION_OPUS_2021_PROBE.md)，保留全部合成样本及语义问题。翻译模型尚未接入输入法宿主/界面，当前探针不作为默认英语教学输出。

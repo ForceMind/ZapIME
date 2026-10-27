@@ -1,0 +1,20 @@
+{
+  "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+  "artifact_id": 12737401857,
+  "artifact_zip_bytes": 233569719,
+  "artifact_zip_sha256": "0f764b1ceb33688b7d1d7a9aabfe3b199c57824b5d7ee0fab96d949786ec6c8c",
+  "actual_full_artifact_size_sha_verified": true,
+  "arm64_apk": {
+    "bytes": 50958904,
+    "sha256": "f9aee35b055727c4cc5703bd801c91fc727544e8b1f03dcb6cefb28cf77f2a7c"
+  },
+  "model_zip": {
+    "bytes": 129097503,
+    "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+    "members_verified_against_pinned_apk_config": 6
+  },
+  "gpl_and_voice_license_assets_present": true,
+  "onnx_weights_not_embedded_in_product_apk": true,
+  "signature_scope": "CI apksigner/zipalign/check_apk steps passed; local extraction verified file hashes/license assets only, not a local signature or real ARM device verification",
+  "distribution_scope": "Development signing only; each CI runner generates its own key; no production release or compatible upgrade promise"
+}

@@ -1,0 +1,101 @@
+{
+  "source_commit": "59c9e8e17741250c8783bbc108efc08ad8b87edb",
+  "merged_pr": 57,
+  "merge_commit": "b2079587e495ab80d869e27ffc1f5f825eb3e6bb",
+  "workflow_runs": [
+    {
+      "id": 40509500276,
+      "name": "Independent ciphertext sync service",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 166,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500276/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500276/logs",
+      "workflow_id": 392053540
+    },
+    {
+      "id": 40509500190,
+      "name": "Windows native TSF development",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 174,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500190/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500190/logs",
+      "workflow_id": 392037100
+    },
+    {
+      "id": 40509500290,
+      "name": "Offline speech CPU probe",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 122,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500290/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500290/logs",
+      "workflow_id": 393617199
+    },
+    {
+      "id": 40509500246,
+      "name": "Android native input acceptance",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 147,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500246/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500246/logs",
+      "workflow_id": 392138455
+    },
+    {
+      "id": 40509500199,
+      "name": "ZapIME development checks",
+      "status": "completed",
+      "conclusion": "success",
+      "run_number": 205,
+      "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500199/jobs",
+      "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/40509500199/logs",
+      "workflow_id": 390189548
+    }
+  ],
+  "android_jobs": [
+    {
+      "id": 122207352743,
+      "name": "Android development APK",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 122213385769,
+      "name": "Android API 36 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 122213385991,
+      "name": "Android API 35 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "downloaded_artifacts": [
+    {
+      "id": 12738700215,
+      "name": "ZapIME-Android-API-36-acceptance",
+      "size_in_bytes": 2434096,
+      "digest": "sha256:ddfc2b1efaae8ac1d7467fc4e10106d03a61ab41a9535dd27507ff6e0b4ab9cf",
+      "head_sha": "59c9e8e17741250c8783bbc108efc08ad8b87edb"
+    },
+    {
+      "id": 12737822222,
+      "name": "ZapIME-Android-API-35-acceptance",
+      "size_in_bytes": 2433768,
+      "digest": "sha256:8d3ed38dbb3ee8e3337d7f4e37f1c19249b72ca4ee6dd2bfc2e8aa6b196b6835",
+      "head_sha": "59c9e8e17741250c8783bbc108efc08ad8b87edb"
+    },
+    {
+      "id": 12737401857,
+      "name": "ZapIME-Android-development",
+      "size_in_bytes": 233569719,
+      "digest": "sha256:0f764b1ceb33688b7d1d7a9aabfe3b199c57824b5d7ee0fab96d949786ec6c8c",
+      "head_sha": "59c9e8e17741250c8783bbc108efc08ad8b87edb"
+    }
+  ],
+  "scope": "Observed exact-source PR runs and fully downloaded selected ZIPs; later main/docs runs are separate. Synthetic and emulator only; no natural voice/ARM handset or production signing."
+}
