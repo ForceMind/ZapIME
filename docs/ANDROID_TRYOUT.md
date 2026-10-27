@@ -4,18 +4,20 @@
 
 ## 固定下载与来源
 
-- 源码：[`59c9e8e17741250c8783bbc108efc08ad8b87edb`](https://github.com/ForceMind/ZapIME/tree/59c9e8e17741250c8783bbc108efc08ad8b87edb)，已通过PR #57合入主线；GPL-3.0-only及各依赖许可原样保留。
-- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40509500246/artifacts/12737401857)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-25，过期可按固定源码与[构建说明](BUILD.md)重建。
+- 源码：[`7a8667a746c5d500bd4984407300ba27e7ddefc8`](https://github.com/ForceMind/ZapIME/tree/7a8667a746c5d500bd4984407300ba27e7ddefc8)，已通过PR #60合入主线；GPL-3.0-only及各依赖许可原样保留。
+- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40517361507/artifacts/12740756313)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-25，过期可按固定源码与[构建说明](BUILD.md)重建。
 - 该源双架构APK构建、API28/35/36的两轮真实输入、原生语音、空结果确认保护和真实服务退出均已通过。最新主线进展见[STATUS](STATUS.md)，本说明不自动把后续其他提交的产物当作同一文件。
 
 解压后，ARM64 Android手机使用`android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk`，同时保留根目录`ZapIME-XASR-model.zip`用于语音。产品APK不内置语音权重。
 
 | 文件 | 字节数 | SHA256 |
 | --- | --- | --- |
-| ARM64 APK | 50,958,904 | `f9aee35b055727c4cc5703bd801c91fc727544e8b1f03dcb6cefb28cf77f2a7c` |
+| ARM64 APK | 50,958,904 | `be032fdb0bd16fd2189bf79ddf1f31e9cfcb2f26868638f1e959b2ecaa1511b9` |
 | 模型ZIP | 129,097,503 | `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1` |
 
-完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，见[包验证记录](evidence/voice-empty-pcm-20261027/final-package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
+完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，新确认事务类型已确认在产品DEX中，测试探针未打进产品，见[包验证记录](evidence/voice-confirmation-20261027/package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
+
+本版固定每次确认的识别文字，复核原输入框及光标后最多尝试插入一次；取消、位置变化和重复完成不会自动重发。三API的20类生产事务/真实Android Editable合成检查均通过，文字来自真实JNI解码；这与物理非空确认、自然麦克风和真机验收分开，见[原始结果](evidence/voice-confirmation-20261027/README.md)。
 
 ## 启用与离线语音
 
