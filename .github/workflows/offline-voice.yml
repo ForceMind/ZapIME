@@ -26,11 +26,16 @@ jobs:
           sudo apt-get install -y espeak-ng
       - name: Verify pinned model files and synthesize Mandarin fixture
         run: |
+          .venv-voice/bin/python -m unittest discover -s scripts -p test_voice_quality.py -v
           .venv-voice/bin/python scripts/voice_probe.py prepare
           .venv-voice/bin/python scripts/voice_probe.py synthesize
+          .venv-voice/bin/python scripts/voice_quality.py synthesize
       - name: Real CPU streaming recognition with networking disabled
         run: |
           sudo unshare --net "$PWD/.venv-voice/bin/python" scripts/voice_probe.py recognize --wav target/voice-probe/synthetic.wav --report target/voice-probe/report.json --include-text --expect-fragment '你好' --expect-fragment '离线语音输入测试' --expect-fragment '三点开会'
+      - name: Whole-sentence synthetic CER diagnostics (not natural speech acceptance)
+        run: |
+          sudo unshare --net "$PWD/.venv-voice/bin/python" scripts/voice_quality.py evaluate --report target/voice-quality-report.json --include-text
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -38,3 +43,5 @@ jobs:
           path: |
             target/voice-probe/report.json
             target/voice-probe/synthetic.wav
+            target/voice-quality-report.json
+            target/voice-quality-fixtures/

@@ -6,6 +6,8 @@ Android 新增真正九宫格拼音键盘，复用固定 MSIME 九键解码器�
 
 **Android 开发版已接入原生离线语音，PR #32/#33 的 API28/35/36 模拟器门禁通过。** 包含模型导入、AudioRecord、独立解码线程、预览/停止/取消与确认插入；显式 RECORD_AUDIO 权限，仍没有 INTERNET 权限。真实 JNI 合成音、模拟器静音录音及独立 App UI 分别验证；尚不代表自然语音、ARM/三星、现代系统后台权限或四端语音已完成。下述旧探针数据继续保留来源与边界。
 
+新增[整句字错率诊断](VOICE_QUALITY.md)：固定12句合成语音、逐句S/D/I和两种明确评分口径，原有单句片段门禁保留。合成集结果与真人/手机准确率分别记录，不将`100%-CER`当准确率，也不将重复轮次当新增样本。
+
 ## Android 模型安装与使用（开发验证版）
 
 1. 取得同一构建的 ARM64 开发 APK 与 `ZapIME-XASR-model.zip`。Android Actions 成功产物 `ZapIME-Android-development` 包含 APK、离线模型包与合成测试证据；GitHub 产物有保留期限，后续可从固定源码重新构建。当前不是正式签名发布。
