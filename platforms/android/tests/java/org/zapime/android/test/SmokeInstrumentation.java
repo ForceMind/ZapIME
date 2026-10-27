@@ -18,6 +18,7 @@ public final class SmokeInstrumentation extends Instrumentation {
     private UiAutomation automation;
     private String stage="launch";
     private boolean voiceOnly;
+    private boolean voiceEmptyInsertVerified;
     private boolean ciDiagnostics;
     private final java.util.ArrayDeque<String> driverEvents=new java.util.ArrayDeque<>();
     private void noteDriver(String code){if(driverEvents.size()==64)driverEvents.removeFirst();driverEvents.addLast(SystemClock.uptimeMillis()+":"+code);}
@@ -310,11 +311,24 @@ public final class SmokeInstrumentation extends Instrumentation {
         try{if(!waitIme("离线语音",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME voice action rejected");if(!ProbeActivity.contextEntered.await(5,java.util.concurrent.TimeUnit.SECONDS))throw new Exception("slow editor fixture not reached");long begin=SystemClock.uptimeMillis();if(!waitIme("取消",900).performAction(AccessibilityNodeInfo.ACTION_CLICK))throw new Exception("IME Cancel accessibility action rejected");waitIme("工具",900);if(SystemClock.uptimeMillis()-begin>=1800)throw new Exception("IME Cancel blocked on remote editor IPC");}
         finally{ProbeActivity.delayNextContext.set(false);ProbeActivity.contextRelease.countDown();}requireEditor("voice guard test","voice_slow_editor_cancel_preserves_text");
         stage="voice recording preview";startDictation();requireEditor("voice guard test","voice_preview_not_committed");screenshot("voice-recording.png");
-        click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，可重新录音")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");screenshot("voice-stopped.png");click("重新录音");waitListening();requireEditor("voice guard test","voice_retry_preserves_editor");click("取消");waitFor("工具",true);
+        click("停止录音");for(int i=0;i<600;i++){if(find("没有识别到文字，可重新录音")!=null||find("识别完成 · 确认后插入")!=null)break;if(i==599)throw new Exception("voice stop timeout");Thread.sleep(100);}requireEditor("voice guard test","voice_stop_requires_confirmation");verifyEmptyVoiceCannotInsert();screenshot("voice-stopped.png");click("重新录音");waitListening();requireEditor("voice guard test","voice_retry_preserves_editor");click("取消");waitFor("工具",true);
         stage="voice selection guard";if(!waitFor("空格",true).performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK))throw new Exception("voice long-space rejected");waitListening();requireEditor("voice guard test","voice_long_space_no_extra_space");runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setSelection(0);});waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("stale voice retained after cursor move");requireEditor("voice guard test","voice_cursor_move_preserves_editor");
         stage="voice focus guard";startDictation();click("probe-password");waitFor("隐私输入 · 不学习");if(find("确认插入",true)!=null)throw new Exception("voice result crossed editor");requireEditor("voice guard test","voice_focus_preserves_editor");click("probe-normal");waitFor("⚡ 闪电 · 离线");
         stage="voice back cancellation";startDictation();long down=SystemClock.uptimeMillis();for(int action:new int[]{KeyEvent.ACTION_DOWN,KeyEvent.ACTION_UP})if(!automation.injectInputEvent(new KeyEvent(down,SystemClock.uptimeMillis(),action,KeyEvent.KEYCODE_BACK,0,0,android.view.KeyCharacterMap.VIRTUAL_KEYBOARD,0,KeyEvent.FLAG_FROM_SYSTEM,InputDevice.SOURCE_KEYBOARD),true))throw new Exception("Back injection rejected");waitFor("工具",true);requireEditor("voice guard test","voice_back_preserves_editor");
         stage="voice hide cancellation";startDictation();click("收起语音键盘");boolean hidden=false;for(int i=0;i<50;i++){boolean shown=false;for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD)shown=true;if(!shown){hidden=true;break;}Thread.sleep(100);}if(!hidden)throw new Exception("IME did not actually hide");click("probe-show-keyboard",true);waitFor("⚡ 闪电 · 离线");waitFor("工具",true);if(find("确认插入",true)!=null)throw new Exception("voice result survived keyboard hide");requireEditor("voice guard test","voice_hide_preserves_editor");startDictation();click("取消");waitFor("工具",true);
+    }
+    private void verifyEmptyVoiceCannotInsert()throws Exception{
+        if(find("没有识别到文字，可重新录音")==null){noteDriver("voice_nonempty_confirmation_retained");return;}
+        stage="voice empty result insertion guard";
+        AccessibilityNodeInfo insert=waitIme("确认插入",2000);
+        if(insert.isEnabled())throw new Exception("empty voice result enabled insertion");
+        // Directed accessibility attempt at an already disabled control only;
+        // ordinary recording entry/stop/retry continue through real touch.
+        insert.performAction(AccessibilityNodeInfo.ACTION_CLICK);Thread.sleep(100);
+        requireEditor("voice guard test","voice_empty_result_cannot_commit");
+        if(find("没有识别到文字，可重新录音")==null)throw new Exception("empty voice action left the safe terminal state");
+        voiceEmptyInsertVerified=true;
+        noteDriver("voice_empty_insert_disabled_verified");
     }
     private void waitImeText(String text) throws Exception {
         for(int i=0;i<150;i++){
@@ -397,7 +411,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         Bundle result=new Bundle();
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
-            if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable\n");finish(Activity.RESULT_OK,result);return;}
+            if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked="+voiceEmptyInsertVerified+"\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");toolsRestartAcceptance();
             for(char c:"ni".toCharArray())click(String.valueOf(c));

@@ -1,0 +1,23 @@
+{
+  "kind": "host C++ synthetic policy test",
+  "command": [
+    "bash",
+    "scripts/test_voice_pcm_evidence.sh"
+  ],
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04) 13.3.0",
+  "exit_code": 0,
+  "stdout": "PASS exact-zero PCM policy: empty/zero simulated text suppressed, valid prefix only, +/-1 and int16 extremes retained, trailing quiet and session isolation\n",
+  "stderr": "",
+  "elapsed_seconds": 0.38532439800110296,
+  "source_sha_before": {
+    "platforms/android/native/VoicePcmEvidence.h": "8bbae5ab9bc5fb869205322b293bf642e3530193e65beb7f458fc29363fd3ab8",
+    "platforms/android/tests/native/VoicePcmEvidenceSmoke.cpp": "27f965d14d9e58785ba25ead8f91b2c5e0096523039e0d5a594e30f999d574dc",
+    "scripts/test_voice_pcm_evidence.sh": "f5fd895ec0e2631f8c84464b4340a628bdec5d2be0f61825cab7fd0d7bed2426"
+  },
+  "source_sha_after": {
+    "platforms/android/native/VoicePcmEvidence.h": "8bbae5ab9bc5fb869205322b293bf642e3530193e65beb7f458fc29363fd3ab8",
+    "platforms/android/tests/native/VoicePcmEvidenceSmoke.cpp": "27f965d14d9e58785ba25ead8f91b2c5e0096523039e0d5a594e30f999d574dc",
+    "scripts/test_voice_pcm_evidence.sh": "f5fd895ec0e2631f8c84464b4340a628bdec5d2be0f61825cab7fd0d7bed2426"
+  },
+  "scope": "Production evidence header and standalone host test compiled with C++17/Wall/Wextra/Werror/pedantic; no JNI/APK/model/microphone/device or natural speech acceptance"
+}
