@@ -1,18 +1,18 @@
 {
-  "scope": "Observed local Rust86 tests, fmt, strict Clippy and host file IO6; not Android JNI/SAF execution",
-  "rust_tests_passed": 86,
+  "scope": "Observed local Rust87 tests, fmt, strict Clippy and host file IO6; Java product/target compile and Python17 regression; not Android JNI/SAF execution",
+  "rust_tests_passed": 87,
   "io_checks_passed": 6,
   "source_sha256": {
     "crates/zapime-core/examples/offline_probe.rs": "3930e5e402cec4534057c4bd71f02d9f01d34c7791c1c944b36a2a379b43b8e3",
     "crates/zapime-core/src/android.rs": "a77fcbd16dfdb0e3d0a71c3b2df2dea89a0de1f3091fdb82ca87a29bea9a3239",
     "crates/zapime-core/src/ffi.rs": "41a4475fb6e385aa423c4934439c4d5cf2ac5811089e8d4aaf46744dccaa56bf",
-    "crates/zapime-core/src/lib.rs": "8140ef2fda16e5a59f9c5d71492abea9adbe8c610af207c170bbc4b138d7239f",
+    "crates/zapime-core/src/lib.rs": "5b67704f8ba6ae4f279268365d374a2a4894148c7a489aa9af19742c5a0a3816",
     "crates/zapime-core/src/local_backup.rs": "8fb1cfb9e9e47212fb45774698fd4323e30f2be0ac5c2f08afaa3c17d7bc8ca9",
     "crates/zapime-core/src/personal.rs": "cbb62407d37f3b4e0ee683404ca019ee811ab39ef7aa25b100360a41511341c3",
     "crates/zapime-core/tests/ffi.rs": "1d0ca95f708222917adda855c0ad60e109cd321596df998d23f53f7cc8c1164c",
     "crates/zapime-core/tests/input.rs": "48ce2c08eb14fad63e0095a941d53e8767f667f474496d5e2e65a109a700fbd7",
     "crates/zapime-core/tests/local_backup.rs": "f67fd89d5923de821e90aa9ca6318e980035556b22d4beacd3213206606ae3fc",
-    "crates/zapime-core/tests/personal_panel.rs": "11b3fb6d79198b2efaf9c9d18b709e9ef0e75fa194848f517fc9d6856e2fa9f0",
+    "crates/zapime-core/tests/personal_panel.rs": "00295a7ac6ccb9042676e0cd09152cbb7c8b6312de05495aeb1b7258975d7ef5",
     "crates/zapime-crypto/examples/sync_fixture.rs": "49f927db8f1ede90a2dafc7a72a63da1ba45c542f5f756e745c24a8946f3d94d",
     "crates/zapime-crypto/src/lib.rs": "d9253a89a8f3cf7ab3c9fa264f0db4c3216b23f4eb96163a66bdb37e1e582d61",
     "crates/zapime-crypto/tests/recovery.rs": "eb0cbf57bff8f07fbc77a364230f642d98aa180f551f7da57656333c3ae86bfd",
@@ -32,5 +32,6 @@
     "crates/zapime-data/tests/sync_state.rs": "9b445f6ccad059a7b2e5ec7ad6be8f4af6b4f279a7eb53e471ccbf60d0038c31",
     "crates/zapime-sync/src/lib.rs": "fde5128e17909d4345a4226f83850363f68f108541bdb6b91d583a1b40ec2926",
     "crates/zapime-sync/tests/pull.rs": "0831295b7d6f0516c887ebb24fd53a58c9d6c9ba5a8be35c5ea3154a92ca57ca"
-  }
+  },
+  "python_tests_passed": 17
 }

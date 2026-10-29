@@ -42,7 +42,7 @@ public final class PersonalDataActivity extends Activity {
     private void message(String value){main.post(()->{if(!closed)status.setText(value);});}
     private JSONObject request(JSONObject input)throws Exception {if(handle==0)throw new IOException("not_ready");JSONObject result=new JSONObject(NativeCore.request(handle,input.toString()));if(result.has("error"))throw new IOException(result.optString("error"));return result;}
     private void refresh()throws Exception {
-        JSONArray records=request(new JSONObject().put("op","personal_list")).getJSONArray("records");
+        JSONArray records=request(new JSONObject().put("op","personal_reload")).getJSONArray("records");
         main.post(()->{if(closed)return;rows.removeAllViews();status.setText("已保存 "+records.length()+" 条 · 本机数据");
             for(int i=0;i<records.length();i++) {JSONObject record=records.optJSONObject(i);if(record==null)continue;JSONObject content=record.optJSONObject("content");if(content==null)continue;
                 LinearLayout item=Ui.card(rows);Button edit=Ui.button(this,"",android.graphics.Color.WHITE,false);edit.setAllCaps(false);edit.setText(content.optString("code",content.optString("title","收藏/剪贴板"))+"\n"+content.optString("text"));edit.setGravity(android.view.Gravity.START|android.view.Gravity.CENTER_VERTICAL);edit.setPadding(0,Ui.dp(this,8),0,Ui.dp(this,8));item.addView(edit);edit.setOnClickListener(v->{selected=record;String kind=content.optString("type");type.setSelection(kind.equals("snippet")?0:kind.equals("dictionary")?1:kind.equals("candidate_rule")?2:kind.equals("favorite")?3:4);code.setText(content.optString("code"));text.setText(content.optString("text"));position.setText(content.optString("position","1"));});

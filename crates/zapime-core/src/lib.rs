@@ -270,6 +270,21 @@ impl InputSession {
                 Ok(result) => result,
                 Err(error) => return json!({"error":error}),
             },
+            // Explicit settings-worker refresh. Never add disk reads to key/view paths.
+            "personal_reload" => {
+                let Some(store) = &self.store else {
+                    return json!({"error":"private_session"});
+                };
+                if !self.engine.snapshot().preedit.is_empty() {
+                    return json!({"error":"composition_active"});
+                }
+                let Ok(personal) = store.records(false) else {
+                    return json!({"error":"personal_store_failed"});
+                };
+                self.personal = personal;
+                self.generation += 1;
+                return json!({"records":self.personal});
+            }
             "personal_list" => return json!({"records":self.personal}),
             "reset" => self.engine.command(Command::Cancel),
             "view" => return self.view(KeyResult::handled(), CommitSource::Engine),
