@@ -20,7 +20,7 @@ Android 已有九键/全键、明暗配色、遵循系统的按键反馈、连�
 
 服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。客户端同步接入仍未完成。
 
-Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动HTTPS验证设备凭据、独立Keystore保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；API28/35/36 与真实 PostgreSQL 门禁已通过，完整配对和数据同步仍未接入。
+Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动HTTPS验证设备凭据、独立Keystore保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；API28/35/36 与真实 PostgreSQL 门禁已通过；保存连接前还会核对已有资料库账号，拒绝跨账号替换。完整配对和数据同步仍未接入。
 
 ## 开发
 

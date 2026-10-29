@@ -4,7 +4,7 @@
 
 Android InputMethodService → 单线程后台队列 → JNI → zapime-core → MSIME Session → Rust 拼音引擎。UI 主线程只负责按键收集、候选显示与 InputConnection 上屏；首次词库安装与会话准备在后台串行执行。每个输入框有 epoch，失焦后的旧结果不提交到新输入框。每个候选快照有 generation，旧候选点击不提交。
 
-词库随包携带、构建时验证 SHA-256。新Android源码申请INTERNET，仅主App显式设备授权检查使用独立SyncWorker；禁止明文HTTP，输入链路不联网。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。
+词库随包携带、构建时验证 SHA-256。新Android源码申请INTERNET，仅主App显式设备授权检查使用独立SyncWorker；禁止明文HTTP，输入链路不联网。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。 同步worker的独立 stateless JNI 只读既有 SQLite v2 的 sync_profile，不分配输入会话或迁移；保存凭据前的账号快照保护与实际同步事务校验分开，尚未自动绑定或上传。
 
 ## 上游与扩展边界
 

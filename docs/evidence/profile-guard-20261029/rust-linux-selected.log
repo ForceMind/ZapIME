@@ -1,0 +1,27 @@
+2026-10-29T08:56:41.5129038Z ##[group]Run cargo fmt --all --check
+2026-10-29T08:56:41.5129452Z [36;1mcargo fmt --all --check[0m
+2026-10-29T08:56:46.5754284Z ##[group]Run cargo test --workspace --locked
+2026-10-29T08:56:46.5754867Z [36;1mcargo test --workspace --locked[0m
+2026-10-29T08:57:20.4752084Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:20.5201715Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+2026-10-29T08:57:20.8342089Z test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.31s
+2026-10-29T08:57:20.9677438Z test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+2026-10-29T08:57:20.9698670Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:24.3743608Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.40s
+2026-10-29T08:57:24.3842323Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+2026-10-29T08:57:25.2343594Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.85s
+2026-10-29T08:57:25.2478443Z test inspection_never_initializes_and_preserves_existing_personal_history ... ok
+2026-10-29T08:57:25.2514710Z test malformed_binding_and_future_schema_are_errors_not_unbound ... ok
+2026-10-29T08:57:25.2516174Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-29T08:57:26.9262725Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.67s
+2026-10-29T08:57:26.9290779Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:26.9646357Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-29T08:57:27.0787465Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+2026-10-29T08:57:27.0804253Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:27.2563936Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+2026-10-29T08:57:27.2889320Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:27.3171843Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:27.3868614Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:27.4182707Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T08:57:27.4334572Z ##[group]Run cargo clippy --workspace --all-targets --locked -- -D warnings
+2026-10-29T08:57:27.4335222Z [36;1mcargo clippy --workspace --all-targets --locked -- -D warnings[0m

@@ -4,22 +4,22 @@
 
 ## 固定下载与来源
 
-- 源码：[`3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483`](https://github.com/ForceMind/ZapIME/tree/3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483)，已通过PR #63合入主线；GPL-3.0-only及各依赖许可原样保留。
-- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40840760306/artifacts/12883296165)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-27，过期可按固定源码与[构建说明](BUILD.md)重建。
+- 源码：[`7466514b16ede5978a169efcd1b32aceba124021`](https://github.com/ForceMind/ZapIME/tree/7466514b16ede5978a169efcd1b32aceba124021)，已通过PR #66合入主线；GPL-3.0-only及各依赖许可原样保留。
+- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40845624970/artifacts/12885072314)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-27，过期可按固定源码与[构建说明](BUILD.md)重建。
 - 该源双架构APK构建、API28/35/36的两轮真实输入、原生语音、空结果确认保护和真实服务退出均已通过。最新主线进展见[STATUS](STATUS.md)，本说明不自动把后续其他提交的产物当作同一文件。
 
 解压后，ARM64 Android手机使用`android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk`，同时保留根目录`ZapIME-XASR-model.zip`用于语音。产品APK不内置语音权重。
 
 | 文件 | 字节数 | SHA256 |
 | --- | --- | --- |
-| ARM64 APK | 50,967,096 | `fb870b29845a51e2a8e24ce4aa64f3f6591b654760b9fe403a03a1e6043582c7` |
+| ARM64 APK | 50,971,192 | `7b4e8e43c436d586445959147c19b8a5048d6f8f53d9eec5d44933eb8375e10b` |
 | 模型ZIP | 129,097,503 | `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1` |
 
-完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，连接与确认事务类型已确认在产品DEX中，测试探针未打进产品，见[包验证记录](evidence/account-connection-20261029/package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
+完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，连接与确认事务类型已确认在产品DEX中，测试探针未打进产品，见[包验证记录](evidence/profile-guard-20261029/package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
 
-本版固定每次确认的识别文字，复核原输入框及光标后最多尝试插入一次；取消、位置变化和重复完成不会自动重发。三API的20类生产事务/真实Android Editable合成检查均通过，文字来自真实JNI解码；这与物理非空确认、自然麦克风和真机验收分开，见[原始结果](evidence/account-connection-20261029/README.md)。
+本版固定每次确认的识别文字，复核原输入框及光标后最多尝试插入一次；取消、位置变化和重复完成不会自动重发。三API的20类生产事务/真实Android Editable合成检查均通过，文字来自真实JNI解码；这与物理非空确认、自然麦克风和真机验收分开，见[原始结果](evidence/profile-guard-20261029/README.md)。
 
-本版新增“服务器与设备连接”，支持显式 HTTPS 身份验证及独立 Keystore 凭据保护；新增 INTERNET 且禁止明文网络。三API输入/语音验收期间以内核规则拒绝产品UID的IPv4/IPv6联网。该连接不上传个人资料，使用方法见[账号连接](ACCOUNT_CONNECTION.md)；Android 正向 HTTPS/用户服务器实连仍需另行验证。
+本版新增“服务器与设备连接”，支持显式 HTTPS 身份验证及独立 Keystore 凭据保护；新增 INTERNET 且禁止明文网络。三API输入/语音验收期间以内核规则拒绝产品UID的IPv4/IPv6联网。保存连接前会只读核对既有资料库账号，移除连接不会解除资料库绑定；未绑定资料库也不会自动绑定。该连接不上传个人资料，使用方法见[账号连接](ACCOUNT_CONNECTION.md)；Android 正向 HTTPS/用户服务器实连仍需另行验证。
 
 ## 启用与离线语音
 

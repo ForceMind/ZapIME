@@ -1,0 +1,36 @@
+{
+  "source_commit": "7466514b16ede5978a169efcd1b32aceba124021",
+  "ci_checkout_commit": "414824972026774577ac9108538671b4f4fd33a7",
+  "identical_tree": "b924af1448d2e0f7eed5e72f89cda4c0fdfa0183",
+  "run_id": 40845624970,
+  "artifact_id": 12885072314,
+  "artifact_zip_bytes": 233625465,
+  "artifact_zip_sha256": "ea51e49f699c44a7b10fffb4e1e90b0ca81aded8c66f68b0b5fdaa94fdd08fab",
+  "full_zip_size_sha_verified": true,
+  "apks": {
+    "arm64-v8a": {
+      "bytes": 50971192,
+      "sha256": "7b4e8e43c436d586445959147c19b8a5048d6f8f53d9eec5d44933eb8375e10b",
+      "production_guard_descriptor_present": true,
+      "jni_guard_dynamic_export_present": true,
+      "test_probe_descriptors_absent": true,
+      "no_embedded_model_or_synthetic_pcm": true,
+      "dex_sha256": "b674b1891216b434d6ca90e12bdcdac06fc8cbf659541ec5a33cd83b5049ee95"
+    },
+    "x86_64": {
+      "bytes": 52269612,
+      "sha256": "136480c7899b6dc536932d623121cc5345bc2ec49351d207d238786e18ffa2e7",
+      "production_guard_descriptor_present": true,
+      "jni_guard_dynamic_export_present": true,
+      "test_probe_descriptors_absent": true,
+      "no_embedded_model_or_synthetic_pcm": true,
+      "dex_sha256": "b674b1891216b434d6ca90e12bdcdac06fc8cbf659541ec5a33cd83b5049ee95"
+    }
+  },
+  "model_zip": {
+    "bytes": 129097503,
+    "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+    "members_checked_against_pinned_apk_config": 6
+  },
+  "scope": "Actual ZIP/APK/DEX/dynamic JNI export/model/native hashes/notices inspected locally; signing/manifest no-cleartext and 16KiB alignment checked in CI. Not ARM execution, Android HTTPS success or production release."
+}
