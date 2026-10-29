@@ -93,6 +93,10 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch {
+	case r.URL.Path == "/v1/session" && r.Method == http.MethodGet:
+		// Read-only identity for the presented device token. No caller-supplied
+		// account selector, key material, object reads or sync cursor mutation.
+		write(w, 200, Session{1, actor.AccountID, actor.DeviceID, actor.Role, actor.ExpiresAt.UTC()})
 	case r.URL.Path == "/v1/changes" && r.Method == http.MethodPost:
 		var op Operation
 		if err = decode(w, r, &op); err != nil {

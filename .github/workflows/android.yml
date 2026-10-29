@@ -41,6 +41,8 @@ jobs:
         run: python3 -m unittest discover -s scripts -p 'test_android_*.py' -v
       - name: Exact-zero PCM result policy (host C++ unit, not JNI acceptance)
         run: bash scripts/test_voice_pcm_evidence.sh
+      - name: Manual account transport against isolated loopback TLS
+        run: bash scripts/test_android_sync_http.sh
       - run: bash scripts/build_android.sh arm64-v8a
       - run: bash scripts/build_android.sh x86_64
       - run: bash scripts/build_android_tests.sh
@@ -91,6 +93,7 @@ jobs:
             target/device-smoke-evidence/${{ github.run_id }}-${{ github.run_attempt }}/
             target/voice-android/
             target/ZapIME-XASR-model.zip
+            target/android-sync-http-tests/report.json
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()

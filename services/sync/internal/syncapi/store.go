@@ -100,7 +100,7 @@ func (s *Store) Authenticate(ctx context.Context, token string) (Identity, error
 		return Identity{}, err
 	}
 	var actor Identity
-	err = s.DB.QueryRowContext(ctx, `SELECT account_id::text,id::text,role FROM zapime_devices WHERE token_hash=$1 AND revoked_at IS NULL AND expires_at>now()`, hash).Scan(&actor.AccountID, &actor.DeviceID, &actor.Role)
+	err = s.DB.QueryRowContext(ctx, `SELECT account_id::text,id::text,role,expires_at FROM zapime_devices WHERE token_hash=$1 AND revoked_at IS NULL AND expires_at>now()`, hash).Scan(&actor.AccountID, &actor.DeviceID, &actor.Role, &actor.ExpiresAt)
 	actor.tokenHash = hash
 	if errors.Is(err, sql.ErrNoRows) {
 		return Identity{}, ErrUnauthorized

@@ -21,7 +21,8 @@ public final class MainActivity extends Activity {
         LinearLayout data=Ui.card(page);data.addView(Ui.text(this,"我的资料",20,Ui.INK));data.addView(Ui.text(this,"词库、短语与收藏，保存在你手中。",14,Ui.MUTED));Button personal=Ui.button(this,"管理资料与备份  →",Ui.BG,false);personal.setContentDescription("个人资料 · 离线管理与备份");personal.setOnClickListener(v->startActivity(new Intent(this,PersonalDataActivity.class)));Ui.addButton(data,personal);
         Button keyboard=Ui.button(this,"键盘与反馈",Ui.BG,false);keyboard.setContentDescription("键盘与反馈设置");keyboard.setOnClickListener(v->startActivity(new Intent(this,KeyboardSettingsActivity.class)));Ui.addButton(page,keyboard);
         Button voice=Ui.button(this,"离线语音 · 模型与权限",Ui.BG,false);voice.setOnClickListener(v->startActivity(new Intent(this,VoiceSettingsActivity.class)));Ui.addButton(page,voice);
-        TextView note=Ui.text(this,"开发验证版 0.1.0 · 当前为本机离线模式\n跨设备同步与云剪贴板仍在开发。",12,Ui.MUTED);note.setPadding(0,Ui.dp(this,20),0,Ui.dp(this,4));page.addView(note);
+        Button sync=Ui.button(this,"服务器与设备连接",Ui.BG,false);sync.setOnClickListener(v->startActivity(new Intent(this,SyncActivity.class)));Ui.addButton(page,sync);
+        TextView note=Ui.text(this,"开发验证版 0.1.0 · 本机输入始终离线\n可手动验证设备连接，个人数据同步仍在开发。",12,Ui.MUTED);note.setPadding(0,Ui.dp(this,20),0,Ui.dp(this,4));page.addView(note);
         Button legal = Ui.button(this,"",Ui.BG,false); legal.setText("开源许可与来源"); legal.setOnClickListener(v -> {
             try (java.io.InputStream in = getAssets().open("NOTICE.txt")) {
                 java.io.ByteArrayOutputStream bytes = new java.io.ByteArrayOutputStream(); byte[] buffer = new byte[8192]; int count; while ((count = in.read(buffer)) != -1) bytes.write(buffer,0,count); String text = new String(bytes.toByteArray(), java.nio.charset.StandardCharsets.UTF_8);
