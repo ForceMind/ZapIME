@@ -70,9 +70,9 @@ try:
     if profile.get("synthetic") is not True or len(cases)!=len(expected_profile) or {row.get("id") for row in cases}!=expected_profile or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing persistent account guard evidence")
     backup=json.loads((out/"local-backup-report.json").read_text())
-    expected_backup={"native_snapshot", "authentication_and_recovery", "nonempty_bound_preserved", "worker_and_limits", "sensitive_activity", "system_saf_export_and_recovery", "stop_clears_sensitive_state"}
+    expected_backup={"native_snapshot", "authentication_and_recovery", "nonempty_bound_preserved", "worker_and_limits", "sensitive_activity", "system_saf_export_and_recovery", "explicit_sensitive_copy_and_clear", "stop_clears_sensitive_state"}
     cases=backup.get("cases", [])
-    if backup.get("synthetic") is not True or len(cases)!=7 or {row.get("id") for row in cases}!=expected_backup or any(row.get("passed") is not True for row in cases):
+    if backup.get("synthetic") is not True or len(cases)!=8 or {row.get("id") for row in cases}!=expected_backup or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing encrypted local backup native/provider evidence")
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):

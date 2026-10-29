@@ -54,6 +54,21 @@ final class BackupProbe {
         Files.write(new File(output,"backup-provider-ui-shape.json").toPath(),shape.toString(2).getBytes(StandardCharsets.UTF_8));
         throw new IOException("system document save control not observed");
     }
+    static void confirmCopy(UiAutomation automation)throws Exception{
+        for(int attempt=0;attempt<100;attempt++){
+            AccessibilityNodeInfo root=automation.getRootInActiveWindow();
+            if(root!=null&&"org.zapime.android".contentEquals(root.getPackageName()==null?"":root.getPackageName())){
+                ArrayDeque<AccessibilityNodeInfo> queue=new ArrayDeque<>();queue.add(root);
+                while(!queue.isEmpty()){
+                    AccessibilityNodeInfo node=queue.remove();String id=node.getViewIdResourceName();
+                    if(node.isEnabled()&&node.isClickable()&&id!=null&&id.endsWith(":id/button1")){SyncAccountProbe.check(node.performAction(AccessibilityNodeInfo.ACTION_CLICK),"explicit copy confirmation rejected");return;}
+                    for(int n=0;n<node.getChildCount();n++){AccessibilityNodeInfo child=node.getChild(n);if(child!=null)queue.add(child);}
+                }
+            }
+            Thread.sleep(100);
+        }
+        throw new IOException("explicit copy confirmation not observed");
+    }
     static void run(Instrumentation i,File output,boolean dedicatedCI)throws Exception{
         SyncAccountProbe.check(dedicatedCI,"system document fixture requires explicit dedicated CI argument");
         Context base=i.getTargetContext();ClassLoader loader=base.getClassLoader();Class<?> core=Class.forName("org.zapime.android.NativeCore",true,loader),bridge=Class.forName("org.zapime.android.LocalBackup",true,loader),installer=Class.forName("org.zapime.android.ResourceInstaller",true,loader);
@@ -81,7 +96,11 @@ final class BackupProbe {
             safCode=SyncAccountProbe.main(i,()->((byte[])SyncAccountProbe.field(page,"expectedCode")).clone());created=SyncAccountProbe.main(i,()->(Uri)SyncAccountProbe.field(page,"lastExportUri"));SyncAccountProbe.check(created!=null,"no actual provider URI");
             try(InputStream in=base.getContentResolver().openInputStream(created)){ByteArrayOutputStream bytes=new ByteArrayOutputStream();byte[] buffer=new byte[8192];int n;while((n=in.read(buffer))!=-1){SyncAccountProbe.check(bytes.size()+n<=6*1024*1024,"SAF encrypted file oversized");bytes.write(buffer,0,n);}safCipher=bytes.toByteArray();}
             Profile safTarget=new Profile(base,new File(fixture,"saf-target"),core,installer);profiles.add(safTarget);restore(bridge,safTarget.context,safCode,safCipher);SyncAccountProbe.check(Arrays.equals(expectedMain,archive(core,safTarget)),"actual SAF export did not recover exact data");
-            final String confirmation=new String(safCode,StandardCharsets.US_ASCII);SyncAccountProbe.main(i,()->{((EditText)SyncAccountProbe.field(page,"confirmCode")).setText(confirmation);((Button)SyncAccountProbe.field(page,"confirm")).performClick();SyncAccountProbe.check(SyncAccountProbe.field(page,"expectedCode")==null&&((TextView)SyncAccountProbe.field(page,"recovery")).length()==0,"code confirmation retained secrets");return null;});SyncAccountProbe.passed(cases,"system_saf_export_and_recovery");stage="stop cleanup";
+            final String confirmation=new String(safCode,StandardCharsets.US_ASCII);stage="explicit copy";
+            SyncAccountProbe.main(i,()->{((Button)SyncAccountProbe.field(page,"copyCode")).performClick();return null;});confirmCopy(i.getUiAutomation());
+            SyncAccountProbe.main(i,()->{ClipboardManager clipboard=(ClipboardManager)page.getSystemService(Context.CLIPBOARD_SERVICE);ClipData clip=clipboard.getPrimaryClip();SyncAccountProbe.check(clip!=null&&clip.getItemCount()==1&&confirmation.contentEquals(clip.getItemAt(0).getText())&&clip.getDescription().getExtras()!=null&&clip.getDescription().getExtras().getBoolean("android.content.extra.IS_SENSITIVE",false),"explicit copy missing sensitive policy");clipboard.setPrimaryClip(ClipData.newPlainText("synthetic unrelated","synthetic replacement"));((Button)SyncAccountProbe.field(page,"clearClipboard")).performClick();SyncAccountProbe.check("synthetic replacement".contentEquals(clipboard.getPrimaryClip().getItemAt(0).getText()),"clear erased newer clipboard");((Button)SyncAccountProbe.field(page,"copyCode")).performClick();return null;});confirmCopy(i.getUiAutomation());
+            SyncAccountProbe.main(i,()->{((Button)SyncAccountProbe.field(page,"clearClipboard")).performClick();ClipboardManager clipboard=(ClipboardManager)page.getSystemService(Context.CLIPBOARD_SERVICE);SyncAccountProbe.check(!clipboard.hasPrimaryClip(),"explicit clear retained copied recovery code");return null;});SyncAccountProbe.passed(cases,"explicit_sensitive_copy_and_clear");
+            SyncAccountProbe.main(i,()->{((EditText)SyncAccountProbe.field(page,"confirmCode")).setText(confirmation);((Button)SyncAccountProbe.field(page,"confirm")).performClick();SyncAccountProbe.check(SyncAccountProbe.field(page,"expectedCode")==null&&((TextView)SyncAccountProbe.field(page,"recovery")).length()==0,"code confirmation retained secrets");return null;});SyncAccountProbe.passed(cases,"system_saf_export_and_recovery");stage="stop cleanup";
             SyncAccountProbe.main(i,()->{((EditText)SyncAccountProbe.field(page,"restoreCode")).setText(confirmation);page.finish();return null;});
             for(int n=0;n<100;n++){if(SyncAccountProbe.main(i,()->((EditText)SyncAccountProbe.field(page,"restoreCode")).length()==0))break;if(n==99)throw new IOException("backup onStop retained code input");Thread.sleep(50);}SyncAccountProbe.passed(cases,"stop_clears_sensitive_state");
         }catch(Throwable error){cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic encrypted backup case: "+stage,error);}
