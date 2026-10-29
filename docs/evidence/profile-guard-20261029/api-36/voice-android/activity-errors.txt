@@ -1,0 +1,3 @@
+--------- beginning of system
+10-29 09:10:51.497   660  2349 E ActivityManager: Unable to freeze binder for 6075: -11
+10-29 09:11:17.092   660   681 E ActivityManager: Unable to freeze binder for 6207: -11

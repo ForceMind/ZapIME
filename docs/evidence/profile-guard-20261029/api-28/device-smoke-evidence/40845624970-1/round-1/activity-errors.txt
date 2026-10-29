@@ -1,0 +1,20 @@
+--------- beginning of main
+--------- beginning of system
+10-29 09:01:28.663  1961  2152 E ActivityManager: Sending non-protected broadcast com.android.systemui.demo from system 2097:com.android.systemui/u0a13 pkg com.android.systemui
+10-29 09:01:28.663  1961  2152 E ActivityManager: java.lang.Throwable
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:21199)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:21710)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntent(ActivityManagerService.java:21945)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact$broadcastIntent$(IActivityManager.java:10171)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:167)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:3291)
+10-29 09:01:28.663  1961  2152 E ActivityManager: 	at android.os.Binder.execTransact(Binder.java:731)
+10-29 09:01:28.667  1961  2152 E ActivityManager: Sending non-protected broadcast com.android.systemui.demo from system 2097:com.android.systemui/u0a13 pkg com.android.systemui
+10-29 09:01:28.667  1961  2152 E ActivityManager: java.lang.Throwable
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.checkBroadcastFromSystem(ActivityManagerService.java:21199)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntentLocked(ActivityManagerService.java:21803)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.broadcastIntent(ActivityManagerService.java:21945)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact$broadcastIntent$(IActivityManager.java:10171)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at android.app.IActivityManager$Stub.onTransact(IActivityManager.java:167)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at com.android.server.am.ActivityManagerService.onTransact(ActivityManagerService.java:3291)
+10-29 09:01:28.667  1961  2152 E ActivityManager: 	at android.os.Binder.execTransact(Binder.java:731)

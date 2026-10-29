@@ -1,0 +1,68 @@
+2026-10-29T08:55:35.9938456Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:47.4765037Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:47.4951060Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:47.5189727Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:47.5271763Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:47.5365663Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.3346709Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.3538279Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.3839672Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.3933492Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.4009972Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.4325891Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.4580508Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:55:55.4840055Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:56:08.6347305Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:58:31.7736102Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:58:34.6533411Z --- PASS: TestPostgresTransactions (0.12s)
+2026-10-29T08:58:34.6534139Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-10-29T08:58:34.6535028Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-10-29T08:58:34.6535875Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-10-29T08:58:34.6536539Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.02s)
+2026-10-29T08:58:34.6537001Z     --- PASS: TestPostgresTransactions/account_isolation (0.01s)
+2026-10-29T08:58:34.6537491Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+2026-10-29T08:58:34.6538551Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-10-29T08:58:34.6539114Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-10-29T08:58:34.6539640Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.00s)
+2026-10-29T08:58:34.6540309Z --- PASS: TestHTTPAndPersistentCiphertext (0.05s)
+2026-10-29T08:58:34.6541030Z --- PASS: TestObjectCacheReadWriteIsolationAndDurability (0.00s)
+2026-10-29T08:58:34.6541727Z --- PASS: TestObjectCacheExpiryEvictionAndFailedReads (0.00s)
+2026-10-29T08:58:34.6542462Z --- PASS: TestObjectCacheConcurrentReadersAndCancellation (0.00s)
+2026-10-29T08:58:34.6543396Z --- PASS: TestObjectCacheWarmAfterSuccessfulWrite (0.00s)
+2026-10-29T08:58:34.6544134Z --- PASS: TestPostgresObjectCacheAuthorizationAndEmptyCursor (0.03s)
+2026-10-29T08:58:34.6544708Z --- PASS: TestS3Configuration (0.00s)
+2026-10-29T08:58:34.6545482Z --- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+2026-10-29T08:58:34.6546079Z --- PASS: TestPostgresObjectFailureRollback (0.02s)
+2026-10-29T08:58:34.6546572Z --- PASS: TestRealS3Protocol (0.02s)
+2026-10-29T08:58:34.6556613Z --- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.08s)
+2026-10-29T08:58:34.6557608Z --- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+2026-10-29T08:58:34.6560400Z --- PASS: TestEnvelopeBounds (0.00s)
+2026-10-29T08:58:34.6560701Z     --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+2026-10-29T08:58:34.6561056Z     --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+2026-10-29T08:58:34.6561396Z     --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+2026-10-29T08:58:34.6561722Z     --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+2026-10-29T08:58:34.6562035Z     --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+2026-10-29T08:58:34.6562342Z     --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+2026-10-29T08:58:34.6562644Z     --- PASS: TestEnvelopeBounds/too_large (0.00s)
+2026-10-29T08:58:34.6562946Z     --- PASS: TestEnvelopeBounds/padding (0.00s)
+2026-10-29T08:58:34.6563451Z --- PASS: TestTokenFormatAndHash (0.00s)
+2026-10-29T08:58:34.6563922Z --- PASS: TestDeviceNameBounds (0.00s)
+2026-10-29T08:58:34.6564175Z === RUN   TestSessionIdentityAndRevocation
+2026-10-29T08:58:34.6564451Z --- PASS: TestSessionIdentityAndRevocation (0.03s)
+2026-10-29T08:58:34.6565184Z --- PASS: FuzzOperationBoundary (0.00s)
+2026-10-29T08:58:34.6565474Z     --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+2026-10-29T08:58:59.0154841Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:59:44.0643888Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:59:50.5050146Z No vulnerabilities found.
+2026-10-29T08:59:50.5910858Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T09:00:04.2746828Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T09:00:19.4158528Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-29T09:00:20.0668400Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T09:00:35.1836510Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T09:00:36.2965338Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-29T09:00:36.3103052Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T09:01:29.5635974Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-29T09:01:30.2964626Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T09:01:58.6460713Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T09:01:58.9966439Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
+2026-10-29T09:01:59.9426599Z   ZAPIME_REQUIRE_DATABASE: 1

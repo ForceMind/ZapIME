@@ -1,0 +1,35 @@
+{
+  "synthetic": true,
+  "api_level": 28,
+  "cases": [
+    {
+      "id": "strict_schema",
+      "passed": true
+    },
+    {
+      "id": "identity_binding",
+      "passed": true
+    },
+    {
+      "id": "keystore_namespace",
+      "passed": true
+    },
+    {
+      "id": "store_roundtrip_switch",
+      "passed": true
+    },
+    {
+      "id": "worker_guard",
+      "passed": true
+    },
+    {
+      "id": "pre_cancel",
+      "passed": true
+    },
+    {
+      "id": "secure_activity_lifecycle",
+      "passed": true
+    }
+  ],
+  "scope": "Real Android JSON validation, distinct Keystore namespaces, local connection store and secure Activity lifecycle; synthetic identities, no Android HTTPS success or user server deployment"
+}
