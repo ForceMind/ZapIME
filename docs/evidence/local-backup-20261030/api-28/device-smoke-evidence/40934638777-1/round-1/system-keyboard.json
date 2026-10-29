@@ -1,0 +1,7 @@
+{
+  "api_level": 28,
+  "selected_ime": "com.android.inputmethod.latin/.LatinIME",
+  "system_package_verified": true,
+  "source": "pm list packages -s",
+  "aosp": true
+}

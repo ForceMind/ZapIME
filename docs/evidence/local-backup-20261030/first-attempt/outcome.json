@@ -1,0 +1,15 @@
+{
+  "scope": "Observed a7f8da1 first attempt: API28 success; both modern gates failed with permission denial; local-backup-report absent because finally cleanup exception masked report publication. Do not infer all eight cases ran on modern APIs. Product code unchanged by subsequent 5e0258b test fix.",
+  "source_commit": "a7f8da1f3dbacde47a07b058c153c730c1fc4123",
+  "run_id": 40931766007,
+  "modern_full_zip_verified": {
+    "35": {
+      "bytes": 2357058,
+      "sha256": "f81eacf3dd4d172211048189a845bf6b91de41838d819f1b4531bdc50307e1b3"
+    },
+    "36": {
+      "bytes": 2357991,
+      "sha256": "52fb53b2b2b9e16edf46194bde57d1e0196e2df83ed99ee5d8c856b3ff756bd3"
+    }
+  }
+}

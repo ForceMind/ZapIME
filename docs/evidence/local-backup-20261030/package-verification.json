@@ -1,0 +1,33 @@
+{
+  "source_commit": "5e0258b19eb74b93be6c6381fbb98ac7c078125a",
+  "apks": {
+    "arm64-v8a": {
+      "bytes": 51144819,
+      "sha256": "5a5bba9a4bfa01d9047bb91954b9033c6ded3896c9eab4877159c490c24a1d6a",
+      "dex_bytes": 196000,
+      "dex_sha256": "9d69a6c3c6ada50700c365865f58d93cf516668b43a74be22aec3ccf4eff3914",
+      "production_backup_descriptors_present": true,
+      "jni_backup_dynamic_exports_present": true,
+      "test_probe_descriptors_absent": true,
+      "crypto_gpl_asset_equals_root": true,
+      "native_hashes_notices_and_explicit_model_boundary_verified": true
+    },
+    "x86_64": {
+      "bytes": 52468108,
+      "sha256": "9a26beccdbd741be02c9c5c405165bf0a767e621deb290df48101c08ea3103dc",
+      "dex_bytes": 196000,
+      "dex_sha256": "9d69a6c3c6ada50700c365865f58d93cf516668b43a74be22aec3ccf4eff3914",
+      "production_backup_descriptors_present": true,
+      "jni_backup_dynamic_exports_present": true,
+      "test_probe_descriptors_absent": true,
+      "crypto_gpl_asset_equals_root": true,
+      "native_hashes_notices_and_explicit_model_boundary_verified": true
+    }
+  },
+  "model_zip": {
+    "bytes": 129097503,
+    "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+    "members_checked_against_pinned_apk_config": 6
+  },
+  "scope": "Actual ZIP/APK/DEX/JNI export/model/native hash/license inspection locally. Signing/no-cleartext/16KiB alignment in CI. Not ARM phone execution or production release."
+}

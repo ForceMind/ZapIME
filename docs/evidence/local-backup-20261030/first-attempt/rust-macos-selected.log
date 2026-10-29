@@ -1,0 +1,31 @@
+2026-10-29T18:32:40.5222800Z HEAD is now at e28a877 Merge a7f8da1f3dbacde47a07b058c153c730c1fc4123 into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:33:51.0003590Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:51.0887430Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+2026-10-29T18:33:51.3464900Z test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+2026-10-29T18:33:52.2601390Z test generic_recovery_cannot_be_misread_as_a_local_snapshot ... ok
+2026-10-29T18:33:52.7054770Z test authenticated_restore_refuses_bound_profile_and_missing_database ... ok
+2026-10-29T18:33:53.6417170Z test encrypted_snapshot_recovers_exact_records_after_source_changes ... ok
+2026-10-29T18:33:53.6418230Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.29s
+2026-10-29T18:33:53.7252450Z test settings_reload_sees_stateless_restore_and_rejects_active_or_private_sessions ... ok
+2026-10-29T18:33:53.7581950Z test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+2026-10-29T18:33:53.7684940Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:55.7087970Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.93s
+2026-10-29T18:33:55.7343330Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+2026-10-29T18:33:55.7645140Z test backup_writer_never_initializes_or_downgrades ... ok
+2026-10-29T18:33:55.7673450Z test snapshot_matches_open_format_and_preserves_history ... ok
+2026-10-29T18:33:55.7706390Z test empty_records_do_not_allow_reusing_bound_or_historical_profile ... ok
+2026-10-29T18:33:55.7707930Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+2026-10-29T18:33:56.4322110Z test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.65s
+2026-10-29T18:33:56.4903180Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+2026-10-29T18:33:57.2092980Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.71s
+2026-10-29T18:33:57.2154970Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:57.2618340Z test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+2026-10-29T18:33:57.3252310Z test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+2026-10-29T18:33:57.3415300Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:57.4407250Z test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+2026-10-29T18:33:57.5277180Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:57.5700780Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:57.6483570Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:33:57.6953660Z test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+2026-10-29T18:34:12.9515610Z [1m[92m    Finished[0m `dev` profile [unoptimized] target(s) in 15.10s
+2026-10-29T18:34:30.9367730Z [1m[92m    Finished[0m `dev` profile [unoptimized] target(s) in 14.61s

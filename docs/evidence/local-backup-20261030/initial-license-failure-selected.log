@@ -1,0 +1,7 @@
+2026-10-29T18:08:17.6345290Z HEAD is now at 66bebd7 Merge 963421d58eee9f2ff6df585494e1c9a2449c180a into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:10:10.0901673Z [1m[92m    Finished[0m `release` profile [optimized] target(s) in 34.91s
+2026-10-29T18:10:10.3543714Z Review missing dependency license files: zapime-crypto
+2026-10-29T18:10:10.3545699Z Collected 132 dependency entries; no bundled license file: ['zapime-core', 'zapime-crypto', 'zapime-data', 'msime-engine', 'msime-path-trust']
+2026-10-29T18:10:10.3632216Z ##[error]Process completed with exit code 1.
+2026-10-29T18:10:11.7353013Z Artifact ZapIME-Android-development.zip successfully finalized. Artifact ID 12921876510
+2026-10-29T18:10:11.9434096Z ##[error]No files were found with the provided path: target/android-voice-tests/ZapIME-voice-tests.apk

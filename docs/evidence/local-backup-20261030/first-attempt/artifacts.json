@@ -1,0 +1,62 @@
+[
+  {
+    "id": 12924067205,
+    "name": "ZapIME-Android-API-36-acceptance",
+    "size_in_bytes": 2357991,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12924067205",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12924067205/zip",
+    "expired": false,
+    "created_at": "2026-10-29T18:48:30Z",
+    "expires_at": "2027-01-27T18:32:26Z",
+    "updated_at": "2026-10-29T18:48:30Z",
+    "digest": "sha256:52fb53b2b2b9e16edf46194bde57d1e0196e2df83ed99ee5d8c856b3ff756bd3",
+    "workflow_run": {
+      "id": 40931766007,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-encrypted-local-backup",
+      "head_sha": "a7f8da1f3dbacde47a07b058c153c730c1fc4123"
+    },
+    "download_size_and_sha256_verified": true
+  },
+  {
+    "id": 12923866916,
+    "name": "ZapIME-Android-development",
+    "size_in_bytes": 233867958,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12923866916",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12923866916/zip",
+    "expired": false,
+    "created_at": "2026-10-29T18:42:29Z",
+    "expires_at": "2027-01-27T18:32:26Z",
+    "updated_at": "2026-10-29T18:42:29Z",
+    "digest": "sha256:2e534073382384db862ca2de284625572cf69ce83b6248aa0ae4a87996a7b5d3",
+    "workflow_run": {
+      "id": 40931766007,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-encrypted-local-backup",
+      "head_sha": "a7f8da1f3dbacde47a07b058c153c730c1fc4123"
+    },
+    "download_size_and_sha256_verified": true
+  },
+  {
+    "id": 12923288745,
+    "name": "ZapIME-Android-API-35-acceptance",
+    "size_in_bytes": 2357058,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12923288745",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12923288745/zip",
+    "expired": false,
+    "created_at": "2026-10-29T18:47:28Z",
+    "expires_at": "2027-01-27T18:32:26Z",
+    "updated_at": "2026-10-29T18:47:28Z",
+    "digest": "sha256:f81eacf3dd4d172211048189a845bf6b91de41838d819f1b4531bdc50307e1b3",
+    "workflow_run": {
+      "id": 40931766007,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-encrypted-local-backup",
+      "head_sha": "a7f8da1f3dbacde47a07b058c153c730c1fc4123"
+    },
+    "download_size_and_sha256_verified": true
+  }
+]

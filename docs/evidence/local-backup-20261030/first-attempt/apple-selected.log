@@ -1,0 +1,14 @@
+2026-10-29T18:32:43.7432530Z Complete job name: Apple native development hosts
+2026-10-29T18:32:46.0153090Z HEAD is now at e28a877 Merge a7f8da1f3dbacde47a07b058c153c730c1fc4123 into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:36:08.5810460Z ** TEST BUILD SUCCEEDED **
+2026-10-29T18:44:31.6436830Z Test Case '-[ZapIMETests.KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys]' passed (0.809 seconds).
+2026-10-29T18:44:31.6543580Z Test Suite 'KeyboardProxyTests' passed at 2026-10-29 18:44:31.639.
+2026-10-29T18:44:32.0555940Z Test Case '-[ZapIMETests.NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary]' passed (0.401 seconds).
+2026-10-29T18:44:32.3963290Z Test Case '-[ZapIMETests.NativeCoreTests testWorkerKeepsNativeSessionOnOneThread]' passed (0.344 seconds).
+2026-10-29T18:44:32.4059550Z Test Suite 'NativeCoreTests' passed at 2026-10-29 18:44:32.386.
+2026-10-29T18:44:32.4327080Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.746 (0.747) seconds
+2026-10-29T18:44:32.4327870Z Test Suite 'ZapIMETests.xctest' passed at 2026-10-29 18:44:32.386.
+2026-10-29T18:44:32.4451780Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.555 (1.558) seconds
+2026-10-29T18:44:32.4566310Z Test Suite 'All tests' passed at 2026-10-29 18:44:32.387.
+2026-10-29T18:44:32.4683230Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.555 (1.560) seconds
+2026-10-29T18:44:33.8584820Z ** TEST EXECUTE SUCCEEDED **
