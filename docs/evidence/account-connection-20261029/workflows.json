@@ -1,0 +1,62 @@
+[
+  {
+    "id": 40840760306,
+    "name": "Android native input acceptance",
+    "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-29T08:14:47Z",
+    "updated_at": "2026-10-29T08:30:56Z",
+    "run_started_at": "2026-10-29T08:14:47Z",
+    "run_attempt": 1,
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/40840760306"
+  },
+  {
+    "id": 40840760234,
+    "name": "Independent ciphertext sync service",
+    "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-29T08:14:47Z",
+    "updated_at": "2026-10-29T08:21:41Z",
+    "run_started_at": "2026-10-29T08:14:47Z",
+    "run_attempt": 1,
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/40840760234"
+  },
+  {
+    "id": 40840760296,
+    "name": "ZapIME development checks",
+    "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-29T08:14:47Z",
+    "updated_at": "2026-10-29T08:29:31Z",
+    "run_started_at": "2026-10-29T08:14:47Z",
+    "run_attempt": 1,
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/40840760296"
+  },
+  {
+    "id": 40840760319,
+    "name": "Windows native TSF development",
+    "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-29T08:14:47Z",
+    "updated_at": "2026-10-29T08:17:58Z",
+    "run_started_at": "2026-10-29T08:14:47Z",
+    "run_attempt": 1,
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/40840760319"
+  },
+  {
+    "id": 40840760272,
+    "name": "Offline speech CPU probe",
+    "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-10-29T08:14:47Z",
+    "updated_at": "2026-10-29T08:16:19Z",
+    "run_started_at": "2026-10-29T08:14:47Z",
+    "run_attempt": 1,
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/40840760272"
+  }
+]

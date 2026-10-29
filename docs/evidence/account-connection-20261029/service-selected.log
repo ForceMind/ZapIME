@@ -1,0 +1,84 @@
+2026-10-29T08:14:58.5631493Z ##[command]/usr/bin/docker create --name 412901dafbae42c8b734e87db03ea17b_postgres16_2c1a59 --label 5a3f70 --network github_network_7d599232960e4ccbae96304f8eef19d1 --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 5s --health-timeout 3s --health-retries 20 -e "POSTGRES_PASSWORD=zapime-ci-only" -e "POSTGRES_DB=zapime_test" -e GITHUB_ACTIONS=true -e CI=true postgres:16
+2026-10-29T08:15:05.1277674Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:16.2085995Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:16.2243863Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:16.2393600Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:16.2492144Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:16.2604943Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.2003984Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.2234578Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.2591186Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.2679936Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.2774164Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.3135248Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.3356485Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:24.3599653Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:15:34.3826010Z [36;1mdocker run -d --name zapime-object-test -p 127.0.0.1:9000:9000 -e MINIO_ROOT_USER=zapime-ci-key -e MINIO_ROOT_PASSWORD=zapime-ci-synthetic-secret zapime-s3-fixture:ci server /data[0m
+2026-10-29T08:15:34.4055539Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:18:01.1995728Z [36;1mtest -z "$(gofmt -l .)"[0m
+2026-10-29T08:18:01.1996114Z [36;1mgo test -race -count=1 -v ./... | tee ../../sync-service-tests.log[0m
+2026-10-29T08:18:01.1996709Z [36;1mgo vet ./...[0m
+2026-10-29T08:18:01.2017612Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:18:04.2491049Z === RUN   TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity
+2026-10-29T08:18:04.2493607Z --- PASS: TestPostgresTransactions (0.13s)
+2026-10-29T08:18:04.2494362Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-10-29T08:18:04.2495295Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-10-29T08:18:04.2496192Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-10-29T08:18:04.2497066Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.02s)
+2026-10-29T08:18:04.2497735Z     --- PASS: TestPostgresTransactions/account_isolation (0.01s)
+2026-10-29T08:18:04.2498400Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+2026-10-29T08:18:04.2499370Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-10-29T08:18:04.2500254Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-10-29T08:18:04.2501051Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.01s)
+2026-10-29T08:18:04.2502287Z --- PASS: TestHTTPAndPersistentCiphertext (0.06s)
+2026-10-29T08:18:04.2503305Z --- PASS: TestObjectCacheReadWriteIsolationAndDurability (0.00s)
+2026-10-29T08:18:04.2504237Z --- PASS: TestObjectCacheExpiryEvictionAndFailedReads (0.00s)
+2026-10-29T08:18:04.2505203Z --- PASS: TestObjectCacheConcurrentReadersAndCancellation (0.00s)
+2026-10-29T08:18:04.2506373Z --- PASS: TestObjectCacheWarmAfterSuccessfulWrite (0.00s)
+2026-10-29T08:18:04.2507478Z --- PASS: TestPostgresObjectCacheAuthorizationAndEmptyCursor (0.04s)
+2026-10-29T08:18:04.2508355Z --- PASS: TestS3Configuration (0.00s)
+2026-10-29T08:18:04.2509141Z --- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+2026-10-29T08:18:04.2510034Z --- PASS: TestPostgresObjectFailureRollback (0.02s)
+2026-10-29T08:18:04.2510728Z --- PASS: TestRealS3Protocol (0.02s)
+2026-10-29T08:18:04.2511925Z --- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.09s)
+2026-10-29T08:18:04.2512964Z --- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+2026-10-29T08:18:04.2516372Z --- PASS: TestEnvelopeBounds (0.00s)
+2026-10-29T08:18:04.2516795Z     --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+2026-10-29T08:18:04.2517307Z     --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+2026-10-29T08:18:04.2517713Z     --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+2026-10-29T08:18:04.2518191Z     --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+2026-10-29T08:18:04.2518576Z     --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+2026-10-29T08:18:04.2519039Z     --- PASS: TestEnvelopeBounds/too_large (0.00s)
+2026-10-29T08:18:04.2519408Z     --- PASS: TestEnvelopeBounds/padding (0.00s)
+2026-10-29T08:18:04.2519873Z     --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+2026-10-29T08:18:04.2520560Z --- PASS: TestTokenFormatAndHash (0.00s)
+2026-10-29T08:18:04.2521199Z --- PASS: TestDeviceNameBounds (0.00s)
+2026-10-29T08:18:04.2521510Z === RUN   TestSessionIdentityAndRevocation
+2026-10-29T08:18:04.2522339Z --- PASS: TestSessionIdentityAndRevocation (0.03s)
+2026-10-29T08:18:04.2523385Z --- PASS: FuzzOperationBoundary (0.00s)
+2026-10-29T08:18:04.2523829Z     --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+2026-10-29T08:18:04.2524118Z PASS
+2026-10-29T08:18:32.9473659Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:19:21.0356458Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:19:28.9442800Z No vulnerabilities found.
+2026-10-29T08:19:29.0404237Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:19:30.3599286Z [1m[92m  Downloaded[0m password-hash v0.5.0
+2026-10-29T08:19:37.5773374Z [1m[92m   Compiling[0m password-hash v0.5.0
+2026-10-29T08:19:45.0815509Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:19:58.6160595Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-29T08:19:59.5261384Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T08:20:00.1863513Z Backup complete: /tmp/zapime-recovery-ci-twnegy1y/database.dump and /tmp/zapime-recovery-ci-twnegy1y/database.dump.objects.tar; keep BOTH files. Client keys are not included.
+2026-10-29T08:20:07.1694301Z Database and object import finished; start sync only after success. Client recovery keys are still required.
+2026-10-29T08:20:14.5055050Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T08:20:14.9302420Z PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery
+2026-10-29T08:20:14.9463274Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-10-29T08:21:08.0601406Z Access credentials: /opt/zapime/owner.json (root only; not your E2EE recovery key)
+2026-10-29T08:21:09.3819838Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-10-29T08:21:10.2607125Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T08:21:16.4216954Z Access credentials: /opt/zapime/owner.json (root only; not your E2EE recovery key)
+2026-10-29T08:21:16.9355270Z Backup complete: /tmp/zapime-installer-recovery-9ni5c6zc/server.dump and /tmp/zapime-installer-recovery-9ni5c6zc/server.dump.objects.tar; keep BOTH files. Client keys are not included.
+2026-10-29T08:21:27.9773609Z Database and object import finished; start sync only after success. Client recovery keys are still required.
+2026-10-29T08:21:34.8415582Z Restored devices retain their original credentials. Use zapime recover-device only if necessary; E2EE keys are still client-owned.
+2026-10-29T08:21:35.7577852Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-10-29T08:21:36.0843557Z PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
+2026-10-29T08:21:37.1047352Z   ZAPIME_REQUIRE_DATABASE: 1

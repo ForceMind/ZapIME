@@ -1,0 +1,36 @@
+{
+  "source_commit": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+  "ci_checkout_commit": "083f057fcd91f8876297cb358d480d51692b801a",
+  "identical_tree": "bd175b34639d5a062dc16d37b94235f6c07eeebd",
+  "run_id": 40840760306,
+  "artifact_id": 12883296165,
+  "artifact_zip_bytes": 233608314,
+  "artifact_zip_sha256": "3377c14de202bf687f02c8e33316204b7be54b64aa9f2edddaa50f12a6b85bbd",
+  "full_zip_size_sha_verified": true,
+  "apks": {
+    "arm64-v8a": {
+      "bytes": 50967096,
+      "sha256": "fb870b29845a51e2a8e24ce4aa64f3f6591b654760b9fe403a03a1e6043582c7",
+      "production_connection_descriptors_present": true,
+      "voice_transaction_present": true,
+      "test_probe_descriptors_absent": true,
+      "no_embedded_model_or_synthetic_pcm": true,
+      "dex_sha256": "536aea24cfa5857354d6b69ae5879b0be3e79a953676ebeb1290869417b391e2"
+    },
+    "x86_64": {
+      "bytes": 52265516,
+      "sha256": "dd13b41813fef5afdce8f557c44c68372f0ccff7547b14cb3782abd8e05ad789",
+      "production_connection_descriptors_present": true,
+      "voice_transaction_present": true,
+      "test_probe_descriptors_absent": true,
+      "no_embedded_model_or_synthetic_pcm": true,
+      "dex_sha256": "536aea24cfa5857354d6b69ae5879b0be3e79a953676ebeb1290869417b391e2"
+    }
+  },
+  "model_zip": {
+    "bytes": 129097503,
+    "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+    "members_checked_against_pinned_apk_config": 6
+  },
+  "scope": "ZIP/file hashes, production DEX, model catalog, native hashes and license assets inspected locally; signing, manifest no-cleartext and 16KiB alignment checked by CI. Development signing only; not ARM handset execution, Android positive HTTPS or production release."
+}

@@ -1,0 +1,17 @@
+{
+  "synthetic": true,
+  "platform": "Android emulator",
+  "api_level": 28,
+  "abi": "x86_64",
+  "model": "x-asr-streaming-int8-2026-06-05",
+  "configured_cpu_threads": 2,
+  "audio_samples": 125490,
+  "audio_seconds": 7.843125,
+  "recognizer_load_ms": 1265,
+  "recognizer_load_scope": "start(handle) after model verification and native class loading; empty-PCM cases run later; not end-to-end or handset cold-start latency",
+  "decode_with_jni_ms": 1131,
+  "rtf": 0.14420272531675832,
+  "recognized_codepoints": 25,
+  "expected_fragments_passed": true,
+  "capture": "synthetic PCM fed without real-time pacing; not microphone or end-to-end latency"
+}

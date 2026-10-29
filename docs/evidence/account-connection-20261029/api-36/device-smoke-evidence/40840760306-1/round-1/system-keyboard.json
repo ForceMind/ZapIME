@@ -1,0 +1,7 @@
+{
+  "api_level": 36,
+  "selected_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+  "system_package_verified": true,
+  "source": "pm list packages -s",
+  "aosp": false
+}

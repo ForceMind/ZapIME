@@ -1,0 +1,810 @@
+{
+  "source_commit": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3885,
+      "sha256": "2494464f8930327100f9c980a230dab3b26f92ed36a4e8bfd280890b92897f7b",
+      "origin": "locally authored evidence/documentation"
+    },
+    {
+      "path": "api-28/android-sync-http-tests/report.json",
+      "bytes": 227,
+      "sha256": "064a0e318e3dd678d5202a4c4b3333d0275b69ed75e7af0f443e3dbf27327169",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "android-sync-http-tests/report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "6a6feb5580359b5cc047c3f88d833aa5695d2007418fa9655e2778ff5a9d712b",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+      "bytes": 8715,
+      "sha256": "6d3db06c03663b34e7e1fb2ae9aa920b38290494efe423818bad81fbde3fe2fe",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+      "bytes": 58,
+      "sha256": "6a6feb5580359b5cc047c3f88d833aa5695d2007418fa9655e2778ff5a9d712b",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+      "bytes": 169,
+      "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+      "bytes": 8832,
+      "sha256": "fd8605fb7789ebe4f530db28a991e02aeb510e7f38a1de57888fe6026571ae9d",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+      "bytes": 58,
+      "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+      "bytes": 169,
+      "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/combined-gates.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/crash.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "b83e7bf8a33bcb27492e10b93ef8408fad9ceeecaa0824518e6dedcdb4fadb7b",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/empty-pcm-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/host-lifecycle.txt",
+      "bytes": 5609,
+      "sha256": "fa49f4e7a7a1820a215de8a9a78b422a6e028cdf4466a1d7c579d78903798330",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/ime-teardown.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/instrumentation.txt",
+      "bytes": 2622,
+      "sha256": "de61ba1e700c3846ca67d360cc867867e7357b175412599492ad514a7097e364",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/native-report.json",
+      "bytes": 650,
+      "sha256": "8da84d7b4dd31af6e4ce93a8c3fbdbf6817f2b7b80375e033dd6d2ba350a095b",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/native-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/offline-uid.json",
+      "bytes": 119,
+      "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/offline-uid.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/sync-connection-report.json",
+      "bytes": 726,
+      "sha256": "8f6461eab44a76f29300cfdefd66b5f01abfdc0114e9201ee498fe4221eb5499",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/sync-connection-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/system-keyboard.json",
+      "bytes": 169,
+      "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/ui-instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-28/voice-android/voice-commit-report.json",
+      "bytes": 3606,
+      "sha256": "7b28f9c5af8537bb25f2071500889fd47d1905613d1fe104195408c1458431f9",
+      "origin": {
+        "artifact_id": 12883296165,
+        "member": "voice-android/voice-commit-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+      "bytes": 294,
+      "sha256": "b1805b35b622da801e336859365a21ed2dcd7a4bcdc43caa5f17616fe3c8c6fb",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+      "bytes": 8668,
+      "sha256": "8d8e93a41b7d5133dfeacfe9572db9b4d7b9d26f25718a94b54c021c8d07153e",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+      "bytes": 118,
+      "sha256": "af70dc872241aba70f60bdbdc9bf682f948e6688e3bb76c1ef655d1de6b85c17",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+      "bytes": 8668,
+      "sha256": "23036d78bb3e972af46547964593c04d444e1685e9fe33f913cb43eca6088a57",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "c883f3f4ed5c1400e011392a4ed6b0a58663dae362a89176f5b16edb35493438",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/combined-gates.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/crash.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "dcdf30236750a00bc0e43416d05bda563115de2f5710157c4d1e4e52e9e259d2",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/empty-pcm-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/host-lifecycle.txt",
+      "bytes": 5980,
+      "sha256": "31c7b911eada2f5f348bd3cb8e21d6a211b790b93d6214ab657b57df0c897b8f",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/ime-teardown.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/instrumentation.txt",
+      "bytes": 2821,
+      "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/native-report.json",
+      "bytes": 648,
+      "sha256": "bec96976d2b0eb2cd021edecd03ec171f7664cacfb593dc2c5fa47e95e722175",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/native-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/offline-uid.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/sync-connection-report.json",
+      "bytes": 726,
+      "sha256": "9b85c565826cc4810636f6d168cdeef1c3ce7393ce6e0325541c38d4a1f16afd",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/sync-connection-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/ui-instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-35/voice-android/voice-commit-report.json",
+      "bytes": 3606,
+      "sha256": "8a567d466fd433f3c09e7069ba57171e65d6903770e51c49b91fe190e41dee79",
+      "origin": {
+        "artifact_id": 12882833845,
+        "member": "voice-android/voice-commit-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+      "bytes": 294,
+      "sha256": "8aba851e48db9b1a77a6723d791eb5cd57a457865715726c280547ba4df0f6e8",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+      "bytes": 8668,
+      "sha256": "8fa72377fcaf878fc02a833e0f441ab0f8d48aa813b953ad5c8a54dc4520bf00",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-1/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+      "bytes": 118,
+      "sha256": "32a3f47111b680c20a7437d6cca2e7c3c11abfc0b08ad402d8d04dd15cfa8cdd",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+      "bytes": 8668,
+      "sha256": "845e6bfaff1b4ee4d821ea97563d7b471217479ad3169ae52a470b2eaf2d3b77",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/ime-teardown.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+      "bytes": 644,
+      "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/instrumentation.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/runtime-errors.log",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "device-smoke-evidence/40840760306-1/round-2/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "0039764ad8b1aa14e764745421be33fc6a469985ee73fce47568583bb36e807b",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/activity-errors.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/combined-gates.json",
+      "bytes": 66,
+      "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/combined-gates.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/crash.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/empty-pcm-report.json",
+      "bytes": 1143,
+      "sha256": "f2ce8f95c4d3a54fdffe6872d4c2a535034321a765dae7a5cb27e4867a6aa634",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/empty-pcm-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/host-lifecycle.txt",
+      "bytes": 5980,
+      "sha256": "b2fa4cd996409774eef3277c3c871f839baae6aa34ae1c25f135f883ef2a6527",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/host-lifecycle.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/ime-teardown.txt",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/ime-teardown.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/instrumentation.txt",
+      "bytes": 2821,
+      "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/native-report.json",
+      "bytes": 650,
+      "sha256": "9bedf8f58e40e56de6282cd8a3a71dff6d94952b148395477accd75c83297807",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/native-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/offline-uid.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/sync-connection-report.json",
+      "bytes": 726,
+      "sha256": "d2d40387113b472075c85bc1a59faeb8c8e4f9fa5c84abae97d518b64b2ec6c8",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/sync-connection-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/system-keyboard.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/ui-instrumentation.txt",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "api-36/voice-android/voice-commit-report.json",
+      "bytes": 3606,
+      "sha256": "416c15622d2c9a28a03d9c1c46ef34848364e5a616778780cd6033f670dd1587",
+      "origin": {
+        "artifact_id": 12883158067,
+        "member": "voice-android/voice-commit-report.json",
+        "copied_without_modification": true
+      }
+    },
+    {
+      "path": "artifacts.json",
+      "bytes": 2519,
+      "sha256": "5606c272d2da622ef992709835c4fca2ee4ba9f05302292b15e3bc1c9c8fe151",
+      "origin": "GitHub artifact metadata; complete ZIP bytes verified locally"
+    },
+    {
+      "path": "local-java-compile.json",
+      "bytes": 5644,
+      "sha256": "a8fc826cb22707863834c304fdb76ef1ae3f6db17ef2441703a3bf5353079573",
+      "origin": "locally authored evidence/documentation"
+    },
+    {
+      "path": "local-tls-report.json",
+      "bytes": 227,
+      "sha256": "064a0e318e3dd678d5202a4c4b3333d0275b69ed75e7af0f443e3dbf27327169",
+      "origin": "locally authored evidence/documentation"
+    },
+    {
+      "path": "package-verification.json",
+      "bytes": 1720,
+      "sha256": "1630ef49841f8dbbfc0c26f0c4912f88f9157e30c5705a414419850442527fa5",
+      "origin": "locally authored evidence/documentation"
+    },
+    {
+      "path": "service-selected.log",
+      "bytes": 7877,
+      "sha256": "91993d0cbfb0a92da713aa1161404cca042448b9d30f2d9515f3acb54870d62c",
+      "origin": {
+        "job_id": 123336285220,
+        "selection": "unmodified selected log lines, not complete job log"
+      }
+    },
+    {
+      "path": "workflows.json",
+      "bytes": 2123,
+      "sha256": "ab114f1caf0b58e3a7e1dab0b2848b6826eb538e4e31c277cce22fc9b693aab4",
+      "origin": "GitHub Actions final run metadata"
+    }
+  ]
+}
