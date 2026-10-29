@@ -7,6 +7,7 @@ use sha2::{Digest, Sha256};
 use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
+pub mod backup;
 pub mod panel;
 pub mod pull;
 pub mod quarantine;
@@ -172,6 +173,62 @@ struct ArchiveBody {
 struct Archive {
     body: ArchiveBody,
     sha256: String,
+}
+
+fn parse_archive(bytes: &[u8]) -> Result<Archive, Error> {
+    if bytes.len() > MAX_ARCHIVE_BYTES {
+        return Err(Error::Invalid);
+    }
+    let archive: Archive = serde_json::from_slice(bytes)?;
+    if archive.body.schema_version != 1 {
+        return Err(Error::Version);
+    }
+    if hex::encode(Sha256::digest(serde_json::to_vec(&archive.body)?)) != archive.sha256 {
+        return Err(Error::Integrity);
+    }
+    if archive.body.records.len() > MAX_RECORDS {
+        return Err(Error::Invalid);
+    }
+    let mut seen = HashSet::new();
+    let mut dictionary_keys = HashSet::new();
+    let mut candidate_slots = HashSet::new();
+    let mut candidate_keys = HashSet::new();
+    for record in &archive.body.records {
+        if record.id.is_nil()
+            || record.device_id.is_nil()
+            || record.revision == 0
+            || record.revision > i64::MAX as u64
+            || !seen.insert(record.id)
+        {
+            return Err(Error::Invalid);
+        }
+        record.content.validate()?;
+        if !record.deleted {
+            match &record.content {
+                Content::Dictionary {
+                    scheme, code, text, ..
+                } => {
+                    if !dictionary_keys.insert((scheme, code, text)) {
+                        return Err(Error::Duplicate);
+                    }
+                }
+                Content::CandidateRule {
+                    scheme,
+                    code,
+                    text,
+                    position,
+                } => {
+                    let unique_slot = candidate_slots.insert((scheme, code, position));
+                    let unique_text = candidate_keys.insert((scheme, code, text));
+                    if !unique_slot || !unique_text {
+                        return Err(Error::PositionConflict);
+                    }
+                }
+                _ => {}
+            }
+        }
+    }
+    Ok(archive)
 }
 
 pub struct Store {
@@ -364,64 +421,32 @@ impl Store {
     }
     /// 首版只恢复到空资料库；校验全部完成后一次事务导入，失败不覆盖已有数据。
     pub fn restore_plaintext(&mut self, bytes: &[u8]) -> Result<(), Error> {
-        if bytes.len() > MAX_ARCHIVE_BYTES {
-            return Err(Error::Invalid);
-        }
-        let archive: Archive = serde_json::from_slice(bytes)?;
-        if archive.body.schema_version != 1 {
-            return Err(Error::Version);
-        }
-        if hex::encode(Sha256::digest(serde_json::to_vec(&archive.body)?)) != archive.sha256 {
-            return Err(Error::Integrity);
-        }
-        if archive.body.records.len() > MAX_RECORDS {
-            return Err(Error::Invalid);
-        }
-        let mut seen = HashSet::new();
-        let mut dictionary_keys = HashSet::new();
-        let mut candidate_slots = HashSet::new();
-        let mut candidate_keys = HashSet::new();
-        for record in &archive.body.records {
-            if record.id.is_nil()
-                || record.device_id.is_nil()
-                || record.revision == 0
-                || record.revision > i64::MAX as u64
-                || !seen.insert(record.id)
-            {
-                return Err(Error::Invalid);
-            }
-            record.content.validate()?;
-            if !record.deleted {
-                match &record.content {
-                    Content::Dictionary {
-                        scheme, code, text, ..
-                    } => {
-                        if !dictionary_keys.insert((scheme, code, text)) {
-                            return Err(Error::Duplicate);
-                        }
-                    }
-                    Content::CandidateRule {
-                        scheme,
-                        code,
-                        text,
-                        position,
-                    } => {
-                        let unique_slot = candidate_slots.insert((scheme, code, position));
-                        let unique_text = candidate_keys.insert((scheme, code, text));
-                        if !unique_slot || !unique_text {
-                            return Err(Error::PositionConflict);
-                        }
-                    }
-                    _ => {}
-                }
-            }
-        }
+        self.restore_plaintext_checked(bytes, false).map(|_| ())
+    }
+    /// Encrypted local snapshots may only enter a completely fresh, unbound profile.
+    pub fn restore_unbound_plaintext(&mut self, bytes: &[u8]) -> Result<usize, Error> {
+        self.restore_plaintext_checked(bytes, true)
+    }
+    fn restore_plaintext_checked(&mut self, bytes: &[u8], fresh: bool) -> Result<usize, Error> {
+        let archive = parse_archive(bytes)?;
         let tx = self
             .db
             .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
         let count: i64 = tx.query_row("SELECT count(*) FROM records", [], |r| r.get(0))?;
         if count != 0 {
             return Err(Error::NotEmpty);
+        }
+        if fresh {
+            let state: bool = tx.query_row(
+                "SELECT EXISTS(SELECT 1 FROM metadata WHERE key IN ('sync_profile','sync_cursor'))
+                 OR EXISTS(SELECT 1 FROM operations) OR EXISTS(SELECT 1 FROM sync_queue)
+                 OR EXISTS(SELECT 1 FROM sync_uploads) OR EXISTS(SELECT 1 FROM sync_versions)
+                 OR EXISTS(SELECT 1 FROM sync_received) OR EXISTS(SELECT 1 FROM sync_retained_pulls)",
+                [], |r| r.get(0),
+            )?;
+            if state {
+                return Err(Error::NotEmpty);
+            }
         }
         for record in &archive.body.records {
             tx.execute(
@@ -434,7 +459,7 @@ impl Store {
             )?;
         }
         tx.commit()?;
-        Ok(())
+        Ok(archive.body.records.len())
     }
     /// 只清理临时剪贴板；永久收藏没有过期字段，不参与自动清理。
     pub fn expire_clipboard(&mut self, now_ms: u64, device_id: Uuid) -> Result<usize, Error> {

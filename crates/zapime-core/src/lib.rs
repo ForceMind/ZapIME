@@ -9,6 +9,7 @@ use zapime_data::{Content, Record, Store};
 #[cfg(target_os = "android")]
 mod android;
 pub mod ffi;
+pub mod local_backup;
 mod personal;
 
 pub struct InputSession {

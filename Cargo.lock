@@ -1458,7 +1458,9 @@ dependencies = [
  "serde_json",
  "tempfile",
  "uuid",
+ "zapime-crypto",
  "zapime-data",
+ "zeroize",
 ]
 
 [[package]]
