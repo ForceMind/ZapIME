@@ -65,6 +65,16 @@ fn backup_writer_never_initializes_or_downgrades() {
     let missing = dir.path().join("missing.db");
     assert!(Store::open_backup_writer(&missing).is_err());
     assert!(!missing.exists());
+    let current = dir.path().join("changed-after-open.db");
+    let initial = Store::open(&current).unwrap();
+    let archive = initial.export_plaintext().unwrap();
+    let mut writer = Store::open_backup_writer(&current).unwrap();
+    let mut reader = Store::open_panel_reader(&current).unwrap();
+    let changed = rusqlite::Connection::open(&current).unwrap();
+    changed.execute_batch("PRAGMA user_version=3;").unwrap();
+    assert!(writer.restore_unbound_plaintext(&archive).is_err());
+    assert!(reader.export_backup_snapshot(1024 * 1024).is_err());
+    assert!(initial.records(true).unwrap().is_empty());
     let path = dir.path().join("future.db");
     let raw = rusqlite::Connection::open(&path).unwrap();
     raw.execute_batch("PRAGMA user_version=3;").unwrap();

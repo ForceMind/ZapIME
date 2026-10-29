@@ -437,6 +437,9 @@ impl Store {
             return Err(Error::NotEmpty);
         }
         if fresh {
+            if tx.query_row::<u32, _, _>("PRAGMA user_version", [], |r| r.get(0))? != 2 {
+                return Err(Error::Version);
+            }
             let state: bool = tx.query_row(
                 "SELECT EXISTS(SELECT 1 FROM metadata WHERE key IN ('sync_profile','sync_cursor'))
                  OR EXISTS(SELECT 1 FROM operations) OR EXISTS(SELECT 1 FROM sync_queue)

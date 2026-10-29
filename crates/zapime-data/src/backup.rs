@@ -22,6 +22,9 @@ impl Store {
             return Err(Error::Invalid);
         }
         let tx = self.db.transaction()?;
+        if tx.query_row::<u32, _, _>("PRAGMA user_version", [], |r| r.get(0))? != 2 {
+            return Err(Error::Version);
+        }
         let (count, size): (i64, i64) = tx.query_row(
             "SELECT count(*),coalesce(sum(length(CAST(body AS BLOB))),0) FROM records",
             [],
