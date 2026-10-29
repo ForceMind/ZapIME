@@ -56,7 +56,15 @@ type Page struct {
 }
 type Identity struct {
 	AccountID, DeviceID, Role string
+	ExpiresAt                 time.Time
 	tokenHash                 []byte
+}
+type Session struct {
+	Protocol  int       `json:"protocol"`
+	AccountID string    `json:"account_id"`
+	DeviceID  string    `json:"device_id"`
+	Role      string    `json:"role"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 type Device struct {
 	ID        string     `json:"id"`

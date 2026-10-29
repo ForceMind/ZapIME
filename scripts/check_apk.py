@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 import hashlib
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -41,9 +42,10 @@ if __name__ == "__main__":
     check_contents(path)
     manifest = subprocess.check_output([sys.argv[2], "dump", "xmltree", str(path), "--file", "AndroidManifest.xml"], text=True)
     assert "org.zapime.android" in manifest
-    assert "android.permission.INTERNET" not in manifest
+    assert "android.permission.INTERNET" in manifest
+    assert re.search(r"android:usesCleartextTraffic[^\n]*(?:\(type 0x12\)0x0|=false)", manifest), "cleartext network must remain disabled"
     assert "android.permission.BIND_INPUT_METHOD" in manifest
     assert "android.permission.RECORD_AUDIO" in manifest
-    print("APK package, native IME, notices and no-INTERNET checks passed")
+    print("APK package, native IME, notices, explicit network permission and no-cleartext checks passed")
     with path.open("rb") as source:
         print("SHA256", hashlib.file_digest(source, "sha256").hexdigest())

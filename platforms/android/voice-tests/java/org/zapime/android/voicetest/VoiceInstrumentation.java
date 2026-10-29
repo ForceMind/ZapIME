@@ -187,6 +187,8 @@ public final class VoiceInstrumentation extends Instrumentation {
             stage="microphone lifecycle";Activity activity=startActivitySync(new Intent().setClassName(getTargetContext(),"org.zapime.android.MainActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             capture(false);getUiAutomation().grantRuntimePermission("org.zapime.android",android.Manifest.permission.RECORD_AUDIO);capture(true);if(Build.VERSION.SDK_INT>=29)liveRecordingMonitor();runOnMainSync(activity::finish);
             nativeCall("release",new Class<?>[]{long.class},0L);pass("permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)");
+            stage="local account connection";SyncAccountProbe.run(this,fixtures);
+            pass("synthetic account JSON identity binding, real Keystore connection/material isolation, local store and secure Activity lifecycle; no Android HTTPS success or data sync claim");
             result.putString("stream","PASS Android offline voice native acceptance\n");finish(Activity.RESULT_OK,result);
         }catch(Throwable failure){result.putString("stream","FAIL Android voice at "+stage+": "+failure.getClass().getSimpleName()+" "+failure.getMessage()+"\n");finish(Activity.RESULT_CANCELED,result);}
     }

@@ -4,7 +4,7 @@
 
 Android InputMethodService → 单线程后台队列 → JNI → zapime-core → MSIME Session → Rust 拼音引擎。UI 主线程只负责按键收集、候选显示与 InputConnection 上屏；首次词库安装与会话准备在后台串行执行。每个输入框有 epoch，失焦后的旧结果不提交到新输入框。每个候选快照有 generation，旧候选点击不提交。
 
-词库随包携带、构建时验证 SHA-256。应用没有 INTERNET 权限。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。
+词库随包携带、构建时验证 SHA-256。新Android源码申请INTERNET，仅主App显式设备授权检查使用独立SyncWorker；禁止明文HTTP，输入链路不联网。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。
 
 ## 上游与扩展边界
 
@@ -29,7 +29,7 @@ Android 键盘内的本机资料面板通过独立 query 请求读取最新记�
 Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；编译/原生桥接已通过相应 CI，但系统输入源启用、真实 App 输入、签名和平台兼容仍待验收。最小宿主不等于上游完整功能，不能把 submodule 的品牌安装包视为 ZapIME 产品。
 
 
-## 独立密文服务（客户端尚未接入）
+## 独立密文服务与客户端接入边界
 
 `services/sync` 使用 Go/PostgreSQL 独立实现。服务访问凭据与 E2EE 根密钥分离；管理员 CLI 建立账号/首设备，owner 授权其他设备。每条写入持有账号行锁，事务内复核摘要令牌/撤销/到期，执行幂等检查、实体 CAS、不可变变更日志和账号单调游标递增。
 
@@ -41,7 +41,7 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 
 共享下载验证及事务边界见 [AUTHENTICATED_PULL.md](AUTHENTICATED_PULL.md)。不会对已有本地待发编辑静默覆盖，也不把发送方本地修订写成自己的修订；下载不创建回声上传。
 
-## Android 离线语音（PR #32 验收中）
+## Android 离线语音
 
 固定 GPL LocalAsr 通过所有者线程受限的 JNI 使用固定 Sherpa/ONNX CPU 库。模型由显式 SAF 导入，按 APK 内白名单逐项校验后生成可信清单，保存在 App 私有目录；加载前重新校验。模型导入、加载、解码及缓存释放共用独立语音 worker，AudioRecord 由 capture 线程喂给有界内存队列，Rust 按键队列不等待语音。
 

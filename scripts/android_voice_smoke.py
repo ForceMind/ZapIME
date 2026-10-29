@@ -34,7 +34,8 @@ run("install", "-r", "-t", str(root / "target/android-voice-tests/ZapIME-voice-t
 run("shell", "pm", "revoke", "org.zapime.android", "android.permission.RECORD_AUDIO")
 # Test-only APK assets carry public model/synthetic PCM. Product storage grants
 # and Android/data ownership are never changed just to deliver CI fixtures.
-# App has no INTERNET permission. Also disconnect the emulator's network radios.
+# The outer acceptance gate blocks the product UID in both kernel IP families.
+# Also disable radios; identity inspection is manual and never part of this gate.
 run("shell", "svc", "wifi", "disable")
 run("shell", "svc", "data", "disable")
 run("logcat", "-c")
@@ -44,7 +45,7 @@ try:
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name))
     evidence=json.loads((out/"empty-pcm-report.json").read_text())
     expected={"no_samples", "all_zero", "ignored_tail", "positive_lsb", "negative_lsb", "cancelled_empty"}
@@ -56,6 +57,11 @@ try:
     cases=confirmation.get("cases", [])
     if confirmation.get("synthetic") is not True or confirmation.get("actual_jni_decoded_text_used") is not True or len(cases)!=len(required) or {row.get("id") for row in cases}!=required or any(row.get("passed") is not True or row.get("actual_editable_verified") is not True for row in cases):
         raise SystemExit("Missing complete synthetic production-confirmation evidence")
+    account=json.loads((out/"sync-connection-report.json").read_text())
+    expected_account={"strict_schema", "identity_binding", "keystore_namespace", "store_roundtrip_switch", "worker_guard", "pre_cancel", "secure_activity_lifecycle"}
+    cases=account.get("cases", [])
+    if account.get("synthetic") is not True or len(cases)!=len(expected_account) or {row.get("id") for row in cases}!=expected_account or any(row.get("passed") is not True for row in cases):
+        raise SystemExit("Missing complete local account connection evidence")
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)
@@ -82,7 +88,7 @@ finally:
     # Always retain its actual failure hierarchy/screenshot before checking fatals.
     for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png","host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
     (out / "crash.txt").write_text(log)
