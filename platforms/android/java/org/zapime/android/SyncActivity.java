@@ -86,6 +86,8 @@ public final class SyncActivity extends Activity {
             default:return "无法连接服务器，请检查网络后手动重试。";
         }}
         if("sync_connection_switch".equals(error.getMessage()))return "请先移除当前连接，再连接另一个账号或服务器。本机个人资料不会自动迁移。";
+        if("sync_connection_profile".equals(error.getMessage()))return "本机资料库已绑定其他账号，连接未保存。移除连接不会改变资料库绑定；独立资料库迁移流程仍在开发。";
+        if("sync_profile_read_failed".equals(error.getMessage()))return "无法核对本机资料库账号，连接未保存。请保留资料并检查数据库，禁止自动覆盖绑定。";
         return "无法读取或保存本机连接；现有资料不会自动上传。请保留原凭据后重试。";
     }
 }

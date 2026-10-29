@@ -47,6 +47,7 @@
 - Android同步保护材料只在专用同步worker使用SyncSecrets，主线程检查必须先于锁；不在输入worker运行Keystore/文件IO。禁止明文/SharedPreferences回退、缺key时覆盖既有密文或在日志/普通归档保存材料；返回数组由调用方清零。material域forget仍无用户流程，connection域只在用户显式移除连接时删除；测试只能清除自己的随机账号别名。E2EE保护材料尚未接账号密钥传输/同步/恢复UI，不能称四端密钥托管已完成。
 
 - Android设备连接仅主App显式HTTPS身份检查，默认启动/键盘/语音不得触发HTTP；不跟随跳转、放宽证书/主机名、自动重试或读取服务器错误正文。连接凭据使用独立connection文件/别名/AAD；原material命名空间与格式保持，显式移除连接不得删除E2EE材料。当前未接资料库绑定、密钥传输、数据同步或配对，不能显示已同步。新增INTERNET后，临时CI以dedicated_ci核实run/attempt及emulator序列后才root设置精确产品UID的IPv4/IPv6拒绝规则；缺root/任一家族失败须失败，finally只删本轮规则，禁止flush或接管既有规则/操作个人设备。JVM回环TLS、Android本机合成探针与真人服务器/手机HTTPS分别记证据。
+- 保存连接前只在同步worker经无输入会话的JNI只读核对既有SQLite sync_profile；缺少主库不创建，未知schema/损坏绑定失败，已绑定其他账号不得写vault。移除连接不清除资料库绑定。此检查只是快照，不能替代未来每次stage/apply的事务内require_profile，不添加自动绑定/换库/上传。
 
 - 同输入框重启保留组字必须验证 restarting、原编辑器身份/选项、可预测且完整折叠在组字尾的选区以及 API30+ EditorInfo 自带初始快照；缺快照/改变文本/隐私或身份变化一律重建。不要在输入线程新增 getTextBeforeCursor 等远端读取，也不要把该修复称为所有间歇失败根因。迁移的 SelectionEchoTracker 保留固定上游 GPL 来源，成功写入记预期，不能预测的写入失效化；API28 不假称已支持此快照路径。
 

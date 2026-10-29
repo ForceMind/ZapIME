@@ -5,5 +5,6 @@ final class NativeCore {
     static native long open(String root, boolean privateMode);
     static native String request(long handle, String json);
     static native String queryPersonal(String root, String json);
+    static native String syncProfile(String root);
     static native void close(long handle);
 }
