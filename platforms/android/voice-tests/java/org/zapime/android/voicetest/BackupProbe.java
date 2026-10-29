@@ -61,7 +61,7 @@ final class BackupProbe {
                 ArrayDeque<AccessibilityNodeInfo> queue=new ArrayDeque<>();queue.add(root);
                 while(!queue.isEmpty()){
                     AccessibilityNodeInfo node=queue.remove();String id=node.getViewIdResourceName();
-                    if(node.isEnabled()&&node.isClickable()&&id!=null&&id.endsWith(":id/button1")){SyncAccountProbe.check(node.performAction(AccessibilityNodeInfo.ACTION_CLICK),"explicit copy confirmation rejected");return;}
+                    if(node.isEnabled()&&node.isClickable()&&((id!=null&&id.endsWith(":id/button1"))||"复制恢复码".contentEquals(node.getText()==null?"":node.getText()))){SyncAccountProbe.check(node.performAction(AccessibilityNodeInfo.ACTION_CLICK),"explicit copy confirmation rejected");return;}
                     for(int n=0;n<node.getChildCount();n++){AccessibilityNodeInfo child=node.getChild(n);if(child!=null)queue.add(child);}
                 }
             }
