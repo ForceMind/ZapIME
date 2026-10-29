@@ -1,0 +1,24 @@
+2026-10-29T18:32:44.0078021Z HEAD is now at e28a877 Merge a7f8da1f3dbacde47a07b058c153c730c1fc4123 into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:33:37.0545491Z Verified kernel IPv4/IPv6 REJECT for exact product UID 10123
+2026-10-29T18:33:53.5150117Z PASS backup file/readback/cancellation boundaries: 6
+2026-10-29T18:34:30.5429536Z Collected 132 dependency entries; no bundled license file: ['zapime-core', 'zapime-data', 'msime-engine', 'msime-path-trust']
+2026-10-29T18:34:31.1161709Z PASS pinned arm64-v8a voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-29T18:34:37.3433336Z PASS voice dynamic dependency allowlist: libonnxruntime.so
+2026-10-29T18:34:37.3434344Z PASS voice dynamic dependency allowlist: libsherpa-onnx-c-api.so
+2026-10-29T18:34:37.3435207Z PASS voice dynamic dependency allowlist: libzapime_voice.so
+2026-10-29T18:35:08.8765270Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+2026-10-29T18:35:42.7761626Z PASS pinned x86_64 voice libraries: SHA256, architecture and 16 KiB LOAD alignment
+2026-10-29T18:35:48.6404211Z PASS voice dynamic dependency allowlist: libonnxruntime.so
+2026-10-29T18:35:48.6405168Z PASS voice dynamic dependency allowlist: libsherpa-onnx-c-api.so
+2026-10-29T18:35:48.6406035Z PASS voice dynamic dependency allowlist: libzapime_voice.so
+2026-10-29T18:36:13.3649129Z PASS packaged APK native hashes, model catalog, notices and explicit model boundary: x86_64
+2026-10-29T18:38:43.4276318Z Verified kernel IPv4/IPv6 REJECT for exact product UID 10067
+2026-10-29T18:40:00.0306126Z PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-29T18:41:15.6478768Z PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy
+2026-10-29T18:42:18.3860214Z INSTRUMENTATION_STATUS: stream=PASS production voice confirmation with real JNI text and Android Editable: one commit, reentrancy/cancel, editor/selection/context guards, rejected writes and main-thread ownership (synthetic method probe; not active IME confirmation)
+2026-10-29T18:42:18.3866731Z INSTRUMENTATION_RESULT: stream=PASS Android offline voice native acceptance
+2026-10-29T18:42:18.3867191Z INSTRUMENTATION_CODE: -1
+2026-10-29T18:42:18.3868791Z INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked=true
+2026-10-29T18:42:18.3869975Z INSTRUMENTATION_CODE: -1
+2026-10-29T18:42:19.6435134Z PASS isolated Android native voice: verified model, real synthetic decode and emulator microphone lifecycle
+2026-10-29T18:42:19.8618061Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 0}

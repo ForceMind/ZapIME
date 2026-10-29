@@ -1,0 +1,149 @@
+{
+  "synthetic": true,
+  "api_level": 28,
+  "actual_jni_decoded_text_used": true,
+  "recognized_codepoints": 25,
+  "cases": [
+    {
+      "id": "commit_once",
+      "outcome": "COMMITTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "reentrant_finish",
+      "outcome": "COMMITTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "cancelled_completion",
+      "outcome": "ALREADY_FINISHED",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "connection_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "ticket_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "epoch_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "selection_version_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "cursor_changed_identical_context",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "selected_range",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "unknown_selection",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "policy_excluded",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "before_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "after_changed",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "null_before",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "null_after",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "oversize_context",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "context_exception",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "editor_rejected",
+      "outcome": "REJECTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "editor_exception",
+      "outcome": "REJECTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true
+    },
+    {
+      "id": "worker_thread_rejected",
+      "outcome": "COMMITTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true
+    }
+  ],
+  "scope": "Production confirmation transaction and bounded-context method with real Android Editable; same-UID synthetic harness, not activated IME, physical Confirm, microphone or natural-speech acceptance"
+}

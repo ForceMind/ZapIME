@@ -1,0 +1,5 @@
+2026-10-29T18:42:43.9572309Z HEAD is now at e28a877 Merge a7f8da1f3dbacde47a07b058c153c730c1fc4123 into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:47:25.4773597Z INSTRUMENTATION_RESULT: stream=FAIL Android voice at encrypted local backup: SecurityException Permission Denial: opening provider com.android.externalstorage.ExternalStorageProvider from ProcessRecord{59a0c33 5503:org.zapime.android/u0a209} (pid=5503, uid=10209) requires that you obtain access using ACTION_OPEN_DOCUMENT or related APIs
+2026-10-29T18:47:25.4774505Z Native voice acceptance failed
+2026-10-29T18:47:25.5842905Z Android gate exit codes: {"android_smoke_repeat.py": 0, "android_voice_smoke.py": 1}
+2026-10-29T18:47:25.5899651Z ##[error]The process '/usr/bin/sh' failed with exit code 1

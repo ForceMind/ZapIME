@@ -1,0 +1,38 @@
+--------- beginning of system
+10-29 19:03:38.103   556  2774 E ActivityManager: ANR in com.google.android.as
+10-29 19:03:38.103   556  2774 E ActivityManager: PID: 1456
+10-29 19:03:38.103   556  2774 E ActivityManager: Reason: No response to onStartJob
+10-29 19:03:38.103   556  2774 E ActivityManager: ErrorId: 39d898bd-4ecc-4198-b6fa-9811f20de4af
+10-29 19:03:38.103   556  2774 E ActivityManager: Frozen: false
+10-29 19:03:38.103   556  2774 E ActivityManager: Load: 0.0 / 0.0 / 0.0
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- Output from /proc/pressure/memory -----
+10-29 19:03:38.103   556  2774 E ActivityManager: some avg10=2.33 avg60=0.52 avg300=0.11 total=422285
+10-29 19:03:38.103   556  2774 E ActivityManager: full avg10=0.09 avg60=0.02 avg300=0.00 total=85950
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- End output from /proc/pressure/memory -----
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- Output from /proc/pressure/cpu -----
+10-29 19:03:38.103   556  2774 E ActivityManager: some avg10=82.38 avg60=34.84 avg300=8.89 total=28328217
+10-29 19:03:38.103   556  2774 E ActivityManager: full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- End output from /proc/pressure/cpu -----
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- Output from /proc/pressure/io -----
+10-29 19:03:38.103   556  2774 E ActivityManager: some avg10=8.00 avg60=4.71 avg300=1.33 total=4462769
+10-29 19:03:38.103   556  2774 E ActivityManager: full avg10=0.09 avg60=0.28 avg300=0.09 total=396895
+10-29 19:03:38.103   556  2774 E ActivityManager: ----- End output from /proc/pressure/io -----
+10-29 19:03:38.103   556  2774 E ActivityManager: 
+10-29 19:03:38.103   556  2774 E ActivityManager: CPU usage from 17971ms to -2ms ago (2026-10-29 19:03:19.787 to 2026-10-29 19:03:37.760):
+10-29 19:03:38.103   556  2774 E ActivityManager:   49% 556/system_server: 38% user + 10% kernel / faults: 73674 minor 372 major
+10-29 19:03:38.103   556  2774 E ActivityManager:   11% 392/android.hardware.graphics.composer3-service.ranchu: 0.2% user + 11% kernel / faults: 13 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   8.3% 481/logcat: 0.4% user + 7.9% kernel / faults: 3 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   6.5% 425/surfaceflinger: 0.6% user + 5.9% kernel / faults: 2569 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   2.9% 139/logd: 0.6% user + 2.3% kernel / faults: 2292 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   2.8% 75/kworker/1:2H-kverityd: 0% user + 2.8% kernel
+10-29 19:03:38.103   556  2774 E ActivityManager:   1.9% 1/init: 0.4% user + 1.5% kernel / faults: 963 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   1.7% 141/servicemanager: 0.3% user + 1.3% kernel / faults: 9 minor
+10-29 19:03:38.103   556  2774 E ActivityManager:   1.2% 198/jbd2/dm-46-8: 0% user + 1.2% kernel
+10-29 19:03:38.103   556  2774 E ActivityManager:   0.5% 354/zygote64: 0% user + 0.5% kernel / faults: 2388 minor
+10-29 19:03:38.103   556  2774 E ActivityManager: 100% TOTAL: 58% user + 40% kernel + 0.1% iowait + 0.8% softirq
+10-29 19:03:38.103   556  2774 E ActivityManager: CPU usage from 48455ms to 48455ms ago (1970-01-01 00:00:00.000 to 1970-01-01 00:00:00.000) with 0% awake:
+10-29 19:03:38.103   556  2774 E ActivityManager: 0% TOTAL: 0% user + 0% kernel
+10-29 19:03:43.232   556   611 E ActivityManager: Unable to freeze binder for 1355: -11
+10-29 19:03:43.295   556   611 E ActivityManager: Unable to freeze binder for 2310: -11
+10-29 19:04:10.431   556   611 E ActivityManager: Unable to freeze binder for 3349: -11
+10-29 19:05:23.371   556   981 E ActivityManager: Unable to freeze binder for 2653: -11

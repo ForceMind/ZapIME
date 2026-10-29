@@ -1,0 +1,5 @@
+2026-10-29T18:28:35.1937586Z HEAD is now at ab9e3a9 Merge dd931eb652bc41340e7f3ee8c869e9b5d8ad3c54 into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:29:39.9125545Z Warning: An error occurred while preparing SDK package NDK (Side by side) 28.2.13676358: Error on ZipFile unknown archive.
+2026-10-29T18:29:39.9884500Z ##[error]Process completed with exit code 1.
+2026-10-29T18:29:40.1872158Z ##[error]No files were found with the provided path: target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+2026-10-29T18:29:40.3991556Z ##[error]No files were found with the provided path: target/android-voice-tests/ZapIME-voice-tests.apk

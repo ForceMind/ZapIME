@@ -1,0 +1,12 @@
+{
+  "tested_source": "5e0258b19eb74b93be6c6381fbb98ac7c078125a",
+  "base_code_merge": "07170f30859bec422cbb37d8c9f42069810d8805",
+  "tested_and_merge_tree": "7024ea48ed499a5cb807cd44f30b62d65fdf0be2",
+  "staged_runtime_path_changes": [],
+  "allowed_documentation_prefixes": [
+    "AGENTS.md",
+    "README.md",
+    "docs/"
+  ],
+  "scope": "Documentation and exact evidence only; does not claim the new documentation head has completed independent CI."
+}

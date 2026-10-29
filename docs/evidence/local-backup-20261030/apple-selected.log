@@ -1,0 +1,13 @@
+2026-10-29T18:51:01.6349840Z HEAD is now at d63e767 Merge 5e0258b19eb74b93be6c6381fbb98ac7c078125a into 30b66b43ee6aa31d65d75e348c8be95bc2384e85
+2026-10-29T18:54:07.1864970Z ** TEST BUILD SUCCEEDED **
+2026-10-29T19:03:32.9953860Z Test Case '-[ZapIMETests.KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys]' passed (1.011 seconds).
+2026-10-29T19:03:32.9955380Z Test Suite 'KeyboardProxyTests' passed at 2026-10-29 19:03:32.989.
+2026-10-29T19:03:33.8416110Z Test Case '-[ZapIMETests.NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary]' passed (0.386 seconds).
+2026-10-29T19:03:34.5959050Z Test Case '-[ZapIMETests.NativeCoreTests testWorkerKeepsNativeSessionOnOneThread]' passed (0.409 seconds).
+2026-10-29T19:03:34.5965560Z Test Suite 'NativeCoreTests' passed at 2026-10-29 19:03:33.786.
+2026-10-29T19:03:34.5966360Z 	 Executed 2 tests, with 0 failures (0 unexpected) in 0.795 (0.797) seconds
+2026-10-29T19:03:34.5969230Z Test Suite 'ZapIMETests.xctest' passed at 2026-10-29 19:03:33.786.
+2026-10-29T19:03:34.5969990Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.805 (1.811) seconds
+2026-10-29T19:03:34.5970650Z Test Suite 'All tests' passed at 2026-10-29 19:03:33.786.
+2026-10-29T19:03:34.5973180Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 1.805 (1.813) seconds
+2026-10-29T19:03:37.8494530Z ** TEST EXECUTE SUCCEEDED **
