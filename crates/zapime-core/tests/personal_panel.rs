@@ -214,3 +214,52 @@ fn private_sessions_cannot_query_commit_or_mutate_saved_data() {
         assert_eq!(s.request(&json!({"op":op}))["error"], "private_session");
     }
 }
+
+#[test]
+fn settings_reload_sees_stateless_restore_and_rejects_active_or_private_sessions() {
+    let (_source_dir, mut source) = fixture(false);
+    let expected = save(
+        &mut source,
+        json!({"type":"favorite","title":"synthetic recovery","text":"restored immediately"}),
+    );
+    let archive = source.request(&json!({"op":"personal_export"}))["archive"]
+        .as_str()
+        .unwrap()
+        .as_bytes()
+        .to_vec();
+    let (dir, mut target) = fixture(false);
+    assert_eq!(
+        target.request(&json!({"op":"personal_list"}))["records"],
+        json!([])
+    );
+    let mut writer = Store::open_backup_writer(&dir.path().join("data/personal.sqlite3")).unwrap();
+    assert_eq!(writer.restore_unbound_plaintext(&archive).unwrap(), 1);
+    assert_eq!(
+        target.request(&json!({"op":"personal_list"}))["records"],
+        json!([])
+    );
+    let before = target.request(&json!({"op":"view"}));
+    assert_eq!(
+        target.request(&json!({"op":"personal_reload"}))["records"],
+        json!([expected])
+    );
+    let after = target.request(&json!({"op":"view"}));
+    assert_eq!(
+        after["generation"].as_u64().unwrap(),
+        before["generation"].as_u64().unwrap() + 1
+    );
+    assert_eq!(after["commit"], before["commit"]);
+    assert_eq!(after["preedit"], before["preedit"]);
+    target.request(&json!({"op":"key","text":"n"}));
+    let composing = target.request(&json!({"op":"view"}));
+    assert_eq!(
+        target.request(&json!({"op":"personal_reload"}))["error"],
+        "composition_active"
+    );
+    assert_eq!(target.request(&json!({"op":"view"})), composing);
+    let (_dir, mut private) = fixture(true);
+    assert_eq!(
+        private.request(&json!({"op":"personal_reload"}))["error"],
+        "private_session"
+    );
+}

@@ -11,6 +11,8 @@ crate-type = ["rlib", "cdylib", "staticlib"]
 msime-engine = { path = "../../vendor/msime/crates/engine" }
 serde_json = "1"
 zapime-data = { path = "../zapime-data" }
+zapime-crypto = { path = "../zapime-crypto" }
+zeroize = "1"
 uuid = { version = "1", features = ["serde"] }
 
 [target.'cfg(target_os = "android")'.dependencies]

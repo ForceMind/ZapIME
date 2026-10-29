@@ -9,6 +9,7 @@
     <activity android:name=".KeyboardSettingsActivity" android:exported="false"/>
     <activity android:name=".PersonalDataActivity" android:exported="false"/>
     <activity android:name=".VoiceSettingsActivity" android:exported="false"/>
+    <activity android:name=".BackupActivity" android:exported="false"/>
     <activity android:name=".SyncActivity" android:exported="false"/>
     <service android:name=".ZapInputMethodService" android:label="闪电输入法" android:permission="android.permission.BIND_INPUT_METHOD" android:exported="true">
       <intent-filter><action android:name="android.view.InputMethod"/></intent-filter>

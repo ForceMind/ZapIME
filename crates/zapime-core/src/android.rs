@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-only
 use super::InputSession;
 use jni::{
-    objects::{JClass, JString},
-    sys::{jboolean, jlong, jstring},
+    objects::{JByteArray, JClass, JString},
+    sys::{jboolean, jbyteArray, jlong, jstring},
     JNIEnv,
 };
 use std::{
@@ -15,6 +15,78 @@ use std::{
 // 句柄只在创建它的线程上有效，避免把非线程安全输入会话跨线程传递。
 thread_local! {
     static SESSIONS: RefCell<(i64, HashMap<i64, InputSession>)> = RefCell::new((1, HashMap::new()));
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_createLocalBackup(
+    mut env: JNIEnv,
+    _: JClass,
+    root: JString,
+    code_out: JByteArray,
+) -> jbyteArray {
+    catch_unwind(AssertUnwindSafe(|| {
+        if env.get_array_length(&code_out).ok()? != 43 {
+            return None;
+        }
+        let root: String = env.get_string(&root).ok()?.into();
+        if root.len() > 4096 {
+            return None;
+        }
+        let backup = crate::local_backup::create(Path::new(&root)).ok()?;
+        // Allocate the encrypted result before exposing the recovery code.
+        let result = env.byte_array_from_slice(&backup.package).ok()?;
+        let code =
+            zeroize::Zeroizing::new(backup.code.iter().map(|b| *b as i8).collect::<Vec<_>>());
+        env.set_byte_array_region(&code_out, 0, &code).ok()?;
+        Some(result.into_raw())
+    }))
+    .ok()
+    .flatten()
+    .unwrap_or(std::ptr::null_mut())
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_restoreLocalBackup(
+    mut env: JNIEnv,
+    _: JClass,
+    root: JString,
+    code: JByteArray,
+    encrypted: JByteArray,
+) -> jstring {
+    let outcome = catch_unwind(AssertUnwindSafe(|| {
+        let code_len = env
+            .get_array_length(&code)
+            .map_err(|_| "invalid_or_unauthenticated_backup")?;
+        let size = env
+            .get_array_length(&encrypted)
+            .map_err(|_| "invalid_or_unauthenticated_backup")?;
+        if code_len != 43 || size <= 0 || size as usize > crate::local_backup::MAX_PACKAGE {
+            return Err("invalid_or_unauthenticated_backup");
+        }
+        let root: String = env
+            .get_string(&root)
+            .map_err(|_| "local_profile_unavailable")?
+            .into();
+        if root.len() > 4096 {
+            return Err("local_profile_unavailable");
+        }
+        let code = zeroize::Zeroizing::new(
+            env.convert_byte_array(&code)
+                .map_err(|_| "local_backup_failed")?,
+        );
+        let encrypted = env
+            .convert_byte_array(&encrypted)
+            .map_err(|_| "local_backup_failed")?;
+        crate::local_backup::restore(Path::new(&root), &code, &encrypted)
+    }))
+    .unwrap_or(Err("local_backup_failed"));
+    let reply = match outcome {
+        Ok(count) => serde_json::json!({"restored_records":count}),
+        Err(code) => serde_json::json!({"error":code}),
+    };
+    env.new_string(reply.to_string())
+        .map(JString::into_raw)
+        .unwrap_or(std::ptr::null_mut())
 }
 
 /// Independent sync-worker read; does not allocate an input session or writer.

@@ -6,5 +6,7 @@ final class NativeCore {
     static native String request(long handle, String json);
     static native String queryPersonal(String root, String json);
     static native String syncProfile(String root);
+    static native byte[] createLocalBackup(String root, byte[] codeOut);
+    static native String restoreLocalBackup(String root, byte[] code, byte[] encrypted);
     static native void close(long handle);
 }
