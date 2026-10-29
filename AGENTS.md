@@ -61,3 +61,5 @@
 - 伴学核心commit必须严格核对本请求commit_source=engine；saved_data/none/缺字段/未知类型仍正常上屏但不进入学习。个人None引擎索引扩展及personal_commit标saved_data，规则只重排既有引擎行不改其来源；不缓存上次来源、不改变候选/正文/generation。直接手打fallback与核心commit分开。
 
 - 语音功能验收的物理入口在慢IPC取消并释放App之后，须先观察公开IME Insets动画和新鲜窗口/按钮几何稳定，再重新取坐标单次触摸并核面板后置条件；inject ACK不等于action。API28隔离API30类，不用隐藏同步API/盲重试toggle；原暂停期间具名取消及1800ms门禁不放宽。工具面板保留仅同编辑器空组字非私密tools，组字仍原快照验证；原失败图/原文保留，别泛称所有#38间歇问题已修复。
+
+- 本机加密备份独立有界worker，不在输入/同步/UI线程做KDF/IO；仅4MiB归档/6MiB密文，固定既有KDF，用途前缀区分同步恢复包，不读取/替换SyncSecrets材料。恢复只打开已存在v2库，同事务拒绝记录、绑定和操作/同步历史；不自动创建/迁移/清空。SAF写后读回不是跨提供程序原子或永久持久保证，代码另存/核对不虚构外部保存，离开不承诺回滚已经开始事务。只有dedicated_ci核实数字run/attempt/emulator后才能传zapime_ci_backup启用系统文档夹具，只删除自己新建的合成文档；正向独立空库JNI与真实SAF导出/正向导入UI/真机分别记证据，日志不含恢复码、正文或秘密页文本。

@@ -8,13 +8,15 @@ import sys
 import time
 import wave
 import json
-from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args
+from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args, dedicated_ci
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
     raise SystemExit("Ephemeral GitHub emulator required")
 adb, serial = sys.argv[1:]
 if not serial.startswith("emulator-") or not serial[len("emulator-"):].isdigit():
     raise SystemExit("Dedicated emulator serial required")
+if not dedicated_ci([adb, "-s", serial]):
+    raise SystemExit("Dedicated numeric-run GitHub emulator required for system backup fixtures")
 root = Path(__file__).resolve().parents[1]
 out = root / "target/voice-android"
 out.mkdir(parents=True, exist_ok=True)
@@ -40,12 +42,12 @@ run("shell", "svc", "wifi", "disable")
 run("shell", "svc", "data", "disable")
 run("logcat", "-c")
 try:
-    result = run("shell", "am", "instrument", "-w", "-r", "org.zapime.android.voicetest/.VoiceInstrumentation", text=True, capture_output=True, timeout=600)
+    result = run("shell", "am", "instrument", "-w", "-r", "-e", "zapime_ci_backup", os.environ["GITHUB_RUN_ID"]+"-"+os.environ["GITHUB_RUN_ATTEMPT"], "org.zapime.android.voicetest/.VoiceInstrumentation", text=True, capture_output=True, timeout=600)
     (out / "instrumentation.txt").write_text(result.stdout + result.stderr)
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name))
     evidence=json.loads((out/"empty-pcm-report.json").read_text())
     expected={"no_samples", "all_zero", "ignored_tail", "positive_lsb", "negative_lsb", "cancelled_empty"}
@@ -67,6 +69,11 @@ try:
     cases=profile.get("cases", [])
     if profile.get("synthetic") is not True or len(cases)!=len(expected_profile) or {row.get("id") for row in cases}!=expected_profile or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing persistent account guard evidence")
+    backup=json.loads((out/"local-backup-report.json").read_text())
+    expected_backup={"native_snapshot", "authentication_and_recovery", "nonempty_bound_preserved", "worker_and_limits", "sensitive_activity", "system_saf_export_and_recovery", "stop_clears_sensitive_state"}
+    cases=backup.get("cases", [])
+    if backup.get("synthetic") is not True or len(cases)!=7 or {row.get("id") for row in cases}!=expected_backup or any(row.get("passed") is not True for row in cases):
+        raise SystemExit("Missing encrypted local backup native/provider evidence")
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)
@@ -93,8 +100,9 @@ finally:
     # Always retain its actual failure hierarchy/screenshot before checking fatals.
     for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png","host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+    run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/backup-provider-ui-shape.json",str(out/"backup-provider-ui-shape.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
     (out / "crash.txt").write_text(log)
     if "org.zapime.android" in log and ("FATAL EXCEPTION" in log or "Fatal signal" in log):
