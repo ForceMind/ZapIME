@@ -5,6 +5,31 @@ use rusqlite::{params, OptionalExtension, Transaction, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
+#[derive(Debug, PartialEq, Eq, Serialize)]
+pub struct ProfileStatus {
+    pub initialized: bool,
+    pub account_id: Option<Uuid>,
+}
+
+/// Inspect only an existing v2 database. Never initialize, migrate or bind it.
+pub fn inspect_profile(path: &std::path::Path) -> Result<ProfileStatus, Error> {
+    match std::fs::symlink_metadata(path) {
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+            return Ok(ProfileStatus {
+                initialized: false,
+                account_id: None,
+            });
+        }
+        Ok(metadata) if metadata.file_type().is_file() => {}
+        _ => return Err(Error::Invalid),
+    }
+    let store = Store::open_panel_reader(path)?;
+    Ok(ProfileStatus {
+        initialized: true,
+        account_id: store.sync_profile()?,
+    })
+}
+
 #[derive(Clone)]
 pub struct PendingOperation {
     pub operation_id: Uuid,
@@ -95,6 +120,26 @@ pub(crate) fn server_revision(tx: &Transaction<'_>, record: Uuid) -> Result<u64,
 }
 
 impl Store {
+    /// No binding is different from an unreadable or noncanonical binding.
+    pub fn sync_profile(&self) -> Result<Option<Uuid>, Error> {
+        let value: Option<String> = self
+            .db
+            .query_row(
+                "SELECT value FROM metadata WHERE key='sync_profile'",
+                [],
+                |r| r.get(0),
+            )
+            .optional()?;
+        value
+            .map(|text| {
+                let profile = Uuid::parse_str(&text).map_err(|_| Error::SyncProfile)?;
+                if profile.is_nil() || profile.to_string() != text {
+                    return Err(Error::SyncProfile);
+                }
+                Ok(profile)
+            })
+            .transpose()
+    }
     /// Best-effort net-change compaction before encryption/staging. Within the
     /// oldest bounded window, only the last unstaged operation per record stays
     /// pending. Frozen requests and all immutable snapshots remain untouched.

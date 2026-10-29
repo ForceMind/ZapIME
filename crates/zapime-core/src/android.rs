@@ -17,6 +17,31 @@ thread_local! {
     static SESSIONS: RefCell<(i64, HashMap<i64, InputSession>)> = RefCell::new((1, HashMap::new()));
 }
 
+/// Independent sync-worker read; does not allocate an input session or writer.
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_syncProfile(
+    mut env: JNIEnv,
+    _: JClass,
+    root: JString,
+) -> jstring {
+    let response = catch_unwind(AssertUnwindSafe(|| {
+        let root: String = env.get_string(&root).map_err(|_| ())?.into();
+        if root.len() > 4096 || !Path::new(&root).is_absolute() {
+            return Err(());
+        }
+        let status =
+            zapime_data::sync::inspect_profile(&Path::new(&root).join("data/personal.sqlite3"))
+                .map_err(|_| ())?;
+        serde_json::to_string(&status).map_err(|_| ())
+    }))
+    .ok()
+    .and_then(Result::<String, ()>::ok)
+    .unwrap_or_else(|| "{\"error\":\"sync_profile_read_failed\"}".into());
+    env.new_string(response)
+        .map(JString::into_raw)
+        .unwrap_or(std::ptr::null_mut())
+}
+
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeCore_open(
     mut env: JNIEnv,

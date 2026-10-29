@@ -24,6 +24,7 @@ final class SyncConnectionStore {
     }
     static void save(Context context,SyncConnection connection)throws IOException {
         worker();synchronized(SyncConnectionStore.class){
+            SyncDatabase.check(context,connection.account);
             try(SyncConnection previous=load(context)){
                 if(previous!=null&&(!previous.account.equals(connection.account)||!previous.server.equals(connection.server)))throw new IOException("sync_connection_switch");
             }
