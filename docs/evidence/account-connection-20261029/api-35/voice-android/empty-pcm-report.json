@@ -1,0 +1,49 @@
+{
+  "synthetic": true,
+  "api_level": 35,
+  "abi": "x86_64",
+  "cases": [
+    {
+      "id": "no_samples",
+      "accepted_samples": 0,
+      "has_nonzero_pcm": false,
+      "empty_required": true,
+      "passed": true
+    },
+    {
+      "id": "all_zero",
+      "accepted_samples": 3200,
+      "has_nonzero_pcm": false,
+      "empty_required": true,
+      "passed": true
+    },
+    {
+      "id": "ignored_tail",
+      "accepted_samples": 1601,
+      "has_nonzero_pcm": false,
+      "empty_required": true,
+      "passed": true
+    },
+    {
+      "id": "positive_lsb",
+      "accepted_samples": 1602,
+      "has_nonzero_pcm": true,
+      "empty_required": false,
+      "passed": true
+    },
+    {
+      "id": "negative_lsb",
+      "accepted_samples": 1602,
+      "has_nonzero_pcm": true,
+      "empty_required": false,
+      "passed": true
+    },
+    {
+      "id": "cancelled_empty",
+      "accepted_samples": 0,
+      "cancelled_before_finish": true,
+      "passed": true
+    }
+  ],
+  "scope": "Real JNI and pinned model with synthetic exact-zero\/prefix\/one-LSB PCM; not VAD, system-mute inference, microphone speech or accuracy acceptance"
+}

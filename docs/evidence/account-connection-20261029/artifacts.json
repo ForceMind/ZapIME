@@ -1,0 +1,62 @@
+[
+  {
+    "id": 12883296165,
+    "name": "ZapIME-Android-development",
+    "size_in_bytes": 233608314,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12883296165",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12883296165/zip",
+    "expired": false,
+    "created_at": "2026-10-29T08:24:17Z",
+    "expires_at": "2027-01-27T08:14:48Z",
+    "updated_at": "2026-10-29T08:24:17Z",
+    "digest": "sha256:3377c14de202bf687f02c8e33316204b7be54b64aa9f2edddaa50f12a6b85bbd",
+    "workflow_run": {
+      "id": 40840760306,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-account-connection",
+      "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483"
+    },
+    "download_size_and_sha256_verified": true
+  },
+  {
+    "id": 12883158067,
+    "name": "ZapIME-Android-API-36-acceptance",
+    "size_in_bytes": 2444616,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12883158067",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12883158067/zip",
+    "expired": false,
+    "created_at": "2026-10-29T08:30:53Z",
+    "expires_at": "2027-01-27T08:14:48Z",
+    "updated_at": "2026-10-29T08:30:53Z",
+    "digest": "sha256:80ff2071c4bbffb021cd53182f46d8cd382f1608fedfdc32a3386d5e3ca3d506",
+    "workflow_run": {
+      "id": 40840760306,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-account-connection",
+      "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483"
+    },
+    "download_size_and_sha256_verified": true
+  },
+  {
+    "id": 12882833845,
+    "name": "ZapIME-Android-API-35-acceptance",
+    "size_in_bytes": 2441204,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12882833845",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/12882833845/zip",
+    "expired": false,
+    "created_at": "2026-10-29T08:29:56Z",
+    "expires_at": "2027-01-27T08:14:48Z",
+    "updated_at": "2026-10-29T08:29:56Z",
+    "digest": "sha256:af75d9a624a2d58f49ab0f312eb245698336aeda73e503142e320429930db884",
+    "workflow_run": {
+      "id": 40840760306,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "feat/android-account-connection",
+      "head_sha": "3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483"
+    },
+    "download_size_and_sha256_verified": true
+  }
+]

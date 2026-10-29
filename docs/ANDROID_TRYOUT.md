@@ -4,20 +4,22 @@
 
 ## 固定下载与来源
 
-- 源码：[`7a8667a746c5d500bd4984407300ba27e7ddefc8`](https://github.com/ForceMind/ZapIME/tree/7a8667a746c5d500bd4984407300ba27e7ddefc8)，已通过PR #60合入主线；GPL-3.0-only及各依赖许可原样保留。
-- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40517361507/artifacts/12740756313)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-25，过期可按固定源码与[构建说明](BUILD.md)重建。
+- 源码：[`3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483`](https://github.com/ForceMind/ZapIME/tree/3b0ce4f0e5d4471cc744f0b6a7d5fc211b3ad483)，已通过PR #63合入主线；GPL-3.0-only及各依赖许可原样保留。
+- [下载 ZapIME-Android-development 构建产物](https://github.com/ForceMind/ZapIME/actions/runs/40840760306/artifacts/12883296165)，完整ZIP约234MB。GitHub可能要求登录；该产物保留到2027-01-27，过期可按固定源码与[构建说明](BUILD.md)重建。
 - 该源双架构APK构建、API28/35/36的两轮真实输入、原生语音、空结果确认保护和真实服务退出均已通过。最新主线进展见[STATUS](STATUS.md)，本说明不自动把后续其他提交的产物当作同一文件。
 
 解压后，ARM64 Android手机使用`android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk`，同时保留根目录`ZapIME-XASR-model.zip`用于语音。产品APK不内置语音权重。
 
 | 文件 | 字节数 | SHA256 |
 | --- | --- | --- |
-| ARM64 APK | 50,958,904 | `be032fdb0bd16fd2189bf79ddf1f31e9cfcb2f26868638f1e959b2ecaa1511b9` |
+| ARM64 APK | 50,967,096 | `fb870b29845a51e2a8e24ce4aa64f3f6591b654760b9fe403a03a1e6043582c7` |
 | 模型ZIP | 129,097,503 | `1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1` |
 
-完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，新确认事务类型已确认在产品DEX中，测试探针未打进产品，见[包验证记录](evidence/voice-confirmation-20261027/package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
+完整产物ZIP的大小/SHA、本地解压后上述两个文件的SHA、模型六成员与APK固定配置、GPL/语音许可资产均已实际核验，连接与确认事务类型已确认在产品DEX中，测试探针未打进产品，见[包验证记录](evidence/account-connection-20261029/package-verification.json)。签名和16KiB对齐由CI实际检查，未冒称真实ARM运行或本地重复签名验收。
 
-本版固定每次确认的识别文字，复核原输入框及光标后最多尝试插入一次；取消、位置变化和重复完成不会自动重发。三API的20类生产事务/真实Android Editable合成检查均通过，文字来自真实JNI解码；这与物理非空确认、自然麦克风和真机验收分开，见[原始结果](evidence/voice-confirmation-20261027/README.md)。
+本版固定每次确认的识别文字，复核原输入框及光标后最多尝试插入一次；取消、位置变化和重复完成不会自动重发。三API的20类生产事务/真实Android Editable合成检查均通过，文字来自真实JNI解码；这与物理非空确认、自然麦克风和真机验收分开，见[原始结果](evidence/account-connection-20261029/README.md)。
+
+本版新增“服务器与设备连接”，支持显式 HTTPS 身份验证及独立 Keystore 凭据保护；新增 INTERNET 且禁止明文网络。三API输入/语音验收期间以内核规则拒绝产品UID的IPv4/IPv6联网。该连接不上传个人资料，使用方法见[账号连接](ACCOUNT_CONNECTION.md)；Android 正向 HTTPS/用户服务器实连仍需另行验证。
 
 ## 启用与离线语音
 
@@ -27,6 +29,6 @@
 4. 返回普通输入框，先完成已有拼音组字。长按空格，或打开“工具 → 离线语音”；停止后先查看预览，点“确认插入”才会写入正文。可取消或重新录音；未识别到文字时确认按钮不可用。当前预览只读，识别错误可重录，或插入后在正文修改。
 5. 模型安装完成后可关闭Wi-Fi/移动数据再试。识别在本机完成，录音不保存、不上传，也不会自动改用服务器识别。密码/禁止学习字段不开放语音入口。按键主题、轻触震动和声音在“键盘与反馈”设置；实际手感需用手机体验。
 
-开发签名在每个新CI runner独立生成，不同构建可能无法直接覆盖安装。需要卸载旧开发版时，先用“管理资料与备份”导出本机资料并妥善保存；卸载/清除数据也会删除模型。当前本机资料导出是明文，不是完整E2EE账号恢复包。
+开发签名在每个新CI runner独立生成，不同构建可能无法直接覆盖安装。需要卸载旧开发版时，先用“管理资料与备份”导出本机资料并妥善保存；卸载/清除数据也会删除模型、本机连接凭据及Keystore包装密钥。当前本机资料导出是明文，不含设备令牌或E2EE材料，不能当作完整账号或密钥恢复包。
 
 此构建的识别质量没有真人准确率百分比。合成样例的全部错误见[质量诊断](VOICE_QUALITY.md)，不能用模拟器、静音或固定合成句通过来代替自然语音、口音和手机性能验收。
