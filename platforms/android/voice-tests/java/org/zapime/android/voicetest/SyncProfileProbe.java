@@ -61,7 +61,7 @@ final class SyncProfileProbe {
             SyncAccountProbe.reject(()->SyncAccountProbe.call(guard,null,"check",new Class<?>[]{Context.class,UUID.class},context,account));
             SyncAccountProbe.check(!new JSONObject((String)SyncAccountProbe.call(core,null,"syncProfile",new Class<?>[]{String.class},root.getAbsolutePath())).has("initialized"),"unknown schema treated as unbound");
             SyncAccountProbe.passed(cases,"invalid_future_fail_closed");stage="worker";
-            SyncAccountProbe.main(i,()->{SyncAccountProbe.reject(()->SyncAccountProbe.call(guard,null,"check",new Class<?>[]{Context.class,UUID.class},context,account));return null;});
+            SyncAccountProbe.main(i,()->{boolean refused=false;try{SyncAccountProbe.call(guard,null,"check",new Class<?>[]{Context.class,UUID.class},context,account);}catch(IOException error){refused="sync_profile_requires_worker".equals(error.getMessage());}SyncAccountProbe.check(refused,"main worker guard reason");return null;});
             SyncAccountProbe.passed(cases,"worker_guard");
         }catch(Throwable error){cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic profile guard case: "+stage,error);}
         finally {
