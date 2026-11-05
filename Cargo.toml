@@ -1,6 +1,6 @@
 [workspace]
 members = ["crates/zapime-core", "crates/zapime-data", "crates/zapime-crypto", "crates/zapime-sync"]
-exclude = ["vendor/msime"]
+exclude = ["vendor/msime", "vendor/voicekey", "integrations/voicekey"]
 resolver = "2"
 
 [profile.dev]
