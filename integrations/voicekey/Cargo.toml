@@ -1,0 +1,19 @@
+[package]
+name = "zapime-voicekey-adapter"
+version = "0.1.0"
+edition = "2021"
+publish = false
+description = "Optional VoiceKey recognizer boundary for ZapIME"
+
+# Independent workspace: adding VoiceKey must not mutate ZapIME's locked core build.
+[workspace]
+resolver = "2"
+
+[dependencies]
+anyhow = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "time", "macros"] }
+voicekey-core = { path = "../../vendor/voicekey/crates/core" }
+voicekey-wtlocal = { path = "../../vendor/voicekey/crates/wtlocal" }
+
+[dev-dependencies]
+async-trait = "0.1"

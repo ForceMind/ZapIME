@@ -1,0 +1,33 @@
+name: VoiceKey adapter (isolated)
+on:
+  pull_request:
+    paths:
+      - ".gitmodules"
+      - "vendor/voicekey"
+      - "integrations/voicekey/**"
+      - ".github/workflows/voicekey-adapter.yml"
+  push:
+    branches: ["feat/voicekey-engine-import"]
+    paths:
+      - ".gitmodules"
+      - "vendor/voicekey"
+      - "integrations/voicekey/**"
+      - ".github/workflows/voicekey-adapter.yml"
+permissions:
+  contents: read
+jobs:
+  adapter:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Build prerequisites for VoiceKey core
+        run: sudo apt-get update && sudo apt-get install -y libasound2-dev cmake pkg-config
+      - name: Select pinned Rust compiler
+        run: rustup toolchain install 1.97.1 --profile minimal
+      - name: Format source
+        run: cargo +1.97.1 fmt --manifest-path integrations/voicekey/Cargo.toml --all -- --check
+      - name: Build and unit test isolated VoiceKey adapter
+        run: cargo +1.97.1 test --manifest-path integrations/voicekey/Cargo.toml
