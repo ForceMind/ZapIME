@@ -44,3 +44,18 @@
 
 ## 不在本次提交范围
 本次只提交技术吸收与执行文档，不包含 VoiceKey 源码、二进制、模型、第三方协议实现，也不代表已完成适配器、真机测试或发布。
+
+## 源码级核查补充（2026-11-05）
+本轮已直接读取 VoiceKey 仓库下列源码文件（只读研究，没有复制到 ZapIME）：
+- `Cargo.toml`：Rust workspace 1.9.0，包含 `crates/core`、`crates/platform`、`crates/hanbao`、`crates/wtlocal`、`app/src-tauri`。
+- `crates/core/src/lib.rs`：`Engine` trait 定义 `run(Audio, Partial) -> Result<String>` 和可选 `prewarm()`；`Audio` 为无界 `tokio::sync::mpsc::UnboundedReceiver<Vec<i16>>`，20ms / 16kHz / 单声道 Int16（每帧320样本）。
+- `crates/wtlocal/src/lib.rs`：`LocalEngine` 使用 `spawn_blocking`，缓存 `Arc<Model>`，按流追加音频、每30个特征帧且不早于上次计算耗时3倍时发 partial，结束时 `finish()`。
+- `crates/wtlocal/Cargo.toml`：依赖 `memmap2`、`rayon`、`tokio` 等。
+- 仓库根目录 `LICENSE` 查询返回 404；朋友口头允许“使用”是合作信号，但商业分发、修改、再授权以及模型和第三方接口许可仍需分别明确。
+
+**具体整合建议**：
+1. 先在 ZapIME 自有代码中实现有界音频队列的 `RecognizerAdapter`，不要照搬 VoiceKey 的无界队列；按 Android 既有 session/ticket/epoch 处理取消、结果过期和焦点变化。
+2. 在测试夹具中加入 VoiceKey 式 `prewarm` 与 partial 自适应节流，测量首字延迟、CPU 峰值、内存与耗电；不能仅以离线模型大小判断速度。
+3. 许可明确后，优先试验 `wtlocal` 作为独立可选引擎；模型文件必须由用户合法获取、显式导入，不默认随 APK 分发。
+4. 将 VoiceKey 多渠道候选作为交互设计参考；云渠道须采用有授权的稳定接口，不直接依赖第三方非公开协议。
+5. 对照测试同一批真人自愿录音的 CER、首字延迟、定稿延迟和峰值资源，三星 S25 必测；对比结果决定默认引擎，不预设 VoiceKey 一定更快。
