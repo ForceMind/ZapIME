@@ -24,6 +24,10 @@ Android 已有九键/全键、明暗配色、遵循系统的按键反馈、连�
 
 Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动HTTPS验证设备凭据、独立Keystore保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；API28/35/36 与真实 PostgreSQL 门禁已通过；保存连接前还会核对已有资料库账号，拒绝跨账号替换。完整配对和数据同步仍未接入。
 
+## VoiceKey 多引擎语音整合（实验分支）
+
+通过可追溯 Git submodule 固定 J3n5en/voicekey 完整源码于 `vendor/voicekey`，`integrations/voicekey` 包含真正引用其 Rust core 与 wtlocal 的离线识别适配器、单独测试和 CI。完整提取：`git submodule update --init`。**尚未连接 Android JNI/输入法设置，现有 X-ASR 仍是唯一默认语音引擎；此功能尚无新 APK 或真人性能结果。** 模型须合法取得且不能自动上传录音；云端逆向接口不得在产品内直接启用。见 [整合工程](integrations/voicekey/README.md) 和 [实现路线](docs/VOICEKEY_INTEGRATION.md)。
+
 ## 开发
 
 ```sh
