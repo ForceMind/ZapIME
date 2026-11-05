@@ -212,7 +212,15 @@ mod tests {
         assert!(s.push(&[0; 1_601]).is_err());
         // Exactly sixty seconds are allowed, but not one additional sample.
         for _ in 0..600 {
-            s.push(&[1; 1_600]).unwrap();
+            loop {
+                match s.push(&[1; 1_600]) {
+                    Ok(()) => break,
+                    Err(e) if e.to_string() == "voicekey_audio_backpressure" => {
+                        tokio::task::yield_now().await;
+                    }
+                    Err(e) => panic!("unexpected push error: {e}"),
+                }
+            }
         }
         assert!(s.push(&[1]).is_err());
         assert_eq!(s.finish().await.unwrap(), "samples:960000");
