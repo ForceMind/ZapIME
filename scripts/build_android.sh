@@ -59,6 +59,9 @@ RUSTFLAGS="$voicekey_rustflags" \
 voicekey_so="$root/integrations/voicekey/target/$rust_target/release/libzapime_voicekey_adapter.so"
 [[ -s "$voicekey_so" ]] || { echo "VoiceKey JNI library missing" >&2; exit 1; }
 cp "$voicekey_so" "$build/lib/$abi/libzapime_voicekey_adapter.so"
+for symbol in Java_org_zapime_android_NativeVoiceKey_start Java_org_zapime_android_NativeVoiceKey_accept Java_org_zapime_android_NativeVoiceKey_finish Java_org_zapime_android_NativeVoiceKey_checkModel; do
+  "$ndk/llvm-nm" -D "$voicekey_so" | grep -Fq "$symbol" || { echo "Missing VoiceKey JNI export: $symbol" >&2; exit 1; }
+done
 "$ndk/llvm-readelf" -l "$build/lib/$abi/libzapime_voicekey_adapter.so" | \
   awk '/LOAD/{if ($NF != "0x4000" && $NF != "0x10000" ) {print "Unexpected LOAD alignment:",$NF; exit 1}}'
 "$tools/aapt2" compile --dir platforms/android/res -o "$build/resources.zip"
