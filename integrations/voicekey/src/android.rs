@@ -209,3 +209,15 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_close(
     if let Ok(mut pool) = handles().lock() { pool.remove(&id); }
     JNI_TRUE
 }
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_checkModel(
+    mut env: JNIEnv,
+    _class: JClass,
+    directory: jni::objects::JString,
+) -> jboolean {
+    let Ok(dir) = env.get_string(&directory) else { return JNI_FALSE };
+    let path = PathBuf::from(dir.to_string_lossy().into_owned());
+    if !path.is_absolute() || !path.is_dir() { return JNI_FALSE; }
+    if voicekey_wtlocal::load(&path).is_ok() { JNI_TRUE } else { JNI_FALSE }
+}
