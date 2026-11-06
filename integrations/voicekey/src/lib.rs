@@ -11,7 +11,8 @@ mod android;
 // Their author and source revision are preserved at vendor/voicekey.
 #[path = "../../../vendor/voicekey/crates/wtlocal/src/fbank.rs"]
 mod fbank;
-#[path = "../../../vendor/voicekey/crates/wtlocal/src/kernels.rs"]
+// Stable Android AArch64 patch; pristine original remains in vendor/voicekey.
+#[path = "kernels.rs"]
 mod kernels;
 #[path = "../../../vendor/voicekey/crates/wtlocal/src/model.rs"]
 mod model;
