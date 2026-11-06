@@ -59,7 +59,7 @@ pub trait RecognizerEngine: Send + Sync {
     async fn run(
         &self,
         audio: mpsc::Receiver<Vec<i16>>,
-        partial: Box<dyn Fn(&str) + Send + Sync>,
+        partial: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
     ) -> Result<String>;
     async fn prewarm(&self) {}
 }
@@ -77,7 +77,7 @@ impl RecognizerEngine for VoiceKeyOfflineEngine {
     async fn run(
         &self,
         mut audio: mpsc::Receiver<Vec<i16>>,
-        partial: Box<dyn Fn(&str) + Send + Sync>,
+        partial: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
     ) -> Result<String> {
         let dir = self.dir.clone();
         tokio::task::spawn_blocking(move || {
@@ -153,7 +153,7 @@ impl RecognitionSession {
     pub fn from_engine(id: SessionId, engine: Box<dyn RecognizerEngine>) -> Self {
         let (tx, rx) = mpsc::channel::<Vec<i16>>(8);
         let (partial_tx, partial_rx) = mpsc::channel::<PartialResult>(32);
-        let callback: Box<dyn Fn(&str) + Send + Sync> = Box::new(move |value| {
+        let callback: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static> = Box::new(move |value| {
             if value.len() <= MAX_TEXT_BYTES {
                 let _ = partial_tx.try_send(PartialResult { session: id, text: value.to_owned() });
             }
@@ -213,7 +213,7 @@ mod tests {
         async fn run(
             &self,
             mut audio: mpsc::Receiver<Vec<i16>>,
-            callback: Box<dyn Fn(&str) + Send + Sync>,
+            callback: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
         ) -> Result<String> {
             let mut n = 0;
             while let Some(frame) = audio.recv().await {
