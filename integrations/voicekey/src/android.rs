@@ -102,7 +102,7 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_start(
     }
     // Model loading happens on ZapIME's dedicated voice worker, not the IME UI.
     // It verifies format and caches a shared model before opening the session.
-    if voicekey_wtlocal::load(&path).is_err() {
+    if crate::load_model(&path).is_err() {
         return fail(&env, "invalid_voicekey_model");
     }
     if handle.cancelled.load(Ordering::Acquire) {
@@ -219,5 +219,5 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_checkModel(
     let Ok(dir) = env.get_string(&directory) else { return JNI_FALSE };
     let path = PathBuf::from(dir.to_string_lossy().into_owned());
     if !path.is_absolute() || !path.is_dir() { return JNI_FALSE; }
-    if voicekey_wtlocal::load(&path).is_ok() { JNI_TRUE } else { JNI_FALSE }
+    if crate::load_model(&path).is_ok() { JNI_TRUE } else { JNI_FALSE }
 }
