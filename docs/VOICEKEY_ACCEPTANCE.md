@@ -126,3 +126,8 @@ Android run42211989441双ABI产品构建硬门禁通过，完整UI/JNI结果及�
 focused run42215806243实际错误：API35接受68800样本、已有非空partial，API36接受62400样本，均JNI `voicekey_audio_backpressure`；API28触摸后provider未退出。原件及哈希全部保留。c7三API原有完整回归、实际23条Editable/5条无模型JNI以及双ABI包独立字节复核均通过，但不构成VoiceKey专项通过。
 
 本切片改为5秒有界、可取消的Full等待，停止后缓冲排空/final共30秒，增加remaining-timeout JNI参数、无效预算ABI探针及独立clock PCM producer、稳定SAF单次真实触摸。本地Rust26/JVM14+17/Python34及API36编译通过；新Android模型/ABI/producer/watchdog结果等待真实CI，不借旧结果补填。main Handler watchdog是协作取消请求，不是强杀推理或硬实时调度。
+
+
+## 08热修的实际首个闭环与现代驱动差异
+
+focused42221304313 API28实际SUCCESS，已核下载JSON：14主/23Editable/JNI预算ABI/真实30秒Handler空闲worker回收/独立125861样本/激活IME全通过。API35/36失败在provider未返回，尚未模型导入。新驱动仅显式FINGER pointer及事件/点位/截图证据，不改产品或原通过断言；AOSP推断和全文获取限制见hotfix-model-42221304313/source-review-pointer-input.md。现代结果仍待新CI，所有旧失败继续保留。

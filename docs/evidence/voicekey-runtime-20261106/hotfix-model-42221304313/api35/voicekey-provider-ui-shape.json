@@ -1,0 +1,474 @@
+[
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/action_bar_root",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "android:id\/content",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "android.view.ViewGroup",
+    "id": "com.google.android.documentsui:id\/coordinator_layout",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,0][320,640]"
+  },
+  {
+    "class": "androidx.drawerlayout.widget.DrawerLayout",
+    "id": "com.google.android.documentsui:id\/drawer_layout",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.widget.ScrollView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "com.google.android.documentsui:id\/app_bar",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,228]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.view.ViewGroup",
+    "id": "com.google.android.documentsui:id\/container_save",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,616][320,640]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/collapsing_toolbar",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,228]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/container_search_fragment",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/container_directory",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.view.View",
+    "id": "com.google.android.documentsui:id\/drawer_edge",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][12,640]"
+  },
+  {
+    "class": "android.widget.ScrollView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,228]"
+  },
+  {
+    "class": "android.view.ViewGroup",
+    "id": "com.google.android.documentsui:id\/toolbar",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,72]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "com.google.android.documentsui:id\/directory_header",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,72][320,228]"
+  },
+  {
+    "class": "android.widget.ImageButton",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[0,24][56,72]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[72,34][170,62]"
+  },
+  {
+    "class": "androidx.appcompat.widget.LinearLayoutCompat",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[224,24][320,72]"
+  },
+  {
+    "class": "android.view.ViewGroup",
+    "id": "com.google.android.documentsui:id\/refresh_layout",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "androidx.recyclerview.widget.RecyclerView",
+    "id": "com.google.android.documentsui:id\/horizontal_breadcrumb",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,72][320,120]"
+  },
+  {
+    "class": "android.widget.HorizontalScrollView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,120][320,168]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "com.google.android.documentsui:id\/header_container",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,168][296,228]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "com.google.android.documentsui:id\/option_menu_search",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[224,24][272,72]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[272,24][320,72]"
+  },
+  {
+    "class": "android.widget.GridView",
+    "id": "com.google.android.documentsui:id\/dir_list",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,24][320,640]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,72][110,120]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,120][320,168]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "com.google.android.documentsui:id\/header_title",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,168][248,228]"
+  },
+  {
+    "class": "androidx.appcompat.widget.LinearLayoutCompat",
+    "id": "com.google.android.documentsui:id\/sub_menu",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[248,174][296,222]"
+  },
+  {
+    "class": "androidx.cardview.widget.CardView",
+    "id": "com.google.android.documentsui:id\/item_root",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[24,232][156,416]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "com.google.android.documentsui:id\/breadcrumb_text",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[0,72][110,120]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "com.google.android.documentsui:id\/search_chip_group",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[20,120][320,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "com.google.android.documentsui:id\/sub_menu_list",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[248,174][296,222]"
+  },
+  {
+    "class": "android.view.View",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,232][156,416]"
+  },
+  {
+    "class": "androidx.cardview.widget.CardView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,232][156,416]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[24,120][123,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[131,120][220,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[228,120][320,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": false,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[332,120][320,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": false,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[464,120][320,168]"
+  },
+  {
+    "class": "android.widget.Button",
+    "id": "null",
+    "visible": false,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[591,120][320,168]"
+  },
+  {
+    "class": "android.widget.RelativeLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,232][156,416]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/thumbnail",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,232][156,364]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/preview_icon",
+    "visible": true,
+    "enabled": true,
+    "clickable": true,
+    "bounds": "[108,232][156,280]"
+  },
+  {
+    "class": "android.widget.LinearLayout",
+    "id": "com.google.android.documentsui:id\/nameplate",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,364][156,416]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "com.google.android.documentsui:id\/icon_thumb",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,232][156,364]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "com.google.android.documentsui:id\/icon_mime_lg",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[70,278][110,318]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[120,244][144,268]"
+  },
+  {
+    "class": "android.widget.FrameLayout",
+    "id": "com.google.android.documentsui:id\/icon",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[24,364][74,416]"
+  },
+  {
+    "class": "android.widget.RelativeLayout",
+    "id": "null",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[74,364][156,416]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "com.google.android.documentsui:id\/icon_mime_sm",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[36,375][66,405]"
+  },
+  {
+    "class": "android.widget.ImageView",
+    "id": "com.google.android.documentsui:id\/icon_check",
+    "visible": false,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[36,375][66,405]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "android:id\/title",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[74,372][144,391]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "com.google.android.documentsui:id\/details",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[74,391][115,408]"
+  },
+  {
+    "class": "android.widget.TextView",
+    "id": "com.google.android.documentsui:id\/date",
+    "visible": true,
+    "enabled": true,
+    "clickable": false,
+    "bounds": "[119,391][144,408]"
+  }
+]

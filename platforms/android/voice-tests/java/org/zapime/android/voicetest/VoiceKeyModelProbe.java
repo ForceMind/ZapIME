@@ -5,6 +5,7 @@ import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.*;
 import android.content.*;
 import android.graphics.Rect;
+import android.graphics.Bitmap;
 import android.os.*;
 import android.view.InputDevice;
 import android.view.MotionEvent;
@@ -43,7 +44,17 @@ final class VoiceKeyModelProbe {
         JSONArray shape=new JSONArray();for(AccessibilityNodeInfo n:nodes(automation.getRootInActiveWindow())){Rect b=new Rect();n.getBoundsInScreen(b);shape.put(new JSONObject().put("class",String.valueOf(n.getClassName())).put("id",String.valueOf(n.getViewIdResourceName())).put("visible",n.isVisibleToUser()).put("enabled",n.isEnabled()).put("clickable",n.isClickable()).put("bounds",b.toShortString()));}
         Files.write(new File(output,"voicekey-provider-ui-shape.json").toPath(),shape.toString(2).getBytes(StandardCharsets.UTF_8));
     }
-    static String selectOfficialDocument(UiAutomation automation,String filename,File output)throws Exception{
+    static MotionEvent fingerEvent(long down,long when,int action,float x,float y){
+        MotionEvent.PointerProperties pointer=new MotionEvent.PointerProperties();pointer.id=0;pointer.toolType=MotionEvent.TOOL_TYPE_FINGER;
+        MotionEvent.PointerCoords coords=new MotionEvent.PointerCoords();coords.x=x;coords.y=y;coords.pressure=1;coords.size=1;
+        MotionEvent event=MotionEvent.obtain(down,when,action,1,new MotionEvent.PointerProperties[]{pointer},new MotionEvent.PointerCoords[]{coords},0,0,1,1,0,0,InputDevice.SOURCE_TOUCHSCREEN,0);
+        SyncAccountProbe.check(event.getPointerCount()==1&&event.getPointerId(0)==0&&event.getToolType(0)==MotionEvent.TOOL_TYPE_FINGER&&event.getSource()==InputDevice.SOURCE_TOUCHSCREEN,"document event must be one real finger touchscreen pointer");return event;
+    }
+    static void providerScreenshot(UiAutomation automation,File output,String name)throws Exception{
+        Bitmap image=automation.takeScreenshot();SyncAccountProbe.check(image!=null,"dedicated CI provider screenshot unavailable");
+        try(OutputStream out=new FileOutputStream(new File(output,name))){SyncAccountProbe.check(image.compress(Bitmap.CompressFormat.PNG,100,out),"provider screenshot encoding failed");}finally{image.recycle();}
+    }
+    static String selectOfficialDocument(UiAutomation automation,String filename,File output,JSONObject report)throws Exception{
         boolean rootsOpened=false,downloadsOpened=false;Rect previous=null;long stableSince=-1;
         for(int attempt=0;attempt<150;attempt++){
             AccessibilityNodeInfo named=exactDocument(automation,filename);
@@ -51,11 +62,12 @@ final class VoiceKeyModelProbe {
                 if(!now.isEmpty()&&now.equals(previous)&&SystemClock.uptimeMillis()-stableSince>=200){
                     // Reacquire immediately before the one physical selection. An
                     // acknowledged down/up is never followed by a blind retry.
-                    AccessibilityNodeInfo fresh=exactDocument(automation,filename);Rect bounds=new Rect();if(fresh!=null)fresh.getBoundsInScreen(bounds);
+                    providerScreenshot(automation,output,"voicekey-provider-before.png");AccessibilityNodeInfo fresh=exactDocument(automation,filename);Rect bounds=new Rect();if(fresh!=null)fresh.getBoundsInScreen(bounds);
                     if(fresh!=null&&bounds.equals(now)){
-                        long when=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(when,when,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);down.setSource(InputDevice.SOURCE_TOUCHSCREEN);boolean sent;
+                        report.put("provider_touch_point",new JSONArray().put(bounds.centerX()).put(bounds.centerY())).put("provider_selected_filename_bounds",new JSONArray().put(bounds.left).put(bounds.top).put(bounds.right).put(bounds.bottom)).put("provider_pointer_id",0).put("provider_pointer_count",1).put("provider_tool_type",MotionEvent.TOOL_TYPE_FINGER).put("provider_event_source",InputDevice.SOURCE_TOUCHSCREEN);
+                        long when=SystemClock.uptimeMillis();MotionEvent down=fingerEvent(when,when,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY());boolean sent;
                         try{sent=automation.injectInputEvent(down,true);}finally{down.recycle();}SyncAccountProbe.check(sent,"official document physical down rejected");Thread.sleep(50);
-                        MotionEvent up=MotionEvent.obtain(when,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);try{sent=automation.injectInputEvent(up,true);}finally{up.recycle();}SyncAccountProbe.check(sent,"official document physical up rejected");return "stable_observed_filename_physical_touch";
+                        MotionEvent up=fingerEvent(when,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY());try{sent=automation.injectInputEvent(up,true);}finally{up.recycle();}SyncAccountProbe.check(sent,"official document physical up rejected");report.put("provider_physical_selection_count",1);Thread.sleep(200);providerScreenshot(automation,output,"voicekey-provider-after.png");return "stable_observed_filename_physical_touch";
                     }
                 }
                 if(previous==null||!previous.equals(now)){previous=now;stableSince=SystemClock.uptimeMillis();}
@@ -186,7 +198,7 @@ final class VoiceKeyModelProbe {
             stage="system SAF import";UiAutomation automation=i.getUiAutomation();AccessibilityServiceInfo info=automation.getServiceInfo();info.flags|=AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;automation.setServiceInfo(info);
             activity=i.startActivitySync(new Intent().setClassName(context,"org.zapime.android.VoiceSettingsActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));final Activity page=activity;
             stage="SAF launch actual settings control";SyncAccountProbe.main(i,()->{SyncAccountProbe.check(((Button)SyncAccountProbe.field(page,"chooseVoiceKey")).performClick(),"actual VoiceKey import control rejected");return null;});
-            stage="SAF observed official filename selection";report.put("provider_selection_method",selectOfficialDocument(automation,packageFilename,output));
+            stage="SAF observed official filename selection";report.put("provider_selection_method",selectOfficialDocument(automation,packageFilename,output,report));
             stage="SAF import completion";
             awaitActualImport(i,page,models,output,report);
             stage="SAF imported model fixed verification";File model=(File)call(models,"verified",new Class<?>[]{Context.class,BooleanSupplier.class},context,(BooleanSupplier)()->false);SyncAccountProbe.check(model.getName().equals(MODEL),"wrong immutable VoiceKey model version");

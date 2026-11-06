@@ -8,6 +8,14 @@
 
 PUBLIC 仓库 ForceMind/ZapIME；分支 `feat/voicekey-engine-import`，复用 PR #71 / Issue #72。main最新核验 `5621ab0e81780ca58c6cf74e97c93928a10f981a`。未强推、未合并、未改可见性、未发布稳定版，未操作用户电脑、手机、服务器或DNS。
 
+## 最新专项事实（程序源码08e8498）
+
+focused run42221304313 的API28首次完整SUCCESS：实际下载报告校验14主案例、23条Editable、真实30秒Android Handler/原生空闲worker退出、5条JNI参数边界、独立producer及实际系统IME全通过。生产与接受均125861样本，首非空partial1401ms，producer EOF到final1656ms；仅该合成fixture/模拟器，不是S25或自然人声。
+
+API35/36仍在SAF provider选择阶段失败，尚未进入该轮识别；不是新的背压失败。新测试驱动显式构造FINGER pointer（原simple MotionEvent默认UNKNOWN），保持单次选择/稳定几何/provider真正返回/固定模型全部断言。依据AOSP来源提出的兼容性解释仍待新的现代CI实证，不修改程序源码。
+
+08热修产品ARM/x86实际下载、源码/32许可/8JNI/16KiB/签名/DEX参数契约全部核验；full run42221304627的artifact13503554301，具体APK SHA与开发证书见full-08e84980证据。当前测试修改不改变程序源码，最终试用说明待现代专项及同源完整回归结果补全。
+
 ## 实际保存的实现
 
 - `20f68dcc`：独立官方模型来源审计。

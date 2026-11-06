@@ -25,7 +25,7 @@ from voicekey_cpu_probe import Blocked, digest, save, trusted_lock
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ('voicekey-model-report.json', 'voice-commit-report.json', 'voicekey-boundary-report.json', 'voicekey-watchdog-report.json',
-           'voicekey-provider-ui-shape.json')
+           'voicekey-provider-ui-shape.json', 'voicekey-provider-before.png', 'voicekey-provider-after.png')
 MODEL_CASES = {'fresh_voicekey_only_profile', 'actual_saf_fixed_model_import',
                'voicekey_selected_without_xasr', 'no_samples', 'all_zero',
                'ignored_tail', 'positive_lsb', 'negative_lsb', 'cancelled_empty',
@@ -97,6 +97,7 @@ def verify_permission_cases(rows):
 
 
 def verify_reports(model, commit, lock):
+    verify_finger_selection(model)
     verify_independent_producer(model)
     rows = model.get('cases', [])
     if (model.get('status') != 'PASS' or model.get('synthetic') is not True or
@@ -131,6 +132,19 @@ def verify_reports(model, commit, lock):
                 r.get('actual_editable_verified') is not True for r in rows)):
         raise ValueError('incomplete_actual_editable_confirmation_evidence')
     verify_permission_cases(rows)
+
+
+def verify_finger_selection(model):
+    point = model.get('provider_touch_point')
+    bounds = model.get('provider_selected_filename_bounds')
+    if (model.get('provider_pointer_id') != 0 or model.get('provider_pointer_count') != 1 or
+            model.get('provider_tool_type') != 1 or model.get('provider_event_source') != 4098 or
+            model.get('provider_physical_selection_count') != 1 or
+            not isinstance(point, list) or len(point) != 2 or
+            not isinstance(bounds, list) or len(bounds) != 4 or
+            any(type(n) is not int for n in point+bounds) or
+            not bounds[0] <= point[0] < bounds[2] or not bounds[1] <= point[1] < bounds[3]):
+        raise ValueError('missing_single_observed_finger_touch_selection_evidence')
 
 
 def verify_independent_producer(model):

@@ -26,3 +26,8 @@ docs/evidence/voicekey-runtime-20261106/second-model-42213679453/api36/* -text -
 docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api28/* -text -whitespace
 docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api35/* -text -whitespace
 docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api36/* -text -whitespace
+
+# Preserve original hotfix Android model reports/log bytes.
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api36/* -text -whitespace

@@ -1,0 +1,30 @@
+[
+  {
+    "architecture": "aarch64",
+    "source_checkout_commit": "eff2a920ef5049ac719eba6d3b901dca6c71822d",
+    "head_commit": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+    "prior_run_id": 42213679417,
+    "model_and_lock_unchanged": true,
+    "fixed_pcm_unchanged": true,
+    "fixed_reference_unchanged": true,
+    "all_6_run_hypotheses_unchanged": true,
+    "all_6_run_metrics_unchanged": true,
+    "distinct_audio_samples": 1,
+    "new_waiter_path": "NOT EXERCISED by this CPU helper: it retains immediate push plus bounded 1ms retries; runtime/JNI tests separately cover push_wait.",
+    "scope": "Actual fixed-model Linux CPU compatibility and error preservation; not natural speech, JNI, Android system IME, phone or S25 acceptance."
+  },
+  {
+    "architecture": "x86_64",
+    "source_checkout_commit": "eff2a920ef5049ac719eba6d3b901dca6c71822d",
+    "head_commit": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+    "prior_run_id": 42213679417,
+    "model_and_lock_unchanged": true,
+    "fixed_pcm_unchanged": true,
+    "fixed_reference_unchanged": true,
+    "all_6_run_hypotheses_unchanged": true,
+    "all_6_run_metrics_unchanged": true,
+    "distinct_audio_samples": 1,
+    "new_waiter_path": "NOT EXERCISED by this CPU helper: it retains immediate push plus bounded 1ms retries; runtime/JNI tests separately cover push_wait.",
+    "scope": "Actual fixed-model Linux CPU compatibility and error preservation; not natural speech, JNI, Android system IME, phone or S25 acceptance."
+  }
+]

@@ -187,6 +187,8 @@ jobs:
             target/voicekey-android/voicekey-watchdog-report.json
             target/voicekey-android/voice-commit-report.json
             target/voicekey-android/voicekey-provider-ui-shape.json
+            target/voicekey-android/voicekey-provider-before.png
+            target/voicekey-android/voicekey-provider-after.png
             target/voicekey-android/offline-uid.json
             target/voicekey-android/system-keyboard.json
             target/voicekey-android/ime-teardown.txt

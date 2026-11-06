@@ -35,6 +35,10 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                      provider_exit_observed=True, import_complete_status_observed=True,
                      drain_after_producer_eof_ms=100, remaining_final_timeout_ms=29900,
                      producer_eof_to_final_ms=200, stop_to_final_ms=200, finish_call_ms=100)
+        model.update(provider_pointer_id=0, provider_pointer_count=1, provider_tool_type=1,
+                     provider_event_source=4098, provider_physical_selection_count=1,
+                     provider_touch_point=[100, 300],
+                     provider_selected_filename_bounds=[74, 290, 144, 310])
         commit = {'synthetic': True, 'actual_jni_decoded_text_used': True,
                   'recognized_codepoints': 3,
                   'cases': [{'id': name, 'passed': True, 'actual_editable_verified': True}
@@ -143,6 +147,18 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                            ('producer_exited', False), ('producer_cleanup_completed', False),
                            ('provider_exit_observed', False), ('import_complete_status_observed', False),
                            ('remaining_final_timeout_ms', 30000), ('producer_eof_to_final_ms', 30001)]:
+            changed = copy.deepcopy(model)
+            changed[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                verify_reports(changed, commit, lock)
+
+    def test_selection_requires_finger_source_and_one_observed_target(self):
+        lock, model, commit = self.fixtures()
+        for key, value in [('provider_tool_type', 0), ('provider_event_source', 0),
+                           ('provider_pointer_id', 1), ('provider_pointer_count', 2),
+                           ('provider_physical_selection_count', 2),
+                           ('provider_touch_point', [200, 300]),
+                           ('provider_selected_filename_bounds', [])]:
             changed = copy.deepcopy(model)
             changed[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
