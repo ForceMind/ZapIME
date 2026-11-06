@@ -47,10 +47,8 @@ bash scripts/build_android_voice.sh "$abi" "$build"
 # Optional VoiceKey Rust JNI is a separate dynamic library. No third-party
 # model weights, reverse-engineered cloud clients or microphone recording are
 # automatically activated by its presence.
-export ANDROID_NDK_HOME="$sdk/ndk/28.2.13676358"
-export ZAPIME_ANDROID_ABI="$abi"
-export CMAKE_TOOLCHAIN_FILE="$root/integrations/voicekey/android.cmake"
-export LIBOPUS_NO_PKG=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
+# Offline-only adapter directly uses the pinned VoiceKey wtlocal Rust kernels.
+# VoiceKey cloud protocol core and Opus dependencies are NOT compiled here.
 # VoiceKey's current aarch64 int8 kernel uses dotprod unconditionally.
 # Limit this experimental alpha to supported ARM CPUs (S25). Before broad
 # release, upstream must add runtime detection and a scalar fallback.
