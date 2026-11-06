@@ -1,75 +1,53 @@
-# ZapIME / VoiceKey offline integration (experimental)
+# ZapIME / VoiceKey offline adapter
 
-Source: J3n5en/voicekey pinned in `vendor/voicekey` at
-`3ba017826eef7fac405198510b03859eb5b6c8c4`.
+Experimental product integration. Updated 2026-11-06.
 
-This module directly compiles VoiceKey's upstream **wtlocal-only** model,
-feature extraction, INT8 kernels and stream decoder source files using Rust
-`#[path]` references. Its original `crates/core` (reverse-engineered cloud
-service clients, built-in third-party protocol constants, Opus and CPAL)
-is **not a dependency of the Android adapter**. The entire original
-VoiceKey code remains available in the Git submodule for provenance and study.
+## Source and architecture
 
-## Integrated code
+The complete upstream repository is pinned at `vendor/voicekey`:
+`J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c8c4`.
 
-- Real Rust VoiceKey offline inference with model mmap cache.
-- Strictly bounded 16-kHz signed PCM input (8 frames of 100ms, 60-second cap).
-- Partial hypotheses are preview-only; final text is returned separately.
-- Dedicated model/inference workers and cancellation; no cloud fallback.
-- Android JNI library `libzapime_voicekey_adapter.so` with per-session owner,
-  cross-thread cancellation and a bounded finalization timeout.
-- Android `VoiceCapture` uses the existing microphone + focus/epoch + explicit
-  confirmation workflow for the selected offline recognizer.
-- Android Settings offers **X-ASR (default)** and **VoiceKey WeChat local
-  (experimental)**, with a user-initiated local file importer.
+The adapter uses four original wtlocal source modules through Rust path references: feature extraction, model loading, stream decoding and XNET parsing. `src/kernels.rs` is an attributed local adaptation of the upstream numerical kernels. Its AArch64 implementation replaces the unstable `vdotq_s32` intrinsic with stable NEON multiply/pairwise-add operations. The pristine source and authorship remain available in the submodule.
 
-## Build
+The product adapter does not depend on the upstream cloud protocol core, embedded service credentials, CPAL or Opus. Importing the full repository is not equivalent to enabling its online services or adopting its Android accessibility/clipboard injection path.
 
-The Git submodule is required:
+The Android side has a separate `NativeVoiceKey` JNI library, local engine preference, an explicit model importer and routing through ZapIME's existing AudioRecord and confirmation transaction. X-ASR remains the default recognizer. Partial text is preview-only; the existing editor/epoch/selection/privacy transaction controls insertion.
+
+## Verified baseline versus remaining acceptance
+
+Code commit `e24f1bd21ecd4fca99d909a972116e5a36e5f6c2` has successful isolated adapter CI and Android dual-ABI builds. Android run `42199407235` also passed the existing API28/35/36 regression jobs. These results do not establish VoiceKey-specific model-driven recognition or natural-speech performance on Samsung S25.
+
+A statically confirmed blocker remains at that baseline: `ZapInputMethodService.startVoice()` still tests X-ASR model readiness irrespective of the selected engine. Fix and test VoiceKey-only installation before treating the UI as a complete second-engine user flow.
+
+Cancellation of an async task must not be assumed to terminate its blocking decoder. Audit task ownership, timeout/close, blank PCM/partial results, backpressure, model cache invalidation/release and JNI exception boundaries. The stable ARM patch requires independent numerical and performance measurements; it is not a claim of equal speed to upstream.
+
+## Reproduction
+
+Follow the toolchain and protected-test rules in the root AGENTS.md:
 
 ```bash
-git submodule update --init vendor/voicekey vendor/msime
+git submodule update --init vendor/msime vendor/voicekey
+python3 scripts/verify_upstream.py
+cargo test --workspace --locked
 cargo test --manifest-path integrations/voicekey/Cargo.toml
-# Android SDK/NDK matching ZapIME AGENTS.md:
 bash scripts/build_android.sh arm64-v8a
 bash scripts/build_android.sh x86_64
 ```
 
-A successful Rust build **alone does not validate mobile inference**.
-Android JNI, APK packaging, native emulator tests and physical ARM quality
-testing must each be recorded in docs/STATUS.md.
+Commit an independently reviewed adapter lockfile and enforce `--locked` for that workspace as part of the next hardening slice. Do not silently upgrade pinned upstream source or reformat pristine vendor files. Format/test failures must not be hidden by continue-on-error.
 
-## Import and privacy
+## Model and privacy boundaries
 
-The VoiceKey mode starts disabled until selected. The model is **not** included
-in any ZapIME binary or cloud storage. The user must explicitly select the
-original Tencent WeChat offline model package, whose fixed size and MD5 are
-from VoiceKey's pinned `crates/wtlocal/src/pack.rs`; import performs bounded
-nested-ZIP extraction and runtime format verification, then saves SHA-256
-digests of extracted files. Every start rechecks the installed model files.
-The package's upstream MD5 is a **legacy identity check, not a substitute for
-an independently pinned SHA-256**; that pin and the model's redistribution/
-use rights must be established before public release. Do not distribute a
-model ZIP derived from VoiceKey without separate rights review.
+No VoiceKey third-party acoustic model is bundled by this adapter or uploaded to personal storage. The candidate importer checks the upstream package size/MD5 and writes per-file SHA256 values after installation. Those generated checksums are not an independent trust anchor. Before stable use, pin a verifiable package and per-member SHA256/size allowlist from a documented source, reject malformed or untrusted packages before parsing, and test interrupted publication and old-model recovery.
 
-No network request, credential, background recording, clipboard access or
-automatic server sync is introduced by the adapter. ZapIME's existing
-`VoiceCommitTransaction` still controls actual text insertion. The user
-can switch back to existing X-ASR at any time.
+The project owner has confirmed the friend's permission to integrate the author's source. Preserve attribution and record the terms for distribution; do not treat this as permission for third-party models, proprietary runtimes or unofficial service APIs. No automatic network fallback, recording upload or editing-context upload is introduced by the intended product flow.
 
-## Known gaps
+## Execution documents
 
-- Until Android CI is verified, the two-engine APK remains a **candidate**.
-- Physical Samsung S25 / natural-speech accuracy, RAM, CPU, battery and
-  start-to-final latency have not been measured.
-- VoiceKey aarch64 upstream presently assumes CPU dot-product support.
-  The experimental ARM64 binary is built for compatible modern CPUs;
-  upstream runtime dispatch or scalar fallback is required before broad ARM
-  distribution. The optional Android engine must not be marketed as all-ARM.
-- The upstream process-wide model cache does not yet have idle release.
-- Model importer needs an independent SHA-256 pin and storage interruption
-  recovery testing before a stable build. The existing X-ASR path is unaffected.
-- Windows, macOS, iOS second-engine activation and authorized cloud services
-  are not yet included.
+- [Product goals and stages](../../docs/DEVELOPMENT_PLAN.md)
+- [VoiceKey integration contract](../../docs/VOICEKEY_INTEGRATION.md)
+- [Verified evidence and acceptance checklist](../../docs/VOICEKEY_ACCEPTANCE.md)
+- [Current status](../../docs/STATUS.md)
+- [Work-session handoff](../../docs/WORK_HANDOFF_PROMPT.md)
 
-Reference roadmap: `docs/VOICEKEY_INTEGRATION.md` and Issue #72.
+The next deliverable is an independently verified, explicitly experimental Android test package and a focused S25 acceptance checklist, not an untested stable release.

@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-11-06",
+  "repository": "ForceMind/ZapIME",
+  "branch": "feat/voicekey-engine-import",
+  "pull_request": 71,
+  "pr_state": "open",
+  "pr_draft": true,
+  "pr_merged": false,
+  "tracking_issue": 72,
+  "code_commit": "e24f1bd21ecd4fca99d909a972116e5a36e5f6c2",
+  "code_tree": "45e8ce851fb3bf0e00ff6c1aa71f277bca12dbc7",
+  "main_commit": "5621ab0e81780ca58c6cf74e97c93928a10f981a",
+  "voicekey_commit": "3ba017826eef7fac405198510b03859eb5b6c8c4",
+  "verification_method": "Live GitHub connector reads of PR, commit, workflow runs, jobs and artifact metadata. Not a new build or a download verification.",
+  "workflow_runs": [
+    {"id": 42199407194, "name": "VoiceKey adapter (isolated)", "status": "completed", "conclusion": "success"},
+    {"id": 42199407188, "name": "Windows native TSF development", "status": "completed", "conclusion": "success"},
+    {"id": 42199407202, "name": "Independent ciphertext sync service", "status": "completed", "conclusion": "success"},
+    {"id": 42199407197, "name": "Offline speech CPU probe", "status": "completed", "conclusion": "success"},
+    {"id": 42199407181, "name": "ZapIME development checks", "status": "completed", "conclusion": "success"},
+    {"id": 42199407235, "name": "Android native input acceptance", "status": "completed", "conclusion": "success"}
+  ],
+  "android_jobs": [
+    {"id": 127830928384, "name": "Android development APK", "conclusion": "success", "observed_success_steps": ["arm64-v8a build", "x86_64 build", "Android API 28 native keyboard smoke"]},
+    {"id": 127835410023, "name": "Android API 36 native acceptance", "conclusion": "success"},
+    {"id": 127835410061, "name": "Android API 35 native acceptance", "conclusion": "success"}
+  ],
+  "artifact_metadata": {
+    "id": 13494970099,
+    "name": "ZapIME-Android-development",
+    "size_in_bytes": 234930585,
+    "digest_reported_by_github": "sha256:0669c42660866c3ed41ff2126810f42f15453bfe30f30f84ae4f203cc345271e",
+    "expired_at_check": false,
+    "expires_at_reported_by_github": "2027-02-04T10:01:15Z",
+    "downloaded_and_independently_hashed_in_this_handoff": false
+  },
+  "coverage_caveats": [
+    "Existing workflow success does not establish VoiceKey-specific model-driven end-to-end coverage.",
+    "No Samsung S25 or natural-speech test was performed in this documentation update.",
+    "No new Release or production signature was created.",
+    "Check individual steps for continue-on-error before treating a workflow success as a strict quality gate.",
+    "These observations belong to code_commit, not to later documentation or code commits."
+  ],
+  "statically_confirmed_blocker": {
+    "id": "VK-01",
+    "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+    "method": "startVoice",
+    "finding": "Readiness still checks VoiceModels.installed/recoverable instead of selecting the model manager for the chosen recognizer.",
+    "dynamic_reproduction_in_this_handoff": false
+  }
+}

@@ -1,61 +1,85 @@
-# VoiceKey 技术吸收与 ZapIME 多引擎语音方案
+# VoiceKey → ZapIME 双离线引擎整合方案 v2
 
-状态：架构决策与实施任务；**未表示 VoiceKey 代码已经集成或测试通过**。
+更新：2026-11-06。此版取代本文件早期“仅方案、未引入源码”的描述。阶段目标见 [开发计划](DEVELOPMENT_PLAN.md)，实际验证范围见 [验收矩阵](VOICEKEY_ACCEPTANCE.md)，最新决策见 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。
 
-## 目标
-保持 ZapIME 原生输入法与默认本地离线语音独立可用；借鉴 J3n5en/voicekey 的多渠道识别、候选对比、实时出字、会话生命周期与离线引擎实现，建立可插拔适配器。参考：https://github.com/J3n5en/voicekey 。
+## 1. 来源与现状
 
-## 已核对基线
-- ZapIME Android 已实现 sherpa-onnx 1.13.8 + X-ASR-zh-en INT8 的模型导入、录音、识别预览、确认插入，模拟器验收通过；真人/三星真机尚未验证。见 docs/VOICE_INPUT.md。
-- VoiceKey README 说明桌面端多渠道并行、实时/定稿候选、微信离线（macOS/Windows/Android）及 Apple Silicon Mac 豆包离线；iOS 为云端语音键盘；Android 为不替换输入法的辅助输入工具。
-- VoiceKey Rust workspace 包含 core/platform/wtlocal/hanbao 等；本次根目录 LICENSE 请求返回 404，不能据此确认授权状态。
+ZapIME 原有 Android 语音路径为固定 MSIME LocalAsr + sherpa-onnx 1.13.8 / ONNX Runtime 1.28.2 + X-ASR-zh-en 流式 INT8，仍为默认。VoiceKey 源码固定于 `vendor/voicekey`，来源 `J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c8c4`。完整源码已以子模块引入，而非把全部上游功能自动打进产品。
 
-## 集成原则
-1. **默认离线**：现有 Native 引擎作为必备基线，未选择云端时禁止上传音频、识别文字或上下文。
-2. **可插拔识别引擎**：定义 VoiceRecognizer 接口（capabilities、prepare、start、push_pcm、partial、final、cancel、close），识别会话必须有唯一 session_id、输入框 epoch、取消令牌与明确超时。
-3. **统一音频前端**：设备音频采集与重采样只做一次；按引擎支持的 PCM 格式分发有界帧，网络引擎需明确授权、连接状态和失败原因。
-4. **统一结果仲裁**：partial 仅供预览；final 按渠道、时间、稳定性显示；多渠道模式允许显式选择。不得将一个渠道的 partial 当成另一个渠道的 final。
-5. **上屏安全**：延续 ZapIME 当前确认插入、焦点/选区代次检查、隐私字段拒绝、最多一次 commitText；未来边说边上屏必须实现可撤销的组合文本事务，不能直接复用不受控的粘贴逻辑。
-6. **许可隔离**：未经 VoiceKey 作者明确授权及第三方依赖/模型/接口许可审核，不复制其实现、二进制、提取出的模型或非公开协议/凭据。先基于公开行为与自有代码实现适配接口。VoiceKey 自身声明部分云接口通过分析第三方客户端协议实现，可能变更或失效，不能作为产品默认能力。
-7. **平台策略**：Android 首先实现 Native 与可插拔适配器；桌面端复用 Rust 会话抽象；iOS 键盘扩展不能直接录音，须由主 App 录音并在平台允许的生命周期内接力，不承诺后台录音始终可用。
+`integrations/voicekey` 当前直接引用上游 `fbank.rs`、`model.rs`、`stream.rs`、`xnet.rs`；`kernels.rs` 是保留来源的最小本地适配副本。原 ARM `vdotq_s32` 在项目固定 Rust 工具链中引发 E0658，现改用稳定 NEON 乘法与成对加和，不再强制 `+dotprod` 或使用旧的 `/proc/cpuinfo` 限制。编译通过不能证明该替代路径与原 VoiceKey 等速，须做数值及 ARM 性能对照。
 
-## 阶段任务与验收
-### P0：Android Alpha（最先交付）
-- 固定当前可下载 APK/模型与 SHA，三星 S25 实测安装、九键/全键、权限、冷/热启动、自然中文、长句、停顿、后台切换和焦点变化。
-- 收集自愿提供的非敏感测试句：逐句 CER、首字/定稿延迟、峰值内存、耗电、崩溃；合成样本不得冒充真人成绩。
-- UI 保留默认离线语音；确保完全断网可用。
+当前适配器不编译 VoiceKey 的非公开云协议核心、内置第三方服务密钥、CPAL 或 Opus。上游桌面应用、Android 无障碍注入、iOS 宿主和其他引擎保留供研究，不直接接管 ZapIME 的包名、录音、权限或上屏流程。
 
-### P1：VoiceKey 兼容式适配层
-- 定义引擎 capability：offline/streaming/languages/network_required/model_size/platforms；统一事件协议与故障隔离。
-- 实现 MockRecognizer、NativeRecognizer、并行仲裁器及自动化测试（取消、迟到结果、焦点切换、静音、网络失败、空结果、顺序错乱）。
-- 在设置页提供“本地优先 / 多渠道对比（实验性）”；未实际集成并验证的渠道不得显示为可用。
+## 2. 目标架构
 
-### P2：经许可审查的可选引擎
-- 向 VoiceKey 作者确认项目许可证、可复用模块、模型及第三方服务使用与再分发权限。
-- 若授权允许，再以独立 feature/module 评估 wtlocal 的性能、ABI、模型来源和许可；所有下载必须显式同意并展示来源。
-- 云端渠道仅在合法稳定的 API、用户授权、隐私告知及可撤销开关满足后接入；不硬编码逆向接口或提取凭据。
+```text
+显式语音入口 + 当前编辑器/隐私/选区检查
+    → 本次会话锁定 engine_id 与 model_id
+    → 可信模型管理（X-ASR / VoiceKey 各自独立）
+    → ZapIME AudioRecord，16 kHz 单声道 PCM16
+    → 独立语音 worker + 有界输入/事件队列
+        ├─ X-ASR：现有 NativeVoice / LocalAsr
+        └─ VoiceKey：NativeVoiceKey / Rust 离线适配器
+    → 带 session/epoch 的 partial 预览与 final 定稿
+    → VoiceCommitTransaction 复核原输入框/选区/隐私
+    → 用户确认后最多一次 commitText
+```
 
-### P3：跨平台
-- macOS/Windows 独立宿主和输入焦点验收；iOS 主 App + 键盘接力的真实设备验证。
-- 对比 VoiceKey 体验，但不得直接宣称准确率、速度或稳定性等同。
+上图是统一产品契约；并不表示所有状态与校验都已实现正确。不得在 UI/按键线程做模型 IO、哈希、解码、等待网络或阻塞式远端编辑器读取。
 
-## 完成定义
-至少一个 Android 真机完整安装、自然语音识别并确认插入；断网、焦点/权限/取消测试通过；多引擎适配器的自动化测试通过；第三方模块仅在许可和安全审计通过后进入可分发包。
+能力描述至少包含引擎/模型版本、offline、streaming、支持平台和 PCM 格式、准备状态、错误码、资源限制。未安装、校验失败、运行库不可用、用户未授权和平台不支持必须区分。没有云端授权时不得自动建立连接或回退上传。
 
-## 不在本次提交范围
-本次只提交技术吸收与执行文档，不包含 VoiceKey 源码、二进制、模型、第三方协议实现，也不代表已完成适配器、真机测试或发布。
+## 3. 当前代码接点
 
-## 源码级核查补充（2026-11-05）
-本轮已直接读取 VoiceKey 仓库下列源码文件（只读研究，没有复制到 ZapIME）：
-- `Cargo.toml`：Rust workspace 1.9.0，包含 `crates/core`、`crates/platform`、`crates/hanbao`、`crates/wtlocal`、`app/src-tauri`。
-- `crates/core/src/lib.rs`：`Engine` trait 定义 `run(Audio, Partial) -> Result<String>` 和可选 `prewarm()`；`Audio` 为无界 `tokio::sync::mpsc::UnboundedReceiver<Vec<i16>>`，20ms / 16kHz / 单声道 Int16（每帧320样本）。
-- `crates/wtlocal/src/lib.rs`：`LocalEngine` 使用 `spawn_blocking`，缓存 `Arc<Model>`，按流追加音频、每30个特征帧且不早于上次计算耗时3倍时发 partial，结束时 `finish()`。
-- `crates/wtlocal/Cargo.toml`：依赖 `memmap2`、`rayon`、`tokio` 等。
-- 仓库根目录 `LICENSE` 查询返回 404；朋友口头允许“使用”是合作信号，但商业分发、修改、再授权以及模型和第三方接口许可仍需分别明确。
+| 路径 | 用途 | 接续重点 |
+| --- | --- | --- |
+| `integrations/voicekey/src/lib.rs` | 有界音频、缓存、流式推理和事件 | 取消、终止、缓存版本、资源上限、无输入行为 |
+| `integrations/voicekey/src/android.rs` | JNI 句柄、线程归属及返回值 | 异常隔离、取消竞态、超时后任务回收、正确 PCM 证据 |
+| `integrations/voicekey/src/kernels.rs` | 稳定 NEON 兼容补丁 | ARM 数值对照、性能、极值/尾块测试与来源保留 |
+| `NativeVoiceKey.java` | 可选 JNI 库绑定 | 实际加载、符号与 ABI 检查 |
+| `VoiceKeyModels.java` | 用户显式离线包导入 | 固定信任锚、有界提取、原子发布与恢复 |
+| `VoiceEnginePreferences.java` / `VoiceSettingsActivity.java` | 本地选择和模型页面 | 能力可用性、错误可见、切换生效边界 |
+| `VoiceCapture.java` / `ZapInputMethodService.java` | 录音调度和语音入口 | 选择一致性、焦点/隐私、入口不得依赖另一引擎 |
+| `scripts/build_android.sh` / `scripts/check_apk.py` | 双 ABI 打包 | 锁依赖、16KiB、实际符号/动态依赖/资产验证 |
 
-**具体整合建议**：
-1. 先在 ZapIME 自有代码中实现有界音频队列的 `RecognizerAdapter`，不要照搬 VoiceKey 的无界队列；按 Android 既有 session/ticket/epoch 处理取消、结果过期和焦点变化。
-2. 在测试夹具中加入 VoiceKey 式 `prewarm` 与 partial 自适应节流，测量首字延迟、CPU 峰值、内存与耗电；不能仅以离线模型大小判断速度。
-3. 许可明确后，优先试验 `wtlocal` 作为独立可选引擎；模型文件必须由用户合法获取、显式导入，不默认随 APK 分发。
-4. 将 VoiceKey 多渠道候选作为交互设计参考；云渠道须采用有授权的稳定接口，不直接依赖第三方非公开协议。
-5. 对照测试同一批真人自愿录音的 CER、首字延迟、定稿延迟和峰值资源，三星 S25 必测；对比结果决定默认引擎，不预设 VoiceKey 一定更快。
+Java 路径均相对于 `platforms/android/java/org/zapime/android/`。
+
+## 4. 已确认的首个修复项
+
+在基线 `e24f1bd...` 的 `ZapInputMethodService.startVoice()` 中，准备条件仍为 `VoiceModels.installed(this) || VoiceModels.recoverable(this)`，并未依据 `VoiceEnginePreferences` 选择模型管理器。因此仅导入 VoiceKey、未安装 X-ASR 时会被旧入口条件拦截。此结论来自静态源码检查；本轮未执行真人复现。
+
+先修复该逻辑并提供五类入口回归：仅 X-ASR、仅 VoiceKey、两者都有、均没有、所选模型损坏。入口只作有界能力提示，最终可信验证仍在独立 worker；不能以修复入口为由把大文件哈希搬到 UI。
+
+## 5. 必须完成的健壮性审计
+
+以下是需以测试核实并收口的风险，不是已通过声明。
+
+**会话与取消。** `abort` 一个异步等待任务不等于已经停止 `spawn_blocking` 内的模型计算。取消令牌须贯穿加载、音频消费、partial、final；超时/取消/close 后不能生成可上屏事件，不能留下无限运行的后台推理。`finish()` 等待期间即使取消或超时，任务和句柄也必须有明确所有者与回收路径。测试重复开始/停止、四句柄容量、权限撤销、键盘隐藏、光标/编辑器切换与慢解码。
+
+**PCM 与结果。** 只根据成功接受的有效 PCM 前缀累计非零证据，不能写死 `has_nonzero_pcm=true`；无输入与全零时 partial/final 都必须为空且避免不必要尾解码。该规则不是 VAD 或真实环境静音判定。没有新 partial 时不要用空值擦掉上一次预览；结果携带来源与会话标识，晚到结果不能串场。终稿不能自动插入或自动学习。
+
+**背压与资源。** 有界队列满时须明确停止/报错或在非 UI worker 有界等待，不能静默丢音；测试 60 秒/960000 样本、尾块、极端慢机、事件洪泛、快速取消再录。模型缓存不能仅按目录路径复用已经替换的权重；导入验证不能污染活动缓存。定义闲置释放与内存压力行为，确保 mmap 文件不被在用时原地覆盖。
+
+**JNI 与数值。** 检查所有入口的 owner/生命周期、长度/空指针/非法路径、panic/异常边界与迟到 cancel；错误不得跨 FFI 杀死输入法。NEON 补丁需要 ARM 上与标量结果对照，不用 x86 测试替代；覆盖负数、边界值、非整块维度等。先保住正确性再优化速度，不为通过构建而切换未审计工具链或移除门禁。
+
+## 6. 可信模型管理
+
+当前 VoiceKey 导入器使用固定上游包尺寸/MD5，并在安装后生成每文件 SHA256。这只能提供有限的包身份及安装后完整性检查，**不等于产品已具备可信固定 SHA256 白名单**。
+
+在稳定使用前需要：从可追溯来源确定固定模型版本、原始包 SHA256、成员路径/长度/SHA256及许可材料；将受信清单绑定 APK/构建，而非相信导入包或新生成的自签清单。大文件/成员数/总解压/嵌套输入都要有上限；拒绝重复成员、路径穿越、符号链接、未知模型组合和异常词表。未经可信校验，不进入本地模型解析或推理。
+
+安装采用 app-private 暂存、完整验证、原子发布、失败恢复旧模型；测导入取消、存储不足、损坏包、发布中断、重复导入、进程重启和使用中替换。SHA/解压不在主线程；语音模型不进入个人备份或 R2。保留 X-ASR 既有可信导入机制，不为兼容第二引擎放宽原白名单。
+
+用户已确认作者许可源码整合；继续整理可分发授权证据和第三方权利，不再把“是否允许用朋友的代码”当成待用户确认的问题。未经独立权利核验，不在公开产物中捆绑第三方权重、专有运行库或厂商账号凭据。模型获取受阻时完成其余安全代码和测试，并明确列出缺口，不制作假模型或假识别文字。
+
+## 7. CI、评测和交付
+
+保持独立适配器工作区与主输入核心隔离，锁定依赖和上游提交；补齐独立 Cargo.lock 后在 CI 使用 --locked。格式、测试和安全检查恢复为硬门禁，不能让 continue-on-error 掩盖失败。格式化本地补丁，不无意改写固定 vendor 源码。
+
+既有 Android 回归必须保持；新增测试要明确选中 VoiceKey 并加载其真实模型。依次区分纯状态机/合成 PCM、模型驱动解码、独立 Editable、已激活 IME、自然麦克风与 ARM 真机证据。专项覆盖和产物要求详见 [验收矩阵](VOICEKEY_ACCEPTANCE.md)。
+
+效率比较区分模型准备/校验、加载、首字、停止到终稿、终稿到确认上屏。相同音频按相同喂入方式分别运行两引擎，记录 RTF、P50/P95、CER、峰值资源、失败。外部 VoiceKey 的快感不能直接等同于本次移植性能；sherpa CPU 探针也不是 S25 的端到端延迟。
+
+## 8. 后续扩展而非本轮默认
+
+先 Android 双引擎闭环，再做桌面原生宿主、iOS 主 App/键盘接力、本地对比候选和经授权的云端能力。保留 VoiceKey 的预热、候选对比、稳定预览等设计价值，但不把多渠道并行常开、无障碍注入或第三方协议原样替换 ZapIME 的原生安全边界。
