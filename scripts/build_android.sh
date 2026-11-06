@@ -29,6 +29,18 @@ cp target/resources/* "$build/assets/dictionary/"
 cp LICENSE "$build/assets/licenses/GPL-3.0.txt"
 cp third_party/licenses/* "$build/assets/licenses/"
 cp third_party/NOTICE.txt "$build/assets/NOTICE.txt"
+mkdir -p "$build/assets/voice-licenses"
+cat > "$build/assets/voice-licenses/voicekey-source.txt" <<'EOF'
+VoiceKey by J3n5en and contributors
+Source: https://github.com/J3n5en/voicekey
+Pinned source version: 3ba017826eef7fac405198510b03859eb5b6c8c4
+Imported as a separate Git submodule under vendor/voicekey.
+Use of the author's code is authorized by the project owner, who
+confirmed the author's permission. Separate third-party acoustic model
+and proprietary service API rights are not granted by that permission.
+No VoiceKey third-party model data is bundled into the APK.
+This Android build uses only the optional offline recognizer adapter.
+EOF
 python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/rust-licenses"
 cp "target/$rust_target/release/libzapime_core.so" "$build/lib/$abi/"
 bash scripts/build_android_voice.sh "$abi" "$build"
