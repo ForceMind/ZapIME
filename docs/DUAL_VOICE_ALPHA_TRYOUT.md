@@ -1,21 +1,31 @@
 # Android 双离线语音 Alpha 候选试用
 
-更新：2026-11-06。本文对应正在验收的双引擎候选（包含权限复查修补，最终固定包待验），**不是已经发布或通过验收的下载公告**。X-ASR 保持默认，VoiceKey 为实验选项；是否推荐第二引擎，由同一台手机、相同语料的实测决定。
+更新：2026-11-06。本文对应正在验收的双引擎候选（包含权限复查与背压修补），**不是已经发布或通过验收的下载公告**。X-ASR 保持默认，VoiceKey 为实验选项；是否推荐第二引擎，由同一台手机、相同语料的实测决定。
 
-## 当前交付状态
+## 当前候选与下载（现代专项仍在核验）
 
-| 项目 | 当前状态 |
+程序固定源码：[`08e84980562ecc8fab436ffcdab6e5aee8c567e7`](https://github.com/ForceMind/ZapIME/tree/08e84980562ecc8fab436ffcdab6e5aee8c567e7)。PR [#71](https://github.com/ForceMind/ZapIME/pull/71)，跟踪 [#72](https://github.com/ForceMind/ZapIME/issues/72)。后续 `c56b3cbcaf4a80a28ee99b091229485be0aaf490` 只修现代文件选择器的测试手指事件，程序路径已机器比较无变化；新的现代专项仍待实际结果。
+
+[固定双ABI构建下载](https://github.com/ForceMind/ZapIME/actions/runs/42221304627/artifacts/13503554301)：登录GitHub后下载 `ZapIME-Android-development` ZIP，解压选择 `android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk` 用于ARM64手机试用；x86_64版用于兼容的模拟器。ZIP的实际字节/摘要及APK签名/16KiB/JNI/许可/DEX均已独立复核，见[产物记录](evidence/voicekey-runtime-20261106/full-08e84980-package-verification.json)。Actions产物有保存期限，下载后保留固定源码与校验资料；不承诺永久下载服务。
+
+| 文件 | 字节数 | 实际SHA256 |
+| --- | ---: | --- |
+| ARM64 APK | 51785617 | `6f6b156c1872de23d76b0981120147143f46bb6f5378bc5ff978a9f8aba73f13` |
+| x86_64 APK | 53108903 | `cce3801275b21e2cedd43fd126bab690e0f4f1b83ea9de26e51010f343122695` |
+| 完整下载ZIP | 234974569 | `5e18aebd7a15b575acc8c01d0ea8bb77c44bce222b9e35d6084d6da23b2aec73` |
+
+开发证书SHA256：`08582031e115a8c819d3e7cf7105e5f683d04fec65b32aab40959b39d32b9547`。两个APK同签，和先前runner/独立focused构建的证书不同。**升级前先备份并保存恢复码；签名不同时不能直接覆盖，不要删除唯一未备份资料。** 这是开发候选，没有正式签名、公证或稳定发布。
+
+固定源码重建需要仓库所锁定的Rust1.97.1、AndroidAPI36/build-tools35/NDK28.2.13676358及JDK17。执行原 `scripts/build_android.sh arm64-v8a`，完整步骤见workflow。临时开发密钥和构建时间戳会改变输出摘要，不宣称不同机器的APK逐字节相同。仅在云端隔离CI运行标记为dedicated emulator的设备验收脚本；不要把这些脚本用于个人手机。
+
+| 验收层级 | 当前事实 |
 | --- | --- |
-| 中间实验源码（后续权限修补另行构建） | [`5bbfe310e716762b36cdb0cf28b09ad5a2e1818c`](https://github.com/ForceMind/ZapIME/tree/5bbfe310e716762b36cdb0cf28b09ad5a2e1818c)，PR [#71](https://github.com/ForceMind/ZapIME/pull/71)，跟踪 [#72](https://github.com/ForceMind/ZapIME/issues/72) |
-| Android 新候选构建与三 API 验收 | [run 42211989441](https://github.com/ForceMind/ZapIME/actions/runs/42211989441)，PENDING；以实际作业和原始报告为准 |
-| 本候选 APK 下载、字节数、SHA256、签名与对齐 | PENDING；尚未发布固定试用下载，不使用旧包的摘要代填 |
-| VoiceKey 仅安装路径、真实 SAF/JNI 与系统 IME | PENDING；已经新增专项门禁，待实际 CI 执行 |
-| 三星 S25、ARM 自然语音与同机公平比较 | NOT RUN；集中操作见 [S25 验收单](S25_DUAL_VOICE_CHECKLIST.md) |
-| 正式签名、稳定发布 | 未进行；开发候选、试用与稳定发布分别验收 |
+| 独立模型/真实JNI/producer/确认/系统IME | 08 focused API28已实际通过14主案例、23Editable及独立125861样本、30秒受控watchdog；API35/36驱动修正后仍待新结果 |
+| ARM原生CPU | 实际LinuxARM数值、26单测、固定模型解码通过；不是AndroidARM手机 |
+| 三星S25/自然人声/同机能耗和性能 | NOT RUN，集中操作见[S25验收单](S25_DUAL_VOICE_CHECKLIST.md) |
+| 四端完整产品、E2EE资料同步与正式发布 | 未完成，不由本候选代填 |
 
-本页所在后续提交补充了结果回调/确认前后权限复查，新增23条确认事务测试。`5bbfe31` 产物仅作中间实验与回归证据，不能作为包含该修补的最终Alpha。最终源码、APK下载和SHA须在实际新构建验证后补全。
-
-既有 [Android 开发版说明](ANDROID_TRYOUT.md)仍对应其文中固定的历史包；其中的通过结果、下载和校验值不代表本双引擎候选。根目录 [STATUS](STATUS.md)及[专项验收记录](VOICEKEY_ACCEPTANCE.md)保留实际进展和失败。
+根[STATUS](STATUS.md)、[验收记录](VOICEKEY_ACCEPTANCE.md)和原始证据保留各次真实失败。旧[Android试用说明](ANDROID_TRYOUT.md)对应其自己的历史包，不混用摘要和通过结论。
 
 ## 两套模型分别准备
 
@@ -23,7 +33,7 @@
 
 ### X-ASR
 
-取得与候选构建对应的 `ZapIME-XASR-model.zip`，在主 App「离线语音 · 模型与权限」选择「导入离线模型 ZIP」。安装成功后选择「使用 X-ASR（原有离线引擎）」。固定每成员尺寸/SHA 与重建命令见 [语音说明](VOICE_INPUT.md)。发布候选时会补全实际产物的校验值；不要混用另一构建的模型或历史 ZIP 摘要。
+取得与候选构建对应的 `ZapIME-XASR-model.zip`，在主 App「离线语音 · 模型与权限」选择「导入离线模型 ZIP」。安装成功后选择「使用 X-ASR（原有离线引擎）」。固定每成员尺寸/SHA 与重建命令见 [语音说明](VOICE_INPUT.md)。同一下载ZIP也带此模型包；固定成员白名单由App复核。不要混用未知来源模型或拿APK摘要当模型摘要。
 
 ### VoiceKey 微信离线
 
@@ -47,7 +57,7 @@ VoiceKey 源码固定为 [`J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c
 
 ## 安装后集中试用
 
-在本页补全真实 APK 下载及校验值后再按该候选安装。先导出个人资料并独立保存加密备份恢复码；不同 CI runner 的开发签名可能不同，不能保证覆盖安装。不要为了安装开发候选删除唯一未备份资料。个人资料备份不等于账号令牌、设备授权或 E2EE 密钥的完整恢复包。
+按本页固定APK与校验值安装；现代专项完成情况先核对上表。先导出个人资料并独立保存加密备份恢复码；不同 CI runner 的开发签名可能不同，不能保证覆盖安装。不要为了安装开发候选删除唯一未备份资料。个人资料备份不等于账号令牌、设备授权或 E2EE 密钥的完整恢复包。
 
 1. 打开主 App，按提示在系统中启用并选择闪电输入法。先在普通输入框验证拼音、九键/全键、退格、候选和资料插入。
 2. 在「离线语音 · 模型与权限」只导入准备试用的引擎模型，明确选择引擎，再允许麦克风。可以仅安装 VoiceKey 测试独立准备路径；另一引擎模型缺席不应拦截。
@@ -55,6 +65,8 @@ VoiceKey 源码固定为 [`J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c
 4. 先用非敏感测试文字验证移动光标、切换输入框/应用、隐藏键盘后的取消保护；结果不能写入新位置。密码及禁止学习字段不开放语音。
 5. 模型准备完成后关闭 Wi-Fi 和移动数据，重复录音、预览、停止、重录与确认。推理在本机进行，没有云识别回退；录音默认不保存、不上传。网络故障不得阻塞普通输入。
 6. 按 [S25 集中验收单](S25_DUAL_VOICE_CHECKLIST.md)一次完成权限、蓝牙、长句、取消、模型故障、触感/主题和输入回归，统一记录失败；不在个人设备运行仓库中限定临时 GitHub 模拟器的 CI 脚本。
+
+CPU固定合成句目前speech-v1 CER为15/22，错误完整保留，不代表自然人声表现，不能据此推荐VoiceKey；X-ASR继续默认。
 
 当前预览为只读。识别错误可重录，或确认插入后在正文中修改。不能用模拟器静音、合成音单句、RTF 或 `100%-CER` 作为自然人声准确率及手机端到端延迟结论。同机比较应分别记录模型校验、冷/热加载、首个非空预览、停止到定稿、CER、峰值内存、CPU、能耗和失败样例；样本数及 P50/P95 的口径见验收单。
 

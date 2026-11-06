@@ -16,6 +16,14 @@ API35/36仍在SAF provider选择阶段失败，尚未进入该轮识别；不是
 
 08热修产品ARM/x86实际下载、源码/32许可/8JNI/16KiB/签名/DEX参数契约全部核验；full run42221304627的artifact13503554301，具体APK SHA与开发证书见full-08e84980证据。当前测试修改不改变程序源码，最终试用说明待现代专项及同源完整回归结果补全。
 
+## c56现代验证及剩余CI环境准备
+
+focused42224836288 三API真实模型全部通过，下载后严格核验14主/23Editable/boundary/watchdog/全部125861样本及单次FINGER触屏。API28/35随后真实系统IME通过。API36在开始录音前系统拒绝显示输入视图（mViewsCreated=false、mInputStarted=true、onShowSoftInput失败），所以整体仍FAIL，原件完整保留。
+
+独立模型脚本未运行既有android_smoke.py第28行的虚拟键盘准备。该模拟器配置有硬键盘；服务dump的mShowImeWithHardKeyboard=1是AOSP内部FALSE枚举，不可误读为secure设置已启用。本切片仅在已核实的临时CI emulator中记录原secure值、设置show_ime_with_hard_keyboard=1并读回，结束后恢复并验证。没有改产品onShowInputRequested、反射创建输入view、降低断言或在个人设备执行。
+
+产品源码继续固定08e8498，新的API36整体结果等待真实CI。
+
 ## 实际保存的实现
 
 - `20f68dcc`：独立官方模型来源审计。

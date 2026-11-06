@@ -222,6 +222,8 @@ def main():
     fixture = 'ZapIME-VoiceKey-'+os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_RUN_ATTEMPT']+'.apk'
     shared_path = '/sdcard/Download/'+fixture
     pushed = False
+    keyboard_policy_before = None
+    keyboard_policy_changed = False
     try:
         verify_package(args.package, lock)
         for apk in (ROOT/'target/android-voice-tests/ZapIME-voice-tests.apk',
@@ -269,6 +271,23 @@ def main():
                 verify_fixture_report(model, ROOT/'target/voice-probe/synthetic.wav')
                 summary['saf_jni_editable'] = 'PASS'
                 run('shell', 'pm', 'grant', 'org.zapime.android', 'android.permission.RECORD_AUDIO')
+                # Match android_smoke.py's established virtual-keyboard setup.
+                # This guarded temporary emulator may expose a hardware keyboard;
+                # leave the product's system input-view policy unchanged.
+                keyboard_policy_before = run('shell', 'settings', 'get', 'secure',
+                                             'show_ime_with_hard_keyboard',
+                                             text=True, capture_output=True).stdout.strip()
+                if keyboard_policy_before not in ('null', '0', '1'):
+                    raise ValueError('unexpected_emulator_soft_keyboard_policy')
+                keyboard_policy_changed = True
+                run('shell', 'settings', 'put', 'secure', 'show_ime_with_hard_keyboard', '1')
+                policy = run('shell', 'settings', 'get', 'secure', 'show_ime_with_hard_keyboard',
+                             text=True, capture_output=True).stdout.strip()
+                if policy != '1':
+                    raise ValueError('emulator_soft_keyboard_policy_not_applied')
+                summary['emulator_soft_keyboard_policy'] = {'before': keyboard_policy_before,
+                                                           'applied_and_read_back': policy,
+                                                           'scope': 'Dedicated CI only; product system keyboard policy unchanged'}
                 for action in ('enable', 'set'):
                     run('shell', 'ime', action, 'org.zapime.android/.ZapInputMethodService')
                 completed = run('shell', 'am', 'instrument', '-w', '-r', '-e', 'voice_only', 'true',
@@ -310,16 +329,33 @@ def main():
         raise
     finally:
         try:
-            if pushed:
-                # The exact numeric-run fixture is the only shared document removed.
-                run('shell', 'rm', shared_path)
-            summary['shared_document_removed'] = True
-        except Exception:
-            summary['shared_document_removed'] = False
-            summary['status'] = 'FAIL'
-            raise
+            if keyboard_policy_changed:
+                try:
+                    if keyboard_policy_before == 'null':
+                        run('shell', 'settings', 'delete', 'secure', 'show_ime_with_hard_keyboard')
+                    else:
+                        run('shell', 'settings', 'put', 'secure', 'show_ime_with_hard_keyboard', keyboard_policy_before)
+                    restored = run('shell', 'settings', 'get', 'secure', 'show_ime_with_hard_keyboard',
+                                   text=True, capture_output=True).stdout.strip()
+                    if restored != keyboard_policy_before:
+                        raise ValueError('emulator_soft_keyboard_policy_restore_failed')
+                    summary['emulator_soft_keyboard_policy_restored'] = True
+                except Exception:
+                    summary['emulator_soft_keyboard_policy_restored'] = False
+                    summary['status'] = 'FAIL'
+                    raise
         finally:
-            save(out/'acceptance-summary.json', summary)
+            try:
+                if pushed:
+                    # The exact numeric-run fixture is the only shared document removed.
+                    run('shell', 'rm', shared_path)
+                summary['shared_document_removed'] = True
+            except Exception:
+                summary['shared_document_removed'] = False
+                summary['status'] = 'FAIL'
+                raise
+            finally:
+                save(out/'acceptance-summary.json', summary)
 
 
 if __name__ == '__main__':

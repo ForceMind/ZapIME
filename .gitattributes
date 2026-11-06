@@ -31,3 +31,11 @@ docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api36/* -text 
 docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api28/* -text -whitespace
 docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api35/* -text -whitespace
 docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api36/* -text -whitespace
+
+# Finger-driver run: retain original source-verified model/UI evidence.
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api36/* -text -whitespace
+
+# SDK dexdump excerpt: original tool whitespace is part of the recorded bytes.
+docs/evidence/voicekey-runtime-20261106/full-08e84980-official-dexdump-excerpt.txt -text -whitespace
