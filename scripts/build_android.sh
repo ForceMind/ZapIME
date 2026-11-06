@@ -32,6 +32,20 @@ cp third_party/NOTICE.txt "$build/assets/NOTICE.txt"
 python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/rust-licenses"
 cp "target/$rust_target/release/libzapime_core.so" "$build/lib/$abi/"
 bash scripts/build_android_voice.sh "$abi" "$build"
+# Optional VoiceKey Rust JNI is a separate dynamic library. No third-party
+# model weights, reverse-engineered cloud clients or microphone recording are
+# automatically activated by its presence.
+export ANDROID_NDK_HOME="$sdk/ndk/28.2.13676358"
+export ZAPIME_ANDROID_ABI="$abi"
+export CMAKE_TOOLCHAIN_FILE="$root/integrations/voicekey/android.cmake"
+export LIBOPUS_NO_PKG=1 CMAKE_POLICY_VERSION_MINIMUM=3.5
+RUSTFLAGS="-C link-arg=-Wl,-z,max-page-size=16384" \
+  cargo build --release --manifest-path integrations/voicekey/Cargo.toml --target "$rust_target"
+voicekey_so="$root/integrations/voicekey/target/$rust_target/release/libzapime_voicekey_adapter.so"
+[[ -s "$voicekey_so" ]] || { echo "VoiceKey JNI library missing" >&2; exit 1; }
+cp "$voicekey_so" "$build/lib/$abi/libzapime_voicekey_adapter.so"
+"$ndk/llvm-readelf" -l "$build/lib/$abi/libzapime_voicekey_adapter.so" | \
+  awk '/LOAD/{if ($NF != "0x4000" && $NF != "0x10000" && $NF != "0x1000" && $NF != "0x10000") {print "Unexpected LOAD alignment:",$NF; exit 1}}'
 "$tools/aapt2" compile --dir platforms/android/res -o "$build/resources.zip"
 "$tools/aapt2" link -o "$build/base.apk" --manifest platforms/android/AndroidManifest.xml -I "$android_jar" -A "$build/assets" "$build/resources.zip" --java "$build/generated"
 find platforms/android/java "$build/generated" -name '*.java' > "$build/java-sources.txt"
