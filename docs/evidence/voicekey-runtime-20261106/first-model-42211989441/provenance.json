@@ -1,0 +1,265 @@
+{
+  "source_commit": "5bbfe310e716762b36cdb0cf28b09ad5a2e1818c",
+  "run_id": 42211989441,
+  "scope": "Original failed first VoiceKey-only gates. No weights or audio included; no overall VoiceKey acceptance. Artifacts downloaded and ZIP hashes independently recomputed.",
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 127877569157,
+      "artifact_id": 13500516595,
+      "zip_bytes": 30572,
+      "zip_sha256": "01583365c4358e7fe577fe195172fd83e72f16a25c01ed1288f8458efe49ef67",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 327,
+          "sha256": "239a5486d3b47e5c3efc2e318f100ce734779a5b6a192209a138abc1772167f1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 58,
+          "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 9572,
+          "sha256": "cccb98b8639b77787e16f9466de1f433c82a3f1a517150debeb9d08fc0cc4dd1"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 25247,
+          "sha256": "c9311a2b36f021a9636a32dab678fae89a1aa2c3a0e7438aeaba90ca194d90b1"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 184,
+          "sha256": "8637b6ff75330ddeee5f7a6e0f81c50f78d797943202115e6190d6c6cdcb7b6c"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 169,
+          "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 53512,
+          "sha256": "ba8f727dadc3f310ce2b0092697045e4fa0e62d04764e1c73d341b43ea2af39a"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 985,
+          "sha256": "997df506c7f13b127d4492dee4e5100f7627423420b00e2aaaa0172884931682"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 17853,
+          "sha256": "331c2f43f1ffe1d11c62982c76c8c2b670c6c4abf4c209d9b144dbf2eda06b1c"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 203307,
+        "sha256": "ac8b4fd75889d54d15449ad3005457d892b355e96427cda18865dd92bc21951e",
+        "retrieved_from": "GitHub workflow-job logs API after completion",
+        "note": "Original text with provider-decoded newline boundary; no signed attachment URLs or model weights."
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 127877569178,
+      "artifact_id": 13499897710,
+      "zip_bytes": 69731,
+      "zip_sha256": "5b7b2886f414f411b7bed0a3f9fa57d4bd74ee9d666aa0c2aa5c40b435ac90c7",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 327,
+          "sha256": "a768a052eec6fee0a575187c9dc8dd5bf16697bd28cea5b965850be926505469"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 118,
+          "sha256": "5fc709ba90047f6d43e4726ceed224213ea6c74b6ee4b7279a427837f4c72671"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25690,
+          "sha256": "c24d87121ba22c57462aba5d9612e382dfd2ea726857e17478b3af5d119ade2e"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 51054,
+          "sha256": "aedd74121e56f50e480e29e5219f07b822efe1cf41c7f90bb85a97b6f64633be"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 190,
+          "sha256": "7edc227c15151856c99da9f023e07e75c5bbe8bdeebcc7fb9097c56a3545123c"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "a9f7e0106e2ef0c6f80b33da011d1c827980e524387d427d166dfb0a98568c5d"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 3011,
+          "sha256": "f6cc64709d095b030160372dd8314079a5d0c523d7421a04999aaaf67e873ea0"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 38922,
+          "sha256": "9326829ade209bed84b8b8573fdc68c48ff0921ea1c4e5235398cf3f9029450e"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 208748,
+        "sha256": "402c0c74facd922861dd8587b21cd325ef184970535ee64f99e55b93419f938e",
+        "retrieved_from": "GitHub workflow-job logs API after completion",
+        "note": "Original text with provider-decoded newline boundary; no signed attachment URLs or model weights."
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 127877569080,
+      "artifact_id": 13499388813,
+      "zip_bytes": 64883,
+      "zip_sha256": "10233fac0e5847f1bf270eeada92e4c7607169f798fe082001f71dc84267fab4",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 325,
+          "sha256": "6e1ff04eff3f6042676aca52310cae9564677c127d0effee4d592f427482d949"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 294,
+          "sha256": "05fa40ef2750d9f3b5ebc2a62adaa0001676a4dee9aedf09e7b61c7d762d471b"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25482,
+          "sha256": "b97b0a25fe06c629c5403363cb16c8792cebdff8537753974f9866ada87dba03"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 56237,
+          "sha256": "d8b92d50aaf2aa58341d3c3e682cc01738bd34f0284e67fac65d8974ce08cfad"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 190,
+          "sha256": "7edc227c15151856c99da9f023e07e75c5bbe8bdeebcc7fb9097c56a3545123c"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "534ed2adc6bb92bd278cb89ca108b2ae7248fb047dbc2b281ebf1ccdacd15b20"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 3011,
+          "sha256": "02c3d8581add1111e32d13743456946c317924a962539a256664b25e4e2b8872"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 37786,
+          "sha256": "6f52c7bd190f27571845a2cc0dc8cb57f17f8347bf4e80e4e511bde73b31d756"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 210588,
+        "sha256": "83085862b2ceefcf0bbc933b520a807843f4ec2fd339dcd55480ba1ae502d7b6",
+        "retrieved_from": "GitHub workflow-job logs API after completion",
+        "note": "Original text with provider-decoded newline boundary; no signed attachment URLs or model weights."
+      }
+    }
+  ]
+}

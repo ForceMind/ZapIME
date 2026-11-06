@@ -13,3 +13,8 @@ docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-2.log
 # Retain original successful instrumentation logs, including final blank lines.
 docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-1.log -text -whitespace
 docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-2.log -text -whitespace
+
+# Preserve byte-verified raw VoiceKey CI failure diagnostics; never source files.
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api28/*.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api35/*.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api36/*.txt -text -whitespace

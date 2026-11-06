@@ -1,0 +1,433 @@
+--------- beginning of main
+11-06 11:54:48.867  2993  3009 I timeinitialize: Waiting for a blocking GC ProfileSaver
+11-06 11:54:48.879  1964  2315 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@598a02e)
+11-06 11:54:48.879  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@598a02e)
+11-06 11:54:48.909  3012  3027 I ackageinstalle: Waiting for a blocking GC ProfileSaver
+11-06 11:54:49.109  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+--------- beginning of system
+11-06 11:54:49.116  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHY
+11-06 11:54:49.119  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHc
+11-06 11:54:49.120  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHg
+11-06 11:54:49.114  1964  2038 I chatty  : uid=1000(system) InputReader identical 2 lines
+11-06 11:54:49.118  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 11:54:49.122  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:49.123  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 11:54:49.124  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHk
+11-06 11:54:49.133  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:49.133  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHo
+11-06 11:54:49.143  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHs
+11-06 11:54:49.146  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AHw
+11-06 11:54:49.152  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AH0
+11-06 11:54:49.132  1964  2038 I chatty  : uid=1000(system) InputReader identical 3 lines
+11-06 11:54:49.136  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 11:54:49.152  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:49.178  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:49.180  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AH4
+11-06 11:54:49.163  2189  2189 I chatty  : uid=1001(radio) com.android.phone identical 1 line
+11-06 11:54:49.174  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:49.193  2189  2225 W System  : A resource failed to call close. 
+11-06 11:54:49.198  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:49.204  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:49.227  1964  1978 I chatty  : uid=1000(system) android.bg identical 1 line
+11-06 11:54:49.240  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:49.278  1964  1964 V SettingsProvider: Notifying for 0: content://settings/secure/input_methods_subtype_history
+11-06 11:54:49.278  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:49.256  2189  2189 I chatty  : uid=1001(radio) com.android.phone identical 3 lines
+11-06 11:54:49.265  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f08017c.
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f120f74.
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f08017b.
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f120480.
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f08017a.
+11-06 11:54:49.280  1964  1978 E system_server: No package ID 7f found for ID 0x7f12099f.
+11-06 11:54:49.321  2083  2083 I InputAttributes: InputType.TYPE_NULL is specified
+11-06 11:54:49.879  1964  2315 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@d22071d)
+11-06 11:54:49.879  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@d22071d)
+11-06 11:54:50.146  1964  1992 I PackageManager.DexOptimizer: Running dexopt (dexoptNeeded=1) on: /data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk pkg=org.zapime.android.voicetest isa=x86_64 dexoptFlags=boot_complete,profile_guided,public,enable_hidden_api_checks targetFilter=speed-profile oatDir=/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/oat classLoaderContext=PCL[]
+11-06 11:54:50.147  1713  2041 V installed: DexInv: --- BEGIN '/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk' ---
+11-06 11:54:50.155  3114  3114 W dex2oat : Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:50.155  3114  3114 I dex2oat : /system/bin/dex2oat --input-vdex-fd=-1 --output-vdex-fd=10 --compiler-filter=speed-profile --classpath-dir=/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw== --class-loader-context=PCL[] --generate-mini-debug-info --compact-dex-level=none --compilation-reason=install
+11-06 11:54:50.239  3114  3114 I dex2oat : Explicit concurrent copying GC freed 490(120KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 728B/1536KB, paused 378us total 2.577ms
+11-06 11:54:50.275  3114  3114 I dex2oat : dex2oat took 120.847ms (127.473ms cpu) (threads: 2) arena alloc=4KB (4200B) java alloc=16KB (17112B) native alloc=1555KB (1592688B) free=2028KB (2077328B)
+11-06 11:54:50.277  1713  2041 V installed: DexInv: --- END '/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk' (success) ---
+11-06 11:54:49.310  1964  1978 I chatty  : uid=1000(system) android.bg identical 2 lines
+11-06 11:54:49.334  1964  1978 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 11:54:50.278  1964  1992 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+11-06 11:54:50.278  1964  1992 D PackageManager: Clear ephemeral installer activity
+11-06 11:54:50.278  1964  1992 V BackupManagerService: restoreAtInstall pkg=org.zapime.android.voicetest token=2 restoreSet=0
+11-06 11:54:50.279  1964  1992 V BackupManagerService: Finishing install immediately
+11-06 11:54:50.287  1713  2041 E         : Couldn't opendir /data/app/vmdl756480972.tmp: No such file or directory
+11-06 11:54:50.287  1713  2041 E installd: Failed to delete /data/app/vmdl756480972.tmp: No such file or directory
+11-06 11:54:50.298  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 11:54:50.298  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AH8
+11-06 11:54:50.301  1964  1964 V BackupManagerConstants: getFullBackupIntervalMilliseconds(...) returns 86400000
+11-06 11:54:50.308  1964  2231 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:org.zapime.android.voicetest flg=0x4000010 (has extras) } to com.android.musicfx/.Compatibility$Receiver
+11-06 11:54:50.311  1964  1978 D AutofillManagerServiceImpl: Reset component for user 0 ()
+11-06 11:54:50.312  1964  1978 D AutofillManagerServiceImpl: Reset component for user 0 ()
+11-06 11:54:50.312  1964  1978 D FieldClassificationStrategy: reset(): service is not bound. Do nothing.
+11-06 11:54:50.312  1964  1978 W VoiceInteractionManagerService: no available voice recognition services found for user 0
+11-06 11:54:50.313  1964  1980 D AutofillUI: destroySaveUiUiThread(): already destroyed
+11-06 11:54:50.319  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:50.321  2189  2189 D CarrierConfigLoader: mHandler: 9 phoneId: 0
+11-06 11:54:50.360  1964  1992 I PackageManager.DexOptimizer: Running dexopt (dexoptNeeded=1) on: /data/app/org.zapime.android.test-TpxtDcOuP6SSYhnLIWpMLQ==/base.apk pkg=org.zapime.android.test isa=x86_64 dexoptFlags=boot_complete,profile_guided,public,enable_hidden_api_checks targetFilter=speed-profile oatDir=/data/app/org.zapime.android.test-TpxtDcOuP6SSYhnLIWpMLQ==/oat classLoaderContext=PCL[]
+11-06 11:54:50.361  1713  2041 V installed: DexInv: --- BEGIN '/data/app/org.zapime.android.test-TpxtDcOuP6SSYhnLIWpMLQ==/base.apk' ---
+11-06 11:54:50.369  3123  3123 W dex2oat : Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:50.369  3123  3123 I dex2oat : /system/bin/dex2oat --input-vdex-fd=-1 --output-vdex-fd=10 --compiler-filter=speed-profile --classpath-dir=/data/app/org.zapime.android.test-TpxtDcOuP6SSYhnLIWpMLQ== --class-loader-context=PCL[] --generate-mini-debug-info --compact-dex-level=none --compilation-reason=install
+11-06 11:54:50.437  3123  3123 I dex2oat : Explicit concurrent copying GC freed 226(117KB) AllocSpace objects, 0(0B) LOS objects, 99% free, 728B/1536KB, paused 449us total 2.860ms
+11-06 11:54:50.473  3123  3123 I dex2oat : dex2oat took 105.323ms (92.237ms cpu) (threads: 2) arena alloc=35KB (36736B) java alloc=16KB (17112B) native alloc=1429KB (1463840B) free=2MB (2206176B)
+11-06 11:54:50.475  1713  2041 V installed: DexInv: --- END '/data/app/org.zapime.android.test-TpxtDcOuP6SSYhnLIWpMLQ==/base.apk' (success) ---
+11-06 11:54:50.476  1964  1992 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+11-06 11:54:50.476  1964  1992 D PackageManager: Clear ephemeral installer activity
+11-06 11:54:50.476  1964  1992 V BackupManagerService: restoreAtInstall pkg=org.zapime.android.test token=3 restoreSet=0
+11-06 11:54:50.476  1964  1992 V BackupManagerService: Finishing install immediately
+11-06 11:54:50.487  1713  2041 E         : Couldn't opendir /data/app/vmdl274283171.tmp: No such file or directory
+11-06 11:54:50.487  1713  2041 E installd: Failed to delete /data/app/vmdl274283171.tmp: No such file or directory
+11-06 11:54:50.501  1964  3111 W BroadcastQueue: Background execution not allowed: receiving Intent { act=android.intent.action.PACKAGE_ADDED dat=package:org.zapime.android.test flg=0x4000010 (has extras) } to com.android.musicfx/.Compatibility$Receiver
+11-06 11:54:50.510  1964  2038 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 11:54:50.512  1964  1964 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIM
+11-06 11:54:50.513  1964  1964 V BackupManagerConstants: getFullBackupIntervalMilliseconds(...) returns 86400000
+11-06 11:54:50.519  2189  2189 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 11:54:50.522  2189  2189 D CarrierConfigLoader: mHandler: 9 phoneId: 0
+11-06 11:54:50.522  1964  1978 D AutofillManagerServiceImpl: Reset component for user 0 ()
+11-06 11:54:50.522  1964  1980 D AutofillUI: destroySaveUiUiThread(): already destroyed
+11-06 11:54:50.522  1964  1978 D AutofillManagerServiceImpl: Reset component for user 0 ()
+11-06 11:54:50.522  1964  1978 D FieldClassificationStrategy: reset(): service is not bound. Do nothing.
+11-06 11:54:50.522  1964  1978 W VoiceInteractionManagerService: no available voice recognition services found for user 0
+11-06 11:54:50.568  1588  1588 W /system/bin/adbd: type=1400 audit(0.0:7): avc: denied { search } for comm=73796E6320737663203436 name="oem" dev="vda1" ino=3325 scontext=u:r:adbd:s0 tcontext=u:object_r:oemfs:s0 tclass=dir permissive=0
+11-06 11:54:50.894  1964  2315 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@11557fd)
+11-06 11:54:50.894  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@11557fd)
+11-06 11:54:51.139  3145  3145 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-06 11:54:51.166  3145  3145 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:51.168  3145  3145 I app_process: The ClassLoaderContext is a special shared library.
+11-06 11:54:51.179  3145  3145 D AndroidRuntime: Calling main entry com.android.commands.svc.Svc
+11-06 11:54:51.180  1964  2231 D WifiService: setWifiEnabled: false pid=3145, uid=2000, package=com.android.shell
+11-06 11:54:51.180  1964  2231 I WifiService: setWifiEnabled package=com.android.shell uid=2000 enable=false
+11-06 11:54:51.181  1964  1964 V SettingsProvider: Notifying for 0: content://settings/global/wifi_on
+11-06 11:54:51.181  1964  2056 D WifiStateMachinePrime: Switching from ClientModeActiveState to WifiDisabled
+11-06 11:54:51.181  1964  2056 D WifiClientModeManager:  currentstate: StartedState
+11-06 11:54:51.181  1964  2056 D WifiClientModeManager: expected stop, not triggering callbacks: newState = 0
+11-06 11:54:51.182  1964  2056 D WifiStateMachinePrime: Entering WifiDisabledState
+11-06 11:54:51.182  1964  2056 D ActiveModeManager: sending scan available broadcast: false
+11-06 11:54:51.182  1964  1964 D WifiP2pService: Wifi enabled=false, P2P Interface availability=true
+11-06 11:54:51.182  3145  3145 D AndroidRuntime: Shutting down VM
+11-06 11:54:51.183  1964  2057 I WifiScanningService: wifi driver unloaded
+11-06 11:54:51.183  1924  1924 W wificond: No pno scan started
+11-06 11:54:51.183  1924  1924 E wificond: Receive ERROR message in response to 'stop scheduled scan' request: Operation not supported on transport endpoint
+11-06 11:54:51.184  1964  2056 I android_os_HwBinder: HwBinder: Starting thread pool for default::android.hardware.wifi.supplicant@1.0::ISupplicant
+11-06 11:54:51.185  1964  2056 I android_os_HwBinder: HwBinder: Starting thread pool for default::android.hardware.wifi.supplicant@1.0::ISupplicant
+11-06 11:54:51.185  2265  2265 E wpa_supplicant: nl80211: Failed to open /proc/sys/net/ipv4/conf/p2p-dev-wlan0/drop_unicast_in_l2_multicast: No such file or directory
+11-06 11:54:51.185  2265  2265 E wpa_supplicant: nl80211: Failed to set IPv4 unicast in multicast filter
+11-06 11:54:51.185  2265  2265 E wpa_supplicant: nl80211: Failed to open /proc/sys/net/ipv4/conf/p2p-dev-wlan0/drop_unicast_in_l2_multicast: No such file or directory
+11-06 11:54:51.185  2265  2265 E wpa_supplicant: nl80211: Failed to set IPv4 unicast in multicast filter
+11-06 11:54:51.185  2265  2265 I wpa_supplicant: nl80211: deinit ifname=p2p-dev-wlan0 disabled_11b_rates=0
+11-06 11:54:51.239  1848  1848 I hostapd : wlan1: AP-STA-DISCONNECTED 02:00:00:44:55:66
+11-06 11:54:51.240  2265  2265 I wpa_supplicant: wlan0: CTRL-EVENT-DISCONNECTED bssid=02:00:00:00:01:00 reason=3 locally_generated=1
+11-06 11:54:51.240  2265  2265 E wpa_supplicant: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan0/drop_unicast_in_l2_multicast: No such file or directory
+11-06 11:54:51.240  2265  2265 E wpa_supplicant: nl80211: Failed to set IPv4 unicast in multicast filter
+11-06 11:54:51.241  2265  2265 E wpa_supplicant: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan0/drop_unicast_in_l2_multicast: No such file or directory
+11-06 11:54:51.241  2265  2265 E wpa_supplicant: nl80211: Failed to set IPv4 unicast in multicast filter
+11-06 11:54:51.297  2265  2265 E wpa_supplicant: nl80211: Failed to open /proc/sys/net/ipv4/conf/wlan0/drop_unicast_in_l2_multicast: No such file or directory
+11-06 11:54:51.297  2265  2265 E wpa_supplicant: nl80211: Failed to set IPv4 unicast in multicast filter
+11-06 11:54:51.297  2265  2265 I wpa_supplicant: nl80211: deinit ifname=wlan0 disabled_11b_rates=0
+11-06 11:54:51.305  3157  3157 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 2000 <<<<<<
+11-06 11:54:51.332  3157  3157 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:51.334  3157  3157 I app_process: The ClassLoaderContext is a special shared library.
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: readPacket error: 
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: android.system.ErrnoException: read failed: ENETDOWN (Network is down)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at libcore.io.Linux.readBytes(Native Method)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at libcore.io.Linux.read(Linux.java:184)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at libcore.io.BlockGuardOs.read(BlockGuardOs.java:254)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.system.Os.read(Os.java:414)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.net.util.PacketReader.readPacket(PacketReader.java:137)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.net.util.PacketReader.handleInput(PacketReader.java:207)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.net.util.PacketReader.access$100(PacketReader.java:70)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.net.util.PacketReader$1.onFileDescriptorEvents(PacketReader.java:189)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.os.MessageQueue.dispatchEvents(MessageQueue.java:285)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.os.MessageQueue.nativePollOnce(Native Method)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.os.MessageQueue.next(MessageQueue.java:326)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.os.Looper.loop(Looper.java:160)
+11-06 11:54:51.339  1964  2341 E ConnectivityPacketTracker.wlan0: 	at android.os.HandlerThread.run(HandlerThread.java:65)
+11-06 11:54:51.339  1964  3056 E DhcpClient: Read error
+11-06 11:54:51.339  1964  3056 E DhcpClient: android.system.ErrnoException: read failed: ENETDOWN (Network is down)
+11-06 11:54:51.339  1964  3056 E DhcpClient: 	at libcore.io.Linux.readBytes(Native Method)
+11-06 11:54:51.339  1964  3056 E DhcpClient: 	at libcore.io.Linux.read(Linux.java:184)
+11-06 11:54:51.339  1964  3056 E DhcpClient: 	at libcore.io.BlockGuardOs.read(BlockGuardOs.java:254)
+11-06 11:54:51.339  1964  3056 E DhcpClient: 	at android.system.Os.read(Os.java:414)
+11-06 11:54:51.339  1964  3056 E DhcpClient: 	at android.net.dhcp.DhcpClient$ReceiveThread.run(DhcpClient.java:364)
+11-06 11:54:51.340  1924  1924 I wificond: Unsubscribe scan result for interface with index: 3
+11-06 11:54:51.353  3157  3157 D AndroidRuntime: Calling main entry com.android.commands.svc.Svc
+11-06 11:54:51.356  3157  3157 D AndroidRuntime: Shutting down VM
+11-06 11:54:51.357  2083  2083 I LatinIME: Timeout waiting for dictionary load
+11-06 11:54:51.358  1964  1964 V SettingsProvider: Notifying for 0: content://settings/global/mobile_data
+11-06 11:54:51.361  1964  2059 D ConnectivityService: NetworkAgentInfo [MOBILE (LTE) - 100] EVENT_NETWORK_INFO_CHANGED, going from CONNECTED to DISCONNECTED
+11-06 11:54:51.361  1964  2059 D ConnectivityService: NetworkAgentInfo [MOBILE (LTE) - 100] got DISCONNECTED, was satisfying 6
+11-06 11:54:51.362  2189  2389 D DcNetworkAgent: NetworkAgent: NetworkAgent channel lost
+11-06 11:54:51.362  2189  2389 D DcNetworkAgent: NetworkAgent: DcNetworkAgent: unwanted found mNetworkAgent=null, which isn't me.  Aborting unwanted
+11-06 11:54:51.363  1922  1950 E Netd    : Removing unknown address fe80::9cdc:65ff:fe72:934c/64 from ifindex 11
+11-06 11:54:51.367  1964  2315 W SupplicantStaIfaceHal: ISupplicant died: cookie=0
+11-06 11:54:51.374  3168  3168 W rrierdefaultap: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:51.377  1964  1981 I ActivityManager: Start proc 3168:com.android.carrierdefaultapp/u0a47 for broadcast com.android.carrierdefaultapp/.CarrierDefaultBroadcastReceiver
+11-06 11:54:51.378  1964  2071 I GnssLocationProvider: WakeLock acquired by sendMessage(UPDATE_NETWORK_STATE, 0, 100)
+11-06 11:54:51.379  1922  1957 D TcpSocketMonitor: resuming tcpinfo polling (interval=30000ms)
+11-06 11:54:51.380  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(UPDATE_NETWORK_STATE, 0, 100)
+11-06 11:54:51.381  1964  1978 E memtrack: Couldn't load memtrack module
+11-06 11:54:51.381  1964  1978 W android.os.Debug: failed to get memory consumption info: -1
+11-06 11:54:51.384  3168  3168 I rrierdefaultap: The ClassLoaderContext is a special shared library.
+11-06 11:54:51.391  3168  3168 D CarrierDefaultBroadcastReceiver: onReceive intent: com.android.internal.telephony.CARRIER_SIGNAL_RESET
+11-06 11:54:51.394  3168  3168 D CarrierDefaultBroadcastReceiver: apply carrier action idx: 6
+11-06 11:54:51.394  3168  3168 D CarrierActionUtils: onCancelAllNotifications
+11-06 11:54:51.395  3168  3168 D CarrierDefaultBroadcastReceiver: apply carrier action idx: 8
+11-06 11:54:51.395  3168  3168 D CarrierActionUtils: onDisableDefaultURLHandler
+11-06 11:54:51.395  1964  2231 D PackageManager: Instant App installer not found with android.intent.action.INSTALL_INSTANT_APP_PACKAGE
+11-06 11:54:51.395  1964  2231 D PackageManager: Clear ephemeral installer activity
+11-06 11:54:51.396  1964  2231 I ActivityManager: Killing 2679:com.android.keychain/1000 (adj 906): empty #17
+11-06 11:54:51.398  1964  1982 W libprocessgroup: kill(-2679, 9) failed: No such process
+11-06 11:54:51.427  1964  1970 W system_server: Receiving file descriptor from ADB failed (socket 28): Success
+11-06 11:54:51.427  1964  1970 E system_server: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2083  2102 W putmethod.lati: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2083  2102 E putmethod.lati: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2094  2114 W ndroid.systemu: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2094  2114 E ndroid.systemu: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2396  2404 W droid.deskcloc: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2396  2404 E droid.deskcloc: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2189  2223 W m.android.phon: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 11:54:51.427  2189  2223 E m.android.phon: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2451  2460 W com.android.se: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2451  2460 E com.android.se: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2234  2245 W ndroid.setting: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2234  2245 E ndroid.setting: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2593  2601 W d.process.acor: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2593  2601 E d.process.acor: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2416  2426 W id.ext.service: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2416  2426 E id.ext.service: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2636  2644 W gedprovisionin: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2636  2644 E gedprovisionin: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2467  2474 W droid.launcher: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2467  2474 E droid.launcher: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2659  2667 W id.printspoole: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.427  2494  2517 W android.smspus: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 11:54:51.427  2659  2667 E id.printspoole: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.427  2494  2517 E android.smspus: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2696  2710 W .android.diale: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2696  2710 E .android.diale: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2504  2524 W d.process.medi: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2504  2524 E d.process.medi: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2795  2803 W .quicksearchbo: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2795  2803 E .quicksearchbo: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2856  2863 W ndroid.calenda: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2856  2863 E ndroid.calenda: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2911  2918 W ndroid.contact: Receiving file descriptor from ADB failed (socket 11): Success
+11-06 11:54:51.428  2911  2918 E ndroid.contact: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2960  2967 W droid.gallery3: Receiving file descriptor from ADB failed (socket 31): Success
+11-06 11:54:51.428  2960  2967 E droid.gallery3: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  3012  3019 W ackageinstalle: Receiving file descriptor from ADB failed (socket 26): Success
+11-06 11:54:51.428  3012  3019 E ackageinstalle: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  3168  3175 W rrierdefaultap: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 11:54:51.428  3168  3175 E rrierdefaultap: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2723  2742 W oadcastreceive: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2723  2742 E oadcastreceive: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2753  2763 W droid.messagin: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2753  2763 E droid.messagin: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2770  2778 W d.carrierconfi: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2770  2778 E d.carrierconfi: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2818  2827 W viders.calenda: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2818  2827 E viders.calenda: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2885  2893 W android.camera: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2885  2893 E android.camera: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.428  2932  2939 W m.android.emai: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.428  2932  2939 E m.android.emai: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.429  2993  3000 W timeinitialize: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.429  2993  3000 E timeinitialize: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.429  3033  3040 W android.traceu: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.429  3033  3040 E android.traceu: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.429  3075  3082 W id.defcontaine: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 11:54:51.429  1918  1918 I Zygote  : Process 2679 exited due to signal (9)
+11-06 11:54:51.429  3075  3082 E id.defcontaine: Something went wrong getting fds from adb. Retry!: Success
+11-06 11:54:51.433  2396  2404 W droid.deskcloc: Receiving file descriptor from ADB failed (socket 32): Connection reset by peer
+11-06 11:54:51.433  2083  2102 W putmethod.lati: Receiving file descriptor from ADB failed (socket 32): Connection reset by peer
+11-06 11:54:51.433  2396  2404 E droid.deskcloc: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 11:54:51.433  2083  2102 E putmethod.lati: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 11:54:51.433  2094  2114 W ndroid.systemu: Receiving file descriptor from ADB failed (socket 32): Connection reset by peer
+11-06 11:54:51.433  2094  2114 E ndroid.systemu: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 11:54:51.433  2189  2223 W m.android.phon: Receiving file descriptor from ADB failed (socket 33): Connection reset by peer
+11-06 11:54:51.433  2189  2223 E m.android.phon: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 11:54:51.433  1964  1970 W system_server: Receiving file descriptor from ADB failed (socket 28): Connection reset by peer
+11-06 11:54:51.433  1964  1970 E system_server: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 11:54:51.437  1964  1982 W libprocessgroup: kill(-2679, 9) failed: No such process
+11-06 11:54:51.437  1964  1982 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 2679 in 38ms
+11-06 11:54:51.453  1964  2056 D WificondControl: tearing down interfaces in wificond
+11-06 11:54:51.455  1571  1571 I android.hardware.wifi@1.0-service: Legacy HAL stop complete callback received
+11-06 11:54:51.656  1571  1571 I android.hardware.wifi@1.0-service: Wifi HAL stopped
+11-06 11:54:51.656  1964  2056 I WifiVendorHal: Vendor Hal stopped
+11-06 11:54:51.656  1964  2056 D WifiClientModeManager: STA iface wlan0 was destroyed, stopping client mode
+11-06 11:54:51.656  1964  2056 E SupplicantStaIfaceHal: Can't call setPowerSave, ISupplicantStaIface is null
+11-06 11:54:51.656  1964  2056 E SupplicantStaIfaceHal: Can't call setBtCoexistenceMode, ISupplicantStaIface is null
+11-06 11:54:51.657  1964  2059 D ConnectivityService: NetworkAgentInfo [WIFI () - 101] EVENT_NETWORK_INFO_CHANGED, going from CONNECTED to DISCONNECTED
+11-06 11:54:51.657  1964  2059 D ConnectivityService: NetworkAgentInfo [WIFI () - 101] got DISCONNECTED, was satisfying 8
+11-06 11:54:51.658  1964  2341 D DhcpClient: doQuit
+11-06 11:54:51.660  1964  2341 D DhcpClient: onQuitting
+11-06 11:54:51.660  1922  1958 D CommandListener: Setting iface cfg
+11-06 11:54:51.660  1922  1950 I Netd    : Destroyed 2 sockets on 192.168.232.2 in 0.2 ms
+11-06 11:54:51.662  1964  2056 I WifiNative: Successfully torn down Iface:{Name=wlan0,Id=0,Type=STA}
+11-06 11:54:51.663  1922  1958 D CommandListener: Clearing all IP addresses on wlan0
+11-06 11:54:51.664  1964  2056 E HalDevMgr: Should have at least 1 chip!
+11-06 11:54:51.664  1964  2056 E HalDevMgr: dispatchAvailableForRequestListeners: no chip info found
+11-06 11:54:51.665  1964  2056 I WifiNative: Successfully initiated teardown for iface=wlan0
+11-06 11:54:51.665  1964  2056 D WifiClientModeManager: expected stop, not triggering callbacks: newState = 1
+11-06 11:54:51.665  1964  2055 W system_server: Long monitor contention with owner WifiStateMachine (2056) at void android.os.HwRemoteBinder.transact(int, android.os.HwParcel, android.os.HwParcel, int)(HwRemoteBinder.java:-2) waiters=0 in java.lang.String com.android.server.wifi.WifiNative.getClientInterfaceName() for 468ms
+11-06 11:54:51.665  1964  2071 I GnssLocationProvider: WakeLock acquired by sendMessage(UPDATE_NETWORK_STATE, 0, 101)
+11-06 11:54:51.666  1964  1964 D WifiP2pService: Wifi enabled=false, P2P Interface availability=true
+11-06 11:54:51.666  1964  2056 D WifiStateMachine: WifiStateMachine: Leaving Connected state
+11-06 11:54:51.666  1964  2056 E SupplicantStaIfaceHal: Can't call setCountryCode, ISupplicantStaIface is null
+11-06 11:54:51.666  1964  2056 D WifiCountryCode: Failed to set country code to: US
+11-06 11:54:51.668  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(UPDATE_NETWORK_STATE, 0, 101)
+11-06 11:54:51.669  1964  2056 E SupplicantStaIfaceHal: Can't call listNetworks, ISupplicantStaIface is null
+11-06 11:54:51.669  1964  2056 E SupplicantStaIfaceHal: removeAllNetworks failed, got null networks
+11-06 11:54:51.669  1964  2056 E WifiStateMachine: Failed to remove networks on exiting connect mode
+11-06 11:54:51.669  1964  2056 W WifiDiags: Fail to reset log handler
+11-06 11:54:51.669  1964  2058 E WifiP2pService: Unhandled message { when=-1ms what=131204 target=com.android.internal.util.StateMachine$SmHandler }
+11-06 11:54:51.669  1964  1983 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+11-06 11:54:51.670  1964  2056 D WifiNetworkAgent: NetworkAgent: NetworkAgent channel lost
+11-06 11:54:51.670  1964  1983 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+11-06 11:54:51.671  1964  2059 D ConnectivityService: Sending DISCONNECTED broadcast for type 1 NetworkAgentInfo [WIFI () - 101] isDefaultNetwork=true
+11-06 11:54:51.672  1922  1957 D TcpSocketMonitor: suspending tcpinfo polling
+11-06 11:54:51.697  1964  3056 D DhcpClient: Receive thread stopped
+11-06 11:54:51.879  1964  2022 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@59cb63e)
+11-06 11:54:51.879  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@59cb63e)
+11-06 11:54:52.837  1964  2448 V BackupManagerConstants: getFullBackupRequiredNetworkType(...) returns 2
+11-06 11:54:52.837  1964  2448 V BackupManagerConstants: getFullBackupRequireCharging(...) returns true
+11-06 11:54:52.878  3210  3210 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+11-06 11:54:52.879  1964  2022 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@60021ec)
+11-06 11:54:52.879  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@60021ec)
+11-06 11:54:52.904  3210  3210 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:52.906  3210  3210 I app_process: The ClassLoaderContext is a special shared library.
+11-06 11:54:52.918  3210  3210 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+11-06 11:54:52.921  1964  2231 I ActivityManager: Force stopping org.zapime.android appid=10067 user=0: start instr
+11-06 11:54:52.928  3220  3220 W .zapime.androi: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:52.932  1964  1981 I ActivityManager: Start proc 3220:org.zapime.android/u0a67 for added application org.zapime.android
+11-06 11:54:52.941  3220  3220 W ActivityThread: Package uses different ABI(s) than its instrumentation: package[org.zapime.android]: x86_64, null instrumentation[org.zapime.android.voicetest]: null, null
+11-06 11:54:52.943  3220  3220 W .zapime.androi: ClassLoaderContext classpath size mismatch for position 0. expected=0, found=1 (PCL[] | PCL[/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk*3056999278])
+11-06 11:54:52.946  3220  3220 W .zapime.androi: ClassLoaderContext size mismatch. expected=1, actual=2 (PCL[] | PCL[];PCL[/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk*3056999278:/data/app/org.zapime.android-tY_TOTIbVH0kQtiB0IF3Aw==/base.apk*1377780023])
+11-06 11:54:52.947  3220  3220 W .zapime.androi: Found duplicate classes, falling back to extracting from APK : /data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk
+11-06 11:54:52.947  3220  3220 W .zapime.androi: NOTE: This wastes RAM and hurts startup performance.
+11-06 11:54:52.947  3220  3220 W .zapime.androi: Found duplicated class when checking oat files: 'Lorg/zapime/android/voicetest/BackupProbe$$ExternalSyntheticLambda0;' in /data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk and /data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk
+11-06 11:54:52.947  3220  3220 W .zapime.androi: 
+11-06 11:54:52.949  3220  3220 W .zapime.androi: ClassLoaderContext size mismatch. expected=1, actual=2 (PCL[] | PCL[/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk*3056999278];PCL[/data/app/org.zapime.android.voicetest-55HQlHD8oNRcDIse_N-Gbw==/base.apk*3056999278:/data/app/org.zapime.android-tY_TOTIbVH0kQtiB0IF3Aw==/base.apk*1377780023])
+11-06 11:54:52.949  3220  3220 W .zapime.androi: Found duplicate classes, falling back to extracting from APK : /data/app/org.zapime.android-tY_TOTIbVH0kQtiB0IF3Aw==/base.apk
+11-06 11:54:52.949  3220  3220 W .zapime.androi: NOTE: This wastes RAM and hurts startup performance.
+11-06 11:54:52.949  3220  3220 W .zapime.androi: Found duplicated class when checking oat files: 'Lorg/zapime/android/BackupActivity$$ExternalSyntheticLambda0;' in /data/app/org.zapime.android-tY_TOTIbVH0kQtiB0IF3Aw==/base.apk and /data/app/org.zapime.android-tY_TOTIbVH0kQtiB0IF3Aw==/base.apk
+11-06 11:54:52.949  3220  3220 W .zapime.androi: 
+11-06 11:54:52.967  1964  1964 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 11:54:52.975  1964  2481 I ActivityManager: START u0 {flg=0x10000000 cmp=org.zapime.android/.VoiceSettingsActivity} from uid 10067
+11-06 11:54:52.977  1799  1948 D         : HostConnection::get() New Host Connection established 0x7277aac2e600, tid 1948
+11-06 11:54:52.987  3220  3220 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@eefb0ca
+11-06 11:54:53.007  1566  1566 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.008  3220  3220 D OpenGLRenderer: Skia GL Pipeline
+11-06 11:54:53.013  1917  2485 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 11:54:53.024  1566  1566 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.042  2467  2630 D EGL_emulation: eglMakeCurrent: 0x7ec6e923dea0: ver 3 0 (tinfo 0x7ec6e92be120)
+11-06 11:54:53.047  1964  2448 V BackupManagerConstants: getFullBackupRequiredNetworkType(...) returns 2
+11-06 11:54:53.047  1964  2448 V BackupManagerConstants: getFullBackupRequireCharging(...) returns true
+11-06 11:54:53.065  1566  1566 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.065  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.065  3220  3240 D         : HostConnection::get() New Host Connection established 0x7ec6e5e4fb60, tid 3240
+11-06 11:54:53.066  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.069  3220  3240 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 11:54:53.069  3220  3240 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 11:54:53.069  3220  3240 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 11:54:53.069  3220  3240 D OpenGLRenderer: Swap behavior 1
+11-06 11:54:53.071  3220  3240 D EGL_emulation: eglCreateContext: 0x7ec6e5ee5c40: maj 3 min 0 rcv 3
+11-06 11:54:53.072  3220  3240 D EGL_emulation: eglMakeCurrent: 0x7ec6e5ee5c40: ver 3 0 (tinfo 0x7ec6e5ee06e0)
+11-06 11:54:53.073  1917  2281 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 11:54:53.088  3220  3240 D EGL_emulation: eglMakeCurrent: 0x7ec6e5ee5c40: ver 3 0 (tinfo 0x7ec6e5ee06e0)
+11-06 11:54:53.344  1964  1987 I ActivityManager: Displayed org.zapime.android/.VoiceSettingsActivity: +347ms
+11-06 11:54:53.353  1917  2485 W SurfaceFlinger: Attempting to set client state on removed layer: Splash Screen org.zapime.android#0
+11-06 11:54:53.353  1917  2485 W SurfaceFlinger: Attempting to destroy on removed layer: Splash Screen org.zapime.android#0
+11-06 11:54:53.354  1964  2067 I AudioTrack: AUDIO_OUTPUT_FLAG_FAST successful; frameCount 0 -> 4512
+11-06 11:54:53.354  1964  2158 I ActivityManager: START u0 {act=android.intent.action.OPEN_DOCUMENT cat=[android.intent.category.OPENABLE] typ=*/* cmp=com.android.documentsui/.picker.PickActivity} from uid 10067
+11-06 11:54:53.375  1964  1981 I ActivityManager: Start proc 3243:com.android.documentsui/u0a17 for activity com.android.documentsui/.picker.PickActivity
+11-06 11:54:53.376  3243  3243 W oid.documentsu: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:53.384  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.395  3243  3243 I oid.documentsu: The ClassLoaderContext is a special shared library.
+11-06 11:54:53.405  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.429  3243  3243 D PickActivity: Created new state object: State{action=3, acceptMimes=[*/*], allowMultiple=false, localOnly=false, showDeviceStorageOption=true, showAdvanced=false, stack=DocumentStack{root=null, docStack=[], stackTouched=false}, dirConfigs={}, excludedAuthorities=[], openableOnly=true, sortModel=SortModel{dimensions={16908304=SortDimension{id=16908304, labelId=2131755226, dataType=0, sortCapability=0, defaultSortDirection=1, sortDirection=0, visibility=4}, 16908310=SortDimension{id=16908310, labelId=2131755224, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296333=SortDimension{id=2131296333, labelId=2131755222, dataType=1, sortCapability=3, defaultSortDirection=2, sortDirection=0, visibility=0}, 2131296375=SortDimension{id=2131296375, labelId=2131755223, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296509=SortDimension{id=2131296509, labelId=2131755225, dataType=1, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}}, defaultDimensionId=0, sortedDimension=null}}
+11-06 11:54:53.430  3243  3243 D DrawerController: Calculated drawer width:264.0
+11-06 11:54:53.430  3243  3243 D Metrics : docsui_launch_action: 2
+11-06 11:54:53.431  3243  3243 D Metrics : docsui_open_mime: 2
+11-06 11:54:53.435  3220  3240 D EGL_emulation: eglMakeCurrent: 0x7ec6e5ee5c40: ver 3 0 (tinfo 0x7ec6e5ee06e0)
+11-06 11:54:53.439  3263  3263 W externalstorag: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:53.440  3243  3243 D PickerActionHandler: Load last accessed stack.
+11-06 11:54:53.440  3243  3243 D PickerActionHandler: Attempting to load last used stack for calling package.
+11-06 11:54:53.443  1964  1975 I ActivityManager: Start proc 3263:com.android.externalstorage/u0a18 for content provider com.android.externalstorage/.ExternalStorageProvider
+11-06 11:54:53.449  3243  3243 D OpenGLRenderer: Skia GL Pipeline
+11-06 11:54:53.453  1917  2281 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 11:54:53.454  3263  3263 I externalstorag: The ClassLoaderContext is a special shared library.
+11-06 11:54:53.462  3263  3263 D ExternalStorage: After updating volumes, found 2 active roots
+11-06 11:54:53.475  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.476  3243  3278 D         : HostConnection::get() New Host Connection established 0x7ec6e786be00, tid 3278
+11-06 11:54:53.476  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.476  1566  2280 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 11:54:53.479  3243  3243 I ProvidersCache: Updating roots due to change at content://com.android.externalstorage.documents
+11-06 11:54:53.479  3243  3278 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 11:54:53.479  3243  3278 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 11:54:53.479  3243  3278 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 11:54:53.479  3243  3278 D OpenGLRenderer: Swap behavior 1
+11-06 11:54:53.480  3243  3278 D EGL_emulation: eglCreateContext: 0x7ec6e79c89c0: maj 3 min 0 rcv 3
+11-06 11:54:53.482  3243  3278 D EGL_emulation: eglMakeCurrent: 0x7ec6e79c89c0: ver 3 0 (tinfo 0x7ec6e5f3d140)
+11-06 11:54:53.483  1917  2281 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 11:54:53.505  3243  3278 D EGL_emulation: eglMakeCurrent: 0x7ec6e79c89c0: ver 3 0 (tinfo 0x7ec6e5f3d140)
+11-06 11:54:53.511  3284  3284 W com.android.mt: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 11:54:53.513  1964  1981 I ActivityManager: Start proc 3284:com.android.mtp/u0a10 for content provider com.android.mtp/.MtpDocumentsProvider
+11-06 11:54:53.524  3284  3284 I com.android.mt: The ClassLoaderContext is a special shared library.
+11-06 11:54:53.566  3243  3274 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 11:54:53.566  3243  3258 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 11:54:53.861  1964  1987 I ActivityManager: Displayed com.android.documentsui/.picker.PickActivity: +497ms
+11-06 11:54:53.866  3243  3243 D DocumentStack: Root changed to: Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null
+11-06 11:54:53.867  3243  3243 D DirectoryFragment: Creating new fragment null directory
+11-06 11:54:53.876  3243  3274 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 11:54:53.880  1964  2022 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@84aa3f)
+11-06 11:54:53.883  1917  2035 W SurfaceFlinger: Attempting to set client state on removed layer: Splash Screen com.android.documentsui#0
+11-06 11:54:53.883  1917  2035 W SurfaceFlinger: Attempting to destroy on removed layer: Splash Screen com.android.documentsui#0
+11-06 11:54:53.885  1964  1978 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@84aa3f)
+11-06 11:54:53.890  3243  3243 D AbstractActionHandler: Creating new loader recents.
+11-06 11:54:53.892  3243  3258 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 11:54:53.905  3243  3258 D Documents: Found 1 of 1 recent queries done
+11-06 11:54:53.967  3243  3243 D AbstractActionHandler: Loader has finished for: <null DocumentInfo>
+11-06 11:54:53.967  3243  3243 I Model   : Updating model with new result set.
+11-06 11:54:53.967  3243  3243 D DirectoryFragment: Received model update. Loading=false
+11-06 11:54:54.189  3243  3243 D Metrics : docsui_root_visited_in_picker: 5
+11-06 11:54:54.189  3243  3243 W ActionModeController: Tried to finish a null action mode.
+11-06 11:54:54.189  3243  3243 D DocumentStack: Root changed to: Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads
+11-06 11:54:54.193  1964  2056 W AlarmManager: Unrecognized alarm listener com.android.server.wifi.WifiConfigStore$1@796eba3
+11-06 11:54:54.198  1964  2056 D WifiConfigStore: Writing to stores completed in 6 ms.
+11-06 11:54:54.205  3243  3243 D DocumentStack: Adding doc to stack: DocumentInfo{docId=downloads, name=Downloads, mimeType=vnd.android.document/directory, isContainer=true, isDirectory=true, isArchive=false, isInArchive=false, isPartial=false, isVirtual=false, isDeleteSupported=false, isCreateSupported=true, isRenameSupported=false, isMetadataSupported=false} @ content://com.android.providers.downloads.documents/document/downloads
+11-06 11:54:54.205  3243  3243 D DirectoryFragment: Showing directory: content://com.android.providers.downloads.documents/document/downloads
+11-06 11:54:54.205  3243  3243 D DirectoryFragment: Creating new fragment for directory: content://com.android.providers.downloads.documents/document/downloads
+11-06 11:54:54.226  3243  3243 D DirectoryFragment: Received model update. Loading=false
+11-06 11:54:54.227  3243  3243 D AbstractActionHandler: Creating new directory loader for: content://com.android.providers.downloads.documents/document/downloads
+11-06 11:54:54.239  3243  3243 D AbstractActionHandler: Loader has finished for: content://com.android.providers.downloads.documents/document/downloads
+11-06 11:54:54.239  3243  3243 I Model   : Updating model with new result set.
+11-06 11:54:54.239  3243  3243 D DirectoryFragment: Received model update. Loading=false
+11-06 11:54:54.437  1964  2184 W WindowManager: removeWindowToken: Attempted to remove non-existing token: android.os.Binder@ec89b5
+11-06 11:54:54.438  1964  1964 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 11:54:54.442  1964  2231 I ActivityManager: Force stopping org.zapime.android appid=10067 user=0: finished inst
+11-06 11:54:54.443  1964  2231 I ActivityManager: Killing 3220:org.zapime.android/u0a67 (adj 0): stop org.zapime.android
+11-06 11:54:54.443  1964  1982 W libprocessgroup: kill(-3220, 9) failed: No such process
+11-06 11:54:54.444  1964  1964 V SettingsProvider: Notifying for 0: content://settings/system/accelerometer_rotation
+11-06 11:54:54.446  1964  3305 W Binder  : Outgoing transactions from this process must be FLAG_ONEWAY
+11-06 11:54:54.446  1964  3305 W Binder  : java.lang.Throwable
+11-06 11:54:54.446  1964  3305 W Binder  : 	at android.os.BinderProxy.transact(Binder.java:1114)
+11-06 11:54:54.446  1964  3305 W Binder  : 	at android.app.IInstrumentationWatcher$Stub$Proxy.instrumentationFinished(IInstrumentationWatcher.java:164)
+11-06 11:54:54.446  1964  3305 W Binder  : 	at com.android.server.am.InstrumentationReporter$MyThread.run(InstrumentationReporter.java:86)
+11-06 11:54:54.446  3210  3210 D AndroidRuntime: Shutting down VM
+11-06 11:54:54.482  1918  1918 I Zygote  : Process 3220 exited due to signal (9)
+11-06 11:54:54.482  1964  1987 W ActivityManager: setHasOverlayUi called on unknown pid: 3220
+11-06 11:54:54.487  1964  1982 W libprocessgroup: kill(-3220, 9) failed: No such process
+11-06 11:54:54.487  1964  1982 I libprocessgroup: Successfully killed process cgroup uid 10067 pid 3220 in 44ms
+11-06 11:54:54.546  3243  3243 D Metrics : docsui_startup_ms: 1121
+11-06 11:54:54.710  2467  2467 E droid.launcher: Invalid ID 0x00000005.
+11-06 11:54:54.710  2467  2467 E droid.launcher: Invalid ID 0x00000006.
+11-06 11:54:54.716  2467  2467 E droid.launcher: Invalid ID 0x00000001.
+11-06 11:54:54.716  2467  2467 E droid.launcher: Invalid ID 0x00000002.
+11-06 11:54:54.716  2467  2467 E droid.launcher: Invalid ID 0x00000003.
+11-06 11:54:54.720  2467  2467 E droid.launcher: Invalid ID 0x00000004.

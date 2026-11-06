@@ -4,7 +4,10 @@ package org.zapime.android.voicetest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.*;
 import android.content.*;
+import android.graphics.Rect;
 import android.os.*;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 import java.io.*;
@@ -25,19 +28,34 @@ final class VoiceKeyModelProbe {
     static final Class<?>[] NONE=new Class<?>[0];
     static Object call(Class<?> type,String name,Class<?>[] signature,Object...args)throws Exception{return SyncAccountProbe.call(type,null,name,signature,args);}
     static JSONObject reply(Object bytes)throws Exception{SyncAccountProbe.check(bytes!=null,"VoiceKey null JNI response");return new JSONObject(new String((byte[])bytes,StandardCharsets.UTF_8));}
-    static JSONObject ok(Object bytes)throws Exception{JSONObject result=reply(bytes);SyncAccountProbe.check(!result.has("error"),"VoiceKey actual model JNI failure");SyncAccountProbe.check("voicekey-wechat".equals(result.getString("engine_id")),"wrong native voice engine");return result;}
+    static JSONObject ok(Object bytes)throws Exception{JSONObject result=reply(bytes);if(result.has("error")){String code=result.optString("error","");throw new AssertionError("VoiceKey JNI error "+(code.matches("[a-z_]{1,80}")?code:"unclassified_native_error"));}SyncAccountProbe.check("voicekey-wechat".equals(result.getString("engine_id")),"wrong native voice engine");return result;}
     static String sha(byte[] bytes)throws Exception{byte[] digest=MessageDigest.getInstance("SHA-256").digest(bytes);StringBuilder text=new StringBuilder();for(byte b:digest)text.append(String.format(java.util.Locale.ROOT,"%02x",b&255));return text.toString();}
     static String fileSha(File file)throws Exception{MessageDigest h=MessageDigest.getInstance("SHA-256");try(InputStream in=new FileInputStream(file)){byte[] b=new byte[65536];int n;while((n=in.read(b))!=-1)h.update(b,0,n);}StringBuilder s=new StringBuilder();for(byte b:h.digest())s.append(String.format(java.util.Locale.ROOT,"%02x",b&255));return s.toString();}
     static JSONObject textEvidence(String text)throws Exception{return new JSONObject().put("recognized_codepoints",text.codePointCount(0,text.length())).put("hypothesis_sha256",sha(text.getBytes(StandardCharsets.UTF_8)));}
     static List<AccessibilityNodeInfo> nodes(AccessibilityNodeInfo root){List<AccessibilityNodeInfo> nodes=new ArrayList<>();if(root==null)return nodes;ArrayDeque<AccessibilityNodeInfo> queue=new ArrayDeque<>();queue.add(root);while(!queue.isEmpty()&&nodes.size()<1000){AccessibilityNodeInfo n=queue.remove();nodes.add(n);for(int k=0;k<n.getChildCount();k++){AccessibilityNodeInfo c=n.getChild(k);if(c!=null)queue.add(c);}}return nodes;}
     static boolean click(AccessibilityNodeInfo node){for(int n=0;n<6&&node!=null;n++,node=node.getParent())if(node.isEnabled()&&node.isClickable())return node.performAction(AccessibilityNodeInfo.ACTION_CLICK);return false;}
-    static void selectOfficialDocument(UiAutomation automation,String filename,File output)throws Exception{
+    static String selectDocumentOnce(UiAutomation automation,AccessibilityNodeInfo filename)throws Exception{
+        SyncAccountProbe.check(filename.isVisibleToUser()&&filename.isEnabled(),"official filename not visible and enabled");
+        AccessibilityNodeInfo target=filename;
+        for(int depth=0;depth<6&&target!=null;depth++,target=target.getParent())if(target.isEnabled()&&target.isClickable()){
+            SyncAccountProbe.check(target.performAction(AccessibilityNodeInfo.ACTION_CLICK),"official document accessibility action rejected");return "accessibility_action";
+        }
+        // API28 DocumentsUI uses a RecyclerView gesture handler: its real file
+        // item may expose no clickable ancestor. Touch the freshly observed
+        // filename once rather than manufacturing a provider URI or bypassing SAF.
+        Rect bounds=new Rect();filename.getBoundsInScreen(bounds);SyncAccountProbe.check(!bounds.isEmpty(),"official filename has no visible bounds");
+        long when=SystemClock.uptimeMillis();MotionEvent down=MotionEvent.obtain(when,when,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        boolean sent;try{sent=automation.injectInputEvent(down,true);}finally{down.recycle();}SyncAccountProbe.check(sent,"official document physical down rejected");Thread.sleep(50);
+        MotionEvent up=MotionEvent.obtain(when,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try{sent=automation.injectInputEvent(up,true);}finally{up.recycle();}SyncAccountProbe.check(sent,"official document physical up rejected");return "touch_observed_filename";
+    }
+    static String selectOfficialDocument(UiAutomation automation,String filename,File output)throws Exception{
         boolean rootsOpened=false,downloadsOpened=false;JSONArray shape=new JSONArray();
         for(int attempt=0;attempt<300;attempt++){
             AccessibilityNodeInfo root=automation.getRootInActiveWindow();
             if(root!=null&&String.valueOf(root.getPackageName()).contains("documentsui")){
                 List<AccessibilityNodeInfo> nodes=nodes(root);
-                for(AccessibilityNodeInfo n:nodes)if(filename.contentEquals(n.getText()==null?"":n.getText())){SyncAccountProbe.check(click(n),"official document selection rejected");return;}
+                for(AccessibilityNodeInfo n:nodes)if(filename.contentEquals(n.getText()==null?"":n.getText())&&n.isVisibleToUser())return selectDocumentOnce(automation,n);
                 // Navigate only controls observed in the real provider tree. Once
                 // an action is acknowledged, never repeat it as a blind retry.
                 if(!downloadsOpened){for(AccessibilityNodeInfo n:nodes){String text=String.valueOf(n.getText());if(text.equals("Downloads")||text.equals("下载")){if(click(n)){downloadsOpened=true;break;}}}}
@@ -93,10 +111,11 @@ final class VoiceKeyModelProbe {
             SyncAccountProbe.check(!(Boolean)call(models,"installed",new Class<?>[]{Context.class},context)&&!(Boolean)call(models,"recoverable",new Class<?>[]{Context.class},context),"VoiceKey model must be imported through actual SAF first");SyncAccountProbe.passed(cases,"fresh_voicekey_only_profile");
             stage="system SAF import";UiAutomation automation=i.getUiAutomation();AccessibilityServiceInfo info=automation.getServiceInfo();info.flags|=AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;automation.setServiceInfo(info);
             activity=i.startActivitySync(new Intent().setClassName(context,"org.zapime.android.VoiceSettingsActivity").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));final Activity page=activity;
-            SyncAccountProbe.main(i,()->{SyncAccountProbe.check(((Button)SyncAccountProbe.field(page,"chooseVoiceKey")).performClick(),"actual VoiceKey import control rejected");return null;});
-            selectOfficialDocument(automation,packageFilename,output);
+            stage="SAF launch actual settings control";SyncAccountProbe.main(i,()->{SyncAccountProbe.check(((Button)SyncAccountProbe.field(page,"chooseVoiceKey")).performClick(),"actual VoiceKey import control rejected");return null;});
+            stage="SAF observed official filename selection";report.put("provider_selection_method",selectOfficialDocument(automation,packageFilename,output));
+            stage="SAF import completion";
             for(int n=0;n<1800;n++){boolean busy=SyncAccountProbe.main(i,()->(Boolean)SyncAccountProbe.field(page,"busy"));if(!busy&&(Boolean)call(models,"installed",new Class<?>[]{Context.class},context))break;if(!busy&&n>10)throw new IOException("official package SAF import rejected");if(n==1799)throw new IOException("official package SAF import timeout");Thread.sleep(100);}
-            File model=(File)call(models,"verified",new Class<?>[]{Context.class,BooleanSupplier.class},context,(BooleanSupplier)()->false);SyncAccountProbe.check(model.getName().equals(MODEL),"wrong immutable VoiceKey model version");
+            stage="SAF imported model fixed verification";File model=(File)call(models,"verified",new Class<?>[]{Context.class,BooleanSupplier.class},context,(BooleanSupplier)()->false);SyncAccountProbe.check(model.getName().equals(MODEL),"wrong immutable VoiceKey model version");
             SyncAccountProbe.check(new File(model,DICT).length()==129706&&fileSha(new File(model,DICT)).equals("08a16004cfcf5b9f1668e055f3100de9b8a44f88541819def2bbd56bfd42f484"),"VoiceKey dictionary differs");
             SyncAccountProbe.check(new File(model,XNET).length()==135646496&&fileSha(new File(model,XNET)).equals("0674250a848ce3eb91024b3c0a6eda61b91ea45b2c40e4900130995e89cb9033"),"VoiceKey network differs");SyncAccountProbe.passed(cases,"actual_saf_fixed_model_import");
             stage="actual engine setting";SyncAccountProbe.main(i,()->{Button use=(Button)SyncAccountProbe.field(page,"useVoiceKey");SyncAccountProbe.check(use.isEnabled()&&use.performClick(),"VoiceKey selection disabled");return null;});
@@ -105,17 +124,19 @@ final class VoiceKeyModelProbe {
             stage="JNI PCM evidence";nativeVoice=Class.forName("org.zapime.android.NativeVoiceKey",true,loader);emptyCases(nativeVoice,model,cases);
             stage="actual synthetic decode";byte[] pcm;try(InputStream input=i.getContext().getAssets().open("voice-fixtures/synthetic.pcm");ByteArrayOutputStream bytes=new ByteArrayOutputStream()){byte[] b=new byte[8192];int n;while((n=input.read(b))!=-1){SyncAccountProbe.check(bytes.size()+n<=1920000,"synthetic PCM exceeded bound");bytes.write(b,0,n);}pcm=bytes.toByteArray();}
             SyncAccountProbe.check(pcm.length>0&&pcm.length%2==0,"synthetic PCM missing");short[] samples=new short[pcm.length/2];ByteBuffer.wrap(pcm).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(samples);report.put("fixture_sha256",sha(pcm)).put("audio_samples",samples.length);
-            h=start(nativeVoice,model);long began=SystemClock.elapsedRealtime();int partials=0;String preview="";long firstPartial=-1;
-            for(int offset=0;offset<samples.length;offset+=1600){int count=Math.min(1600,samples.length-offset);short[] block=Arrays.copyOfRange(samples,offset,offset+count);JSONObject partial=accept(nativeVoice,h,block,count);if(partial.optBoolean("partial_updated")){preview=partial.getString("text");partials++;if(firstPartial<0&&!preview.isEmpty())firstPartial=SystemClock.elapsedRealtime()-began;}Thread.sleep(100);}
+            stage="synthetic native model start";h=start(nativeVoice,model);long began=SystemClock.elapsedRealtime();int partials=0;String preview="";long firstPartial=-1;report.put("accepted_samples",0).put("partial_updates",0).put("first_nonempty_partial_ms",JSONObject.NULL);
+            stage="synthetic paced feed";
+            for(int offset=0;offset<samples.length;offset+=1600){report.put("last_attempt_offset",offset);int count=Math.min(1600,samples.length-offset);short[] block=Arrays.copyOfRange(samples,offset,offset+count);JSONObject partial=accept(nativeVoice,h,block,count);report.put("accepted_samples",offset+count);if(partial.optBoolean("partial_updated")){preview=partial.getString("text");partials++;if(firstPartial<0&&!preview.isEmpty())firstPartial=SystemClock.elapsedRealtime()-began;}report.put("partial_updates",partials).put("first_nonempty_partial_ms",firstPartial<0?JSONObject.NULL:firstPartial).put("last_partial",textEvidence(preview));Thread.sleep(100);}
             // A real trailing block is fed even when shorter than a normal frame.
-            JSONObject tail=accept(nativeVoice,h,new short[371],371);if(tail.optBoolean("partial_updated")){preview=tail.getString("text");partials++;}
+            stage="synthetic tail feed";JSONObject tail=accept(nativeVoice,h,new short[371],371);report.put("accepted_samples",samples.length+371);if(tail.optBoolean("partial_updated")){preview=tail.getString("text");partials++;if(firstPartial<0&&!preview.isEmpty())firstPartial=SystemClock.elapsedRealtime()-began;}
+            report.put("partial_updates",partials).put("first_nonempty_partial_ms",firstPartial<0?JSONObject.NULL:firstPartial).put("last_partial",textEvidence(preview));stage="synthetic nonempty streaming preview";
             SyncAccountProbe.check(firstPartial>=0,"VoiceKey supplied no nonempty streaming preview before finish");
-            long finishing=SystemClock.elapsedRealtime();String decoded=ok(call(nativeVoice,"finish",new Class<?>[]{long.class},h)).getString("text");SyncAccountProbe.check(!decoded.trim().isEmpty(),"VoiceKey synthetic fixture decoded empty; no fabricated transcript permitted");
+            stage="synthetic native final";long finishing=SystemClock.elapsedRealtime();String decoded=ok(call(nativeVoice,"finish",new Class<?>[]{long.class},h)).getString("text");SyncAccountProbe.check(!decoded.trim().isEmpty(),"VoiceKey synthetic fixture decoded empty; no fabricated transcript permitted");
             report.put("model_decode_executed",true).put("result",textEvidence(decoded)).put("last_partial",textEvidence(preview)).put("partial_updates",partials).put("first_nonempty_partial_ms",firstPartial<0?JSONObject.NULL:firstPartial).put("stop_to_final_ms",SystemClock.elapsedRealtime()-finishing).put("paced_feed_and_finish_ms",SystemClock.elapsedRealtime()-began);
             SyncAccountProbe.check((Boolean)call(nativeVoice,"close",new Class<?>[]{long.class},h),"VoiceKey synthetic worker did not exit");h=0;SyncAccountProbe.passed(cases,"actual_jni_synthetic_decode_and_tail");
             stage="actual confirmation transaction";VoiceCommitProbe.run(i,decoded,output);SyncAccountProbe.passed(cases,"actual_editable_production_confirmation");
             SyncAccountProbe.check((Boolean)call(nativeVoice,"releaseCache",NONE),"VoiceKey model cache still busy after all sessions");SyncAccountProbe.passed(cases,"idle_release_after_real_model");report.put("status","PASS");
-        }catch(Throwable e){failure=e;cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",e.getClass().getSimpleName()));throw new Exception("VoiceKey official-model acceptance: "+stage,e);}
+        }catch(Throwable e){failure=e;Throwable cause=e;for(int depth=0;depth<5&&cause.getCause()!=null;depth++)cause=cause.getCause();JSONObject failed=new JSONObject().put("id",stage).put("passed",false).put("failure_type",cause.getClass().getSimpleName());String reason=cause.getMessage();if(cause instanceof AssertionError&&reason!=null&&reason.matches("[A-Za-z0-9 _+.,()-]{1,160}")){failed.put("failure_reason",reason);if(reason.startsWith("VoiceKey JNI error "))report.put("native_error_code",reason.substring(19));}cases.put(failed);throw new Exception("VoiceKey official-model acceptance: "+stage,e);}
         finally{
             Throwable cleanup=null;
             try{if(h!=0&&nativeVoice!=null)SyncAccountProbe.check((Boolean)call(nativeVoice,"close",new Class<?>[]{long.class},h),"VoiceKey failed decode worker did not exit");}catch(Throwable e){cleanup=e;}

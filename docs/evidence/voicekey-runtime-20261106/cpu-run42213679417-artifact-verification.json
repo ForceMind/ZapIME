@@ -1,0 +1,34 @@
+[
+  {
+    "architecture": "x86_64",
+    "artifact_id": 13500222179,
+    "bytes": 6642,
+    "sha256": "51c1479c7def9957dd0267d4ecb21896a36a27f99a53138c909b15b8cf1f41c2",
+    "members": [
+      "android-voicekey-model-tests/official-import-report.json",
+      "voicekey-probe/synthesis.json",
+      "voicekey-probe/prepare.json",
+      "voicekey-probe/fixture.json",
+      "voicekey-probe/report.json",
+      "voicekey-probe/source/audit.json",
+      "voicekey-probe/source-commit.txt",
+      "voicekey-probe/scope.txt"
+    ]
+  },
+  {
+    "architecture": "aarch64",
+    "artifact_id": 13499582926,
+    "bytes": 6638,
+    "sha256": "32b7562028fa38e62f19d7bc38751a594e7e60d0eaded9bfbd33e738c19f2918",
+    "members": [
+      "android-voicekey-model-tests/official-import-report.json",
+      "voicekey-probe/prepare.json",
+      "voicekey-probe/synthesis.json",
+      "voicekey-probe/fixture.json",
+      "voicekey-probe/report.json",
+      "voicekey-probe/source/audit.json",
+      "voicekey-probe/source-commit.txt",
+      "voicekey-probe/scope.txt"
+    ]
+  }
+]
