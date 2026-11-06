@@ -2,6 +2,9 @@
 //! Optional VoiceKey recognizer adapter. No keyboard access, audio capture or networking.
 //! Runs only when invoked by the separate ZapIME voice worker.
 //! The default/production ZapIME recognition path remains unchanged.
+#[cfg(target_os = "android")]
+mod android;
+
 use anyhow::{anyhow, bail, Result};
 use std::path::PathBuf;
 use tokio::sync::mpsc;
