@@ -65,11 +65,11 @@ public final class VoiceSettingsActivity extends Activity {
     private void updateEngines(){
         if(engineInfo==null||voiceKeyStatus==null)return;
         String selected=VoiceEnginePreferences.selected(this);
-        boolean ready=VoiceKeyModels.installed(this),supported=VoiceKeyModels.cpuSupported();
+        boolean ready=VoiceKeyModels.installed(this);
         engineInfo.setText("当前引擎："+(VoiceEnginePreferences.VOICEKEY.equals(selected)?"VoiceKey 微信离线（实验）":"X-ASR · 离线"));
-        voiceKeyStatus.setText(!supported?"此设备缺少 VoiceKey 当前 ARM 优化所需的 dotprod 指令，实验引擎已禁用。":ready?"VoiceKey 模型已导入；开始录音时会重新验证完整性。":"VoiceKey 模型尚未安装 · 原有 X-ASR 完全不受影响。");
-        useVoiceKey.setEnabled(!busy&&ready&&supported);
-        chooseVoiceKey.setEnabled(!busy&&supported);
+        voiceKeyStatus.setText(ready?"VoiceKey 模型已导入；开始录音时会重新验证完整性。":"VoiceKey 模型尚未安装 · 原有 X-ASR 完全不受影响。");
+        useVoiceKey.setEnabled(!busy&&ready);
+        chooseVoiceKey.setEnabled(!busy);
         useNative.setEnabled(!busy);
     }
     @Override protected void onActivityResult(int request,int result,Intent data){
