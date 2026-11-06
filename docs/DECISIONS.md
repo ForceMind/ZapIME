@@ -4,7 +4,7 @@
 
 用户确认 VoiceKey 作者同意项目集成其代码。先将 J3n5en/voicekey 完整源码按精确提交 3ba017826eef7fac405198510b03859eb5b6c8c4 作为独立 Git 子模块引入，不覆盖固定 MSIME 和 Android 的原 sherpa-onnx/X-ASR 生产路径；不将用户设备私密资料、第三方模型、逆向协议密钥或第三方二进制复制到 ZapIME。
 
-适配器以真正的 Rust 路径依赖调用 VoiceKey core + wtlocal，保留有界 16kHz/PCM16 入口、60 秒限制、不可直接上屏的 partial、异步取消和独立测试；引擎核心自身的 unbounded Audio 通道由适配器限定整体最大输入，不应把它当作严格逐帧背压的端到端保证。默认仅离线引擎。产品 JNI/GUI、模型逐项校验与第三方模型许可、ARM64 真机/耗电/真人 CER 和多渠道用户同意尚未实现，必须分别验收，不可把源码引入说成用户已能切换引擎。
+最终隔离实现从固定子模块直接引用 VoiceKey wtlocal 的 FBank/INT8/模型/流式解码源码，**不编译** VoiceKey core 内的非公开云协议客户端和内置第三方密钥。适配器原生使用有界 16kHz/PCM16 输入、60 秒限制、有界 partial、异步取消和独立测试，无 VoiceKey 原版无界 Audio 通道。Android 新增独立 JNI 和显式切换/文件导入，但仍属于需完成 APK 与真机验收的候选代码。默认仍是现有 X-ASR。产品 JNI/GUI、模型逐项校验与第三方模型许可、ARM64 真机/耗电/真人 CER 和多渠道用户同意尚未实现，必须分别验收，不可把源码引入说成用户已能切换引擎。
 
 朋友许可的事实不自动授予微信/字节等第三方模型或非公开云 API 的产品化权利；正式二进制发布须留下代码许可条款和模型独立授权证据。复用 VoiceKey 上游源码保留著作权与贡献者来源。见 VOICEKEY_INTEGRATION.md。
 
