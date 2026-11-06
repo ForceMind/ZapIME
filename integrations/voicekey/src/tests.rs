@@ -391,3 +391,154 @@ fn real_fbank_tail_is_chunk_invariant_and_retains_upstream_snip_edges() {
             .all(|value| value.is_finite()));
     }
 }
+
+struct PausedCounting(Arc<(Mutex<bool>, Condvar)>);
+impl RecognizerEngine for PausedCounting {
+    fn run(
+        &self,
+        audio: mpsc::Receiver<Vec<i16>>,
+        partial: Box<dyn Fn(&str) + Send>,
+        cancel: &Cancellation,
+    ) -> Result<String> {
+        let (lock, cv) = &*self.0;
+        let _guard = cv
+            .wait_while(lock.lock().unwrap(), |released| !*released)
+            .unwrap();
+        drop(_guard);
+        Counting.run(audio, partial, cancel)
+    }
+}
+fn full_waiter(engine: Box<dyn RecognizerEngine>, gate: &Capacity) -> Arc<RecognitionSession> {
+    let s = Arc::new(
+        RecognitionSession::spawn(
+            SessionId(701),
+            engine,
+            Cancellation::default(),
+            Some(gate.acquire().unwrap()),
+        )
+        .unwrap(),
+    );
+    for _ in 0..AUDIO_QUEUE {
+        s.push(&[0; 1600]).unwrap();
+    }
+    assert_eq!(s.input.lock().unwrap().accepted, 12800);
+    s
+}
+#[test]
+fn bounded_wait_accepts_one_exact_prefix_after_real_receiver_resumes() {
+    let gate = Capacity(Arc::new(AtomicUsize::new(0)));
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let s = full_waiter(Box::new(PausedCounting(pair.clone())), &gate);
+    let waiting = s.clone();
+    let entered = Arc::new(std::sync::Barrier::new(2));
+    let other = entered.clone();
+    let task = std::thread::spawn(move || {
+        other.wait();
+        waiting.push_wait(&[1; 137], Duration::from_secs(2))
+    });
+    entered.wait();
+    std::thread::sleep(Duration::from_millis(20));
+    assert!(!task.is_finished());
+    assert!(!s.has_nonzero_pcm());
+    release(&pair);
+    task.join().unwrap().unwrap();
+    assert_eq!(s.input.lock().unwrap().accepted, 12937);
+    assert!(s.has_nonzero_pcm());
+    assert_eq!(finish(&s), "samples:12937");
+    assert!(gate.acquire().is_ok());
+}
+#[test]
+fn bounded_wait_cross_thread_cancel_rejects_pending_nonzero_and_keeps_real_slot() {
+    let gate = Capacity(Arc::new(AtomicUsize::new(0)));
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let s = full_waiter(Box::new(Held(pair.clone())), &gate);
+    let waiting = s.clone();
+    let task = std::thread::spawn(move || waiting.push_wait(&[1; 137], Duration::from_secs(5)));
+    std::thread::sleep(Duration::from_millis(20));
+    assert!(!task.is_finished());
+    s.cancel();
+    assert_eq!(task.join().unwrap().unwrap_err().to_string(), "cancelled");
+    assert!(!s.has_nonzero_pcm());
+    assert_eq!(s.input.lock().unwrap().accepted, 12800);
+    assert!(gate.acquire().is_err());
+    release(&pair);
+    assert!(s.cancel_and_wait(Duration::from_secs(2)));
+    assert!(gate.acquire().is_ok());
+}
+#[test]
+fn bounded_wait_timeout_never_claims_acceptance_or_releases_stalled_worker() {
+    let gate = Capacity(Arc::new(AtomicUsize::new(0)));
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let s = full_waiter(Box::new(Held(pair.clone())), &gate);
+    assert_eq!(
+        s.push_wait(&[1; 137], Duration::from_millis(20))
+            .unwrap_err()
+            .to_string(),
+        "voicekey_audio_backpressure"
+    );
+    assert_eq!(s.input.lock().unwrap().accepted, 12800);
+    assert!(!s.has_nonzero_pcm());
+    s.cancel();
+    assert!(gate.acquire().is_err());
+    release(&pair);
+    assert!(s.cancel_and_wait(Duration::from_secs(2)));
+    assert!(gate.acquire().is_ok());
+}
+#[test]
+fn bounded_wait_observes_finish_closing_ingress_without_late_accept() {
+    let gate = Capacity(Arc::new(AtomicUsize::new(0)));
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let s = full_waiter(Box::new(PausedCounting(pair.clone())), &gate);
+    let waiting = s.clone();
+    let task = std::thread::spawn(move || waiting.push_wait(&[1; 137], Duration::from_secs(3)));
+    std::thread::sleep(Duration::from_millis(20));
+    assert!(!task.is_finished());
+    let finalizing = s.clone();
+    let finisher = std::thread::spawn(move || finalizing.finish(Duration::from_secs(3)));
+    assert_eq!(
+        task.join().unwrap().unwrap_err().to_string(),
+        "session_closed"
+    );
+    assert_eq!(s.input.lock().unwrap().accepted, 12800);
+    assert!(!s.has_nonzero_pcm());
+    release(&pair);
+    assert_eq!(finisher.join().unwrap().unwrap(), "");
+    assert!(gate.acquire().is_ok());
+}
+#[test]
+fn bounded_wait_fails_when_receiver_ends_instead_of_retrying_to_deadline() {
+    let gate = Capacity(Arc::new(AtomicUsize::new(0)));
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let s = full_waiter(Box::new(Held(pair.clone())), &gate);
+    let waiting = s.clone();
+    let task = std::thread::spawn(move || waiting.push_wait(&[1; 137], Duration::from_secs(3)));
+    std::thread::sleep(Duration::from_millis(20));
+    assert!(!task.is_finished());
+    release(&pair);
+    assert_eq!(
+        task.join().unwrap().unwrap_err().to_string(),
+        "voicekey_engine_stopped"
+    );
+    assert_eq!(s.input.lock().unwrap().accepted, 12800);
+    assert!(!s.has_nonzero_pcm());
+    assert_eq!(finish(&s), "");
+    assert!(gate.acquire().is_ok());
+}
+
+#[test]
+fn finish_budget_bounds_reject_invalid_values_instead_of_extending_budget() {
+    assert_eq!(
+        checked_finish_timeout_ms(1).unwrap(),
+        Duration::from_millis(1)
+    );
+    assert_eq!(
+        checked_finish_timeout_ms(30_000).unwrap(),
+        Duration::from_secs(30)
+    );
+    for invalid in [i32::MIN, -1, 0, 30_001, i32::MAX] {
+        assert_eq!(
+            checked_finish_timeout_ms(invalid).unwrap_err().to_string(),
+            "invalid_timeout"
+        );
+    }
+}

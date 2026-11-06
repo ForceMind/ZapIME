@@ -162,6 +162,7 @@ public final class VoiceInstrumentation extends Instrumentation {
                 require(voiceKeyModelCI.matches("[0-9]+-[0-9]+"),"dedicated VoiceKey model CI required");
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
                 if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
+                stage="VoiceKey real JNI boundary and timeout ABI";VoiceKeyBoundaryProbe.run(this,fixtures);
                 stage="VoiceKey official model SAF/JNI/Editable";
                 VoiceKeyModelProbe.run(this,fixtures,"ZapIME-VoiceKey-"+voiceKeyModelCI+".apk");
                 result.putString("stream","PASS Android VoiceKey official model acceptance\n");finish(Activity.RESULT_OK,result);return;
@@ -222,7 +223,7 @@ public final class VoiceInstrumentation extends Instrumentation {
         ClassLoader loader=getTargetContext().getClassLoader();Class<?> capture=Class.forName("org.zapime.android.VoiceCapture",true,loader),listener=Class.forName("org.zapime.android.VoiceCapture$Listener",true,loader);
         CountDownLatch done=new CountDownLatch(1);AtomicReference<String> terminal=new AtomicReference<>();AtomicReference<Object> instance=new AtomicReference<>();AtomicBoolean heard=new AtomicBoolean();
         Method stop=capture.getDeclaredMethod("stop");stop.setAccessible(true);
-        Object callback=Proxy.newProxyInstance(loader,new Class<?>[]{listener},(proxy,method,args)->{if(method.getName().equals("update")){String state=(String)args[0];if(state.equals("recording")&&heard.compareAndSet(false,true)){new Handler(Looper.getMainLooper()).postDelayed(()->{try{stop.invoke(instance.get());}catch(Exception e){terminal.set("stop_error");done.countDown();}},350);}if(state.equals("result")||state.equals("empty")||state.equals("error")||state.equals("microphone_error")||state.equals("microphone_silenced")){terminal.set(state);done.countDown();}}return null;});
+        Object callback=Proxy.newProxyInstance(loader,new Class<?>[]{listener},(proxy,method,args)->{if(method.getName().equals("update")){String state=(String)args[0];if(state.equals("recording")&&heard.compareAndSet(false,true)){new Handler(Looper.getMainLooper()).postDelayed(()->{try{stop.invoke(instance.get());}catch(Exception e){terminal.set("stop_error");done.countDown();}},350);}if(state.equals("result")||state.equals("empty")||state.equals("error")||state.equals("timeout")||state.equals("microphone_error")||state.equals("microphone_silenced")){terminal.set(state);done.countDown();}}return null;});
         Class<?> session=Class.forName("org.zapime.android.VoiceEngineSession",true,loader);Constructor<?> sessionCtor=session.getDeclaredConstructor(String.class);sessionCtor.setAccessible(true);Object xasrSession=sessionCtor.newInstance("xasr");
         Constructor<?> ctor=capture.getDeclaredConstructor(Context.class,session,listener);ctor.setAccessible(true);Object value=ctor.newInstance(getTargetContext(),xasrSession,callback);instance.set(value);Method start=capture.getDeclaredMethod("start");start.setAccessible(true);start.invoke(value);
         require(done.await(90,TimeUnit.SECONDS),"microphone timeout");Method cancel=capture.getDeclaredMethod("cancel");cancel.setAccessible(true);cancel.invoke(value);

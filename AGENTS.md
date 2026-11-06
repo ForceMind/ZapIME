@@ -67,3 +67,5 @@
 - 受保护CI的SAF夹具须在Activity临时URI授权失效前删除自己的新建文档；逐项清理并保留原始操作失败，报告必须即使清理失败也写出且要求cleanup_completed=true。不得增加产品存储权限、持久化授权或跳过提供程序来让门禁通过。
 
 - VoiceKey 接续先读 docs/VOICEKEY_INTEGRATION.md、docs/VOICEKEY_ACCEPTANCE.md、integrations/voicekey/README.md。固定 vendor 仅直接引用 fbank/xnet；model/stream/kernels 是保留固定来源的本地适配，不改脏 vendor。独立 Cargo.lock，构建/测试/许可收集 --locked，严格格式与 native ARM 门禁不可软失败。物理 blocking worker 实际退出前持有容量，close 超时不等于计算被杀死。模型信任仅来自 third_party/voicekey-model-lock.json 生成的 APK 目录；官方完整性审计不等于识别或再分发许可。产品及公开测试产物不捆绑权重。test_android_voice_engine.sh、test_android_voicekey_models.sh、test_android_packaging.py 分别覆盖主机路由/存储/打包；新模型 CPU/JNI/系统 IME/ARM workflow 各自保留真实结果，不能借旧 X-ASR 或 APK 通过。原始记录见 docs/evidence/voicekey-runtime-20261106，真机任务见 docs/S25_DUAL_VOICE_CHECKLIST.md。
+
+- VoiceKey背压仅在独立语音worker有界等待，不增队列、不跳帧、不重复计入PCM证据；停止后drain/final使用同一30秒预算且不能重复stop延长。watchdog只发协作取消，物理解码槽到实际线程退出才释放。JNI finish唯一native参数为(long,int)，旧long Java wrapper默认30000；真实JNI须验证无效预算不消耗句柄。专项PCM使用独立单调时钟生产者及实际VoicePcmQueue，不用同步consumer阻塞稀释生产速率。

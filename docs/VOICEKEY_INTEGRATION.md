@@ -85,3 +85,8 @@ Java 路径均相对于 `platforms/android/java/org/zapime/android/`。
 ## 8. 后续扩展而非本轮默认
 
 先 Android 双引擎闭环，再做桌面原生宿主、iOS 主 App/键盘接力、本地对比候选和经授权的云端能力。保留 VoiceKey 的预热、候选对比、稳定预览等设计价值，但不把多渠道并行常开、无障碍注入或第三方协议原样替换 ZapIME 的原生安全边界。
+
+
+### 实施补充：背压与共同停止预算
+
+实际focused Android已证实8帧队列在100ms馈入下出现计算峰值。JNI accept仅在Full时最多等待5秒并轮询取消，不改变非阻塞push或容量，不静默丢帧。Java `finish(long)`转发唯一native `finish(long,int)`默认30000；生产录音使用停止后共同预算的剩余值。独立main Handler watchdog发协作取消，UI拒绝期限后结果；物理worker退出前容量仍保留。不能将watchdog或一次async等待解释为物理强制终止。新专项采用真实生产队列和独立绝对时钟producer，不以同步accept变慢作为馈入节奏证明。新实现的实际Android验收以STATUS/原报告为准。

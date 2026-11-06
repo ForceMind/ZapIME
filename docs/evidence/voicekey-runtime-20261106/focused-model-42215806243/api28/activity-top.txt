@@ -1,0 +1,208 @@
+TASK null id=5 userId=0
+  ACTIVITY com.android.launcher3/.Launcher c820f95 pid=2399
+--encoded-view-dump-v0--
+eJztnQt0HNV5gO/KWmn19lM24IfANtgGy/IDWxbEWA8LK1i22BWRcRyW2d2RduLRzjIzK1kOJDaG8DIvAyEntA0hcKBQkrY0cDiElp6TNm3SlianeXAKbUoDgbQkoaXnpD0B9793/pkdzc4+ZjWrXZnx8dm7untn5s69/3f//7/PEPENEPgXIlUsHAyReUGyNiqNt3OJmCwJsXYhofJyghPbk5IoRKfa+/ioJH9K4CdDpHog8OEf/yRE/EHi338gPNAXIjX92u1qg/QzgDevg9C3O0Tq8e8GCKuOh0gjxjfh3834e8sh+JhPPxYMnIF/IbJQy9lFeq4mIAPtI0IiJk0OcglujJfX7OOmpJQ6xMncuELz1rTpw++EyCK8wWIMl+AjWjFcihlehuE5NN4XIucOnLjfB3/D//Mw6XIMV2C4EsNVGLZheD6GF2C4GsM1A8dZuBbDCzH+IgzXYWmsx9LYgFm6GMNLMNyIYTuGmzDswHBz/xXHabgFw639vW003Nbf+ygNL2V1s50W7w5M0onhThrZhfm5DMPLD0F5fIJ+7KI/X0E/dtM/uwfOsAQ9GPbSX/roxx566fwQ6ad/XEk/9tKPAfrxSfpxFb1+H/02SD/20/TVIXKA/jFEP66mCYL0I0Q/hrX6X63Xf1QCsUyo7TKvtAd5RUrJUV5ZMxznx3la9zUHP3g2RK4JkppRCX6JhcinTN/h9iP4bgcxvBar/RCGn2ZldBiF5jMYe90AqabxYZql6+kHR/MaoT9XhUg0RBPFtKyep2d1UoiN8Wr7PiHBc7ImpDSLdZcterMs6GB++oETXstOBjq+qpNKJjo8PmIUwzEM4xgKKNefxdBDZ9bQIRQdnyvokAVbOtxGhzB0qnKjU2Wgs2RaK890jZqK0Mz5X27/QwbNUiG2iYuqgpQIj0sxPhzh5LDCEmXHiIZmjGjYiGEThnkxWpcD6wyO/MdOtVs4+sg5R0fwjUS8zyxzRcP1GLrHlRa/DcNK5SrgnkryT/77qyEybmLJdcbgf0LL1LnZG3ual8Z7uw8zjOoBI8x3yRWQI3ICCxr5mWugMpPzsddI7pBTNo2UNuYuNHtEIpdKROO8vLV9H34LSpKqu0SNF32ii7HVAGzpSSvKuqvpfO8/POturrE0x627NEvr7VmKydwYjUy298E3kFlKDXjxNy3dy3BqApxomrCo/VSDNVMioDrtczmQUHhV5SIin4swf0Pdv3mEzTXCSMUSVmUmjFDCCCXMN42wWoOwVfayOyLJR5QkF2XZrH3pv2sYV43A1WT6lxLrqe32WaOOntLewym8AX8GVA3P3/Td0kEVQKgCCFUAoboXoQogVAGE6l4PqqKhIs6dp9+EPwgRqZTOk0WFkVwqrM1eint5UUw7WS2D0RX5OvgCiFYnotWmoeV7H9Hq0NDy/aAAtFZn9JpcKUupZGa/+IM7TyNHH6U7JbJxUYNc1GRRNjXIRY1DZdOhcUHfzEUuliEX8eNFcUE8LnIonvxcdNhzEYpLshpNqd2J2AhzT3rhrThw/5mFV//Apijj5DyzJgonuTE+HE0ntLH3apCeDdMVE5UpRs8aB/RszId0BkdVz952fSZHlW7krSkJdwtnxt2cM/JmXx/ZuFTzDO422AvvDUqk/WolYtCmd1HURhafw4hbAcQpPCdH42nSwoUZg2ssfenqdObo3yVgrqHz8L9Q5rQHLcYHzRHmaFbdZ64nTjzmytCNkaeLvfrMdX9R6PCuGyw56gAMvXhq7nVPeBRVaveEQ3IuzqmtNAtxr6QYPepVEz/9kdEFCKnCmohXFFKNQvyXHlIeUsUiVRNiZpjtlKOCwVphEdggL3KqMGHSSv4fXfTPlaqVGve+edRD6GOK0Gsbry6DJso3R8//3vrnGS4taUcpCUwV5hq1IjjXWcDZWwA4G3KinDlhTx19YeYTjZKHcgBUhwA1I0B1CFAdAtSMANUhQHUOAdpbEoDmewC5D1C1AdAyi5gOjHNjvG63NfPfWMPoaU7TI8B72MJTh3P0diI8jQjP5ThHD3vCaejuTCOyZfBurUuB3nsxhqWaaeRHivxIkR8p8iNFfqTIjxT5C5yjh93pNHSPou5XNIq00J3udJKXIjKdIt/cpGhBWhBwTt5Si1QO80cNF8d37sU9DJUlaVS0ZGEVktkSsxPVTSsS04LE7ERi3kBiNtgTAxHLi5ybd90LISSGZFE2NRZiauyI0WQnHzH1SEx9FmLqkZh6h8S8gcRscJOYnjeQmKfcIya/3vFRYnxzmhiIvSFI5u3ZDz6J3N99H02gYKjibVJ4wQSGk1gaR9ntpmiqRez5xwpcgcHdfh+DbiVANyEJUT6M6MWFhDp97CmDPlK2OeUnL70jC301Zvog/nczp494c8oreE75rFp9VYVZfdWrX7yHUXW+PVWipPDhSEpVsxiCZQOr9oHUNy3juXNvynllgkWKMgTPArVG7AzBfHqp4aPf/zYjaLEdQZUFTf3PvrZn9lY4WW3BKoSmKostWDWXoSlOG50d0DjRRrn8qnlrf/aVAvu7Z5+dqmde/v7MJxA5VTjVWRROtadwzoL+O4sftZsmUDDM7kfdzuLBj2oYlqfaFG5KSIx1oUu1tdA+jMb/ee0pxto5toZf1n6MsvHX+OvGv3SDP8+T8vibGX8Z/RgadJ+jL3IjproJr/48PuYLNFwUIscx/gSGN9PCyHkxyX/xSfs5TszR60HfrXrA/744yog/N6PXUuM/olaYjzfv+SNPFuLjmTpPbJHX4vMh34DINyDyjYh8IyLfgMg3IPKNZxvy7purldl5YvLx8mF3XMeODnyewFDHDv7fQr/eium/iOFtGN6OYQnSJQpYn9UnpSIiH4pzMWmyJxWB79Ns7cfeGWatQQ20Bh1HL81J/oBGvu8wTtn/RyR/IPfkEsJG04uePly98rkPse90YKbTh2vP/DzPErKFFg1vXUJGCsR9oBRTTHpmOMXEDncye94pKfv0Yf+ecU4Qc6v/IVT/Q3nUPwuPpu/JbIDN5rGMGXDZ/PA7/2XicrstlwPI5emycNn4T+f1elx6XLrBZe2VnCjy8pS7ZKbvamLT+I/Kc5NZ8G9ICdEjisonEVJjrxA+CqWh6HS2JC99hdG5AOiUJniZpg4nuQQvumI6+yioPtcXY/ufPP2/pZus2YfE9iGxq5HY7yGxfUhsHxL7vVk1nE/93d8zYllYLsPZtVFH58Q2vvDYLjeJbdkvtcmMijZB5al8ZZ8ETbKsQSVmZXmZvVzTFaVCIiZEOVWSlfR2CEMQP6DHayOB675qMMnWoQrpn/PvO0JXb7MNEuqmb5BAlpV2g4T6qvf+08yk9sScTE6WfwL1bmRyWSk2SNA6XiqVSeKeMxvYw3+rxIvjiNEttNpeRvtkKTnMyWO82sMxjupue/yTjKOFbO8eKRlW2c90t8aCdhppQ+U2ZAGpkEmgMwCpueGbL+Eq091ZpoS2Vd5KhN2lmAJqgPRKBkjaJSUZxCTl2zmYXPi7n5Z9lWlVvo3n+niRV/k0cKwJeO6pzcYc0hhLoPOWdexlCVqTd1msyQ60JidyAwcRK4pa6xP4+kutbu2dUHvmFxbC5iNh87MQNh8Jm+/Q4ZsoBWE9YlbCztKhFpcJqwny4+A45fb3rqcXKxgW4O8ZN2Xu3gKzl5dl/7oQD+8d4+Sp6VTWvXTqYUblMqAylRASigqeZF4wn0NNuDELmMdKBGbT55pvcQ/Mt2YJzGMlAVP1wJwRmHXX6OLuLpvm+5rwLHSk4w6bPVOsnTWhOC+OhqKyMK730zS8+p30PpQK/SU8wX6q3A3z6t790vjcW1C7uxI3zCuOZTK316QTC7bV7MI7tYxssZdLgJJLJpX2blHshjBj66G6L8uPGdtO0pQGRW7v5goRK92gqPqCT289yyjqW1YeiuaeMzgrm6WQTAfQbziAmwviLMhHp6JiGrOa1+/5jdGDyTATBUUtXGN1ZmGtBEvXm1ovEWbOV86l682WpesrLZDpS9ebi4TM3aXrOmSnEbLVULnquo5L2jraNrZt2bxtx7bOrdu37bjE9H29s04ZMsMxQt/ZwKEv4zgnGw7nGxyusecwc7i9ZlPrrxh6tYBe1uXuzdjxMoLArUT/7nQR4+2deraUVDIpyWr7xA6dvStlIaYBl+2UNP+KyXstgwbe0Htx6m2mWJFZX7DhAlZLu7VntV3FT0UkTo61res+EBpa78rw+50s/miup5iG4xMOSW154Onl+UkdQVIfLTepTYcvXOuR6pFaLKn1vZwYTYnaKLabcE67cebUtYJ5rJt67v/y8/go8vhuuXlsmPfhMx6PHo/F8hgAbHg6YuAujabbmlg86ZBF/xX7AvlZfBfdxi1lZ3HwzNc8Fj0Wix5D7OXGeZlzl0TjpiYO73DIYcNXl/y1c2/yNM7erpltDgM3/+1tHoceh0UvqugVpegRdzHU72mi8E6HFDafaPsz555i2SisXv/BGx6FHoXFW6Z02C6q2szEnpllatzWxOJdTlkc/Zugcy+xfCx2Tq72WPRYrIBlhmmNmLnM8JRDCgPCg23O/cOyUUh+7HvNo9CjsGgK+wWRd1kd6vc0UXi307HGW5f+gWPvkNLHKDw22xTWLIh8waPQo7AilvYaHNou7b3HqVX69R/uc+whlo/EwCNvPuSR6JFY9NTuQV5RuDEhMeYui+b7mmi81yGNTU+2PO3YRywfjc3RJx/xaPRoLNo6HUwpQtRl6xTvaaLwPocU1nPf7XTsI5aPwnlPLFrgUehRWDSFQ3EpkWcZomMK8Z4mCu93Oqtm140Tzn3EY0jhr2abwqrvXzDpUehR6PpBmjMayddvauLwtEMOqwMrf+7cQywbh3XbXx30OPQ4LHoMMcSrKvhxbo8hpm9rYvEBhyxWNf2yyrl/WDYWG/9KWuSx6LFYLIutI3yEin5bjyxNKrzcNswrKu/yvNOsDzFx+qBDTud9Zc+Qcw+ybJz6v7FowOPU47TojRDfffjpXzz4rXf+/IG3bn3i7ecechfQzLtP38oUl0915F5w3C9KHFXAe3kull5vHFAf32/s9Eb3t2FrjuMsjZMFx+SwZae3Ne4vOK5pelcq8VnZxLKqf43LW7ytKckWb/dloKpdUsSq/vyoOt3npsJXE5NCVvX7jNXEO3NDNsTLipTgRLpFaUgUYsDbMBcJqbKQZJPC3x690VCLKhdRKuuQjerLHvFb1OAWBKzRAlijd5BiBe4p5eYhG7PCmi/XFopLLLKbPr/Gd+yFQ4yjFo2jcBK5qyyeml989i7Lib9F7JAx2+dUdSBPB+142l3BPPnOdjPTypNmVxIne7Gl+2OGDGQyd0rMTl7jDYk4I68ByZukmq6iqAuE3zzhUedRV4nUVTPD0Exc/mOnthZzVJzPcjGeWUVMZ1bhKv9duS1a7XS4drpXlTaWYuwMlz73OPB7v76QNQrL08fJRfVkYd2rtG0l6tGd3I6tRABbiU50Jy/Ju13qymLdybpFD49ZrF3rZuEBR+5k7Rk5T89PABuHQJaen0CB7uRy87apGrHpxkHb9rQId7JVaxyK3TF8po2Dr6DGocLdSXPjcBwbh+PTGwctnMDQ1DiQaQ3DyfwHt9asrlvMuGsF7kY5RQ0rUVmic2LDSSmZStoS96Zlg2K9A2cC9fJVSNyurMRtKJa4eRetfdm8R7H2FFvNvMiOOC2+oA6cpizquCmXOtZ+n0bcVaiOr0LidjF1vNsdddyjE/fb2SSunBsVl4C4qjRxPUQjTgsL2JB4OnG4xH9bri1Hzfs19gNxIQSODU4e/MmfMhznW3G0A9HXhiAest+6kXSVbuvG2s7eeWgid+XqSYX4t+1A1OId9aRaQSRF9u50lWLrxu53NBCNrRtdAJF8DHtSiXlh8Ap7jvZKKpiIzG5s/pPHjjNg6gGYuB6ff9CBns9kt8spPRWplPtyk7XXv2ixGCfnzI7CNKvujz30JDKIKeGOwmVUXQ1Hv/1R2Y+XSY9DtOU7qpPZh3JjmPFVB3yJGF34ht1UYhzj5eTMiuZ/GP2jQg71Lo6nVuSp1eJ8rUKeWpGnVuRp1VzmiXg8ZZiFTsb1sgyeh+KSrEZTanciNsLk2ej9YHxtOZBifPn3HwgP9NmqrqXI1npLB8dBZGshsjVUAFvOz+f1rXqm3q1TYTIJIyXSWIuRsCFXCatDwto8jTV7GqvaIGwGB2FXX9PyOdNB2JtzjjfssCgxPIKQxucCDSKunQFotQu6v4we1Q40DYeKn0H2rgW0agStGkFrsoBWjaBVO3SmdpQCtO7XZwYa+bgfhO3ieiQt3n49UmLGXNa+Nf6+icsttlzuQC4TZeGy6aHxH3tcely6ciyau2vnDTazrJ0/NmM+6x5ZN2Lic6stn08gn6+XR28+/q99Hp8en27wWcrVEgashayWODljclt+8NuNJnK32ZL7OrqWi8pCrv+H90c8cj1yXTkJ2MVdvA1S7XbxJo4OHC1XuoKn9dABkBMY6tN6CnsI1PdDQdKUlKUkL6tTA4kYfxR+DpJVSS5Gp613QQ3yY7KUSsSGtJgeSVWlcWiJguSccUGJdqkyl1Ag2TinClKinROTcSjt9UFy7jjPKSkZhCWhduH32F5eGIvTpUpBsiAmc5P0GbzIT7CLAYAgOU+PjnNybJKT+e5oFFLInEolaTU8Vs9bChpeS66+GCTLs2Z9WEqGyDlBUq1OJUGAd8Cb68/CXF8UJIun5VpIjAgxNQ6MQX5HpWhK6RKUfhpytN2mwm9/kmaXok6J/Ka9EqASlXk+sUdkt0R4VsKD9HxiGNQKhgP+9FxF44IYk/lEn/b3ATnGy3sS9MlQEmG4hZFQFJK9mBga8yBpFKe100fgVbWYrkmsgP1B0sLqb0JQhIggCuoUY/ZSfBV8AZbf9j5+QojyffwolxLpvEu4Q3sfJx/pjtJq66GHVdwSJCttKrxbFNMZA01WJUDWh2ha+uxRQQStOSyloMyUkTifOBBRolRMWHvQxkHNK3ruurA16uPp8b1JTV4WA+BxfKMVQbLIUqb7+FH4YR0VVRtZxKq9MEiWWCpdl9K9QdLMMgoFHD2iVflykARtRJ8+SPsGGrQXkmoCEuc0CQGdZpP0ILToQXK+XnNQJfAj3z0eEeDZmiHQK4n0KB4F3oceMA4XclDj1DAICccgB9vgUfr1SWFCUuHxVUFSDxFwdZdKxbw9SObraWRJRby2Wq+E3IyC6wGXDHIy+B6gOEBU2CsrAF2UMReB6jKu4mVFUFg9aDG9HNQd6BSwibBKVSU0BSnGR1h2oBjWBMkyG2ZDKidDGX8+SJaai1+SaUlghpvSgqtX802AuDl9hIOcQhEyMWOIrwqShRZBYPHUyWIFqh3b7guSBiwykcnJIbjO+L1bFMYS9AGgqiFef39FEoUYVtC5QeIfFTm6mL0FihvzqQVBVQT1CiCyQuF1aNtA1ixZ05uupXCLOLz8MTq2II7g2x4EIdCqg0kPRY1yCbYeVDg+kVX4dlPVSknuhhSkESEO04zJ3ARDfBgyrWqN0HyoF71wOWWYtuNMCKHw4VeePgDKRReMOqNV6ZK1vA3or5cEA0Ghr7cMHjgBmkSIpt+gE+pXzxjTFQKt2m6twb3WXOR9gsxHtXpfC+JkIzJ7EjFmoTSN8yrXFQ4nQLeHw6ANaSmZZMJ42wvg4Tb30dqFRVAUk1obsCRIfKD5Lof76HmdFERxv8TEPERa4Xe43ZUgexlaYCDBGrBBKcYzC8h+eTS2p93JJKqA3XAvo8Kg0OhEW6oGeFDCMusFUI3CAX01ykV5rPpJaFZYPDSVtFVAcQyAPOsyyN7vNuA2qzJEdVOry1e6avZzNHuHoQamt78iF+HFfvqk60GKzapnWNKRJufbs45Pa0zLEBb8jdDMY4wOMiOPjzGe0SI5ASVhCDvQsY9PjNGrbw2SFVnfUKvkCb2wtPYM3o8J0S6ToYE1zVoybNVCJMpEikkZU8O9cGeVytrNUDCYF3jBfUAHuH4ss8yYCqSlMg5vG2F06wyNg4tlo18PsOqfah8E8GSBE9tNevUzdDB9Wj0I43RlO5dQoS66zb+Aj2BqqVGzhJLSdLVyP7Qz5hcLhzdvYe7KQnOV9tCChIbtdGZqsDofyIwF5/TBzNhLwf/QW4k4lXLaSnwW2mGQcr1QBJBbheoCPSIIMqS1eTQTe0ZHod4Uw+45RQ2XaU8Bb+7ujMhOcH907a2m+bwnI+HOELk3M+MdIXJfZiy4D8ct6mqaPJ7MuDsU1h0ZkVBWd2ZEQlFdZzQvMTBy6ClgtJJZM4MVfFfGZdvBu4YCZE2yXoCxjFTwOomMSHibYxmRIAt9EDmtlaPFvgAiLaCCUwdSg5dzqiobjFxmsu5FOolqmFncIeoUMFHgwH6L9vN8LMJFjxhVm0yjxdFGYERQ42DCMiU8BWLEODbadhn0QFqdM8voChPVMZN9YjwhZdhUemuAVgi4mM3sBx6MtaTC7rbZpFKZDQbW0hZrHNheG02WOGtGRWa9HAqRS+x/gWsutv8FnrDJVHa65QbRHTbRcJ+d5vwwzMFxTBejpU0NkYa0QRVBw6M5nVwLTHq4Oq1rwUSI07rdY0jHaNoPGtRR4+DCCc1VI/8PJSKUcA
+    Misc:
+    	mWorkspaceLoading=false mPendingRequestArgs=null mPendingActivityResult=null
+ mRotationHelper: [mStateHandlerRequest=0, mCurrentStateRequest=0, mLastActivityFlags=5, mIgnoreAutoRotateSettings=false, mAutoRotateEnabled=false]
+ deviceProfile isTransposed=false
+ orientation=1
+ mSystemUiController: mStates=[10, 0, 0, 0, 0]
+ mActivityFlags: 0
+ mForceInvisible: 0
+    Data Model:
+     ---- workspace screens:  0
+     ---- workspace items 
+    	ShortcutInfo(id=1 type=APP container=hotseat screen=0 cell(0,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Phone)
+    	ShortcutInfo(id=2 type=APP container=hotseat screen=1 cell(1,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Messaging)
+    	ShortcutInfo(id=3 type=APP container=hotseat screen=3 cell(3,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=WebView Browser Tester)
+    	ShortcutInfo(id=4 type=APP container=hotseat screen=4 cell(4,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Camera)
+    	ShortcutInfo(id=5 type=APP container=desktop screen=0 cell(0,3) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Email)
+    	ShortcutInfo(id=6 type=APP container=desktop screen=0 cell(1,3) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Gallery)
+     ---- appwidget items 
+     ---- folder items 
+     ---- items id map 
+    	ShortcutInfo(id=1 type=APP container=hotseat screen=0 cell(0,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Phone)
+    	ShortcutInfo(id=2 type=APP container=hotseat screen=1 cell(1,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Messaging)
+    	ShortcutInfo(id=3 type=APP container=hotseat screen=3 cell(3,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=WebView Browser Tester)
+    	ShortcutInfo(id=4 type=APP container=hotseat screen=4 cell(4,0) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Camera)
+    	ShortcutInfo(id=5 type=APP container=desktop screen=0 cell(0,3) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Email)
+    	ShortcutInfo(id=6 type=APP container=desktop screen=0 cell(1,3) span(1,1) minSpan(1,1) rank=0 user=UserHandle{0} title=Gallery)
+
+TASK org.zapime.android id=6 userId=0
+  ACTIVITY com.android.documentsui/.picker.PickActivity 81962d0 pid=3121
+    Local Activity 467329 State:
+      mResumed=true mStopped=false mFinished=false
+      mChangingConfigurations=false
+      mCurrentConfig={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=standard} s.7}
+      mLoadersStarted=true
+      Loader Manager fcbb6ae:
+        Active Loaders:
+          #42: LoaderInfo{3f9fc4f #42 : DirectoryLoader{6aafdc}}
+            mId=42 mArgs=null
+            mCallbacks=com.android.documentsui.AbstractActionHandler$LoaderBindings@f2a18e5
+            mLoader=DirectoryLoader{6aafdc id=42}
+              mId=42 mListener=LoaderInfo{3f9fc4f #42 : DirectoryLoader{6aafdc}}
+              mStarted=true mContentChanged=false mProcessingChange=false
+            mHaveData=true  mDeliveredData=true
+            mData=com.android.documentsui.DirectoryResult@ea08fba
+            mStarted=true mReportNextStart=false mDestroyed=false
+            mRetaining=false mRetainingStarted=false mListenerRegistered=true
+      Active Fragments in a040e6b:
+        #0: RootsFragment{35c2527 #0 id=0x7f090045}
+          mFragmentId=#7f090045 mContainerId=#7f090045 mTag=null
+          mState=5 mIndex=0 mWho=android:fragment:0 mBackStackNesting=0
+          mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+          mHidden=false mDetached=false mMenuVisible=true mHasMenu=false
+          mRetainInstance=false mRetaining=false mUserVisibleHint=true
+          mFragmentManager=FragmentManager{a040e6b in HostCallbacks{1e0edc8}}
+          mHost=android.app.Activity$HostCallbacks@1e0edc8
+          mArguments=Bundle[{includeApps=null}]
+          mContainer=android.widget.FrameLayout{2834307 V.E...... .......D 0,56-264,616 #7f090045 app:id/container_roots}
+          mView=com.android.documentsui.sidebar.RootsList{ad78546 VFED.VC.. ......ID 0,0-264,560 #7f0900df app:id/roots_list}
+          Loader Manager:
+            Active Loaders:
+              #2: LoaderInfo{5e85e61 #2 : RootsLoader{b7ed86}}
+                mId=2 mArgs=null
+                mCallbacks=com.android.documentsui.sidebar.RootsFragment$5@4532647
+                mLoader=RootsLoader{b7ed86 id=2}
+                  mId=2 mListener=LoaderInfo{5e85e61 #2 : RootsLoader{b7ed86}}
+                  mStarted=true mContentChanged=false mProcessingChange=false
+                mHaveData=true  mDeliveredData=true
+                mData=[Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+                mStarted=true mReportNextStart=false mDestroyed=false
+                mRetaining=false mRetainingStarted=false mListenerRegistered=true
+          Child FragmentManager{efb1e74 in RootsFragment{35c2527}}:
+            FragmentManager misc state:
+              mHost=android.app.Activity$HostCallbacks@1e0edc8
+              mContainer=android.app.Fragment$1@5eb7f9d
+              mParent=RootsFragment{35c2527 #0 id=0x7f090045}
+              mCurState=5 mStateSaved=false mDestroyed=false
+        #1: DirectoryFragment{dca871c #2 id=0x7f090044}
+          mFragmentId=#7f090044 mContainerId=#7f090044 mTag=null
+          mState=5 mIndex=2 mWho=android:fragment:2 mBackStackNesting=0
+          mAdded=true mRemoving=false mFromLayout=false mInLayout=false
+          mHidden=false mDetached=false mMenuVisible=true mHasMenu=false
+          mRetainInstance=false mRetaining=false mUserVisibleHint=true
+          mFragmentManager=FragmentManager{a040e6b in HostCallbacks{1e0edc8}}
+          mHost=android.app.Activity$HostCallbacks@1e0edc8
+          mArguments=Bundle[{selection=size=0, items=[], root=Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, document=DocumentInfo{docId=downloads, name=Downloads, mimeType=vnd.android.document/directory, isContainer=true, isDirectory=true, isArchive=false, isInArchive=false, isPartial=false, isVirtual=false, isDeleteSupported=false, isCreateSupported=true, isRenameSupported=false, isMetadataSupported=false} @ content://com.android.providers.downloads.documents/document/downloads}]
+          mContainer=android.widget.FrameLayout{7ae759c V.E...... ........ 0,60-320,560 #7f090044 app:id/container_directory}
+          mView=com.android.documentsui.dirlist.AnimationView{c86f908 V.E...... ........ 0,0-320,500}
+          Child FragmentManager{6955c12 in DirectoryFragment{dca871c}}:
+            FragmentManager misc state:
+              mHost=android.app.Activity$HostCallbacks@1e0edc8
+              mContainer=android.app.Fragment$1@791dfe3
+              mParent=DirectoryFragment{dca871c #2 id=0x7f090044}
+              mCurState=5 mStateSaved=false mDestroyed=false
+      Added Fragments:
+        #0: RootsFragment{35c2527 #0 id=0x7f090045}
+        #1: DirectoryFragment{dca871c #2 id=0x7f090044}
+      FragmentManager misc state:
+        mHost=android.app.Activity$HostCallbacks@1e0edc8
+        mContainer=android.app.Activity$HostCallbacks@1e0edc8
+        mCurState=5 mStateSaved=false mDestroyed=false
+    ViewRoot:
+      mAdded=true mRemoved=false
+      mConsumeBatchedInputScheduled=false
+      mConsumeBatchedInputImmediatelyScheduled=false
+      mPendingInputEventCount=0
+      mProcessInputEventsScheduled=false
+      mTraversalScheduled=false      mIsAmbientMode=false
+      android.view.ViewRootImpl$NativePreImeInputStage: mQueueLength=0
+      android.view.ViewRootImpl$ImeInputStage: mQueueLength=0
+      android.view.ViewRootImpl$NativePostImeInputStage: mQueueLength=0
+    Choreographer:
+      mFrameScheduled=false
+      mLastFrameTime=33567 (264 ms ago)
+    View Hierarchy:
+      DecorView@24bd96c[PickActivity]
+        android.widget.FrameLayout{1994a96 V.E...... ........ 0,0-320,640}
+          android.widget.FrameLayout{fcfc5b1 V.E...... ........ 0,24-320,640 #1020002 android:id/content}
+            android.support.design.widget.CoordinatorLayout{ed32058 V.E...... ........ 0,0-320,616 #7f09004a app:id/coordinator_layout}
+              android.support.v4.widget.DrawerLayout{c12ab35 VFE...... ........ 0,0-320,616 #7f09006a app:id/drawer_layout}
+                android.widget.LinearLayout{902a617 V.E...... ........ 0,0-320,616}
+                  android.widget.Toolbar{66a0bed V.E...... ........ 0,0-320,56 #7f090124 app:id/toolbar}
+                    com.android.documentsui.DropdownBreadcrumb{7e5ade0 G.ED..CL. ......I. 0,0-0,0 #7f09006c app:id/dropdown_breadcrumb}
+                    android.widget.ImageButton{185ea04 VFED..C.. ........ 0,0-56,56}
+                    android.widget.ActionMenuView{69263ce V.E...... ........ 184,0-320,56}
+                      com.android.internal.view.menu.ActionMenuItemView{9b520c9 VFED..C.. ........ 0,4-48,52 #7f0900ca app:id/option_menu_search}
+                      com.android.internal.view.menu.ActionMenuItemView{ea8b569 VFED..C.. ........ 48,4-96,52 #7f0900c7 app:id/option_menu_list}
+                      android.widget.ActionMenuPresenter$OverflowMenuButton{61172ef VFED..CL. ........ 96,4-136,52}
+                    android.widget.TextView{1177a22 V.ED..... ........ 72,14-170,42}
+                  android.widget.FrameLayout{757166e V.E...... ........ 0,56-320,616}
+                    android.widget.LinearLayout{ce879e9 V.E...... ........ 0,0-320,560}
+                      android.widget.LinearLayout{379a270 V.E...... ........ 0,0-320,60 #7f09006d app:id/dropdown_sort_widget}
+                        android.widget.TextView{6818cb3 VFED..C.. ........ 161,6-256,54 #7f090103 app:id/sort_dimen_dropdown}
+                        android.widget.ImageView{ffe410f VFED..C.. ........ 260,6-308,54 #7f090102 app:id/sort_arrow}
+                      android.widget.FrameLayout{7ae759c V.E...... ........ 0,60-320,560 #7f090044 app:id/container_directory}
+                        com.android.documentsui.dirlist.AnimationView{c86f908 V.E...... ........ 0,0-320,500}
+                          android.widget.ProgressBar{3057899 G.ED..... ......I. 0,0-0,0 #7f0900d4 app:id/progressbar}
+                          com.android.documentsui.dirlist.DocumentsSwipeRefreshLayout{b1a3eab V.ED..... ........ 0,0-320,500 #7f0900d6 app:id/refresh_layout}
+                            android.support.v4.widget.CircleImageView{988a8a1 G.ED..... ......ID 140,-40-180,0}
+                            android.support.v7.widget.RecyclerView{8ec58fa VFED..... ........ 0,0-320,500 #7f090057 app:id/dir_list}
+                              android.widget.LinearLayout{d04a9b9 VFE...... ........ 16,16-154,209}
+                                android.widget.RelativeLayout{74903ac V.E...... ........ 0,0-138,193}
+                                  android.widget.FrameLayout{1f0fd5f V.E...... ........ 0,0-138,138 #7f09011f app:id/thumbnail}
+                                    com.android.documentsui.GridItemThumbnail{4c8d1fe V.ED..... ........ 0,0-138,138 #7f09008d app:id/icon_thumb}
+                                    com.android.documentsui.GridItemThumbnail{c3d2875 V.ED..... ........ 49,49-89,89 #7f09008b app:id/icon_mime_lg}
+                                  android.widget.RelativeLayout{752107b V.E...... ........ 0,138-138,193 #7f0900b8 app:id/nameplate}
+                                    android.widget.ImageView{7dc100a V.ED..... ........ 12,12-42,42 #7f09008c app:id/icon_mime_sm}
+                                    android.widget.ImageView{918ae98 V.ED..... ........ 12,12-42,42 #7f090088 app:id/icon_check}
+                                    android.widget.TextView{644d6f1 V.ED..... ........ 50,8-126,30 #1020016 android:id/title}
+                                    android.widget.TextView{43322d6 V.ED..... ........ 50,30-91,47 #7f090056 app:id/details}
+                                    android.widget.TextView{5e73957 V.ED..... ........ 95,30-126,47 #7f09004d app:id/date}
+                                  android.view.View{7361c44 V.ED..... ........ 0,0-138,193}
+                      android.widget.FrameLayout{fc5cba5 V.E...... ........ 0,560-320,560 #7f090046 app:id/container_save}
+                    android.view.View{1e22b7a V.ED..... ........ 0,0-12,560 #7f090069 app:id/drawer_edge}
+                android.widget.LinearLayout{e7df2b I.E...... .......D -264,0-0,616 #7f09006b app:id/drawer_roots}
+                  android.widget.Toolbar{e6c7d21 V.E...... ......ID 0,0-264,56 #7f0900e0 app:id/roots_toolbar}
+                    android.widget.TextView{efb4f88 V.ED..... ........ 16,14-110,42}
+                  android.widget.FrameLayout{2834307 V.E...... .......D 0,56-264,616 #7f090045 app:id/container_roots}
+                    com.android.documentsui.sidebar.RootsList{ad78546 VFED.VC.. ......ID 0,0-264,560 #7f0900df app:id/roots_list}
+                      com.android.documentsui.sidebar.RootItemView{96d5853 V.E...... ......ID -1,8-264,56}
+                        android.widget.FrameLayout{2aab042 V.E...... .......D 25,4-65,44}
+                          android.widget.ImageView{54dc68d V.ED..... ......ID 0,0-24,40 #1020006 android:id/icon}
+                        android.widget.LinearLayout{35d3e89 V.E...... ........ 65,6-225,41}
+                          android.widget.TextView{7aa1590 V.ED..... ........ 16,8-160,27 #1020016 android:id/title}
+                          android.widget.TextView{369275e G.ED..... ......ID 0,0-0,0 #1020010 android:id/summary}
+                        android.widget.FrameLayout{fd7094a V.E...... ........ 225,4-265,44}
+                          android.widget.ImageView{e78973f GFED..C.. ......I. 0,0-0,0 #7f09006f app:id/eject_icon}
+                      android.widget.FrameLayout{ac2fabc V.E...... .......D -1,56-264,81}
+                        android.view.View{16b26af V.ED..... ......ID 0,12-265,13}
+                      com.android.documentsui.sidebar.RootItemView{8e135c1 V.E...... .....AID -1,81-264,129}
+                        android.widget.FrameLayout{2306a8 V.E...... .....A.D 25,4-65,44}
+                          android.widget.ImageView{cd7ecb V.ED..... .....AID 0,0-24,40 #1020006 android:id/icon}
+                        android.widget.LinearLayout{8b33ca7 V.E...... .....A.. 65,6-225,41}
+                          android.widget.TextView{a8ae166 V.ED..... .....A.. 16,8-160,27 #1020016 android:id/title}
+                          android.widget.TextView{127c80c G.ED..... .....AID 0,0-0,0 #1020010 android:id/summary}
+                        android.widget.FrameLayout{44f3eb5 V.E...... .....A.. 225,4-265,44}
+                          android.widget.ImageView{22c0555 GFED..C.. .....AI. 0,0-0,0 #7f09006f app:id/eject_icon}
+          android.view.ViewStub{b1c5b6a G.E...... ......I. 0,0-0,0 #102018a android:id/action_mode_bar_stub}
+        android.view.View{c06921f V.ED..... ........ 0,0-320,24 #102002f android:id/statusBarBackground}
+    Looper (main, tid 2) {ce9685b}
+      Message 0: { when=+7s634ms what=132 target=android.app.ActivityThread$H }
+      (Total messages: 1, polling=false, quitting=false)
+    Autofill Compat Mode: false
+    AutofillManager:
+      sessionId: -2147483648
+      state: UNKNOWN
+      context: com.android.documentsui.picker.PickActivity@467329
+      client: com.android.documentsui.picker.PickActivity@467329
+      enabled: false
+      hasService: true
+      hasCallback: false
+      onInvisibleCalled false
+      last autofilled data: null
+      tracked views: null
+      fillable ids: null
+      entered ids: null
+      save trigger id: null
+      save on finish(): false
+      compat mode enabled: false
+      debug: false verbose: false
+    ResourcesManager:
+      cached apks: total=3 created=0 evicted=2 hit=1 miss=5 max=3
+      total apks: 5
+      resources: 7
+      resource impls: 7

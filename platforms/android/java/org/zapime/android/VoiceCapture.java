@@ -20,6 +20,9 @@ final class VoiceCapture {
     private final Handler main=new Handler(Looper.getMainLooper());
     private final AtomicBoolean cancelled=new AtomicBoolean(),stopping=new AtomicBoolean();
     private final VoicePcmQueue audio=new VoicePcmQueue();
+    private final VoiceStopBudget stopBudget=new VoiceStopBudget(SystemClock::elapsedRealtime);
+    private final AtomicBoolean ended=new AtomicBoolean();
+    private final Runnable stopWatchdog=()->{if(!ended.get()&&!cancelled.get()){captureFailed("timeout");update("timeout","");}};
     private volatile long handle;
     private volatile String captureFailure;
     private volatile boolean recording;
@@ -30,16 +33,21 @@ final class VoiceCapture {
     private final VoicePreviewState preview=new VoicePreviewState();
     VoiceCapture(Context context,VoiceEngineSession engine,Listener listener){this.context=context.getApplicationContext();this.engine=engine;this.useVoiceKey=engine.voiceKey();this.listener=listener;}
     void start(){VoiceWorker.EXECUTOR.execute(this::run);}
-    void stop(){if(recording)stopping.set(true);else cancel();}
-    void cancel(){cancelled.set(true);stopping.set(true);long id=handle;if(id!=0)cancelNative(id);}
-    private void update(String state,String text){main.post(()->{if(!cancelled.get()&&(captureFailure==null||state.startsWith("microphone_")))listener.update(state,text);});}
+    void stop(){if(recording){markStopped();stopping.set(true);}else cancel();}
+    void cancel(){cancelled.set(true);stopping.set(true);main.removeCallbacks(stopWatchdog);long id=handle;if(id!=0)cancelNative(id);}
+    private void markStopped(){if(useVoiceKey&&!cancelled.get()&&stopBudget.stop())main.postDelayed(stopWatchdog,stopBudget.remainingMillis());}
+    private void update(String state,String text){main.post(()->{
+        if(cancelled.get())return;
+        if(useVoiceKey&&!state.equals("timeout")&&stopBudget.expired()){captureFailed("timeout");listener.update("timeout","");return;}
+        if(captureFailure==null||state.equals(captureFailure))listener.update(state,text);
+    });}
     private synchronized void captureFailed(String reason){
         if(cancelled.get()||captureFailure!=null)return;
         captureFailure=reason;stopping.set(true);
         long id=handle;if(id!=0)cancelNative(id);
     }
     private void cancelNative(long id){try{if(useVoiceKey)NativeVoiceKey.cancel(id);else NativeVoice.cancel(id);}catch(RuntimeException|LinkageError failure){captureFailure="microphone_error";}}
-    private void checkCapture()throws IOException{if(captureFailure!=null)throw new IOException("microphone_failure");}
+    private void checkCapture()throws IOException{if(useVoiceKey&&stopBudget.expired())captureFailed("timeout");if(captureFailure!=null)throw new IOException("microphone_failure");}
     private JSONObject result(byte[] bytes)throws Exception {
         JSONObject result=useVoiceKey?NativeVoiceKey.result(bytes):NativeVoice.result(bytes);if(result.has("error"))throw new IOException("voice_failure");return result;
     }
@@ -62,7 +70,7 @@ final class VoiceCapture {
                 try{checkCapture();JSONObject accepted=result(useVoiceKey?NativeVoiceKey.accept(handle,chunk,chunk.length):NativeVoice.accept(handle,chunk,chunk.length));preview.accept(accepted.has("text")&&!accepted.isNull("text"),accepted.optString("text",null));long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",preview.text());}}finally{Arrays.fill(chunk,(short)0);}
             }
             if(cancelled.get())return;checkCapture();
-            update("decoding",preview.text());String text=result(useVoiceKey?NativeVoiceKey.finish(handle):NativeVoice.finish(handle)).getString("text");
+            update("decoding",preview.text());String text=result(useVoiceKey?NativeVoiceKey.finish(handle,stopBudget.remainingMillis()):NativeVoice.finish(handle)).getString("text");
             checkCapture();
             if(!cancelled.get())update(text.trim().isEmpty()?"empty":"result",text);
         } catch(Exception|LinkageError failure){if(!cancelled.get())update(captureFailure!=null?captureFailure:"error","");}
@@ -71,6 +79,7 @@ final class VoiceCapture {
             if(capture!=null){boolean interrupted=false;while(capture.isAlive())try{capture.join(200);}catch(InterruptedException e){interrupted=true;}if(interrupted)Thread.currentThread().interrupt();}
             audio.clear();
             long id=handle;handle=0;if(id!=0)try{if(useVoiceKey)NativeVoiceKey.close(id);else NativeVoice.close(id);}catch(RuntimeException|LinkageError failure){/* Terminal cleanup must not kill the shared voice worker. */}
+            ended.set(true);main.removeCallbacks(stopWatchdog);
             if(loaded)VoiceWorker.releaseWhenIdle();
         }
     }
@@ -97,7 +106,7 @@ final class VoiceCapture {
             if(filled>0&&!cancelled.get()&&captureFailure==null&&!audio.offer(Arrays.copyOf(block,filled)))throw new IOException();
         } catch(Exception failure){captureFailed("microphone_error");}
         finally {
-            recording=false;Arrays.fill(block,(short)0);
+            recording=false;markStopped();Arrays.fill(block,(short)0);
             if(monitor!=null)try{monitor.close();}catch(RuntimeException failure){captureFailed("microphone_error");}
             if(recorder!=null){try{recorder.stop();}catch(RuntimeException ignored){}try{recorder.release();}catch(RuntimeException failure){captureFailed("microphone_error");}}
             audio.finish();

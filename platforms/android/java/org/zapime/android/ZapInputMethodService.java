@@ -490,13 +490,14 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voiceState.equals("empty"))label="没有识别到文字，可重新录音";
         if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
         if(voiceState.equals("microphone_silenced"))label="系统已暂停麦克风，请检查权限或占用后重试";
+        if(voiceState.equals("timeout"))label="识别超时，可重新录音";
         if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";
         if(!label.contentEquals(voiceLabel.getText()))voiceLabel.setText(label);
         String preview=voiceText.isEmpty()?"录音不保存、不上传":voiceText;
         if(!preview.contentEquals(voicePreview.getText())){boolean bottom=voicePreview.getHeight()-voiceScroll.getHeight()-voiceScroll.getScrollY()<=dp(24);voicePreview.setText(preview);if(bottom){final ScrollView scroll=voiceScroll;scroll.post(()->{if(scroll.isAttachedToWindow())scroll.fullScroll(View.FOCUS_DOWN);});}}
         voiceStop.setText(voiceTerminal()?"重新录音":"停止录音");voiceStop.setEnabled(voiceState.equals("recording")||voiceTerminal());voiceStop.setAlpha(voiceStop.isEnabled()?1f:.4f);voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());voiceInsert.setAlpha(voiceInsert.isEnabled()?1f:.4f);
     }
-    private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("microphone_error")||voiceState.equals("microphone_silenced");}
+    private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("timeout")||voiceState.equals("microphone_error")||voiceState.equals("microphone_silenced");}
     private void insertVoice(){
         if(voiceCommit!=null||!voiceState.equals("result")||voiceText.trim().isEmpty())return;
         final InputConnection target=getCurrentInputConnection();

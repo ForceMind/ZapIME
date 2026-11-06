@@ -1,71 +1,54 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-11-06 03:35 PST（America/Los_Angeles；11:35 UTC）。本轮已经实施产品代码、测试与 CI，不是只更新计划。累计汇报次数和上次间隔没有可靠连续记录，不补造。
+更新时间：2026-11-06 04:42 PST（America/Los_Angeles）。本轮已经实际修改产品、运行测试、推送提交和下载核验APK；累计汇报次数/此前间隔没有可靠连续记录，不补造。
 
-## 实施后的专项补充（03:54 PST）
+## 当前交付结论
 
-实现 `5bbfe310e716762b36cdb0cf28b09ad5a2e1818c` 已提交 PR #71 并同步 Issue #72。
+源码现在可以交本地 Codex 接续；**Android 双离线引擎 Alpha 尚未通过专项验收**。X-ASR 默认，VoiceKey 可选。先完成同一键盘双模型独立、离线录音预览/停止/取消/重录/确认的闭环，再决定推荐引擎。四端、个人数据、独立E2EE/R2及英语伴学长期目标保留。
 
-- 原生 ARM/x86 run `42211989370` 两端各20项实际执行、数值/极值/尾维度对照、严格fmt/Clippy/locked及release微内核诊断全部通过。云端内核诊断不等于手机或语音端到端性能。
-- 真实模型 CPU run `42211989430`：x86 固定官方模型、生产 Java 导入、断网 Rust 解码通过。固定合成样本125490个PCM样本，speech-v1 CER=15/22（约68.18%）；保留全部错误与六轮重复，不把重复算新增语料，不推荐第二引擎。ARM两次均因rustfmt安装冲突失败，未执行模型，原始失败及实际下载metadata校验已归档。下一切片显式安装固定Rust组件，未软化测试。
-- Android run `42211989441` 已通过双ABI真实构建、新打包硬门禁及API28现有完整回归；API35/36及VoiceKey-only专项仍在执行，尚未取得新APK字节校验或模型JNI证据。该包是中间实验基线。
-- 独立安全复核新增确认权限缺口：本切片在结果回调、确认点击与异步上下文完成时复查当前RECORD_AUDIO权限；增加生产查询helper驱动的真实Editable权限状态测试。权限变化为ContextWrapper模拟，不冒称系统撤权/进程退出验收。最终候选必须包含此修复。本切片Android host31项再通过，产品/23条事务探针Java以API36编译通过；23条Android实际执行尚待新CI。
-- 为保留正在执行的完整验收及失败证据，Android后续提交改为排队而非取消当前run。仍需每次最终候选对应的新完整检查通过。
+PUBLIC 仓库 ForceMind/ZapIME；分支 `feat/voicekey-engine-import`，复用 PR #71 / Issue #72。main最新核验 `5621ab0e81780ca58c6cf74e97c93928a10f981a`。未强推、未合并、未改可见性、未发布稳定版，未操作用户电脑、手机、服务器或DNS。
 
-以下表格保留此前03:35本地检查快照；新结果以上述精确run和原始报告为准。源码可立即交本地Codex接续；Alpha下载/签名/试用说明仍待最终包。
+## 实际保存的实现
 
-## 真实模型与Android专项诊断补充
+- `20f68dcc`：独立官方模型来源审计。
+- `5bbfe310`：按所选引擎独立检查模型；Rust真实阻塞worker/取消/缓存/PCM/partial；固定SHA模型导入；锁依赖/许可/JNI/16KiB硬门禁。
+- `c7b98ebb`：结果回调、确认点击、异步核对结束三处权限复查；23条真实Editable事务用例（3条权限为ContextWrapper模拟，非OS撤权）；固定Rust组件安装。
+- `767ead79`：真实失败原件与精确JNI/样本/partial诊断；SAF可见文件真实选择。
+- `45d9057b`：独立VoiceKey-only专项CI；专用测试APK只带固定合成PCM，连X-ASR模型也不带。完整Android回归继续单独运行。
 
-- 权限复查与23条确认探针提交：`c7b98ebb7a0707ea622a6799a8d1d0246751e759`；Android run42213679453正在构建新候选。
-- 修后CPU run42213679417已在x86和原生ARM实际通过官方固定模型、生产Java导入、离线推理、空/全零/±1及取消回收。两个实际下载ZIP的尺寸/SHA均匹配，只有metadata；相同125490样本PCM、4线程在两架构六轮输出一致。speech-v1 CER仍15/22；固定非私密合成音通过显式include-text保留全部错误，不外推真人准确率。
-- `5bbfe31`中间产品已通过API28/35/36全部既有回归。artifact13500326619实际下载ZIP234967345B/SHA256868b854727b6b5879c85f6cdbbe6ad7141318a066baf49ac62b65dbf8575d171；双APK8JNI、32包独立许可、全部5库16KiB、实际签名/zipalign复核通过。开发证书与更早基线不同，不承诺覆盖升级；该包不含后续权限修补，不作最终Alpha。
-- 第二引擎专项真实失败：API28文件格没有clickable祖先，实际模型尚未导入；API35/36真实SAF固定模型导入、仅VoiceKey设置及PCM/取消已通过，实际合成解码阶段AssertionError。尚不能称VoiceKey系统IME已通过。
-- 本次仅修API28基于当前可见文件bounds的单次真实选择，并补现代JNI错误码/逐帧接受数/partial/细分阶段诊断，保持原预览断言和100ms节奏。下一实际运行据精确失败继续修复，不以CPU通过替代Android专项。
+固定上游：VoiceKey `3ba017826eef7fac405198510b03859eb5b6c8c4`；MSIME `97d652a49cabb0887355b84186af2aa9032d3814`。未修改vendor；不编译非公开云协议或第三方凭据。
 
-## 当前主线与 GitHub
+## 已真实取得的运行与产物
 
-近期目标仍是可给用户和 VoiceKey 作者试用的 Android 双离线引擎 Alpha；X-ASR 默认，VoiceKey 可选。长期四端输入、个人资料、自建端到端加密同步、低频 R2、恢复与英语伴学保持原计划。
-
-- PUBLIC 仓库：ForceMind/ZapIME；分支 `feat/voicekey-engine-import`；复用 PR #71、Issue #72。未强推、未改可见性、未合并或发稳定版。
-- main 最新核验：`5621ab0e81780ca58c6cf74e97c93928a10f981a`。
-- 本轮已保存审计代码：`20f68dcc0e11c14ae69f6db5692567ea72dfb1a2`。本页随下一实际实现切片提交，Git commit 是其精确源码标识。
-- 固定上游：VoiceKey `3ba017826eef7fac405198510b03859eb5b6c8c4`，MSIME `97d652a49cabb0887355b84186af2aa9032d3814`；未改脏 vendor。
-
-## 本轮实际变更
-
-1. `startVoice()` 固定所选引擎后在 VoiceWorker 检查其独立模型管理器，传递不可变会话到录音。只装 VoiceKey 不再被 X-ASR 准备条件拦截；大文件验证不进入 UI/按键线程。无新 partial 保留已有预览，停止后仍需原事务确认，最多插入一次。
-2. Rust 改为有界阻塞解码 worker 和协作取消；实际线程退出前保留物理容量，超时不会被解释为推理已停止。满队列显式失败；有效 count 前缀累积非零证据；空/全零不尾部生成文字。缓存身份感知原子替换，导入验证与运行缓存隔离，取消/关闭/内存及闲置释放明确所有权。
-3. 独立复核发现并修复旧 instrumentation 反射构造不匹配，以及解析异常污染缓存锁问题。模型解析移到缓存锁外并捕获 panic，增加短 XNET 与真实 Fbank 边界测试。Fbank 保留上游 snip-edges：不足一跳长的尾样本不自动补零；队列完整接收不代表特征补帧。
-4. 新固定信任锚 `third_party/voicekey-model-lock.json` 与生成 Java 白名单。官方原包/内层/所有成员固定尺寸和 SHA256，ZIP 解析前先验证原包；拒绝未知/重复/穿越/符号链接/嵌套/超量，取消或 IO 失败保留旧有效模型，同版本不替换文件。导入与恢复在独立 worker。
-5. 适配器依赖锁、独立许可清单/实际文本、8 JNI 符号、双 ABI/16KiB/动态依赖与不含第三方模型的 APK 检查已加入硬门禁。原作者整合许可按用户确认保留，权重再分发许可未确立，不随公开 APK 或测试产物分发。
-6. 新增真实 CPU 模型探针（原生 x86_64/ARM runner）、真实 JNI 无模型边界探针，以及专用全新 API28/35/36 VoiceKey-only 官方模型 SAF/JNI/Editable/系统 IME 离线验收。已有 X-ASR、键盘、资料、隐私、备份和真实退出门禁保留，没有软化失败。
-
-## 已实际运行的证据
-
-| 范围 | 本轮结果及边界 |
+| 范围 | 已核验结果与限制 |
 | --- | --- |
-| 引擎选择/partial | JVM 12 cases PASS，覆盖仅 X-ASR、仅 VoiceKey、都有、均无、所选损坏及无 fallback；不是模型推理 |
-| 模型安装器 | 生产 Java 真实 IO fixture 17 类 PASS。ENOSPC 为写失败注入，中断为目录状态模拟，不冒称真实磁盘耗尽/杀进程 |
-| Rust 适配器 | 20 tests PASS；严格格式/锁依赖检查；Android ARM 目标 cargo check PASS。目标编译不是 ARM 设备执行 |
-| 产品 Java/测试 Java | API36 android.jar + Java compiler source8/target8 编译 PASS；不是 APK 安装或系统 IME 运行 |
-| Python 工程边界 | Android host 原25项及新5项专项元数据测试，CPU探针19项通过；不是实际 JNI |
-| 根 Rust 工程 | workspace locked test、fmt、strict Clippy PASS；详细日志未包含模型权重 |
-| 官方模型来源 | 独立 CI run `42209579465` SUCCESS；artifact `13498970123` 实际下载 ZIP 1335B / SHA256 `3edac8fcfbbea036d743d99b48803a63b60ccf57846267aea9811db0f91650fd`。模型原包 SHA256 `b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863`；只证明来源完整性，不是推理 |
-| 旧基线 APK | run `42199407235` / artifact `13494970099` 实际下载；双 ABI、签名及16KiB对齐、JNI/署名独立复核。此包缺少新门禁所需 releaseCache/完整适配器依赖许可，因此不冒充新候选 |
+| 原生ARM/x86适配器 | run42211989370两端各20测试、数值极值/尾维度对照、严格fmt/Clippy/locked及微内核诊断PASS。不是手机/端到端性能 |
+| 真实固定模型CPU | run42213679417原生ARM/x86、生产Java导入、断网Rust推理、空/零/±1及取消回收PASS；实际下载metadata尺寸/SHA匹配，无权重/音频回传 |
+| 固定合成音质量 | 同一125490样本PCM、4线程，两架构六轮输出一致；speech-v1 CER=15/22≈68.18%，全部错误保留。重复不算新增语料，不外推自然人声准确率，不据此推荐VoiceKey |
+| 官方模型信任锚 | run42209579465官方来源审计、原包102920639B/SHA256 b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863及成员白名单固定。不是模型再分发许可 |
+| 原有完整Android回归 | 5bbfe run42211989441、c7 run42213679453分别API28/35/36原输入/X-ASR/资料/隐私/备份/退出PASS；两工作流的VoiceKey专项失败仍保留，不能把整体称全绿 |
+| c7真实Editable/JNI报告 | 实际提取JSON：23条事务、3条模拟权限状态、5条无模型VoiceKey JNI边界PASS。实际已解码文字来自X-ASR，不是第二引擎 |
+| c7双ABI产品包 | artifact13500587615实际ZIP234980271B/SHA256 e891aab11d24f659309d591bb2bf23bb3a16e0deb89a5480cc5848c6f5325695；两APK源码锁、32包独立许可、8JNI、全部5库16KiB、manifest、实际签名/zipalign复核PASS。尚未包含下面背压修补 |
+| 45专项输入包 | run42215806243实际四输入ZIP/三APK同签/模型排除核验PASS；harness PCM与同包WAV帧完全一致。仅证明构建输入，不证明专项通过 |
 
-原始证据：[本轮目录](evidence/voicekey-runtime-20261106/)。官方来源本地曾返回 195B HTML，保留失败观察；隔离 CI 后取得可信原包，不能把本地失败删掉或把元数据当识别成功。
+## 已定位失败及本切片修补
 
-## 仍待真实执行与交付
+原始失败在 `first-model-42211989441`、`second-model-42213679453`、`focused-model-42215806243` 完整保留，并记录下载ZIP/成员/作业日志SHA与源码。
 
-- 当前实现提交的新 Android 双 ABI APK 和保留回归：等待新 CI 构建/运行后记录准确 SHA，不套用 e24f1bd 六条绿灯。
-- VoiceKey 真实合规模型 CPU、原生 ARM 数值/性能、实际 JNI、SAF 和只装 VoiceKey 的系统 IME：新专项已接硬门禁，当前未取得新运行结果，不称 PASS。
-- 三星 S25 / ARM 手机、自然语音 CER、端到端延迟、CPU/能耗/温度：NOT RUN。没有用户设备访问权限或本环境真机。
-- 模型再分发权利、正式签名与稳定发布：未满足。仍按用户显式取得官方模型；开发签名覆盖升级前须备份。
+1. API35/36精确JNI错误为 `voicekey_audio_backpressure`，分别在68800/62400样本处失败；API35已有非空partial（1907ms），所以不是缺模型或完全不出字。8帧内部队列遇到计算峰值，原JNI立即取消。
+2. 本切片保持队列容量，只有Full时在专用voice worker有界等待最多5秒；以最多10ms的等待片段轮询取消（不代表硬实时调度），成功入队才计样本/非零证据，不静默丢帧。timeout仍明确失败/取消，物理线程退出前不释放解码槽。
+3. 停止时间戳幂等，缓冲排空与final共享30秒预算，JNI finish接收剩余毫秒；main Handler独立watchdog取消，超时结果无法供确认。它是协作取消，不是物理强杀；每次accept仍有5秒独立上限，不宣称主Looper调度具备硬实时保证。
+4. 专项改用生产VoicePcmQueue和独立单调时钟PCM producer（首帧100ms），要求125490+371样本全部生产/接受，记录生产时长/排空/final。不会靠同步accept阻塞拉慢生产者；仍不是自然麦克风输入。
+5. API28原选择触摸已执行但provider未返回。新驱动等窗口文件几何稳定200ms、最后fresh观察后单次真实触摸，必须观察provider退出及真实导入完成；没有盲重试或制造URI。
 
-下一步是查看新 CI 真实失败并修复，实际下载/校验新候选 APK，更新试用说明及固定源码/校验值。一次性手机验收见 [S25 集中验收单](S25_DUAL_VOICE_CHECKLIST.md)，不要求用户现在执行零散步骤。可立即交给本地 Codex 继续源码开发，但不能将该移交等同于 Alpha 验收完成。
+本切片本地实际：Rust26测试/fmt/native及Android交叉Clippy通过；JVM引擎/预览/共同预算14例、模型存储17类、Android Python34例通过；产品与voice-tests用API36 Java source8/target8编译通过。根Rust87测试/fmt/Clippy此前通过。新JNI参数ABI、背压修补、独立producer及SAF稳定驱动仍待新CI实际执行，不能借旧包或CPU结果称PASS。
 
-## 长期范围与历史
+## 下一步与客观边界
 
-原 Android 九键/全键、主题/触感、资料面板、候选置顶与备份保留。其他三端原生验收、完整四端同步/配对/恢复、服务器实际部署与英语伴学翻译/UI仍未完成。本轮未操作用户电脑、手机、服务器或 DNS。
+继续读取新focused真实结果并修复，保留完整Android回归；实际下载最终双ABI APK、校验固定源码/签名/摘要后更新[Alpha试用说明](DUAL_VOICE_ALPHA_TRYOUT.md)。当前c7包与45测试输入都是中间证据，不能当含背压修补的最终Alpha。
 
-[开发计划](DEVELOPMENT_PLAN.md) · [技术整合](VOICEKEY_INTEGRATION.md) · [验收与历史证据](VOICEKEY_ACCEPTANCE.md) · [ADR-020](ADR_020_VOICEKEY_DELIVERY.md) · [接管指令](WORK_HANDOFF_PROMPT.md) · [此前状态原文](STATUS_HISTORY_20261106.md)。
+三星S25/ARM手机、自然人声CER、同机端到端性能/CPU/能耗/温度、真实系统撤权场景：NOT RUN。集中操作见[S25验收单](S25_DUAL_VOICE_CHECKLIST.md)，不要求用户现在执行零散步骤。VoiceKey权重再分发许可未确立，不进入公开APK/测试产物/备份/R2；用户显式从固定官方来源取得。开发证书每个临时runner可能不同，升级前备份，不能承诺覆盖安装。
+
+其他三端系统安装、完整四端E2EE配对/同步/恢复、用户服务器真实部署、正式签名与英语伴学实际翻译/UI仍未完成。
+
+[开发计划](DEVELOPMENT_PLAN.md) · [技术整合](VOICEKEY_INTEGRATION.md) · [验收历史](VOICEKEY_ACCEPTANCE.md) · [原始本轮证据](evidence/voicekey-runtime-20261106/) · [接管指令](WORK_HANDOFF_PROMPT.md) · [此前状态原文](STATUS_HISTORY_20261106.md)。

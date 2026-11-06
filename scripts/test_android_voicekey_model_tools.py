@@ -7,7 +7,7 @@ import tempfile
 import unittest
 
 from android_voicekey_model_smoke import (COMMIT_CASES, MODEL_CASES,
-                                         verify_package, verify_reports)
+                                         verify_package, verify_reports, verify_boundary_report, verify_watchdog_report)
 from voicekey_cpu_probe import Blocked
 
 
@@ -24,10 +24,22 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                  'fixture_sha256': 'c'*64, 'partial_updates': 1,
                  'first_nonempty_partial_ms': 100,
                  'cases': [{'id': name, 'passed': True} for name in sorted(MODEL_CASES)]}
+        model.update(audio_samples=125490, independent_producer=True,
+                     producer_clock='monotonic_absolute_deadlines',
+                     production_pcm_queue_reused=True, production_pcm_queue_capacity=602,
+                     trailing_zero_samples=371, accepted_samples=125861, produced_samples=125861,
+                     producer_first_frame_ms=100, producer_eof_elapsed_ms=7867,
+                     producer_epoch_elapsed_realtime_ms=1000, producer_eof_elapsed_realtime_ms=8867,
+                     producer_failure=False, producer_exited=True, producer_cleanup_completed=True,
+                     provider_selection_method='stable_observed_filename_physical_touch',
+                     provider_exit_observed=True, import_complete_status_observed=True,
+                     drain_after_producer_eof_ms=100, remaining_final_timeout_ms=29900,
+                     producer_eof_to_final_ms=200, stop_to_final_ms=200, finish_call_ms=100)
         commit = {'synthetic': True, 'actual_jni_decoded_text_used': True,
                   'recognized_codepoints': 3,
                   'cases': [{'id': name, 'passed': True, 'actual_editable_verified': True}
                             for name in sorted(COMMIT_CASES)]}
+        next(r for r in model['cases'] if r['id'] == 'no_samples')['invalid_finish_budget_session_preserved'] = True
         states = {'permission_granted': (True, True), 'permission_denied': (False, False),
                   'permission_revoked_before_confirmation': (True, False)}
         for row in commit['cases']:
@@ -38,6 +50,38 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                            permission_state_scope='Host-only metadata fixture; not a JNI execution.',
                            commit_attempts=1 if final else 0)
         return lock, model, commit
+
+    def test_boundary_requires_real_timeout_abi_and_exact_cases(self):
+        row = {'engine_id': 'voicekey', 'model_decode_executed': False,
+               'finish_timeout_contract_checked': True,
+               'cases': [{'id': name, 'passed': True} for name in
+                         ('bounded_allocation', 'foreign_owner', 'invalid_parameters',
+                          'cancel_close_stale', 'reclaimed_idle_release')]}
+        verify_boundary_report(row)
+        for key, value in [('finish_timeout_contract_checked', False), ('model_decode_executed', True)]:
+            changed = copy.deepcopy(row); changed[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError): verify_boundary_report(changed)
+        changed = copy.deepcopy(row); changed['cases'].append(changed['cases'][0])
+        with self.assertRaises(ValueError): verify_boundary_report(changed)
+
+    def test_watchdog_scope_cannot_claim_active_inference_or_skip_physical_exit(self):
+        lock = {'model_id': 'host-metadata-only', 'package': {'sha256': 'a'*64}}
+        report = dict(id='actual_android_stop_watchdog', engine_id='voicekey',
+                      native_engine_id='voicekey-wechat', model_id=lock['model_id'],
+                      model_package_sha256='a'*64, callback_count=1,
+                      callback_elapsed_ms=30010, remaining_budget_ms=0,
+                      audio_record_executed=False, matrix_inference_executed=False,
+                      system_ime_executed=False)
+        for key in ('passed', 'synthetic', 'controlled_capture_state', 'real_android_timer',
+                    'real_model_native_session_started', 'callback_on_main_thread',
+                    'timeout_result_empty', 'native_finish_rejected_cancelled',
+                    'physical_idle_worker_exit_confirmed', 'cleanup_completed'):
+            report[key] = True
+        verify_watchdog_report(report, lock)
+        for key, value in [('matrix_inference_executed', True), ('physical_idle_worker_exit_confirmed', False),
+                           ('callback_elapsed_ms', 29999), ('remaining_budget_ms', 1), ('callback_count', 2)]:
+            changed = copy.deepcopy(report); changed[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError): verify_watchdog_report(changed, lock)
 
     def test_complete_metadata_shape(self):
         lock, model, commit = self.fixtures()
@@ -89,6 +133,20 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
             row[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
                 verify_reports(model, changed, lock)
+
+    def test_independent_producer_samples_clock_cleanup_and_shared_deadline(self):
+        lock, model, commit = self.fixtures()
+        for key, value in [('independent_producer', False), ('production_pcm_queue_reused', False),
+                           ('production_pcm_queue_capacity', 603), ('accepted_samples', 125860),
+                           ('produced_samples', 125862), ('producer_first_frame_ms', 0),
+                           ('producer_eof_elapsed_ms', 10000), ('producer_failure', True),
+                           ('producer_exited', False), ('producer_cleanup_completed', False),
+                           ('provider_exit_observed', False), ('import_complete_status_observed', False),
+                           ('remaining_final_timeout_ms', 30000), ('producer_eof_to_final_ms', 30001)]:
+            changed = copy.deepcopy(model)
+            changed[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                verify_reports(changed, commit, lock)
 
     def test_prepared_package_must_match_fixed_hash_size_and_not_symlink(self):
         with tempfile.TemporaryDirectory() as directory:

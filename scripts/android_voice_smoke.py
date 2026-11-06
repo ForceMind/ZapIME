@@ -8,7 +8,7 @@ import sys
 import time
 import wave
 import json
-from android_voicekey_model_smoke import verify_permission_cases
+from android_voicekey_model_smoke import verify_permission_cases, verify_boundary_report
 from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args, dedicated_ci
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
@@ -77,9 +77,7 @@ try:
     if backup.get("synthetic") is not True or backup.get("cleanup_completed") is not True or len(cases)!=8 or {row.get("id") for row in cases}!=expected_backup or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing encrypted local backup native/provider evidence")
     vk=json.loads((out/"voicekey-boundary-report.json").read_text())
-    required_vk={"bounded_allocation","foreign_owner","invalid_parameters","cancel_close_stale","reclaimed_idle_release"}
-    if vk.get("engine_id")!="voicekey" or vk.get("model_decode_executed") is not False or len(vk.get("cases",[]))!=len(required_vk) or {r.get("id") for r in vk.get("cases",[])}!=required_vk or any(r.get("passed") is not True for r in vk["cases"]):
-        raise SystemExit("Missing real VoiceKey JNI boundary evidence (not model decoding)")
+    verify_boundary_report(vk)
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)

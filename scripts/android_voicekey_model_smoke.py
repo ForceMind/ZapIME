@@ -24,14 +24,14 @@ from android_offline_uid import offline_product
 from voicekey_cpu_probe import Blocked, digest, save, trusted_lock
 
 ROOT = Path(__file__).resolve().parents[1]
-REPORTS = ('voicekey-model-report.json', 'voice-commit-report.json',
+REPORTS = ('voicekey-model-report.json', 'voice-commit-report.json', 'voicekey-boundary-report.json', 'voicekey-watchdog-report.json',
            'voicekey-provider-ui-shape.json')
 MODEL_CASES = {'fresh_voicekey_only_profile', 'actual_saf_fixed_model_import',
                'voicekey_selected_without_xasr', 'no_samples', 'all_zero',
                'ignored_tail', 'positive_lsb', 'negative_lsb', 'cancelled_empty',
                'cancelled_nonzero_cross_thread',
                'actual_jni_synthetic_decode_and_tail',
-               'actual_editable_production_confirmation', 'idle_release_after_real_model'}
+               'actual_editable_production_confirmation', 'idle_release_after_real_model', 'actual_android_stop_watchdog'}
 COMMIT_CASES = {'commit_once', 'reentrant_finish', 'cancelled_completion',
                 'connection_changed', 'ticket_changed', 'epoch_changed',
                 'selection_version_changed', 'cursor_changed_identical_context',
@@ -47,6 +47,35 @@ def verify_package(package, lock):
             package.stat().st_size != lock['package']['size'] or
             digest(package) != lock['package']['sha256']):
         raise Blocked('prepared_official_package_missing_or_different_from_fixed_lock')
+
+
+def verify_watchdog_report(report, lock):
+    required_true = ('passed', 'synthetic', 'controlled_capture_state', 'real_android_timer',
+                     'real_model_native_session_started', 'callback_on_main_thread',
+                     'timeout_result_empty', 'native_finish_rejected_cancelled',
+                     'physical_idle_worker_exit_confirmed', 'cleanup_completed')
+    if (report.get('id') != 'actual_android_stop_watchdog' or
+            report.get('engine_id') != 'voicekey' or report.get('native_engine_id') != 'voicekey-wechat' or
+            report.get('model_id') != lock['model_id'] or
+            report.get('model_package_sha256') != lock['package']['sha256'] or
+            any(report.get(key) is not True for key in required_true) or
+            any(report.get(key) is not False for key in
+                ('audio_record_executed', 'matrix_inference_executed', 'system_ime_executed')) or
+            report.get('callback_count') != 1 or report.get('remaining_budget_ms') != 0 or
+            not 30000 <= report.get('callback_elapsed_ms', -1) <= 40000):
+        raise ValueError('incomplete_actual_android_idle_watchdog_evidence')
+
+
+def verify_boundary_report(report):
+    expected = {'bounded_allocation', 'foreign_owner', 'invalid_parameters',
+                'cancel_close_stale', 'reclaimed_idle_release'}
+    rows = report.get('cases', [])
+    if (report.get('engine_id') != 'voicekey' or
+            report.get('model_decode_executed') is not False or
+            report.get('finish_timeout_contract_checked') is not True or
+            len(rows) != len(expected) or {r.get('id') for r in rows} != expected or
+            any(r.get('passed') is not True for r in rows)):
+        raise ValueError('incomplete_real_voicekey_boundary_or_timeout_abi_evidence')
 
 
 def verify_permission_cases(rows):
@@ -68,6 +97,7 @@ def verify_permission_cases(rows):
 
 
 def verify_reports(model, commit, lock):
+    verify_independent_producer(model)
     rows = model.get('cases', [])
     if (model.get('status') != 'PASS' or model.get('synthetic') is not True or
             model.get('engine_id') != 'voicekey' or
@@ -89,6 +119,8 @@ def verify_reports(model, commit, lock):
             {r.get('id') for r in rows} != MODEL_CASES or
             any(r.get('passed') is not True for r in rows)):
         raise ValueError('incomplete_real_voicekey_model_evidence')
+    if next(r for r in rows if r['id'] == 'no_samples').get('invalid_finish_budget_session_preserved') is not True:
+        raise ValueError('missing_live_invalid_budget_session_preservation')
     rows = commit.get('cases', [])
     if (commit.get('synthetic') is not True or
             commit.get('actual_jni_decoded_text_used') is not True or
@@ -99,6 +131,33 @@ def verify_reports(model, commit, lock):
                 r.get('actual_editable_verified') is not True for r in rows)):
         raise ValueError('incomplete_actual_editable_confirmation_evidence')
     verify_permission_cases(rows)
+
+
+def verify_independent_producer(model):
+    audio = model.get('audio_samples', 0)
+    if (not isinstance(audio, int) or audio != 125490 or
+            model.get('independent_producer') is not True or
+            model.get('producer_clock') != 'monotonic_absolute_deadlines' or
+            model.get('production_pcm_queue_reused') is not True or
+            model.get('production_pcm_queue_capacity') != 602 or
+            model.get('trailing_zero_samples') != 371 or
+            model.get('accepted_samples') != audio+371 or
+            model.get('produced_samples') != audio+371 or
+            model.get('producer_first_frame_ms', -1) < 100 or
+            model.get('producer_eof_elapsed_ms', -1) < (audio+371)*1000//16000 or
+            model.get('producer_eof_elapsed_realtime_ms', 0) - model.get('producer_epoch_elapsed_realtime_ms', 0) != model.get('producer_eof_elapsed_ms') or
+            model.get('producer_failure') is not False or
+            model.get('producer_exited') is not True or
+            model.get('producer_cleanup_completed') is not True or
+            model.get('provider_selection_method') != 'stable_observed_filename_physical_touch' or
+            model.get('provider_exit_observed') is not True or
+            model.get('import_complete_status_observed') is not True or
+            not 0 <= model.get('drain_after_producer_eof_ms', -1) < 30000 or
+            not 0 < model.get('remaining_final_timeout_ms', 0) <= 30000-model['drain_after_producer_eof_ms'] or
+            model.get('stop_to_final_ms') != model.get('producer_eof_to_final_ms') or
+            not 0 <= model.get('finish_call_ms', -1) <= model.get('stop_to_final_ms', -1) or
+            not 0 <= model.get('producer_eof_to_final_ms', -1) <= 30000):
+        raise ValueError('missing_independent_clock_no_drop_or_shared_eof_deadline_evidence')
 
 
 def verify_fixture_report(model, path):
@@ -188,6 +247,11 @@ def main():
                 model = json.loads((out/'voicekey-model-report.json').read_text())
                 commit = json.loads((out/'voice-commit-report.json').read_text())
                 verify_reports(model, commit, lock)
+                verify_boundary_report(json.loads((out/'voicekey-boundary-report.json').read_text()))
+                watchdog = json.loads((out/'voicekey-watchdog-report.json').read_text())
+                verify_watchdog_report(watchdog, lock)
+                if next(r for r in model['cases'] if r['id'] == 'actual_android_stop_watchdog') != watchdog:
+                    raise ValueError('watchdog_case_and_report_differ')
                 verify_fixture_report(model, ROOT/'target/voice-probe/synthetic.wav')
                 summary['saf_jni_editable'] = 'PASS'
                 run('shell', 'pm', 'grant', 'org.zapime.android', 'android.permission.RECORD_AUDIO')

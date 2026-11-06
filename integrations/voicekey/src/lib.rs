@@ -28,6 +28,16 @@ const MAX_TEXT_BYTES: usize = 65_536;
 const PARTIAL_EVERY: usize = 30;
 const AUDIO_QUEUE: usize = 8;
 
+/// The JNI caller supplies its remaining overall drain budget. Invalid values
+/// must be rejected before a handle becomes one-shot finished, never expanded.
+#[cfg(any(target_os = "android", test))]
+fn checked_finish_timeout_ms(timeout_ms: i32) -> Result<Duration> {
+    if !(1..=30_000).contains(&timeout_ms) {
+        bail!("invalid_timeout");
+    }
+    Ok(Duration::from_millis(timeout_ms as u64))
+}
+
 #[derive(Clone, Default)]
 pub struct Cancellation(Arc<AtomicBool>);
 impl Cancellation {
@@ -416,6 +426,48 @@ impl RecognitionSession {
         input.nonzero |= samples.iter().any(|x| *x != 0);
         Ok(())
     }
+    /// Worker-only bounded backpressure; UI/key threads must not call this.
+    /// `push` keeps its nonblocking/full contract. No capacity or evidence is
+    /// added until the complete prefix is actually accepted by the channel.
+    pub fn push_wait(&self, samples: &[i16], timeout: Duration) -> Result<()> {
+        let deadline = Instant::now()
+            .checked_add(timeout)
+            .ok_or_else(|| anyhow!("invalid_accept_timeout"))?;
+        let mut attempted = false;
+        loop {
+            self.shared.cancel.check()?;
+            if attempted && Instant::now() >= deadline {
+                bail!("voicekey_audio_backpressure");
+            }
+            attempted = true;
+            match self.push(samples) {
+                Ok(()) => return Ok(()),
+                Err(error) if error.to_string() == "voicekey_audio_backpressure" => {}
+                Err(error) => return Err(error),
+            }
+            self.shared.cancel.check()?;
+            let now = Instant::now();
+            if now >= deadline {
+                bail!("voicekey_audio_backpressure");
+            }
+            // No ingress/handle mutex spans this wait. The completion/cancel
+            // notification accelerates exit; short bounded polls notice a
+            // receiver freeing capacity without expanding the native queue.
+            let pause = (deadline - now).min(Duration::from_millis(10));
+            let slot = self
+                .shared
+                .result
+                .lock()
+                .map_err(|_| anyhow!("voicekey_lock"))?;
+            let (_slot, _) = self
+                .shared
+                .ready
+                .wait_timeout_while(slot, pause, |value| {
+                    value.is_none() && !self.shared.cancel.is_cancelled()
+                })
+                .map_err(|_| anyhow!("voicekey_lock"))?;
+        }
+    }
     pub fn poll_partial(&self) -> Option<PartialResult> {
         if self.shared.cancel.is_cancelled() || !self.has_nonzero_pcm() {
             return None;
@@ -466,6 +518,7 @@ impl RecognitionSession {
     }
     pub fn cancel(&self) {
         self.shared.cancel.cancel();
+        self.shared.ready.notify_all();
         if let Ok(mut input) = self.input.lock() {
             input.sender.take();
         }

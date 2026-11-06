@@ -180,7 +180,7 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_accept(
         let Some(session) = session(&handle) else {
             return fail("invalid_session");
         };
-        if let Err(error) = session.push(&bytes) {
+        if let Err(error) = session.push_wait(&bytes, Duration::from_secs(5)) {
             session.cancel();
             return fail(&error.to_string());
         }
@@ -202,8 +202,13 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_finish(
     mut env: JNIEnv,
     _class: JClass,
     id: jlong,
+    timeout_ms: jint,
 ) -> jbyteArray {
     boundary(&mut env, |_| {
+        let timeout = match crate::checked_finish_timeout_ms(timeout_ms) {
+            Ok(timeout) => timeout,
+            Err(_) => return fail("invalid_timeout"),
+        };
         let Some(handle) = owned(id) else {
             return fail("invalid_owner");
         };
@@ -218,7 +223,7 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_finish(
         let Some(session) = session(&handle) else {
             return fail("invalid_session");
         };
-        let result = session.finish(Duration::from_secs(30));
+        let result = session.finish(timeout);
         if let Ok(mut slot) = handle.session.lock() {
             slot.take();
         }

@@ -183,6 +183,8 @@ jobs:
             target/voicekey-android/model-instrumentation.txt
             target/voicekey-android/ime-instrumentation.txt
             target/voicekey-android/voicekey-model-report.json
+            target/voicekey-android/voicekey-boundary-report.json
+            target/voicekey-android/voicekey-watchdog-report.json
             target/voicekey-android/voice-commit-report.json
             target/voicekey-android/voicekey-provider-ui-shape.json
             target/voicekey-android/offline-uid.json

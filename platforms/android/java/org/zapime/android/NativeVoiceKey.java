@@ -11,7 +11,8 @@ final class NativeVoiceKey {
     static native long allocate();
     static native byte[] start(long handle, byte[] model, byte[] unusedRuntime);
     static native byte[] accept(long handle, short[] pcm, int count);
-    static native byte[] finish(long handle);
+    static byte[] finish(long handle){return finish(handle,30000);}
+    static native byte[] finish(long handle,int timeoutMs);
     static native void cancel(long handle);
     static native boolean close(long handle);
     static native boolean checkModel(String dir);

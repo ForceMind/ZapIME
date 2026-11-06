@@ -119,3 +119,10 @@ GitHub 返回 `ZapIME-Android-development`：artifact `13494970099`，大小 `23
 Android run42211989441双ABI产品构建硬门禁通过，完整UI/JNI结果及产物校验仍待取得。此为中间实验基线；新安全复核发现确认流程未在权限变化后重查RECORD_AUDIO。本切片补结果回调、点击确认、异步核对完成三处检查，并以生产权限helper+真实Editable验证模拟权限变化。它不代替真实系统撤权/进程生命周期，后者仍NOT RUN，最终试用包需包含修复。
 
 新增证据均在[evidence/voicekey-runtime-20261106](evidence/voicekey-runtime-20261106/)，包括双次ARM失败和x86全部CER。后续完整CI排队保留当前run，不通过取消或软失败掩盖结果。
+
+
+## 确认背压后的修补验收层级
+
+focused run42215806243实际错误：API35接受68800样本、已有非空partial，API36接受62400样本，均JNI `voicekey_audio_backpressure`；API28触摸后provider未退出。原件及哈希全部保留。c7三API原有完整回归、实际23条Editable/5条无模型JNI以及双ABI包独立字节复核均通过，但不构成VoiceKey专项通过。
+
+本切片改为5秒有界、可取消的Full等待，停止后缓冲排空/final共30秒，增加remaining-timeout JNI参数、无效预算ABI探针及独立clock PCM producer、稳定SAF单次真实触摸。本地Rust26/JVM14+17/Python34及API36编译通过；新Android模型/ABI/producer/watchdog结果等待真实CI，不借旧结果补填。main Handler watchdog是协作取消请求，不是强杀推理或硬实时调度。

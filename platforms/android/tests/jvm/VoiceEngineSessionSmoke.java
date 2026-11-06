@@ -3,6 +3,7 @@ package org.zapime.android;
 import java.io.*;
 import java.nio.file.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public final class VoiceEngineSessionSmoke {
     static void check(boolean value){if(!value)throw new AssertionError("engine routing");}
@@ -29,7 +30,12 @@ public final class VoiceEngineSessionSmoke {
             check(preview.accept(true,"synthetic partial").equals("synthetic partial"));
             for(int n=0;n<20;n++)check(preview.accept(false,null).equals("synthetic partial"));
             check(preview.accept(true,"").isEmpty());check(new VoicePreviewState().text().isEmpty());checks++;
-            System.out.println("PASS immutable engine routing: "+checks+" cases; X-ASR-only/VoiceKey-only/both/none/corrupt selected; no fallback. Not model decoding.");
+            AtomicLong clock=new AtomicLong(1000);VoiceStopBudget budget=new VoiceStopBudget(clock::get);
+            clock.set(900000);check(budget.remainingMillis()==30000&&!budget.expired());check(budget.stop());
+            for(int n=1;n<=3;n++){clock.addAndGet(9000);check(!budget.stop());check(budget.remainingMillis()==30000-n*9000);}
+            clock.addAndGet(3000);check(budget.expired()&&budget.remainingMillis()==0&&!budget.stop());checks++;
+            VoiceStopBudget fresh=new VoiceStopBudget(clock::get);check(!fresh.expired()&&fresh.remainingMillis()==30000);check(fresh.stop());clock.addAndGet(30001);check(fresh.expired()&&budget.expired());checks++;
+            System.out.println("PASS immutable engine routing, preview and shared stop budget: "+checks+" cases; X-ASR-only/VoiceKey-only/both/none/corrupt selected; no fallback. Not model decoding.");
         }finally{Files.delete(root);}
     }
 }
