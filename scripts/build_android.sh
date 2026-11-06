@@ -49,12 +49,9 @@ bash scripts/build_android_voice.sh "$abi" "$build"
 # automatically activated by its presence.
 # Offline-only adapter directly uses the pinned VoiceKey wtlocal Rust kernels.
 # VoiceKey cloud protocol core and Opus dependencies are NOT compiled here.
-# VoiceKey's current aarch64 int8 kernel uses dotprod unconditionally.
-# Limit this experimental alpha to supported ARM CPUs (S25). Before broad
-# release, upstream must add runtime detection and a scalar fallback.
-voicekey_rustflags="-C link-arg=-Wl,-z,max-page-size=16384"
-if [[ "$abi" == "arm64-v8a" ]]; then voicekey_rustflags="$voicekey_rustflags -C target-feature=+dotprod"; fi
-RUSTFLAGS="$voicekey_rustflags" \
+# Stable NEON alternative to the upstream unstable AArch64 dot-product
+# intrinsic, without assuming all ARM64 CPUs have dotprod.
+RUSTFLAGS="-C link-arg=-Wl,-z,max-page-size=16384" \
   cargo build --release --manifest-path integrations/voicekey/Cargo.toml --target "$rust_target"
 voicekey_so="$root/integrations/voicekey/target/$rust_target/release/libzapime_voicekey_adapter.so"
 [[ -s "$voicekey_so" ]] || { echo "VoiceKey JNI library missing" >&2; exit 1; }
