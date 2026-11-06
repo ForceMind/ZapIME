@@ -6,7 +6,7 @@
 - 新 `integrations/voicekey` 不编译非公开云识别协议客户端，仅直接引用固定 VoiceKey `wtlocal` 的五个离线源码模块：FBank、INT8 kernel、模型、流式解码、xnet。显式有界 8×100ms PCM 队列、60秒/960000采样上限、预览仅 partial、终稿单独返回、取消及独立 Rust 单测。
 - Android 新增独立 JNI 和可选 `libzapime_voicekey_adapter.so` 双 ABI 构建；用户主动导入上游固定版本的模型包，尺寸/MD5 匹配后有界嵌套 ZIP 提取，逐文件 SHA-256 清单和启动前复核。此 SHA 是**安装后完整性记录**，还不是官方原包独立 SHA-256 信任锚；后续必须补充，并核对第三方模型合法使用与发布权。
 - 原有 `VoiceCapture` 在单独 voice worker 根据显式设置选择 X-ASR 或 VoiceKey，复用独立 AudioRecord、静音/取消/焦点及 `VoiceCommitTransaction` 确认上屏约束，不自动启用云服务；未安装/不支持的实验引擎不得启动。ARM 端当前构建依赖 dotprod 指令并以 `/proc/cpuinfo` 显式保守门禁，不能称适用所有 ARM 手机。
-- 早期隔离 Rust 适配器曾在 CI `42056393749` 通过；重构为仅离线模块后，CI `42166066807` 曾报 partial 回调生命周期错误，提交 `e900b763` 修正后 `42166066807` 这条记录不适用于修正版（真正的修正版运行另行核验）。所有新增 Android JNI、APK、API28/35/36、新旧引擎对比与三星 S25 真机**尚无完整验收证据**；不能把分支源码或以前的 X-ASR 模拟器测试当作新引擎已部署。
+- 早期隔离 Rust 适配器 CI `42056393749` 成功；重构为仅离线模块后，CI `42165916483` 检出了 partial 回调生命周期错误，提交 `e900b763` 修正后独立 Rust CI `42166066807` **已成功**。所有新增 Android JNI、APK、API28/35/36、新旧引擎对比与三星 S25 真机**尚无完整验收证据**；不能把分支源码或以前的 X-ASR 模拟器测试当作新引擎已部署。
 - 安装包一旦生成仍是实验开发签名；无明确模型使用权、独立 SHA256 锚、真实手机识别性能与正式签名，不创建 Release，也不替换 docs/ANDROID_TRYOUT.md 的已验收旧 APK。
 
 
