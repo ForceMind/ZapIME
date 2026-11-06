@@ -25,7 +25,7 @@ final class VoiceCapture {
     private volatile boolean recording;
     private long lastPartial;
     private boolean loaded;
-    private boolean useVoiceKey;
+    private volatile boolean useVoiceKey;
     VoiceCapture(Context context,Listener listener){this.context=context.getApplicationContext();this.listener=listener;}
     void start(){VoiceWorker.EXECUTOR.execute(this::run);}
     void stop(){if(recording)stopping.set(true);else cancel();}
