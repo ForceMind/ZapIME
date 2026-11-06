@@ -1,8 +1,9 @@
 # ZapIME（闪电输入法）｜双离线语音引擎与 Android Alpha 持续研发接管
 
-> 2026-11-06 实施接续：本轮已实际修复引擎入口、Rust/JNI 取消与缓存/PCM、可信模型导入，并补 CPU/ARM/VoiceKey-only Android 专项门禁。请首先读取最新 `docs/STATUS.md` 和 `docs/evidence/voicekey-runtime-20261106/`，再核验实时分支及 CI；下面历史交接的 e24f1bd 状态不覆盖新实现。官方模型审计 run 42209579465 只证明固定来源/摘要，不代表模型推理或手机通过。
+> 2026-11-06 实施接续：本轮已交付 [Android 双离线引擎 Alpha 固定候选](DUAL_VOICE_ALPHA_TRYOUT.md)。产品源码为 `08e84980562ecc8fab436ffcdab6e5aee8c567e7`，其双 ABI APK 已实际下载核验。产品不变的测试提交 `be79d084eef1f835e7504f134f46ba315b36df18` 在 focused run42227414903 的 API28/35/36 全部通过真实 VoiceKey 模型/JNI/Editable及离线系统IME门禁。原失败与修补证据完整保留；S25/自然人声/正式签名仍 NOT RUN。先读最新 STATUS、试用指南及本轮证据，下面历史 e24 基线与“先修入口”等任务不能覆盖已完成实现。
 >
-> 可由本地 Codex 在仓库接续：`git clone --branch feat/voicekey-engine-import --recurse-submodules https://github.com/ForceMind/ZapIME.git`；已有仓库先 `git status --short` / `git fetch origin`，保留未提交改动，不 reset/force。读 AGENTS 与本页指定文档，继续复用 PR #71 / Issue #72。限定隔离 GitHub 模拟器的验收脚本不可在个人设备执行；本地开发环境可运行不需要设备的 Rust/JVM/host 测试。
+> 本地 Codex 现在可以接续：`git clone --branch feat/voicekey-engine-import --recurse-submodules https://github.com/ForceMind/ZapIME.git`。已有仓库先 `git status --short` / `git fetch origin`，保留未提交改动，不 reset/force。读取 AGENTS、STATUS、本文、整合与验收文档。复用 PR #71 / Issue #72，不重复提交计划。限定隔离 GitHub 模拟器的验收脚本不可在个人设备执行；本地可运行无需设备的 Rust/JVM/host 测试。下一步以手机集中验收和同机语料对比为主；源代码集成、候选试用、合并及稳定发布分层处理。
+
 
 
 你现在接管已有工程的后续开发，担任产品、Rust/Android 原生开发、语音推理、隐私安全、测试与 GitHub 交付负责人。你的任务是读取真实仓库、修改代码、运行测试、修复问题并交付可安装试用包，不是重新设计项目，也不是仅提交文档或建议。
@@ -16,7 +17,8 @@
 - 当前开发分支：feat/voicekey-engine-import。
 - 当前 PR：https://github.com/ForceMind/ZapIME/pull/71
 - 跟踪任务：https://github.com/ForceMind/ZapIME/issues/72
-- 本轮最后核验的产品代码：e24f1bd21ecd4fca99d909a972116e5a36e5f6c2。
+- 当前固定候选产品代码：08e84980562ecc8fab436ffcdab6e5aee8c567e7；专项测试提交：be79d084eef1f835e7504f134f46ba315b36df18。
+- 下面 e24 基础与实施顺序保留为原交接要求；是否已完成以 STATUS 和原始证据为准。
 - 当时 main：5621ab0e81780ca58c6cf74e97c93928a10f981a。
 - VoiceKey 固定来源：J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c8c4。
 

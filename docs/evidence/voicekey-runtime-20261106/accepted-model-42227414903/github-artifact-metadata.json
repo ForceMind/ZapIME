@@ -1,0 +1,64 @@
+{
+  "run_id": 42227414903,
+  "source_commit": "be79d084eef1f835e7504f134f46ba315b36df18",
+  "artifacts": [
+    {
+      "id": 13507016216,
+      "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+      "size_in_bytes": 238014,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13507016216",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13507016216/zip",
+      "expired": false,
+      "created_at": "2026-11-06T13:46:40Z",
+      "expires_at": "2026-11-20T13:46:39Z",
+      "updated_at": "2026-11-06T13:46:40Z",
+      "digest": "sha256:a5b742fc7f3db49c0e892954cd055fbd40088d47e75ad53d421ac7290c083323",
+      "workflow_run": {
+        "id": 42227414903,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/voicekey-engine-import",
+        "head_sha": "be79d084eef1f835e7504f134f46ba315b36df18"
+      }
+    },
+    {
+      "id": 13506458469,
+      "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+      "size_in_bytes": 186055,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13506458469",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13506458469/zip",
+      "expired": false,
+      "created_at": "2026-11-06T13:45:55Z",
+      "expires_at": "2026-11-20T13:45:55Z",
+      "updated_at": "2026-11-06T13:45:55Z",
+      "digest": "sha256:77b7db5044a8916d52f69ae3fe8e1d5506cd35389428699263ddcaf932466ca5",
+      "workflow_run": {
+        "id": 42227414903,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/voicekey-engine-import",
+        "head_sha": "be79d084eef1f835e7504f134f46ba315b36df18"
+      }
+    },
+    {
+      "id": 13505819838,
+      "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+      "size_in_bytes": 183984,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13505819838",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13505819838/zip",
+      "expired": false,
+      "created_at": "2026-11-06T13:46:37Z",
+      "expires_at": "2026-11-20T13:46:36Z",
+      "updated_at": "2026-11-06T13:46:37Z",
+      "digest": "sha256:98193e65eae900c642ab91fd756e63b0d97e63173121e3942ce7c82f4367b571",
+      "workflow_run": {
+        "id": 42227414903,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/voicekey-engine-import",
+        "head_sha": "be79d084eef1f835e7504f134f46ba315b36df18"
+      }
+    }
+  ]
+}
+

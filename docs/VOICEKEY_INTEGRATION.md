@@ -1,12 +1,12 @@
 # VoiceKey → ZapIME 双离线引擎整合方案 v2
 
-更新：2026-11-06。此版取代本文件早期“仅方案、未引入源码”的描述。阶段目标见 [开发计划](DEVELOPMENT_PLAN.md)，实际验证范围见 [验收矩阵](VOICEKEY_ACCEPTANCE.md)，最新决策见 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。
+更新：2026-11-06。产品08e84980与产品不变的测试be79d084已完成云端专项：API28/35/36 focused42227414903全通过，固定双ABI APK已实际核验并提供[候选试用](DUAL_VOICE_ALPHA_TRYOUT.md)。三星S25/自然人声/正式签名仍NOT RUN。此版取代本文件早期“仅方案、未引入源码”的描述。阶段目标见 [开发计划](DEVELOPMENT_PLAN.md)，实际验证范围见 [验收矩阵](VOICEKEY_ACCEPTANCE.md)，最新决策见 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。
 
 ## 1. 来源与现状
 
 ZapIME 原有 Android 语音路径为固定 MSIME LocalAsr + sherpa-onnx 1.13.8 / ONNX Runtime 1.28.2 + X-ASR-zh-en 流式 INT8，仍为默认。VoiceKey 源码固定于 `vendor/voicekey`，来源 `J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c8c4`。完整源码已以子模块引入，而非把全部上游功能自动打进产品。
 
-`integrations/voicekey` 直接引用固定上游的 `fbank.rs` / `xnet.rs`；`model.rs`、`stream.rs`、`kernels.rs` 是保留作者及固定提交来源的本地适配副本。前两者增加真实推理路径的协作取消、精确零输入策略及边界校验；数值补丁用稳定 NEON 乘法与成对加和替换原 ARM `vdotq_s32`，不再强制 `+dotprod` 或使用旧 `/proc/cpuinfo` 限制。固定 vendor 未修改。x86 单测或 AArch64 编译检查不能证明 ARM 运行数值及速度，仍须独立原生 ARM 对照。
+`integrations/voicekey` 直接引用固定上游的 `fbank.rs` / `xnet.rs`；`model.rs`、`stream.rs`、`kernels.rs` 是保留作者及固定提交来源的本地适配副本。前两者增加真实推理路径的协作取消、精确零输入策略及边界校验；数值补丁用稳定 NEON 乘法与成对加和替换原 ARM `vdotq_s32`，不再强制 `+dotprod` 或使用旧 `/proc/cpuinfo` 限制。固定 vendor 未修改。x86 单测或 AArch64 编译检查不能证明 ARM 运行数值及速度，本轮已完成Linux原生ARM数值参考对照与微内核诊断；不等于Android ARM手机验证。
 
 当前适配器不编译 VoiceKey 的非公开云协议核心、内置第三方服务密钥、CPAL 或 Opus。上游桌面应用、Android 无障碍注入、iOS 宿主和其他引擎保留供研究，不直接接管 ZapIME 的包名、录音、权限或上屏流程。
 
@@ -50,19 +50,19 @@ Java 路径均相对于 `platforms/android/java/org/zapime/android/`。
 
 在基线 `e24f1bd...` 的 `ZapInputMethodService.startVoice()` 中，准备条件仍为 `VoiceModels.installed(this) || VoiceModels.recoverable(this)`，并未依据 `VoiceEnginePreferences` 选择模型管理器。因此仅导入 VoiceKey、未安装 X-ASR 时会被旧入口条件拦截。此结论来自静态源码检查；本轮未执行真人复现。
 
-当前硬化源码通过 `VoiceEngineSession` 固定所选引擎并调用对应的模型准备路径，不回退另一引擎。本地 JVM 路由/预览回归 12 例已通过，包含仅 X-ASR、仅 VoiceKey、两者都有、均没有、所选模型损坏。入口只作有界能力提示，完整可信验证仍在独立 worker。这是主机回归，不是已激活系统 IME 的真实模型使用；新 Android CI 结果仍须独立记录。
+当前硬化源码通过 `VoiceEngineSession` 固定所选引擎并调用对应的模型准备路径，不回退另一引擎。本地 JVM 路由/预览/预算回归 14 例已通过，包含仅 X-ASR、仅 VoiceKey、两者都有、均没有、所选模型损坏。入口只作有界能力提示，完整可信验证仍在独立 worker。主机回归与Android证据分开；be79 focused三API已另外通过仅装VoiceKey、真实模型/JNI及激活系统IME。
 
 ## 5. 必须完成的健壮性审计
 
 以下描述本轮实现和仍需运行验证的边界；主机单测不代替真实模型、Android 或真机。
 
-**会话与取消。** 已移除适配器的 Tokio/async-trait 路径，改为标准库 blocking worker、有界通道及贯穿本地 model/stream 的协作取消。物理解码容量由实际 worker 持有直到退出，不由调用方 drop/超时提前释放；`close` 返回是否完成回收，超时返回不能宣称计算被强制终止。JNI 的 finish 不持句柄锁等待，使另一线程 cancel 可到达相同令牌。主机测试覆盖慢 worker、超时、drop、panic 及取消等待；权限撤销、系统 IME 生命周期与真实模型慢计算仍须新 Android/JNI 验收。
+**会话与取消。** 已移除适配器的 Tokio/async-trait 路径，改为标准库 blocking worker、有界通道及贯穿本地 model/stream 的协作取消。物理解码容量由实际 worker 持有直到退出，不由调用方 drop/超时提前释放；`close` 返回是否完成回收，超时返回不能宣称计算被强制终止。JNI 的 finish 不持句柄锁等待，使另一线程 cancel 可到达相同令牌。主机测试覆盖慢 worker、超时、drop、panic 及取消等待；模拟权限边界及模拟器系统IME生命周期已另行验证；OS实际撤权、手机慢计算和活动模型超时负向场景仍须独立验收。
 
 **PCM 与结果。** 只根据成功入队的有效 PCM 前缀累计非零证据。无输入与全零不调用模型 partial/final，±1 保留；该规则不是 VAD 或真实环境静音判定。JNI 显式报告 `partial_updated`，无新值不擦空旧预览；结果携带会话/引擎标识，取消清理且终稿仍须原事务确认。固定 Fbank 的任意分块与整段特征相等已有主机测试；保留其 400 样本窗/160 步长 snip-edges 行为，不把不足一窗的末尾描述为已 flush 解码。
 
-**背压与资源。** 音频队列 8 帧、每帧最多 1600 样本、每会话最多 960000 样本；满队列明确失败并取消，不计入接受样本或非零证据。partial 使用有界最新值槽。缓存身份含路径、长度、修改时间及 Unix inode，检测 app-private 原子替换；模型解析在缓存锁外且验证不写活动缓存，解析 panic 被隔离。新增 `releaseCache`，close/空闲/内存压力路径只释放未被使用的缓存；仍需真实设备观察峰值内存及慢机恢复。
+**背压与资源。** 音频队列 8 帧、每帧最多 1600 样本、每会话最多 960000 样本；非阻塞push在满队列时明确失败；JNI在专用worker仅Full时最多等待5秒，超时仍失败并取消；只成功接受的样本计数，不静默丢音。partial 使用有界最新值槽。缓存身份含路径、长度、修改时间及 Unix inode，检测 app-private 原子替换；模型解析在缓存锁外且验证不写活动缓存，解析 panic 被隔离。新增 `releaseCache`，close/空闲/内存压力路径只释放未被使用的缓存；仍需真实设备观察峰值内存及慢机恢复。
 
-**JNI 与数值。** 已加入 owner/生命周期、参数长度、路径、panic 及 pending Java exception 边界；新增 8 导出/ABI/动态依赖/16KiB 打包硬门禁。适配器本地 20 单测、严格格式、锁定依赖树及 x86/AArch64 clippy 已通过，AArch64 Android `cargo check` 也通过；后者没有链接或运行 Android ELF。x86 release 合成 kernel 计时仅为诊断，不是手机延迟或推荐引擎证据。原生 ARM 数值/性能 workflow 已添加，结果仍待实际执行。
+**JNI 与数值。** 已加入 owner/生命周期、参数长度、路径、panic 及 pending Java exception 边界；新增 8 导出/ABI/动态依赖/16KiB 打包硬门禁。适配器本地 26 单测、严格格式、锁定依赖树及 x86/AArch64 clippy 已通过，AArch64 Android `cargo check` 也通过；后者没有链接或运行 Android ELF。x86 release 合成 kernel 计时仅为诊断，不是手机延迟或推荐引擎证据。产品08原生ARM/x86 run42221304426实际通过数值参考/26测试及微内核诊断；真实模型run42221304326另行通过。诊断性能不是手机端到端性能。
 
 ## 6. 可信模型管理
 
@@ -76,7 +76,7 @@ Java 路径均相对于 `platforms/android/java/org/zapime/android/`。
 
 ## 7. CI、评测和交付
 
-独立适配器工作区、Cargo.lock 和上游提交已锁定；构建/测试/许可收集使用 `--locked`。格式、测试和安全检查为硬门禁，不使用 continue-on-error。独立 Rust 许可目录记录锁哈希、实际依赖图及逐文件许可 SHA；本地双 ABI 各 32 个非 dev 包收集与封装清单验证已通过。新 APK 还须实际通过这些门禁，旧包不能替代。
+独立适配器工作区、Cargo.lock 和上游提交已锁定；构建/测试/许可收集使用 `--locked`。格式、测试和安全检查为硬门禁，不使用 continue-on-error。独立 Rust 许可目录记录锁哈希、实际依赖图及逐文件许可 SHA；本地双 ABI 各 32 个非 dev 包收集与封装清单验证已通过。产品08双ABI APK已实际通过这些门禁并下载重验；摘要及开发证书见试用页。旧包不能替代新产品。
 
 既有 Android 回归必须保持；新增测试要明确选中 VoiceKey 并加载其真实模型。依次区分纯状态机/合成 PCM、模型驱动解码、独立 Editable、已激活 IME、自然麦克风与 ARM 真机证据。专项覆盖和产物要求详见 [验收矩阵](VOICEKEY_ACCEPTANCE.md)。
 

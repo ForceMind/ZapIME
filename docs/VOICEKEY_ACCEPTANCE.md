@@ -1,6 +1,23 @@
 # VoiceKey 双引擎验收矩阵与交接快照
 
-核验日期：2026-11-06。第 1–6 节保留接管时固定源码的历史快照，其“本轮”指当时仅更新文档及读取元数据的工作。**本次实际开发、旧产物下载核验及新源码主机结果见第 7 节；新产品 CI/模型推理/真机结果仍须分别记录。**
+核验日期：2026-11-06。第 1–6 节保留接管时固定源码的历史快照，其“本轮”指当时仅更新文档及读取元数据的工作。**当前候选结论见下面“当前验收层级”；第7节起按时间保留所有实施及失败记录，其中“待CI”是当时状态，不覆盖后来的真实结果。**
+
+## 当前验收层级（2026-11-06）
+
+产品固定 `08e84980562ecc8fab436ffcdab6e5aee8c567e7`；产品不变的测试提交 `be79d084eef1f835e7504f134f46ba315b36df18`。候选 APK 与使用步骤见 [Alpha试用说明](DUAL_VOICE_ALPHA_TRYOUT.md)。PR #71保持draft/open，未合并或发布稳定版。
+
+| 层级 | 结果 | 可核验证据 |
+| --- | --- | --- |
+| 状态机与存储 | PASS | JVM路由/预览/停止预算14、可信存储17类；模拟故障不是实际ENOSPC/断电 |
+| ARM/x86原生数值与CPU模型 | PASS | 产品08 runs42221304426/42221304326；26单测、实际固定模型解码及原件；Linux ARM不等于ARM Android |
+| VoiceKey JNI/Editable | PASS | be79 focused42227414903，API28/35/36各14主+23Editable、真实固定模型/SHA、非空预览和确认、JNI边界、独立producer125861全部接受 |
+| 已激活系统IME/AudioRecord | PASS，限定模拟器 | 三API实际静音AudioRecord/取消重录/保护、精确UID双族离线、系统IME退出、环境恢复和清理；未以合成PCM冒充麦克风自然识别 |
+| 原键盘/X-ASR/资料/备份 | PASS | 固定产品08 full42221304627三API原门禁；旧VoiceKey现代驱动失败保留，另由be79 focused验证 |
+| 双ABI候选产物 | PASS | artifact13503554301实际下载、APK摘要、源码/许可/JNI/16KiB/签名及官方SDK dexdump；开发签名不是正式发布 |
+| S25/自然人声/OS撤权/手机质量与能耗 | NOT RUN | [一次性集中清单](S25_DUAL_VOICE_CHECKLIST.md)；不使用模拟权限或静音代填 |
+| 稳定发布/正式签名/完整四端 | 未完成 | 不由候选包、CI或本文推导 |
+
+首次/第二轮/背压/现代provider/API36键盘策略失败均保留。最终修正仅测试FINGER及专用模拟器原设置记录/准备/恢复；没有删失败、放宽断言或改产品显示策略。受控watchdog为模型加载后的空闲worker协作取消，不代表活动计算可强杀。固定合成单句CER15/22，不能外推真人准确率或推荐VoiceKey；X-ASR保持默认。
 
 ## 1. 源码与分支
 
@@ -131,3 +148,11 @@ focused run42215806243实际错误：API35接受68800样本、已有非空partia
 ## 08热修的实际首个闭环与现代驱动差异
 
 focused42221304313 API28实际SUCCESS，已核下载JSON：14主/23Editable/JNI预算ABI/真实30秒Handler空闲worker回收/独立125861样本/激活IME全通过。API35/36失败在provider未返回，尚未模型导入。新驱动仅显式FINGER pointer及事件/点位/截图证据，不改产品或原通过断言；AOSP推断和全文获取限制见hotfix-model-42221304313/source-review-pointer-input.md。现代结果仍待新CI，所有旧失败继续保留。
+
+## 最终模拟器专项与候选交付
+
+be79 focused [42227414903](https://github.com/ForceMind/ZapIME/actions/runs/42227414903) API28/35/36全部SUCCESS，ZIP已实际下载核metadata摘要，原始报告经当前严格validator重验。每端独立producer生产=接受125861；14主/23Editable/5JNI边界及实际30秒Handler探针通过；真实系统IME门禁与双族产品UID规则移除、文档清理全部通过。API36记录before0/applied1/readback1/restored0，28/35原1并恢复1，直接验证此次CI环境准备差异。
+
+产品路径08→be79无变化的机器比较见[源码一致记录](evidence/voicekey-runtime-20261106/final-product-source-equivalence.json)。固定双ABI APK仍取08 full artifact13503554301及其自己的摘要和开发证书；不把不同runner同源码包混用签名。全文来源和试用步骤见[候选说明](DUAL_VOICE_ALPHA_TRYOUT.md)。新文档触发的完整流水线仍以实时结果为准，不循环把报告提交视作新的产品代码或旧结果覆盖新代码。
+
+最终专项下载原件、逐文件摘要和严格校验结果见[三API通过证据](evidence/voicekey-runtime-20261106/accepted-model-42227414903/README.md)。

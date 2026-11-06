@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "engine_id": "voicekey",
+  "native_engine_id": "voicekey-wechat",
+  "model_id": "wechat-offline-20260710220526250",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "api_level": 28,
+  "synthetic": true,
+  "model_decode_executed": true,
+  "cases": [
+    {
+      "id": "fresh_voicekey_only_profile",
+      "passed": true
+    },
+    {
+      "id": "actual_saf_fixed_model_import",
+      "passed": true
+    },
+    {
+      "id": "voicekey_selected_without_xasr",
+      "passed": true
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "no_samples",
+      "passed": true,
+      "accepted_samples": 0,
+      "expected_nonzero_pcm": false,
+      "invalid_finish_budget_session_preserved": true
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "all_zero",
+      "passed": true,
+      "accepted_samples": 1600,
+      "expected_nonzero_pcm": false,
+      "invalid_finish_budget_session_preserved": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "ignored_tail",
+      "passed": true,
+      "accepted_samples": 2,
+      "expected_nonzero_pcm": false,
+      "invalid_finish_budget_session_preserved": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "positive_lsb",
+      "passed": true,
+      "accepted_samples": 1,
+      "expected_nonzero_pcm": true,
+      "invalid_finish_budget_session_preserved": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "negative_lsb",
+      "passed": true,
+      "accepted_samples": 1,
+      "expected_nonzero_pcm": true,
+      "invalid_finish_budget_session_preserved": false
+    },
+    {
+      "id": "cancelled_empty",
+      "passed": true,
+      "accepted_samples": 0
+    },
+    {
+      "id": "cancelled_nonzero_cross_thread",
+      "passed": true,
+      "accepted_samples": 1600,
+      "physical_worker_exit_confirmed": true,
+      "scope": "Cross-thread cancellation after accepted PCM and actual worker exit; not proof of interrupting every blocking inference instruction."
+    },
+    {
+      "id": "actual_android_stop_watchdog",
+      "passed": true,
+      "synthetic": true,
+      "engine_id": "voicekey",
+      "native_engine_id": "voicekey-wechat",
+      "model_id": "wechat-offline-20260710220526250",
+      "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+      "scope": "Controlled VoiceCapture handle\/recording fields, actual production stop() and 30-second Android main Handler timer, plus real model-backed native idle-worker cancellation\/close. No capture.run(), AudioRecord, active matrix inference, system IME or natural speech.",
+      "controlled_capture_state": true,
+      "real_android_timer": true,
+      "audio_record_executed": false,
+      "matrix_inference_executed": false,
+      "system_ime_executed": false,
+      "real_model_native_session_started": true,
+      "callback_elapsed_ms": 30022,
+      "remaining_budget_ms": 0,
+      "callback_on_main_thread": true,
+      "callback_count": 1,
+      "timeout_result_empty": true,
+      "native_finish_rejected_cancelled": true,
+      "physical_idle_worker_exit_confirmed": true,
+      "cleanup_completed": true
+    },
+    {
+      "id": "actual_jni_synthetic_decode_and_tail",
+      "passed": true
+    },
+    {
+      "id": "actual_editable_production_confirmation",
+      "passed": true
+    },
+    {
+      "id": "idle_release_after_real_model",
+      "passed": true
+    }
+  ],
+  "scope": "Real system ACTION_OPEN_DOCUMENT import into clean dedicated CI profile, selected VoiceKey model only, actual JNI synthetic PCM, and separate real Editable\/production VoiceCommitTransaction probe. Not natural speech, phone\/ARM performance or physical confirmation in a system IME. Separate UI instrumentation covers emulator AudioRecord\/IME lifecycle.",
+  "provider_touch_point": [
+    104,
+    313
+  ],
+  "provider_selected_filename_bounds": [
+    66,
+    302,
+    142,
+    324
+  ],
+  "provider_pointer_id": 0,
+  "provider_pointer_count": 1,
+  "provider_tool_type": 1,
+  "provider_event_source": 4098,
+  "provider_physical_selection_count": 1,
+  "provider_selection_method": "stable_observed_filename_physical_touch",
+  "import_busy_observed": true,
+  "provider_exit_observed": true,
+  "import_complete_status_observed": true,
+  "selected_engine": "voicekey",
+  "xasr_model_present": false,
+  "fixture_sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+  "audio_samples": 125490,
+  "independent_producer": true,
+  "producer_clock": "monotonic_absolute_deadlines",
+  "production_pcm_queue_reused": true,
+  "production_pcm_queue_capacity": 602,
+  "accepted_samples": 125861,
+  "partial_updates": 3,
+  "first_nonempty_partial_ms": 1400,
+  "trailing_zero_samples": 371,
+  "synthetic_decode_stage": "native final",
+  "last_attempt_offset": 125490,
+  "last_partial": {
+    "recognized_codepoints": 16,
+    "hypothesis_sha256": "815a2d4a32c6ed00a7ee48f8ee83a8d8bba23cb82fc202885aa0b41aa60ae57d"
+  },
+  "remaining_final_timeout_ms": 29899,
+  "drain_after_producer_eof_ms": 101,
+  "result": {
+    "recognized_codepoints": 21,
+    "hypothesis_sha256": "4e3a721825d44a6b68c3a21868cb59737fcb76892ff0817606915bf4ebbb567a"
+  },
+  "finish_call_ms": 1524,
+  "stop_to_final_ms": 1625,
+  "producer_eof_to_final_ms": 1625,
+  "paced_feed_and_finish_ms": 9492,
+  "produced_samples": 125861,
+  "producer_first_frame_ms": 100,
+  "producer_epoch_elapsed_realtime_ms": 72609,
+  "producer_eof_elapsed_realtime_ms": 80476,
+  "producer_eof_elapsed_ms": 7867,
+  "producer_max_lateness_ms": 1,
+  "producer_failure": false,
+  "producer_exited": true,
+  "producer_cleanup_completed": true,
+  "cleanup_completed": true,
+  "voicekey_selected_for_following_ime_probe": true
+}

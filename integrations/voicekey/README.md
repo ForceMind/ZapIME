@@ -19,7 +19,7 @@ The historical `e24f1bd21ecd4fca99d909a972116e5a36e5f6c2` APKs have now been dow
 
 The new source fixes the selected-engine readiness route, freezes the choice for each recording and retains the existing confirmation transaction. Host regressions cover X-ASR-only, VoiceKey-only, both, neither and corrupted selected-model routing. Absence of a fresh partial no longer clears an existing preview. Audio queue overflow is an explicit failure; only successfully accepted PCM contributes nonzero evidence.
 
-The runtime now uses one physical blocking decoder permit, a bounded audio queue and cooperative checks in the actual model/stream path, rather than aborting a Tokio wait. A timed-out or dropped caller cannot free that permit while its worker is still running. `close` reports whether the real worker completed; it does not claim to forcibly stop a calculation. Cache identity detects app-private atomic model replacement, validation is uncached, and `releaseCache` handles idle/memory-pressure release. Host tests and AArch64 `cargo check` are distinct from running native ARM code, JNI or model inference. New model/JNI/native ARM workflows remain pending until their own results are recorded.
+The runtime now uses one physical blocking decoder permit, a bounded audio queue and cooperative checks in the actual model/stream path, rather than aborting a Tokio wait. A timed-out or dropped caller cannot free that permit while its worker is still running. `close` reports whether the real worker completed; it does not claim to forcibly stop a calculation. Cache identity detects app-private atomic model replacement, validation is uncached, and `releaseCache` handles idle/memory-pressure release. Host tests and AArch64 `cargo check` are distinct from running native ARM code, JNI or model inference. The candidate product `08e84980` passed the native Linux ARM/x86 26-test/numerical gates and fixed-model CPU probes. With unchanged product code, test commit `be79d084` passed the focused API28/35/36 model/JNI/Editable and offline system-IME lifecycle workflow [42227414903](https://github.com/ForceMind/ZapIME/actions/runs/42227414903). This is not Android ARM handset or natural-speech evidence. The fixed APKs and their own signatures/hashes are in the [Alpha trial guide](../../docs/DUAL_VOICE_ALPHA_TRYOUT.md).
 
 ## Reproduction
 
@@ -53,4 +53,4 @@ The project owner has confirmed the friend's permission to integrate the author'
 - [Current status](../../docs/STATUS.md)
 - [Work-session handoff](../../docs/WORK_HANDOFF_PROMPT.md)
 
-The next deliverable is an independently verified, explicitly experimental Android test package and a focused S25 acceptance checklist, not an untested stable release.
+An independently checked, explicitly experimental Android Alpha candidate and one consolidated S25 checklist are available. Phone/natural-speech acceptance and production signing remain NOT RUN; the default stays X-ASR.
