@@ -25,13 +25,18 @@ def check_contents(path):
         directory = cores[0].rsplit("/", 1)[0]
         abi = directory.split("/")[-1]
         assert directory == "lib/" + abi and abi in LOCK["libraries"], "unsupported native directory"
-        libraries = {directory + "/" + name for name in ["libzapime_core.so", "libzapime_voice.so", "libsherpa-onnx-c-api.so", "libonnxruntime.so"]}
+        libraries = {directory + "/" + name for name in ["libzapime_core.so", "libzapime_voice.so", "libsherpa-onnx-c-api.so", "libonnxruntime.so", "libzapime_voicekey_adapter.so"]}
         assert {name for name in entries if name.startswith("lib/")} == libraries, "missing/unexpected packaged runtime"
         for name, spec in LOCK["libraries"][abi].items():
             member = directory + "/" + name
             assert apk.getinfo(member).file_size == spec["size"], "packaged runtime size mismatch"
             with apk.open(member) as source:
                 assert hashlib.file_digest(source, "sha256").hexdigest() == spec["sha256"], "packaged runtime checksum mismatch"
+        # The optional JNI implementation is bundled for explicit user-selected
+        # offline use, but no third-party VoiceKey model or non-public cloud
+        # credentials are installed in the product APK.
+        optional = apk.getinfo(directory + "/libzapime_voicekey_adapter.so")
+        assert optional.file_size > 0, "empty VoiceKey JNI library"
         assert json.loads(apk.read("assets/voice-model.json")) == model_config(), "untrusted packaged model catalog"
         assert not any(name.endswith(".onnx") for name in entries), "model weights must remain an explicit import"
     print("PASS packaged APK native hashes, model catalog, notices and explicit model boundary:", abi)
