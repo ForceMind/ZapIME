@@ -1,5 +1,15 @@
 # ZapIME 项目执行状态
 
+## VoiceKey 独立离线引擎接入候选（2026-11-06，北京时间；PR #71 / Issue #72）
+
+- **代码已提交至未合并实验分支** `feat/voicekey-engine-import`；保留原主线 X-ASR 作为默认，不改仓库 Public 或原 MSIME 子模块固定来源。VoiceKey 原仓库以 Git 子模块固定 `3ba017826eef7fac405198510b03859eb5b6c8c4`，来源 `J3n5en/voicekey`。用户确认作者同意本项目集成源码，但第三方模型和服务授权独立。
+- 新 `integrations/voicekey` 不编译非公开云识别协议客户端，仅直接引用固定 VoiceKey `wtlocal` 的五个离线源码模块：FBank、INT8 kernel、模型、流式解码、xnet。显式有界 8×100ms PCM 队列、60秒/960000采样上限、预览仅 partial、终稿单独返回、取消及独立 Rust 单测。
+- Android 新增独立 JNI 和可选 `libzapime_voicekey_adapter.so` 双 ABI 构建；用户主动导入上游固定版本的模型包，尺寸/MD5 匹配后有界嵌套 ZIP 提取，逐文件 SHA-256 清单和启动前复核。此 SHA 是**安装后完整性记录**，还不是官方原包独立 SHA-256 信任锚；后续必须补充，并核对第三方模型合法使用与发布权。
+- 原有 `VoiceCapture` 在单独 voice worker 根据显式设置选择 X-ASR 或 VoiceKey，复用独立 AudioRecord、静音/取消/焦点及 `VoiceCommitTransaction` 确认上屏约束，不自动启用云服务；未安装/不支持的实验引擎不得启动。ARM 端当前构建依赖 dotprod 指令并以 `/proc/cpuinfo` 显式保守门禁，不能称适用所有 ARM 手机。
+- 早期隔离 Rust 适配器曾在 CI `42056393749` 通过；重构为仅离线模块后，CI `42166066807` 曾报 partial 回调生命周期错误，提交 `e900b763` 修正后 `42166066807` 这条记录不适用于修正版（真正的修正版运行另行核验）。所有新增 Android JNI、APK、API28/35/36、新旧引擎对比与三星 S25 真机**尚无完整验收证据**；不能把分支源码或以前的 X-ASR 模拟器测试当作新引擎已部署。
+- 安装包一旦生成仍是实验开发签名；无明确模型使用权、独立 SHA256 锚、真实手机识别性能与正式签名，不创建 Release，也不替换 docs/ANDROID_TRYOUT.md 的已验收旧 APK。
+
+
 更新时间：2026-10-30 01:58:34 +0800；第 68 次记录汇报；距第 67 次记录约 8.7 小时。次数按仓库各提交记录累计。
 
 Android 手工连接、账号保护及本机加密备份已分别经 PR #63/#66/#69 合入；最新功能合并为 07170f30859bec422cbb37d8c9f42069810d8805。最终代码 5e0258b 五工作流 success，三系统 Rust 各87项，API28/35/36 各八项备份及原连接/输入/语音/UID隔离/退出门禁通过。新APK、三个原始ZIP及固定模型已实际核验，固定试用说明已更新。账号连接部分仍仅手工设备授权与本机凭据保护，资料库绑定UI、E2EE配对/恢复、上传/拉取及四端互通未完成；没有 Android 正向 HTTPS、用户服务器部署或ARM真机证据。
