@@ -17,7 +17,7 @@ def check_contents(path):
         assert len(entries) == len(names), "duplicate APK members"
         for name in ["classes.dex", "assets/NOTICE.txt", "assets/licenses/GPL-3.0.txt", "assets/licenses/chinese-ime-lm-NOTICE.txt", "assets/dictionary/msime-pinyin.db", "assets/dictionary/msime-english.db", "assets/dictionary/msime-scowl_Copyright.txt"]:
             assert name in entries, "missing APK entry: " + name
-        for name in ["voice-model.json", "voice-licenses/sherpa-onnx-Apache-2.0.txt", "voice-licenses/onnxruntime-MIT.txt", "voice-licenses/onnxruntime-ThirdPartyNotices.txt", "voice-licenses/nlohmann-json-MIT.txt", "voice-licenses/ndk-toolchain.txt", "voice-licenses/ndk-sysroot.txt"]:
+        for name in ["voice-model.json", "voice-licenses/voicekey-source.txt", "voice-licenses/sherpa-onnx-Apache-2.0.txt", "voice-licenses/onnxruntime-MIT.txt", "voice-licenses/onnxruntime-ThirdPartyNotices.txt", "voice-licenses/nlohmann-json-MIT.txt", "voice-licenses/ndk-toolchain.txt", "voice-licenses/ndk-sysroot.txt"]:
             assert "assets/" + name in entries, "missing voice attribution: " + name
             assert apk.getinfo("assets/" + name).file_size > 0, "empty voice attribution"
         cores = [name for name in entries if name.endswith("/libzapime_core.so")]
