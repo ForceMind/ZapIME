@@ -1,0 +1,94 @@
+name: VoiceKey locked offline CPU model probe
+on:
+  pull_request:
+    paths:
+      - integrations/voicekey/**
+      - vendor/voicekey
+      - third_party/voicekey-model-lock.json
+      - platforms/android/java/org/zapime/android/VoiceKeyModelStore.java
+      - platforms/android/java/org/zapime/android/VoiceKeyModelCatalog.java
+      - platforms/android/tests/jvm/VoiceKeyModelImportProbe.java
+      - scripts/generate_voicekey_catalog.py
+      - scripts/probe_voicekey_model_import.sh
+      - scripts/voicekey_cpu_probe.py
+      - scripts/test_voicekey_cpu_probe.py
+      - scripts/audit_voicekey_model.py
+      - scripts/voice_probe.py
+      - scripts/voice_quality_metrics.py
+      - scripts/requirements-voice-fixture.txt
+      - scripts/qwen_translation_probe/network.py
+      - .github/workflows/voicekey-model-probe.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: voicekey-model-probe-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  model-cpu:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-24.04
+            architecture: x86_64
+          - runner: ubuntu-24.04-arm
+            architecture: aarch64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: 1.97.1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install fixed synthetic fixture and process isolation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y espeak-ng libseccomp2
+          python3 -m pip install --requirement scripts/requirements-voice-fixture.txt
+      - name: Strict probe input boundary tests
+        run: python3 -m unittest discover -s scripts -p test_voicekey_cpu_probe.py -v
+      - name: Build actual pinned offline adapter probe
+        run: |
+          cargo fmt --manifest-path integrations/voicekey/Cargo.toml --all --check
+          cargo build --locked --manifest-path integrations/voicekey/Cargo.toml --release --example offline_probe
+      - name: Prepare official model against independent SHA256 lock (no redistribution)
+        run: python3 scripts/voicekey_cpu_probe.py prepare --report target/voicekey-probe/prepare.json
+      - name: Exercise production Java import with the same fixed official package
+        run: bash scripts/probe_voicekey_model_import.sh target/voicekey-probe/source/official-package.apk
+      - name: Generate fixed public synthetic PCM
+        run: python3 scripts/voicekey_cpu_probe.py fixture --report target/voicekey-probe/synthesis.json
+      - name: Execute real model with inherited network syscall restriction
+        run: python3 scripts/voicekey_cpu_probe.py run --rounds 3 --report target/voicekey-probe/report.json
+      - name: Save source and scope metadata
+        if: always()
+        run: |
+          mkdir -p target/voicekey-probe
+          git rev-parse HEAD > target/voicekey-probe/source-commit.txt
+          printf '%s\n' 'Synthetic Rust CPU compatibility only. No Android/JNI/AudioRecord/system IME/phone/natural-speech acceptance. Model redistribution permission not established; no weights or audio uploaded.' > target/voicekey-probe/scope.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: VoiceKey-CPU-metadata-${{ matrix.architecture }}
+          # Deliberate exact allowlist: never upload source package, model directory,
+          # PCM/WAV, build tree, or broadly glob target/voicekey-probe.
+          path: |
+            target/android-voicekey-model-tests/official-import-report.json
+            target/voicekey-probe/prepare.json
+            target/voicekey-probe/synthesis.json
+            target/voicekey-probe/fixture.json
+            target/voicekey-probe/report.json
+            target/voicekey-probe/source/audit.json
+            target/voicekey-probe/source-commit.txt
+            target/voicekey-probe/scope.txt
+          if-no-files-found: error
+          retention-days: 30

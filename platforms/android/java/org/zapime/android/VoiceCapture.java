@@ -25,17 +25,20 @@ final class VoiceCapture {
     private volatile boolean recording;
     private long lastPartial;
     private boolean loaded;
-    private volatile boolean useVoiceKey;
-    VoiceCapture(Context context,Listener listener){this.context=context.getApplicationContext();this.listener=listener;}
+    private final VoiceEngineSession engine;
+    private final boolean useVoiceKey;
+    private final VoicePreviewState preview=new VoicePreviewState();
+    VoiceCapture(Context context,VoiceEngineSession engine,Listener listener){this.context=context.getApplicationContext();this.engine=engine;this.useVoiceKey=engine.voiceKey();this.listener=listener;}
     void start(){VoiceWorker.EXECUTOR.execute(this::run);}
     void stop(){if(recording)stopping.set(true);else cancel();}
-    void cancel(){cancelled.set(true);stopping.set(true);long id=handle;if(id!=0){if(useVoiceKey)NativeVoiceKey.cancel(id);else NativeVoice.cancel(id);}}
+    void cancel(){cancelled.set(true);stopping.set(true);long id=handle;if(id!=0)cancelNative(id);}
     private void update(String state,String text){main.post(()->{if(!cancelled.get()&&(captureFailure==null||state.startsWith("microphone_")))listener.update(state,text);});}
     private synchronized void captureFailed(String reason){
         if(cancelled.get()||captureFailure!=null)return;
         captureFailure=reason;stopping.set(true);
-        long id=handle;if(id!=0){if(useVoiceKey)NativeVoiceKey.cancel(id);else NativeVoice.cancel(id);}
+        long id=handle;if(id!=0)cancelNative(id);
     }
+    private void cancelNative(long id){try{if(useVoiceKey)NativeVoiceKey.cancel(id);else NativeVoice.cancel(id);}catch(RuntimeException|LinkageError failure){captureFailure="microphone_error";}}
     private void checkCapture()throws IOException{if(captureFailure!=null)throw new IOException("microphone_failure");}
     private JSONObject result(byte[] bytes)throws Exception {
         JSONObject result=useVoiceKey?NativeVoiceKey.result(bytes):NativeVoice.result(bytes);if(result.has("error"))throw new IOException("voice_failure");return result;
@@ -44,11 +47,10 @@ final class VoiceCapture {
         Thread capture=null;
         try {
             if(cancelled.get())return;update("loading","");
-            useVoiceKey=VoiceEnginePreferences.VOICEKEY.equals(VoiceEnginePreferences.selected(context));
-            File model=useVoiceKey?VoiceKeyModels.verified(context,cancelled::get):VoiceModels.verified(context,cancelled::get);if(cancelled.get())return;
-            handle=useVoiceKey?NativeVoiceKey.allocate():NativeVoice.allocate();loaded=true;if(!useVoiceKey)VoiceWorker.nativeLoaded=true;
+            File model=engine.verified(()->VoiceModels.verified(context,cancelled::get),()->VoiceKeyModels.verified(context,cancelled::get));if(cancelled.get())return;
+            handle=useVoiceKey?NativeVoiceKey.allocate():NativeVoice.allocate();loaded=true;if(useVoiceKey)VoiceWorker.voiceKeyLoaded=true;else VoiceWorker.nativeLoaded=true;
             if(handle==0)throw new IOException("voice_capacity");
-            if(cancelled.get()){if(useVoiceKey)NativeVoiceKey.cancel(handle);else NativeVoice.cancel(handle);return;}
+            if(cancelled.get()){cancelNative(handle);return;}
             byte[] modelBytes=model.getAbsolutePath().getBytes(StandardCharsets.UTF_8);
             byte[] runtimeBytes=useVoiceKey?new byte[0]:new File(context.getApplicationInfo().nativeLibraryDir,"libsherpa-onnx-c-api.so").getAbsolutePath().getBytes(StandardCharsets.UTF_8);
             result(useVoiceKey?NativeVoiceKey.start(handle,modelBytes,runtimeBytes):NativeVoice.start(handle,modelBytes,runtimeBytes));
@@ -57,10 +59,10 @@ final class VoiceCapture {
             while(!cancelled.get()){
                 short[] chunk=audio.next(cancelled);
                 if(chunk==null)break;
-                try{checkCapture();String partial=result(useVoiceKey?NativeVoiceKey.accept(handle,chunk,chunk.length):NativeVoice.accept(handle,chunk,chunk.length)).optString("text");long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",partial);}}finally{Arrays.fill(chunk,(short)0);}
+                try{checkCapture();JSONObject accepted=result(useVoiceKey?NativeVoiceKey.accept(handle,chunk,chunk.length):NativeVoice.accept(handle,chunk,chunk.length));preview.accept(accepted.has("text")&&!accepted.isNull("text"),accepted.optString("text",null));long now=SystemClock.uptimeMillis();if(now-lastPartial>=100){lastPartial=now;update("recording",preview.text());}}finally{Arrays.fill(chunk,(short)0);}
             }
             if(cancelled.get())return;checkCapture();
-            update("decoding","");String text=result(useVoiceKey?NativeVoiceKey.finish(handle):NativeVoice.finish(handle)).getString("text");
+            update("decoding",preview.text());String text=result(useVoiceKey?NativeVoiceKey.finish(handle):NativeVoice.finish(handle)).getString("text");
             checkCapture();
             if(!cancelled.get())update(text.trim().isEmpty()?"empty":"result",text);
         } catch(Exception|LinkageError failure){if(!cancelled.get())update(captureFailure!=null?captureFailure:"error","");}
@@ -68,8 +70,8 @@ final class VoiceCapture {
             stopping.set(true);
             if(capture!=null){boolean interrupted=false;while(capture.isAlive())try{capture.join(200);}catch(InterruptedException e){interrupted=true;}if(interrupted)Thread.currentThread().interrupt();}
             audio.clear();
-            long id=handle;if(id!=0){if(useVoiceKey)NativeVoiceKey.close(id);else NativeVoice.close(id);handle=0;}
-            if(loaded&&!useVoiceKey)VoiceWorker.EXECUTOR.schedule(()->NativeVoice.release(120000),121,TimeUnit.SECONDS);
+            long id=handle;handle=0;if(id!=0)try{if(useVoiceKey)NativeVoiceKey.close(id);else NativeVoice.close(id);}catch(RuntimeException|LinkageError failure){/* Terminal cleanup must not kill the shared voice worker. */}
+            if(loaded)VoiceWorker.releaseWhenIdle();
         }
     }
     private void capture(){

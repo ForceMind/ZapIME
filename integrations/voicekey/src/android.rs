@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
-//! Android JNI boundary for the optional VoiceKey WeChat local recognizer.
-//! Only the ZapIME voice worker may own allocate/start/accept/finish/close.
-//! cancel() can be called from any thread. No network calls, editor access
-//! or third-party model downloads are performed here.
-use crate::{RecognitionSession, RecognizerChoice, SessionId};
-use jni::objects::{JByteArray, JClass, JShortArray};
+//! JNI owns session handles on the voice worker; only cancel is cross-thread.
+use crate::{Cancellation, RecognitionSession, RecognizerChoice, SessionId};
+use jni::objects::{JByteArray, JClass, JShortArray, JString};
 use jni::sys::{jboolean, jbyteArray, jint, jlong, JNI_FALSE, JNI_TRUE};
 use jni::JNIEnv;
 use serde_json::{json, Value};
@@ -17,32 +14,25 @@ use std::time::Duration;
 
 struct Handle {
     owner: ThreadId,
-    cancelled: AtomicBool,
-    session: Mutex<Option<RecognitionSession>>,
+    cancel: Cancellation,
+    session: Mutex<Option<Arc<RecognitionSession>>>,
     started: AtomicBool,
+    finished: AtomicBool,
 }
-
 static NEXT: AtomicI64 = AtomicI64::new(1);
 static HANDLES: OnceLock<Mutex<HashMap<i64, Arc<Handle>>>> = OnceLock::new();
-static RUNTIME: OnceLock<tokio::runtime::Runtime> = OnceLock::new();
 fn handles() -> &'static Mutex<HashMap<i64, Arc<Handle>>> {
     HANDLES.get_or_init(|| Mutex::new(HashMap::new()))
-}
-fn runtime() -> &'static tokio::runtime::Runtime {
-    RUNTIME.get_or_init(|| {
-        tokio::runtime::Builder::new_multi_thread()
-            .worker_threads(2)
-            .enable_all()
-            .build()
-            .expect("VoiceKey runtime cannot start")
-    })
 }
 fn find(id: jlong) -> Option<Arc<Handle>> {
     handles().lock().ok()?.get(&id).cloned()
 }
 fn owned(id: jlong) -> Option<Arc<Handle>> {
-    let handle = find(id)?;
-    (handle.owner == std::thread::current().id()).then_some(handle)
+    let h = find(id)?;
+    (h.owner == std::thread::current().id()).then_some(h)
+}
+fn fail(reason: &str) -> Value {
+    json!({"error":reason})
 }
 fn response(env: &JNIEnv, value: Value) -> jbyteArray {
     let Ok(raw) = serde_json::to_vec(&value) else {
@@ -51,10 +41,22 @@ fn response(env: &JNIEnv, value: Value) -> jbyteArray {
     if raw.len() > 524_288 {
         return std::ptr::null_mut();
     }
-    env.byte_array_from_slice(&raw).map_or(std::ptr::null_mut(), |array| array.into_raw())
+    env.byte_array_from_slice(&raw)
+        .map_or(std::ptr::null_mut(), |x| x.into_raw())
 }
-fn fail(env: &JNIEnv, reason: &str) -> jbyteArray {
-    response(env, json!({"error":reason}))
+fn boundary(env: &mut JNIEnv, call: impl FnOnce(&mut JNIEnv) -> Value) -> jbyteArray {
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| call(env)))
+        .unwrap_or_else(|_| fail("voicekey_internal_error"));
+    // Invalid JNI arguments may leave a Java exception pending. Do not allocate
+    // a reply with that exception pending or let it escape into the IME.
+    if env.exception_check().unwrap_or(true) {
+        let _ = env.exception_clear();
+        return response(env, fail("voicekey_jni_failure"));
+    }
+    response(env, result)
+}
+fn session(handle: &Handle) -> Option<Arc<RecognitionSession>> {
+    handle.session.lock().ok()?.as_ref().cloned()
 }
 
 #[no_mangle]
@@ -62,19 +64,31 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_allocate(
     _env: JNIEnv,
     _class: JClass,
 ) -> jlong {
-    let Ok(mut pool) = handles().lock() else { return 0 };
-    if pool.len() >= 4 { return 0; }
-    let id = NEXT.fetch_add(1, Ordering::Relaxed);
-    if id <= 0 { return 0; }
-    pool.insert(id, Arc::new(Handle {
-        owner: std::thread::current().id(),
-        cancelled: AtomicBool::new(false),
-        session: Mutex::new(None),
-        started: AtomicBool::new(false),
-    }));
-    id
+    std::panic::catch_unwind(|| {
+        let Ok(mut pool) = handles().lock() else {
+            return 0;
+        };
+        if pool.len() >= 4 {
+            return 0;
+        }
+        let id = NEXT.fetch_add(1, Ordering::Relaxed);
+        if id <= 0 {
+            return 0;
+        }
+        pool.insert(
+            id,
+            Arc::new(Handle {
+                owner: std::thread::current().id(),
+                cancel: Cancellation::default(),
+                session: Mutex::new(None),
+                started: AtomicBool::new(false),
+                finished: AtomicBool::new(false),
+            }),
+        );
+        id
+    })
+    .unwrap_or(0)
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_start(
     mut env: JNIEnv,
@@ -83,44 +97,55 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_start(
     model_path: JByteArray,
     _runtime_path: JByteArray,
 ) -> jbyteArray {
-    let Some(handle) = owned(id) else { return fail(&env, "invalid_owner") };
-    if handle.cancelled.load(Ordering::Acquire) || handle.started.swap(true, Ordering::AcqRel) {
-        return fail(&env, "invalid_session");
-    }
-    let Ok(path_bytes) = env.convert_byte_array(model_path) else {
-        return fail(&env, "invalid_model_path");
-    };
-    if path_bytes.is_empty() || path_bytes.len() > 4096 || path_bytes.contains(&0) {
-        return fail(&env, "invalid_model_path");
-    }
-    let Ok(path_text) = String::from_utf8(path_bytes) else {
-        return fail(&env, "invalid_model_path");
-    };
-    let path = PathBuf::from(path_text);
-    if !path.is_absolute() || !path.is_dir() {
-        return fail(&env, "model_missing");
-    }
-    // Model loading happens on ZapIME's dedicated voice worker, not the IME UI.
-    // It verifies format and caches a shared model before opening the session.
-    if crate::load_model(&path).is_err() {
-        return fail(&env, "invalid_voicekey_model");
-    }
-    if handle.cancelled.load(Ordering::Acquire) {
-        return fail(&env, "cancelled");
-    }
-    let choice = RecognizerChoice::WechatOffline { model_dir: path };
-    let _guard = runtime().enter();
-    let session = choice.start(SessionId(id as u64));
-    let Ok(mut slot) = handle.session.lock() else {
-        return fail(&env, "voicekey_lock");
-    };
-    if handle.cancelled.load(Ordering::Acquire) {
-        return fail(&env, "cancelled");
-    }
-    *slot = Some(session);
-    response(&env, json!({"ready":true}))
+    boundary(&mut env, |env| {
+        let Some(handle) = owned(id) else {
+            return fail("invalid_owner");
+        };
+        if handle.cancel.is_cancelled() {
+            return fail("cancelled");
+        }
+        if handle.started.swap(true, Ordering::AcqRel) {
+            return fail("invalid_session");
+        }
+        let Ok(size) = env.get_array_length(&model_path) else {
+            return fail("invalid_model_path");
+        };
+        if size <= 0 || size > 4096 {
+            return fail("invalid_model_path");
+        }
+        let Ok(bytes) = env.convert_byte_array(&model_path) else {
+            return fail("invalid_model_path");
+        };
+        if bytes.contains(&0) {
+            return fail("invalid_model_path");
+        }
+        let Ok(text) = String::from_utf8(bytes) else {
+            return fail("invalid_model_path");
+        };
+        let choice = RecognizerChoice::WechatOffline {
+            model_dir: PathBuf::from(text),
+        };
+        let decoded = match choice.start(SessionId(id as u64), handle.cancel.clone()) {
+            Ok(session) => session,
+            Err(error) => {
+                return match error.to_string().as_str() {
+                    "cancelled" => fail("cancelled"),
+                    "voicekey_decoder_busy" => fail("voicekey_decoder_busy"),
+                    _ => fail("invalid_voicekey_model"),
+                }
+            }
+        };
+        let Ok(mut slot) = handle.session.lock() else {
+            return fail("voicekey_lock");
+        };
+        if handle.cancel.is_cancelled() {
+            decoded.cancel();
+            return fail("cancelled");
+        }
+        *slot = Some(Arc::new(decoded));
+        json!({"ready":true,"engine_id":"voicekey-wechat"})
+    })
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_accept(
     mut env: JNIEnv,
@@ -129,95 +154,174 @@ pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_accept(
     pcm: JShortArray,
     count: jint,
 ) -> jbyteArray {
-    let Some(handle) = owned(id) else { return fail(&env, "invalid_owner") };
-    if handle.cancelled.load(Ordering::Acquire) {
-        return fail(&env, "cancelled");
-    }
-    if count <= 0 || count > crate::MAX_FRAME_SAMPLES as jint {
-        return fail(&env, "invalid_audio");
-    }
-    let Ok(len) = env.get_array_length(&pcm) else { return fail(&env, "invalid_audio") };
-    if count > len { return fail(&env, "invalid_audio"); }
-    let mut buf = vec![0i16; count as usize];
-    if env.get_short_array_region(&pcm, 0, &mut buf).is_err() {
-        return fail(&env, "invalid_audio");
-    }
-    let Ok(mut slot) = handle.session.lock() else { return fail(&env, "voicekey_lock") };
-    let Some(session) = slot.as_mut() else { return fail(&env, "invalid_session") };
-    if let Err(err) = session.push(&buf) {
-        return fail(&env, &err.to_string());
-    }
-    let mut latest = String::new();
-    while let Some(result) = session.poll_partial() {
-        if result.session == SessionId(id as u64) {
-            latest = result.text;
+    boundary(&mut env, |env| {
+        let Some(handle) = owned(id) else {
+            return fail("invalid_owner");
+        };
+        if handle.cancel.is_cancelled() {
+            return fail("cancelled");
         }
-    }
-    response(&env, json!({"text":latest,"has_nonzero_pcm":true}))
+        if handle.finished.load(Ordering::Acquire) {
+            return fail("invalid_session");
+        }
+        if count <= 0 || count > crate::MAX_FRAME_SAMPLES as jint {
+            return fail("invalid_audio");
+        }
+        let Ok(size) = env.get_array_length(&pcm) else {
+            return fail("invalid_audio");
+        };
+        if count > size {
+            return fail("invalid_audio");
+        }
+        let mut bytes = vec![0i16; count as usize];
+        if env.get_short_array_region(&pcm, 0, &mut bytes).is_err() {
+            return fail("invalid_audio");
+        }
+        let Some(session) = session(&handle) else {
+            return fail("invalid_session");
+        };
+        if let Err(error) = session.push(&bytes) {
+            session.cancel();
+            return fail(&error.to_string());
+        }
+        let partial = session
+            .poll_partial()
+            .filter(|x| x.session == SessionId(id as u64));
+        if handle.cancel.is_cancelled() {
+            return fail("cancelled");
+        }
+        let mut reply = json!({"partial_updated":partial.is_some(),"has_nonzero_pcm":session.has_nonzero_pcm(),"engine_id":"voicekey-wechat"});
+        if let Some(partial) = partial {
+            reply["text"] = json!(partial.text);
+        }
+        reply
+    })
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_finish(
-    env: JNIEnv,
+    mut env: JNIEnv,
     _class: JClass,
     id: jlong,
 ) -> jbyteArray {
-    let Some(handle) = owned(id) else { return fail(&env, "invalid_owner") };
-    if handle.cancelled.load(Ordering::Acquire) { return fail(&env, "cancelled"); }
-    let session = {
-        let Ok(mut slot) = handle.session.lock() else { return fail(&env, "voicekey_lock") };
-        slot.take()
-    };
-    let Some(session) = session else { return fail(&env, "invalid_session") };
-    let completed = runtime().block_on(async {
-        tokio::time::timeout(Duration::from_secs(30), session.finish()).await
-    });
-    if handle.cancelled.load(Ordering::Acquire) { return fail(&env, "cancelled"); }
-    match completed {
-        Ok(Ok(text)) => response(&env, json!({"text":text})),
-        Ok(Err(_)) => fail(&env, "decode_failure"),
-        Err(_) => fail(&env, "decode_timeout"),
-    }
+    boundary(&mut env, |_| {
+        let Some(handle) = owned(id) else {
+            return fail("invalid_owner");
+        };
+        if handle.cancel.is_cancelled() {
+            return fail("cancelled");
+        }
+        if handle.finished.swap(true, Ordering::AcqRel) {
+            return fail("invalid_session");
+        }
+        // No handle/session mutex is held during the real blocking wait, so
+        // cancellation can always reach the same token while finalizing.
+        let Some(session) = session(&handle) else {
+            return fail("invalid_session");
+        };
+        let result = session.finish(Duration::from_secs(30));
+        if let Ok(mut slot) = handle.session.lock() {
+            slot.take();
+        }
+        if handle.cancel.is_cancelled() {
+            return fail("cancelled");
+        }
+        match result {
+            Ok(text) => json!({"text":text,"engine_id":"voicekey-wechat"}),
+            Err(error) => {
+                if error.to_string() == "decode_timeout" {
+                    fail("decode_timeout")
+                } else {
+                    fail("decode_failure")
+                }
+            }
+        }
+    })
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_cancel(
     _env: JNIEnv,
     _class: JClass,
     id: jlong,
 ) {
-    if let Some(handle) = find(id) {
-        handle.cancelled.store(true, Ordering::Release);
-        if let Ok(mut slot) = handle.session.try_lock() {
-            if let Some(session) = slot.as_mut() { session.cancel(); }
+    let _ = std::panic::catch_unwind(|| {
+        if let Some(handle) = find(id) {
+            handle.cancel.cancel();
+            if let Some(session) = session(&handle) {
+                session.cancel();
+            }
         }
-    }
+    });
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_close(
     _env: JNIEnv,
     _class: JClass,
     id: jlong,
 ) -> jboolean {
-    let Some(handle) = owned(id) else { return JNI_FALSE };
-    handle.cancelled.store(true, Ordering::Release);
-    if let Ok(mut slot) = handle.session.lock() {
-        if let Some(session) = slot.as_mut() { session.cancel(); }
-        slot.take();
-    }
-    if let Ok(mut pool) = handles().lock() { pool.remove(&id); }
-    JNI_TRUE
+    std::panic::catch_unwind(|| {
+        let Some(handle) = owned(id) else {
+            return JNI_FALSE;
+        };
+        handle.cancel.cancel();
+        let done = session(&handle).is_none_or(|x| x.cancel_and_wait(Duration::from_secs(2)));
+        if let Ok(mut slot) = handle.session.lock() {
+            slot.take();
+        }
+        if let Ok(mut pool) = handles().lock() {
+            pool.remove(&id);
+        }
+        crate::release_cache();
+        // A timed-out worker retains the single physical decoder permit until
+        // actual exit. false never means a detached calculation was killed.
+        if done {
+            JNI_TRUE
+        } else {
+            JNI_FALSE
+        }
+    })
+    .unwrap_or(JNI_FALSE)
 }
-
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_checkModel(
     mut env: JNIEnv,
     _class: JClass,
-    directory: jni::objects::JString,
+    directory: JString,
 ) -> jboolean {
-    let Ok(dir) = env.get_string(&directory) else { return JNI_FALSE };
-    let path = PathBuf::from(dir.to_string_lossy().into_owned());
-    if !path.is_absolute() || !path.is_dir() { return JNI_FALSE; }
-    if crate::load_model(&path).is_ok() { JNI_TRUE } else { JNI_FALSE }
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let Ok(size) = env
+            .call_method(&directory, "length", "()I", &[])
+            .and_then(|x| x.i())
+        else {
+            return false;
+        };
+        if size <= 0 || size > 4096 {
+            return false;
+        }
+        let Ok(text) = env.get_string(&directory) else {
+            return false;
+        };
+        let path = PathBuf::from(text.to_string_lossy().into_owned());
+        crate::validate_model(&path).is_ok()
+    }))
+    .unwrap_or(false);
+    if env.exception_check().unwrap_or(true) {
+        let _ = env.exception_clear();
+        return JNI_FALSE;
+    }
+    if result {
+        JNI_TRUE
+    } else {
+        JNI_FALSE
+    }
+}
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeVoiceKey_releaseCache(
+    _env: JNIEnv,
+    _class: JClass,
+) -> jboolean {
+    if std::panic::catch_unwind(crate::release_cache).unwrap_or(false) {
+        JNI_TRUE
+    } else {
+        JNI_FALSE
+    }
 }

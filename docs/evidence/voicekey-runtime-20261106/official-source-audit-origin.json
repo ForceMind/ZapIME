@@ -1,0 +1,9 @@
+{
+  "run_id": 42209579465,
+  "commit": "20f68dcc0e11c14ae69f6db5692567ea72dfb1a2",
+  "artifact_id": 13498970123,
+  "downloaded_zip_bytes": 1335,
+  "downloaded_zip_sha256": "3edac8fcfbbea036d743d99b48803a63b60ccf57846267aea9811db0f91650fd",
+  "archive_members": ["audit.json"],
+  "scope": "Verified downloaded metadata bytes; official package/member integrity only. No weights redistributed or inference acceptance."
+}

@@ -17,7 +17,12 @@ permissions:
   contents: read
 jobs:
   adapter:
-    runs-on: ubuntu-24.04
+    name: Native numerical and lifecycle (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
@@ -30,9 +35,22 @@ jobs:
             exit 1
           fi
       - name: Select pinned Rust compiler
-        run: rustup toolchain install 1.97.1 --profile minimal && rustup component add rustfmt --toolchain 1.97.1
-      - name: Format source (diagnostic until dependency build is verified)
-        continue-on-error: true
-        run: cargo +1.97.1 fmt --manifest-path integrations/voicekey/Cargo.toml --all -- --check
-      - name: Build and unit test isolated VoiceKey adapter
-        run: cargo +1.97.1 test --manifest-path integrations/voicekey/Cargo.toml
+        uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          components: rustfmt, clippy
+      - name: Identify actual runner architecture
+        run: |
+          uname -m
+          rustc -vV
+      - name: Strictly format all adapter-owned files without rewriting vendor
+        run: |
+          cargo fmt --manifest-path integrations/voicekey/Cargo.toml --all -- --check --config skip_children=true
+          rustfmt --edition 2021 --check --config skip_children=true integrations/voicekey/src/*.rs
+      - name: Build and unit test locked offline adapter
+        run: cargo test --locked --manifest-path integrations/voicekey/Cargo.toml
+      - name: Strictly lint adapter and probe
+        run: cargo clippy --all-targets --locked --manifest-path integrations/voicekey/Cargo.toml -- -D warnings
+      - name: Verify locked dependency graph
+        run: cargo tree --locked --manifest-path integrations/voicekey/Cargo.toml --edges normal
+      - name: Release kernel timing diagnostic (not handset latency)
+        run: cargo test --release --locked --manifest-path integrations/voicekey/Cargo.toml architecture_dot_timing_diagnostic -- --nocapture --test-threads=1

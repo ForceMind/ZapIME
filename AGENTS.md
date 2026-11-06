@@ -65,3 +65,5 @@
 - 本机加密备份独立有界worker，不在输入/同步/UI线程做KDF/IO；仅4MiB归档/6MiB密文，固定既有KDF，用途前缀区分同步恢复包，不读取/替换SyncSecrets材料。恢复只打开已存在v2库，同事务拒绝记录、绑定和操作/同步历史；不自动创建/迁移/清空。SAF写后读回不是跨提供程序原子或永久持久保证，代码另存/核对不虚构外部保存，离开不承诺回滚已经开始事务。只有dedicated_ci核实数字run/attempt/emulator后才能传zapime_ci_backup启用系统文档夹具，只删除自己新建的合成文档；正向独立空库JNI与真实SAF导出/正向导入UI/真机分别记证据，日志不含恢复码、正文或秘密页文本。
 
 - 受保护CI的SAF夹具须在Activity临时URI授权失效前删除自己的新建文档；逐项清理并保留原始操作失败，报告必须即使清理失败也写出且要求cleanup_completed=true。不得增加产品存储权限、持久化授权或跳过提供程序来让门禁通过。
+
+- VoiceKey 接续先读 docs/VOICEKEY_INTEGRATION.md、docs/VOICEKEY_ACCEPTANCE.md、integrations/voicekey/README.md。固定 vendor 仅直接引用 fbank/xnet；model/stream/kernels 是保留固定来源的本地适配，不改脏 vendor。独立 Cargo.lock，构建/测试/许可收集 --locked，严格格式与 native ARM 门禁不可软失败。物理 blocking worker 实际退出前持有容量，close 超时不等于计算被杀死。模型信任仅来自 third_party/voicekey-model-lock.json 生成的 APK 目录；官方完整性审计不等于识别或再分发许可。产品及公开测试产物不捆绑权重。test_android_voice_engine.sh、test_android_voicekey_models.sh、test_android_packaging.py 分别覆盖主机路由/存储/打包；新模型 CPU/JNI/系统 IME/ARM workflow 各自保留真实结果，不能借旧 X-ASR 或 APK 通过。原始记录见 docs/evidence/voicekey-runtime-20261106，真机任务见 docs/S25_DUAL_VOICE_CHECKLIST.md。

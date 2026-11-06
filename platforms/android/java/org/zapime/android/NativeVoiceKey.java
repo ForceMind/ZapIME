@@ -15,6 +15,7 @@ final class NativeVoiceKey {
     static native void cancel(long handle);
     static native boolean close(long handle);
     static native boolean checkModel(String dir);
+    static native boolean releaseCache();
 
     static JSONObject result(byte[] bytes) throws Exception {
         if (bytes == null) throw new java.io.IOException("voicekey_native_unavailable");

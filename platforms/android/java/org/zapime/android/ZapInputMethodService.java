@@ -440,7 +440,8 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void startVoice(){
         if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
-        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED||!(VoiceModels.installed(this)||VoiceModels.recoverable(this))){open(VoiceSettingsActivity.class);return;}
+        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED){open(VoiceSettingsActivity.class);return;}
+        final VoiceEngineSession engine=new VoiceEngineSession(VoiceEnginePreferences.selected(this));
         learning.invalidate();cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
         worker.execute(()->main.post(()->{
@@ -450,11 +451,14 @@ public final class ZapInputMethodService extends InputMethodService {
             voiceTarget=target;voiceSelection=selectionVersion;voiceCursor=selectionStart;final int selected=voiceSelection;
             // Remote editor queries can wait seconds. Keep Cancel and the IME
             // main looper responsive even when the other App is not responding.
-            VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
+            VoiceWorker.EXECUTOR.execute(()->{
+                boolean modelReady=false;try{modelReady=engine.available(()->VoiceModels.installed(this)||VoiceModels.recoverable(this),()->VoiceKeyModels.installed(this)||VoiceKeyModels.recoverable(this));}catch(RuntimeException ignored){}
+                if(!modelReady){main.post(()->{if(ticket==voiceTicket&&epoch==active&&layer.equals("voice")){cancelVoice(true);open(VoiceSettingsActivity.class);}});return;}
+                String[] context=voiceContext(target);main.post(()->{
                 if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
                 if(context==null||target!=getCurrentInputConnection()||selected!=selectionVersion){cancelVoice(true);Toast.makeText(this,"输入位置不可用，请重试",Toast.LENGTH_SHORT).show();return;}
                 voiceBefore=context[0];voiceAfter=context[1];
-                voice=new VoiceCapture(this,(state,text)->{
+                voice=new VoiceCapture(this,engine,(state,text)->{
                     if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
                     if(voiceCommit!=null)return;
                     if(state.equals("recording")&&voiceState.equals("decoding"))return;
@@ -516,7 +520,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}
     @Override public boolean onKeyUp(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK&&voiceBack){voiceBack=false;return true;}return super.onKeyUp(code,event);}
-    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);if(VoiceWorker.nativeLoaded)VoiceWorker.EXECUTOR.execute(()->NativeVoice.release(0));}}
+    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);VoiceWorker.EXECUTOR.execute(VoiceWorker::releaseCaches);}}
     private void delete(InputConnection c){
         learning.invalidate();
         selectionEcho.invalidate();

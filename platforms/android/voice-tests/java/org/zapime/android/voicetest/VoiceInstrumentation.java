@@ -24,8 +24,9 @@ public final class VoiceInstrumentation extends Instrumentation {
     private String stage="start";
     private File fixtures;
     private boolean backupCI;
+    private String voiceKeyModelCI;
     private static final Class<?>[] NONE=new Class<?>[0];
-    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");start();}
+    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");voiceKeyModelCI=args==null?null:args.getString("zapime_ci_voicekey_model");start();}
     private Object invoke(Class<?> type,String name,Class<?>[] signature,Object...args)throws Exception {Method method=type.getDeclaredMethod(name,signature);method.setAccessible(true);return method.invoke(null,args);}
     private Object nativeCall(String name,Class<?>[] signature,Object...args)throws Exception{return invoke(nativeVoice,name,signature,args);}
     private JSONObject json(Object bytes)throws Exception{return new JSONObject(new String((byte[])bytes,StandardCharsets.UTF_8));}
@@ -157,6 +158,14 @@ public final class VoiceInstrumentation extends Instrumentation {
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
+            if(voiceKeyModelCI!=null){
+                require(voiceKeyModelCI.matches("[0-9]+-[0-9]+"),"dedicated VoiceKey model CI required");
+                fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
+                if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
+                stage="VoiceKey official model SAF/JNI/Editable";
+                VoiceKeyModelProbe.run(this,fixtures,"ZapIME-VoiceKey-"+voiceKeyModelCI+".apk");
+                result.putString("stream","PASS Android VoiceKey official model acceptance\n");finish(Activity.RESULT_OK,result);return;
+            }
             nativeVoice=Class.forName("org.zapime.android.NativeVoice",true,getTargetContext().getClassLoader());models=Class.forName("org.zapime.android.VoiceModels",true,getTargetContext().getClassLoader());
             stage="ordered PCM completion";finalPcmRace();
             stage="recording policy state";recordingPolicyState();
@@ -190,6 +199,7 @@ public final class VoiceInstrumentation extends Instrumentation {
             nativeCall("release",new Class<?>[]{long.class},0L);pass("permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)");
             stage="local account connection";SyncAccountProbe.run(this,fixtures);
             stage="persistent account guard";SyncProfileProbe.run(this,fixtures);
+            stage="VoiceKey JNI boundaries (no model)";VoiceKeyBoundaryProbe.run(this,fixtures);
             stage="encrypted local backup";BackupProbe.run(this,fixtures,backupCI);
             pass("synthetic account JSON identity binding, real Keystore connection/material isolation, local store and secure Activity lifecycle; no Android HTTPS success or data sync claim");
             result.putString("stream","PASS Android offline voice native acceptance\n");finish(Activity.RESULT_OK,result);
@@ -213,7 +223,8 @@ public final class VoiceInstrumentation extends Instrumentation {
         CountDownLatch done=new CountDownLatch(1);AtomicReference<String> terminal=new AtomicReference<>();AtomicReference<Object> instance=new AtomicReference<>();AtomicBoolean heard=new AtomicBoolean();
         Method stop=capture.getDeclaredMethod("stop");stop.setAccessible(true);
         Object callback=Proxy.newProxyInstance(loader,new Class<?>[]{listener},(proxy,method,args)->{if(method.getName().equals("update")){String state=(String)args[0];if(state.equals("recording")&&heard.compareAndSet(false,true)){new Handler(Looper.getMainLooper()).postDelayed(()->{try{stop.invoke(instance.get());}catch(Exception e){terminal.set("stop_error");done.countDown();}},350);}if(state.equals("result")||state.equals("empty")||state.equals("error")||state.equals("microphone_error")||state.equals("microphone_silenced")){terminal.set(state);done.countDown();}}return null;});
-        Constructor<?> ctor=capture.getDeclaredConstructor(Context.class,listener);ctor.setAccessible(true);Object value=ctor.newInstance(getTargetContext(),callback);instance.set(value);Method start=capture.getDeclaredMethod("start");start.setAccessible(true);start.invoke(value);
+        Class<?> session=Class.forName("org.zapime.android.VoiceEngineSession",true,loader);Constructor<?> sessionCtor=session.getDeclaredConstructor(String.class);sessionCtor.setAccessible(true);Object xasrSession=sessionCtor.newInstance("xasr");
+        Constructor<?> ctor=capture.getDeclaredConstructor(Context.class,session,listener);ctor.setAccessible(true);Object value=ctor.newInstance(getTargetContext(),xasrSession,callback);instance.set(value);Method start=capture.getDeclaredMethod("start");start.setAccessible(true);start.invoke(value);
         require(done.await(90,TimeUnit.SECONDS),"microphone timeout");Method cancel=capture.getDeclaredMethod("cancel");cancel.setAccessible(true);cancel.invoke(value);
         require(permitted?heard.get()&&(terminal.get().equals("empty")||terminal.get().equals("result")):"microphone_error".equals(terminal.get())&&!heard.get(),"microphone permission/stop state");
     }

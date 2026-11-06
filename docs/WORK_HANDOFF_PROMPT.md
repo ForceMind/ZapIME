@@ -1,5 +1,10 @@
 # ZapIME（闪电输入法）｜双离线语音引擎与 Android Alpha 持续研发接管
 
+> 2026-11-06 实施接续：本轮已实际修复引擎入口、Rust/JNI 取消与缓存/PCM、可信模型导入，并补 CPU/ARM/VoiceKey-only Android 专项门禁。请首先读取最新 `docs/STATUS.md` 和 `docs/evidence/voicekey-runtime-20261106/`，再核验实时分支及 CI；下面历史交接的 e24f1bd 状态不覆盖新实现。官方模型审计 run 42209579465 只证明固定来源/摘要，不代表模型推理或手机通过。
+>
+> 可由本地 Codex 在仓库接续：`git clone --branch feat/voicekey-engine-import --recurse-submodules https://github.com/ForceMind/ZapIME.git`；已有仓库先 `git status --short` / `git fetch origin`，保留未提交改动，不 reset/force。读 AGENTS 与本页指定文档，继续复用 PR #71 / Issue #72。限定隔离 GitHub 模拟器的验收脚本不可在个人设备执行；本地开发环境可运行不需要设备的 Rust/JVM/host 测试。
+
+
 你现在接管已有工程的后续开发，担任产品、Rust/Android 原生开发、语音推理、隐私安全、测试与 GitHub 交付负责人。你的任务是读取真实仓库、修改代码、运行测试、修复问题并交付可安装试用包，不是重新设计项目，也不是仅提交文档或建议。
 
 ## 一、接续位置与事实核验

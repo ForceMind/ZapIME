@@ -1,275 +1,494 @@
 // SPDX-License-Identifier: GPL-3.0-only
-//! Isolated VoiceKey offline engine adapter for ZapIME.
-//!
-//! The upstream source modules below are compiled from a pinned Git submodule,
-//! not copied. This build deliberately does NOT compile VoiceKey's unofficial
-//! online service protocol clients, embedded service keys, or microphone code.
+//! Optional offline engine. One physical decoder slot remains occupied until
+//! the blocking worker exits; cancellation is cooperative, never task abort.
 #[cfg(target_os = "android")]
 mod android;
-
-// These five VoiceKey modules do not depend on its cloud recognition core.
-// Their author and source revision are preserved at vendor/voicekey.
 #[path = "../../../vendor/voicekey/crates/wtlocal/src/fbank.rs"]
+#[rustfmt::skip]
 mod fbank;
-// Stable Android AArch64 patch; pristine original remains in vendor/voicekey.
-#[path = "kernels.rs"]
 mod kernels;
-#[path = "../../../vendor/voicekey/crates/wtlocal/src/model.rs"]
 mod model;
-#[path = "../../../vendor/voicekey/crates/wtlocal/src/stream.rs"]
 mod stream;
 #[path = "../../../vendor/voicekey/crates/wtlocal/src/xnet.rs"]
+#[rustfmt::skip]
 mod xnet;
 
 use anyhow::{anyhow, bail, Result};
-use async_trait::async_trait;
-use std::path::{Path, PathBuf};
-use std::sync::{Arc, Mutex};
-use tokio::sync::mpsc;
-use tokio::task::JoinHandle;
-
 use model::Model;
+use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use std::sync::{mpsc, Arc, Condvar, Mutex, OnceLock};
+use std::thread::JoinHandle;
+use std::time::{Duration, Instant};
 use stream::Stream;
 
-/// One minute of mono 16 kHz signed PCM, matching the existing ZapIME limit.
 pub const MAX_SAMPLES: usize = 960_000;
-/// Capture sends no more than 100 ms per event.
 pub const MAX_FRAME_SAMPLES: usize = 1_600;
 const MAX_TEXT_BYTES: usize = 65_536;
 const PARTIAL_EVERY: usize = 30;
+const AUDIO_QUEUE: usize = 8;
 
-static MODEL_CACHE: Mutex<Option<(PathBuf, Arc<Model>)>> = Mutex::new(None);
+#[derive(Clone, Default)]
+pub struct Cancellation(Arc<AtomicBool>);
+impl Cancellation {
+    pub fn cancel(&self) {
+        self.0.store(true, Ordering::Release);
+    }
+    pub fn is_cancelled(&self) -> bool {
+        self.0.load(Ordering::Acquire)
+    }
+    pub fn check(&self) -> Result<()> {
+        if self.is_cancelled() {
+            bail!("cancelled");
+        }
+        Ok(())
+    }
+}
 
-/// Load one validated model for the whole process; repeated hot sessions reuse
-/// its mmap instead of reloading weights on each microphone gesture.
-pub(crate) fn load_model(dir: &Path) -> Result<Arc<Model>> {
-    let mut cache = MODEL_CACHE.lock().map_err(|_| anyhow!("model_lock"))?;
-    if let Some((old, model)) = cache.as_ref() {
-        if old == dir {
-            return Ok(model.clone());
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct FileIdentity {
+    path: PathBuf,
+    size: u64,
+    modified: std::time::SystemTime,
+    #[cfg(unix)]
+    inode: (u64, u64),
+}
+impl FileIdentity {
+    fn read(path: &Path) -> Result<Self> {
+        let meta = std::fs::symlink_metadata(path)?;
+        if !meta.is_file() || meta.file_type().is_symlink() {
+            bail!("invalid_model_file");
+        }
+        Ok(Self {
+            path: path.canonicalize()?,
+            size: meta.len(),
+            modified: meta.modified()?,
+            #[cfg(unix)]
+            inode: {
+                use std::os::unix::fs::MetadataExt;
+                (meta.dev(), meta.ino())
+            },
+        })
+    }
+}
+#[derive(Clone, Debug, PartialEq, Eq)]
+struct ModelIdentity(Vec<FileIdentity>);
+impl ModelIdentity {
+    fn read(dir: &Path) -> Result<Self> {
+        let meta = std::fs::symlink_metadata(dir)?;
+        if !dir.is_absolute() || !meta.is_dir() || meta.file_type().is_symlink() {
+            bail!("invalid_model_path");
+        }
+        let mut files = Vec::new();
+        for (index, entry) in std::fs::read_dir(dir)?.enumerate() {
+            if index >= 16 {
+                bail!("invalid_model_files");
+            }
+            let path = entry?.path();
+            if path.extension().is_some_and(|x| x == "xnet") {
+                files.push(FileIdentity::read(&path)?);
+            }
+        }
+        if files.len() != 1 || files[0].size == 0 || files[0].size > 512 * 1024 * 1024 {
+            bail!("invalid_model_files");
+        }
+        let dictionary = FileIdentity::read(&dir.join("dict.decoder.utf8.txt"))?;
+        if dictionary.size == 0 || dictionary.size > 16 * 1024 * 1024 {
+            bail!("invalid_model_dictionary");
+        }
+        files.push(dictionary);
+        Ok(Self(files))
+    }
+}
+struct Cached {
+    identity: ModelIdentity,
+    model: Arc<Model>,
+}
+static MODEL_CACHE: Mutex<Option<Cached>> = Mutex::new(None);
+fn load_model(dir: &Path, cancel: &Cancellation) -> Result<Arc<Model>> {
+    cancel.check()?;
+    // Identity detects app-private atomic replacement; the Java importer still
+    // authenticates the fixed file SHA allowlist before calling any parser.
+    let identity = ModelIdentity::read(dir)?;
+    {
+        let cache = MODEL_CACHE.lock().map_err(|_| anyhow!("model_lock"))?;
+        cancel.check()?;
+        if let Some(old) = cache.as_ref() {
+            if old.identity == identity {
+                return Ok(old.model.clone());
+            }
         }
     }
-    let model = Arc::new(Model::load(dir)?);
-    *cache = Some((dir.to_path_buf(), model.clone()));
+    // Parsing untrusted files must never poison the shared cache mutex. Catch
+    // parser panics as a second boundary behind trusted SHA verification.
+    let model = Arc::new(load_uncached(dir, cancel)?);
+    cancel.check()?;
+    if identity != ModelIdentity::read(dir)? {
+        bail!("model_changed_during_load");
+    }
+    let mut cache = MODEL_CACHE.lock().map_err(|_| anyhow!("model_lock"))?;
+    *cache = Some(Cached {
+        identity,
+        model: model.clone(),
+    });
     Ok(model)
 }
+fn load_uncached(dir: &Path, cancel: &Cancellation) -> Result<Model> {
+    std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        Model::load_checked(dir, cancel)
+    }))
+    .map_err(|_| anyhow!("invalid_model_parser_panic"))?
+}
+/// Validation is deliberately uncached: a staging model must not displace the
+/// active model, and each validated mmap is dropped before the importer moves it.
+pub fn validate_model(dir: &Path) -> Result<()> {
+    let before = ModelIdentity::read(dir)?;
+    let _model = load_uncached(dir, &Cancellation::default())?;
+    if before != ModelIdentity::read(dir)? {
+        bail!("model_changed_during_load");
+    }
+    Ok(())
+}
+/// Explicit memory-pressure/idle release. Never evict an in-use model.
+pub fn release_cache() -> bool {
+    let Ok(mut cache) = MODEL_CACHE.try_lock() else {
+        return false;
+    };
+    if cache
+        .as_ref()
+        .is_some_and(|x| Arc::strong_count(&x.model) > 1)
+    {
+        return false;
+    }
+    cache.take();
+    true
+}
 
-/// An engine receives a bounded PCM channel and emits preview-only callbacks.
-#[async_trait]
-pub trait RecognizerEngine: Send + Sync {
-    async fn run(
+#[derive(Clone)]
+struct Capacity(Arc<AtomicUsize>);
+impl Capacity {
+    fn acquire(&self) -> Result<Permit> {
+        self.0
+            .compare_exchange(0, 1, Ordering::AcqRel, Ordering::Acquire)
+            .map_err(|_| anyhow!("voicekey_decoder_busy"))?;
+        Ok(Permit(self.0.clone()))
+    }
+}
+struct Permit(Arc<AtomicUsize>);
+impl Drop for Permit {
+    fn drop(&mut self) {
+        self.0.fetch_sub(1, Ordering::AcqRel);
+    }
+}
+fn capacity() -> &'static Capacity {
+    static SLOT: OnceLock<Capacity> = OnceLock::new();
+    SLOT.get_or_init(|| Capacity(Arc::new(AtomicUsize::new(0))))
+}
+
+pub trait RecognizerEngine: Send + 'static {
+    fn run(
         &self,
         audio: mpsc::Receiver<Vec<i16>>,
-        partial: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
+        partial: Box<dyn Fn(&str) + Send>,
+        cancel: &Cancellation,
     ) -> Result<String>;
-    async fn prewarm(&self) {}
 }
-
 struct VoiceKeyOfflineEngine {
-    dir: PathBuf,
+    model: Arc<Model>,
 }
-
-#[async_trait]
 impl RecognizerEngine for VoiceKeyOfflineEngine {
-    async fn prewarm(&self) {
-        let dir = self.dir.clone();
-        let _ = tokio::task::spawn_blocking(move || load_model(&dir)).await;
-    }
-    async fn run(
+    fn run(
         &self,
-        mut audio: mpsc::Receiver<Vec<i16>>,
-        partial: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
+        audio: mpsc::Receiver<Vec<i16>>,
+        partial: Box<dyn Fn(&str) + Send>,
+        cancel: &Cancellation,
     ) -> Result<String> {
-        let dir = self.dir.clone();
-        tokio::task::spawn_blocking(move || {
-            let mut session = Stream::new(load_model(&dir)?);
-            let mut last = String::new();
-            let (mut previous, mut duration) = (std::time::Instant::now(), std::time::Duration::ZERO);
-            while let Some(frame) = audio.blocking_recv() {
-                session.push(&frame);
-                while let Ok(next) = audio.try_recv() {
-                    session.push(&next);
-                }
-                if session.fresh() >= PARTIAL_EVERY && previous.elapsed() >= duration * 3 {
-                    let start = std::time::Instant::now();
-                    let text = session.partial();
-                    duration = start.elapsed();
-                    previous = std::time::Instant::now();
-                    if !text.is_empty() && text != last {
-                        partial(&text);
-                        last = text;
-                    }
-                }
+        run_audio(
+            Box::new(Stream::new(self.model.clone())),
+            audio,
+            partial,
+            cancel,
+        )
+    }
+}
+trait Decoder: Send {
+    fn push(&mut self, pcm: &[i16], nonzero: bool, cancel: &Cancellation) -> Result<()>;
+    fn fresh(&self) -> usize;
+    fn partial(&mut self, cancel: &Cancellation) -> Result<String>;
+    fn finish(self: Box<Self>, cancel: &Cancellation) -> Result<String>;
+}
+impl Decoder for Stream {
+    fn push(&mut self, pcm: &[i16], nonzero: bool, cancel: &Cancellation) -> Result<()> {
+        self.push(pcm, nonzero, cancel)
+    }
+    fn fresh(&self) -> usize {
+        self.fresh()
+    }
+    fn partial(&mut self, cancel: &Cancellation) -> Result<String> {
+        self.partial(cancel)
+    }
+    fn finish(self: Box<Self>, cancel: &Cancellation) -> Result<String> {
+        (*self).finish(cancel)
+    }
+}
+fn run_audio(
+    mut session: Box<dyn Decoder>,
+    audio: mpsc::Receiver<Vec<i16>>,
+    partial: Box<dyn Fn(&str) + Send>,
+    cancel: &Cancellation,
+) -> Result<String> {
+    let mut nonzero = false;
+    let mut last = String::new();
+    let (mut previous, mut duration) = (Instant::now(), Duration::ZERO);
+    loop {
+        cancel.check()?;
+        let frame = match audio.recv_timeout(Duration::from_millis(20)) {
+            Ok(frame) => frame,
+            Err(mpsc::RecvTimeoutError::Timeout) => continue,
+            Err(mpsc::RecvTimeoutError::Disconnected) => break,
+        };
+        nonzero |= frame.iter().any(|x| *x != 0);
+        session.push(&frame, nonzero, cancel)?;
+        // Only feature extraction runs for exact-zero input. Do not call a
+        // model partial or final decoder without accepted nonzero evidence.
+        if nonzero && session.fresh() >= PARTIAL_EVERY && previous.elapsed() >= duration * 3 {
+            let started = Instant::now();
+            let text = session.partial(cancel)?;
+            duration = started.elapsed();
+            previous = Instant::now();
+            cancel.check()?;
+            if !text.is_empty() && text != last {
+                partial(&text);
+                last = text;
             }
-            Ok(session.finish())
-        }).await?
+        }
+    }
+    cancel.check()?;
+    if nonzero {
+        session.finish(cancel)
+    } else {
+        Ok(String::new())
     }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SessionId(pub u64);
-
 #[derive(Debug, PartialEq, Eq)]
 pub struct PartialResult {
     pub session: SessionId,
     pub text: String,
 }
-
 #[derive(Clone, Debug)]
 pub enum RecognizerChoice {
-    /// User-supplied, already validated VoiceKey-compatible local model.
     WechatOffline { model_dir: PathBuf },
 }
-
 impl RecognizerChoice {
-    pub fn is_offline(&self) -> bool { true }
-
-    pub async fn prewarm(&self) {
-        let RecognizerChoice::WechatOffline { model_dir } = self;
-        VoiceKeyOfflineEngine { dir: model_dir.clone() }.prewarm().await;
+    pub fn is_offline(&self) -> bool {
+        true
     }
-
-    pub fn start(&self, id: SessionId) -> RecognitionSession {
-        let RecognizerChoice::WechatOffline { model_dir } = self;
-        RecognitionSession::from_engine(
+    pub fn start(&self, id: SessionId, cancel: Cancellation) -> Result<RecognitionSession> {
+        let permit = capacity().acquire()?;
+        let Self::WechatOffline { model_dir } = self;
+        let model = load_model(model_dir, &cancel)?;
+        RecognitionSession::spawn(
             id,
-            Box::new(VoiceKeyOfflineEngine { dir: model_dir.clone() }),
+            Box::new(VoiceKeyOfflineEngine { model }),
+            cancel,
+            Some(permit),
         )
     }
 }
-
-/// Strictly bounded ingress AND inference queue, unlike VoiceKey's original
-/// unbounded Audio bus. Partial messages also have a fixed maximum count.
-pub struct RecognitionSession {
-    id: SessionId,
-    input: Option<mpsc::Sender<Vec<i16>>>,
-    task: Option<JoinHandle<Result<String>>>,
-    partials: mpsc::Receiver<PartialResult>,
+struct Input {
+    sender: Option<mpsc::SyncSender<Vec<i16>>>,
     accepted: usize,
     nonzero: bool,
 }
-
+struct Shared {
+    cancel: Cancellation,
+    partial: Mutex<Option<PartialResult>>,
+    result: Mutex<Option<std::result::Result<String, String>>>,
+    ready: Condvar,
+}
+pub struct RecognitionSession {
+    id: SessionId,
+    input: Mutex<Input>,
+    shared: Arc<Shared>,
+    worker: Mutex<Option<JoinHandle<()>>>,
+}
 impl RecognitionSession {
-    /// Fake-engine injection is used only by synthetic unit tests.
-    pub fn from_engine(id: SessionId, engine: Box<dyn RecognizerEngine>) -> Self {
-        let (tx, rx) = mpsc::channel::<Vec<i16>>(8);
-        let (partial_tx, partial_rx) = mpsc::channel::<PartialResult>(32);
-        let callback: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static> = Box::new(move |value| {
-            if value.len() <= MAX_TEXT_BYTES {
-                let _ = partial_tx.try_send(PartialResult { session: id, text: value.to_owned() });
-            }
+    fn spawn(
+        id: SessionId,
+        engine: Box<dyn RecognizerEngine>,
+        cancel: Cancellation,
+        permit: Option<Permit>,
+    ) -> Result<Self> {
+        let (tx, rx) = mpsc::sync_channel(AUDIO_QUEUE);
+        let shared = Arc::new(Shared {
+            cancel,
+            partial: Mutex::new(None),
+            result: Mutex::new(None),
+            ready: Condvar::new(),
         });
-        let task = tokio::spawn(async move { engine.run(rx, callback).await });
-        Self {
-            id, input: Some(tx), task: Some(task),
-            partials: partial_rx, accepted: 0, nonzero: false,
-        }
+        let output = shared.clone();
+        let worker = std::thread::Builder::new()
+            .name("zapime-voicekey-decode".into())
+            .spawn(move || {
+                // This permit is owned by the physical blocking worker, including
+                // while it winds down after timeout or a caller drops its session.
+                let _permit = permit;
+                let callback_output = output.clone();
+                let callback = Box::new(move |value: &str| {
+                    if !callback_output.cancel.is_cancelled()
+                        && !value.is_empty()
+                        && value.len() <= MAX_TEXT_BYTES
+                    {
+                        if let Ok(mut slot) = callback_output.partial.lock() {
+                            *slot = Some(PartialResult {
+                                session: id,
+                                text: value.to_owned(),
+                            });
+                        }
+                    }
+                });
+                let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                    engine.run(rx, callback, &output.cancel)
+                }));
+                let result = if output.cancel.is_cancelled() {
+                    Err("cancelled".into())
+                } else {
+                    match outcome {
+                        Ok(Ok(text)) if text.len() <= MAX_TEXT_BYTES => Ok(text),
+                        Ok(Ok(_)) => Err("transcript_limit".into()),
+                        Ok(Err(error)) => Err(error.to_string()),
+                        Err(_) => Err("voicekey_worker_panicked".into()),
+                    }
+                };
+                drop(engine); // Model/mmap released before completion is observed.
+                release_cache();
+                if let Ok(mut slot) = output.result.lock() {
+                    *slot = Some(result);
+                    output.ready.notify_all();
+                }
+            })?;
+        Ok(Self {
+            id,
+            input: Mutex::new(Input {
+                sender: Some(tx),
+                accepted: 0,
+                nonzero: false,
+            }),
+            shared,
+            worker: Mutex::new(Some(worker)),
+        })
     }
-
-    pub fn session_id(&self) -> SessionId { self.id }
-
-    pub fn push(&mut self, samples: &[i16]) -> Result<()> {
-        if samples.is_empty() || samples.len() > MAX_FRAME_SAMPLES { bail!("invalid_pcm_frame"); }
-        let count = self.accepted.checked_add(samples.len()).ok_or_else(|| anyhow!("audio_limit"))?;
-        if count > MAX_SAMPLES { bail!("audio_limit"); }
-        let sender = self.input.as_ref().ok_or_else(|| anyhow!("session_closed"))?;
-        sender.try_send(samples.to_vec()).map_err(|e| match e {
-            mpsc::error::TrySendError::Full(_) => anyhow!("voicekey_audio_backpressure"),
-            mpsc::error::TrySendError::Closed(_) => anyhow!("voicekey_engine_stopped"),
+    #[cfg(test)]
+    fn from_engine(id: SessionId, engine: Box<dyn RecognizerEngine>) -> Self {
+        Self::spawn(id, engine, Cancellation::default(), None).unwrap()
+    }
+    pub fn session_id(&self) -> SessionId {
+        self.id
+    }
+    pub fn has_nonzero_pcm(&self) -> bool {
+        self.input.lock().is_ok_and(|x| x.nonzero)
+    }
+    pub fn push(&self, samples: &[i16]) -> Result<()> {
+        self.shared.cancel.check()?;
+        if samples.is_empty() || samples.len() > MAX_FRAME_SAMPLES {
+            bail!("invalid_pcm_frame");
+        }
+        let mut input = self.input.lock().map_err(|_| anyhow!("voicekey_lock"))?;
+        let count = input
+            .accepted
+            .checked_add(samples.len())
+            .ok_or_else(|| anyhow!("audio_limit"))?;
+        if count > MAX_SAMPLES {
+            bail!("audio_limit");
+        }
+        let tx = input
+            .sender
+            .as_ref()
+            .ok_or_else(|| anyhow!("session_closed"))?;
+        tx.try_send(samples.to_vec()).map_err(|e| match e {
+            mpsc::TrySendError::Full(_) => anyhow!("voicekey_audio_backpressure"),
+            mpsc::TrySendError::Disconnected(_) => anyhow!("voicekey_engine_stopped"),
         })?;
-        self.nonzero |= samples.iter().any(|&s| s != 0);
-        self.accepted = count;
+        input.accepted = count;
+        input.nonzero |= samples.iter().any(|x| *x != 0);
         Ok(())
     }
-
-    /// These results may be shown in a preview but MUST NOT commit into an
-    /// editor until ZapIME's ticket/epoch/selection checks pass.
-    pub fn poll_partial(&mut self) -> Option<PartialResult> { self.partials.try_recv().ok() }
-
-    pub async fn finish(mut self) -> Result<String> {
-        self.input.take();
-        let task = self.task.take().ok_or_else(|| anyhow!("session_closed"))?;
-        let text = task.await.map_err(|_| anyhow!("voicekey_task_failed"))??;
-        if text.len() > MAX_TEXT_BYTES { bail!("transcript_limit"); }
-        Ok(if self.nonzero { text } else { String::new() })
-    }
-
-    pub fn cancel(&mut self) {
-        self.input.take();
-        if let Some(task) = self.task.take() { task.abort(); }
-    }
-}
-
-impl Drop for RecognitionSession {
-    fn drop(&mut self) { self.cancel(); }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    struct FakeEngine;
-    #[async_trait]
-    impl RecognizerEngine for FakeEngine {
-        async fn run(
-            &self,
-            mut audio: mpsc::Receiver<Vec<i16>>,
-            callback: Box<dyn for<'a> Fn(&'a str) + Send + Sync + 'static>,
-        ) -> Result<String> {
-            let mut n = 0;
-            while let Some(frame) = audio.recv().await {
-                n += frame.len();
-                callback("合成预览");
-            }
-            Ok(format!("samples:{n}"))
+    pub fn poll_partial(&self) -> Option<PartialResult> {
+        if self.shared.cancel.is_cancelled() || !self.has_nonzero_pcm() {
+            return None;
         }
+        self.shared.partial.lock().ok()?.take()
     }
-
-    #[tokio::test]
-    async fn accepts_pcm_without_cloud_runtime_or_model() {
-        let mut s = RecognitionSession::from_engine(SessionId(21), Box::new(FakeEngine));
-        s.push(&[1; 1_600]).unwrap();
-        s.push(&[2; 800]).unwrap();
-        assert_eq!(s.finish().await.unwrap(), "samples:2400");
+    fn wait(&self, timeout: Duration) -> Result<Option<std::result::Result<String, String>>> {
+        let slot = self
+            .shared
+            .result
+            .lock()
+            .map_err(|_| anyhow!("voicekey_lock"))?;
+        let (slot, _) = self
+            .shared
+            .ready
+            .wait_timeout_while(slot, timeout, |x| x.is_none())
+            .map_err(|_| anyhow!("voicekey_lock"))?;
+        Ok(slot.clone())
     }
-
-    #[tokio::test]
-    async fn no_audio_and_only_zero_pcm_never_commit() {
-        let empty = RecognitionSession::from_engine(SessionId(22), Box::new(FakeEngine));
-        assert_eq!(empty.finish().await.unwrap(), "");
-        let mut silent = RecognitionSession::from_engine(SessionId(23), Box::new(FakeEngine));
-        silent.push(&[0; 1_600]).unwrap();
-        assert_eq!(silent.finish().await.unwrap(), "");
+    pub fn finish(&self, timeout: Duration) -> Result<String> {
+        self.input
+            .lock()
+            .map_err(|_| anyhow!("voicekey_lock"))?
+            .sender
+            .take();
+        let Some(result) = self.wait(timeout)? else {
+            self.cancel();
+            self.wait(Duration::from_secs(2))?;
+            bail!("decode_timeout");
+        };
+        self.join_completed();
+        self.shared.cancel.check()?;
+        let text = result.map_err(|e| anyhow!(e))?;
+        Ok(if self.has_nonzero_pcm() {
+            text
+        } else {
+            String::new()
+        })
     }
-
-    #[tokio::test]
-    async fn invalid_frames_and_sixty_second_cap() {
-        let mut s = RecognitionSession::from_engine(SessionId(24), Box::new(FakeEngine));
-        assert!(s.push(&[]).is_err());
-        assert!(s.push(&[0; 1_601]).is_err());
-        for _ in 0..600 {
-            loop {
-                match s.push(&[1; 1_600]) {
-                    Ok(()) => break,
-                    Err(e) if e.to_string() == "voicekey_audio_backpressure" =>
-                        tokio::task::yield_now().await,
-                    Err(e) => panic!("unexpected push error: {e}"),
+    fn join_completed(&self) {
+        if let Ok(mut worker) = self.worker.lock() {
+            if self.shared.result.lock().is_ok_and(|x| x.is_some()) {
+                if let Some(worker) = worker.take() {
+                    let _ = worker.join();
                 }
             }
         }
-        assert!(s.push(&[1]).is_err());
-        assert_eq!(s.finish().await.unwrap(), "samples:960000");
     }
-
-    #[tokio::test]
-    async fn cancel_rejects_new_pcm() {
-        let mut s = RecognitionSession::from_engine(SessionId(25), Box::new(FakeEngine));
-        s.cancel();
-        assert!(s.push(&[1]).is_err());
+    pub fn cancel(&self) {
+        self.shared.cancel.cancel();
+        if let Ok(mut input) = self.input.lock() {
+            input.sender.take();
+        }
+        if let Ok(mut partial) = self.shared.partial.lock() {
+            partial.take();
+        }
     }
-
-    #[test]
-    fn only_offline_recognizer_is_selectable() {
-        assert!(RecognizerChoice::WechatOffline { model_dir: PathBuf::from("/private/voicekey") }.is_offline());
+    /// False means the cooperative worker is still winding down, not killed.
+    pub fn cancel_and_wait(&self, timeout: Duration) -> bool {
+        self.cancel();
+        let done = self.wait(timeout).ok().flatten().is_some();
+        if done {
+            self.join_completed();
+        }
+        done
     }
 }
+impl Drop for RecognitionSession {
+    fn drop(&mut self) {
+        self.cancel();
+        self.join_completed();
+    }
+}
+
+#[cfg(test)]
+mod tests;
