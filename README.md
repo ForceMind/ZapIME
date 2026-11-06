@@ -26,7 +26,7 @@ Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动
 
 ## VoiceKey 多引擎语音整合（实验分支）
 
-通过可追溯 Git submodule 固定 J3n5en/voicekey 完整源码于 `vendor/voicekey`，`integrations/voicekey` 包含真正引用其 Rust core 与 wtlocal 的离线识别适配器、单独测试和 CI。完整提取：`git submodule update --init`。**尚未连接 Android JNI/输入法设置，现有 X-ASR 仍是唯一默认语音引擎；此功能尚无新 APK 或真人性能结果。** 模型须合法取得且不能自动上传录音；云端逆向接口不得在产品内直接启用。见 [整合工程](integrations/voicekey/README.md) 和 [实现路线](docs/VOICEKEY_INTEGRATION.md)。
+通过可追溯 Git submodule 固定 J3n5en/voicekey 完整源码于 `vendor/voicekey`，`integrations/voicekey` 直接从固定子模块编译 VoiceKey wtlocal 的 FBank、INT8 算子、模型和流式解码文件，不编译其非公开云协议客户端；另有 Android JNI、用户显式模型导入、离线引擎选择界面和独立 CI。完整提取：`git submodule update --init`。**Android JNI/设置及录音分流已提交在实验分支；仍需经过 APK 构建、模拟器及真机验收，不能视为已发布成品。X-ASR 仍是默认引擎，暂无真人识别与性能对比结果。** 模型须合法取得且不能自动上传录音；云端逆向接口不得在产品内直接启用。见 [整合工程](integrations/voicekey/README.md) 和 [实现路线](docs/VOICEKEY_INTEGRATION.md)。
 
 ## 开发
 
