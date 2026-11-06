@@ -1,0 +1,22 @@
+{
+  "recorded_at_utc": "2026-11-06T11:53:52.599851+00:00",
+  "source_parent": "5bbfe310e716762b36cdb0cf28b09ad5a2e1818c",
+  "scope": "Permission recheck helper and simulated-state real-Editable cases added; Java compilation only, Android execution pending",
+  "java_compile": "PASS API36 OpenJDK21 source8 target8",
+  "python_android_host_tests": 31,
+  "permission_cases_added": [
+    "permission_granted",
+    "permission_denied",
+    "permission_revoked_before_confirmation"
+  ],
+  "actual_os_revocation": "NOT RUN",
+  "source_sha256": {
+    "platforms/android/java/org/zapime/android/ZapInputMethodService.java": "7bc918ba654a21b2dd2c700037d71c2ca59b0c319052c417aa57d65257081185",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceCommitProbe.java": "e43d6da4dac743f7e20abf57b459e24dac8fccafec34bc15c07e704c217b95f0",
+    "scripts/android_voice_smoke.py": "25e8e755fb047396c5fa36321cc3ab489a99091ea673cdf291c3e5e68feb8c1d",
+    "scripts/android_voicekey_model_smoke.py": "d8ad18486c35e5674131d9e65fd6560f9e8cb8cac7f280d1520e71ec057d8490",
+    "scripts/test_android_voicekey_model_tools.py": "cecb2024f19551a905b8e901d25259bf6f6e105d41cc7a9b76db6657867c9439",
+    ".github/workflows/voicekey-model-probe.yml": "7cd08770bf31ce3c3af185bc915f97899f8433199168757cc5a52bd4efd1e843",
+    ".github/workflows/android.yml": "1b638fe36bffb42ddaf7e479abdbce6c72f6a035a060915f74793c9518853a39"
+  }
+}

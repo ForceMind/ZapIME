@@ -28,6 +28,15 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                   'recognized_codepoints': 3,
                   'cases': [{'id': name, 'passed': True, 'actual_editable_verified': True}
                             for name in sorted(COMMIT_CASES)]}
+        states = {'permission_granted': (True, True), 'permission_denied': (False, False),
+                  'permission_revoked_before_confirmation': (True, False)}
+        for row in commit['cases']:
+            if row['id'] in states:
+                initial, final = states[row['id']]
+                row.update(initial_permission_granted=initial, final_permission_granted=final,
+                           production_permission_queries=2, os_permission_revocation_tested=False,
+                           permission_state_scope='Host-only metadata fixture; not a JNI execution.',
+                           commit_attempts=1 if final else 0)
         return lock, model, commit
 
     def test_complete_metadata_shape(self):
@@ -68,6 +77,17 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
             if mutation == 'not_editable': changed['cases'][0]['actual_editable_verified'] = False
             if mutation == 'missing': changed['cases'].pop()
             with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                verify_reports(model, changed, lock)
+
+    def test_permission_evidence_cannot_claim_revocation_or_accept_late_commit(self):
+        lock, model, commit = self.fixtures()
+        for key, value in [('final_permission_granted', True), ('commit_attempts', 1),
+                           ('production_permission_queries', 1), ('os_permission_revocation_tested', True),
+                           ('permission_state_scope', '')]:
+            changed = copy.deepcopy(commit)
+            row = next(r for r in changed['cases'] if r['id'] == 'permission_revoked_before_confirmation')
+            row[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
                 verify_reports(model, changed, lock)
 
     def test_prepared_package_must_match_fixed_hash_size_and_not_symlink(self):

@@ -1,0 +1,26 @@
+[
+  {
+    "architecture": "aarch64",
+    "bytes": 510,
+    "sha256": "bae58fed09334ee6991cdcec28b392958ff569d7d098479ba2f97294e7446835",
+    "members": [
+      "voicekey-probe/source-commit.txt",
+      "voicekey-probe/scope.txt"
+    ]
+  },
+  {
+    "architecture": "x86_64",
+    "bytes": 6408,
+    "sha256": "44663d3363e9d005ef8199bf85fb425861478f3809c7831a7855f4f0b01526e1",
+    "members": [
+      "voicekey-probe/prepare.json",
+      "voicekey-probe/fixture.json",
+      "android-voicekey-model-tests/official-import-report.json",
+      "voicekey-probe/synthesis.json",
+      "voicekey-probe/report.json",
+      "voicekey-probe/source/audit.json",
+      "voicekey-probe/source-commit.txt",
+      "voicekey-probe/scope.txt"
+    ]
+  }
+]

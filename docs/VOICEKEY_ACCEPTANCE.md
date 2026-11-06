@@ -110,3 +110,12 @@ GitHub 返回 `ZapIME-Android-development`：artifact `13494970099`，大小 `23
 新模型 CPU、Android VoiceKey 专项 JNI/AudioRecord/Editable、真实系统 IME 及 native ARM 数值/性能 workflow 已增加，**PENDING / NOT RUN，只有实际 CI 结果可改为 PASS**。不能用原 X-ASR、旧 APK 或 x86 单测替代。S25、自然语音、双引擎同机同料质量/资源/能耗与 P50/P95 报告仍未完成；集中操作见 [S25 清单](S25_DUAL_VOICE_CHECKLIST.md)。本地探针构建/输入边界与未推理原因见 [独立记录](evidence/voicekey-runtime-20261106/cpu-probe-build-input-check.json)。
 
 [适配器 LICENSE](../integrations/voicekey/LICENSE) 记录用户确认源码整合及其边界；ZapIME 自有适配/修改为 GPL-3.0-only，不替 VoiceKey 宣称 GPL。标准公开分发条款仍须有记录；第三方权重再分发权利未建立，产品及公开测试 APK/产物不捆绑 VoiceKey 权重，不启用提取凭据或非公开云协议。
+
+
+## 后续真实运行与权限边界修补
+
+`5bbfe310e716762b36cdb0cf28b09ad5a2e1818c` 的原生 ARM/x86 run42211989370已实际通过20项测试及数值对照。CPU run42211989430 x86真实官方模型/生产Java导入/断网推理通过；单条固定合成音speech-v1 CER15/22，不作为自然人声准确率。ARM两次均失败于工具链rustfmt安装冲突，模型推理未执行，证据未删除。
+
+Android run42211989441双ABI产品构建硬门禁通过，完整UI/JNI结果及产物校验仍待取得。此为中间实验基线；新安全复核发现确认流程未在权限变化后重查RECORD_AUDIO。本切片补结果回调、点击确认、异步核对完成三处检查，并以生产权限helper+真实Editable验证模拟权限变化。它不代替真实系统撤权/进程生命周期，后者仍NOT RUN，最终试用包需包含修复。
+
+新增证据均在[evidence/voicekey-runtime-20261106](evidence/voicekey-runtime-20261106/)，包括双次ARM失败和x86全部CER。后续完整CI排队保留当前run，不通过取消或软失败掩盖结果。

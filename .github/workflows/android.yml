@@ -6,7 +6,9 @@ on:
   workflow_dispatch:
 concurrency:
   group: android-${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
+  # Retain evidence from an active acceptance run when a later fix is pushed.
+  # New commits queue the latest complete run rather than discarding evidence.
+  cancel-in-progress: false
 permissions:
   contents: read
 jobs:

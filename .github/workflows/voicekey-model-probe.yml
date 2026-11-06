@@ -40,9 +40,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
-      - uses: dtolnay/rust-toolchain@master
+      - uses: dtolnay/rust-toolchain@1.97.1
         with:
-          toolchain: 1.97.1
+          components: rustfmt, clippy
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
@@ -67,8 +67,10 @@ jobs:
         run: bash scripts/probe_voicekey_model_import.sh target/voicekey-probe/source/official-package.apk
       - name: Generate fixed public synthetic PCM
         run: python3 scripts/voicekey_cpu_probe.py fixture --report target/voicekey-probe/synthesis.json
+      # Explicit transcript opt-in applies only to the fixed public synthetic
+      # definition above, to preserve all errors; never user audio or microphone.
       - name: Execute real model with inherited network syscall restriction
-        run: python3 scripts/voicekey_cpu_probe.py run --rounds 3 --report target/voicekey-probe/report.json
+        run: python3 scripts/voicekey_cpu_probe.py run --rounds 3 --include-text --report target/voicekey-probe/report.json
       - name: Save source and scope metadata
         if: always()
         run: |

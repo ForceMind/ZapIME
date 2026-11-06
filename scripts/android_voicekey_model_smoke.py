@@ -38,7 +38,8 @@ COMMIT_CASES = {'commit_once', 'reentrant_finish', 'cancelled_completion',
                 'selected_range', 'unknown_selection', 'policy_excluded',
                 'before_changed', 'after_changed', 'null_before', 'null_after',
                 'oversize_context', 'context_exception', 'editor_rejected',
-                'editor_exception', 'worker_thread_rejected'}
+                'editor_exception', 'worker_thread_rejected', 'permission_granted',
+                'permission_denied', 'permission_revoked_before_confirmation'}
 
 
 def verify_package(package, lock):
@@ -46,6 +47,24 @@ def verify_package(package, lock):
             package.stat().st_size != lock['package']['size'] or
             digest(package) != lock['package']['sha256']):
         raise Blocked('prepared_official_package_missing_or_different_from_fixed_lock')
+
+
+def verify_permission_cases(rows):
+    expected = {'permission_granted': (True, True),
+                'permission_denied': (False, False),
+                'permission_revoked_before_confirmation': (True, False)}
+    found = [r for r in rows if r.get('id') in expected]
+    if len(found) != len(expected) or {r['id'] for r in found} != set(expected):
+        raise ValueError('missing_confirmation_permission_evidence')
+    for row in found:
+        initial, final = expected[row['id']]
+        if (row.get('initial_permission_granted') is not initial or
+                row.get('final_permission_granted') is not final or
+                row.get('production_permission_queries') != 2 or
+                row.get('os_permission_revocation_tested') is not False or
+                not row.get('permission_state_scope') or
+                row.get('commit_attempts') != (1 if final else 0)):
+            raise ValueError('invalid_simulated_confirmation_permission_evidence')
 
 
 def verify_reports(model, commit, lock):
@@ -79,6 +98,7 @@ def verify_reports(model, commit, lock):
             any(r.get('passed') is not True or
                 r.get('actual_editable_verified') is not True for r in rows)):
         raise ValueError('incomplete_actual_editable_confirmation_evidence')
+    verify_permission_cases(rows)
 
 
 def verify_fixture_report(model, path):

@@ -8,6 +8,7 @@ import sys
 import time
 import wave
 import json
+from android_voicekey_model_smoke import verify_permission_cases
 from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args, dedicated_ci
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
@@ -55,10 +56,11 @@ try:
     if evidence.get("synthetic") is not True or len(cases)!=6 or {row.get("id") for row in cases}!=expected or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing complete JNI empty-PCM evidence")
     confirmation=json.loads((out/"voice-commit-report.json").read_text())
-    required={"commit_once", "reentrant_finish", "cancelled_completion", "connection_changed", "ticket_changed", "epoch_changed", "selection_version_changed", "cursor_changed_identical_context", "selected_range", "unknown_selection", "policy_excluded", "before_changed", "after_changed", "null_before", "null_after", "oversize_context", "context_exception", "editor_rejected", "editor_exception", "worker_thread_rejected"}
+    required={"commit_once", "reentrant_finish", "cancelled_completion", "connection_changed", "ticket_changed", "epoch_changed", "selection_version_changed", "cursor_changed_identical_context", "selected_range", "unknown_selection", "policy_excluded", "before_changed", "after_changed", "null_before", "null_after", "oversize_context", "context_exception", "editor_rejected", "editor_exception", "worker_thread_rejected","permission_granted","permission_denied","permission_revoked_before_confirmation"}
     cases=confirmation.get("cases", [])
     if confirmation.get("synthetic") is not True or confirmation.get("actual_jni_decoded_text_used") is not True or len(cases)!=len(required) or {row.get("id") for row in cases}!=required or any(row.get("passed") is not True or row.get("actual_editable_verified") is not True for row in cases):
         raise SystemExit("Missing complete synthetic production-confirmation evidence")
+    verify_permission_cases(cases)
     account=json.loads((out/"sync-connection-report.json").read_text())
     expected_account={"strict_schema", "identity_binding", "keystore_namespace", "store_roundtrip_switch", "worker_guard", "pre_cancel", "secure_activity_lifecycle"}
     cases=account.get("cases", [])

@@ -12,6 +12,7 @@ import android.view.inputmethod.*;
 import android.widget.*;
 import android.graphics.Color;
 import android.content.Intent;
+import android.content.Context;
 import android.view.Gravity;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
@@ -438,9 +439,10 @@ public final class ZapInputMethodService extends InputMethodService {
         if(!value.optBoolean("handled")&&fallback!=null){if(fallback.equals("⌫"))deleteQuery();else appendQuery(fallback);}
         preedit=value.optString("preedit","");refreshSearchLabel();refreshStatus();renderResult(value);
     }
+    private static boolean voicePermissionGranted(Context context){return context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)==android.content.pm.PackageManager.PERMISSION_GRANTED;}
     private void startVoice(){
         if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
-        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED){open(VoiceSettingsActivity.class);return;}
+        if(!voicePermissionGranted(this)){open(VoiceSettingsActivity.class);return;}
         final VoiceEngineSession engine=new VoiceEngineSession(VoiceEnginePreferences.selected(this));
         learning.invalidate();cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
@@ -460,6 +462,7 @@ public final class ZapInputMethodService extends InputMethodService {
                 voiceBefore=context[0];voiceAfter=context[1];
                 voice=new VoiceCapture(this,engine,(state,text)->{
                     if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+                    if(!voicePermissionGranted(this)){cancelVoice(true);return;}
                     if(voiceCommit!=null)return;
                     if(state.equals("recording")&&voiceState.equals("decoding"))return;
                     voiceState=state;voiceText=text;updateVoicePanel();
@@ -497,7 +500,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void insertVoice(){
         if(voiceCommit!=null||!voiceState.equals("result")||voiceText.trim().isEmpty())return;
         final InputConnection target=getCurrentInputConnection();
-        if(target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||searchActive||!ready||!preedit.isEmpty()
+        if(!voicePermissionGranted(this)||target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||searchActive||!ready||!preedit.isEmpty()
                 ||voiceCursor<0||selectionStart!=voiceCursor||selectionEnd!=voiceCursor||voiceBefore==null||voiceAfter==null){cancelVoice(true);return;}
         final int ticket=voiceTicket,active=epoch;
         final VoiceCommitTransaction request=new VoiceCommitTransaction(
@@ -507,7 +510,7 @@ public final class ZapInputMethodService extends InputMethodService {
         VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
             if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice")||voiceCommit!=request)return;
             VoiceCommitTransaction.Editor current=new VoiceCommitTransaction.Editor(getCurrentInputConnection(),voiceTicket,epoch,
-                    selectionVersion,selectionStart,selectionEnd,ready&&!privateSession&&!searchActive&&preedit.isEmpty()&&target==voiceTarget);
+                    selectionVersion,selectionStart,selectionEnd,voicePermissionGranted(this)&&ready&&!privateSession&&!searchActive&&preedit.isEmpty()&&target==voiceTarget);
             VoiceCommitTransaction.Outcome outcome=request.finish(current,context,()->{selectionEcho.invalidate();cancelVoice(true);});
             if(outcome==VoiceCommitTransaction.Outcome.REJECTED)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();
             else if(outcome==VoiceCommitTransaction.Outcome.INVALID)Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
