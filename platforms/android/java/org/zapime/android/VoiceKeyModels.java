@@ -23,24 +23,6 @@ final class VoiceKeyModels {
     private static final String MANIFEST = "zapime-voicekey.properties";
 
     private VoiceKeyModels(){}
-    /**
-     * The pinned VoiceKey aarch64 kernel currently uses SDOT without runtime
-     * dispatch. Refuse to load it on ARM devices without asimddp/dotprod.
-     * An unavailable feature report fails closed until upstream adds fallback.
-     */
-    static boolean cpuSupported(){
-        String[] abis=android.os.Build.SUPPORTED_ABIS;
-        if(abis.length==0||!"arm64-v8a".equals(abis[0]))return true;
-        try(BufferedReader input=new BufferedReader(new FileReader("/proc/cpuinfo"))){
-            String line;
-            while((line=input.readLine())!=null){
-                if(line.startsWith("Features")||line.startsWith("features")){
-                    return line.contains("asimddp")||line.contains("dotprod");
-                }
-            }
-        }catch(IOException ignored){}
-        return false;
-    }
     private static File root(Context context){return new File(context.getFilesDir(),"voicekey");}
     private static File current(Context context){return new File(root(context),"current");}
     private static File staging(Context context){return new File(root(context),"incoming");}
@@ -67,7 +49,6 @@ final class VoiceKeyModels {
         return dir.isDirectory()&&new File(dir,MANIFEST).isFile();
     }
     static File verified(Context context,BooleanSupplier cancelled)throws Exception {
-        if(!cpuSupported())throw new IOException("voicekey_cpu_unsupported");
         File dir=current(context);
         if(Files.isSymbolicLink(dir.toPath())||!dir.isDirectory())throw new IOException("voicekey_model_missing");
         File manifest=new File(dir,MANIFEST);
@@ -98,7 +79,6 @@ final class VoiceKeyModels {
         return dir.getCanonicalFile();
     }
     static synchronized void importPackage(Context context,InputStream source,BooleanSupplier cancelled)throws Exception {
-        if(!cpuSupported())throw new IOException("voicekey_cpu_unsupported");
         File parent=root(context);
         if(!parent.isDirectory()&&!parent.mkdirs())throw new IOException("voicekey_storage");
         if(Files.isSymbolicLink(parent.toPath()))throw new IOException("voicekey_storage");
