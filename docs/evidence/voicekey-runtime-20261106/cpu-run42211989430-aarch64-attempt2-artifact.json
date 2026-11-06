@@ -1,0 +1,15 @@
+{
+  "run_id": 42211989430,
+  "attempt": 2,
+  "job_id": 127874731265,
+  "artifact_id": 13499532749,
+  "status": "FAIL_BEFORE_MODEL",
+  "bytes": 510,
+  "sha256": "fbbf2d887a4b182c7bf54731dacb4d992cd3f206085ff679ec89f241bebafc25",
+  "members": [
+    "voicekey-probe/source-commit.txt",
+    "voicekey-probe/scope.txt"
+  ],
+  "model_decode_executed": false,
+  "reason": "rustfmt-preview-aarch64-unknown-linux-gnu component conflict bin/cargo-fmt repeated on fresh retry; model, Java import and native probe skipped"
+}

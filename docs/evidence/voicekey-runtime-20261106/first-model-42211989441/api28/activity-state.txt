@@ -1,0 +1,138 @@
+ACTIVITY MANAGER ACTIVITIES (dumpsys activity activities)
+Display #0 (activities from top to bottom):
+
+  Stack #1: type=standard mode=fullscreen
+  isSleeping=false
+  mBounds=Rect(0, 0 - 0, 0)
+    Task id #6
+    mBounds=Rect(0, 0 - 0, 0)
+    mMinWidth=-1
+    mMinHeight=-1
+    mLastNonFullscreenBounds=null
+    * TaskRecord{f23ab5b #6 A=org.zapime.android U=0 StackId=1 sz=1}
+      userId=0 effectiveUid=u0a67 mCallingUid=u0a67 mUserSetupComplete=true mCallingPackage=org.zapime.android
+      affinity=org.zapime.android
+      intent={flg=0x10000000 cmp=org.zapime.android/.VoiceSettingsActivity}
+      realActivity=org.zapime.android/.VoiceSettingsActivity
+      autoRemoveRecents=false isPersistable=true numFullscreen=1 activityType=1
+      rootWasReset=false mNeverRelinquishIdentity=true mReuseTask=false mLockTaskAuth=LOCK_TASK_AUTH_PINNABLE
+      Activities=[ActivityRecord{8c29a7c u0 com.android.documentsui/.picker.PickActivity t6}]
+      askedCompatMode=false inRecents=true isAvailable=true
+      stackId=1
+      hasBeenVisible=true mResizeMode=RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION mSupportsPictureInPicture=false isResizeable=true lastActiveTime=48436 (inactive for 0s)
+      * Hist #0: ActivityRecord{8c29a7c u0 com.android.documentsui/.picker.PickActivity t6}
+          packageName=com.android.documentsui processName=com.android.documentsui
+          launchedFromUid=10067 launchedFromPackage=org.zapime.android userId=0
+          app=ProcessRecord{3c7dff8 3243:com.android.documentsui/u0a17}
+          Intent { act=android.intent.action.OPEN_DOCUMENT cat=[android.intent.category.OPENABLE] typ=*/* cmp=com.android.documentsui/.picker.PickActivity }
+          frontOfTask=true task=TaskRecord{f23ab5b #6 A=org.zapime.android U=0 StackId=1 sz=1}
+          taskAffinity=com.android.documentsui
+          realActivity=com.android.documentsui/.picker.PickActivity
+          baseDir=/system/priv-app/DocumentsUI/DocumentsUI.apk
+          dataDir=/data/user/0/com.android.documentsui
+          stateNotNeeded=false componentSpecified=false mActivityType=standard
+          compat={160dpi} labelRes=0x7f10006c icon=0x7f0e0000 theme=0x7f1100bd
+          mLastReportedConfigurations:
+           mGlobalConfig={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=undefined} s.7}
+           mOverrideConfig={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=standard} s.7}
+          CurrentConfiguration={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=standard} s.7}
+          resultTo=ActivityRecord{c370d8 u0 org.zapime.android/.VoiceSettingsActivity t-1 f} resultWho=null resultCode=3
+          taskDescription: label="null" icon=null iconResource=0 iconFilename=null primaryColor=ff1a73e8
+           backgroundColor=fffafafa
+           statusBarColor=ff254fae
+           navigationBarColor=ff000000
+          launchFailed=false launchCount=1 lastLaunchTime=-1s356ms
+          haveState=false icicle=null
+          state=RESUMED stopped=false delayedResume=false finishing=false
+          keysPaused=false inHistory=true visible=true sleeping=false idle=true mStartingWindowState=STARTING_WINDOW_SHOWN
+          fullscreen=true noDisplay=false immersive=false launchMode=0
+          frozenBeforeDestroy=false forceNewConfig=false
+          mActivityType=standard
+          waitingVisible=false nowVisible=true lastVisibleTime=-884ms
+          resizeMode=RESIZE_MODE_RESIZEABLE_VIA_SDK_VERSION
+          mLastReportedMultiWindowMode=false mLastReportedPictureInPictureMode=false
+
+    Running activities (most recent first):
+      TaskRecord{f23ab5b #6 A=org.zapime.android U=0 StackId=1 sz=1}
+        Run #0: ActivityRecord{8c29a7c u0 com.android.documentsui/.picker.PickActivity t6}
+
+    mResumedActivity: ActivityRecord{8c29a7c u0 com.android.documentsui/.picker.PickActivity t6}
+    mLastPausedActivity: ActivityRecord{c370d8 u0 org.zapime.android/.VoiceSettingsActivity t-1 f}
+
+  Stack #0: type=home mode=fullscreen
+  isSleeping=false
+  mBounds=Rect(0, 0 - 0, 0)
+
+    Task id #5
+    mBounds=Rect(0, 0 - 0, 0)
+    mMinWidth=-1
+    mMinHeight=-1
+    mLastNonFullscreenBounds=null
+    * TaskRecord{4281cd1 #5 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+      userId=0 effectiveUid=u0a31 mCallingUid=0 mUserSetupComplete=true mCallingPackage=null
+      intent={act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.Launcher}
+      realActivity=com.android.launcher3/.Launcher
+      autoRemoveRecents=false isPersistable=true numFullscreen=1 activityType=2
+      rootWasReset=false mNeverRelinquishIdentity=true mReuseTask=false mLockTaskAuth=LOCK_TASK_AUTH_PINNABLE
+      Activities=[ActivityRecord{ee1538 u0 com.android.launcher3/.Launcher t5}]
+      askedCompatMode=false inRecents=true isAvailable=true
+      mRootProcess=ProcessRecord{8822336 2467:com.android.launcher3/u0a31}
+      stackId=0
+      hasBeenVisible=true mResizeMode=RESIZE_MODE_RESIZEABLE mSupportsPictureInPicture=false isResizeable=true lastActiveTime=46886 (inactive for 1s)
+      * Hist #0: ActivityRecord{ee1538 u0 com.android.launcher3/.Launcher t5}
+          packageName=com.android.launcher3 processName=com.android.launcher3
+          launchedFromUid=0 launchedFromPackage=null userId=0
+          app=ProcessRecord{8822336 2467:com.android.launcher3/u0a31}
+          Intent { act=android.intent.action.MAIN cat=[android.intent.category.HOME] flg=0x10000100 cmp=com.android.launcher3/.Launcher }
+          frontOfTask=true task=TaskRecord{4281cd1 #5 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+          taskAffinity=null
+          realActivity=com.android.launcher3/.Launcher
+          baseDir=/system/priv-app/Launcher3QuickStep/Launcher3QuickStep.apk
+          dataDir=/data/user/0/com.android.launcher3
+          stateNotNeeded=true componentSpecified=false mActivityType=home
+          compat={160dpi} labelRes=0x7f110035 icon=0x7f08001b theme=0x7f120002
+          mLastReportedConfigurations:
+           mGlobalConfig={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=undefined} s.7}
+           mOverrideConfig={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=home} s.7}
+          CurrentConfiguration={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 320, 640) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=home} s.7}
+          OverrideConfiguration={0.0 ?mcc?mnc ?localeList ?layoutDir ?swdp ?wdp ?hdp ?density ?lsize ?long ?ldr ?wideColorGamut ?orien ?uimode ?night ?touch ?keyb/?/? ?nav/? winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=null mWindowingMode=undefined mActivityType=home}}
+          taskDescription: label="null" icon=null iconResource=0 iconFilename=null primaryColor=fff5f5f5
+           backgroundColor=fffafafa
+           statusBarColor=0
+           navigationBarColor=0
+          launchFailed=false launchCount=0 lastLaunchTime=-13s560ms
+          haveState=true icicle=Bundle[mParcelledData.dataSize=3892]
+          state=STOPPED stopped=true delayedResume=false finishing=false
+          keysPaused=false inHistory=true visible=false sleeping=false idle=true mStartingWindowState=STARTING_WINDOW_REMOVED
+          fullscreen=true noDisplay=false immersive=false launchMode=2
+          frozenBeforeDestroy=false forceNewConfig=false
+          mActivityType=home
+          waitingVisible=false nowVisible=false lastVisibleTime=-13s115ms
+          resizeMode=RESIZE_MODE_RESIZEABLE
+          mLastReportedMultiWindowMode=false mLastReportedPictureInPictureMode=false
+
+    Running activities (most recent first):
+      TaskRecord{4281cd1 #5 I=com.android.launcher3/.Launcher U=0 StackId=0 sz=1}
+        Run #0: ActivityRecord{ee1538 u0 com.android.launcher3/.Launcher t5}
+
+    mLastPausedActivity: ActivityRecord{ee1538 u0 com.android.launcher3/.Launcher t5}
+
+  ResumedActivity: ActivityRecord{8c29a7c u0 com.android.documentsui/.picker.PickActivity t6}
+  mFocusedStack=ActivityStack{7e7a237 stackId=1 type=standard mode=fullscreen visible=true translucent=false, 1 tasks} mLastFocusedStack=ActivityStack{7e7a237 stackId=1 type=standard mode=fullscreen visible=true translucent=false, 1 tasks}
+  mCurTaskIdForUser={0=6}
+  mUserStackInFront={}
+  displayId=0 stacks=2
+   mHomeStack=ActivityStack{e9703a4 stackId=0 type=home mode=fullscreen visible=false translucent=true, 1 tasks}
+  isHomeRecentsComponent=true  KeyguardController:
+    mKeyguardShowing=false
+    mAodShowing=false
+    mKeyguardGoingAway=false
+    mOccluded=false
+    mDismissingKeyguardActivity=null
+    mDismissalRequested=false
+    mVisibilityTransactionDepth=0
+  LockTaskController
+    mLockTaskModeState=NONE
+    mLockTaskModeTasks=
+    mLockTaskPackages (userId:packages)=
+      u0:[]

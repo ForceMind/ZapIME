@@ -1,0 +1,37 @@
+VoiceKey native cloud runner evidence
+Repository: ForceMind/ZapIME
+Run: https://github.com/ForceMind/ZapIME/actions/runs/42211989370
+Head: 5bbfe310e716762b36cdb0cf28b09ad5a2e1818c
+Base: 5621ab0e81780ca58c6cf74e97c93928a10f981a
+Executed PR merge: b7bcaaccb9b334ead8e57ced8bc32d5f9f0d2d60
+Scope: native Linux cloud numerical/control tests plus synthetic release microkernel.
+Not Android/JNI/AudioRecord/system IME, speech quality, S25 or end-to-end performance.
+Raw log hashes identify the decoded saved UTF-8 logs; broad logs are not committed.
+Both jobs also passed strict fmt, all-target Clippy -D warnings and locked dependency graph.
+Timing: 2x4 dot k=512; 25 samples x 100 repeats; Rust reference may auto-vectorize; no performance threshold.
+
+RUNNER x86_64 / job 127872611540
+decoded_log_sha256=51be091694931d640d61e7a3bfcef35c6a35fcced0b3fe4bce07e73266515a50
+2026-11-06T11:40:38.1024310Z HEAD is now at b7bcaac Merge 5bbfe310e716762b36cdb0cf28b09ad5a2e1818c into 5621ab0e81780ca58c6cf74e97c93928a10f981a
+2026-11-06T11:40:59.8658279Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-06T11:40:59.8660328Z host: x86_64-unknown-linux-gnu
+2026-11-06T11:40:59.8811656Z x86_64
+2026-11-06T11:40:59.9122670Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-06T11:40:59.9124568Z host: x86_64-unknown-linux-gnu
+2026-11-06T11:41:05.2862064Z test kernels::tests::architecture_dot_matches_i64_reference_for_extremes_and_tail_dimensions ... ok
+2026-11-06T11:41:05.2921952Z test kernels::tests::quantized_matrix_covers_tiles_and_odd_tails ... ok
+2026-11-06T11:41:07.2893615Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+2026-11-06T11:41:16.6878798Z test kernels::tests::architecture_dot_timing_diagnostic ... {"scope":"synthetic 2x4 dot kernel only; Rust reference may auto-vectorize; no speed threshold or handset claim","architecture":"x86_64","debug_assertions":false,"k":512,"samples":25,"repeats_per_sample":100,"optimized_ns_p50":66,"optimized_ns_p95":67,"reference_ns_p50":728,"reference_ns_p95":965}
+
+RUNNER aarch64 / job 127872612105
+decoded_log_sha256=422d2bb7fd0581987a88d408a5f4cccff25b56cf1fee8311ac84ab83e1ab34f5
+2026-11-06T11:40:50.7748592Z HEAD is now at b7bcaac Merge 5bbfe310e716762b36cdb0cf28b09ad5a2e1818c into 5621ab0e81780ca58c6cf74e97c93928a10f981a
+2026-11-06T11:41:03.2458888Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-06T11:41:03.2461125Z host: aarch64-unknown-linux-gnu
+2026-11-06T11:41:03.2705460Z aarch64
+2026-11-06T11:41:03.2957276Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-06T11:41:03.2959646Z host: aarch64-unknown-linux-gnu
+2026-11-06T11:41:08.2629696Z test kernels::tests::architecture_dot_matches_i64_reference_for_extremes_and_tail_dimensions ... ok
+2026-11-06T11:41:08.2758360Z test kernels::tests::quantized_matrix_covers_tiles_and_odd_tails ... ok
+2026-11-06T11:41:10.2704688Z test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.01s
+2026-11-06T11:41:18.1472598Z test kernels::tests::architecture_dot_timing_diagnostic ... {"scope":"synthetic 2x4 dot kernel only; Rust reference may auto-vectorize; no speed threshold or handset claim","architecture":"aarch64","debug_assertions":false,"k":512,"samples":25,"repeats_per_sample":100,"optimized_ns_p50":159,"optimized_ns_p95":161,"reference_ns_p50":433,"reference_ns_p95":476}

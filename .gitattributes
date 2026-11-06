@@ -13,3 +13,106 @@ docs/evidence/android-voice-touch-40106347773/api-36/native-keyboard-round-2.log
 # Retain original successful instrumentation logs, including final blank lines.
 docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-1.log -text -whitespace
 docs/evidence/android-voice-touch-success-40108971495/native-keyboard-round-2.log -text -whitespace
+
+# Preserve byte-verified raw VoiceKey CI failure diagnostics; never source files.
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api28/*.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api35/*.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/first-model-42211989441/api36/*.txt -text -whitespace
+
+# Original later VoiceKey failure evidence, byte hashes retained.
+docs/evidence/voicekey-runtime-20261106/second-model-42213679453/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/second-model-42213679453/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/second-model-42213679453/api36/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/focused-model-42215806243/api36/* -text -whitespace
+
+# Preserve original hotfix Android model reports/log bytes.
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/hotfix-model-42221304313/api36/* -text -whitespace
+
+# Finger-driver run: retain original source-verified model/UI evidence.
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api28/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api35/* -text -whitespace
+docs/evidence/voicekey-runtime-20261106/finger-model-42224836288/api36/* -text -whitespace
+
+# SDK dexdump excerpt: original tool whitespace is part of the recorded bytes.
+docs/evidence/voicekey-runtime-20261106/full-08e84980-official-dexdump-excerpt.txt -text -whitespace
+
+# Exact original accepted VoiceKey report/image/log paths, verified against provenance.
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/acceptance-summary.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/activity-errors.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/activity-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/activity-top.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/crash.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/host-lifecycle.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/ime-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/ime-teardown.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/last-anr.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/model-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/offline-uid.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/system-keyboard.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/system-runtime.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voice-commit-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voice-recording.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voice-stopped.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-boundary-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-model-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-prepare-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-provider-after.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-provider-before.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/voicekey-watchdog-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/window-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api28/workflow-job-original.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/acceptance-summary.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/activity-errors.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/activity-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/activity-top.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/crash.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/host-lifecycle.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/ime-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/ime-teardown.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/last-anr.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/model-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/offline-uid.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/system-keyboard.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/system-runtime.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voice-commit-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voice-recording.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voice-stopped.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-boundary-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-model-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-prepare-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-provider-after.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-provider-before.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/voicekey-watchdog-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/window-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api35/workflow-job-original.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/acceptance-summary.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/activity-errors.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/activity-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/activity-top.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/crash.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/host-lifecycle.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/ime-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/ime-teardown.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/last-anr.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/model-instrumentation.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/offline-uid.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/system-keyboard.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/system-runtime.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voice-commit-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voice-recording.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voice-stopped.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-boundary-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-model-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-prepare-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-provider-after.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-provider-before.png -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/voicekey-watchdog-report.json -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/window-state.txt -text -whitespace
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/workflow-job-original.txt -text -whitespace
+
+# Preserve the downloaded final GitHub artifact metadata bytes and recorded hash.
+docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/github-artifact-metadata.json -text -whitespace

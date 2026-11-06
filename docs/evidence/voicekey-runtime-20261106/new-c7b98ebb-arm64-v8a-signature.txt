@@ -1,0 +1,17 @@
+Verifies
+Verified using v1 scheme (JAR signing): false
+Verified using v2 scheme (APK Signature Scheme v2): false
+Verified using v3 scheme (APK Signature Scheme v3): true
+Verified using v3.1 scheme (APK Signature Scheme v3.1): false
+Verified using v4 scheme (APK Signature Scheme v4): false
+Verified for SourceStamp: false
+Number of signers: 1
+Signer #1 certificate DN: CN=ZapIME Development
+Signer #1 certificate SHA-256 digest: a17d38115ce78a43debf2c1c9c2ef72a0c26c131dd708fb74c7073eae5b6b2db
+Signer #1 certificate SHA-1 digest: d69d4da83f9363c7a9e681f10d73f08fed060e76
+Signer #1 certificate MD5 digest: 1262df0cd8d6ef206ff10a42fa7d4467
+Signer #1 key algorithm: RSA
+Signer #1 key size (bits): 2048
+Signer #1 public key SHA-256 digest: b991b8f2e317d66c618c617168604fdb9356f79655f808860995f4c138997205
+Signer #1 public key SHA-1 digest: ad78455905a772745b085c3999e15c20a97263fd
+Signer #1 public key MD5 digest: 879920a4c76d80726e9d7f2ade541a04

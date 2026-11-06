@@ -1,0 +1,423 @@
+{
+  "run_id": 42227414903,
+  "source_commit": "be79d084eef1f835e7504f134f46ba315b36df18",
+  "cases": [
+    {
+      "api": 36,
+      "job_id": 127925439181,
+      "artifact_id": 13507016216,
+      "zip_bytes": 238014,
+      "zip_sha256": "a5b742fc7f3db49c0e892954cd055fbd40088d47e75ad53d421ac7290c083323",
+      "github_digest_match": true,
+      "downloaded_source_validators_pass": true,
+      "whole_job_conclusion": "success",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 326,
+          "sha256": "4887a5f67f75476efc3280c0fbdd739ef9c95ecc575c662fe4269782e3dd9f5f"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd"
+        },
+        {
+          "name": "host-lifecycle.txt",
+          "bytes": 5980,
+          "sha256": "618d4d511a8b1d88f4227b9676eb9d5b914991ec4f96d588027d62bd75b04512"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25626,
+          "sha256": "515a757e5b37e95cbfe6202a6d9a04c85ad84a2b5e4f6795de1ae65a0669ad91"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 1088,
+          "sha256": "b017c512de26c30eee0ae723fe0db09f8936c1d1be0b3b22414295bd2721dd84"
+        },
+        {
+          "name": "voice-commit-report.json",
+          "bytes": 5302,
+          "sha256": "230d56b1cc8ff1ab54c5616f36f75ffb46c9f652e6eb618b31d42a10e4fb1808"
+        },
+        {
+          "name": "voicekey-boundary-report.json",
+          "bytes": 680,
+          "sha256": "e2aaed3c59f9e11b751bdf05bcfd37db67ad701aafdad094a1162df688ece8be"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "602e8dfcb310d01017c6558138602f05d64a123c84abd1d1e2fe4aa1550cf8c3"
+        },
+        {
+          "name": "voicekey-provider-after.png",
+          "bytes": 73152,
+          "sha256": "5c2f98eb6593c78336716d1dccfa997c6525654912a035b7b2b3403123ac5504"
+        },
+        {
+          "name": "ime-instrumentation.txt",
+          "bytes": 316,
+          "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185"
+        },
+        {
+          "name": "voicekey-watchdog-report.json",
+          "bytes": 1058,
+          "sha256": "2f94562abf061b954326ed3a6b0591c467cf6c3372b74deea95347b88e7c0b43"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 37819,
+          "sha256": "bb02f0a34e1287fa93740548267d85c2c28bcd008e27092801f4c50ddf381710"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "voice-recording.png",
+          "bytes": 39926,
+          "sha256": "ad919631f45e1fc7c151dab61a87508fde468efcccd4908cdd77aac1e552afa0"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 105,
+          "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 382,
+          "sha256": "df01325cbb911b1fc07ff3c576f0bfe756554854a79dfab5a8f0a63f44402a7a"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 6239,
+          "sha256": "5f982fa1ddbafc98815518556c5ef7d1c46e75201268c7b3709ec48b3124988d"
+        },
+        {
+          "name": "voice-stopped.png",
+          "bytes": 41602,
+          "sha256": "513c5b6c74ce9153eb4911b9419006881bc4c3a6deb2ebb8246488fece16a56a"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 56361,
+          "sha256": "42980c301def931cf91386ca115d17dc182d25141dbfdf181dd2e75d3fce8b8d"
+        },
+        {
+          "name": "voicekey-provider-before.png",
+          "bytes": 17289,
+          "sha256": "31fb85105f0d82fc27e9c336bc0f813eab390d5929e3424281f1a6375d955c06"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 209299,
+        "sha256": "c2838da8c7d63190a41068dcb100e4edc3775a4f3c52629e673893f6cfbb09dd",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      },
+      "local_download_verification": {
+        "file": "download-verification.json",
+        "bytes": 1015,
+        "sha256": "555a4b7d7fe1ca3e179a758cde749d7f77c1c2dae924387b02ecd58ed9e61d32",
+        "scope": "Additional verification after download; not an original artifact member"
+      }
+    },
+    {
+      "api": 28,
+      "job_id": 127925439223,
+      "artifact_id": 13506458469,
+      "zip_bytes": 186055,
+      "zip_sha256": "77b7db5044a8916d52f69ae3fe8e1d5506cd35389428699263ddcaf932466ca5",
+      "github_digest_match": true,
+      "downloaded_source_validators_pass": true,
+      "whole_job_conclusion": "success",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 320,
+          "sha256": "2afb400ba8a35fd2d924d41d098aa5437d9216a4dfa74aaf3cdff3f82d2ffb90"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 169,
+          "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74"
+        },
+        {
+          "name": "host-lifecycle.txt",
+          "bytes": 5544,
+          "sha256": "47f620b15b797acace25189113fcf7e378ba08239c887d6d488a4aad69d93df3"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 5330,
+          "sha256": "0366954ab5e08d0e2fbe39d72c5f8fc893012e0fbafbbaa30c576d643f9b6631"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 1088,
+          "sha256": "1bb16679ecf6e20d05bfc13c5573c61fa60b47ae79fe9e5c4ef4584cffcb3086"
+        },
+        {
+          "name": "voice-commit-report.json",
+          "bytes": 5302,
+          "sha256": "7510eb52ed6d7966d1710a8268ddbb0aa5362c99c060e48bc31f94160d66b896"
+        },
+        {
+          "name": "voicekey-boundary-report.json",
+          "bytes": 680,
+          "sha256": "25657cd8e0184b801e9d2315795422e59bf25f7f6312468ff16ee6505a22fdd4"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 114721,
+          "sha256": "f7c1ce1ff55852afdab3dae2f24426b214b8e645cc6fa993359422a3883f5b85"
+        },
+        {
+          "name": "voicekey-provider-after.png",
+          "bytes": 66946,
+          "sha256": "c17f74f195b10c6d5610d9618b8327b443b0d13a1c62fd0468c3b70e6c155685"
+        },
+        {
+          "name": "ime-instrumentation.txt",
+          "bytes": 316,
+          "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185"
+        },
+        {
+          "name": "voicekey-watchdog-report.json",
+          "bytes": 1058,
+          "sha256": "3f7052f05326346a8ba87135f252ddadd8253d4e421e5548aed56d4ae2ce5408"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 15044,
+          "sha256": "b23583f9a990e413b7711ed75cc85f6f521efc0a5e3db67df55c8ed97a1632d5"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "voice-recording.png",
+          "bytes": 37363,
+          "sha256": "ff86a06c9edb06af79e28fab08558a8cc1f2872e67d405189a957a5675bc1d1d"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 105,
+          "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 58,
+          "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 6237,
+          "sha256": "f39070c28b453c7da656593ad4ae18c0fcacea46fe44e9c3a6af804f1b3c320e"
+        },
+        {
+          "name": "voice-stopped.png",
+          "bytes": 38802,
+          "sha256": "c6f919fff0ef943da9fb0a6475843ed9b986f82833fb83c488640705e002e319"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 10825,
+          "sha256": "6f431a8a56bb79b9bc8bc503b3e820715072bc439fdccd1280fb1dc40abfee58"
+        },
+        {
+          "name": "voicekey-provider-before.png",
+          "bytes": 11181,
+          "sha256": "4ae06644545781a97080aa977b458bd7a4bb52dd49b51d6d5a5df73ba4b63977"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 201915,
+        "sha256": "fa106510bce7da8ecf3c713769347d39fae05b8f35976bc80135aaeb6ad9535e",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      },
+      "local_download_verification": {
+        "file": "download-verification.json",
+        "bytes": 1015,
+        "sha256": "371e02c0461c335a998ebeff24c85fcba5ced00aa0f13ddafd3f2b23ce6fe563",
+        "scope": "Additional verification after download; not an original artifact member"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 127925439326,
+      "artifact_id": 13505819838,
+      "zip_bytes": 183984,
+      "zip_sha256": "98193e65eae900c642ab91fd756e63b0d97e63173121e3942ce7c82f4367b571",
+      "github_digest_match": true,
+      "downloaded_source_validators_pass": true,
+      "whole_job_conclusion": "success",
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 320,
+          "sha256": "dcd75c2727c084791437b3505b531a6c303a2745ff1c9fd8453fa1374fb6d915"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f"
+        },
+        {
+          "name": "host-lifecycle.txt",
+          "bytes": 5980,
+          "sha256": "9f4079831f8531797c770a8049b1b35a95a298101107dcf3471c5bfead8dc8c4"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25836,
+          "sha256": "03001ebec71ff9c941dca47f2673d89ff409681ce26fb10f35e3baefc16ccd55"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 1088,
+          "sha256": "1bb16679ecf6e20d05bfc13c5573c61fa60b47ae79fe9e5c4ef4584cffcb3086"
+        },
+        {
+          "name": "voice-commit-report.json",
+          "bytes": 5302,
+          "sha256": "50755220f7c8a04611fc33389ef7743a26021f0aa648a084499ded3a766e4b05"
+        },
+        {
+          "name": "voicekey-boundary-report.json",
+          "bytes": 680,
+          "sha256": "ac2e2ccadea54cdbfced1899ac13e3d462f224a161fdca4ef7774a88d5c58c1f"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "db57fa66831e1fade8a6ba9951b4689cdcda852b2bf0ff34cd48e0b191c93f2d"
+        },
+        {
+          "name": "voicekey-provider-after.png",
+          "bytes": 18266,
+          "sha256": "79e7058c7f1c0ba685cb8466634ba8324a581850685ec0c6f2b0980e83d6cf06"
+        },
+        {
+          "name": "ime-instrumentation.txt",
+          "bytes": 316,
+          "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185"
+        },
+        {
+          "name": "voicekey-watchdog-report.json",
+          "bytes": 1058,
+          "sha256": "80b9de0a74196412f54901083cd26f6b2d63ee1032eeb76ce07d9cc24d383f44"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 38947,
+          "sha256": "37204bfc2cafdbbf9e577f967057bf3a10addee686807eb329c08cb3f4df7b99"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "voice-recording.png",
+          "bytes": 40132,
+          "sha256": "230cea7072cd26120fef7dfb10bba32ceba2b8967b44622fe3401a0200a2da6a"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 105,
+          "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 382,
+          "sha256": "69930f3f400c7d23e885e7ae5ae8fac613084ae5389f09866b4e553cf04f707a"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 6238,
+          "sha256": "2b565d4cbea353e667036cff72041d828b1d06a0619d76d1d377854fe3771c07"
+        },
+        {
+          "name": "voice-stopped.png",
+          "bytes": 41793,
+          "sha256": "68394929a1e0753b06e6b28fb867ea748a714325b191abb726ed91074c778f51"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 49894,
+          "sha256": "a26976ae0cb16ef2f38128355cf7f736e3ceb1fcccc4d8082ba40363d3186522"
+        },
+        {
+          "name": "voicekey-provider-before.png",
+          "bytes": 18303,
+          "sha256": "1d3ed71cb645590cb3c0c01f4161170cae1b938f6a1c7a0a2978f9ef6532293c"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 207538,
+        "sha256": "cda6b4bf981197019da50b8e2180c9ebce09e59aa02786d2596bd8f24b251364",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      },
+      "local_download_verification": {
+        "file": "download-verification.json",
+        "bytes": 1015,
+        "sha256": "20d1d0b42563ed7471a44343764f6c8b95fbb2f9db07e1b206a7970f5d671026",
+        "scope": "Additional verification after download; not an original artifact member"
+      }
+    }
+  ]
+}

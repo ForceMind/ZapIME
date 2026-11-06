@@ -1,0 +1,28 @@
+[package]
+name = "zapime-voicekey-adapter"
+version = "0.1.0"
+edition = "2021"
+publish = false
+license-file = "LICENSE"
+description = "Optional offline VoiceKey wtlocal recognition for ZapIME"
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+# This adapter only compiles VoiceKey's offline wtlocal Rust modules. The
+# complete upstream source is pinned separately; none of its unofficial
+# cloud protocol modules, credentials or audio device wrappers link here.
+[workspace]
+resolver = "2"
+
+[dependencies]
+anyhow = "1"
+memmap2 = "0.9"
+rayon = "1"
+
+[target.'cfg(target_os = "android")'.dependencies]
+jni = "0.21"
+serde_json = "1"
+
+[dev-dependencies]
+serde_json = "1"

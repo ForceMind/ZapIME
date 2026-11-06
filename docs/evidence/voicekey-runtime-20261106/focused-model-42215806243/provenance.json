@@ -1,0 +1,264 @@
+{
+  "run_id": 42215806243,
+  "source_commit": "45d9057b19f78f8b35599cfe1c1b19a50f493184",
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 127888186708,
+      "artifact_id": 13501992227,
+      "zip_bytes": 49407,
+      "zip_sha256": "e452e51cff5ccc67f05c4c8820f68c980816d0937b6e29798447dbc36cf229d2",
+      "github_digest_match": true,
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 326,
+          "sha256": "de6c596aafc8c972159971e4d1d3a8a843ccf3330c4903a30654d2662b80e086"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 169,
+          "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 9580,
+          "sha256": "45ef2edca37bd6fc14b660fb80da4966f4088fdeb69b97f2af2ccd49db2e6198"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 198968,
+          "sha256": "0b55b441949ffa6eb17c6dc6aacca5f63b36f17cbb34e33bc656e6f20fd72ec8"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 17859,
+          "sha256": "e329fc5caf6487e0298e116981e6ea0c5138afe536a315c12bdd234e1e163688"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 188,
+          "sha256": "451d3d7fc17f5c34297816b7b836e3292650b4351b5a87df8557212a16e38d12"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "448b2e1363175a1bfeb93092fc10258d19a88c17deae438be6eca07c8695d4ba"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 1044,
+          "sha256": "70826b384d37fc1f87db37cc02a0b3f387df14abe275924cebf79cbd3635cc17"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 25199,
+          "sha256": "a71ab91531130ca553ee5d0bfa107cd2d9d57aaf5cdd614661e086aaa9a53410"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 201279,
+        "sha256": "ddd638ad1086a2045b603d87994703d0d3c34261a1209ff3a41ef24cd8b701ac",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 127888186660,
+      "artifact_id": 13501892016,
+      "zip_bytes": 64410,
+      "zip_sha256": "9ad13c90761f8d3fffb55bffec124c17eb3448f5c3204be32e7e94cf8ab76dcb",
+      "github_digest_match": true,
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 326,
+          "sha256": "8c9bec5f6bb35f8821f016a4c920ac244005b2095dc1fab801d5c6cc835868a5"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25479,
+          "sha256": "70328770c797cb1cddd33c7178f6353c31f4228f68043059b7c16dcf2f044a84"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "166ad66896b5b50e0ce2a061a533a09933ca48668b79958b7148cc71689ab5eb"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 37783,
+          "sha256": "38c326d9f9286e307cd5eefd0afc1cc5e994638d93f790e16cbbdf1379cd4874"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 187,
+          "sha256": "ddf55d1a0bce6d45646ac27f76644bcf90cc96fb22a5e44397dae4fd8ce2773e"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 206,
+          "sha256": "8bd748fd1e4ec760ca40521e16b57aa6daa77f24e85151ad133cf8189d83eb9b"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 3462,
+          "sha256": "e7081d25052b1e280f4412d6f60e614eb3338a10ed0d6862c7d0a6fcab117205"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 56756,
+          "sha256": "81f9016ef7403877adb9e19f36d4763d890390b524cd41631054c4497d197e00"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 209247,
+        "sha256": "6ef5252f84a82ab35479e01c8daee32dcd413cb271cc421494fa744c1ebe19d7",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 127888186672,
+      "artifact_id": 13501332311,
+      "zip_bytes": 65398,
+      "zip_sha256": "82c8d64d1020b6d15a89a0a239a2ed0a697f4dca6345c4819fb968fb716482dc",
+      "github_digest_match": true,
+      "members": [
+        {
+          "name": "voicekey-prepare-report.json",
+          "bytes": 327,
+          "sha256": "030877dbdf8b2f986c750f4ef043860c6847737e515309e0ff606ebbcf0ea621"
+        },
+        {
+          "name": "ime-teardown.txt",
+          "bytes": 66,
+          "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+        },
+        {
+          "name": "system-keyboard.json",
+          "bytes": 244,
+          "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f"
+        },
+        {
+          "name": "activity-state.txt",
+          "bytes": 25709,
+          "sha256": "e9d848a7d17b3840d372830e31b8e9ab875b68913189a62dcffe30ce00332f7e"
+        },
+        {
+          "name": "last-anr.txt",
+          "bytes": 88,
+          "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+        },
+        {
+          "name": "acceptance-summary.json",
+          "bytes": 831,
+          "sha256": "5b9ed8b6ecc5860c602ce33108184d5b3d0881df8710638c77823fe16eeed27b"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "system-runtime.txt",
+          "bytes": 262144,
+          "sha256": "0f75e1efc1875496726e2454d68076bb4d832c0bb5785345ea0b932fe6aa3bb7"
+        },
+        {
+          "name": "window-state.txt",
+          "bytes": 38915,
+          "sha256": "7d87557a6a7e5031a241fef9e40663ffd2d0d83fc45abbaa22692d0999eda066"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "model-instrumentation.txt",
+          "bytes": 187,
+          "sha256": "ddf55d1a0bce6d45646ac27f76644bcf90cc96fb22a5e44397dae4fd8ce2773e"
+        },
+        {
+          "name": "activity-errors.txt",
+          "bytes": 118,
+          "sha256": "0477e238e92fb211209c7c1f88da1dcf633e484d18bdd936b8518c2d29241c13"
+        },
+        {
+          "name": "voicekey-model-report.json",
+          "bytes": 3462,
+          "sha256": "80fc91152cd32ab50c7f98ecacbd0d573c7a86551cb74d5fc141620a4408f213"
+        },
+        {
+          "name": "activity-top.txt",
+          "bytes": 50100,
+          "sha256": "1984d78469898be6e2177c63c6fd3dfb80ce5a50d4e85636169aa6073bbef388"
+        }
+      ],
+      "workflow_log": {
+        "file": "workflow-job-original.txt",
+        "bytes": 207547,
+        "sha256": "f5cca0d4dd2fe159132247c6f0c5690f3fa00ff0a8a58d55cba1f24d7d4925f4",
+        "retrieved_from": "GitHub workflow-job logs API after completion"
+      }
+    }
+  ]
+}

@@ -1,0 +1,402 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "engine_id": "voicekey",
+  "model_id": "wechat-offline-20260710220526250",
+  "model_lock_sha256": "f9bec02d69612cb957102489986549d3177297786585274971798896506cc254",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "model_files": {
+    "dict.decoder.utf8.txt": {
+      "output": "dict.decoder.utf8.txt",
+      "size": 129706,
+      "sha256": "08a16004cfcf5b9f1668e055f3100de9b8a44f88541819def2bbd56bfd42f484"
+    },
+    "embed_140m_kld43wh_test_78000_1_merge_4.kv.conv1d.dyQu.onnx.xnet": {
+      "output": "embed_140m_kld43wh_test_78000_1_merge_4.kv.conv1d.dyQu.onnx.xnet",
+      "size": 135646496,
+      "sha256": "0674250a848ce3eb91024b3c0a6eda61b91ea45b2c40e4900130995e89cb9033"
+    }
+  },
+  "platform": "Linux-7.0.0-1017-azure-aarch64-with-glibc2.39",
+  "architecture": "aarch64",
+  "synthetic": true,
+  "distinct_audio_samples": 1,
+  "repeated_rounds_are_not_new_speech_samples": true,
+  "fixed_model_and_fixture_hash_verification_ms": 90.14181899999585,
+  "fixture_sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+  "reference_sha256": "5689f369f10ef9b4bca431dad3430e63dc1e5c26c7c8be663d73ee88e8a91352",
+  "audio_samples": 125490,
+  "network_restriction": {
+    "method": "no_new_privs plus Linux libseccomp, before spawning the native runtime; inherited across exec",
+    "blocked_syscalls": [
+      "socket",
+      "socketpair",
+      "connect",
+      "accept",
+      "accept4",
+      "bind",
+      "listen",
+      "sendto",
+      "sendmsg",
+      "sendmmsg",
+      "recvfrom",
+      "recvmsg",
+      "recvmmsg",
+      "shutdown"
+    ],
+    "socket_creation_rejected": [
+      "AF_INET",
+      "AF_INET6"
+    ],
+    "scope": "this worker and its native child only; specific socket syscalls, not all inherited-fd/io_uring paths, device airplane mode, or general sandbox"
+  },
+  "native": {
+    "cache_scope": "Every completed physical worker releases model weights. Both series start a model anew, repeated_start does not retain an engine cache. OS page cache is warm after independent integrity/model validation; not phone cold-start.",
+    "cases": [
+      {
+        "accepted_samples": 0,
+        "feed_and_finish_ms": 0.723719,
+        "finish_call_ms": 0.7230869999999999,
+        "first_partial_observed_after_accepted_samples": null,
+        "first_partial_observed_ms": null,
+        "has_nonzero_pcm": false,
+        "id": "no_samples",
+        "model_start_ms": 2.8361039999999997,
+        "partial_count": 0,
+        "partial_nonempty": false,
+        "recognized_codepoints": 0,
+        "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hypothesis": ""
+      },
+      {
+        "accepted_samples": 3200,
+        "feed_and_finish_ms": 0.805914,
+        "finish_call_ms": 0.803155,
+        "first_partial_observed_after_accepted_samples": null,
+        "first_partial_observed_ms": null,
+        "has_nonzero_pcm": false,
+        "id": "all_zero",
+        "model_start_ms": 2.999975,
+        "partial_count": 0,
+        "partial_nonempty": false,
+        "recognized_codepoints": 0,
+        "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hypothesis": ""
+      },
+      {
+        "accepted_samples": 1601,
+        "feed_and_finish_ms": 7.641218,
+        "finish_call_ms": 7.63937,
+        "first_partial_observed_after_accepted_samples": null,
+        "first_partial_observed_ms": null,
+        "has_nonzero_pcm": true,
+        "id": "positive_lsb",
+        "model_start_ms": 2.9995830000000003,
+        "partial_count": 0,
+        "partial_nonempty": false,
+        "recognized_codepoints": 0,
+        "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hypothesis": ""
+      },
+      {
+        "accepted_samples": 1601,
+        "feed_and_finish_ms": 7.074362,
+        "finish_call_ms": 7.072274,
+        "first_partial_observed_after_accepted_samples": null,
+        "first_partial_observed_ms": null,
+        "has_nonzero_pcm": true,
+        "id": "negative_lsb",
+        "model_start_ms": 3.09077,
+        "partial_count": 0,
+        "partial_nonempty": false,
+        "recognized_codepoints": 0,
+        "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "hypothesis": ""
+      },
+      {
+        "accepted_samples": 1600,
+        "cancel_to_drained_ms": 0.661307,
+        "final_rejected": true,
+        "id": "cancel_after_first_frame",
+        "new_pcm_rejected": true,
+        "physical_worker_drained": true,
+        "scope": "Cancellation after first accepted frame; not a forced mid-matrix pause."
+      }
+    ],
+    "complete": true,
+    "configured_model_threads": 4,
+    "engine_id": "voicekey",
+    "latency_scope": "Process compute and polling observation; excludes microphone, Android/JNI/editor and user confirmation.",
+    "pacing": "unpaced_100ms_frames",
+    "runs": [
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 839.790473,
+        "finish_call_ms": 396.650693,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 441.006156,
+        "has_nonzero_pcm": true,
+        "mode": "release_before_start",
+        "model_start_ms": 2.957425,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 1,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      },
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 825.463168,
+        "finish_call_ms": 386.248792,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 437.079081,
+        "has_nonzero_pcm": true,
+        "mode": "release_before_start",
+        "model_start_ms": 2.8447440000000004,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 2,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      },
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 846.885297,
+        "finish_call_ms": 405.162759,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 439.58540400000004,
+        "has_nonzero_pcm": true,
+        "mode": "release_before_start",
+        "model_start_ms": 2.799411,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 3,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      },
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 830.433016,
+        "finish_call_ms": 390.038098,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 438.252855,
+        "has_nonzero_pcm": true,
+        "mode": "repeated_start",
+        "model_start_ms": 2.873518,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 1,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      },
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 843.221848,
+        "finish_call_ms": 402.692321,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 438.394175,
+        "has_nonzero_pcm": true,
+        "mode": "repeated_start",
+        "model_start_ms": 3.030925,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 2,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      },
+      {
+        "accepted_samples": 125490,
+        "feed_and_finish_ms": 838.391473,
+        "finish_call_ms": 390.370864,
+        "first_partial_observed_after_accepted_samples": 96000,
+        "first_partial_observed_ms": 444.821397,
+        "has_nonzero_pcm": true,
+        "mode": "repeated_start",
+        "model_start_ms": 2.8612300000000004,
+        "partial_count": 1,
+        "partial_nonempty": true,
+        "round": 3,
+        "recognized_codepoints": 22,
+        "hypothesis_sha256": "3409522f9db3a134ee582d45974028435bfc9eca3e91c0c09dc372452e5f8959",
+        "metrics": {
+          "verbatim": {
+            "reference_characters": 25,
+            "substitutions": 13,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 16,
+            "cer": 0.64
+          },
+          "speech-v1": {
+            "reference_characters": 22,
+            "substitutions": 12,
+            "deletions": 3,
+            "insertions": 0,
+            "errors": 15,
+            "cer": 0.6818181818181818
+          }
+        },
+        "hypothesis": "领高，是一转一篇语音输入，则是一篇小点才灰。"
+      }
+    ],
+    "schema_version": 1,
+    "thread_policy": "Pinned upstream Model::forward caps its Rayon pool at available_parallelism.min(4).",
+    "uncached_model_validation_ms": 3.567655
+  },
+  "latency_summary_ms": {
+    "release_before_start": {
+      "model_start_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 2.8447440000000004,
+        "p95": 2.957425
+      },
+      "finish_call_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 396.650693,
+        "p95": 405.162759
+      },
+      "feed_and_finish_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 839.790473,
+        "p95": 846.885297
+      },
+      "first_partial_observed_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 439.58540400000004,
+        "p95": 441.006156
+      }
+    },
+    "repeated_start": {
+      "model_start_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 2.873518,
+        "p95": 3.030925
+      },
+      "finish_call_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 390.370864,
+        "p95": 402.692321
+      },
+      "feed_and_finish_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 838.391473,
+        "p95": 843.221848
+      },
+      "first_partial_observed_ms": {
+        "measured_rounds": 3,
+        "total_rounds": 3,
+        "p50": 438.394175,
+        "p95": 444.821397
+      }
+    }
+  },
+  "process_seconds": 5.0919776819999925,
+  "child_cpu_seconds": 19.481933,
+  "child_peak_rss": 156912,
+  "rss_unit": "KiB on Linux, bytes on macOS",
+  "energy": "NOT MEASURED",
+  "scope": "Model-driven Rust CPU compatibility on the recorded runner architecture, not JNI/AudioRecord/IME, natural speech or ARM phone acceptance. Both series reload weights after physical worker exit; repeated_start does not retain an engine model cache. OS page cache is warm after integrity/parse checks. RTF is not end-to-end latency; CER is not accuracy. Model redistribution permission not established.",
+  "reference": "你好，这是一段离线语音输入测试。今天下午三点开会。"
+}

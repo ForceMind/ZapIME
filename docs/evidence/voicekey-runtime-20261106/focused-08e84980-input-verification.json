@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-11-06T12:59:24.001138+00:00",
+  "source_commit": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+  "run_id": 42221304313,
+  "artifact_id": 13503044367,
+  "scope": "Actual product APK bytes, source-locked packaged notices, native metadata, manifest, signature and alignment. Not installation, model decoding, AudioRecord, natural speech or ARM execution.",
+  "artifact_zip": {
+    "bytes": 52904248,
+    "sha256": "b50bea87a9cda338dbfbc7d1fc1919919bdfeaf44ff2d45e3dde6137f0e4b815",
+    "github_size_and_digest_verified": true
+  },
+  "apks": {
+    "x86_64": {
+      "bytes": 53108903,
+      "sha256": "fb5d3636c8b84c8ba036577e75d0dcdb96f86d3ed22bfba15a21c193d1b64548",
+      "source_locked_check_contents_passed": true,
+      "native": {
+        "lib/x86_64/libonnxruntime.so": {
+          "bytes": 25581120,
+          "sha256": "087e84297cad64acb823c3d901d6e0cc934e91add7cdb20da802cd1c0bea5c3e",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libsherpa-onnx-c-api.so": {
+          "bytes": 4927096,
+          "sha256": "631ca2828e47b61d8afe4b3c75a157423cbafaba6f8c0db89c27d21f1b173d9a",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_core.so": {
+          "bytes": 13739912,
+          "sha256": "9f5c4acd268caca73ef679e0df9f374b7d02422e2f9ddddd5f530559632093a6",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_voice.so": {
+          "bytes": 4340224,
+          "sha256": "5617155e843ba7cd16b727bf38915983ba7b5a4ef5d9a154a4fd57c475e51c10",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_voicekey_adapter.so": {
+          "bytes": 1294624,
+          "sha256": "a4e514e297c4d5251529f9a577c071557f21b0a8cceff6c8ed649f822e775fe6",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        }
+      },
+      "voicekey_jni_exports": [
+        "Java_org_zapime_android_NativeVoiceKey_accept",
+        "Java_org_zapime_android_NativeVoiceKey_allocate",
+        "Java_org_zapime_android_NativeVoiceKey_cancel",
+        "Java_org_zapime_android_NativeVoiceKey_checkModel",
+        "Java_org_zapime_android_NativeVoiceKey_close",
+        "Java_org_zapime_android_NativeVoiceKey_finish",
+        "Java_org_zapime_android_NativeVoiceKey_releaseCache",
+        "Java_org_zapime_android_NativeVoiceKey_start"
+      ],
+      "voicekey_needed_libraries": [
+        "libc.so",
+        "libdl.so",
+        "libm.so"
+      ],
+      "adapter_notice_collection": {
+        "schema_version": 1,
+        "root_package": "zapime-voicekey-adapter",
+        "target_platform": "x86_64-linux-android",
+        "inventory_sha256": "cd80f97a37791d615d2129b03ad99404611348b0b80f5a24f0e6503d655d1151",
+        "packages": 32,
+        "cargo_lock_sha256": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104"
+      },
+      "adapter_notice_sha_matches_source_lock": true,
+      "dex_sha256": "c60c96a6db19d1008568a4355161f50d99c8925a0efb1164a612d11fbee308a7",
+      "engine_type_descriptors_present": true,
+      "test_probe_descriptors_absent": true,
+      "no_known_model_audio_extension_members": true,
+      "manifest_exit_code": 0,
+      "signature_exit_code": 0,
+      "signature_v3_verified": true,
+      "certificate_sha256": "5f24035153f4ee5a633894c315127d6b9a0ccfe3ac71d9d64283a01ab2214063",
+      "zipalign_exit_code": 0
+    }
+  },
+  "same_run_product_signer_matches": true,
+  "product_abis": [
+    "x86_64"
+  ],
+  "limitations": [
+    "New product APK byte verification does not establish VoiceKey model decoding, system IME, natural-speech quality or S25 readiness.",
+    "Development certificate is not release signing and is not assumed upgrade-compatible with any other runner artifact.",
+    "Known extension and dependency boundary checks are not a general proof that arbitrary binary bytes contain no secrets.",
+    "No VoiceKey weights extracted, uploaded or redistributed by this verification."
+  ],
+  "status": "PASS_X86_PRODUCT_BYTES_SIGNATURES_DEX_CONTRACT_AND_MODEL_FREE_HARNESS_ONLY",
+  "candidate_status": "FOCUSED_08_X86_ONLY; native finish ABI changed, actual invocation remains separate",
+  "verification_inputs": {
+    "source_commit": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+    "official_build_tools_35_zip_sha256": "bd3a4966912eb8b30ed0d00b0cda6b6543b949d5ffe00bea54c04c81e1561d88",
+    "checker_source_sha256": "fd576f0c4fd6ec5e215f768dbffe8e651b1829abe7cf4d0c91c4050b1ee9f0cc",
+    "prepare_voice_source_sha256": "51f8ca58b5f8e963048728a01fa13a7d9175ce7a23cb49fda0358a577e0172c5",
+    "adapter_cargo_lock_sha256": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104"
+  },
+  "focused_harnesses": {
+    "scope": "Actual focused input ZIP member allowlist, synthetic WAV/PCM equality, harness assets and same-run APK signatures. No recognition or installation executed by this verifier.",
+    "harnesses": {
+      "editor": {
+        "bytes": 45556,
+        "sha256": "19bc5ceb37186ff9e018a920843d17b00371c410bb1e5f0e9aeae51244d53a88",
+        "assets": [
+          {
+            "path": "assets/licenses/GPL-3.0.txt",
+            "bytes": 34931,
+            "sha256": "5e376676c81ad41e9b690711db575bfd2623467b21814d7767373fda14aff80f"
+          }
+        ],
+        "signature_exit_code": 0,
+        "certificate_sha256": "5f24035153f4ee5a633894c315127d6b9a0ccfe3ac71d9d64283a01ab2214063",
+        "zipalign_exit_code": 0
+      },
+      "voice": {
+        "bytes": 340612,
+        "sha256": "ef9e86666f93c3f8c90928ffb3245e524571f2d70c50490e482e9d42b96d8f3b",
+        "assets": [
+          {
+            "path": "assets/NOTICE.txt",
+            "bytes": 372,
+            "sha256": "eaf1c7162f4f40a4d80110081e19e3909596b59269c8ab92003c5f88c8252fe7"
+          },
+          {
+            "path": "assets/licenses/GPL-3.0.txt",
+            "bytes": 34931,
+            "sha256": "5e376676c81ad41e9b690711db575bfd2623467b21814d7767373fda14aff80f"
+          },
+          {
+            "path": "assets/voice-fixtures/synthetic.pcm",
+            "bytes": 250980,
+            "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac"
+          }
+        ],
+        "synthetic_pcm_equals_artifact_wav": true,
+        "signature_exit_code": 0,
+        "certificate_sha256": "5f24035153f4ee5a633894c315127d6b9a0ccfe3ac71d9d64283a01ab2214063",
+        "zipalign_exit_code": 0
+      }
+    },
+    "artifact_members": [
+      "android-tests/ZapIME-tests.apk",
+      "android-voice-tests/ZapIME-voice-tests.apk",
+      "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+      "voice-probe/synthetic.wav"
+    ],
+    "synthetic_fixture": {
+      "wav_bytes": 251024,
+      "wav_sha256": "b845eb40da997926414653cb955355f1bf77e01f2457c9a0555a0b5248666aaa",
+      "pcm_bytes": 250980,
+      "pcm_sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+      "rate_hz": 16000,
+      "channels": 1,
+      "bits_per_sample": 16,
+      "frames": 125490
+    },
+    "same_signer_product_and_two_harnesses": true,
+    "no_known_model_members": true
+  },
+  "actual_product_dex_contract": {
+    "scope": "Actual product DEX native declarations only; not JNI invocation or proof of Rust calling convention.",
+    "native_methods": {
+      "accept": "(J[SI)[B",
+      "allocate": "()J",
+      "cancel": "(J)V",
+      "checkModel": "(Ljava/lang/String;)Z",
+      "close": "(J)Z",
+      "finish": "(JI)[B",
+      "releaseCache": "()Z",
+      "start": "(J[B[B)[B"
+    },
+    "finish_wrapper": "(J)[B",
+    "native_finish": "(JI)[B",
+    "native_method_count": 8
+  },
+  "dex_old_c7_control": {
+    "native_finish": "(J)[B",
+    "new_gate_would_reject": true,
+    "scope": "Actually parsed the previously verified C7 x86 APK; no C7 JNI invocation performed in this comparison."
+  }
+}

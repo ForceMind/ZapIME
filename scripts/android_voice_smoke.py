@@ -8,6 +8,7 @@ import sys
 import time
 import wave
 import json
+from android_voicekey_model_smoke import verify_permission_cases, verify_boundary_report
 from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args, dedicated_ci
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
@@ -47,7 +48,7 @@ try:
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name))
     evidence=json.loads((out/"empty-pcm-report.json").read_text())
     expected={"no_samples", "all_zero", "ignored_tail", "positive_lsb", "negative_lsb", "cancelled_empty"}
@@ -55,10 +56,11 @@ try:
     if evidence.get("synthetic") is not True or len(cases)!=6 or {row.get("id") for row in cases}!=expected or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing complete JNI empty-PCM evidence")
     confirmation=json.loads((out/"voice-commit-report.json").read_text())
-    required={"commit_once", "reentrant_finish", "cancelled_completion", "connection_changed", "ticket_changed", "epoch_changed", "selection_version_changed", "cursor_changed_identical_context", "selected_range", "unknown_selection", "policy_excluded", "before_changed", "after_changed", "null_before", "null_after", "oversize_context", "context_exception", "editor_rejected", "editor_exception", "worker_thread_rejected"}
+    required={"commit_once", "reentrant_finish", "cancelled_completion", "connection_changed", "ticket_changed", "epoch_changed", "selection_version_changed", "cursor_changed_identical_context", "selected_range", "unknown_selection", "policy_excluded", "before_changed", "after_changed", "null_before", "null_after", "oversize_context", "context_exception", "editor_rejected", "editor_exception", "worker_thread_rejected","permission_granted","permission_denied","permission_revoked_before_confirmation"}
     cases=confirmation.get("cases", [])
     if confirmation.get("synthetic") is not True or confirmation.get("actual_jni_decoded_text_used") is not True or len(cases)!=len(required) or {row.get("id") for row in cases}!=required or any(row.get("passed") is not True or row.get("actual_editable_verified") is not True for row in cases):
         raise SystemExit("Missing complete synthetic production-confirmation evidence")
+    verify_permission_cases(cases)
     account=json.loads((out/"sync-connection-report.json").read_text())
     expected_account={"strict_schema", "identity_binding", "keystore_namespace", "store_roundtrip_switch", "worker_guard", "pre_cancel", "secure_activity_lifecycle"}
     cases=account.get("cases", [])
@@ -74,6 +76,8 @@ try:
     cases=backup.get("cases", [])
     if backup.get("synthetic") is not True or backup.get("cleanup_completed") is not True or len(cases)!=8 or {row.get("id") for row in cases}!=expected_backup or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing encrypted local backup native/provider evidence")
+    vk=json.loads((out/"voicekey-boundary-report.json").read_text())
+    verify_boundary_report(vk)
     method="org.zapime.android/.ZapInputMethodService"
     for action in ("enable","set"):
         run("shell","ime",action,method)
@@ -100,7 +104,7 @@ finally:
     # Always retain its actual failure hierarchy/screenshot before checking fatals.
     for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png","host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/backup-provider-ui-shape.json",str(out/"backup-provider-ui-shape.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout

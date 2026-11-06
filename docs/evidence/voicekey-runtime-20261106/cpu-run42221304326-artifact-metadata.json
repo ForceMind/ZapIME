@@ -1,0 +1,42 @@
+{
+  "artifacts": [
+    {
+      "id": 13504021109,
+      "name": "VoiceKey-CPU-metadata-aarch64",
+      "size_in_bytes": 6643,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13504021109",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13504021109/zip",
+      "expired": false,
+      "created_at": "2026-11-06T12:56:08Z",
+      "expires_at": "2026-12-06T12:56:08Z",
+      "updated_at": "2026-11-06T12:56:08Z",
+      "digest": "sha256:67e6449537d3182c9d82ed3574b4277910ce465b30829ce2262e3934c6c7f20c",
+      "workflow_run": {
+        "id": 42221304326,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/voicekey-engine-import",
+        "head_sha": "08e84980562ecc8fab436ffcdab6e5aee8c567e7"
+      }
+    },
+    {
+      "id": 13503977021,
+      "name": "VoiceKey-CPU-metadata-x86_64",
+      "size_in_bytes": 6652,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13503977021",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13503977021/zip",
+      "expired": false,
+      "created_at": "2026-11-06T12:58:16Z",
+      "expires_at": "2026-12-06T12:58:15Z",
+      "updated_at": "2026-11-06T12:58:16Z",
+      "digest": "sha256:04da93f63cbea2c26d959b78a64878d6c4476a268bff51e28d78f44c57fcb626",
+      "workflow_run": {
+        "id": 42221304326,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/voicekey-engine-import",
+        "head_sha": "08e84980562ecc8fab436ffcdab6e5aee8c567e7"
+      }
+    }
+  ]
+}

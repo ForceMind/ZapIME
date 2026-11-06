@@ -1,0 +1,26 @@
+{
+  "product_commit": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+  "artifact_run_id": 42221304627,
+  "artifact_id": 13503554301,
+  "artifact_zip_sha256": "5e18aebd7a15b575acc8c01d0ea8bb77c44bce222b9e35d6084d6da23b2aec73",
+  "files": [
+    {
+      "filename": "ZapIME-0.1.0-dev-arm64-v8a.apk",
+      "bytes": 51785617,
+      "sha256": "6f6b156c1872de23d76b0981120147143f46bb6f5378bc5ff978a9f8aba73f13"
+    },
+    {
+      "filename": "ZapIME-XASR-model.zip",
+      "bytes": 129097503,
+      "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1"
+    }
+  ],
+  "apk_development_certificate_sha256": "08582031e115a8c819d3e7cf7105e5f683d04fec65b32aab40959b39d32b9547",
+  "voicekey_weights_included": false,
+  "xasr_source_lock": "third_party/voice-probe-lock.json",
+  "limits": [
+    "Development candidate; not production signing.",
+    "S25 and natural-speech acceptance NOT RUN.",
+    "GitHub artifact retention is finite; preserve source and checksums."
+  ]
+}

@@ -1,0 +1,2 @@
+--------- beginning of system
+11-06 12:22:07.904   558  1144 E ActivityManager: Unable to freeze binder for 3200: -11

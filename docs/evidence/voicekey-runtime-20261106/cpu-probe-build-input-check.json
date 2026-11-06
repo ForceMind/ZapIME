@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "date_utc": "2026-11-06",
+  "status": "PASS_BUILD_AND_BOUNDARIES_ONLY",
+  "engine_id": "voicekey",
+  "tests": {
+    "python_input_tests": {
+      "count": 19,
+      "passed": 19,
+      "command": "python3 -m unittest discover -s scripts -p test_voicekey_cpu_probe.py -v"
+    },
+    "release_example_build": {
+      "exit_code": 0,
+      "command": "cargo build --locked --manifest-path integrations/voicekey/Cargo.toml --release --example offline_probe"
+    },
+    "rustfmt": {
+      "exit_code": 0,
+      "command": "cargo fmt --manifest-path integrations/voicekey/Cargo.toml --all --check"
+    },
+    "clippy_initial": {
+      "exit_code": 101,
+      "command": "cargo clippy --locked --manifest-path integrations/voicekey/Cargo.toml --example offline_probe -- -D warnings",
+      "scope": "Initial runtime kernels.rs lint failures: redundant_locals, needless_range_loop, manual_is_multiple_of. Assigned runtime maintainer to correct; not a model execution failure."
+    },
+    "clippy_after_runtime_fix": {
+      "exit_code": 0,
+      "command": "cargo clippy --locked --manifest-path integrations/voicekey/Cargo.toml --example offline_probe -- -D warnings"
+    }
+  },
+  "actual_model_inference": {
+    "status": "BLOCKED",
+    "model_decode_executed": false,
+    "reason": "No local verified model directory; direct official CDN observation returned HTML. Authorized isolated GitHub model probe must download official package directly and execute without rehosting weights."
+  },
+  "local_check_report": {
+    "schema_version": 1,
+    "status": "BLOCKED",
+    "reason": "model_directory_missing",
+    "engine_id": "voicekey",
+    "native_process_started": false,
+    "model_decode_executed": false
+  },
+  "scope": "Input validation tests use deliberately non-model bytes and never assert recognition. The independent CI probe must execute actual fixed weights before model compatibility can pass."
+}

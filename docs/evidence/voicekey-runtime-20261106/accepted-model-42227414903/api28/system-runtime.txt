@@ -1,0 +1,914 @@
+--------- beginning of main
+11-06 13:44:44.415  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/BentleyDubs.ogg since build fingerprint changed
+11-06 13:44:44.419  1588  1588 W /system/bin/adbd: dnssd_clientstub DNSServiceRefDeallocate called with NULL DNSServiceRef
+11-06 13:44:44.419  1854  2207 W SupplicantStaIfaceHal: ISupplicant died: cookie=0
+11-06 13:44:44.419  1854  1861 W system_server: Receiving file descriptor from ADB failed (socket 29): Success
+11-06 13:44:44.419  1854  1861 E system_server: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.419  1975  1982 W putmethod.lati: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 13:44:44.419  1975  1982 E putmethod.lati: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.419  2150  2179 W ndroid.setting: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 13:44:44.419  2150  2179 E ndroid.setting: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  1998  2005 W ndroid.systemu: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  1998  2005 E ndroid.systemu: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2283  2292 W id.ext.service: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2283  2292 E id.ext.service: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2084  2101 W m.android.phon: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2084  2101 E m.android.phon: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2303  2318 W droid.deskcloc: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2303  2318 E droid.deskcloc: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2348  2356 W com.android.se: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2530  2537 W gedprovisionin: Receiving file descriptor from ADB failed (socket 31): Success
+11-06 13:44:44.420  2348  2356 E com.android.se: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2530  2537 E gedprovisionin: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2364  2384 W droid.launcher: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2561  2568 W .android.diale: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2364  2384 E droid.launcher: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2561  2568 E .android.diale: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2577  2585 W oadcastreceive: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2428  2445 W d.process.medi: Receiving file descriptor from ADB failed (socket 34): Success
+11-06 13:44:44.420  2577  2585 E oadcastreceive: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2428  2445 E d.process.medi: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2683  2699 W d.carrierconfi: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2436  2468 W android.smspus: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2683  2699 E d.carrierconfi: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2436  2468 E android.smspus: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2724  2731 W id.printspoole: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2610  2622 W d.process.acor: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2724  2731 E id.printspoole: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2610  2622 E d.process.acor: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2790  2797 W android.camera: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2602  2617 W droid.messagin: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.420  2790  2797 E android.camera: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2602  2617 E droid.messagin: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2853  2861 W droid.gallery3: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 13:44:44.420  2677  2689 W viders.calenda: Receiving file descriptor from ADB failed (socket 31): Success
+11-06 13:44:44.420  2853  2861 E droid.gallery3: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.420  2677  2689 E viders.calenda: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2888  2895 W timeinitialize: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2888  2895 E timeinitialize: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2741  2748 W ndroid.keychai: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2741  2748 E ndroid.keychai: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2909  2916 W ackageinstalle: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2909  2916 E ackageinstalle: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2768  2776 W ndroid.calenda: Receiving file descriptor from ADB failed (socket 11): Success
+11-06 13:44:44.421  2768  2776 E ndroid.calenda: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2946  2953 W android.traceu: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2811  2818 W ndroid.contact: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2946  2953 E android.traceu: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2811  2818 E ndroid.contact: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  3040  3047 W rrierdefaultap: Receiving file descriptor from ADB failed (socket 32): Success
+11-06 13:44:44.421  2830  2837 W m.android.emai: Receiving file descriptor from ADB failed (socket 33): Success
+11-06 13:44:44.421  3040  3047 E rrierdefaultap: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2830  2837 E m.android.emai: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.421  2927  2934 W id.defcontaine: Receiving file descriptor from ADB failed (socket 31): Success
+11-06 13:44:44.421  2927  2934 E id.defcontaine: Something went wrong getting fds from adb. Retry!: Success
+11-06 13:44:44.422  1998  2005 W ndroid.systemu: Receiving file descriptor from ADB failed (socket 32): Connection reset by peer
+11-06 13:44:44.422  1998  2005 E ndroid.systemu: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 13:44:44.422  2283  2292 W id.ext.service: Receiving file descriptor from ADB failed (socket 32): Connection reset by peer
+11-06 13:44:44.422  2283  2292 E id.ext.service: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 13:44:44.422  2150  2179 W ndroid.setting: Receiving file descriptor from ADB failed (socket 33): Connection reset by peer
+11-06 13:44:44.422  2150  2179 E ndroid.setting: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 13:44:44.423  1975  1982 W putmethod.lati: Receiving file descriptor from ADB failed (socket 33): Connection reset by peer
+11-06 13:44:44.423  1975  1982 E putmethod.lati: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 13:44:44.423  1854  1861 W system_server: Receiving file descriptor from ADB failed (socket 29): Connection reset by peer
+11-06 13:44:44.423  1854  1861 E system_server: Something went wrong getting fds from adb. Retry!: Connection reset by peer
+11-06 13:44:44.432  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Rasalas.ogg since build fingerprint changed
+11-06 13:44:44.439  1854  1873 W libprocessgroup: kill(-2650, 9) failed: No such process
+11-06 13:44:44.449  1706  1706 I Zygote  : Process 2650 exited due to signal (9)
+11-06 13:44:44.459  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Solarium.ogg since build fingerprint changed
+11-06 13:44:44.474  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Draco.ogg since build fingerprint changed
+11-06 13:44:44.479  1854  1873 W libprocessgroup: kill(-2650, 9) failed: No such process
+11-06 13:44:44.479  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10066 pid 2650 in 80ms
+11-06 13:44:44.483  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/CurveBall.ogg since build fingerprint changed
+11-06 13:44:44.488  1854  1948 D WificondControl: tearing down interfaces in wificond
+--------- beginning of system
+11-06 13:44:44.489  1574  1574 I android.hardware.wifi@1.0-service: Legacy HAL stop complete callback received
+11-06 13:44:44.492  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/No_Limits.ogg since build fingerprint changed
+11-06 13:44:44.501  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Terminated.ogg since build fingerprint changed
+11-06 13:44:44.510  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/LoopyLounge.ogg since build fingerprint changed
+11-06 13:44:44.524  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/ANDROMEDA.ogg since build fingerprint changed
+11-06 13:44:44.534  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/hydra.ogg since build fingerprint changed
+11-06 13:44:44.543  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/CanisMajor.ogg since build fingerprint changed
+11-06 13:44:44.554  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Nairobi.ogg since build fingerprint changed
+11-06 13:44:44.563  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/LoveFlute.ogg since build fingerprint changed
+11-06 13:44:44.565  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@2370d09)
+11-06 13:44:44.565  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@2370d09)
+11-06 13:44:44.573  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Savannah.ogg since build fingerprint changed
+11-06 13:44:44.583  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/VeryAlarmed.ogg since build fingerprint changed
+11-06 13:44:44.591  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Bollywood.ogg since build fingerprint changed
+11-06 13:44:44.600  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Hydra.ogg since build fingerprint changed
+11-06 13:44:44.608  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Champagne_Edition.ogg since build fingerprint changed
+11-06 13:44:44.618  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Lyra.ogg since build fingerprint changed
+11-06 13:44:44.628  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Backroad.ogg since build fingerprint changed
+11-06 13:44:44.637  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Themos.ogg since build fingerprint changed
+11-06 13:44:44.655  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Club_Cubano.ogg since build fingerprint changed
+11-06 13:44:44.664  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/SilkyWay.ogg since build fingerprint changed
+11-06 13:44:44.674  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Steppin_Out.ogg since build fingerprint changed
+11-06 13:44:44.683  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Carina.ogg since build fingerprint changed
+11-06 13:44:44.690  1574  1574 I android.hardware.wifi@1.0-service: Wifi HAL stopped
+11-06 13:44:44.690  1854  1948 I WifiVendorHal: Vendor Hal stopped
+11-06 13:44:44.690  1854  1948 D WifiClientModeManager: STA iface wlan0 was destroyed, stopping client mode
+11-06 13:44:44.690  1854  1948 E SupplicantStaIfaceHal: Can't call setPowerSave, ISupplicantStaIface is null
+11-06 13:44:44.690  1854  1948 E SupplicantStaIfaceHal: Can't call setBtCoexistenceMode, ISupplicantStaIface is null
+11-06 13:44:44.691  1854  1948 I WifiNative: Successfully torn down Iface:{Name=wlan0,Id=0,Type=STA}
+11-06 13:44:44.691  1854  1948 E HalDevMgr: Should have at least 1 chip!
+11-06 13:44:44.691  1854  1948 E HalDevMgr: dispatchAvailableForRequestListeners: no chip info found
+11-06 13:44:44.691  1854  1948 I WifiNative: Successfully initiated teardown for iface=wlan0
+11-06 13:44:44.691  1854  1948 D WifiClientModeManager: expected stop, not triggering callbacks: newState = 1
+11-06 13:44:44.692  1854  1854 D WifiP2pService: Wifi enabled=false, P2P Interface availability=true
+11-06 13:44:44.692  1854  1948 E SupplicantStaIfaceHal: Can't call listNetworks, ISupplicantStaIface is null
+11-06 13:44:44.692  1854  1948 E SupplicantStaIfaceHal: removeAllNetworks failed, got null networks
+11-06 13:44:44.692  1854  1948 E WifiStateMachine: Failed to remove networks on exiting connect mode
+11-06 13:44:44.692  1854  1948 W WifiDiags: Fail to reset log handler
+11-06 13:44:44.692  1854  1950 E WifiP2pService: Unhandled message { when=0 what=131204 target=com.android.internal.util.StateMachine$SmHandler }
+11-06 13:44:44.693  1854  1874 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+11-06 13:44:44.694  1854  1874 E BatteryExternalStatsWorker: no controller energy info supplied for wifi
+11-06 13:44:44.694  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Big_Easy.ogg since build fingerprint changed
+11-06 13:44:44.701  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Enter_the_Nexus.ogg since build fingerprint changed
+11-06 13:44:44.712  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/MildlyAlarming.ogg since build fingerprint changed
+11-06 13:44:44.721  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/URSAMINOR.ogg since build fingerprint changed
+11-06 13:44:44.740  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Testudo.ogg since build fingerprint changed
+11-06 13:44:44.752  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Machina.ogg since build fingerprint changed
+11-06 13:44:44.761  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Vespa.ogg since build fingerprint changed
+11-06 13:44:44.769  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/World.ogg since build fingerprint changed
+11-06 13:44:44.777  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Ring_Classic_02.ogg since build fingerprint changed
+11-06 13:44:44.788  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Playa.ogg since build fingerprint changed
+11-06 13:44:44.799  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Shes_All_That.ogg since build fingerprint changed
+11-06 13:44:44.808  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/DreamTheme.ogg since build fingerprint changed
+11-06 13:44:44.827  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/FriendlyGhost.ogg since build fingerprint changed
+11-06 13:44:44.837  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Growl.ogg since build fingerprint changed
+11-06 13:44:44.846  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Calypso_Steel.ogg since build fingerprint changed
+11-06 13:44:44.855  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Pyxis.ogg since build fingerprint changed
+11-06 13:44:44.862  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Thunderfoot.ogg since build fingerprint changed
+11-06 13:44:44.872  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/SpringyJalopy.ogg since build fingerprint changed
+11-06 13:44:44.881  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Scarabaeus.ogg since build fingerprint changed
+11-06 13:44:44.898  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Atria.ogg since build fingerprint changed
+11-06 13:44:44.913  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/GameOverGuitar.ogg since build fingerprint changed
+11-06 13:44:44.923  2428  2925 I MediaScanner: forcing rescan of /system/media/audio/ringtones/Noises1.ogg since build fingerprint changed
+11-06 13:44:44.932  2428  2925 W MediaScanner: Error opening directory '/oem/media/', skipping: No such file or directory.
+11-06 13:44:44.932  2428  2925 W MediaScanner: Error opening directory '/product/media/', skipping: No such file or directory.
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: Error inserting title_key=7Y/K) parent=98 is_music=false title=Hydra _size=22924 duration=5000 bucket_id=293500348 is_alarm=false album_artist=null media_type=2 is_notification=false track=0 bucket_display_name=ringtones _data=/system/media/audio/ringtones/Hydra.ogg is_drm=false _display_name=Hydra.ogg composer=null format=47362 title_resource_uri=null is_ringtone=true artist_id=1 is_podcast=false date_added=1793972684 date_modified=1533059818 mime_type=application/ogg album_id=5
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: android.database.sqlite.SQLiteConstraintException: UNIQUE constraint failed: files._data (code 2067 SQLITE_CONSTRAINT_UNIQUE)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteConnection.nativeExecuteForLastInsertedRowId(Native Method)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteConnection.executeForLastInsertedRowId(SQLiteConnection.java:796)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteSession.executeForLastInsertedRowId(SQLiteSession.java:788)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteStatement.executeInsert(SQLiteStatement.java:86)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteDatabase.insertWithOnConflict(SQLiteDatabase.java:1564)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.database.sqlite.SQLiteDatabase.insert(SQLiteDatabase.java:1433)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaProvider.insertFile(MediaProvider.java:2359)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaProvider.insertInternal(MediaProvider.java:2592)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaProvider.bulkInsert(MediaProvider.java:1853)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.content.ContentProvider$Transport.bulkInsert(ContentProvider.java:280)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.content.ContentProviderClient.bulkInsert(ContentProviderClient.java:299)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.media.MediaInserter.flush(MediaInserter.java:91)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.media.MediaInserter.flushAll(MediaInserter.java:74)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.media.MediaScanner.scanDirectories(MediaScanner.java:1370)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaScannerService.scan(MediaScannerService.java:83)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaScannerService.access$300(MediaScannerService.java:47)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaScannerService$ServiceHandler.handleMessage(MediaScannerService.java:258)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.os.Handler.dispatchMessage(Handler.java:106)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at android.os.Looper.loop(Looper.java:193)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at com.android.providers.media.MediaScannerService.run(MediaScannerService.java:162)
+11-06 13:44:44.939  2428  2925 E SQLiteDatabase: 	at java.lang.Thread.run(Thread.java:764)
+11-06 13:44:44.952  2428  2925 V MediaProvider: pruneThumbnails 
+11-06 13:44:44.953  2428  2925 V MediaProvider: /pruneDeadThumbnailFiles... 
+11-06 13:44:45.019  2530  2545 I gedprovisionin: Waiting for a blocking GC ProfileSaver
+11-06 13:44:45.302  2577  2594 I oadcastreceive: Waiting for a blocking GC ProfileSaver
+11-06 13:44:45.565  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@bf9d92f)
+11-06 13:44:45.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@bf9d92f)
+11-06 13:44:45.634  1854  2345 V BackupManagerConstants: getFullBackupRequiredNetworkType(...) returns 2
+11-06 13:44:45.634  1854  2345 V BackupManagerConstants: getFullBackupRequireCharging(...) returns true
+11-06 13:44:45.864  3085  3085 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+11-06 13:44:45.871  1854  2345 V BackupManagerConstants: getFullBackupRequiredNetworkType(...) returns 2
+11-06 13:44:45.871  1854  2345 V BackupManagerConstants: getFullBackupRequireCharging(...) returns true
+11-06 13:44:45.890  3085  3085 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:44:45.892  3085  3085 I app_process: The ClassLoaderContext is a special shared library.
+11-06 13:44:45.905  3085  3085 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+11-06 13:44:45.909  1854  2190 I ActivityManager: Force stopping org.zapime.android appid=10067 user=0: start instr
+11-06 13:44:45.915  3095  3095 W .zapime.androi: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:44:45.921  1854  1872 I ActivityManager: Start proc 3095:org.zapime.android/u0a67 for added application org.zapime.android
+11-06 13:44:45.926  3095  3095 W ActivityThread: Package uses different ABI(s) than its instrumentation: package[org.zapime.android]: x86_64, null instrumentation[org.zapime.android.voicetest]: null, null
+11-06 13:44:45.928  3095  3095 W .zapime.androi: ClassLoaderContext classpath size mismatch for position 0. expected=0, found=1 (PCL[] | PCL[/data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk*3726324387])
+11-06 13:44:45.932  3095  3095 W .zapime.androi: ClassLoaderContext size mismatch. expected=1, actual=2 (PCL[] | PCL[];PCL[/data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk*3726324387:/data/app/org.zapime.android--2ru2RSnZBsDeH78jk886g==/base.apk*1631257089])
+11-06 13:44:45.932  3095  3095 W .zapime.androi: Found duplicate classes, falling back to extracting from APK : /data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk
+11-06 13:44:45.932  3095  3095 W .zapime.androi: NOTE: This wastes RAM and hurts startup performance.
+11-06 13:44:45.932  3095  3095 W .zapime.androi: Found duplicated class when checking oat files: 'Lorg/zapime/android/voicetest/BackupProbe$$ExternalSyntheticLambda0;' in /data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk and /data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk
+11-06 13:44:45.932  3095  3095 W .zapime.androi: 
+11-06 13:44:45.934  3095  3095 W .zapime.androi: ClassLoaderContext size mismatch. expected=1, actual=2 (PCL[] | PCL[/data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk*3726324387];PCL[/data/app/org.zapime.android.voicetest-pWGfxGBCRwFWmckW8bvEEQ==/base.apk*3726324387:/data/app/org.zapime.android--2ru2RSnZBsDeH78jk886g==/base.apk*1631257089])
+11-06 13:44:45.934  3095  3095 W .zapime.androi: Found duplicate classes, falling back to extracting from APK : /data/app/org.zapime.android--2ru2RSnZBsDeH78jk886g==/base.apk
+11-06 13:44:45.934  3095  3095 W .zapime.androi: NOTE: This wastes RAM and hurts startup performance.
+11-06 13:44:45.934  3095  3095 W .zapime.androi: Found duplicated class when checking oat files: 'Lorg/zapime/android/BackupActivity$$ExternalSyntheticLambda0;' in /data/app/org.zapime.android--2ru2RSnZBsDeH78jk886g==/base.apk and /data/app/org.zapime.android--2ru2RSnZBsDeH78jk886g==/base.apk
+11-06 13:44:45.934  3095  3095 W .zapime.androi: 
+11-06 13:44:45.953  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 13:44:45.959  1854  2190 I ActivityManager: START u0 {flg=0x10000000 cmp=org.zapime.android/.VoiceSettingsActivity} from uid 10067
+11-06 13:44:46.004  3095  3095 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@9ba0126
+11-06 13:44:46.021  3095  3095 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:44:46.023  1705  2275 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:46.030  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.071  1565  1565 I chatty  : uid=1000(system) allocator@2.0-s identical 2 lines
+11-06 13:44:46.072  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.074  3095  3116 D         : HostConnection::get() New Host Connection established 0x78bc09064b00, tid 3116
+11-06 13:44:46.076  3095  3116 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:44:46.076  3095  3116 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:44:46.076  3095  3116 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:44:46.076  3095  3116 D OpenGLRenderer: Swap behavior 1
+11-06 13:44:46.078  3095  3116 D EGL_emulation: eglCreateContext: 0x78bc0900d0a0: maj 3 min 0 rcv 3
+11-06 13:44:46.079  3095  3116 D EGL_emulation: eglMakeCurrent: 0x78bc0900d0a0: ver 3 0 (tinfo 0x78bc090f5800)
+11-06 13:44:46.080  1705  2275 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:46.086  2364  2519 D EGL_emulation: eglMakeCurrent: 0x78bbfd6dec20: ver 3 0 (tinfo 0x78bbfd6ab6a0)
+11-06 13:44:46.105  3095  3116 D EGL_emulation: eglMakeCurrent: 0x78bc0900d0a0: ver 3 0 (tinfo 0x78bc090f5800)
+11-06 13:44:46.336  1854  1878 I ActivityManager: Displayed org.zapime.android/.VoiceSettingsActivity: +328ms
+11-06 13:44:46.341  1705  2275 W SurfaceFlinger: Attempting to set client state on removed layer: Splash Screen org.zapime.android#0
+11-06 13:44:46.341  1705  2275 W SurfaceFlinger: Attempting to destroy on removed layer: Splash Screen org.zapime.android#0
+11-06 13:44:46.345  1854  2390 I ActivityManager: START u0 {act=android.intent.action.OPEN_DOCUMENT cat=[android.intent.category.OPENABLE] typ=*/* cmp=com.android.documentsui/.picker.PickActivity} from uid 10067
+11-06 13:44:46.351  1854  1959 I AudioTrack: AUDIO_OUTPUT_FLAG_FAST successful; frameCount 0 -> 4512
+11-06 13:44:46.362  1854  1872 I ActivityManager: Start proc 3119:com.android.documentsui/u0a17 for activity com.android.documentsui/.picker.PickActivity
+11-06 13:44:46.366  3119  3119 W oid.documentsu: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:44:46.373  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.384  3119  3119 I oid.documentsu: The ClassLoaderContext is a special shared library.
+11-06 13:44:46.393  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.412  3095  3116 D EGL_emulation: eglMakeCurrent: 0x78bc0900d0a0: ver 3 0 (tinfo 0x78bc090f5800)
+11-06 13:44:46.415  1854  1872 I ActivityManager: Start proc 3138:com.android.externalstorage/u0a18 for content provider com.android.externalstorage/.ExternalStorageProvider
+11-06 13:44:46.419  3138  3138 W externalstorag: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:44:46.424  3119  3119 D PickActivity: Created new state object: State{action=3, acceptMimes=[*/*], allowMultiple=false, localOnly=false, showDeviceStorageOption=true, showAdvanced=false, stack=DocumentStack{root=null, docStack=[], stackTouched=false}, dirConfigs={}, excludedAuthorities=[], openableOnly=true, sortModel=SortModel{dimensions={16908304=SortDimension{id=16908304, labelId=2131755226, dataType=0, sortCapability=0, defaultSortDirection=1, sortDirection=0, visibility=4}, 16908310=SortDimension{id=16908310, labelId=2131755224, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296333=SortDimension{id=2131296333, labelId=2131755222, dataType=1, sortCapability=3, defaultSortDirection=2, sortDirection=0, visibility=0}, 2131296375=SortDimension{id=2131296375, labelId=2131755223, dataType=0, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}, 2131296509=SortDimension{id=2131296509, labelId=2131755225, dataType=1, sortCapability=3, defaultSortDirection=1, sortDirection=0, visibility=0}}, defaultDimensionId=0, sortedDimension=null}}
+11-06 13:44:46.425  3119  3119 D DrawerController: Calculated drawer width:264.0
+11-06 13:44:46.426  3119  3119 D Metrics : docsui_launch_action: 2
+11-06 13:44:46.427  3119  3119 D Metrics : docsui_open_mime: 2
+11-06 13:44:46.431  3119  3119 D PickerActionHandler: Load last accessed stack.
+11-06 13:44:46.431  3119  3119 D PickerActionHandler: Attempting to load last used stack for calling package.
+11-06 13:44:46.435  3119  3119 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:44:46.438  1705  1926 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:46.445  3138  3138 I externalstorag: The ClassLoaderContext is a special shared library.
+11-06 13:44:46.451  3138  3138 D ExternalStorage: After updating volumes, found 2 active roots
+11-06 13:44:46.464  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.465  3119  3155 D         : HostConnection::get() New Host Connection established 0x78bc0c462000, tid 3155
+11-06 13:44:46.465  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.465  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:46.467  3119  3155 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:44:46.467  3119  3155 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:44:46.467  3119  3155 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:44:46.468  3119  3155 D OpenGLRenderer: Swap behavior 1
+11-06 13:44:46.468  3119  3119 I ProvidersCache: Updating roots due to change at content://com.android.externalstorage.documents
+11-06 13:44:46.469  3119  3155 D EGL_emulation: eglCreateContext: 0x78bc0c43c6e0: maj 3 min 0 rcv 3
+11-06 13:44:46.470  3119  3155 D EGL_emulation: eglMakeCurrent: 0x78bc0c43c6e0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:44:46.475  1854  1872 I ActivityManager: Start proc 3158:com.android.mtp/u0a10 for content provider com.android.mtp/.MtpDocumentsProvider
+11-06 13:44:46.478  1705  2275 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:46.489  3158  3158 W com.android.mt: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:44:46.498  3119  3155 D EGL_emulation: eglMakeCurrent: 0x78bc0c43c6e0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:44:46.499  3158  3158 I com.android.mt: The ClassLoaderContext is a special shared library.
+11-06 13:44:46.547  3119  3153 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:46.547  3119  3135 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:46.565  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@6097ad)
+11-06 13:44:46.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@6097ad)
+11-06 13:44:46.820  1854  1878 I ActivityManager: Displayed com.android.documentsui/.picker.PickActivity: +464ms
+11-06 13:44:46.822  3119  3119 D DocumentStack: Root changed to: Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null
+11-06 13:44:46.822  3119  3119 D DirectoryFragment: Creating new fragment null directory
+11-06 13:44:46.827  3119  3135 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:46.839  3119  3119 D AbstractActionHandler: Creating new loader recents.
+11-06 13:44:46.840  1705  1926 W SurfaceFlinger: Attempting to set client state on removed layer: Splash Screen com.android.documentsui#0
+11-06 13:44:46.840  1705  1926 W SurfaceFlinger: Attempting to destroy on removed layer: Splash Screen com.android.documentsui#0
+11-06 13:44:46.841  3119  3153 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:46.850  2811  2825 I ndroid.contact: Waiting for a blocking GC ProfileSaver
+11-06 13:44:46.857  2811  2825 I ndroid.contact: WaitForGcToComplete blocked ProfileSaver on HeapTrim for 6.406ms
+11-06 13:44:46.868  3119  3153 D Documents: Found 1 of 1 recent queries done
+11-06 13:44:46.909  2830  2844 I m.android.emai: Waiting for a blocking GC ProfileSaver
+11-06 13:44:46.927  3119  3119 D AbstractActionHandler: Loader has finished for: <null DocumentInfo>
+11-06 13:44:46.927  3119  3119 I Model   : Updating model with new result set.
+11-06 13:44:46.927  3119  3119 D DirectoryFragment: Received model update. Loading=false
+11-06 13:44:47.230  3119  3119 D Metrics : docsui_root_visited_in_picker: 5
+11-06 13:44:47.230  3119  3119 W ActionModeController: Tried to finish a null action mode.
+11-06 13:44:47.230  3119  3119 D DocumentStack: Root changed to: Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads
+11-06 13:44:47.246  3119  3119 D DocumentStack: Adding doc to stack: DocumentInfo{docId=downloads, name=Downloads, mimeType=vnd.android.document/directory, isContainer=true, isDirectory=true, isArchive=false, isInArchive=false, isPartial=false, isVirtual=false, isDeleteSupported=false, isCreateSupported=true, isRenameSupported=false, isMetadataSupported=false} @ content://com.android.providers.downloads.documents/document/downloads
+11-06 13:44:47.246  3119  3119 D DirectoryFragment: Showing directory: content://com.android.providers.downloads.documents/document/downloads
+11-06 13:44:47.246  3119  3119 D DirectoryFragment: Creating new fragment for directory: content://com.android.providers.downloads.documents/document/downloads
+11-06 13:44:47.266  3119  3119 D DirectoryFragment: Received model update. Loading=false
+11-06 13:44:47.268  3119  3119 D AbstractActionHandler: Creating new directory loader for: content://com.android.providers.downloads.documents/document/downloads
+11-06 13:44:47.281  3119  3119 D AbstractActionHandler: Loader has finished for: content://com.android.providers.downloads.documents/document/downloads
+11-06 13:44:47.281  3119  3119 I Model   : Updating model with new result set.
+11-06 13:44:47.282  3119  3119 D DirectoryFragment: Received model update. Loading=false
+11-06 13:44:47.565  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@10a0f65)
+11-06 13:44:47.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@10a0f65)
+11-06 13:44:47.587  3119  3119 D Metrics : docsui_startup_ms: 1172
+11-06 13:44:47.708  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:47.716  3085  3094 D         : HostConnection::get() New Host Connection established 0x766c68bbd4e0, tid 3094
+11-06 13:44:47.717  3085  3094 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:44:47.718  1705  1924 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:47.719  3085  3182 D libEGL  : Emulator has host GPU support, qemu.gles is set to 1.
+11-06 13:44:47.720  3085  3182 E vndksupport: Could not load /vendor/lib64/egl/libGLES_emulation.so from sphal namespace: dlopen failed: library "/vendor/lib64/egl/libGLES_emulation.so" not found.
+11-06 13:44:47.720  3085  3182 E libEGL  : load_driver(/vendor/lib64/egl/libGLES_emulation.so): unknown
+11-06 13:44:47.720  3085  3182 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-06 13:44:47.721  3085  3182 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-06 13:44:47.724  3085  3182 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-06 13:44:47.729  3085  3182 D         : HostConnection::get() New Host Connection established 0x766c62646000, tid 3182
+11-06 13:44:47.730  3085  3182 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:44:47.731  3085  3182 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:44:47.731  3085  3182 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:44:47.731  3085  3182 D OpenGLRenderer: Swap behavior 1
+11-06 13:44:47.732  3085  3182 D EGL_emulation: eglCreateContext: 0x766c62636460: maj 3 min 0 rcv 3
+11-06 13:44:47.733  3085  3182 D EGL_emulation: eglMakeCurrent: 0x766c62636460: ver 3 0 (tinfo 0x766c62617380)
+11-06 13:44:47.735  1705  1924 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:44:47.811  1854  1928 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 13:44:47.816  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AH4
+11-06 13:44:47.821  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AH8
+11-06 13:44:47.832  1854  1928 I chatty  : uid=1000(system) InputReader identical 3 lines
+11-06 13:44:47.838  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIA
+11-06 13:44:47.841  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIE
+11-06 13:44:47.842  1854  1928 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 13:44:47.846  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:47.848  1854  1928 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 13:44:47.851  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AII
+11-06 13:44:47.852  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIM
+11-06 13:44:47.861  1854  1869 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 13:44:47.862  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIQ
+11-06 13:44:47.864  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIU
+11-06 13:44:47.864  1854  1928 I chatty  : uid=1000(system) InputReader identical 3 lines
+11-06 13:44:47.868  1854  1928 I InputReader: Reconfiguring input devices.  changes=0x00000010
+11-06 13:44:47.877  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIY
+11-06 13:44:47.886  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:47.902  1854  1854 I Telecom : DefaultDialerCache: Refreshing default dialer for user 0: now com.android.dialer: DDC.oR@AIc
+11-06 13:44:47.911  1854  1869 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 13:44:47.937  1854  1869 I chatty  : uid=1000(system) android.bg identical 3 lines
+11-06 13:44:47.940  1854  1869 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 13:44:47.941  2084  2084 I chatty  : uid=1001(radio) com.android.phone identical 3 lines
+11-06 13:44:47.957  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:47.958  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/input_methods_subtype_history
+11-06 13:44:47.959  1854  1869 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 13:44:47.963  1975  1975 I InputAttributes: InputType.TYPE_NULL is specified
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f08017c.
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f120f74.
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f08017b.
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f120480.
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f08017a.
+11-06 13:44:47.964  1854  1869 E system_server: No package ID 7f found for ID 0x7f12099f.
+11-06 13:44:47.969  3119  3119 D PickerActionHandler: onFinished() [content://com.android.providers.downloads.documents/document/raw%3A%2Fstorage%2Femulated%2F0%2FDownload%2FZapIME-VoiceKey-42227414903-1.apk]
+11-06 13:44:47.971  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:47.976  3119  3135 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:47.984  3119  3135 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:47.987  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:47.989  1854  1869 I chatty  : uid=1000(system) android.bg identical 2 lines
+11-06 13:44:47.991  1854  1869 W VoiceInteractionManagerService: no available voice interaction services found for user 0
+11-06 13:44:47.996  3119  3135 D ProvidersAccess: Matched roots: [Root{authority=null, rootId=null, title=Recent, isUsb=false, isSd=false, isMtp=false} @ content:/root/null, Root{authority=com.android.providers.downloads.documents, rootId=downloads, title=Downloads, isUsb=false, isSd=false, isMtp=false} @ content://com.android.providers.downloads.documents/root/downloads, Root{authority=com.android.externalstorage.documents, rootId=home, title=Documents, isUsb=false, isSd=false, isMtp=false} @ content://com.android.externalstorage.documents/root/home]
+11-06 13:44:48.014  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:48.016  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:48.017  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:48.018  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:48.033  3095  3116 D EGL_emulation: eglMakeCurrent: 0x78bc0900d0a0: ver 3 0 (tinfo 0x78bc090f5800)
+11-06 13:44:48.055  1854  1870 I ActivityManager: Killing 2683:com.android.carrierconfig/u0a15 (adj 906): empty #17
+11-06 13:44:48.055  1854  1873 W libprocessgroup: kill(-2683, 9) failed: No such process
+11-06 13:44:48.058  2084  2084 D CarrierSvcBindHelper: No carrier app for: 0
+11-06 13:44:48.065  3119  3155 D EGL_emulation: eglMakeCurrent: 0x78bc0c43c6e0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:44:48.089  1706  1706 I Zygote  : Process 2683 exited due to signal (9)
+11-06 13:44:48.099  1854  1873 W libprocessgroup: kill(-2683, 9) failed: No such process
+11-06 13:44:48.099  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10015 pid 2683 in 43ms
+11-06 13:44:48.162  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:44:48.552  1555  3164 W audio_hw_generic: Hardware backing HAL too slow, could only write 0 of 720 frames
+11-06 13:44:48.565  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c7708d)
+11-06 13:44:48.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c7708d)
+11-06 13:44:48.567  1555  3164 W audio_hw_generic: Hardware backing HAL too slow, could only write 0 of 720 frames
+11-06 13:44:48.627  1555  3164 I chatty  : uid=1041(audioserver) writer identical 1 line
+11-06 13:44:48.702  1555  3164 W audio_hw_generic: Hardware backing HAL too slow, could only write 0 of 720 frames
+11-06 13:44:49.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@3441242)
+11-06 13:44:49.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@3441242)
+11-06 13:44:49.665  1854  1974 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+11-06 13:44:50.001  1975  1975 I LatinIME: Timeout waiting for dictionary load
+11-06 13:44:50.247  1555  3164 W audio_hw_generic: Hardware backing HAL too slow, could only write 0 of 720 frames
+11-06 13:44:50.367  1555  3164 I chatty  : uid=1041(audioserver) writer identical 8 lines
+11-06 13:44:50.382  1555  3164 W audio_hw_generic: Hardware backing HAL too slow, could only write 0 of 720 frames
+11-06 13:44:50.426  1555  1555 W audio_hw_generic: Not supplying enough data to HAL, expected position 376633 , only wrote 189360
+11-06 13:44:50.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@2981253)
+11-06 13:44:50.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@2981253)
+11-06 13:44:51.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f874790)
+11-06 13:44:51.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f874790)
+11-06 13:44:51.736  1555  3164 W audio_hw_generic: Not supplying enough data to HAL, expected position 189439 , only wrote 189360
+11-06 13:44:52.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@dc78889)
+11-06 13:44:52.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@dc78889)
+11-06 13:44:53.206  1854  1867 I ActivityManager: Killing 2741:com.android.keychain/1000 (adj 906): empty #17
+11-06 13:44:53.206  1854  1873 W libprocessgroup: kill(-2741, 9) failed: No such process
+11-06 13:44:53.239  1706  1706 I Zygote  : Process 2741 exited due to signal (9)
+11-06 13:44:53.249  1854  1873 W libprocessgroup: kill(-2741, 9) failed: No such process
+11-06 13:44:53.249  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 1000 pid 2741 in 43ms
+11-06 13:44:53.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c85108e)
+11-06 13:44:53.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c85108e)
+11-06 13:44:54.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8414cbc)
+11-06 13:44:54.566  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8414cbc)
+11-06 13:44:54.961  1555  1555 W audio_hw_generic: Not supplying enough data to HAL, expected position 496916 , only wrote 344160
+11-06 13:44:55.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e972445)
+11-06 13:44:55.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e972445)
+11-06 13:44:56.566  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@5c5a79a)
+11-06 13:44:56.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@5c5a79a)
+11-06 13:44:56.760  1854  1870 I ActivityManager: Waited long enough for: ServiceRecord{99cbd45 u0 com.android.calendar/.alerts.InitAlarmsService}
+11-06 13:44:57.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@95578cb)
+11-06 13:44:57.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@95578cb)
+11-06 13:44:58.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c3478a8)
+11-06 13:44:58.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c3478a8)
+11-06 13:44:58.851  1854  1867 D AlarmManagerService: Kernel timezone updated to 0 minutes west of GMT
+11-06 13:44:59.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@90abfc1)
+11-06 13:44:59.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@90abfc1)
+11-06 13:45:00.003  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.003  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.016  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.016  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.023  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.023  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.028  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.028  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.036  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.036  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.042  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.042  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.048  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:00.048  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:00.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ac0d6a7)
+11-06 13:45:00.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ac0d6a7)
+11-06 13:45:01.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1ac7754)
+11-06 13:45:01.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1ac7754)
+11-06 13:45:02.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1c296fd)
+11-06 13:45:02.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1c296fd)
+11-06 13:45:03.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e898ff2)
+11-06 13:45:03.567  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e898ff2)
+11-06 13:45:04.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@19a3643)
+11-06 13:45:04.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@19a3643)
+11-06 13:45:05.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@603b4c0)
+11-06 13:45:05.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@603b4c0)
+11-06 13:45:06.567  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@d26a5f9)
+11-06 13:45:06.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@d26a5f9)
+11-06 13:45:07.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@79cb93e)
+11-06 13:45:07.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@79cb93e)
+11-06 13:45:08.426  3211  3211 W ndroid.keychai: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:45:08.430  1854  1872 I ActivityManager: Start proc 3211:com.android.keychain/1000 for service com.android.keychain/.KeyChainService
+11-06 13:45:08.437  1854  1867 I ActivityManager: Killing 2303:com.android.deskclock/u0a57 (adj 906): empty #17
+11-06 13:45:08.437  1854  1867 I ActivityManager: Killing 2811:com.android.contacts/u0a12 (adj 906): empty #18
+11-06 13:45:08.438  1854  1873 W libprocessgroup: kill(-2303, 9) failed: No such process
+11-06 13:45:08.438  1854  1867 I ActivityManager: Killing 2790:com.android.camera2/u0a45 (adj 906): empty #19
+11-06 13:45:08.438  1854  1867 I ActivityManager: Killing 2724:com.android.printspooler/u0a54 (adj 906): empty #20
+11-06 13:45:08.446  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.446  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.447  3211  3211 I ndroid.keychai: The ClassLoaderContext is a special shared library.
+11-06 13:45:08.456  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.456  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.459  1854  1867 I ActivityManager: Killing 2530:com.android.managedprovisioning/u0a32 (adj 906): empty #17
+11-06 13:45:08.465  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.465  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.469  1706  1706 I Zygote  : Process 2303 exited due to signal (9)
+11-06 13:45:08.473  1706  1706 I Zygote  : Process 2790 exited due to signal (9)
+11-06 13:45:08.475  1706  1706 I Zygote  : Process 2724 exited due to signal (9)
+11-06 13:45:08.477  1706  1706 I Zygote  : Process 2811 exited due to signal (9)
+11-06 13:45:08.479  1854  1873 W libprocessgroup: kill(-2303, 9) failed: No such process
+11-06 13:45:08.479  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10057 pid 2303 in 41ms
+11-06 13:45:08.479  1854  1873 W libprocessgroup: kill(-2811, 9) failed: No such process
+11-06 13:45:08.479  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10012 pid 2811 in 0ms
+11-06 13:45:08.479  1854  1873 W libprocessgroup: kill(-2790, 9) failed: No such process
+11-06 13:45:08.479  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10045 pid 2790 in 0ms
+11-06 13:45:08.479  1854  1873 W libprocessgroup: kill(-2724, 9) failed: No such process
+11-06 13:45:08.479  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10054 pid 2724 in 0ms
+11-06 13:45:08.479  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.479  1854  1873 W libprocessgroup: kill(-2530, 9) failed: No such process
+11-06 13:45:08.479  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.485  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.485  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.489  1706  1706 I Zygote  : Process 2530 exited due to signal (9)
+11-06 13:45:08.492  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.492  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.498  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.498  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.504  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.504  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.510  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.510  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.515  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.515  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.521  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.521  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.522  1854  1873 W libprocessgroup: kill(-2530, 9) failed: No such process
+11-06 13:45:08.522  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10032 pid 2530 in 42ms
+11-06 13:45:08.527  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:08.527  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:08.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@3272b4a)
+11-06 13:45:08.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@3272b4a)
+11-06 13:45:09.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c1a2abb)
+11-06 13:45:09.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c1a2abb)
+11-06 13:45:10.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7cb5bd8)
+11-06 13:45:10.568  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7cb5bd8)
+11-06 13:45:11.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8a21b31)
+11-06 13:45:11.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8a21b31)
+11-06 13:45:11.801  2768  2805 D InitAlarmsService: Clearing and rescheduling alarms.
+11-06 13:45:11.804  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:11.804  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:11.806  1854  2395 I ActivityManager: Killing 2768:com.android.calendar/u0a44 (adj 906): empty #17
+11-06 13:45:11.807  1854  1873 W libprocessgroup: kill(-2768, 9) failed: No such process
+11-06 13:45:11.814  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:11.814  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:11.820  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:11.820  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:11.827  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:11.827  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:11.834  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:11.834  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:11.849  1854  1873 W libprocessgroup: kill(-2768, 9) failed: No such process
+11-06 13:45:11.859  1706  1706 I Zygote  : Process 2768 exited due to signal (9)
+11-06 13:45:11.889  1854  1873 W libprocessgroup: kill(-2768, 9) failed: No such process
+11-06 13:45:11.889  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10044 pid 2768 in 82ms
+11-06 13:45:12.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a34b216)
+11-06 13:45:12.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a34b216)
+11-06 13:45:13.568  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@9b6b797)
+11-06 13:45:13.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@9b6b797)
+11-06 13:45:14.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4865d84)
+11-06 13:45:14.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4865d84)
+11-06 13:45:15.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@5cc396d)
+11-06 13:45:15.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@5cc396d)
+11-06 13:45:16.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8c1d9a2)
+11-06 13:45:16.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8c1d9a2)
+11-06 13:45:16.806  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:16.806  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:17.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4cdcdf0)
+11-06 13:45:17.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4cdcdf0)
+11-06 13:45:18.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7ffff69)
+11-06 13:45:18.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7ffff69)
+11-06 13:45:19.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c07edee)
+11-06 13:45:19.569  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c07edee)
+11-06 13:45:20.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@df3028f)
+11-06 13:45:20.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@df3028f)
+11-06 13:45:21.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4d9d91c)
+11-06 13:45:21.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@4d9d91c)
+11-06 13:45:22.569  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8902925)
+11-06 13:45:22.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8902925)
+11-06 13:45:23.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@988fafa)
+11-06 13:45:23.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@988fafa)
+11-06 13:45:24.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@32738ab)
+11-06 13:45:24.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@32738ab)
+11-06 13:45:25.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a396b08)
+11-06 13:45:25.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a396b08)
+11-06 13:45:26.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@93f32a1)
+11-06 13:45:26.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@93f32a1)
+11-06 13:45:27.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@adbccc6)
+11-06 13:45:27.570  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@adbccc6)
+11-06 13:45:28.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f1eb487)
+11-06 13:45:28.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f1eb487)
+11-06 13:45:29.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@27e2fb4)
+11-06 13:45:29.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@27e2fb4)
+11-06 13:45:30.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@b7b57dd)
+11-06 13:45:30.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@b7b57dd)
+11-06 13:45:31.570  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a37ef52)
+11-06 13:45:31.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@a37ef52)
+11-06 13:45:31.719  3095  3110 I .zapime.androi: Waiting for a blocking GC ProfileSaver
+11-06 13:45:31.746  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.746  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.747  1854  1940 W WindowManager: removeWindowToken: Attempted to remove non-existing token: android.os.Binder@61c3a1a
+11-06 13:45:31.748  1854  2190 I ActivityManager: Force stopping org.zapime.android appid=10067 user=0: finished inst
+11-06 13:45:31.748  1854  2190 I ActivityManager: Killing 3095:org.zapime.android/u0a67 (adj 0): stop org.zapime.android
+11-06 13:45:31.749  1854  1873 W libprocessgroup: kill(-3095, 9) failed: No such process
+11-06 13:45:31.751  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 13:45:31.755  1854  1854 V SettingsProvider: Notifying for 0: content://settings/system/accelerometer_rotation
+11-06 13:45:31.757  1854  3234 W Binder  : Outgoing transactions from this process must be FLAG_ONEWAY
+11-06 13:45:31.757  1854  3234 W Binder  : java.lang.Throwable
+11-06 13:45:31.757  1854  3234 W Binder  : 	at android.os.BinderProxy.transact(Binder.java:1114)
+11-06 13:45:31.757  1854  3234 W Binder  : 	at android.app.IInstrumentationWatcher$Stub$Proxy.instrumentationFinished(IInstrumentationWatcher.java:164)
+11-06 13:45:31.757  1854  3234 W Binder  : 	at com.android.server.am.InstrumentationReporter$MyThread.run(InstrumentationReporter.java:86)
+11-06 13:45:31.758  3085  3085 D AndroidRuntime: Shutting down VM
+11-06 13:45:31.763  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.763  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.771  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:31.772  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:31.772  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.772  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.772  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:31.779  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.779  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.781  1854  1940 W InputMethodManagerService: Got RemoteException sending setActive(false) notification to pid 3095 uid 10067
+11-06 13:45:31.787  2364  2519 D EGL_emulation: eglMakeCurrent: 0x78bbfd6dec20: ver 3 0 (tinfo 0x78bbfd6ab6a0)
+11-06 13:45:31.789  1854  1873 W libprocessgroup: kill(-3095, 9) failed: No such process
+11-06 13:45:31.789  1854  1927 W InputDispatcher: channel '7a5dc22 org.zapime.android/org.zapime.android.VoiceSettingsActivity (server)' ~ Consumer closed input channel or an error occurred.  events=0x9
+11-06 13:45:31.789  1854  1927 E InputDispatcher: channel '7a5dc22 org.zapime.android/org.zapime.android.VoiceSettingsActivity (server)' ~ Channel is unrecoverably broken and will be disposed!
+11-06 13:45:31.790  1706  1706 I Zygote  : Process 3095 exited due to signal (9)
+11-06 13:45:31.790  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.790  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.794  1854  2190 I WindowManager: WIN DEATH: Window{7a5dc22 u0 org.zapime.android/org.zapime.android.VoiceSettingsActivity}
+11-06 13:45:31.794  1854  2190 W InputDispatcher: Attempted to unregister already unregistered input channel '7a5dc22 org.zapime.android/org.zapime.android.VoiceSettingsActivity (server)'
+11-06 13:45:31.808  1854  2190 I ActivityManager: Killing 2602:com.android.messaging/u0a61 (adj 906): empty #17
+11-06 13:45:31.811  1705  1926 W SurfaceFlinger: Attempting to set client state on removed layer: org.zapime.android/org.zapime.android.VoiceSettingsActivity#0
+11-06 13:45:31.811  1705  1926 W SurfaceFlinger: Attempting to destroy on removed layer: AppWindowToken{b15bf27 token=Token{7b3dde6 ActivityRecord{2565441 u0 org.zapime.android/.VoiceSettingsActivity t6}}}#0
+11-06 13:45:31.811  1705  1926 W SurfaceFlinger: Attempting to destroy on removed layer: org.zapime.android/org.zapime.android.VoiceSettingsActivity#0
+11-06 13:45:31.811  1705  1926 W SurfaceFlinger: Attempting to destroy on removed layer: 7a5dc22 org.zapime.android/org.zapime.android.VoiceSettingsActivity#0
+11-06 13:45:31.812  1854  1878 W ActivityManager: setHasOverlayUi called on unknown pid: 3095
+11-06 13:45:31.812  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.812  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.818  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.825  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.829  1854  1873 W libprocessgroup: kill(-3095, 9) failed: No such process
+11-06 13:45:31.829  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10067 pid 3095 in 80ms
+11-06 13:45:31.829  1854  1873 W libprocessgroup: kill(-2602, 9) failed: No such process
+11-06 13:45:31.832  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.832  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.840  1706  1706 I Zygote  : Process 2602 exited due to signal (9)
+11-06 13:45:31.844  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.844  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.850  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.850  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.857  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.857  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.864  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.865  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.871  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.871  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.873  1854  1873 W libprocessgroup: kill(-2602, 9) failed: No such process
+11-06 13:45:31.873  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10061 pid 2602 in 43ms
+11-06 13:45:31.876  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.876  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.882  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.882  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.887  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.887  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:31.893  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:31.893  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:32.338  1854  1854 I GnssLocationProvider: WakeLock acquired by sendMessage(SET_REQUEST, 0, com.android.server.location.GnssLocationProvider$GpsRequest@d84fb4e)
+11-06 13:45:32.338  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(SET_REQUEST, 0, com.android.server.location.GnssLocationProvider$GpsRequest@d84fb4e)
+11-06 13:45:32.365  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/show_ime_with_hard_keyboard
+11-06 13:45:32.394  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/enabled_input_methods
+11-06 13:45:32.410  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/selected_input_method_subtype
+11-06 13:45:32.413  1975  2014 I LatinIME:LogUtils: Dictionary info: dictionary = UserHistoryDictionary.en_US ; version = 1793972676 ; date = 1793972732
+11-06 13:45:32.414  1854  1854 W InputMethodManagerService: Illegal subtype state: old subtype = null, new subtype = android.view.inputmethod.InputMethodSubtype@d1fd4c3b
+11-06 13:45:32.416  1854  2346 I ActivityManager: Killing 2888:com.android.onetimeinitializer/u0a23 (adj 906): empty #17
+11-06 13:45:32.419  1854  1873 W libprocessgroup: kill(-2888, 9) failed: No such process
+11-06 13:45:32.419  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/default_input_method
+11-06 13:45:32.425  1854  1872 I ActivityManager: Start proc 3277:org.zapime.android/u0a67 for service org.zapime.android/.ZapInputMethodService
+11-06 13:45:32.427  3277  3277 W .zapime.androi: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:45:32.449  1706  1706 I Zygote  : Process 2888 exited due to signal (9)
+11-06 13:45:32.462  1854  1873 W libprocessgroup: kill(-2888, 9) failed: No such process
+11-06 13:45:32.462  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10023 pid 2888 in 43ms
+11-06 13:45:32.490  3282  3282 D AndroidRuntime: >>>>>> START com.android.internal.os.RuntimeInit uid 0 <<<<<<
+11-06 13:45:32.516  3282  3282 W app_process: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:45:32.517  3282  3282 I app_process: The ClassLoaderContext is a special shared library.
+11-06 13:45:32.527  3282  3282 D AndroidRuntime: Calling main entry com.android.commands.am.Am
+11-06 13:45:32.529  1854  2882 I ActivityManager: Force stopping org.zapime.android.test appid=10069 user=0: start instr
+11-06 13:45:32.535  3306  3306 W me.android.tes: Unexpected CPU variant for X86 using defaults: x86_64
+11-06 13:45:32.537  1854  2882 I ActivityManager: Start proc 3306:org.zapime.android.test/u0a69 for added application org.zapime.android.test
+11-06 13:45:32.555  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 13:45:32.561  1854  2882 I ActivityManager: START u0 {flg=0x10008000 cmp=org.zapime.android.test/.ProbeActivity} from uid 10069
+11-06 13:45:32.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@45c2180)
+11-06 13:45:32.574  3306  3306 W ActivityThread: handleWindowVisibility: no activity for token android.os.BinderProxy@6ac1505
+11-06 13:45:32.581  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@45c2180)
+11-06 13:45:32.596  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:32.620  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:32.638  3306  3306 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:45:32.640  1705  1926 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:32.653  2364  2519 D EGL_emulation: eglMakeCurrent: 0x78bbfd6dec20: ver 3 0 (tinfo 0x78bbfd6ab6a0)
+11-06 13:45:32.658  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:32.659  3306  3327 D         : HostConnection::get() New Host Connection established 0x78bc0aaa6f80, tid 3327
+11-06 13:45:32.659  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:32.660  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:32.661  1854  2395 D AutofillManagerServiceImpl: Reset component for user 0 ()
+11-06 13:45:32.663  3306  3327 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:45:32.663  3306  3327 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:45:32.663  3306  3327 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:45:32.663  3306  3327 D OpenGLRenderer: Swap behavior 1
+11-06 13:45:32.665  3306  3327 D EGL_emulation: eglCreateContext: 0x78bc12bee9c0: maj 3 min 0 rcv 3
+11-06 13:45:32.668  3306  3327 D EGL_emulation: eglMakeCurrent: 0x78bc12bee9c0: ver 3 0 (tinfo 0x78bc090c4140)
+11-06 13:45:32.670  1705  1924 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:32.686  3306  3327 D EGL_emulation: eglMakeCurrent: 0x78bc12bee9c0: ver 3 0 (tinfo 0x78bc090c4140)
+11-06 13:45:32.695  3277  3277 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:45:32.715  1705  1926 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:32.846  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:32.848  3277  3331 D         : HostConnection::get() New Host Connection established 0x78bc0c44a300, tid 3331
+11-06 13:45:32.849  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:32.925  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:32.992  3277  3331 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:45:32.992  3277  3331 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:45:32.992  3277  3331 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:45:32.992  3277  3331 D OpenGLRenderer: Swap behavior 1
+11-06 13:45:33.136  3277  3331 D EGL_emulation: eglCreateContext: 0x78bc0c43cdc0: maj 3 min 0 rcv 3
+11-06 13:45:33.161  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:33.214  1854  1878 I ActivityManager: Displayed org.zapime.android.test/.ProbeActivity: +556ms
+11-06 13:45:33.230  1705  1821 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:33.294  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:33.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c32d7c5)
+11-06 13:45:33.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c32d7c5)
+11-06 13:45:33.682  3277  3331 I OpenGLRenderer: Davey! duration=744ms; Flags=0, IntendedVsync=83348108426, Vsync=83348108426, OldestInputEvent=9223372036854775807, NewestInputEvent=0, HandleInputStart=83348656590, AnimationStart=83348698160, PerformTraversalsStart=83348733620, DrawStart=83700132490, SyncQueued=83705277200, SyncStart=83706323320, IssueDrawCommandsStart=83706373920, SwapBuffers=83990221680, FrameCompleted=84093745880, DequeueBufferDuration=226000, QueueBufferDuration=592000, 
+11-06 13:45:34.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@9f62d72)
+11-06 13:45:34.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@9f62d72)
+11-06 13:45:35.301  1854  1974 E TaskPersister: File error accessing recents directory (directory doesn't exist?).
+11-06 13:45:35.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7d645c3)
+11-06 13:45:35.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7d645c3)
+11-06 13:45:35.654  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:35.656  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:35.658  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:35.728  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:35.735  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:35.792  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:35.794  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:35.796  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:35.801  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:35.813  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:35.975  1719  1742 E storaged: getDiskStats failed with result NOT_SUPPORTED and size 0
+11-06 13:45:36.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c0a558)
+11-06 13:45:36.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c0a558)
+11-06 13:45:37.186  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:37.186  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:37.190  1854  3339 I system_server: The ClassLoaderContext is a special shared library.
+11-06 13:45:37.270  1854  3339 I chatty  : uid=1000 system_server identical 78 lines
+11-06 13:45:37.271  1854  3339 I system_server: The ClassLoaderContext is a special shared library.
+11-06 13:45:37.272  1854  3339 I BackgroundDexOptService: Pinning optimized code {}
+11-06 13:45:37.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@b4425b3)
+11-06 13:45:37.571  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@b4425b3)
+11-06 13:45:37.576  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:37.577  1705  1926 W SurfaceFlinger: Attempting to set client state on removed layer: Surface(name=87babd1 InputMethod)/@0x36e2b41 - animation-leash#0
+11-06 13:45:37.577  1705  1926 W SurfaceFlinger: Attempting to destroy on removed layer: Surface(name=87babd1 InputMethod)/@0x36e2b41 - animation-leash#0
+11-06 13:45:37.578  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:37.580  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:37.584  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:37.597  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:38.056  1579  3344 I AudioFlinger: AudioFlinger's thread 0xea283c80 tid=3344 ready to run
+11-06 13:45:38.333  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:38.342  3282  3305 D         : HostConnection::get() New Host Connection established 0x7ab0711bc4e0, tid 3305
+11-06 13:45:38.344  3282  3305 D OpenGLRenderer: Skia GL Pipeline
+11-06 13:45:38.345  1705  1926 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:38.345  3282  3346 D libEGL  : Emulator has host GPU support, qemu.gles is set to 1.
+11-06 13:45:38.347  3282  3346 E vndksupport: Could not load /vendor/lib64/egl/libGLES_emulation.so from sphal namespace: dlopen failed: library "/vendor/lib64/egl/libGLES_emulation.so" not found.
+11-06 13:45:38.347  3282  3346 E libEGL  : load_driver(/vendor/lib64/egl/libGLES_emulation.so): unknown
+11-06 13:45:38.347  3282  3346 D libEGL  : loaded /vendor/lib64/egl/libEGL_emulation.so
+11-06 13:45:38.348  3282  3346 D libEGL  : loaded /vendor/lib64/egl/libGLESv1_CM_emulation.so
+11-06 13:45:38.353  3282  3346 D libEGL  : loaded /vendor/lib64/egl/libGLESv2_emulation.so
+11-06 13:45:38.357  3282  3346 D         : HostConnection::get() New Host Connection established 0x7ab06ac46000, tid 3346
+11-06 13:45:38.358  3282  3346 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasWideColorDisplay retrieved: 0
+11-06 13:45:38.359  3282  3346 I ConfigStore: android::hardware::configstore::V1_0::ISurfaceFlingerConfigs::hasHDRDisplay retrieved: 0
+11-06 13:45:38.359  3282  3346 I OpenGLRenderer: Initialized EGL, version 1.4
+11-06 13:45:38.359  3282  3346 D OpenGLRenderer: Swap behavior 1
+11-06 13:45:38.360  3282  3346 D EGL_emulation: eglCreateContext: 0x7ab06ac36500: maj 3 min 0 rcv 3
+11-06 13:45:38.362  3282  3346 D EGL_emulation: eglMakeCurrent: 0x7ab06ac36500: ver 3 0 (tinfo 0x7ab06ac17380)
+11-06 13:45:38.367  1705  1926 E SurfaceFlinger: ro.sf.lcd_density must be defined as a build property
+11-06 13:45:38.549  1854  2346 E memtrack: Couldn't load memtrack module
+11-06 13:45:38.549  1854  2346 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:38.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e14ea9c)
+11-06 13:45:38.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@e14ea9c)
+11-06 13:45:39.396  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:39.571  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f0b9ca5)
+11-06 13:45:39.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f0b9ca5)
+11-06 13:45:39.959  1579  3354 I AudioFlinger: AudioFlinger's thread 0xea203ac0 tid=3354 ready to run
+11-06 13:45:40.514  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:40.516  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:40.516  1717  2648 W ResolverController: netId 100 was erased during private DNS validation
+11-06 13:45:40.518  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:40.523  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:40.537  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:40.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@abe5e21)
+11-06 13:45:40.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@abe5e21)
+11-06 13:45:40.892  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:40.894  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:40.896  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:40.898  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:40.912  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:41.406  1579  3361 I AudioFlinger: AudioFlinger's thread 0xe9e09ac0 tid=3361 ready to run
+11-06 13:45:41.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@81bb5d)
+11-06 13:45:41.573  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@81bb5d)
+11-06 13:45:41.869  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:41.873  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:41.875  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:41.881  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:41.892  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:42.478  2561  2964 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_STATUS_SMS_TIME_OUT
+11-06 13:45:42.478  2561  2561 I Dialer  : RetryPolicy - discarding deferred status: configuration_state=4
+11-06 13:45:42.479  2561  2561 I Dialer  : VvmTaskExecutor - no more tasks, stopping service if no task are added in 5000 millis
+11-06 13:45:42.479  2561  2561 I Dialer  : VvmTaskReceiver - task received
+11-06 13:45:42.480  2561  2561 I Dialer  : VvmTaskReceiver - TaskExecutor already running
+11-06 13:45:42.480  2561  2561 I Dialer  : Task.createTask - create task:com.android.voicemail.impl.ActivationTask
+11-06 13:45:42.480  2561  2561 I Dialer  : RetryPolicy - retry #1 for com.android.voicemail.impl.ActivationTask@3badb0 queued, executing in 5000
+11-06 13:45:42.480  2561  2561 I Dialer  : VvmTaskExecutor - com.android.voicemail.impl.ActivationTask@3badb0 added
+11-06 13:45:42.480  2561  2561 I Dialer  : VvmTaskExecutor - minimal wait time:5000
+11-06 13:45:42.480  2561  2561 I Dialer  : VvmTaskExecutor - sleep for 5000 millis
+11-06 13:45:42.480  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:42.480  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:42.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@dc3641e)
+11-06 13:45:42.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@dc3641e)
+11-06 13:45:43.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1e6f4ff)
+11-06 13:45:43.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1e6f4ff)
+11-06 13:45:43.621  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:43.623  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:43.625  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:43.628  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:43.644  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:44.102  1579  3367 I AudioFlinger: AudioFlinger's thread 0xe9e09380 tid=3367 ready to run
+11-06 13:45:44.224  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:44.226  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:44.229  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:44.234  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:44.247  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:44.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c7084f7)
+11-06 13:45:44.572  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@c7084f7)
+11-06 13:45:44.656  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8192
+11-06 13:45:44.657  1565  1613 I chatty  : uid=1000(system) HwBinder:1565_2 identical 1 line
+11-06 13:45:44.658  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 8192
+11-06 13:45:44.666  3306  3327 D EGL_emulation: eglMakeCurrent: 0x78bc12bee9c0: ver 3 0 (tinfo 0x78bc090c4140)
+11-06 13:45:45.129  3306  3327 D EGL_emulation: eglMakeCurrent: 0x78bc12bee9c0: ver 3 0 (tinfo 0x78bc090c4140)
+11-06 13:45:45.572  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@de85185)
+11-06 13:45:45.573  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@de85185)
+11-06 13:45:46.489  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:46.491  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:46.493  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:46.496  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:46.509  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:46.573  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@986ba6)
+11-06 13:45:46.574  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@986ba6)
+11-06 13:45:46.986  1579  3373 I AudioFlinger: AudioFlinger's thread 0xe9c9e140 tid=3373 ready to run
+11-06 13:45:47.036  1854  1871 D AutofillManagerService: onBackKeyPressed()
+11-06 13:45:47.055  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:47.058  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:47.061  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:47.067  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:47.079  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:47.490  2561  2964 I Dialer  : VvmTaskExecutor - executing task com.android.voicemail.impl.ActivationTask@3badb0
+11-06 13:45:47.490  2561  2964 I Dialer  : PreOMigrationHandler - ComponentInfo{com.android.phone/com.android.services.telephony.TelephonyConnectionService}, ***, UserHandle{0} already migrated
+11-06 13:45:47.500  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:47.500  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:47.515  2610  3064 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-06 13:45:47.516  2561  2964 I Dialer  : VvmActivationTask - VVM content provider configured - vvm_type_cvvm
+11-06 13:45:47.517  2561  2964 I Dialer  : OmtpVvmCarrierCfgHlpr - OmtpEvent:CONFIG_ACTIVATING
+11-06 13:45:47.521  2610  3064 I VoicemailNotifier: receivers for android.intent.action.PROVIDER_CHANGED :[]
+11-06 13:45:47.524  2561  2964 I Dialer  : TelephonyMangerCompat.setVisualVoicemailSmsFilterSettings - using TelephonyManager
+11-06 13:45:47.527  2561  2964 I Dialer  : TelephonyMangerCompat.sendVisualVoicemailSms - using TelephonyManager
+11-06 13:45:47.573  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ed7497e)
+11-06 13:45:47.573  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@ed7497e)
+11-06 13:45:48.573  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f82dedf)
+11-06 13:45:48.574  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@f82dedf)
+11-06 13:45:48.634  1705  1825 W SurfaceFlinger: Attempting to set client state on removed layer: PopupWindow:a447ae1#0
+11-06 13:45:48.634  1705  1825 W SurfaceFlinger: Attempting to destroy on removed layer: PopupWindow:a447ae1#0
+11-06 13:45:48.824  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:48.826  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:48.828  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:48.831  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:48.843  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:49.282  1579  3379 I AudioFlinger: AudioFlinger's thread 0xe9c9e7c0 tid=3379 ready to run
+11-06 13:45:49.394  1998  1998 V StatusBar: mStatusBarWindow: com.android.systemui.statusbar.phone.StatusBarWindowView{a62f372 V.ED..... ......ID 0,0-320,24} canPanelBeCollapsed(): false
+11-06 13:45:49.404  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:49.573  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8873dcf)
+11-06 13:45:49.574  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@8873dcf)
+11-06 13:45:49.633  1555  3164 W audio_hw_generic: Not supplying enough data to HAL, expected position 344325 , only wrote 344160
+11-06 13:45:49.698  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:49.699  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:49.701  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:49.716  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:50.573  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7adde19)
+11-06 13:45:50.574  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@7adde19)
+11-06 13:45:51.536  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:51.539  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:51.541  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:51.544  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:51.558  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 397312
+11-06 13:45:51.575  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@932a1db)
+11-06 13:45:51.575  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@932a1db)
+11-06 13:45:52.038  1579  3386 I AudioFlinger: AudioFlinger's thread 0xe9c9e300 tid=3386 ready to run
+11-06 13:45:52.171  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:52.174  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:52.177  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:52.182  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:52.196  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 364544
+11-06 13:45:52.401  1854  3228 W WindowManager: removeWindowToken: Attempted to remove non-existing token: android.os.Binder@6812626
+11-06 13:45:52.401  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/accessibility_enabled
+11-06 13:45:52.403  1854  3228 I ActivityManager: Force stopping org.zapime.android.test appid=10069 user=0: finished inst
+11-06 13:45:52.404  1854  3228 I ActivityManager: Killing 3306:org.zapime.android.test/u0a69 (adj 0): stop org.zapime.android.test
+11-06 13:45:52.404  1854  3388 W Binder  : Outgoing transactions from this process must be FLAG_ONEWAY
+11-06 13:45:52.404  1854  3388 W Binder  : java.lang.Throwable
+11-06 13:45:52.404  1854  3388 W Binder  : 	at android.os.BinderProxy.transact(Binder.java:1114)
+11-06 13:45:52.404  1854  3388 W Binder  : 	at android.app.IInstrumentationWatcher$Stub$Proxy.instrumentationFinished(IInstrumentationWatcher.java:164)
+11-06 13:45:52.404  1854  3388 W Binder  : 	at com.android.server.am.InstrumentationReporter$MyThread.run(InstrumentationReporter.java:86)
+11-06 13:45:52.404  1854  1873 W libprocessgroup: kill(-3306, 9) failed: No such process
+11-06 13:45:52.404  1854  3228 W ActivityManager: Force removing ActivityRecord{8e608bd u0 org.zapime.android.test/.ProbeActivity t7}: app died, no saved state
+11-06 13:45:52.405  3282  3282 D AndroidRuntime: Shutting down VM
+11-06 13:45:52.423  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.423  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.435  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.435  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.439  1706  1706 I Zygote  : Process 3306 exited due to signal (9)
+11-06 13:45:52.442  1854  1878 W ActivityManager: setHasOverlayUi called on unknown pid: 3306
+11-06 13:45:52.445  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:52.445  1565  1613 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:52.445  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.445  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.445  1565  1565 D gralloc_ranchu: gralloc_alloc: Creating ashmem region of size 823296
+11-06 13:45:52.449  1854  1873 W libprocessgroup: kill(-3306, 9) failed: No such process
+11-06 13:45:52.449  1854  1873 I libprocessgroup: Successfully killed process cgroup uid 10069 pid 3306 in 45ms
+11-06 13:45:52.455  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.455  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.455  1998  1998 V StatusBar: mStatusBarWindow: com.android.systemui.statusbar.phone.StatusBarWindowView{a62f372 V.ED..... ......ID 0,0-320,24} canPanelBeCollapsed(): false
+11-06 13:45:52.462  2364  2519 D EGL_emulation: eglMakeCurrent: 0x78bbfd6dec20: ver 3 0 (tinfo 0x78bbfd6ab6a0)
+11-06 13:45:52.470  3277  3331 D EGL_emulation: eglMakeCurrent: 0x78bc0c43cdc0: ver 3 0 (tinfo 0x78bc0c40d5c0)
+11-06 13:45:52.503  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.503  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.514  1854  1869 E memtrack: Couldn't load memtrack module
+11-06 13:45:52.514  1854  1869 W android.os.Debug: failed to get memory consumption info: -1
+11-06 13:45:52.574  1854  1909 I GnssLocationProvider: WakeLock acquired by sendMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1f52e66)
+11-06 13:45:52.574  1854  1869 I GnssLocationProvider: WakeLock released by handleMessage(REPORT_SV_STATUS, 0, com.android.server.location.GnssLocationProvider$SvStatusInfo@1f52e66)
+11-06 13:45:52.652  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/input_methods_subtype_history
+11-06 13:45:52.653  1854  1854 V SettingsProvider: Notifying for 0: content://settings/secure/default_input_method
+11-06 13:45:52.661  1705  1821 W SurfaceFlinger: Attempting to destroy on removed layer: 87babd1 InputMethod#0
+11-06 13:45:52.663  1975  1975 I LatinIME: Hardware accelerated drawing: true
+11-06 13:45:52.668  1854  1854 W InputMethodManagerService: Illegal subtype state: old subtype = null, new subtype = android.view.inputmethod.InputMethodSubtype@c9194f98
+11-06 13:45:52.670  1975  1975 W InputAttributes: No editor info for this field. Bug?
+11-06 13:45:52.670  1975  2014 I LatinIME:LogUtils: Dictionary info: dictionary = UserHistoryDictionary.en_US ; version = 1793972676 ; date = 1793972732
+11-06 13:45:52.672  1975  2014 I LatinIME:LogUtils: Dictionary info: dictionary = userunigram.en_US ; version = 1793972752 ; date = ?
+11-06 13:45:52.704  1975  2014 I LatinIME:LogUtils: Dictionary info: dictionary = main:en ; version = 54 ; date = 1414726273
+11-06 13:45:52.843  1555  1555 W audio_hw_generic: Not supplying enough data to HAL, expected position 650278 , only wrote 498240
+11-06 13:45:52.975  2364  2364 E droid.launcher: Invalid ID 0x00000005.
+11-06 13:45:52.976  2364  2364 E droid.launcher: Invalid ID 0x00000006.
+11-06 13:45:52.984  2364  2364 E droid.launcher: Invalid ID 0x00000001.
+11-06 13:45:52.984  2364  2364 E droid.launcher: Invalid ID 0x00000002.
+11-06 13:45:52.985  2364  2364 E droid.launcher: Invalid ID 0x00000003.
+11-06 13:45:52.985  2364  2364 E droid.launcher: Invalid ID 0x00000004.

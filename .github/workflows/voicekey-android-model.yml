@@ -1,0 +1,213 @@
+name: VoiceKey Android model acceptance (focused)
+on:
+  pull_request:
+    paths:
+      - ".gitmodules"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "crates/**"
+      - "vendor/msime"
+      - "vendor/voicekey"
+      - "integrations/voicekey/**"
+      - "platforms/android/**"
+      - "third_party/**"
+      - "scripts/**"
+      - ".github/workflows/voicekey-android-model.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  # Independent diagnostic workflow; never cancels the full Android gates.
+  group: voicekey-android-model-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+jobs:
+  focused-build:
+    name: Signed x86_64 product and model-free harnesses
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          targets: x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android-native
+          cache-on-failure: true
+      - name: Install pinned Android build platform and toolchains
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
+      - name: Build original product with unchanged JNI, license and APK gates
+        run: bash scripts/build_android.sh x86_64
+      - name: Build independent editor host harness
+        run: bash scripts/build_android_tests.sh
+      - name: Prepare fixed synthetic fixture runtime
+        run: |
+          python3 -m venv .venv-voice
+          .venv-voice/bin/pip install --only-binary=:all: -r scripts/requirements-voice-fixture.txt
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 update -qq
+          sudo apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install -y --no-install-recommends espeak-ng
+      - name: Build VoiceKey-only synthetic harness without downloading X-ASR weights
+        run: |
+          .venv-voice/bin/python scripts/voice_probe.py synthesize
+          bash scripts/build_android_voice_tests.sh --voicekey-only
+      - name: Verify signed, aligned model-free inputs and record hashes
+        run: |
+          tools="$ANDROID_SDK_ROOT/build-tools/35.0.0"
+          for apk in target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk target/android-tests/ZapIME-tests.apk target/android-voice-tests/ZapIME-voice-tests.apk; do
+            "$tools/apksigner" verify --verbose "$apk"
+            "$tools/zipalign" -c 4 "$apk"
+          done
+          python3 - <<'PY'
+          import hashlib, json, subprocess, zipfile
+          from pathlib import Path
+          paths = ('target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk', 'target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk', 'target/voice-probe/synthetic.wav')
+          inputs = []
+          for name in paths:
+              p = Path(name)
+              if not p.is_file() or p.stat().st_size == 0:
+                  raise SystemExit('Missing focused input: ' + name)
+              if p.suffix == '.apk':
+                  with zipfile.ZipFile(p) as archive:
+                      if any(n.endswith(('.xnet', '.onnx', 'ime_asr_decoder_model.zip')) or n == 'assets/voice-fixtures/model.zip' for n in archive.namelist()):
+                          raise SystemExit('Unexpected model weights in focused APK: ' + name)
+                      if 'voice-tests' in name and 'assets/voice-fixtures/synthetic.pcm' not in archive.namelist():
+                          raise SystemExit('Synthetic PCM missing from focused harness')
+              inputs.append({'path': name, 'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()})
+          output = Path('target/voicekey-focused-build.json')
+          output.write_text(json.dumps({'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'status': 'BUILT', 'inputs': inputs, 'scope': 'Signed x86_64 development APK and synthetic harnesses only; no X-ASR/VoiceKey model weights or emulator/phone acceptance.'}, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZapIME-VoiceKey-focused-inputs
+          # Only these four signed/synthetic inputs cross into fresh emulators.
+          path: |
+            target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            target/android-tests/ZapIME-tests.apk
+            target/android-voice-tests/ZapIME-voice-tests.apk
+            target/voice-probe/synthetic.wav
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-VoiceKey-focused-build-metadata
+          path: target/voicekey-focused-build.json
+          if-no-files-found: error
+          retention-days: 14
+  voicekey-model:
+    name: Focused VoiceKey-only API ${{ matrix.api }}
+    needs: focused-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 28
+            target: default
+          - api: 35
+            target: google_apis
+          - api: 36
+            target: google_apis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZapIME-VoiceKey-focused-inputs
+          path: target
+      - name: Verify exact product and model-free harness inputs
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import sys, zipfile
+          sys.path.insert(0, 'scripts')
+          from check_apk import check_contents
+          check_contents(Path('target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk'))
+          for name in ('target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk'):
+              with zipfile.ZipFile(name) as archive:
+                  if any(n.endswith(('.xnet', '.onnx', 'ime_asr_decoder_model.zip')) or n == 'assets/voice-fixtures/model.zip' for n in archive.namelist()):
+                      raise SystemExit('Model weights in focused harness: ' + name)
+          if not Path('target/voice-probe/synthetic.wav').is_file():
+              raise SystemExit('Missing fixed synthetic fixture')
+          PY
+      - name: Prepare fixed official VoiceKey model only on the isolated runner
+        timeout-minutes: 10
+        run: python3 scripts/voicekey_cpu_probe.py prepare --report target/voicekey-prepare-report.json
+      - name: Enable KVM on the fresh dedicated CI emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Actual offline VoiceKey SAF, JNI, Editable and system IME lifecycle
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          ram-size: '4096M'
+          heap-size: '512M'
+          emulator-boot-timeout: 300
+          script: |
+            adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            python3 scripts/android_voicekey_model_smoke.py "$(command -v adb)" emulator-5554
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-VoiceKey-focused-API-${{ matrix.api }}-metadata
+          # Exact evidence allowlist; no downloaded package, weights, WAV or PCM.
+          path: |
+            target/voicekey-prepare-report.json
+            target/voicekey-android/acceptance-summary.json
+            target/voicekey-android/model-instrumentation.txt
+            target/voicekey-android/ime-instrumentation.txt
+            target/voicekey-android/voicekey-model-report.json
+            target/voicekey-android/voicekey-boundary-report.json
+            target/voicekey-android/voicekey-watchdog-report.json
+            target/voicekey-android/voice-commit-report.json
+            target/voicekey-android/voicekey-provider-ui-shape.json
+            target/voicekey-android/voicekey-provider-before.png
+            target/voicekey-android/voicekey-provider-after.png
+            target/voicekey-android/offline-uid.json
+            target/voicekey-android/system-keyboard.json
+            target/voicekey-android/ime-teardown.txt
+            target/voicekey-android/crash.txt
+            target/voicekey-android/activity-top.txt
+            target/voicekey-android/activity-state.txt
+            target/voicekey-android/window-state.txt
+            target/voicekey-android/last-anr.txt
+            target/voicekey-android/system-runtime.txt
+            target/voicekey-android/activity-errors.txt
+            target/voicekey-android/voice-recording.png
+            target/voicekey-android/voice-stopped.png
+            target/voicekey-android/hierarchy.txt
+            target/voicekey-android/smoke.png
+            target/voicekey-android/host-lifecycle.txt
+            target/voicekey-android/ci-activity-top.txt
+            target/voicekey-android/ci-activity-state.txt
+            target/voicekey-android/ci-window-state.txt
+            target/voicekey-android/ci-input-service.txt
+            target/voicekey-android/ci-system-runtime.txt
+          if-no-files-found: error
+          retention-days: 14

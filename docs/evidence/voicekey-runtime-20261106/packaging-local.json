@@ -1,0 +1,43 @@
+{
+  "scope": "Actual host license collection for both Android Cargo targets and packaged-inventory validation; eight host Python regression tests. Not a newly built APK or Android JNI execution. Existing baseline ELF parsed for both ABIs; new releaseCache requirement correctly rejects that old binary.",
+  "new_python_tests_passed": 8,
+  "adapter_graphs": {
+    "arm64-v8a": {
+      "platform": "aarch64-linux-android",
+      "non_dev_packages": 32,
+      "all_declared_license_texts_present": true,
+      "actual_inventory_package_checks_passed": true,
+      "inventory_sha256": "cd80f97a37791d615d2129b03ad99404611348b0b80f5a24f0e6503d655d1151",
+      "cargo_lock_sha256": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104"
+    },
+    "x86_64": {
+      "platform": "x86_64-linux-android",
+      "non_dev_packages": 32,
+      "all_declared_license_texts_present": true,
+      "actual_inventory_package_checks_passed": true,
+      "inventory_sha256": "cd80f97a37791d615d2129b03ad99404611348b0b80f5a24f0e6503d655d1151",
+      "cargo_lock_sha256": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104"
+    }
+  },
+  "backward_compatible_core_collector": {
+    "platform": "x86_64-linux-android",
+    "packages": 133,
+    "missing_text_names": [
+      "zapime-core",
+      "zapime-data",
+      "msime-engine",
+      "msime-path-trust"
+    ],
+    "scope": "Only pre-existing separately packaged root/upstream GPL exceptions; no new registry exception."
+  },
+  "source_sha256": {
+    "scripts/collect_rust_notices.py": "050b1664ffd404a4ecf47bf8caa20d34122e5199c148e50e2097fe831b2190d4",
+    "scripts/check_apk.py": "fd576f0c4fd6ec5e215f768dbffe8e651b1829abe7cf4d0c91c4050b1ee9f0cc",
+    "scripts/test_android_packaging.py": "f6ebb88d0a36743001f3de0a57bcc91881b9a567b9b67f64f1f3a8e99ebc385b",
+    "integrations/voicekey/LICENSE": "1bfc75e8faefd57164165b3fce6edaedc4f42405aa39d38ff1eec6f71ac02be3",
+    "integrations/voicekey/GPL-3.0.txt": "5e376676c81ad41e9b690711db575bfd2623467b21814d7767373fda14aff80f",
+    "integrations/voicekey/Cargo.toml": "8a036bfb44a49e054887f6d57a895aaccbb01cd1d21661a36930b5c7381eaf03",
+    "integrations/voicekey/Cargo.lock": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104"
+  },
+  "android_python_suite_tests_passed": 25
+}

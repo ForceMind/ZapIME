@@ -1,0 +1,19 @@
+{
+  "id": 13500587615,
+  "name": "ZapIME-Android-development",
+  "size_in_bytes": 234980271,
+  "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13500587615",
+  "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13500587615/zip",
+  "expired": false,
+  "created_at": "2026-11-06T12:08:48Z",
+  "expires_at": "2027-02-04T11:54:33Z",
+  "updated_at": "2026-11-06T12:08:48Z",
+  "digest": "sha256:e891aab11d24f659309d591bb2bf23bb3a16e0deb89a5480cc5848c6f5325695",
+  "workflow_run": {
+    "id": 42213679453,
+    "repository_id": 1426543601,
+    "head_repository_id": 1426543601,
+    "head_branch": "feat/voicekey-engine-import",
+    "head_sha": "c7b98ebb7a0707ea622a6799a8d1d0246751e759"
+  }
+}
