@@ -1,6 +1,22 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-11-06 23:05 PST（America/Los_Angeles）。本轮已实际修改产品、运行测试、推送代码并下载核验 APK。累计汇报次数及此前汇报间隔没有可靠连续记录，不补造。
+更新时间：2026-11-06 23:28 PST（America/Los_Angeles）。本轮已实际修改产品、运行测试、推送代码并下载核验 APK。累计汇报次数及此前汇报间隔没有可靠连续记录，不补造。
+
+## 新工作切片：显式手动加密同步（2026-11-06 23:20 PST）
+
+[PR #73](https://github.com/ForceMind/ZapIME/pull/73) 固定 `931d30ec478288e910f9c0d884fa5e9024c88f61` focused [42349924323](https://github.com/ForceMind/ZapIME/actions/runs/42349924323) 的本机准备三端全部通过；原ZIP已实际下载，严格复验每端11项JNI/Keystore及10项真实系统文档UI、同根/缺材料恢复、单次触摸和完整清理。API35本轮确实观察抽屉覆盖并关闭一次；API28/36未观察到覆盖，未声称运行关闭分支。[固定源码三端原始证据](evidence/sync-preparation-20261106/accepted-saf-42349924323/README.md)保留旧失败及新成功的独立身份，不用于代填下面新传输代码的结果。
+
+[PR #74](https://github.com/ForceMind/ZapIME/pull/74) 保存服务端密钥身份CAS：实现提交 `1858895a490dad18de9696ff772ef6db410ef9f8`，合入931后为 `e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e`。GET/PUT `/v1/key-descriptor`、当前owner首次登记、同根幂等、不同根/legacy停止、Push异key拦截和schema3防降级已有实际Go/PostgreSQL/race/vet、旧二进制拒绝及真实根材料/pg_dump新库恢复证据；[原始日志与限制](evidence/sync-key-descriptor-20261106/README.md)。对应Docker/S3/安装器CI仍按实际结果更新，不当作本地已经运行。
+
+最新开发分支 `feat/android-manual-sync` 基于上述服务merge，接入 [手动同步实现](ANDROID_MANUAL_SYNC.md)：共享typed Descriptor、实际持久冻结字节及AEAD快照核对、严格ACK与认证整页入口，4项独立JNI；Android独立密钥核对/登记和单轮传输页面。确认锁定所见server/account/device/key指纹，网络前后复核完整连接与实际材料的DB根指纹；默认不上传，无后台轮询或自动重试。冲突、旧历史/缺key与完整新设备灾备未解决事项仍明确保留。
+
+主机原session TLS31、descriptor TLS26、transfer TLS43及有界队列检查通过；轮次策略41条断言通过，涵盖先身份/拉取后stage、原buffer传递、16次上限、未知ACK不自动重试与取消后保留已提交计数。源8/API36 Java编译通过。共享Rust、额外JNI/密钥解析/真实服务端到端与新源码Android三端检查继续完成，待固定提交和对应CI记录；不沿用931准备层或08语音包替代。手机HTTPS/多设备、S25/自然人声及正式签名仍NOT RUN。
+
+23:28 PST收口更新（距23:20检查点8分钟）：新共享客户端/存储/原生桥工作区114项测试、严格fmt/Clippy、实际JNI源的Linux主机3项边界及strictClippy、Android Python47、source8/API36全部产品与voice-tests Java编译通过。真实回环TLS31+26+43、有界worker、轮次策略41条及文件IO9项通过。使用生产existing-v2写连接的新共享client已在真实Go/PostgreSQL上跑17条CLI命令，双库加密交换、原密文丢ACK重放、重复确认、无回声、错根前拒绝与坏后半页回滚/原密文保留均通过；[原始主机/本地服务/服务CI证据](evidence/manual-sync-20261106/)固定源SHA。新Android14项密钥和12项transfer专项已写入独立CI硬门禁，实际执行仍待对应提交。
+
+PR74的固定e8e016服务[CI42350448294](https://github.com/ForceMind/ZapIME/actions/runs/42350448294)已SUCCESS：真实PG+S3的23个顶层Test（0 SKIP）、容器、vuln、原双设备灾备、一键/重复安装及全新DB/对象桶恢复均通过，原artifact ZIP已实际下载重验。不能把这份旧fixture服务CI当成新manual client Docker/S3通过。新落库词库/候选在新输入会话生效，保留组字的旧handle不即时热更；新UI和指南已说明。
+
+累计汇报次数无可靠连续记录。所有切片尚未合并、未发布稳定版、未操作用户设备/生产服务器/DNS，仓库保持PUBLIC。
 
 ## 新工作切片：本机同步材料准备（2026-11-06 22:23 PST）
 

@@ -1,0 +1,168 @@
+{
+  "run": 42350448294,
+  "head": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "job": {
+    "id": 128337307776,
+    "run_id": 42350448294,
+    "workflow_name": "Independent ciphertext sync service",
+    "head_branch": "feat/sync-key-descriptor",
+    "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42350448294",
+    "run_attempt": 1,
+    "node_id": "CR_kwDOVQdT8c8AAAAd4X_ogA",
+    "head_sha": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128337307776",
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42350448294/job/128337307776",
+    "status": "completed",
+    "conclusion": "success",
+    "created_at": "2026-11-07T07:14:53Z",
+    "started_at": "2026-11-07T07:16:15Z",
+    "completed_at": "2026-11-07T07:23:26Z",
+    "name": "postgres",
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1,
+        "started_at": "2026-11-07T07:16:16Z",
+        "completed_at": "2026-11-07T07:16:17Z"
+      },
+      {
+        "name": "Initialize containers",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2,
+        "started_at": "2026-11-07T07:16:17Z",
+        "completed_at": "2026-11-07T07:16:30Z"
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3,
+        "started_at": "2026-11-07T07:16:30Z",
+        "completed_at": "2026-11-07T07:16:41Z"
+      },
+      {
+        "name": "Run dtolnay/rust-toolchain@1.97.1",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4,
+        "started_at": "2026-11-07T07:16:41Z",
+        "completed_at": "2026-11-07T07:16:50Z"
+      },
+      {
+        "name": "Run actions/setup-go@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5,
+        "started_at": "2026-11-07T07:16:50Z",
+        "completed_at": "2026-11-07T07:17:00Z"
+      },
+      {
+        "name": "Start isolated S3-compatible storage for R2 protocol acceptance",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6,
+        "started_at": "2026-11-07T07:17:00Z",
+        "completed_at": "2026-11-07T07:19:29Z"
+      },
+      {
+        "name": "PostgreSQL transaction, HTTP, isolation and revoke tests",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7,
+        "started_at": "2026-11-07T07:19:29Z",
+        "completed_at": "2026-11-07T07:20:02Z"
+      },
+      {
+        "name": "Verify container build",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8,
+        "started_at": "2026-11-07T07:20:02Z",
+        "completed_at": "2026-11-07T07:20:52Z"
+      },
+      {
+        "name": "Known Go vulnerability gate",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9,
+        "started_at": "2026-11-07T07:20:52Z",
+        "completed_at": "2026-11-07T07:21:00Z"
+      },
+      {
+        "name": "Build real Rust encryption/recovery probe",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10,
+        "started_at": "2026-11-07T07:21:00Z",
+        "completed_at": "2026-11-07T07:21:17Z"
+      },
+      {
+        "name": "Two-device ciphertext and fresh-server recovery exercise",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 11,
+        "started_at": "2026-11-07T07:21:17Z",
+        "completed_at": "2026-11-07T07:21:48Z"
+      },
+      {
+        "name": "One-command installer, repeat install and fresh DB + object bucket recovery",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12,
+        "started_at": "2026-11-07T07:21:48Z",
+        "completed_at": "2026-11-07T07:23:22Z"
+      },
+      {
+        "name": "Run actions/upload-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 13,
+        "started_at": "2026-11-07T07:23:22Z",
+        "completed_at": "2026-11-07T07:23:23Z"
+      },
+      {
+        "name": "Post Run actions/setup-go@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 24,
+        "started_at": "2026-11-07T07:23:23Z",
+        "completed_at": "2026-11-07T07:23:23Z"
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 25,
+        "started_at": "2026-11-07T07:23:23Z",
+        "completed_at": "2026-11-07T07:23:24Z"
+      },
+      {
+        "name": "Stop containers",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 26,
+        "started_at": "2026-11-07T07:23:24Z",
+        "completed_at": "2026-11-07T07:23:24Z"
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 27,
+        "started_at": "2026-11-07T07:23:24Z",
+        "completed_at": "2026-11-07T07:23:24Z"
+      }
+    ],
+    "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128337307776",
+    "labels": [
+      "ubuntu-latest"
+    ],
+    "runner_id": 1000048355,
+    "runner_name": "GitHub Actions 1000048355",
+    "runner_group_id": 0,
+    "runner_group_name": "GitHub Actions"
+  }
+}

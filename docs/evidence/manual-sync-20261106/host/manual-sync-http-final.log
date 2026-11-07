@@ -1,0 +1,9 @@
+warning: [options] bootstrap class path not set in conjunction with -source 8
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+4 warnings
+PASS SyncHttp loopback TLS: trusted/untrusted CA, hostname, redirect, bounded body/deadline, cancellation and no application retry; checks=31
+PASS sync worker bounded backlog, explicit rejection and actual recovery
+PASS SyncHttp public descriptor loopback TLS: checks=26
+PASS SyncHttp frozen ciphertext transfer TLS: checks=43

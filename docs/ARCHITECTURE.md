@@ -4,7 +4,7 @@
 
 Android InputMethodService → 单线程后台队列 → JNI → zapime-core → MSIME Session → Rust 拼音引擎。UI 主线程只负责按键收集、候选显示与 InputConnection 上屏；首次词库安装与会话准备在后台串行执行。每个输入框有 epoch，失焦后的旧结果不提交到新输入框。每个候选快照有 generation，旧候选点击不提交。
 
-词库随包携带、构建时验证 SHA-256。新Android源码申请INTERNET，仅主App显式设备授权检查使用独立SyncWorker；禁止明文HTTP，输入链路不联网。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。 同步worker的独立 stateless JNI 只读既有 SQLite v2 的 sync_profile，不分配输入会话或迁移；保存凭据前的账号快照保护与实际同步事务校验分开，尚未自动绑定或上传。
+词库随包携带、构建时验证 SHA-256。新Android源码申请INTERNET，仅主App显式设备授权、密钥核对/登记和逐轮确认同步使用独立SyncWorker；禁止明文HTTP，输入链路不联网。资源、个人数据和缓存是三个独立目录，个人词库的工作副本由上游 generation 机制准备。当前候选列表最多显示前 40 条，完整分页仍待迁移。 同步worker的独立stateless JNI只打开既有SQLite v2，不分配输入会话或迁移；保存凭据前的账号快照保护、本机材料全指纹绑定和每次stage/ACK/apply的事务校验分开。用户先准备/恢复材料并核对服务器登记，再明确授权当前显示server/account/device/key指纹的一轮传输；没有自动绑定或后台上传。
 
 ## 上游与扩展边界
 
@@ -52,3 +52,5 @@ Apple/Windows 当前默认不学习、不联网，未接入个人资料管理；
 Android手打请求在入队时捕获独立学习ticket，随交接缓冲传递，commitText接受后交给有界EnglishLearningSession，再进入EnglishLearningGate。引擎epoch、学习context与翻译revision分开；每次编辑器重启都更换学习context。资料插入/搜索/语音和观察到的外部编辑不进入该路径。生产默认关闭、无模型，没有原文缓存、网络或资料写入。推理worker/英语条/显式收藏尚未接入，见ENGLISH_LEARNING.md。
 
 核心JSON追加commit_source，仅区分此请求的engine/saved_data/none；Android伴学只接显式engine，缺/未知字段保守排除但不改变上屏。个人候选扩展和面板资料的来源由共享核心判定，不靠请求名或正文相等推测，详见ENGLISH_LEARNING.md。
+
+Android手动传输按 [手动同步契约](ANDROID_MANUAL_SYNC.md) 实现：共享client原语返回实际持久化密文请求，Java不重序列化；HTTPS不持有SQLite事务或vault锁，ACK与拉取cursor分离。单次确认最多16个POST、前后各2页，并受合作预算和独立有界worker约束。按键、语音及本机资料搜索保持离线路径。服务端schema3的create-once密钥身份CAS不接收根密钥，不等于配对或持有证明；失败、旧历史和换根迁移保留明确边界。

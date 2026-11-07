@@ -1,0 +1,1 @@
+{"passed":true,"checks":26,"redirect_target_requests":0,"public_descriptor_put_requests":3,"scope":"Actual host-JVM loopback TLS and production SyncHttp public descriptor GET/PUT only; fixture CA trusted only in this JVM, original session deadline tested separately; not Android HTTPS, parser/JNI, real server authorization or data synchronization"}

@@ -1,0 +1,298 @@
+{
+  "saved_at_utc": "2026-11-07T07:25:50.096406+00:00",
+  "parent_commit": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "scope": "Frozen working-source host checks; file hashes identify source. Host JNI typecheck/tests are not Android ABI/runtime acceptance. Android 14 descriptor and 12 transfer cases are NOT RUN pending CI.",
+  "results": {
+    "workspace_rust_tests": 114,
+    "workspace_fmt": "PASS",
+    "workspace_strict_clippy": "PASS",
+    "actual_jni_source_host_tests": 3,
+    "actual_jni_source_host_strict_clippy": "PASS",
+    "python_android_tests": 47,
+    "loopback_tls_session_checks": 31,
+    "loopback_tls_descriptor_checks": 26,
+    "loopback_tls_transfer_checks": 43,
+    "bounded_sync_worker": "PASS",
+    "round_policy_assertions": 41,
+    "backup_file_boundary_checks": 9,
+    "product_voice_test_java": "PASS API36 source8 target8"
+  },
+  "not_run": [
+    "Android new-source JNI/SAF/IME regression",
+    "Android HTTPS against actual server",
+    "phone and cross-device testing",
+    "formal signing or production deployment"
+  ],
+  "initial_failures": [
+    "Initial policy test javac name shadowing failed; original log retained; qualified SyncRoundSmoke.check and final 41 assertions passed. Other historical fixture/compiler failures are preserved in the respective service/native slice records."
+  ],
+  "source_files": [
+    {
+      "path": ".github/workflows/android.yml",
+      "bytes": 11304,
+      "sha256": "cb63ee35f938a833338e05ff67ebb44f07ce90fd3ac774bfdad346ff4ec8b662"
+    },
+    {
+      "path": ".github/workflows/sync-service.yml",
+      "bytes": 2889,
+      "sha256": "aad9ee0813d5519bb9aae82280146ad4c68340d9f8ba34c62acae9c5160d83ab"
+    },
+    {
+      "path": "crates/zapime-core/src/android_sync.rs",
+      "bytes": 18100,
+      "sha256": "caa7262f4a1054d57d5cbbbfd82667be0d638378fdccbd464b7b741b11962af3"
+    },
+    {
+      "path": "crates/zapime-data/src/pull.rs",
+      "bytes": 9180,
+      "sha256": "6d66937094cfe1f604e1c9ccb8b074c3ac915f7e65cf75fc4f48fd284c0d4509"
+    },
+    {
+      "path": "crates/zapime-data/src/quarantine.rs",
+      "bytes": 9349,
+      "sha256": "349ed885922d4c6024260f1a01c8cde74c436fffc9c6657d4e96d99e38a86049"
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "bytes": 28824,
+      "sha256": "e3dee336f3ff8e4822a8940192ce65bd83846458685e461f68c766b7742a7499"
+    },
+    {
+      "path": "crates/zapime-data/tests/sync_state.rs",
+      "bytes": 23235,
+      "sha256": "01891b00fc455a9658b4804571615a91a8b28d45c5b7459277a4217c9432b791"
+    },
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "bytes": 11869,
+      "sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a"
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "bytes": 7976,
+      "sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e"
+    },
+    {
+      "path": "crates/zapime-sync/src/lib.rs",
+      "bytes": 8696,
+      "sha256": "cd71cdeb6b84b37ede562c41d1c982a7627660ed41ba4ef3dce35122892d7cd0"
+    },
+    {
+      "path": "crates/zapime-sync/src/workspace.rs",
+      "bytes": 9410,
+      "sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a"
+    },
+    {
+      "path": "crates/zapime-sync/tests/client.rs",
+      "bytes": 27335,
+      "sha256": "1b7637870d7446339b40d277f468181e443e4b0b5ec51c9d92c70c96fdedb5f2"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/NativeCore.java",
+      "bytes": 1673,
+      "sha256": "e34a0dd2eb0183f718d898778bbd92c81187ca4841e9607437b2ef8624d8cbdd"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncActivity.java",
+      "bytes": 9410,
+      "sha256": "603bf6b871933f9c6286c4e356d4accc455a71ea32fd2ff3e5a6e6a6765c207a"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncConnection.java",
+      "bytes": 6946,
+      "sha256": "771cb334afe91d680de9998cc1dfd2d55abdf7aae5a6402bb408c6cd64a51900"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncHttp.java",
+      "bytes": 8435,
+      "sha256": "10c48a95fddd69260c2027f0f9505210018776b940dd88360851a5ef367f652d"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncKeyRegistration.java",
+      "bytes": 16699,
+      "sha256": "8f3ebd920845f22392b7d4b2a495ac31a66d323bdd691cc7573c93aed9f92ef6"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncKeyRegistrationActivity.java",
+      "bytes": 15571,
+      "sha256": "ecdab31ec8e08e9d0d51ae1f72aeac507c61dea399a424d1cfdf24960ecb6e99"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncRound.java",
+      "bytes": 3008,
+      "sha256": "e5352a3ce74b28f6c9913470b397fa04eaa1f4c0f4ddb331ad506e2398a433e3"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncTransfer.java",
+      "bytes": 9192,
+      "sha256": "14b9a544de01d2088c218ded2d66da1b7772bca005f8f463a496f6526e219a84"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SyncTransferActivity.java",
+      "bytes": 12437,
+      "sha256": "fc4bf02fbc3968decee6c686c35475680df03e481fd7b934432c5715f5557d8a"
+    },
+    {
+      "path": "platforms/android/tests/jvm/SyncKeyHttpSmoke.java",
+      "bytes": 11575,
+      "sha256": "f7ee494e68b30f9c12ae53aad0d48be881df16d7b420ab675cce3c953ab5383b"
+    },
+    {
+      "path": "platforms/android/tests/jvm/SyncRoundSmoke.java",
+      "bytes": 5628,
+      "sha256": "63b613bce02f195e5972b2207f1a31663137be48e967ff0b0bedd925cc4a8abc"
+    },
+    {
+      "path": "platforms/android/tests/jvm/SyncTransferHttpSmoke.java",
+      "bytes": 15651,
+      "sha256": "b12b027f2b1abadbbafe0c0b7ca635b2b435eeeab745052c17527ebec683a250"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncKeyRegistrationProbe.java",
+      "bytes": 26833,
+      "sha256": "b75b1d927e73119d7e594333c3b1a6ee5e6345028d7880490ebd71286cc8ccd1"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncTransferProbe.java",
+      "bytes": 30246,
+      "sha256": "a613d872f4561bd703173fea7f3897dbb2883f53c330db72e44d2f7c73bf4f05"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+      "bytes": 35129,
+      "sha256": "2de1cac489e1d2873083e92539220f5f09f0b3f5b3c8e9a832293ad06c2d6277"
+    },
+    {
+      "path": "scripts/android_sync_key_report.py",
+      "bytes": 2841,
+      "sha256": "3715981c681207dda95358e8db9315989fb8a48f4e633a940d4ae0a0efa0c599"
+    },
+    {
+      "path": "scripts/android_sync_preparation_smoke.py",
+      "bytes": 4497,
+      "sha256": "de951d0d505bc4bdb24836eaa2b454fa80656ffa12045608ba0cf1180f47e43c"
+    },
+    {
+      "path": "scripts/android_sync_transfer_report.py",
+      "bytes": 3066,
+      "sha256": "d913f5ccd7574e9af4edd7d0c556838d6a9f3db83e420e30f27887aa85c86e06"
+    },
+    {
+      "path": "scripts/check_apk.py",
+      "bytes": 9852,
+      "sha256": "23269993976f70b3856c81228f4d2288a08ffa1d35e6224248fbe38144d2cd35"
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "bytes": 12891,
+      "sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c"
+    },
+    {
+      "path": "scripts/test_android_sync_http.sh",
+      "bytes": 1316,
+      "sha256": "537ab47f95e8161ce4a34544be98665b8fb64eebec58a635e08c1203169dfd96"
+    },
+    {
+      "path": "scripts/test_android_sync_key_report.py",
+      "bytes": 2763,
+      "sha256": "ef2b15cd800d6290be12a85e50e89e4099f6c75fd2673745e151225766c846c9"
+    },
+    {
+      "path": "scripts/test_android_sync_round.sh",
+      "bytes": 392,
+      "sha256": "9997bc23ea13855e200bd9d9342f4b27980c4e61c69207478bdf0f71c3e15b22"
+    },
+    {
+      "path": "scripts/test_android_sync_transfer_report.py",
+      "bytes": 3226,
+      "sha256": "4393bb459615262f87b5a209f5672951c9a6d42c53587469d0d9ac36c2a7a3e7"
+    }
+  ],
+  "logs": [
+    {
+      "file": "manual-sync-java-final.log",
+      "bytes": 802,
+      "sha256": "c4c5d2c2a4785aac8f84fcc8c6b5517a93f5ab652f77197f704365a77421a8e9"
+    },
+    {
+      "file": "manual-sync-python-final.log",
+      "bytes": 1237,
+      "sha256": "0e142f3ad37021d1236813f967871d2097d9654a37a4476c117fff5cb68dcd06"
+    },
+    {
+      "file": "manual-sync-http-final.log",
+      "bytes": 673,
+      "sha256": "f154bb967d29c5f62893e11403385844ba93dc6937083b8e31433c04c6cbd209"
+    },
+    {
+      "file": "manual-sync-round-final.log",
+      "bytes": 467,
+      "sha256": "f83b96c34604f9a7f55051101f28473e91ca729e9c25d841a8903240f07b37db"
+    },
+    {
+      "file": "manual-sync-backup-final.log",
+      "bytes": 399,
+      "sha256": "0117475438c3aa7d0b11f35e1bd21d5a2db435dad59a614a2c4a4c848e6216e5"
+    },
+    {
+      "file": "manual-sync-upstream-final.log",
+      "bytes": 64,
+      "sha256": "c7c29f59b95860426b9b25231349bf15344caa2481e29ba9d5f591a716cce974"
+    },
+    {
+      "file": "sync-transfer-workspace-tests.log",
+      "bytes": 13934,
+      "sha256": "92c66f7929ee62964c9e4aa175b453fc68759de11f6c88d4ef7bfd2219fed0c4"
+    },
+    {
+      "file": "sync-transfer-workspace-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "sync-transfer-workspace-clippy.log",
+      "bytes": 816,
+      "sha256": "24072c6e5f0e611ff82e7af62bc8ba41cf33450eb97ba1171493b992b57945ca"
+    },
+    {
+      "file": "sync-transfer-jni-host-tests.log",
+      "bytes": 1294,
+      "sha256": "b978acb1aa6ea7cd2b31a76964c3fbf897124402e12a265a5b1888b8072bc42c"
+    },
+    {
+      "file": "sync-transfer-jni-host-typecheck.log",
+      "bytes": 789,
+      "sha256": "93350411dc0a88faa61eeb5fa46a68d4ad4d4d68647d780641394db2f4962ec1"
+    },
+    {
+      "file": "sync-transfer-jni-host-clippy.log",
+      "bytes": 605,
+      "sha256": "0fde1c37726489ae919977d87566f62e335739a4f01a0281580cc9bae9dd815a"
+    },
+    {
+      "file": "sync-transfer-jni-host-build.log",
+      "bytes": 849,
+      "sha256": "9a3dd5bd12a4475d7f6d904aed05ffaaf7cb423a38a702ea697203475fff7f3d"
+    },
+    {
+      "file": "sync-round-first-compile-failure.log",
+      "bytes": 909,
+      "sha256": "f45bbd1764c4a08f83fdbe7576c7369cc6a20a61a0cb2e109b1d4c6f8a2743e0"
+    },
+    {
+      "file": "report.json",
+      "bytes": 227,
+      "sha256": "064a0e318e3dd678d5202a4c4b3333d0275b69ed75e7af0f443e3dbf27327169"
+    },
+    {
+      "file": "key-descriptor-report.json",
+      "bytes": 350,
+      "sha256": "42e5c844dc4f579c430e1fd01b30273e806999f8694e01c3c4bd9d077972c628"
+    },
+    {
+      "file": "transfer-report.json",
+      "bytes": 493,
+      "sha256": "83c14bf9903037c5b1c5465f73a67b79476d490c716269e918f372ca6f9c4ad4"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 # ZapIME（闪电输入法）｜双离线语音引擎与 Android Alpha 持续研发接管
 
+> 最新同步接续：PR #73本机准备已有固定931d30三端真实JNI/SAF证据；PR #74为服务端schema3密钥身份CAS（1858895a，后合入931为e8e016）。最新 `feat/android-manual-sync` 正接入共享client原语、独立密钥核对/登记UI与显式逐轮密文传输；先读STATUS、ANDROID_MANUAL_SYNC、SYNC_KEY_DESCRIPTOR及新证据，逐项核实对应源码CI，不把准备层通过作为新传输通过。旧08语音包不含这些功能；未完成Android HTTPS/手机、配对、冲突解决、历史迁移或四端同步。已有工作树保留改动，继续独立分支/PR，不强推或操作个人设备。
+
 > 2026-11-06 后续同步切片：新工作在 `feat/android-sync-preparation` / PR #73，基于下面已固定的双离线Alpha分支。新增本机密钥创建/恢复、受保护材料与SQLite身份绑定、独立JNI和页面；读 `docs/ANDROID_SYNC_PREPARATION.md` 与最新STATUS核对实际CI。它不启用HTTP同步/全局密钥登记，不能误报四端已同步。接续这项工作应取新分支；原 `08e84980` APK仍只对应原语音候选。
 
 

@@ -1,0 +1,6 @@
+warning: [options] bootstrap class path not set in conjunction with -source 8
+warning: [options] source value 8 is obsolete and will be removed in a future release
+warning: [options] target value 8 is obsolete and will be removed in a future release
+warning: [options] To suppress warnings about obsolete options, use -Xlint:-options.
+4 warnings
+PASS manual sync ordering/budgets/cancellation: 41 assertions; synthetic policy only, no transport/crypto/Android claims

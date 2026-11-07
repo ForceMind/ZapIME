@@ -1,0 +1,2 @@
+{"status": "PASS", "probe": "shared_manual_client_real_server", "commands": 17, "stores": 2, "server_revisions": 2, "records_each": 1, "pending_each": 0, "private_temporary_files_removed": true}
+PASS: actual shared client/real server/PG two-store roundtrip, tamper preservation, frozen retries, descriptor gate; private fixtures removed

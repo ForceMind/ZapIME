@@ -14,6 +14,93 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 SERVICE = ROOT / "services/sync"
 
+def manual_client_roundtrip(api, owner, member, probe=None):
+    """Actual shared client on two private SQLite stores and real HTTP replies.
+
+    api transports the exact frozen request bytes with raw=, never re-encoding
+    an upload. Credentials remain in Python memory and are not CLI arguments.
+    """
+    probe = probe or ROOT / "target/debug/examples/manual_sync_fixture"
+    reports = []
+    with tempfile.TemporaryDirectory(prefix="manual-client-", dir=ROOT / "target") as temporary:
+        directory = Path(temporary)
+        def run(command, *args):
+            result = subprocess.run([str(probe), command, str(directory), *map(str, args)],
+                                    check=True, text=True, capture_output=True)
+            lines = [json.loads(line) for line in result.stdout.splitlines()]
+            assert lines and all(line["status"] == "PASS" for line in lines)
+            reports.extend(lines)
+            return lines
+        def save(name, value):
+            path = directory / name
+            path.write_text(json.dumps(value))
+            return path
+        assert run("init", owner["account_id"])[-1]["pending"] == 1
+        descriptor = json.loads((directory / "descriptor.json").read_text())
+        status, empty = api("GET", "/v1/key-descriptor", owner["token"])
+        assert status == 200 and empty["state"] == "empty"
+        status, registered = api("PUT", "/v1/key-descriptor", owner["token"], descriptor)
+        assert status == 200 and registered["descriptor"] == descriptor
+        assert registered["registered_by"] == owner["device_id"]
+        assert api("GET", "/v1/key-descriptor", member["token"]) == (200, registered)
+        registered_file = save("registered.json", registered)
+        wrong = dict(registered, descriptor=dict(descriptor, material_sha256="0" * 64))
+        # Do not accidentally select the genuine digest in this negative case.
+        if wrong["descriptor"] == descriptor:
+            wrong["descriptor"]["material_sha256"] = "1" * 64
+        wrong_file = save("wrong-descriptor.json", wrong)
+        run("reject-descriptor", "a", wrong_file)
+        refused_packet = directory / "refused-upload.json"
+        refusal = subprocess.run([str(probe), "stage", str(directory), "a", str(wrong_file), str(refused_packet)],
+                                 text=True, capture_output=True)
+        assert refusal.returncode != 0 and not refused_packet.exists()
+        packet_a, retry_a = directory / "upload-a.json", directory / "retry-a.json"
+        assert run("stage", "a", registered_file, packet_a)[-1]["pending"] == 1
+        status, ack_a = api("POST", "/v1/changes", owner["token"], raw=packet_a.read_bytes())
+        assert status == 200 and ack_a["revision"] == 1
+        # Lose the first ACK deliberately. A new process must reuse exact bytes.
+        run("stage", "a", registered_file, retry_a)
+        assert packet_a.read_bytes() == retry_a.read_bytes()
+        assert api("POST", "/v1/changes", owner["token"], raw=retry_a.read_bytes()) == (200, ack_a)
+        ack_a_file = save("ack-a.json", ack_a)
+        for _ in range(2):
+            report = run("ack", "a", registered_file, owner["device_id"], packet_a, ack_a_file)[-1]
+            assert report["pending"] == 0 and report["cursor"] == 0
+        status, page_b = api("GET", "/v1/changes?after=0", member["token"])
+        assert status == 200 and len(page_b["changes"]) == 1
+        report = run("apply", "b", registered_file, save("first-page-b.json", page_b))
+        assert report[0]["applied"] == 1 and report[0]["echoed"] == 0
+        assert report[-1]["pending"] == 0 and report[-1]["cursor"] == 1
+        assert run("edit-b")[-1]["pending"] == 1
+        packet_b = directory / "upload-b.json"
+        run("stage", "b", registered_file, packet_b)
+        assert json.loads(packet_b.read_text())["base_revision"] == 1
+        status, ack_b = api("POST", "/v1/changes", member["token"], raw=packet_b.read_bytes())
+        assert status == 200 and ack_b["revision"] == 2
+        report = run("ack", "b", registered_file, member["device_id"], packet_b, save("ack-b.json", ack_b))[-1]
+        assert report["pending"] == 0 and report["cursor"] == 1
+        status, page_a = api("GET", "/v1/changes?after=0", owner["token"])
+        assert status == 200 and len(page_a["changes"]) == 2
+        tampered = json.loads(json.dumps(page_a))
+        ciphertext = tampered["changes"][1]["operation"]["envelope"]["ciphertext"]
+        tampered["changes"][1]["operation"]["envelope"]["ciphertext"] = ("B" if ciphertext[0] == "A" else "A") + ciphertext[1:]
+        report = run("reject-page", "a", registered_file, save("tampered-page.json", tampered))[-1]
+        assert report["pending"] == 0 and report["cursor"] == 0 and report["records"] == 1
+        report = run("apply", "a", registered_file, save("full-page-a.json", page_a))
+        assert report[0]["applied"] == 1 and report[0]["echoed"] == 1
+        assert report[-1]["cursor"] == 2 and report[-1]["pending"] == 0
+        status, echo_b = api("GET", "/v1/changes?after=1", member["token"])
+        assert status == 200 and len(echo_b["changes"]) == 1
+        report = run("apply", "b", registered_file, save("echo-page-b.json", echo_b))
+        assert report[0]["applied"] == 0 and report[0]["echoed"] == 1
+        final = run("verify")[-1]
+        assert final["pending_each"] == 0 and final["cursor_each"] == 2
+    # Only counters/status leave the private fixture; TemporaryDirectory removes
+    # local plaintext, root bytes, SQLite/WAL files and encrypted response files.
+    print(json.dumps({"status":"PASS", "probe":"shared_manual_client_real_server",
+        "commands":len(reports), "stores":2, "server_revisions":2,
+        "records_each":1, "pending_each":0, "private_temporary_files_removed":True}))
+
 def main():
     env = dict(os.environ, COMPOSE_PROJECT_NAME="zapime-ci-" + secrets.token_hex(6),
                POSTGRES_PASSWORD=secrets.token_hex(32))
@@ -23,10 +110,11 @@ def main():
         return result.stdout if capture else None
     def compose(*args, capture=False):
         return command(["docker", "compose", *args], capture)
-    def api(method, path, token, body=None):
+    def api(method, path, token, body=None, raw=None):
+        assert body is None or raw is None
         headers = {"Authorization": "Bearer " + token, "Content-Type": "application/json"}
         request = urllib.request.Request("http://127.0.0.1:8787" + path,
-            data=json.dumps(body).encode() if body is not None else None, headers=headers, method=method)
+            data=raw if raw is not None else (json.dumps(body).encode() if body is not None else None), headers=headers, method=method)
         try:
             with urllib.request.urlopen(request, timeout=10) as response:
                 return response.status, json.load(response)
@@ -91,6 +179,10 @@ def main():
             assert api("POST", "/v1/changes", owner["token"], changed_operation) == (409, {"error": "key_descriptor_mismatch"})
             change_file.write_text(json.dumps(page["changes"][0]))
             subprocess.run([str(probe), "verify", str(fixture), str(change_file)], check=True)
+        manual_owner = json.loads(compose("exec", "-T", "sync", "/usr/local/bin/zapime-sync", "provision", "CI manual client owner", capture=True))
+        status, manual_member = api("POST", "/v1/devices", manual_owner["token"], {"name": "CI manual client second device"})
+        assert status == 201
+        manual_client_roundtrip(api, manual_owner, manual_member)
         print("PASS: two-device ciphertext exchange, create-once key identity, revoke, empty-server descriptor/database restore and client key recovery")
     finally:
         compose("down", "--volumes")

@@ -1,0 +1,211 @@
+{
+  "source_commit": "931d30ec478288e910f9c0d884fa5e9024c88f61",
+  "run_id": 42349924323,
+  "saved_at_utc": "2026-11-07T07:15:51.672028+00:00",
+  "validator": {
+    "path": "scripts/android_sync_preparation_report.py",
+    "sha256": "35441f135be3c0da36b05ed9cb0c98b5dfa31ec31bffd684ad21a1eb7b91b153",
+    "source_commit": "931d30ec478288e910f9c0d884fa5e9024c88f61",
+    "frozen_from_git_show": true,
+    "helper_path": "scripts/android_voicekey_model_smoke.py",
+    "helper_sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5",
+    "helper_matches_source": true
+  },
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 128336241049,
+      "whole_job_conclusion": "success",
+      "artifact_id": 13565835525,
+      "zip_bytes": 10720,
+      "zip_sha256": "b3495402414729f55ff616cccf2c3c6b0212fb4cbb20191be8ad5966f31d5dd9",
+      "github_digest_size_source_match": true,
+      "native_strict_pass": true,
+      "native_cases": 11,
+      "ui_strict_pass": true,
+      "ui_cases": 10,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "navigation_close_method": null,
+      "selection_unoccluded": true,
+      "navigation_occlusion_scope": "identified_DocumentsUI_roots_navigation_only",
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "73131867e60ea6b4c19fcae811111c460500e3d852e0d5d1d91387882386ca76"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 9438,
+          "sha256": "4480b45ecde13f4ecf359044b26aa2f417388ddb16de3187540006f14b605124"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "c43cc271f31874c5429b9da8aba56fbfae304a81424b595c8270f5d270099081"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 193539,
+        "sha256": "3fbd0cde1199a19e045b92879ba88136961ac75519d24dd7ad3b8e5ad7da4482",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 128336241091,
+      "whole_job_conclusion": "success",
+      "artifact_id": 13565850505,
+      "zip_bytes": 30856,
+      "zip_sha256": "35c2f97bdd15ba550e82dd37db458ca024513bb5d1e82b67837e44079c1e9d48",
+      "github_digest_size_source_match": true,
+      "native_strict_pass": true,
+      "native_cases": 11,
+      "ui_strict_pass": true,
+      "ui_cases": 10,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "navigation_cover_detected": true,
+      "navigation_close_count": 1,
+      "navigation_close_method": "observed_cover_single_global_back",
+      "selection_unoccluded": true,
+      "navigation_occlusion_scope": "identified_DocumentsUI_roots_navigation_only",
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 118,
+          "sha256": "f826d64837edb62dd9a6904be20e8c07c150cd5f7a7a23400cab14f7ef1d733f"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 19505,
+          "sha256": "38308919cc2eb7c5618984befff78e1c925b6712d51bb336e4cdbcebe11a9671"
+        },
+        {
+          "name": "sync-key-provider-nav-before.png",
+          "bytes": 12100,
+          "sha256": "94659df66e8d053bd36107face5980bc56d35365c5e3523d3135fb60e4ed3480"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2714,
+          "sha256": "e46af2f625bc121f429530010d88b162a7488be63d66cf9ad50375afc1925dc1"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 199317,
+        "sha256": "d2c673148791007ff7e11f07ccb7b8c78175bc18fca662f59fbe7880b7931b49",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 128336241095,
+      "whole_job_conclusion": "success",
+      "artifact_id": 13565221647,
+      "zip_bytes": 18333,
+      "zip_sha256": "ceb10a48b8671029516c856b26a628c24b06c1ca6cb4f371ce4cfa00dc8cce1f",
+      "github_digest_size_source_match": true,
+      "native_strict_pass": true,
+      "native_cases": 11,
+      "ui_strict_pass": true,
+      "ui_cases": 10,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "navigation_close_method": null,
+      "selection_unoccluded": true,
+      "navigation_occlusion_scope": "identified_DocumentsUI_roots_navigation_only",
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 294,
+          "sha256": "62869e68e6d417940648ab6fb81e83e579f22d37b4a7e58fc1cb84a562822b99"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 17333,
+          "sha256": "eb5dffe3606654829a0997b0d74330a6613ed84015091573a2c0967f49e4a11c"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "1b9bf45ee6c1ae5dbe9922b4bcfa450525a38a025853056d94a64cd93bb953c0"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 200443,
+        "sha256": "adbbd52eab13e32d80cffc89ea0ae6fedfb827f727e1baaba9276c567160c3b2",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    }
+  ],
+  "scope": "Only source931 local key preparation/recovery native and provider UI acceptance. No new manual data transfer, descriptor registration, models, phone or production signing claimed."
+}

@@ -10,6 +10,8 @@ import sys
 from android_ci_device import dedicated_ci, assert_no_app_anr
 from android_offline_uid import offline_product
 from android_sync_preparation_report import verify_report, verify_ui_report
+from android_sync_key_report import verify_report as verify_key_report
+from android_sync_transfer_report import verify_report as verify_transfer_report
 
 
 def main():
@@ -43,6 +45,9 @@ def main():
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-report.json",
                 str(out / "sync-preparation-report.json"))
             verify_report(json.loads((out / "sync-preparation-report.json").read_text()), api)
+            for filename, validator in (("sync-key-registration-report.json", verify_key_report), ("sync-transfer-report.json", verify_transfer_report)):
+                run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + filename, str(out / filename))
+                validator(json.loads((out / filename).read_text()), api)
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-ui-report.json",
                 str(out / "sync-preparation-ui-report.json"))
             verify_ui_report(json.loads((out / "sync-preparation-ui-report.json").read_text()), api)
@@ -53,7 +58,7 @@ def main():
             "sensitive_ui_dump_collected": False, "scope": "Raw instrumentation and sanitized reports retained; provider-only evidence below"}, indent=2) + "\n")
         raise
     finally:
-        for name in ("sync-preparation-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "sync-key-provider-nav-before.png", "backup-provider-ui-shape.json"):
+        for name in ("sync-preparation-report.json", "sync-key-registration-report.json", "sync-transfer-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "sync-key-provider-nav-before.png", "backup-provider-ui-shape.json"):
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + name,
                 str(out / name), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
@@ -61,7 +66,7 @@ def main():
         if "org.zapime.android" in log and ("FATAL EXCEPTION" in log or "Fatal signal" in log):
             raise RuntimeError("Target fatal during local sync preparation")
         assert_no_app_anr(command, out)
-    print("PASS local sync preparation JNI/vault/Activity; no data sync or phone claim")
+    print("PASS local sync preparation, descriptor and encrypted transfer JNI boundaries; no Android HTTPS or phone claim")
 
 
 if __name__ == "__main__": main()

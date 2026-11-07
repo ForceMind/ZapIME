@@ -18,8 +18,9 @@ VOICEKEY_JNI = {"Java_org_zapime_android_NativeVoiceKey_" + name for name in
 CORE_JNI = {"Java_org_zapime_android_NativeCore_" + name for name in
             ("open", "request", "queryPersonal", "syncProfile", "close",
              "createLocalBackup", "restoreLocalBackup", "newSyncMaterial",
-             "syncMaterialInfo", "syncWorkspaceStatus", "prepareSync",
-             "createSyncRecovery", "restoreSyncRecovery")}
+             "syncMaterialInfo", "syncKeyDescriptor", "syncWorkspaceStatus", "prepareSync",
+             "createSyncRecovery", "restoreSyncRecovery", "stageSyncUpload",
+             "ackSyncUpload", "syncPullCursor", "applySyncPage")}
 
 
 def check_notice_inventory(apk, prefix, root_package, target_platform=None):

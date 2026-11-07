@@ -164,6 +164,8 @@ public final class VoiceInstrumentation extends Instrumentation {
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
                 if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
                 stage="local sync material preparation";SyncPreparationProbe.run(this,fixtures);
+                stage="offline key descriptor parser and native identity";SyncKeyRegistrationProbe.run(this,fixtures);
+                stage="offline encrypted transfer JNI boundary";SyncTransferProbe.run(this,fixtures);
                 stage="local sync recovery system documents";SyncPreparationUiProbe.run(this,fixtures,syncPreparationCI);
                 result.putString("stream","PASS Android local sync preparation acceptance\n");finish(Activity.RESULT_OK,result);return;
             }

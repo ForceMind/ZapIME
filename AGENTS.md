@@ -73,3 +73,5 @@
 - 本机同步准备见docs/ANDROID_SYNC_PREPARATION.md：typed材料不得普通JSON/日志化；先create-only vault保存并读回，再existing-v2事务绑定account/key ID/根指纹。文件与DB不是跨存储原子事务；中断复用旧材料，bound缺材料须恢复，旧cipher不可读不自动重置。准备/本地绑定不是上传授权或账号全局密钥登记；无HTTP/自动上传。新页面的SAF/生命周期、方法JNI/Keystore、手机及全设备灾备分别记证据，不能沿用旧备份页成功。
 
 - 新同步恢复页SAF验收仅在数字CI独立模式、主资料根和连接原本不存在后创建合成fixture；不在原完整输入gate中清空主库。只删本轮唯一文档且先删后finish，清理失败拒绝成功。页面可能显示实际合成恢复码，专用脚本禁止通用Activity/a11y/页面截图诊断，只取阶段/严格报告/provider列表。控制worker排队上限8，拒绝须显示失败，不能阻塞/无限排队或宣称阻塞IO必然中止。
+
+- 最新Android手动同步契约见docs/ANDROID_MANUAL_SYNC.md与ADR-022：原准备页保持零HTTP；核对/首次登记和逐轮资料传输为独立显式页面。所有副作用先锁定用户确认的公开Selection(server/account/device/keySHA)，HTTP前后核当前完整connection和实际vault字节的DB指纹。无默认上传/后台轮询；原冻结字节才可POST，ACK必须与真实stage及AEAD原快照匹配，不动pull cursor；整页只走共享preserving认证边界。既有“宿主尚未接入”描述为早期基线，不得用来删新接缝或跳过新实际CI/真机验收。

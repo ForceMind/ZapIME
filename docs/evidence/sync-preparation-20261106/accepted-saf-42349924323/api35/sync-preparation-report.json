@@ -1,0 +1,52 @@
+{
+  "synthetic": true,
+  "api_level": 35,
+  "cases": [
+    {
+      "id": "fresh_create_and_binding",
+      "passed": true
+    },
+    {
+      "id": "create_only_idempotent",
+      "passed": true
+    },
+    {
+      "id": "authenticated_recovery_roundtrip",
+      "passed": true
+    },
+    {
+      "id": "bound_missing_material_requires_recovery",
+      "passed": true
+    },
+    {
+      "id": "vault_before_binding_retry",
+      "passed": true
+    },
+    {
+      "id": "different_material_and_fingerprint_preserved",
+      "passed": true
+    },
+    {
+      "id": "connection_snapshot_and_member_policy",
+      "passed": true
+    },
+    {
+      "id": "absent_future_database_fail_closed",
+      "passed": true
+    },
+    {
+      "id": "worker_guard_before_lock",
+      "passed": true
+    },
+    {
+      "id": "connection_removal_preserves_material",
+      "passed": true
+    },
+    {
+      "id": "secure_preparation_activity_lifecycle",
+      "passed": true
+    }
+  ],
+  "cleanup_completed": true,
+  "scope": "Real stateless JNI and Android Keystore on isolated full-v2 synthetic database copies; create-only material, explicit account\/key fingerprint binding, key recovery and lifecycle\/identity boundaries. No HTTP, cloud-key registration, upload, cross-device data sync, provider UI or phone acceptance."
+}

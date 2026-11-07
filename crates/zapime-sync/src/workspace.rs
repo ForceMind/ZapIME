@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 //! Explicit, local-only key preparation. No HTTP, remote key registration,
 //! pairing, records export, consent flag or automatic upload is implemented here.
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 use std::{fs, path::Path};
 use uuid::Uuid;
@@ -13,6 +13,31 @@ const MAGIC: &[u8; 8] = b"ZSKM\0\0\0\x01";
 const RECOVERY_DOMAIN: &[u8] = b"ZapIME/sync-material/v1\0";
 pub const MATERIAL_BYTES: usize = 72;
 pub const MAX_RECOVERY_PACKAGE: usize = 16 * 1024;
+
+/// Public identity for comparison with the server's create-once descriptor.
+/// It does not contain the root and does not prove possession or registration.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct Descriptor {
+    pub version: u8,
+    pub key_id: Uuid,
+    pub material_sha256: String,
+}
+impl Descriptor {
+    pub fn validate(&self) -> Result<(), Error> {
+        if self.version != 1
+            || self.key_id.is_nil()
+            || self.material_sha256.len() != 64
+            || !self
+                .material_sha256
+                .bytes()
+                .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+        {
+            return Err(Error::Invalid);
+        }
+        Ok(())
+    }
+}
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -35,7 +60,7 @@ pub enum Error {
 pub struct Material {
     pub profile: Uuid,
     pub key_id: Uuid,
-    key: SecretKey,
+    pub(crate) key: SecretKey,
 }
 impl Material {
     /// User-invoked local candidate generation only. This does not establish
@@ -78,7 +103,7 @@ impl Material {
         bytes.extend_from_slice(self.key.to_protected_storage().as_ref());
         bytes
     }
-    fn validate(&self, profile: Uuid) -> Result<(), Error> {
+    pub(crate) fn validate(&self, profile: Uuid) -> Result<(), Error> {
         if profile.is_nil() || self.profile.is_nil() || self.key_id.is_nil() {
             return Err(Error::Invalid);
         }
@@ -87,11 +112,24 @@ impl Material {
         }
         Ok(())
     }
-    fn binding(&self) -> WorkspaceBinding {
+    pub(crate) fn binding(&self) -> WorkspaceBinding {
         WorkspaceBinding {
             profile_id: self.profile,
             key_id: self.key_id,
             material_sha256: Sha256::digest(self.encode().as_slice()).into(),
+        }
+    }
+    pub fn descriptor(&self) -> Descriptor {
+        const HEX: &[u8] = b"0123456789abcdef";
+        let mut fingerprint = String::with_capacity(64);
+        for byte in self.binding().material_sha256 {
+            fingerprint.push(HEX[(byte >> 4) as usize] as char);
+            fingerprint.push(HEX[(byte & 15) as usize] as char);
+        }
+        Descriptor {
+            version: 1,
+            key_id: self.key_id,
+            material_sha256: fingerprint,
         }
     }
 }

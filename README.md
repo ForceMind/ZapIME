@@ -8,7 +8,7 @@
 
 **优先交付可以给用户和 VoiceKey 作者试用的 Android 双离线引擎 Alpha。** X-ASR 保持默认，VoiceKey 微信离线作为第二套可选方案；四端、同步和英语伴学的长期目标不取消，但不阻塞本次 Android 交付。
 
-当前工作分支为 `feat/voicekey-engine-import`，关联 PR #71 / Issue #72，尚未合并 main。不要只从 main 的历史提示词接管而遗漏实验分支。
+双离线候选保存在 `feat/voicekey-engine-import` / PR #71；后续本机准备为PR #73、服务器密钥登记为PR #74，最新手动同步开发分支为 `feat/android-manual-sync`。继续跟踪 Issue #72，尚未合并 main；不要只从 main 的历史提示词接管而遗漏这些堆叠分支。
 
 [新开发计划与目标](docs/DEVELOPMENT_PLAN.md) · [当前状态](docs/STATUS.md) · [VoiceKey 整合方案](docs/VOICEKEY_INTEGRATION.md) · [证据与验收矩阵](docs/VOICEKEY_ACCEPTANCE.md) · [工作会话接管提示词](docs/WORK_HANDOFF_PROMPT.md)
 
@@ -28,9 +28,9 @@ Android 双离线引擎 Alpha 已提供[固定 APK、模型准备与试用指南
 
 规划中的[英语伴学](docs/ENGLISH_LEARNING.md)将在中文上屏后展示参考英译，并通过主动收藏积累中英对照。请求生命周期策略已有基线；Android增加接受提交来源隔离与有界短句组装，生产默认不捕获，仍无可用翻译开关；已完成[OPUS 2020预处理对照](docs/ENGLISH_TRANSLATION_PREPROCESSING.md)、[Qwen固定配置CPU研究](docs/ENGLISH_TRANSLATION_QWEN_PROBE.md)和[OPUS 2021研究](docs/ENGLISH_TRANSLATION_OPUS_2021_PROBE.md)，保留全部合成样本及语义问题。翻译模型尚未接入输入法宿主/界面，当前探针不作为默认英语教学输出。
 
-服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。客户端同步接入仍未完成。
+服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。服务器新增[密钥身份登记](docs/SYNC_KEY_DESCRIPTOR.md)；完整四端互通、配对与灾备仍需独立验收。
 
-Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动 HTTPS 验证设备凭据、独立 Keystore 保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；保存连接前核对已有资料库账号，拒绝跨账号替换。完整配对和数据同步仍未接入。 新增独立开发中的[本机同步密钥准备](docs/ANDROID_SYNC_PREPARATION.md)，提供显式创建、密钥恢复文件和资料库身份绑定；主机已验证，Android新系统证据待运行。固定语音Alpha包不包含这一新切片。
+Android 的[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)提供显式HTTPS授权验证及独立Keystore凭据保护；[本机密钥准备](docs/ANDROID_SYNC_PREPARATION.md)提供创建/恢复、资料库身份绑定和独立恢复文件。固定源码931d30的API28/35/36实际JNI与新页SAF流程已通过并下载重验。最新源码继续接入独立密钥核对/首次登记页面及[手动加密同步](docs/ANDROID_MANUAL_SYNC.md)：用户确认一次才传输，冻结请求重试、严格ACK与整页认证，不开启后台轮询。新传输切片的对应CI、Android HTTPS与真机证据单独记录，不能沿用931准备层通过结论。固定08e84980语音Alpha包不包含这些后续功能。
 
 ## VoiceKey 双离线引擎整合
 
@@ -57,7 +57,7 @@ bash scripts/test_android_voicekey_models.sh
 
 ## 数据与隐私原则
 
-本地输入不等网络。个人词库、自定义候选、短语、永久收藏与临时剪贴板使用可迁移的数据体系。云同步计划采用用户自持恢复材料的端到端加密；服务端可替换，四端均保留离线副本。新 Android 源码仅主 App 手动验证设备连接会联网，禁止明文 HTTP；键盘和离线语音不依赖网络，个人数据同步仍未启用。
+本地输入不等网络。个人词库、自定义候选、短语、永久收藏与临时剪贴板使用可迁移的数据体系。云同步计划采用用户自持恢复材料的端到端加密；服务端可替换，四端均保留离线副本。新Android源码只在主App显式设备检查、密钥登记或逐轮确认同步后联网，禁止明文HTTP；键盘和离线语音不依赖网络。没有默认上传或后台轮询，当前不宣称四端同步完成。
 
 ## 许可与来源
 
@@ -65,4 +65,4 @@ bash scripts/test_android_voicekey_models.sh
 
 zapime.com / zapime.app 仍是候选域名，未确认购买或绑定。
 
-独立服务源码、启动和备份说明见 [services/sync](services/sync/README.md)，协议见 [SYNC_PROTOCOL.md](docs/SYNC_PROTOCOL.md)。Android 已接手动设备授权验证；四端资料同步尚未接通，不代表已在用户服务器部署。
+独立服务源码、启动和备份说明见 [services/sync](services/sync/README.md)，协议见 [SYNC_PROTOCOL.md](docs/SYNC_PROTOCOL.md)。Android新增手动授权、密钥身份和单轮密文传输接缝；四端资料同步尚未完成验收，不代表已在用户服务器部署。
