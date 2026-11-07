@@ -4,6 +4,12 @@
 
 面向 Android、iOS、macOS、Windows 的原生中文输入法工程。以离线输入、统一个人数据、自建加密同步与长期可恢复为目标。
 
+## 离线候选增强（2026-11-07）
+
+`feat/offline-candidate-ranking` 基于 `feat/android-manual-sync` 接入真实的 **MSIME 拼音解码 + chinese-ime-lm rerank-v2 8M + 既有 ONNX Runtime**。Android 的“离线候选增强”默认开启；模型随开发包准备，基础候选先显示，后台只重排已有精确拼音候选。个人置顶、补全、部分上屏和原引擎选词身份保留；密码、禁止学习和搜索字段不启用增强，异常退回基础候选。
+
+模型/资源校验、并发协议、上下文与验收边界见[候选增强实现](docs/CANDIDATE_RANKING.md)。共享核心接口不等于另外三个原生宿主已加载模型；各项实际结果以[项目状态](docs/STATUS.md)及固定提交的 CI 为准。
+
 ## 当前执行目标与接管入口（2026-11-06）
 
 **优先交付可以给用户和 VoiceKey 作者试用的 Android 双离线引擎 Alpha。** X-ASR 保持默认，VoiceKey 微信离线作为第二套可选方案；四端、同步和英语伴学的长期目标不取消，但不阻塞本次 Android 交付。

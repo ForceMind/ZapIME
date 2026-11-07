@@ -13,14 +13,17 @@ mod android_sync;
 pub mod ffi;
 pub mod local_backup;
 mod personal;
+mod ranking;
 
 pub struct InputSession {
     engine: Session,
     generation: u64,
+    composition_revision: u64,
     private: bool,
     nine_key: bool,
     store: Option<Store>,
     personal: Vec<Record>,
+    ranking: ranking::CandidateRanking,
 }
 
 /// Provenance of this reply only; never retained across requests or errors.
@@ -71,25 +74,28 @@ impl InputSession {
             personal,
             engine,
             generation: 0,
+            composition_revision: 0,
             private,
             nine_key: false,
+            ranking: ranking::CandidateRanking::new(!private),
         })
     }
 
     /// 单线程串行调用；候选选择必须携带显示时的代次，拒绝过期点击。
     pub fn request(&mut self, request: &Value) -> Value {
+        // 推理只返回已有行的排列；应用仍在会话所属线程完成。
+        match request["op"].as_str() {
+            Some("candidate_ranking") => return self.configure_ranking(request),
+            Some("candidate_rank") => return self.apply_ranking(request),
+            _ => {}
+        }
         if request["op"] == "personal_pin" {
             if self.private {
                 return json!({"error":"private_session"});
             }
-            if request["generation"].as_u64() != Some(self.generation) {
-                return json!({"error":"stale_generation"});
-            }
-            let Some(index) = request["index"]
-                .as_u64()
-                .and_then(|n| usize::try_from(n).ok())
-            else {
-                return json!({"error":"invalid_candidate"});
+            let index = match self.resolve_selection(request) {
+                Ok(index) => index,
+                Err(error) => return json!({"error":error}),
             };
             let Some((text, engine_index)) = self.display_candidates().get(index).cloned() else {
                 return json!({"error":"invalid_candidate"});
@@ -142,7 +148,13 @@ impl InputSession {
                 KeyResult::handled()
             }
             "nine_spelling" => {
-                if request["generation"].as_u64() != Some(self.generation) {
+                // Pure candidate ranking never changes spelling choices. A
+                // displayed reading remains valid within its input revision.
+                let current = match request.get("composition_revision") {
+                    Some(revision) => revision.as_u64() == Some(self.composition_revision),
+                    None => request["generation"].as_u64() == Some(self.generation),
+                };
+                if !current {
                     return json!({"error":"stale_generation"});
                 }
                 let index = request["index"]
@@ -169,7 +181,27 @@ impl InputSession {
                 {
                     self.engine.character(byte, false)
                 } else {
-                    self.engine.punctuation(byte)
+                    // 标点隐式提交也使用用户看见的首选；部分候选继续由原引擎处理。
+                    let visible = self.visible_candidate_index(request);
+                    let index = visible.unwrap_or(0);
+                    if (self.ranking.applied() || visible.is_some())
+                        && self.display_answers_key(index)
+                    {
+                        let (mut selected, source) = self.select_display(index);
+                        commit_source = source;
+                        let punctuation = self.engine.punctuation(byte);
+                        if let Some(text) = punctuation.commit {
+                            selected
+                                .commit
+                                .get_or_insert_with(String::new)
+                                .push_str(&text);
+                        }
+                        selected.handled |= punctuation.handled;
+                        selected.diagnostic = selected.diagnostic.or(punctuation.diagnostic);
+                        selected
+                    } else {
+                        self.engine.punctuation(byte)
+                    }
                 }
             }
             "command" => {
@@ -177,7 +209,10 @@ impl InputSession {
                     return json!({"error":"invalid_command"});
                 };
                 if command == Command::CommitCandidate && !self.display_candidates().is_empty() {
-                    let (result, source) = self.select_display(0);
+                    // 未改变输入的后台重排不能改变已看见的空格首选；快速连打
+                    // 已推进输入代时按最新输入提交，不能把空格当过期点击丢掉。
+                    let index = self.visible_candidate_index(request).unwrap_or(0);
+                    let (result, source) = self.select_display(index);
                     commit_source = source;
                     result
                 } else {
@@ -185,18 +220,10 @@ impl InputSession {
                 }
             }
             "select" => {
-                if request["generation"].as_u64() != Some(self.generation) {
-                    return json!({"error":"stale_generation"});
-                }
-                let Some(index) = request["index"]
-                    .as_u64()
-                    .and_then(|n| usize::try_from(n).ok())
-                else {
-                    return json!({"error":"invalid_candidate"});
+                let index = match self.resolve_selection(request) {
+                    Ok(index) => index,
+                    Err(error) => return json!({"error":error}),
                 };
-                if index >= self.display_candidates().len() {
-                    return json!({"error":"invalid_candidate"});
-                }
                 let (result, source) = self.select_display(index);
                 commit_source = source;
                 result
@@ -284,7 +311,9 @@ impl InputSession {
                     return json!({"error":"personal_store_failed"});
                 };
                 self.personal = personal;
+                self.ranking.invalidate();
                 self.generation += 1;
+                self.composition_revision += 1;
                 return json!({"records":self.personal});
             }
             "personal_list" => return json!({"records":self.personal}),
@@ -292,12 +321,14 @@ impl InputSession {
             "view" => return self.view(KeyResult::handled(), CommitSource::Engine),
             _ => return json!({"error":"unknown_operation"}),
         };
+        self.ranking.invalidate();
         self.generation += 1;
+        self.composition_revision += 1;
         self.view(result, commit_source)
     }
 
     // 自定义条目只在整段编码精确匹配时覆盖；其余拼音解码继续走原引擎。
-    fn display_candidates(&self) -> Vec<(String, Option<usize>)> {
+    fn base_display_candidates(&self) -> Vec<(String, Option<usize>)> {
         let snapshot = self.engine.snapshot();
         let mut rows: Vec<_> = snapshot
             .candidates
@@ -357,6 +388,15 @@ impl InputSession {
         rows.truncate(40);
         rows
     }
+
+    fn display_candidates(&self) -> Vec<(String, Option<usize>)> {
+        // Freeze personal rules, deduplication and the visible-page boundary
+        // before ranking. An off-page engine row must never displace a visible
+        // identity while the composition revision remains unchanged.
+        let mut rows = self.base_display_candidates();
+        self.ranking.reorder(&mut rows);
+        rows
+    }
     fn select_display(&mut self, index: usize) -> (KeyResult, CommitSource) {
         match self.display_candidates().get(index).cloned() {
             Some((_, Some(engine_index))) => {
@@ -372,6 +412,7 @@ impl InputSession {
 
     fn view(&self, result: KeyResult, source: CommitSource) -> Value {
         let snapshot = self.engine.snapshot();
+        let rows = self.display_candidates();
         // A candidate rule may only reorder an existing engine row. Keep that
         // row's engine identity; injected dictionary/snippet/rule text has no
         // engine index and is saved data, even if its text happens to match.
@@ -385,11 +426,14 @@ impl InputSession {
         };
         json!({
             "generation": self.generation,
+            "composition_revision": self.composition_revision,
             "handled": result.handled,
             "commit": result.commit,
             "commit_source": commit_source,
             "preedit": snapshot.preedit,
-            "candidates": self.display_candidates().into_iter().map(|row|row.0).collect::<Vec<_>>(),
+            "candidates": rows.iter().map(|row|&row.0).collect::<Vec<_>>(),
+            "candidate_ids": rows.iter().enumerate().map(|(index,row)|ranking::row_id(index,row.1)).collect::<Vec<_>>(),
+            "ranking": self.ranking.view(&snapshot, &self.rankable_indices(&snapshot)),
             "code": snapshot.editing_text,
             "private": self.private,
             "layout": if self.nine_key {"nine_key"} else {"qwerty"},

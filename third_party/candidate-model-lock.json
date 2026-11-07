@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "model_id": "msime-keystroke-8m-rerank-v2",
+  "asset_directory": "candidate-model",
+  "upstream": {
+    "repository": "metasequoiaime/chinese-ime-lm",
+    "release_tag": "rerank-v2",
+    "documentation_commit": "1c90f5ee1b76ecf18d5171ef78a4dc076a0bb0d8",
+    "license": "Apache-2.0",
+    "source_review_status": "upstream_dataset_declaration_difference_recorded"
+  },
+  "model": {
+    "layers": 6,
+    "heads": 4,
+    "head_dim": 64,
+    "width": 256,
+    "max_positions": 256,
+    "context_chars": 64,
+    "bos": 2,
+    "unk": 1,
+    "vocab_size": 12288,
+    "self_normalized": true,
+    "attribution_sha256": "519e70e0fb522b878f691de3f0e80cbf271598d0b4b7ebbafc5bb4bfc42aa4a6"
+  },
+  "files": {
+    "lm_step.ort": {
+      "size": 8220336,
+      "sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.ort"
+    },
+    "model.json": {
+      "size": 951,
+      "sha256": "33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+      "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.model.json"
+    },
+    "vocab.json": {
+      "size": 85613,
+      "sha256": "d7fb2e70de9f0c2c65b822a8fbf604655bfef6d0dcd8f1975d73f1cd5ea7f038",
+      "url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.vocab.json"
+    },
+    "LICENSE.txt": {
+      "size": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "source": "third_party/licenses/chinese-ime-lm-rerank-v2-Apache-2.0.txt"
+    },
+    "NOTICE.txt": {
+      "size": 2302,
+      "sha256": "e120d424d4d7d8cc006c7adcd02a748e83a07cdae8f35f31fefd431e56168d1e",
+      "source": "third_party/licenses/chinese-ime-lm-rerank-v2-NOTICE.txt"
+    },
+    "SOURCE_REVIEW.txt": {
+      "size": 3156,
+      "sha256": "5731b554831bc29993f3cbe10bc91d967b312d43ab074fc714c2a9cd471b1546",
+      "source": "third_party/licenses/chinese-ime-lm-rerank-v2-SOURCE_REVIEW.txt"
+    }
+  },
+  "build_headers": {
+    "runtime_version": "1.28.2",
+    "repository": "microsoft/onnxruntime",
+    "source_commit": "33ca9628233dc8f002435e868d4c2e9f82766ca1",
+    "license": "MIT",
+    "files": {
+      "onnxruntime_c_api.h": {
+        "size": 394991,
+        "sha256": "b69a133143c0da61782b2b02cc8a620d21ac139231fd211719776d10385135c1",
+        "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_c_api.h"
+      },
+      "onnxruntime_ep_c_api.h": {
+        "size": 152985,
+        "sha256": "db86df0f846b8d3bdbf429a5c76c5805293196575ca3c475878612591cd18e51",
+        "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_ep_c_api.h"
+      },
+      "LICENSE.txt": {
+        "size": 1073,
+        "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+        "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/LICENSE"
+      },
+      "onnxruntime_error_code.h": {
+        "size": 2775,
+        "sha256": "5ce3b054e798eced8d14f5b86e98692fd33470463f96194ce0700a2d53dd8721",
+        "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_error_code.h"
+      }
+    }
+  }
+}

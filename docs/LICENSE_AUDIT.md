@@ -2,6 +2,14 @@
 
 本表是固定版本的工程引入审计，不能代替发布时对最终依赖与产物的清单核对。
 
+## Android 候选模型引入（2026-11-07）
+
+候选增强固定 chinese-ime-lm `rerank-v2` 的 6×256 / 8M `.ort`、原始 metadata 与 vocabulary；权重声明 Apache-2.0，完整 LICENSE、上游 NOTICE 与独立 SOURCE_REVIEW 随 APK 保留。六文件大小/SHA256、官方 URL 和文档提交全部在 [`candidate-model-lock.json`](../third_party/candidate-model-lock.json)，不能由外来模型清单决定运行代码。该模型是现在开发 APK 唯一允许的候选 `.ort`；既有语音模型仍不随产品 APK 打包。
+
+本地 C++/JNI 适配采用项目 GPL-3.0-only，前缀 feed 算法对应上游 GPL Python 源；测试保留原 feed 和精确来源，不误套上游 `reference/` 子目录 Apache 许可。来源/改动见 [integrations/candidate/SOURCE.md](../integrations/candidate/SOURCE.md)。复用 APK 既有 ORT 1.28.2、nlohmann/json 和原 NDK 通知，不再分发第二份运行库。新增 Microsoft C API 头固定到具体提交并保留 MIT；仅为构建输入。
+
+上游对 LCCC 训练来源的描述与 LCCC 原仓库研究用途声明存在差异，已按事实存入 `third_party/licenses/chinese-ime-lm-rerank-v2-SOURCE_REVIEW.txt` 并随包保留。工程测试不解决这个来源问题；没有据此宣称商业分发权利已全部澄清。SHA256 是固定资源完整性校验，不是发布者数字签名。
+
 | 组件 | 核验版本/范围 | 授权与处置 |
 | --- | --- | --- |
 | MSIME | 97d652a49cabb0887355b84186af2aa9032d3814 | 根 LICENSE + workspace GPL-3.0-only；submodule 原样保留源码、版权、第三方通知；当前链接 engine/path-trust |

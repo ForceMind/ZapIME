@@ -1,0 +1,212 @@
+name: Offline candidate ranking acceptance
+on:
+  pull_request:
+    paths:
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'crates/**'
+      - 'vendor/msime'
+      - 'integrations/candidate/**'
+      - 'platforms/android/**'
+      - 'third_party/**'
+      - 'scripts/**'
+      - '.github/workflows/candidate-ranking.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: candidate-ranking-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  host-model:
+    name: Real model numerical and JNI host contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Prepare fixed model, C headers and JSON dependency
+        run: |
+          python3 scripts/prepare_candidate_model.py --headers target/candidate-runtime/include
+          python3 scripts/prepare_android_voice.py x86_64 target/candidate-host/android-runtime
+          python3 -m venv .venv-candidate
+          .venv-candidate/bin/pip install --only-binary=:all: -r integrations/candidate/tests/requirements.txt
+      - name: Execute actual model scores, bounded cache and JNI lifecycle
+        run: CANDIDATE_TEST_PYTHON="$PWD/.venv-candidate/bin/python" bash integrations/candidate/tests/test_host.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-candidate-ranking-host-metadata
+          path: |
+            target/candidate-host/native-report.json
+            target/candidate-host/jni-report.json
+          if-no-files-found: error
+          retention-days: 14
+  build:
+    name: Candidate model product and synthetic harness
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          targets: aarch64-linux-android, x86_64-linux-android
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: android-native
+          cache-on-failure: true
+      - name: Check model provenance, resources and worker lifecycle
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_prepare_candidate_model.py' -v
+          bash scripts/test_android_candidates.sh
+      - name: Install pinned Android build platform and toolchains
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
+      - name: Build actual product and candidate-only synthetic harness
+        run: |
+          bash scripts/build_android.sh x86_64
+          bash scripts/build_android.sh arm64-v8a
+          bash scripts/build_android_tests.sh
+          bash scripts/build_android_voice_tests.sh --candidate-only
+      - name: Verify APKs and record exact input identity
+        run: |
+          tools="$ANDROID_SDK_ROOT/build-tools/35.0.0"
+          for apk in target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk target/android-tests/ZapIME-tests.apk target/android-voice-tests/ZapIME-voice-tests.apk; do
+            "$tools/apksigner" verify --verbose "$apk"
+            "$tools/zipalign" -c 4 "$apk"
+          done
+          python3 - <<'PY'
+          import hashlib, json, subprocess, zipfile
+          from pathlib import Path
+          for harness in ('target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk'):
+              with zipfile.ZipFile(harness) as archive:
+                  if any(name.endswith(('.ort', '.onnx', '.xnet', '.pcm', '.wav', 'model.zip')) for name in archive.namelist()):
+                      raise SystemExit('Unexpected model/audio in candidate-only harness')
+          paths = ('target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk', 'target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk', 'target/android-tests/ZapIME-tests.apk', 'target/android-voice-tests/ZapIME-voice-tests.apk', 'third_party/candidate-model-lock.json')
+          inputs = [{'path': name, 'bytes': Path(name).stat().st_size, 'sha256': hashlib.sha256(Path(name).read_bytes()).hexdigest()} for name in paths]
+          Path('target/candidate-ranking-build.json').write_text(json.dumps({'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'status': 'BUILT', 'inputs': inputs, 'scope': 'Development arm64-v8a/x86_64 products and synthetic candidate harnesses; real model execution is a separate gate.'}, indent=2) + '\n')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZapIME-candidate-ranking-inputs
+          path: |
+            target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk
+            target/android-tests/ZapIME-tests.apk
+            target/android-voice-tests/ZapIME-voice-tests.apk
+          if-no-files-found: error
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-candidate-ranking-build-metadata
+          path: target/candidate-ranking-build.json
+          if-no-files-found: error
+          retention-days: 14
+  candidate-model:
+    name: Actual candidate JNI API ${{ matrix.api }}
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - api: 28
+            target: default
+          - api: 35
+            target: google_apis
+          - api: 36
+            target: google_apis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - uses: actions/download-artifact@v4
+        with:
+          name: ZapIME-candidate-ranking-inputs
+          path: target
+      - name: Check actual target model assets and native interfaces
+        run: |
+          python3 - <<'PY'
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'scripts')
+          from check_apk import check_contents
+          check_contents(Path('target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk'))
+          PY
+      - name: Enable KVM on the fresh dedicated CI emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Execute offline model methods and actual default-on system keyboard
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: ${{ matrix.target }}
+          arch: x86_64
+          ram-size: '4096M'
+          emulator-boot-timeout: 300
+          script: |
+            adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
+            python3 scripts/android_candidate_ranking_smoke.py "$(command -v adb)" emulator-5554
+            python3 scripts/android_candidate_ime_smoke.py "$(command -v adb)" emulator-5554
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-candidate-ranking-API-${{ matrix.api }}-metadata
+          path: |
+            target/candidate-ranking-android/candidate-ranking-report.json
+            target/candidate-ranking-android/instrumentation.txt
+            target/candidate-ranking-android/offline-uid.json
+            target/candidate-ranking-android/crash.txt
+            target/candidate-ranking-android/activity-errors.txt
+            target/candidate-ime-android/instrumentation.txt
+            target/candidate-ime-android/candidate-ime-report.json
+            target/candidate-ime-android/candidate-ime-service-before.txt
+            target/candidate-ime-android/candidate-ime-service-scored.txt
+            target/candidate-ime-android/candidate-ime-service-after.txt
+            target/candidate-ime-android/candidate-ime-host-lifecycle.txt
+            target/candidate-ime-android/candidate-ime-candidates.png
+            target/candidate-ime-android/candidate-ime-committed.png
+            target/candidate-ime-android/candidate-ime-failure.png
+            target/candidate-ime-android/system-keyboard.json
+            target/candidate-ime-android/input-method-state.txt
+            target/candidate-ime-android/ime-teardown.txt
+            target/candidate-ime-android/runtime-errors.txt
+            target/candidate-ime-android/activity-errors.txt
+            target/candidate-ime-android/offline-uid.json
+            target/candidate-ime-android/run-summary.json
+            target/candidate-ime-android/activity-top.txt
+            target/candidate-ime-android/activity-state.txt
+            target/candidate-ime-android/window-state.txt
+            target/candidate-ime-android/last-anr.txt
+            target/candidate-ime-android/system-runtime.txt
+          if-no-files-found: error
+          retention-days: 14

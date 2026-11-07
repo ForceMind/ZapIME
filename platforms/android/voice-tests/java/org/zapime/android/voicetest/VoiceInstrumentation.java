@@ -25,10 +25,11 @@ public final class VoiceInstrumentation extends Instrumentation {
     private File fixtures;
     private boolean backupCI;
     private String voiceKeyModelCI;
+    private String candidateRankingCI;
     private String syncPreparationCI;
     private String syncHttpsCI,syncHttpsPhase,syncHttpsOrigin,syncHttpsBadOrigin,syncHttpsBootstrap;
     private static final Class<?>[] NONE=new Class<?>[0];
-    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");voiceKeyModelCI=args==null?null:args.getString("zapime_ci_voicekey_model");syncPreparationCI=args==null?null:args.getString("zapime_ci_sync_preparation");syncHttpsCI=args==null?null:args.getString("zapime_ci_sync_https");if(args!=null){syncHttpsPhase=args.getString("sync_https_phase");syncHttpsOrigin=args.getString("sync_https_origin");syncHttpsBadOrigin=args.getString("sync_https_bad_origin");syncHttpsBootstrap=args.getString("sync_https_bootstrap");}start();}
+    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");voiceKeyModelCI=args==null?null:args.getString("zapime_ci_voicekey_model");candidateRankingCI=args==null?null:args.getString("zapime_ci_candidate_ranking");syncPreparationCI=args==null?null:args.getString("zapime_ci_sync_preparation");syncHttpsCI=args==null?null:args.getString("zapime_ci_sync_https");if(args!=null){syncHttpsPhase=args.getString("sync_https_phase");syncHttpsOrigin=args.getString("sync_https_origin");syncHttpsBadOrigin=args.getString("sync_https_bad_origin");syncHttpsBootstrap=args.getString("sync_https_bootstrap");}start();}
     private Object invoke(Class<?> type,String name,Class<?>[] signature,Object...args)throws Exception {Method method=type.getDeclaredMethod(name,signature);method.setAccessible(true);return method.invoke(null,args);}
     private Object nativeCall(String name,Class<?>[] signature,Object...args)throws Exception{return invoke(nativeVoice,name,signature,args);}
     private JSONObject json(Object bytes)throws Exception{return new JSONObject(new String((byte[])bytes,StandardCharsets.UTF_8));}
@@ -160,6 +161,14 @@ public final class VoiceInstrumentation extends Instrumentation {
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
+            if(candidateRankingCI!=null){
+                require(candidateRankingCI.matches("[0-9]+-[0-9]+"),"dedicated candidate ranking CI required");
+                fixtures=new File(getTargetContext().getExternalFilesDir(null),"candidate-fixtures");
+                if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
+                stage="offline candidate model, native IDs and Android Editable";
+                CandidateRankingProbe.run(this,fixtures);
+                result.putString("stream","PASS Android offline candidate ranking acceptance\n");finish(Activity.RESULT_OK,result);return;
+            }
             if(syncHttpsCI!=null){
                 require(syncHttpsCI.matches("[0-9]+-[0-9]+")&&android.os.Build.VERSION.SDK_INT==28,"dedicated API28 sync HTTPS CI required");
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");

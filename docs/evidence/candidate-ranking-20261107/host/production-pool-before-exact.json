@@ -1,0 +1,608 @@
+{
+  "scope": "fixed_synthetic_pinyin_real_production_dictionary_debug_core_and_host_ort_not_android_performance_or_accuracy",
+  "passed": true,
+  "core_shared_sha256": "516d64bf9c60af3b84fefa9e6f1f63e5c8c5de7e665a54406b5c4eaed64b0ffa",
+  "core_build": "cargo build -p zapime-core --locked dev profile",
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "dictionary_sha256": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+  "runtime_version": "1.24.4",
+  "native_model_process_load_ms": 62.29274399993301,
+  "cases": [
+    {
+      "pinyin": "shijie",
+      "preedit": "shijie",
+      "visible_count": 40,
+      "visible": [
+        "世界",
+        "时节",
+        "师姐",
+        "视界",
+        "十届",
+        "石阶",
+        "世杰",
+        "使节",
+        "士杰",
+        "十杰",
+        "石碣",
+        "十戒",
+        "十诫",
+        "失节",
+        "尸解",
+        "诗节",
+        "拾芥",
+        "市界",
+        "石街",
+        "石蜐",
+        "世界上",
+        "世界杯",
+        "世界各地",
+        "是",
+        "时",
+        "事",
+        "实",
+        "十",
+        "师",
+        "使",
+        "屎",
+        "世",
+        "始",
+        "失",
+        "士",
+        "湿",
+        "石",
+        "识",
+        "视",
+        "势"
+      ],
+      "rankable_count": 23,
+      "rankable": [
+        {
+          "id": "engine:0",
+          "text": "世界"
+        },
+        {
+          "id": "engine:1",
+          "text": "时节"
+        },
+        {
+          "id": "engine:2",
+          "text": "师姐"
+        },
+        {
+          "id": "engine:3",
+          "text": "视界"
+        },
+        {
+          "id": "engine:4",
+          "text": "十届"
+        },
+        {
+          "id": "engine:5",
+          "text": "石阶"
+        },
+        {
+          "id": "engine:6",
+          "text": "世杰"
+        },
+        {
+          "id": "engine:7",
+          "text": "使节"
+        },
+        {
+          "id": "engine:8",
+          "text": "士杰"
+        },
+        {
+          "id": "engine:9",
+          "text": "十杰"
+        },
+        {
+          "id": "engine:10",
+          "text": "石碣"
+        },
+        {
+          "id": "engine:11",
+          "text": "十戒"
+        },
+        {
+          "id": "engine:12",
+          "text": "十诫"
+        },
+        {
+          "id": "engine:13",
+          "text": "失节"
+        },
+        {
+          "id": "engine:14",
+          "text": "尸解"
+        },
+        {
+          "id": "engine:15",
+          "text": "诗节"
+        },
+        {
+          "id": "engine:16",
+          "text": "拾芥"
+        },
+        {
+          "id": "engine:17",
+          "text": "市界"
+        },
+        {
+          "id": "engine:18",
+          "text": "石街"
+        },
+        {
+          "id": "engine:19",
+          "text": "石蜐"
+        },
+        {
+          "id": "engine:20",
+          "text": "世界上"
+        },
+        {
+          "id": "engine:21",
+          "text": "世界杯"
+        },
+        {
+          "id": "engine:22",
+          "text": "世界各地"
+        }
+      ],
+      "per_key_rankable_counts": [
+        24,
+        32,
+        32,
+        32,
+        31,
+        23
+      ],
+      "core_debug_open_ms": 157.03297999971255,
+      "core_debug_per_key_ms": [
+        2.822346001266851,
+        9.209478999764542,
+        2.4729779997869628,
+        2.0821789985348005,
+        2.8446790001908084,
+        2.2303480000118725
+      ],
+      "empty_context_scores": [
+        -4.080642223358154,
+        -5.987682819366455,
+        -6.411591053009033,
+        -6.620866775512695,
+        -7.148438930511475,
+        -7.977543830871582,
+        -8.5894775390625,
+        -8.122384071350098,
+        -8.032332420349121,
+        -9.011710166931152,
+        -10.998091697692871,
+        -8.66638469696045,
+        -10.352347373962402,
+        -8.657709121704102,
+        -10.333001136779785,
+        -8.920156478881836,
+        -10.397634506225586,
+        -7.207172393798828,
+        -7.781821250915527,
+        -8.162424087524414,
+        -3.750274419784546,
+        -3.6716766357421875,
+        -3.292097330093384
+      ],
+      "empty_context_order": [
+        "世界各地",
+        "世界杯",
+        "世界上",
+        "世界",
+        "时节",
+        "师姐",
+        "视界",
+        "十届",
+        "市界",
+        "石街",
+        "石阶",
+        "士杰",
+        "使节",
+        "石蜐",
+        "世杰",
+        "失节",
+        "十戒",
+        "诗节",
+        "十杰",
+        "尸解",
+        "十诫",
+        "拾芥",
+        "石碣"
+      ],
+      "empty_context_order_changed": true,
+      "native_first_page_ms": 2.4588160013081506,
+      "native_warm_page_ms": [
+        0.3217670000594808,
+        0.2763800002867356,
+        0.24199900144594721,
+        0.23752199922455475,
+        0.23844400129746646
+      ],
+      "native_warm_page_median_ms": 0.24199900144594721,
+      "fixed_synthetic_context": "我们一起探索",
+      "context_scores": [
+        -2.737910747528076,
+        -7.049242973327637,
+        -7.068788051605225,
+        -7.043073654174805,
+        -7.461513042449951,
+        -8.55412769317627,
+        -8.361953735351562,
+        -9.5875825881958,
+        -10.451871871948242,
+        -9.322558403015137,
+        -11.931559562683105,
+        -9.128278732299805,
+        -11.064105987548828,
+        -9.457687377929688,
+        -12.014883041381836,
+        -8.893028259277344,
+        -9.347419738769531,
+        -8.0089750289917,
+        -9.132932662963867,
+        -9.219330787658691,
+        -2.942161798477173,
+        -3.555743455886841,
+        -2.785210132598877
+      ],
+      "context_order": [
+        "世界",
+        "世界各地",
+        "世界上",
+        "世界杯",
+        "视界",
+        "时节",
+        "师姐",
+        "十届",
+        "市界",
+        "世杰",
+        "石阶",
+        "诗节",
+        "十戒",
+        "石街",
+        "石蜐",
+        "十杰",
+        "拾芥",
+        "失节",
+        "使节",
+        "士杰",
+        "十诫",
+        "石碣",
+        "尸解"
+      ],
+      "context_page_ms": 1.9260870012658415,
+      "rank_applied": true,
+      "generation_changed": true,
+      "selected_commit": "世界各地",
+      "selected_cleared_full_input": true
+    },
+    {
+      "pinyin": "tianqi",
+      "preedit": "tianqi",
+      "visible_count": 40,
+      "visible": [
+        "天气",
+        "天启",
+        "天齐",
+        "田七",
+        "天琪",
+        "田契",
+        "田齐",
+        "天气预报",
+        "天气变化",
+        "天气情况",
+        "天",
+        "田",
+        "甜",
+        "添",
+        "填",
+        "舔",
+        "恬",
+        "腆",
+        "阗",
+        "殄",
+        "忝",
+        "湉",
+        "畋",
+        "觍",
+        "瑱",
+        "掭",
+        "盷",
+        "黇",
+        "淟",
+        "畑",
+        "鿬",
+        "佃",
+        "晪",
+        "沺",
+        "钿",
+        "㐁",
+        "㖭",
+        "㙉",
+        "㜤",
+        "㥏"
+      ],
+      "rankable_count": 10,
+      "rankable": [
+        {
+          "id": "engine:0",
+          "text": "天气"
+        },
+        {
+          "id": "engine:1",
+          "text": "天启"
+        },
+        {
+          "id": "engine:2",
+          "text": "天齐"
+        },
+        {
+          "id": "engine:3",
+          "text": "田七"
+        },
+        {
+          "id": "engine:4",
+          "text": "天琪"
+        },
+        {
+          "id": "engine:5",
+          "text": "田契"
+        },
+        {
+          "id": "engine:6",
+          "text": "田齐"
+        },
+        {
+          "id": "engine:7",
+          "text": "天气预报"
+        },
+        {
+          "id": "engine:8",
+          "text": "天气变化"
+        },
+        {
+          "id": "engine:9",
+          "text": "天气情况"
+        }
+      ],
+      "per_key_rankable_counts": [
+        24,
+        32,
+        1,
+        32,
+        28,
+        10
+      ],
+      "core_debug_open_ms": 110.88270700020075,
+      "core_debug_per_key_ms": [
+        1.8105859999195673,
+        1.9064379994233605,
+        2.079283998682513,
+        1.4694990004500141,
+        1.1884420000569662,
+        1.7761939998308662
+      ],
+      "empty_context_scores": [
+        -4.420965671539307,
+        -7.514881134033203,
+        -7.385869026184082,
+        -8.436224937438965,
+        -8.148531913757324,
+        -9.182284355163574,
+        -8.866142272949219,
+        -2.5436553955078125,
+        -3.5082998275756836,
+        -4.37257194519043
+      ],
+      "empty_context_order": [
+        "天气预报",
+        "天气变化",
+        "天气情况",
+        "天气",
+        "天齐",
+        "天启",
+        "天琪",
+        "田七",
+        "田齐",
+        "田契"
+      ],
+      "empty_context_order_changed": true,
+      "native_first_page_ms": 2.130500000930624,
+      "native_warm_page_ms": [
+        0.33074000020860694,
+        0.4254610012139892,
+        0.27629000032902695,
+        0.26347099992563017,
+        0.3169800002069678
+      ],
+      "native_warm_page_median_ms": 0.3169800002069678,
+      "fixed_synthetic_context": "今天的",
+      "context_scores": [
+        -2.094313621520996,
+        -6.631191253662109,
+        -7.174619674682617,
+        -8.476293563842773,
+        -8.573297500610352,
+        -8.718368530273438,
+        -10.07050609588623,
+        -1.4181795120239258,
+        -2.2303824424743652,
+        -2.772416353225708
+      ],
+      "context_order": [
+        "天气预报",
+        "天气",
+        "天气变化",
+        "天气情况",
+        "天启",
+        "天齐",
+        "田七",
+        "天琪",
+        "田契",
+        "田齐"
+      ],
+      "context_page_ms": 1.6808430009405129,
+      "rank_applied": true,
+      "generation_changed": true,
+      "selected_commit": "天气预报",
+      "selected_cleared_full_input": true
+    },
+    {
+      "pinyin": "nihao",
+      "preedit": "nihao",
+      "visible_count": 40,
+      "visible": [
+        "你好",
+        "你好吗",
+        "你好啊",
+        "拟好",
+        "你好呀",
+        "你",
+        "尼",
+        "妮",
+        "泥",
+        "逆",
+        "拟",
+        "腻",
+        "倪",
+        "霓",
+        "匿",
+        "溺",
+        "昵",
+        "睨",
+        "旎",
+        "怩",
+        "猊",
+        "鲵",
+        "伲",
+        "坭",
+        "铌",
+        "麑",
+        "薿",
+        "呢",
+        "鿭",
+        "𨺙",
+        "𫐐",
+        "𫠜",
+        "㘈",
+        "㞾",
+        "㠜",
+        "㥾",
+        "㦐",
+        "㩘",
+        "㪒",
+        "㮏"
+      ],
+      "rankable_count": 5,
+      "rankable": [
+        {
+          "id": "engine:0",
+          "text": "你好"
+        },
+        {
+          "id": "engine:1",
+          "text": "你好吗"
+        },
+        {
+          "id": "engine:2",
+          "text": "你好啊"
+        },
+        {
+          "id": "engine:3",
+          "text": "拟好"
+        },
+        {
+          "id": "engine:4",
+          "text": "你好呀"
+        }
+      ],
+      "per_key_rankable_counts": [
+        24,
+        32,
+        19,
+        5,
+        5
+      ],
+      "core_debug_open_ms": 112.76429200006532,
+      "core_debug_per_key_ms": [
+        1.414618000126211,
+        1.4357699983520433,
+        1.014785000734264,
+        1.4823980000073789,
+        1.356451999527053
+      ],
+      "empty_context_scores": [
+        -4.364169120788574,
+        -4.621117115020752,
+        -4.113034248352051,
+        -8.629129409790039,
+        -4.306312084197998
+      ],
+      "empty_context_order": [
+        "你好啊",
+        "你好呀",
+        "你好",
+        "你好吗",
+        "拟好"
+      ],
+      "empty_context_order_changed": true,
+      "native_first_page_ms": 2.488920999894617,
+      "native_warm_page_ms": [
+        0.24245900021924172,
+        0.21248499979265034,
+        0.18381199879513588,
+        0.24765800117165782,
+        0.1878179991763318
+      ],
+      "native_warm_page_median_ms": 0.21248499979265034,
+      "fixed_synthetic_context": "朋友见面先说",
+      "context_scores": [
+        -3.750236988067627,
+        -4.093222141265869,
+        -3.948904037475586,
+        -9.440275192260742,
+        -4.160159587860107
+      ],
+      "context_order": [
+        "你好",
+        "你好啊",
+        "你好吗",
+        "你好呀",
+        "拟好"
+      ],
+      "context_page_ms": 2.089308998620254,
+      "rank_applied": true,
+      "generation_changed": true,
+      "selected_commit": "你好啊",
+      "selected_cleared_full_input": true
+    }
+  ],
+  "code_version_boundary": {
+    "variant": "before_exact_reading_filter",
+    "base_git_commit": "f727d2031f438881fbfaf99aa474517cde66cd29",
+    "working_tree_changes": true,
+    "executed_core_binary_sha256": "516d64bf9c60af3b84fefa9e6f1f63e5c8c5de7e665a54406b5c4eaed64b0ffa",
+    "source_snapshot_available": false
+  },
+  "fixture_provenance": {
+    "fixed_synthetic_input": true,
+    "personal_user_data_used": false,
+    "pinyin": [
+      "shijie",
+      "tianqi",
+      "nihao"
+    ],
+    "dictionary": "target/resources/msime-pinyin.db",
+    "dictionary_bytes": 73723904,
+    "msime_commit": "97d652a49cabb0887355b84186af2aa9032d3814",
+    "model_id": "msime-keystroke-8m-rerank-v2"
+  },
+  "eligibility_policy": "Full input consumption without requiring exact canonical reading; this report preserves the discovered completion-promotion defect."
+}

@@ -23,6 +23,7 @@ final class KeyboardTouch {
         }
     }
     void cancel(){if(active!=null){Binding b=active;active=null;b.stop();}}
+    boolean isActive(){return active!=null;}
     void bind(Button button,Runnable action,boolean repeat,BooleanSupplier valid) {
         Binding binding=new Binding(button,action,repeat,valid);
         button.setHapticFeedbackEnabled(context.getSharedPreferences("keyboard",Context.MODE_PRIVATE).getBoolean("haptic",true));

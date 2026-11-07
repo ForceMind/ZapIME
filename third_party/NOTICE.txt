@@ -12,14 +12,22 @@ Corresponding source, build scripts and license texts must accompany binary dist
 
 The engine includes chinese-ime-lm reference/ (Apache-2.0).
 See licenses/chinese-ime-lm-NOTICE.txt and licenses/chinese-ime-lm-Apache-2.0.txt.
-This development package does not bundle neural model weights, n-gram files,
-third-party cloud services, or unlicensed dictionary inputs.
+Android development builds now include the fixed chinese-ime-lm rerank-v2
+6x256 (8M) candidate model. Its weights are declared Apache-2.0 upstream;
+the exact model/vocabulary/metadata sizes and SHA256 values are recorded in
+candidate-model-lock.json. The complete weight LICENSE, upstream NOTICE and
+SOURCE_REVIEW are bundled in assets/candidate-model and assets/licenses.
+See licenses/chinese-ime-lm-rerank-v2-NOTICE.txt and the separate SOURCE_REVIEW
+for the recorded difference between upstream training-dataset declarations.
+That record is not a claim of resolved commercial redistribution rights.
+No n-gram files, third-party cloud clients or unlicensed dictionary inputs
+are added by candidate ranking. Candidate context is not sent to a service.
 
 Android includes the fixed MSIME shared/voice/LocalAsr.cpp implementation (GPL-3.0-only)
 and sherpa-onnx 1.13.8 / ONNX Runtime native CPU libraries. Artifact and per-library
 hashes plus source identity are in android-voice-lock.json. The AAR has no notices;
 Sherpa Apache-2.0, ONNX MIT/ThirdPartyNotices, nlohmann-json MIT and NDK notices
-are copied into assets/voice-licenses. Model weights are not bundled. This native
+are copied into assets/voice-licenses. Voice model weights are not bundled. This native
 bridge alone is not microphone or voice-input UI acceptance.
 
 Pinyin and English dictionaries: metasequoiaime/msime-dictionary dict-v2.0.24.

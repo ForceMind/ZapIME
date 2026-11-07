@@ -9,7 +9,7 @@ import unittest
 import zipfile
 
 from collect_rust_notices import collect, graph
-from check_apk import check_notice_inventory, check_voicekey_native, check_core_native, elf_metadata, VOICEKEY_JNI, CORE_JNI
+from check_apk import check_notice_inventory, check_voicekey_native, check_core_native, check_candidate_native, elf_metadata, VOICEKEY_JNI, CORE_JNI, CANDIDATE_JNI
 
 
 def package(directory, name, license_id="MIT", declared=None):
@@ -101,6 +101,16 @@ def synthetic_elf(exports=VOICEKEY_JNI):
 
 
 class VoiceKeyElfTests(unittest.TestCase):
+    def test_candidate_gate_requires_all_exports_and_existing_runtime_only(self):
+        check_candidate_native(synthetic_elf(CANDIDATE_JNI), "arm64-v8a")
+        for missing in CANDIDATE_JNI:
+            with self.subTest(missing=missing), self.assertRaises(AssertionError):
+                check_candidate_native(synthetic_elf(CANDIDATE_JNI - {missing}), "arm64-v8a")
+        changed = synthetic_elf(CANDIDATE_JNI)
+        offset = changed.index(b"libm.so")
+        changed[offset:offset + 7] = b"evil.so"
+        with self.assertRaises(AssertionError): check_candidate_native(changed, "arm64-v8a")
+
     def test_core_gate_requires_every_stateless_sync_export(self):
         check_core_native(synthetic_elf(CORE_JNI), "arm64-v8a")
         for missing in CORE_JNI:
