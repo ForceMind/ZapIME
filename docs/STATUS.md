@@ -10,6 +10,8 @@
 
 当前仅修 test-only 参考与 suite：从固定上游 feed builders 冻结输入张量，用同一 APK 运行库独立两次图运行作为参考，再与生产 native 比较；不引用 Android 实测分数作期望值，不放宽 0.001、不减少 **14 项**。方法与真实系统 IME 各跑一次，任何失败仍使 suite 失败。新测试须等固定提交 Android CI，不将主机编译或 schema 验证代填。真实键盘门禁要求生产词库、触屏按键、当前 inputRevision/appliedRevision 相等且发布计数增加、所见候选精确上屏及恢复系统键盘。其他三端模型宿主、25M 对比、真实语料准确率、S25 延迟/内存/能耗、正式签名/稳定发布和训练数据声明差异的最终澄清仍未完成。现有语音、同步、备份及系统输入门禁继续保留，不用候选单项结果代替。
 
+测试修订 `a73eea01` 的 [42360463367](https://github.com/ForceMind/ZapIME/actions/runs/42360463367) 已实际证明 API35 的 **14 项方法检查通过、同运行库独立参考误差 0**。真实系统 IME 也完成默认开启、生产词库/模型、`shijie` 触屏输入、当前 revision 排序发布及点击“世界”进入宿主 Editable。该 job 仍明确 **FAIL**：最后恢复含分号的系统输入法设置值时，test-only adb shell 命令未转义而 exit 127；其余清理通过。[原 ZIP、报告、包身份与限制](evidence/candidate-ranking-20261107/android-second-run-42360463367/README.md)保持原样。当前只修恢复命令的远端 shell 编码，保留读回/清理门禁，设备复验仍需新 CI，不修改产品实现。
+
 ## 前序手动同步进度（保留原记录）
 
 更新时间：2026-11-07 00:13 PST（America/Los_Angeles）。本轮已实际开发、测试、保存GitHub并下载核验APK。累计汇报次数无可靠连续记录。

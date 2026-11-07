@@ -10,6 +10,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import sys
 import time
@@ -39,6 +40,17 @@ PROBE_FILES = (
     "candidate-ime-committed.png",
     "candidate-ime-failure.png",
 )
+
+
+def restore_setting_args(name, value):
+    """Quote the remote shell as well as the local adb argument boundary."""
+    if value in (None, "null", ""):
+        arguments = ["settings", "delete", "secure", name]
+    else:
+        arguments = ["settings", "put", "secure", name, value]
+    # adb shell rejoins its arguments before the device shell parses them.
+    # Enabled IMEs can include semicolon-delimited subtype IDs; preserve them.
+    return ["shell", shlex.join(arguments)]
 
 
 def verify_report(report, token, api):
@@ -147,10 +159,7 @@ def main():
         summary["errors"].append({"stage": label, "type": type(failure).__name__, "reason": str(failure)[:500]})
 
     def restore_setting(name, value):
-        if value in (None, "null", ""):
-            run("shell", "settings", "delete", "secure", name)
-        else:
-            run("shell", "settings", "put", "secure", name, value)
+        run(*restore_setting_args(name, value))
 
     def pull_probe_files():
         for name in PROBE_FILES:

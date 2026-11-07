@@ -1,0 +1,75 @@
+{
+  "workflow_run": 42360463367,
+  "implementation_commit": "3a11177b7d0b2ef054183f5297a282dcb650a14f",
+  "test_revision": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+  "tested_merge_commit": "697155198b205dbb3cada79468b8000667471dea",
+  "api_35_artifact_id": 13569192986,
+  "api_35_job_id": 128368275519,
+  "api_35_overall": "FAIL",
+  "method_checks_passed": 14,
+  "method_reference_max_abs_error": 0,
+  "system_ime_input_path_passed": true,
+  "settings_restore_passed": false,
+  "files": [
+    {
+      "path": "api-35/candidate-ime-report.json",
+      "bytes": 1098,
+      "sha256": "4b7757e97ade16ec2802222d532a371bb778ca531d7b5d21bb11c3bfa82295e8"
+    },
+    {
+      "path": "api-35/candidate-ranking-report.json",
+      "bytes": 3685,
+      "sha256": "49aceca27828d952c8397a88c39b8b41ae6d36f5f0db98477b6d76f433fadac8"
+    },
+    {
+      "path": "api-35/candidate-suite-summary.json",
+      "bytes": 624,
+      "sha256": "08ebe103cd3ce1bc3108b6541d156f673bce469fd09f2df050a92e389ec04903"
+    },
+    {
+      "path": "api-35/cleanup-summary.json",
+      "bytes": 1017,
+      "sha256": "23ac513dc08d103ba285284da9db2db33633cacf211620f93f761f46471e9d73"
+    },
+    {
+      "path": "api-35/offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+    },
+    {
+      "path": "api-35/original.zip",
+      "bytes": 104386,
+      "sha256": "35f386920882070d1a9dc0523197b5b0170c17f9d10d1cb976e7c31f8cf933fe"
+    },
+    {
+      "path": "apk-local-verification.json",
+      "bytes": 1750,
+      "sha256": "937cbe7e946ef5e50e0e7a577c4795119252b649363d89661ecc3ff56562e261"
+    },
+    {
+      "path": "build-report.json",
+      "bytes": 1146,
+      "sha256": "cdcdda9120ff31939ae8df8795a26c4c351f375130e45e5bc3fd4eb804e7a072"
+    },
+    {
+      "path": "host/jni-report.json",
+      "bytes": 264,
+      "sha256": "de4915a7b471b069b02559d4dbf4dc86718195e1f51962318896a3c92f6b56a2"
+    },
+    {
+      "path": "host/native-report.json",
+      "bytes": 1686,
+      "sha256": "6d02afa34ab1ca941e88ce83f66e89f92a8bcf27848ec3b25b2270d85f9ffb1e"
+    },
+    {
+      "path": "host/oracle-report.json",
+      "bytes": 2384,
+      "sha256": "8dbc36d9d97f49d1d1f3ab79a5a6ed362137f106642a5eb19872484bae11d98f"
+    },
+    {
+      "path": "source-identity.json",
+      "bytes": 440,
+      "sha256": "a21d017ed046571dadc60e703319bd3b29b3af279e44dc30b78152c774df2cc2"
+    }
+  ]
+}
