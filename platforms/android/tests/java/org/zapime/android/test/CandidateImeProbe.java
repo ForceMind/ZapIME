@@ -246,6 +246,7 @@ final class CandidateImeProbe {
         Matcher requests = SUBMITTED.matcher(text);
         require(requests.find(), "production_request_diagnostic_missing");
         result.submitted = Integer.parseInt(requests.group(1));
+        result.line += "\n" + requests.group().trim();
         require(!requests.find(), "ambiguous_request_diagnostic");
         return result;
     }
