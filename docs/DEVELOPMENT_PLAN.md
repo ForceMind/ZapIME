@@ -2,7 +2,7 @@
 
 更新日期：2026-11-06。当前工作主线：PR #71 / Issue #72，`feat/voicekey-engine-import`。
 
-2026-11-07 补充当前切片：按用户要求，`feat/offline-candidate-ranking` 从手动同步开发基线接入默认开启的 Android 本机候选增强。采用固定 MSIME 解码器、chinese-ime-lm rerank-v2 8M 和已有 ORT，先完成实际模型推理、稳定候选身份、隐私/生命周期回退与包内资源核验，再在独立 Android API28/35/36 作业运行真实 JNI/Editable 探针。此切片不取消下述语音、四端和同步目标；具体实现/未验项目见 [候选增强](CANDIDATE_RANKING.md)，结果见 [STATUS](STATUS.md)。
+2026-11-07 补充当前切片：按用户要求，`feat/offline-candidate-ranking` / PR #78 已从手动同步开发基线接入默认开启的 Android 本机候选增强。固定 MSIME、chinese-ime-lm rerank-v2 8M 和已有 ORT 已完成实际推理、稳定候选身份、隐私/生命周期回退及包内资源核验；固定测试修订 `5e1a87c` 的 API28/35/36 真实模型方法与系统 IME 两类门禁全部通过，已提供[双 ABI 开发包](CANDIDATE_RANKING_TRYOUT.md)。下一阶段分别验证 ARM/S25 长期输入、真实语料质量和性能，以及其他三端模型宿主；不将模拟器成功当手机验收。此切片保留下述语音、四端和同步目标；实现与边界见[候选增强](CANDIDATE_RANKING.md)，精确结果见[STATUS](STATUS.md)。
 
 本版更新近期交付优先级，不取消原有四端输入、数据归属、同步和恢复目标。原始完整规划按原文件字节保留在 [2026-10-20 基线计划](DEVELOPMENT_PLAN_BASELINE_20261020.md)。工程实施同时遵循 [AGENTS.md](../AGENTS.md)、[架构](ARCHITECTURE.md)、[技术决策](DECISIONS.md)及新增 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。事实进度以 [STATUS](STATUS.md) 和对应提交证据为准；本文件中的目标不是已实现功能。
 

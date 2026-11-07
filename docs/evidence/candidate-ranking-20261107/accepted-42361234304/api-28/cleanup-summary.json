@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope": "production-system-ime-candidate-ranking",
+  "run_attempt": "42361234304-1",
+  "passed": true,
+  "instrumentation_verified": true,
+  "system_keyboard_restored": true,
+  "service_exited": true,
+  "settings_restored": true,
+  "initial_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "final_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "errors": [],
+  "api_level": 28,
+  "offline_uid_verified": true
+}

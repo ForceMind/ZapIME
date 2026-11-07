@@ -10,6 +10,8 @@
 
 模型/资源校验、并发协议、上下文与验收边界见[候选增强实现](docs/CANDIDATE_RANKING.md)。共享核心接口不等于另外三个原生宿主已加载模型；各项实际结果以[项目状态](docs/STATUS.md)及固定提交的 CI 为准。
 
+[固定 Android 开发包与开启说明](docs/CANDIDATE_RANKING_TRYOUT.md)已提供；最终候选专项 [42361234304](https://github.com/ForceMind/ZapIME/actions/runs/42361234304) 在 API28/35/36 的真实模型与系统键盘门禁均通过，原报告及失败历史见[验收记录](docs/evidence/candidate-ranking-20261107/accepted-42361234304/README.md)。ARM64 已完成构建和包校验，手机长期输入/性能与稳定发行仍独立验收。
+
 ## 当前执行目标与接管入口（2026-11-06）
 
 **优先交付可以给用户和 VoiceKey 作者试用的 Android 双离线引擎 Alpha。** X-ASR 保持默认，VoiceKey 微信离线作为第二套可选方案；四端、同步和英语伴学的长期目标不取消，但不阻塞本次 Android 交付。

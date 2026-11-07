@@ -1,0 +1,65 @@
+{
+  "head_sha": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+  "run_id": 42360463238,
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 128367554790,
+      "name": "Android development APK",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128369638310,
+      "name": "Android API 36 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128369638331,
+      "name": "VoiceKey-only real model API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128369638333,
+      "name": "VoiceKey-only real model API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128369638374,
+      "name": "Android API 35 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128369638393,
+      "name": "VoiceKey-only real model API 36",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13569762333,
+      "name": "ZapIME-VoiceKey-only-API-36",
+      "size_in_bytes": 239555,
+      "digest": "sha256:33bf482375a808ce16be5a007160ab31ecd908294b074865f5826fb113477274"
+    },
+    {
+      "id": 13569697414,
+      "name": "ZapIME-VoiceKey-only-API-35",
+      "size_in_bytes": 180784,
+      "digest": "sha256:ee89c83edf0861c95a6fae9a8caec5995a11df7804ff47a5046f722d685a58d7"
+    },
+    {
+      "id": 13569661578,
+      "name": "ZapIME-VoiceKey-only-API-28",
+      "size_in_bytes": 187355,
+      "digest": "sha256:d46e9389c231011cf7d8a25785c9df988c4e988a1f2dbb7ba8aa7c9241711074"
+    }
+  ],
+  "scope": "All workflow jobs passed at this exact head, including API28 native keyboard acceptance in the build job. Three API VoiceKey original ZIPs SHA-checked and actual summaries confirm execution, service exit, fixture deletion and UID-rule cleanup. Previous 3a failures remain separately archived."
+}

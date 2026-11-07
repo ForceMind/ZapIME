@@ -12,6 +12,36 @@
   "settings_restore_passed": false,
   "files": [
     {
+      "path": "api-28/candidate-ime-report.json",
+      "bytes": 1098,
+      "sha256": "e9c03ccbf7c5e44359a5b6ef9eaf1d4fd425a3bf70aea88a4274a87e824bb4a4"
+    },
+    {
+      "path": "api-28/candidate-ranking-report.json",
+      "bytes": 3684,
+      "sha256": "ded4bcf415df00d943655600530311caf288448faed420c8eb392a0258ab65f2"
+    },
+    {
+      "path": "api-28/candidate-suite-summary.json",
+      "bytes": 621,
+      "sha256": "daa21217595ba8a4cec6b07eaea39f0ad16129c2cbe003cecd117693cd490193"
+    },
+    {
+      "path": "api-28/cleanup-summary.json",
+      "bytes": 522,
+      "sha256": "8cbe08b6285e4a4487add367c2b42fff126a92185491399775b37f9d4f899fa2"
+    },
+    {
+      "path": "api-28/offline-uid.json",
+      "bytes": 119,
+      "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+    },
+    {
+      "path": "api-28/original.zip",
+      "bytes": 95761,
+      "sha256": "483e95c1d66fb5d1590c051ead532d7177258044e438bd69541a0fbefc0b3abb"
+    },
+    {
       "path": "api-35/candidate-ime-report.json",
       "bytes": 1098,
       "sha256": "4b7757e97ade16ec2802222d532a371bb778ca531d7b5d21bb11c3bfa82295e8"
@@ -42,6 +72,36 @@
       "sha256": "35f386920882070d1a9dc0523197b5b0170c17f9d10d1cb976e7c31f8cf933fe"
     },
     {
+      "path": "api-36/candidate-ime-report.json",
+      "bytes": 1098,
+      "sha256": "7793a8952c273d4799b8af87b092db5015ba1dc059f667cf31706afcc8ed79b5"
+    },
+    {
+      "path": "api-36/candidate-ranking-report.json",
+      "bytes": 3686,
+      "sha256": "37347aeba77c8629ce4d5c6f0803e44307b6121c7afd1547ebacacd40d257fe9"
+    },
+    {
+      "path": "api-36/candidate-suite-summary.json",
+      "bytes": 625,
+      "sha256": "261f3345c5fae148d34649e72c5b07e4232fc96c6cf99e9412fc2286b2da7175"
+    },
+    {
+      "path": "api-36/cleanup-summary.json",
+      "bytes": 1017,
+      "sha256": "dfc8cd37cea9dd131330f2a91a24af287a4174d3d7880dfbe67f0a51dcb7da9d"
+    },
+    {
+      "path": "api-36/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "api-36/original.zip",
+      "bytes": 104998,
+      "sha256": "c5b83ab73343b20eb195e34887f74651e297bbd049e304a0ef3f9f9bda4edcb0"
+    },
+    {
       "path": "apk-local-verification.json",
       "bytes": 1750,
       "sha256": "937cbe7e946ef5e50e0e7a577c4795119252b649363d89661ecc3ff56562e261"
@@ -70,6 +130,38 @@
       "path": "source-identity.json",
       "bytes": 440,
       "sha256": "a21d017ed046571dadc60e703319bd3b29b3af279e44dc30b78152c774df2cc2"
+    }
+  ],
+  "api_results": [
+    {
+      "api": 28,
+      "artifact_id": 13569731854,
+      "job_id": 128368275582,
+      "overall": "PASS",
+      "method_checks_passed": 14,
+      "method_reference_max_abs_error": 0,
+      "system_input_passed": true,
+      "settings_restore_passed": true
+    },
+    {
+      "api": 35,
+      "artifact_id": 13569192986,
+      "job_id": 128368275519,
+      "overall": "FAIL",
+      "method_checks_passed": 14,
+      "method_reference_max_abs_error": 0,
+      "system_input_passed": true,
+      "settings_restore_passed": false
+    },
+    {
+      "api": 36,
+      "artifact_id": 13570091175,
+      "job_id": 128368275544,
+      "overall": "FAIL",
+      "method_checks_passed": 14,
+      "method_reference_max_abs_error": 0,
+      "system_input_passed": true,
+      "settings_restore_passed": false
     }
   ]
 }

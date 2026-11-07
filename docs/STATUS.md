@@ -2,15 +2,21 @@
 
 ## 默认开启的本机候选增强（2026-11-07）
 
-按用户要求，在独立 `feat/offline-candidate-ranking` 分支从手动同步基线 `f727d2031f438881fbfaf99aa474517cde66cd29` 接入 **MSIME + chinese-ime-lm rerank-v2 8M + 既有 ONNX Runtime**。Android 设置缺省开启，固定模型随开发包准备，工作线程实际执行模型并只返回既有完整候选排列。个人置顶、部分上屏、九键读音和显示时候选 ID 保留；私密/禁止学习/搜索字段排除，资源/推理失败沿用基础候选。[实现与范围](CANDIDATE_RANKING.md)、[ADR-024](DECISIONS.md)及资源来源记录已经落盘，vendor 固定版本未改变。
+**Android 开发版已接入并默认开启本机候选增强，三端专项实测全部通过，固定双 ABI 安装包已下载复核。** [试用包与开启说明](CANDIDATE_RANKING_TRYOUT.md)、[实现契约](CANDIDATE_RANKING.md)、[完整原始验收](evidence/candidate-ranking-20261107/accepted-42361234304/README.md)均已保存。
 
-本地主机：完整工作区 **134 项**测试、fmt、严格 Clippy 通过，其中新增 **16 项**核心候选回归；Android Python **89 项**、固定资源 **14 项**、三组 JVM 上下文/worker/真实资源检查通过。实际双 ABI 开发 APK 已用最终精确读音/可见页/诊断 revision 代码重建，通过 JNI、固定模型哈希、许可证、16 KiB 和签名门禁。两个独立 Android harness 均已编译。真实 8M 主机推理与上游 Python feed 的 **15 组**数值/缓存检查、生产 JNI/JVM **36 项**及生产词库 **3 组**实际排序提交通过；普通页最大误差为 0，长自然句页有界分批最大均值 logP 差异约 0.03533。发现的过度补全与可见候选挤出问题已按原引擎完整读音及最终可见槽修复，[原问题与修复证据](evidence/candidate-ranking-20261107/README.md)分别保留；这些不是输入准确率或 Android 性能指标。
+[PR #78](https://github.com/ForceMind/ZapIME/pull/78) 的产品实现固定 `3a11177b7d0b2ef054183f5297a282dcb650a14f`，最终测试修订 `5e1a87ccc345cbdb41635059c35cb63ce988b197`。从手动同步基线 `f727d203` 接续，采用固定 MSIME + chinese-ime-lm rerank-v2 8M + APK 已有 ORT 1.28.2。实际 CI merge checkout `4985350e8a7e30257afb58f12cf938c056ab8618` 与测试修订树相同。分支保持开发审查状态，尚未合并 main 或发布稳定版。
 
-实现 `3a11177b7d0b2ef054183f5297a282dcb650a14f` 已保存于 [PR #78](https://github.com/ForceMind/ZapIME/pull/78)。共享 Linux/macOS/Windows 与 Apple 宿主 CI 成功，主机真实模型/JNI、双 ABI 产品构建成功。首轮候选 [42358906839](https://github.com/ForceMind/ZapIME/actions/runs/42358906839) 的 API28/35/36 在第 3 项严格数值比较失败：Android ORT 1.28.2 三端输出一致，但相对 Linux 1.24.4 原参考最大差约 0.09153，超出 0.001；[原失败与包身份](evidence/candidate-ranking-20261107/android-first-run-42358906839/README.md)保留，不把首选相同写成通过。系统 IME 因前项失败尚未执行。
+Android 新偏好默认开启，用户明确关闭的值保留。基础候选先显示，独立有界 worker 只重排最终可见的精确读音候选；个人规则、补全、部分上屏与原候选 ID 保留，输入线程不等待模型。当前会话最多 64 个码点上下文，敏感/禁止学习/无建议/搜索字段排除，资源或推理失败沿用基础候选。模型随包固定校验，不上传输入。其他三个原生宿主尚未加载该模型。
 
-当前仅修 test-only 参考与 suite：从固定上游 feed builders 冻结输入张量，用同一 APK 运行库独立两次图运行作为参考，再与生产 native 比较；不引用 Android 实测分数作期望值，不放宽 0.001、不减少 **14 项**。方法与真实系统 IME 各跑一次，任何失败仍使 suite 失败。新测试须等固定提交 Android CI，不将主机编译或 schema 验证代填。真实键盘门禁要求生产词库、触屏按键、当前 inputRevision/appliedRevision 相等且发布计数增加、所见候选精确上屏及恢复系统键盘。其他三端模型宿主、25M 对比、真实语料准确率、S25 延迟/内存/能耗、正式签名/稳定发布和训练数据声明差异的最终澄清仍未完成。现有语音、同步、备份及系统输入门禁继续保留，不用候选单项结果代替。
+[候选专项 42361234304](https://github.com/ForceMind/ZapIME/actions/runs/42361234304) 五作业全部 SUCCESS。API28/35/36 各 **14/14** 实际模型/JNI/MSIME/Editable 检查通过，生产分数与固定上游张量的同运行库独立参考误差均 **0**，门槛仍 0.001。另三条真实系统 IME 路径均通过：默认偏好、生产词库/模型、6 次 `shijie` 触屏输入、当前 revision 的排序发布、点击所见“世界”精确进入 Editable、无 composing span；原系统键盘/设置、服务退出、合成资料与 IPv4/IPv6 规则清理全部验证。不是用方法探针替代系统键盘，截图也不作为绘制帧或真人上屏证明。
 
-测试修订 `a73eea01` 的 [42360463367](https://github.com/ForceMind/ZapIME/actions/runs/42360463367) 已实际证明 API35 的 **14 项方法检查通过、同运行库独立参考误差 0**。真实系统 IME 也完成默认开启、生产词库/模型、`shijie` 触屏输入、当前 revision 排序发布及点击“世界”进入宿主 Editable。该 job 仍明确 **FAIL**：最后恢复含分号的系统输入法设置值时，test-only adb shell 命令未转义而 exit 127；其余清理通过。[原 ZIP、报告、包身份与限制](evidence/candidate-ranking-20261107/android-second-run-42360463367/README.md)保持原样。当前只修恢复命令的远端 shell 编码，保留读回/清理门禁，设备复验仍需新 CI，不修改产品实现。
+主机完整 workspace **134 项**（其中候选 **16 项**）、fmt、严格 Clippy 通过；Android Python **95 项**、资源准备 **14 项**、三组 JVM worker/上下文/资源检查通过。最终 CI 实际执行 native **15 组**、生产 JNI/JVM **36 项**及独立 oracle；普通页误差 0，本轮分批差 0.017479419708251953，仅描述该主机环境。真实生产库 3 组合成排序提交及过度补全/可见页修复前后原报告保留，不将机械通过冒充输入准确率。
+
+既有回归分别保留身份：相同产品载荷的 a73 完整 Android [42360463238](https://github.com/ForceMind/ZapIME/actions/runs/42360463238) 六作业全过，VoiceKey focused [42360463313](https://github.com/ForceMind/ZapIME/actions/runs/42360463313) 八作业全过；5e 的 [VoiceKey focused 42361234391](https://github.com/ForceMind/ZapIME/actions/runs/42361234391) 八作业亦全过，三端实际系统 IME/服务退出/共享文件/网络清理原件已核。5e 的完整 Android 复跑在本次归档快照时仍运行，不能据旧运行写成新 HEAD 全部 CI 通过。当前 Windows、离线语音 CPU、独立同步服务对应 5e 的 CI 已成功。
+
+两份产品 APK 已实际下载，复验 SHA256、v3 签名、16 KiB 对齐、固定模型、原生库和许可证。后两次修订只有测试与证据变化；APK 内容逐成员相对首轮实现仅开发签名证书不同。首轮跨 ORT 参考失败、第二轮 adb shell 分号设置恢复失败均保留原字节，修正未放宽数值/读回/清理门槛；完整过程见验收目录。
+
+S25/ARM 手机、长时间输入、真实语料首选率/误排序率、RSS/P95/能耗、25M 对比、其他三端模型宿主、正式签名/稳定发行及训练来源声明差异的最终澄清仍分别验收。本次没有操作用户设备或服务器。
 
 ## 前序手动同步进度（保留原记录）
 
