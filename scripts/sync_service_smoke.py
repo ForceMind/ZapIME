@@ -7,6 +7,7 @@ from pathlib import Path
 import secrets
 import subprocess
 import tempfile
+import uuid
 import urllib.error
 import urllib.request
 
@@ -38,20 +39,35 @@ def main():
         assert status == 201
         with tempfile.TemporaryDirectory(prefix="zapime-recovery-ci-") as directory:
             directory = Path(directory)
-            fixture, packet, change_file = [directory / name for name in ("private-fixture.json", "ciphertext.json", "change.json")]
+            fixture, packet, change_file, descriptor_file = [directory / name for name in ("private-fixture.json", "ciphertext.json", "change.json", "public-key-descriptor.json")]
             probe = ROOT / "target/debug/examples/sync_fixture"
             subprocess.run([str(probe), "seal", owner["account_id"], str(fixture), str(packet)], check=True)
+            subprocess.run([str(probe), "descriptor", owner["account_id"], str(fixture), str(descriptor_file)], check=True)
             operation = json.loads(packet.read_text())
+            descriptor = json.loads(descriptor_file.read_text())
+            assert descriptor["key_id"] == operation["key_id"]
+            status, empty = api("GET", "/v1/key-descriptor", owner["token"])
+            assert status == 200 and empty["state"] == "empty" and empty["descriptor"] is None
+            status, registered = api("PUT", "/v1/key-descriptor", owner["token"], descriptor)
+            assert status == 200 and registered["state"] == "registered" and registered["descriptor"] == descriptor
+            assert registered["account_id"] == owner["account_id"] and registered["registered_by"] == owner["device_id"]
+            assert api("PUT", "/v1/key-descriptor", owner["token"], descriptor) == (200, registered)
+            assert api("GET", "/v1/key-descriptor", member["token"]) == (200, registered)
+            changed_descriptor = dict(descriptor, key_id=str(uuid.uuid4()))
+            assert api("PUT", "/v1/key-descriptor", owner["token"], changed_descriptor) == (409, {"error": "key_descriptor_conflict"})
             status, first = api("POST", "/v1/changes", owner["token"], operation)
             assert status == 200 and first["revision"] == 1
             status, retry = api("POST", "/v1/changes", owner["token"], operation)
             assert status == 200 and retry == first
+            changed_operation = dict(operation, operation_id=str(uuid.uuid4()), record_id=str(uuid.uuid4()), key_id=str(uuid.uuid4()))
+            assert api("POST", "/v1/changes", owner["token"], changed_operation) == (409, {"error": "key_descriptor_mismatch"})
             status, pulled = api("GET", "/v1/changes?after=0", member["token"])
             assert status == 200 and pulled["changes"] == [first]
             change_file.write_text(json.dumps(first))
             subprocess.run([str(probe), "verify", str(fixture), str(change_file)], check=True)
             status, _ = api("DELETE", "/v1/devices/" + member["device_id"], owner["token"])
             assert status == 200 and api("GET", "/v1/changes", member["token"])[0] == 401
+            assert api("GET", "/v1/key-descriptor", member["token"])[0] == 401
             stored = compose("exec", "-T", "db", "psql", "-U", "zapime", "-d", "zapime", "-Atc",
                              "SELECT change::text FROM zapime_records", capture=True)
             assert "永久收藏恢复探针" not in stored and owner["token"] not in stored
@@ -69,9 +85,13 @@ def main():
             status, page = api("GET", "/v1/changes?after=0", owner["token"])
             assert status == 200 and page["head"] == 1 and page["changes"] == [first]
             assert api("GET", "/v1/changes", member["token"])[0] == 401
+            assert api("GET", "/v1/key-descriptor", owner["token"]) == (200, registered)
+            assert api("PUT", "/v1/key-descriptor", owner["token"], descriptor) == (200, registered)
+            assert api("PUT", "/v1/key-descriptor", owner["token"], changed_descriptor) == (409, {"error": "key_descriptor_conflict"})
+            assert api("POST", "/v1/changes", owner["token"], changed_operation) == (409, {"error": "key_descriptor_mismatch"})
             change_file.write_text(json.dumps(page["changes"][0]))
             subprocess.run([str(probe), "verify", str(fixture), str(change_file)], check=True)
-        print("PASS: two-device ciphertext exchange, revoke, empty-server database restore and client key recovery")
+        print("PASS: two-device ciphertext exchange, create-once key identity, revoke, empty-server descriptor/database restore and client key recovery")
     finally:
         compose("down", "--volumes")
 

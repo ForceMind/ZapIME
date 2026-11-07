@@ -1,0 +1,5 @@
+PASS: legacy seal command
+PASS: real recovered root public descriptor and stable identity
+PASS: wrong account AEAD binding rejected before descriptor output
+PASS: legacy verify command authenticated and restored real ciphertext
+PASS: private temporary files removed

@@ -39,6 +39,12 @@ func failure(w http.ResponseWriter, err error) {
 		write(w, 409, map[string]string{"error": "operation_id_reused"})
 	case errors.Is(err, ErrCursor):
 		write(w, 409, map[string]string{"error": "invalid_cursor"})
+	case errors.Is(err, ErrKeyDescriptorConflict):
+		write(w, 409, map[string]string{"error": "key_descriptor_conflict"})
+	case errors.Is(err, ErrKeyDescriptorLegacy):
+		write(w, 409, map[string]string{"error": "key_descriptor_legacy"})
+	case errors.Is(err, ErrKeyDescriptorMismatch):
+		write(w, 409, map[string]string{"error": "key_descriptor_mismatch"})
 	case errors.Is(err, ErrInvalid):
 		write(w, 400, map[string]string{"error": "invalid_request"})
 	case errors.Is(err, ErrLimit):
@@ -93,6 +99,29 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch {
+	case r.URL.Path == "/v1/key-descriptor" && r.Method == http.MethodGet:
+		if r.URL.RawQuery != "" || r.URL.ForceQuery || r.ContentLength != 0 || len(r.TransferEncoding) != 0 {
+			failure(w, ErrInvalid)
+			return
+		}
+		state, err := api.Store.KeyDescriptor(ctx, actor)
+		if err != nil {
+			failure(w, err)
+			return
+		}
+		write(w, 200, state)
+	case r.URL.Path == "/v1/key-descriptor" && r.Method == http.MethodPut:
+		input, err := decodeKeyDescriptor(w, r)
+		if err != nil {
+			failure(w, err)
+			return
+		}
+		state, err := api.Store.RegisterKeyDescriptor(ctx, actor, input)
+		if err != nil {
+			failure(w, err)
+			return
+		}
+		write(w, 200, state)
 	case r.URL.Path == "/v1/session" && r.Method == http.MethodGet:
 		// Read-only identity for the presented device token. No caller-supplied
 		// account selector, key material, object reads or sync cursor mutation.

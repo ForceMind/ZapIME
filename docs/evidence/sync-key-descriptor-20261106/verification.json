@@ -1,0 +1,216 @@
+{
+  "saved_at_utc": "2026-11-07T07:11:38.338669+00:00",
+  "source_state": "Frozen independent service key-descriptor slice based on 5b2d9488; source hashes identify tested files",
+  "go_version": "go version go1.27.3 linux/amd64",
+  "postgresql": "16.11 from verified official archive, user-built under target; own data directory and random loopback TCP port; stopped after tests",
+  "go_race": {
+    "passed_top_level_tests": 21,
+    "passed_fuzz_seed_groups": 1,
+    "skipped": [
+      "TestRealS3Protocol",
+      "TestPostgresRealObjectStorageAndPortableArchive"
+    ],
+    "exit_code": 0
+  },
+  "go_vet_exit_code": 0,
+  "rust_example_check_build_fmt": "PASS after sha2 Array LowerHex corrected to per-byte hex",
+  "strict_clippy": "PASS in isolated fixed-base snapshot; historical main-tree data-layer WIP failure retained separately",
+  "local_roundtrip": {
+    "scope": "Actual local PG16.11 and service binaries, inline storage; no Docker/S3/installer/public TLS/phone claim",
+    "private_material_removed": true,
+    "real_aead_descriptor": true,
+    "wrong_account_descriptor_refused": true,
+    "actual_v2_binary_refused_schema3": true,
+    "pg_dump_fresh_database_restore": true,
+    "descriptor_identity_and_timestamp_preserved": true,
+    "wrong_root_registration_and_push_refused": true,
+    "device_revocation_preserved": true,
+    "restored_ciphertext_authenticated": true
+  },
+  "docker_s3_installer": "NOT RUN locally; strict new CI assertions present",
+  "tools": {
+    "go_archive_bytes": 70588678,
+    "go_archive_sha256": "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+    "postgresql_archive_sha256": "6deb08c23d03d77d8f8bd1c14049eeef64aef8968fd8891df2dfc0b42f178eac",
+    "old_v2_binary_source": "af40cd6571bf1ce32fa5516ff2dcfb6f1ef311a7"
+  },
+  "source_files": [
+    {
+      "path": "services/sync/internal/syncapi/http.go",
+      "bytes": 5805,
+      "sha256": "62119a8a8c438320d9ce5cad8e36c940300fe5996902bdb1a6abdac6cab779e1"
+    },
+    {
+      "path": "services/sync/internal/syncapi/protocol.go",
+      "bytes": 4620,
+      "sha256": "168421acc84a77a75c13561c78dfe75208ee8ad73ef3ed0ad9fbd0bd7dd8d9fb"
+    },
+    {
+      "path": "services/sync/internal/syncapi/store.go",
+      "bytes": 13628,
+      "sha256": "2a3974a6bab8e43a6991f633e84e498359c321a40694144f13678fb26a7e94f4"
+    },
+    {
+      "path": "services/sync/internal/syncapi/key_descriptor.go",
+      "bytes": 7386,
+      "sha256": "5ff1dcdf25f2ee6fa133e01b7e43f08b4c250994b1e61aa15395fb8735466606"
+    },
+    {
+      "path": "services/sync/internal/syncapi/key_descriptor_test.go",
+      "bytes": 19141,
+      "sha256": "c117acf9fab5fdec5e5401ab4b0e9480104d878788ddcb409bf2dbe2c7b18b08"
+    },
+    {
+      "path": "services/sync/README.md",
+      "bytes": 6330,
+      "sha256": "8f8b8ef65c4d702f8e3b63ebbce92820c1a704a85cff9e5cc3913166abbb995a"
+    },
+    {
+      "path": "crates/zapime-crypto/Cargo.toml",
+      "bytes": 466,
+      "sha256": "3d2cd4c5da4e5e75b8917385b546575633de133677f6d84059d11e51eb5549d6"
+    },
+    {
+      "path": "crates/zapime-crypto/examples/sync_fixture.rs",
+      "bytes": 7097,
+      "sha256": "7a1a8b04dd9dfa9085717b35771926248543fca76279612d986177696c3cd655"
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "bytes": 6631,
+      "sha256": "e33ce0cbd0bf3dbc732ac0731d5e5b0f27c7a57d61db87db6f74b13718e91dfd"
+    },
+    {
+      "path": "scripts/server_install_smoke.py",
+      "bytes": 8419,
+      "sha256": "6567c8bb1bd30270b05da77afac73740e5625878ea7a97a0ac82484c187e7e46"
+    },
+    {
+      "path": "docs/SYNC_PROTOCOL.md",
+      "bytes": 11367,
+      "sha256": "2fac99fded783a1385d41b44b6803a1707d2a0853bb3835f941f5e84858666ea"
+    },
+    {
+      "path": "docs/SYNC_KEY_DESCRIPTOR.md",
+      "bytes": 4348,
+      "sha256": "e1dab4c4a6507d945b01f8bc190e6d5724678e6500bffea208b10a2b6c743039"
+    }
+  ],
+  "logs": [
+    {
+      "file": "descriptor-isolated-clippy.log",
+      "bytes": 4946,
+      "sha256": "e042ccd0fa2b011283e02982b36c853fcccb7e0bf9aca3e9eb98c7e2f4ac73f4"
+    },
+    {
+      "file": "descriptor-isolated-fixture-build.log",
+      "bytes": 2558,
+      "sha256": "adec3170622ac9b4fb5171da1bc784990b543528080e6b0ecb74e1183eddade2"
+    },
+    {
+      "file": "descriptor-isolated-fixture-check.log",
+      "bytes": 1543,
+      "sha256": "57f70103f529776527f20dbc21eb8d83a6581fce0d1d552090030df93b034f19"
+    },
+    {
+      "file": "descriptor-isolated-fixture-execution.log",
+      "bytes": 266,
+      "sha256": "fab8e117919a00d9d5321762e375c2bddb3b0d9be11bffafcc11e33d75793050"
+    },
+    {
+      "file": "descriptor-isolated-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "fixture-first-lowerhex-failure.log",
+      "bytes": 1893,
+      "sha256": "848541db737cf047b12109da069d5a578a52030c1c23a4ee5f947b1026afdc90"
+    },
+    {
+      "file": "key-descriptor-fixture-build.log",
+      "bytes": 578,
+      "sha256": "6c86f28b77aeafcf1677a419ea3ed9085d90531b02d3d4dc4e4ce81e11dccfaa"
+    },
+    {
+      "file": "key-descriptor-fixture-check.log",
+      "bytes": 578,
+      "sha256": "5aaea840977a70c1d606d53eea956339402f70bd8e8d3042bc099f32bc20986e"
+    },
+    {
+      "file": "key-descriptor-fixture-clippy.log",
+      "bytes": 1183,
+      "sha256": "e42565b68c1f6621921cc58ebb6e607f0f8460124a59fa11e69d0ac39a88b1a0"
+    },
+    {
+      "file": "key-descriptor-fixture-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "key-descriptor-go-first-build-failure.log",
+      "bytes": 1623,
+      "sha256": "9dd04a465a96cba0073b93af166a60fa9d303bd4e80510a1c15a68d4f3941820"
+    },
+    {
+      "file": "key-descriptor-go-pg-lifetime-failure.log",
+      "bytes": 8015,
+      "sha256": "df5b5991045a4d742de2d3bb4bce058312bdb9cc45ae89baf9a45a7a26619b46"
+    },
+    {
+      "file": "key-descriptor-go-tests.log",
+      "bytes": 8308,
+      "sha256": "5cb0787dd5592104849ca7b19341446c08ffd55f0e45a88967480a76553902d8"
+    },
+    {
+      "file": "key-descriptor-go-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "local-key-descriptor-roundtrip.json",
+      "bytes": 511,
+      "sha256": "09201fafb260f3fcde9d9111b70f5fb6f6b14b2c1f8253103600df83fea5a688"
+    },
+    {
+      "file": "local-key-descriptor-roundtrip.log",
+      "bytes": 117,
+      "sha256": "a2bdcc4beaf35180380ede2fc353a089fe448502eb14195b65630724d7acc396"
+    }
+  ],
+  "isolated_snapshot": {
+    "base_commit": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba",
+    "source_tree_before_final_validation_logs": "435bb3d2255a394c9bb727ca2bec24751d9cd3ca",
+    "commands": [
+      {
+        "command": "cargo fmt --all --check",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo check --locked -p zapime-crypto --examples",
+        "exit_code": 0
+      },
+      {
+        "command": "cargo build --locked -p zapime-crypto --example sync_fixture",
+        "exit_code": 0
+      }
+    ],
+    "fixture_execution": {
+      "result": "PASS",
+      "legacy_seal_and_verify": true,
+      "same_real_root_descriptor_stable": true,
+      "wrong_account_rejected_before_output": true,
+      "private_temporary_files_removed": true
+    },
+    "cargo_lock": {
+      "base_sha256": "82ccf9e46ccab00631826a60e33b117a806cf3bb3ad4c0f737ff9b16ae5d761c",
+      "saved_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "only_change": "zapime-crypto dependencies gains existing sha2 package; no package version/source/checksum changes"
+    },
+    "main_index_checkout_head_modified_by_snapshot_operation": false
+  }
+}

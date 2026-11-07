@@ -14,12 +14,15 @@ import (
 )
 
 var (
-	ErrUnauthorized    = errors.New("unauthorized")
-	ErrForbidden       = errors.New("forbidden")
-	ErrInvalid         = errors.New("invalid_request")
-	ErrOperationReused = errors.New("operation_id_reused")
-	ErrCursor          = errors.New("invalid_cursor")
-	ErrLimit           = errors.New("limit_reached")
+	ErrUnauthorized          = errors.New("unauthorized")
+	ErrForbidden             = errors.New("forbidden")
+	ErrInvalid               = errors.New("invalid_request")
+	ErrOperationReused       = errors.New("operation_id_reused")
+	ErrCursor                = errors.New("invalid_cursor")
+	ErrLimit                 = errors.New("limit_reached")
+	ErrKeyDescriptorConflict = errors.New("key_descriptor_conflict")
+	ErrKeyDescriptorLegacy   = errors.New("key_descriptor_legacy")
+	ErrKeyDescriptorMismatch = errors.New("key_descriptor_mismatch")
 )
 
 // 密文格式直接对应 zapime-crypto v1；服务端不持有根密钥、不尝试解密。
