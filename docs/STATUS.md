@@ -1,5 +1,9 @@
 # ZapIME 项目执行状态
 
+## 工作对话交接同步（2026-11-07）
+
+[当前交接提示](WORK_HANDOFF_PROMPT.md)和[开发计划](DEVELOPMENT_PLAN.md)已统一为 `feat/offline-candidate-ranking` / PR #78，并明确其手动同步基线、已验源码身份及候选质量/资源的后续任务。旧交接按原字节保存在[历史文件](history/WORK_HANDOFF_PROMPT_PRE_CANDIDATE_20261107.md)，不再将早期语音分支或已完成的 `startVoice()` 修复作为当前入口。本次仅更新文档；以下七条成功 workflow 仍属于固定测试修订 `5e1a87c`，不声称在文档提交上重复执行。
+
 ## 默认开启的本机候选增强（2026-11-07）
 
 **Android 开发版已接入并默认开启本机候选增强，三端专项实测全部通过，固定双 ABI 安装包已下载复核。** [试用包与开启说明](CANDIDATE_RANKING_TRYOUT.md)、[实现契约](CANDIDATE_RANKING.md)、[完整原始验收](evidence/candidate-ranking-20261107/accepted-42361234304/README.md)均已保存。

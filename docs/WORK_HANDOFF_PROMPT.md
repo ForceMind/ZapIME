@@ -1,100 +1,92 @@
-# ZapIME（闪电输入法）｜双离线语音引擎与 Android Alpha 持续研发接管
+# ZapIME（闪电输入法）｜默认离线候选增强与后续研发接管
 
-> 最新验证接续：固定e3c4的三端47项及完整Android原输入/双语音回归、共享client实际服务CI均通过并下载核验，候选APK/校验值/固定服务一键命令见ANDROID_MANUAL_SYNC_TRYOUT.md。共享checks原macOS路径夹具失败已归档，产品NOFOLLOW不放宽，修复只规范化自有测试/示例父目录，主机118项通过；修后macOS等新CI。后续新增10项真实设置页生命周期与独立API28受控系统CA HTTPS门禁，源码与主机检查不是设备通过；接续读ADR_023_ANDROID_SYNC_HTTPS_CI.md、STATUS和对应新run。不要在个人设备执行根库/清理/网络CI脚本。
+更新日期：2026-11-07。此文件是当前工作对话的接续入口。上一版混合了早期语音、同步和待验收状态，已按原文件字节归档到 [历史交接](history/WORK_HANDOFF_PROMPT_PRE_CANDIDATE_20261107.md)；其中的旧 clone 分支、待修启动入口和待运行 CI 不再是当前任务。
 
-> 最新同步接续：PR #73本机准备已有固定931d30三端真实JNI/SAF证据；PR #74为服务端schema3密钥身份CAS（1858895a，后合入931为e8e016）。最新 `feat/android-manual-sync` 正接入共享client原语、独立密钥核对/登记UI与显式逐轮密文传输；先读STATUS、ANDROID_MANUAL_SYNC、SYNC_KEY_DESCRIPTOR及新证据，逐项核实对应源码CI，不把准备层通过作为新传输通过。旧08语音包不含这些功能；未完成Android HTTPS/手机、配对、冲突解决、历史迁移或四端同步。已有工作树保留改动，继续独立分支/PR，不强推或操作个人设备。
+你现在接管已有工程的后续开发。先读取真实仓库和当前证据，继续修改代码、验证并交付可审查的切片。保留已完成的候选增强、双离线语音和显式手动同步，不从旧语音分支重新实现。
 
-> 2026-11-06 后续同步切片：新工作在 `feat/android-sync-preparation` / PR #73，基于下面已固定的双离线Alpha分支。新增本机密钥创建/恢复、受保护材料与SQLite身份绑定、独立JNI和页面；读 `docs/ANDROID_SYNC_PREPARATION.md` 与最新STATUS核对实际CI。它不启用HTTP同步/全局密钥登记，不能误报四端已同步。接续这项工作应取新分支；原 `08e84980` APK仍只对应原语音候选。
+## 1. 从这里接续
 
+仓库：[ForceMind/ZapIME](https://github.com/ForceMind/ZapIME)，保持 Public 和原 GPL-3.0-only、第三方署名义务。
 
-> 2026-11-06 实施接续：本轮已交付 [Android 双离线引擎 Alpha 固定候选](DUAL_VOICE_ALPHA_TRYOUT.md)。产品源码为 `08e84980562ecc8fab436ffcdab6e5aee8c567e7`，其双 ABI APK 已实际下载核验。产品不变的测试提交 `be79d084eef1f835e7504f134f46ba315b36df18` 在 focused run42227414903 的 API28/35/36 全部通过真实 VoiceKey 模型/JNI/Editable及离线系统IME门禁。原失败与修补证据完整保留；S25/自然人声/正式签名仍 NOT RUN。先读最新 STATUS、试用指南及本轮证据，下面历史 e24 基线与“先修入口”等任务不能覆盖已完成实现。
->
-> 本地 Codex 现在可以接续：`git clone --branch feat/voicekey-engine-import --recurse-submodules https://github.com/ForceMind/ZapIME.git`。已有仓库先 `git status --short` / `git fetch origin`，保留未提交改动，不 reset/force。读取 AGENTS、STATUS、本文、整合与验收文档。复用 PR #71 / Issue #72，不重复提交计划。限定隔离 GitHub 模拟器的验收脚本不可在个人设备执行；本地可运行无需设备的 Rust/JVM/host 测试。下一步以手机集中验收和同机语料对比为主；源代码集成、候选试用、合并及稳定发布分层处理。
+| 记录 | 接续位置 |
+| --- | --- |
+| 当前开发分支 | `feat/offline-candidate-ranking` |
+| 当前审查入口 | [PR #78](https://github.com/ForceMind/ZapIME/pull/78)，交接时 open / draft，尚未合并 main |
+| PR 基线 | `feat/android-manual-sync`，`f727d2031f438881fbfaf99aa474517cde66cd29` |
+| 候选功能实现 | `3a11177b7d0b2ef054183f5297a282dcb650a14f` |
+| 最终已验测试修订 | `5e1a87ccc345cbdb41635059c35cb63ce988b197` |
+| 实际 CI merge checkout | `4985350e8a7e30257afb58f12cf938c056ab8618`，树与上述测试修订相同 |
+| 本轮交接前的证据提交 | `7c1a0779bfe144bbcdb34121431b0201e59ccf59`；本文件随后以仅文档提交更新 |
 
+这些 SHA 是证据身份，不保证接管时仍为最新。已有仓库先执行 `git status --short` 和 `git fetch origin`，检查 main、当前分支、PR 及基线的实际变化，保留已有未提交工作。分支已推进或 PR 已合并时从新状态接续，不 reset 到记录 SHA，不强推。新的独立切片可以从核实后的当前功能基线建立分支；不要仅从 `feat/voicekey-engine-import` 接续而漏掉后来的同步和候选实现。
 
+全新工作目录可以使用：
 
-你现在接管已有工程的后续开发，担任产品、Rust/Android 原生开发、语音推理、隐私安全、测试与 GitHub 交付负责人。你的任务是读取真实仓库、修改代码、运行测试、修复问题并交付可安装试用包，不是重新设计项目，也不是仅提交文档或建议。
+```sh
+git clone --branch feat/offline-candidate-ranking --recurse-submodules https://github.com/ForceMind/ZapIME.git
+cd ZapIME
+git status --short
+git log -5 --oneline
+```
 
-## 一、接续位置与事实核验
+阅读顺序：
 
-仓库：https://github.com/ForceMind/ZapIME
+1. [AGENTS.md](../AGENTS.md)、[当前状态](STATUS.md)、[开发计划](DEVELOPMENT_PLAN.md)和 [技术决策](DECISIONS.md)。
+2. [候选增强契约](CANDIDATE_RANKING.md)、[候选试用包](CANDIDATE_RANKING_TRYOUT.md)、[最终原始验收](evidence/candidate-ranking-20261107/accepted-42361234304/README.md)。
+3. 涉及其他模块时再读 [双离线语音试用](DUAL_VOICE_ALPHA_TRYOUT.md)、[VoiceKey 验收](VOICEKEY_ACCEPTANCE.md)、[手动同步](ANDROID_MANUAL_SYNC.md)、[同步 HTTPS 测试边界](ADR_023_ANDROID_SYNC_HTTPS_CI.md)及对应原始报告。
 
-- 名称：ZapIME / 闪电输入法；仓库保持 Public，客户端原有 GPL-3.0-only 与第三方署名义务不改变。
-- 主分支：main。
-- 当前开发分支：feat/voicekey-engine-import。
-- 当前 PR：https://github.com/ForceMind/ZapIME/pull/71
-- 跟踪任务：https://github.com/ForceMind/ZapIME/issues/72
-- 当前固定候选产品代码：08e84980562ecc8fab436ffcdab6e5aee8c567e7；专项测试提交：be79d084eef1f835e7504f134f46ba315b36df18。
-- 下面 e24 基础与实施顺序保留为原交接要求；是否已完成以 STATUS 和原始证据为准。
-- 当时 main：5621ab0e81780ca58c6cf74e97c93928a10f981a。
-- VoiceKey 固定来源：J3n5en/voicekey@3ba017826eef7fac405198510b03859eb5b6c8c4。
+先区分最新状态、带固定 SHA 的历史结果和后续目标；不要将历史段落里的“待执行”覆盖较新的实际成功，也不要把旧成功附到新代码上。
 
-这些 SHA 是交接记录，不保证你启动时仍是最新。先查 main、工作分支、PR、Issue、未提交改动和 CI；保护现有工作树，不强推、不覆盖其他人的改动。若 PR 已合并或分支有新进展，从新的真实状态续接，不强行回退到记录 SHA。本提示词和新计划已提交在该实验分支，不能只读 main 的旧文档而漏掉它们。
+## 2. 已完成的候选方案
 
-首先阅读 AGENTS.md、README.md、docs/DEVELOPMENT_PLAN.md、docs/STATUS.md、docs/VOICEKEY_INTEGRATION.md、docs/VOICEKEY_ACCEPTANCE.md、docs/ADR_020_VOICEKEY_DELIVERY.md、integrations/voicekey/README.md，并按需读取 docs/DECISIONS.md、VOICE_INPUT.md、VOICE_QUALITY.md 和原始历史。近期目标与语音实施以这些新文档为准；历史要求未明确变更的继续保留。
+Android 开发版已接入 **固定 MSIME 解码器 + chinese-ime-lm rerank-v2 8M + ONNX Runtime 1.28.2**。这是实际本机候选语言模型，模型随产品 APK 打包，校验固定，不需要 API key，不上传输入，不在按键过程中下载模型。默认开启；用户明确关闭的偏好保留。设置入口为“主页 → 键盘与反馈 → 中文候选 → 离线候选增强”。
 
-## 二、最高优先级交付目标
+基础候选先显示，模型在独立有界 worker 上运行，只重排最终可见且读音精确匹配的整词候选。MSIME 的分词、部分上屏、个人规则和候选身份继续生效；补全、模糊及纠错候选不被误当精确候选重排。排序只返回已有候选 ID 的排列，不生成任意新文字或自动上屏。
 
-尽快交付一份可以给我和 VoiceKey 作者试用的 Android 双离线引擎 Alpha：同一个 ZapIME 键盘可以选择 X-ASR 或 VoiceKey 微信离线；各自模型独立准备；断网完成录音、流式预览、停止、取消、重录和确认插入。
+必须保留的实现边界：
 
-X-ASR 仍为默认。不要等 Windows/macOS/iOS、完整云同步或英语伴学全部完成才交付 Android。先把不需要我真机的工作全部完成；缺少 S25 时交付可验证的候选包与一次性真机验收单，不虚构真机结果，也不要因缺手机而停止其余工程。
+- 输入线程不等待模型；最多一个实际推理任务和一个最新待处理任务。80 ms 防抖、400 ms 结果有效期是调度预算，不是真机性能实测。
+- 纯重排不改变输入修订，用户点击、空格和九键选择仍绑定所见候选身份；真实输入变化或过期结果必须拒绝。
+- 仅使用允许的当前会话上下文，最多 64 个 Unicode 码点；编辑器变化、失焦、未知光标状态等按契约清空。密码、隐私、禁止学习、无建议和搜索字段排除。
+- 模型加载、推理、清理及 close 由同一 worker 拥有；只有协作 cancel 可以跨线程。失败沿用基础候选，不回退云端。
+- 候选模型随包是 ADR-024 的明确决定；VoiceKey 等语音权重仍按各自导入契约准备，不能混用两类资源规则。
 
-长期目标不变：四端真实原生输入法；九键/全键；参考 QQ 输入法体验但独立设计的主题与系统触感；统一词库、候选、短语、永久收藏和显式剪贴板；本地数据可迁移；自建服务器中转与 R2 密文存储；低频增量 E2EE 同步与恢复；后续中文上屏后的英语伴学。这些继续沿既有架构开发，不从零重写。
+固定 MSIME 来源为 `97d652a49cabb0887355b84186af2aa9032d3814`，VoiceKey 为 `3ba017826eef7fac405198510b03859eb5b6c8c4`。权重与适配代码来源分别见 [候选来源说明](../integrations/candidate/SOURCE.md) 和 [许可审计](LICENSE_AUDIT.md)。保留训练资料来源声明差异及后续澄清记录，不把本次工程通过表述成完整商业授权结论。
 
-## 三、已完成基础及不能夸大的部分
+## 3. 已验收范围与下一轮不能代填的结果
 
-完整 VoiceKey 源码已以 vendor/voicekey 子模块引入。当前产品适配器只编译离线 wtlocal 的特征、模型、流式解码及本地稳定 NEON 补丁；不编译其非公开云识别客户端或第三方服务密钥。
+固定测试修订 `5e1a87c` 的七条 workflow 已全部 SUCCESS：候选专项、完整 Android、VoiceKey 专项、共享核心/Apple、Windows、离线语音 CPU 和同步服务。后续证据及本次交接提交只修改文档，不应被描述为重新运行了全部 CI。
 
-Android 已有 NativeVoiceKey JNI、模型导入、引擎设置、VoiceCapture 分流和 APK 打包实现。代码基线 e24f1bd 的六条 CI 均已核验 success；Android run 42199407235 已完成双 ABI 构建以及 API28/35/36 现有回归。但这不等于 VoiceKey 模型驱动的完整识别、仅装 VoiceKey 路径、S25 或自然人声准确率已经通过。
+[候选专项 42361234304](https://github.com/ForceMind/ZapIME/actions/runs/42361234304) 在 API28/35/36 各通过 14 项真实模型/JNI/MSIME/Editable 检查；独立同运行库参考的生产分数误差为 0。每个 API 另有真实系统 IME 门禁：默认偏好、实际触摸输入 `shijie`、当前输入修订的排序发布、点击所见“世界”进入 Editable，以及原键盘/设置、服务退出、合成资料和网络规则完整恢复。数值一致性不等于语料首选率 100%，方法检查不替代系统 IME，截图也不替代实际 Editable 断言。
 
-开发 artifact 为 13494970099，来源见 docs/VOICEKEY_ACCEPTANCE.md。此前只核验了 GitHub 元数据；你需实际取得 ZIP 并复核大小、SHA、APK 成员、ABI、JNI、对齐、署名和签名。不要把旧 CI 的成功附到新提交冒充已测试，也不要把几百字节的失败产物当安装包。
+ARM64 和 x86_64 产品 APK 已实际下载并核验摘要、签名、16 KiB 对齐、模型、原生库和许可证；固定下载与开启方法见 [试用指南](CANDIDATE_RANKING_TRYOUT.md)。这些是开发包，开发签名及备份限制必须继续说明。
 
-## 四、立即开始的研发任务
+以下仍需独立验收：ARM/S25 手机运行、长时间输入、真实语料首选率和误排序率、P50/P95、RSS/能耗、8M 与 25M 对照、Windows/macOS/iOS 的模型宿主、正式签名及稳定发行。共享 Rust 和其他平台构建通过不等于其他宿主已经加载模型，也不覆盖 Windows 历史 TSF 激活问题。
 
-### 1. 先修复已静态确认的启动入口问题
+原始跨 ORT 版本参考失败和 adb shell 设置恢复失败均已保留；修正没有放宽门槛。后续发现问题继续保留原失败和精确源码身份，不覆盖原件或把历史失败隐藏成从未发生。
 
-检查 platforms/android/java/org/zapime/android/ZapInputMethodService.java 的 startVoice()。在交接基线中它仍用 VoiceModels.installed/recoverable 判断准备状态，没有按 VoiceEnginePreferences 选择模型管理器，会拦住仅装 VoiceKey 的路径。
+## 4. 接下来实际做什么
 
-实际修复并补充五类测试：仅安装 X-ASR、仅安装 VoiceKey、两者都有、均未安装、所选模型损坏。引擎选择贯穿本轮会话，最终模型哈希与加载留在独立 worker；不得为修复入口把模型 IO 搬进 UI。
+### 第一阶段：冻结候选质量基线并完成可执行的资源验证
 
-### 2. 收口实际运行的安全与资源边界
+在当前 8M 实现上准备公开或合成、可追溯且有预期结果的中文候选语料，覆盖短词/整句、歧义拼音、九键、补全与纠错边界、个人置顶、上下文切换和连续输入。先固定数据及指标，再比较基础排序与模型排序；记录首选率、Top-k、选词操作成本、错误提升/降序和失败样本。模型不能生成正确答案但基础候选中也没有答案的情况须单独归因。不能把本轮机械门禁或少量示例当语言质量结论。
 
-审计并修复 integrations/voicekey/src/lib.rs、android.rs、kernels.rs，以及 NativeVoiceKey、VoiceKeyModels、VoiceEnginePreferences、VoiceSettingsActivity、VoiceCapture 和已有确认事务的连接。
+先完成无需用户手机的语料、评估工具、审查与可复现主机测量；按实际环境标记资源结果。准备一次集中 ARM/S25 验收，覆盖安装升级/备份、冷热加载、长期输入、隐私切换、触摸和迟到排序竞态、内存/延迟/能耗。缺手机时继续其余工程，不虚构手机结果，也不让用户反复执行零散步骤。未经另行授权不操作用户设备或在其设备上运行隔离 CI 清理脚本。
 
-重点测试：成功接受 PCM 的非零证据；无样本/全零的部分与最终文字必须为空；没有新 partial 时保留正确预览；队列满/尾块/60秒上限；取消、超时、close 后真实推理与句柄回收；重复录音/权限撤销/输入框和光标变化时无迟到上屏；模型缓存替换与闲置释放；异常不跨 JNI 导致崩溃。
+### 第二阶段：依据实测优化
 
-不要将 abort 异步任务当成阻塞推理必然停止，不要把写死的状态标记当实测。语音预览不自动上屏，仍通过 VoiceCommitTransaction 对原连接、ticket/epoch、选区和隐私条件复核后最多一次 commitText。
+依据质量与资源结果修复具体失败，再决定缓存、调度或 25M 对照。默认保留已交付的 8M 离线增强和用户关闭偏好；只有获得相应证据后才提出默认模型调整。每个改动复验受影响的真实边界，不为文档更新重复全部门禁。
 
-稳定 NEON 补丁已修复原 vdotq_s32 的编译问题。保留来源，在 ARM 上做标量数值对照和资源/速度测试；不因 x86 单测通过就宣称 ARM 等速或适配所有设备。
+### 第三阶段：沿原产品路线继续独立切片
 
-### 3. 完成可信模型与可重复构建
+Windows/macOS/iOS 模型宿主、双离线语音同机比较、同步配对/冲突/恢复及英语伴学分别按 [开发计划](DEVELOPMENT_PLAN.md) 推进。Android 已有双离线语音、密钥准备和显式逐轮手动同步，不重新实现早期 `startVoice()` 修复或将手动同步删回准备层。
 
-现有 MD5 包身份检查与安装后生成的每文件 SHA256 不等于可信原包固定白名单。补齐可追溯的版本、包及成员长度/SHA256、来源和授权记录，可信目录绑定构建；拒绝未知成员、重复文件、路径穿越、符号链接、超量输入和未验证模型解析。覆盖取消、磁盘不足、发布中断、重启恢复、旧有效模型保留和使用中替换。
+语音仍以 X-ASR 为默认、VoiceKey 为可选，模型独立准备；英语伴学实际模型 worker/UI 仍未完整接入且默认关闭。同步不默认上传、不后台轮询；受控 API28 系统 CA 的 HTTPS 成功不代表两台手机、公网 PKI、R2、配对或完整四端同步已验收。
 
-用户已明确确认作者同意集成代码，不要反复询问同一许可。保留作者署名并整理授权证据；第三方权重、专有二进制和厂商服务权限单独处理。不得默认打包未获许可的模型，也不得启用上游提取的凭据或非公开云协议。资源受阻时明确记录，继续其他可执行工作。
+## 5. 工作方式与交付
 
-锁定适配器 Cargo 依赖和上游。格式/测试应为硬门禁，不用 continue-on-error 隐藏失败，不为了格式化改脏固定 vendor。检查双 ABI、16KiB 对齐、JNI 导出、运行库依赖和包内权重/云代码隔离。
+在当前会话授权范围内持续完成可执行切片，普通文件修改、测试和技术选择不反复询问。保护工作树与固定上游，不强推、不擅自合并 main 或发布稳定版；遇到单点阻塞记录准确边界并继续其他事项，不承诺无人执行的后台研发。
 
-### 4. 新增 VoiceKey 专项验收，而非只重跑旧 X-ASR
+每个切片交付代码、适用测试、原始失败与成功、准确源码/产物身份、剩余问题，并更新 STATUS、相关契约和 PR。不要把“方案已写入”作为研发完成，也不要让当前文档变成覆盖更晚事实的固定脚本。
 
-执行主工作区和独立适配器测试；构建 arm64-v8a 与 x86_64；保留 API28/35/36 两轮输入、语音、隐私、备份与真实服务退出检查。新增明确选中 VoiceKey、加载其真实模型并完成 JNI 解码、预览和确认插入的用例。
-
-分别记录状态机单测、合成模型探针、JNI、AudioRecord/Editable、真实 IME 和自然人声/ARM 真机证据。无合法测试模型或设备的项目写 BLOCKED/NOT RUN，不使用假识别文字，不降低断言，不删失败。所有公开测试资料仅用合成或明确可公开材料，真实用户录音默认留在本机。
-
-### 5. 交付试用包并安排公平对比
-
-对通过当前阶段门禁的包，提供固定下载来源、commit、APK SHA256、模型准备步骤、麦克风权限、切换/断网/取消/重录方法、开发签名与升级备份限制。避免每次随意换签名导致不能覆盖安装，不要求用户卸载唯一未备份的数据。
-
-准备 S25 的同机同语料 A/B 测试，分别记录模型准备/校验、冷/热加载、首字、停止到定稿、CER、峰值内存、CPU、能耗和失败样例；报告 P50/P95 及样本数。顺序重放相同音频，避免并行争抢资源。不要把 RTF 当端到端延迟、把 100%-CER 当准确率，或先验宣称 VoiceKey 一定更快。结果决定推荐引擎，未经证据不改默认。
-
-## 五、工程操作与工作方式
-
-只在获授权的仓库、云端工作目录和隔离 CI 操作；未经单独允许不接管我的电脑、手机、服务器或 DNS。保留现有公开状态、MSIME/VoiceKey 固定来源、原数据和隐私边界。按 AGENTS.md 执行；不要在个人设备运行会清空测试环境的 CI 脚本。
-
-复用 PR #71 并按需拆分可独立验证的切片；更新 Issue #72 的真实进度。先检查 GitHub 当前变化，禁止强推。CI/审查未满足前不强行合并；安全切片是否可合并和能否宣称真机交付分开判断。
-
-在当前工作会话可用的执行范围内连续推进，不为普通文件修改、下一项测试或一般技术选择反复停下来让我说“继续”。遇到单点限制记录原因并推进其他任务；不要用定时任务代替研发，不承诺无人执行的后台工作。
-
-完成一个切片后，将来源提交、实际修改、命令/退出码、CI/产物、覆盖边界、失败及下一项任务写回 docs/STATUS.md、docs/VOICEKEY_ACCEPTANCE.md、PR/Issue。不能只汇报“方案已入库”。当前可执行任务耗尽时，交付明确成果和唯一的集中阻塞清单。
-
-现在开始：重新核验分支与 CI，阅读上述新文档，然后先修复 startVoice() 的模型选择入口并运行对应回归，再继续后续工程。
+**现在开始：核对工作树与 PR #78 的最新状态，读取候选契约及最终验收；保留已完成实现，从候选质量基线与无需手机的评估工具继续。**
