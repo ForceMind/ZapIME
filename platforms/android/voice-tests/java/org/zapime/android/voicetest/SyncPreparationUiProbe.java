@@ -2,6 +2,7 @@
 package org.zapime.android.voicetest;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
@@ -102,22 +103,52 @@ final class SyncPreparationUiProbe {
         }
         return found;
     }
+    private static Rect visibleRoots(UiAutomation automation)throws Exception {
+        AccessibilityNodeInfo root=automation.getRootInActiveWindow();
+        if(root==null||!String.valueOf(root.getPackageName()).contains("documentsui"))return null;
+        Rect screen=new Rect();root.getBoundsInScreen(screen);
+        for(AccessibilityNodeInfo node:VoiceKeyModelProbe.nodes(root)){
+            String id=node.getViewIdResourceName();
+            if(node.isVisibleToUser()&&id!=null&&(id.endsWith(":id/container_roots")||id.endsWith(":id/roots_list"))){
+                Rect bounds=new Rect();node.getBoundsInScreen(bounds);
+                if(bounds.intersect(screen)&&!bounds.isEmpty())return bounds;
+            }
+        }
+        return null;
+    }
     private static void selectRecovery(UiAutomation automation,String name,File output,JSONObject report)throws Exception {
-        boolean rootsOpened=false,downloadsOpened=false;Rect previous=null;long stableSince=-1;
+        boolean rootsOpened=false,downloadsOpened=false,closedCover=false;Rect previous=null;long stableSince=-1;
+        report.put("provider_navigation_cover_detected",false).put("provider_navigation_close_count",0)
+                .put("provider_occlusion_scope","identified_DocumentsUI_roots_navigation_only");
         for(int attempt=0;attempt<150;attempt++){
             AccessibilityNodeInfo named=uniqueDocument(automation,name);
+            Rect navigation=visibleRoots(automation);
+            if(closedCover&&navigation!=null){previous=null;stableSince=-1;Thread.sleep(200);continue;}
             if(named!=null){
                 Rect bounds=new Rect();named.getBoundsInScreen(bounds);
+                // Visibility alone does not prove hit-test reachability: modern
+                // DocumentsUI exposes the filename beneath an open drawer.
+                if(navigation!=null&&navigation.contains(bounds.centerX(),bounds.centerY())){
+                    SyncAccountProbe.check(!closedCover,"provider drawer still covers filename after one close");
+                    VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-nav-before.png");
+                    report.put("provider_navigation_cover_detected",true).put("provider_navigation_bounds",new JSONArray().put(navigation.left).put(navigation.top).put(navigation.right).put(navigation.bottom));
+                    SyncAccountProbe.check(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK),"observed provider drawer close rejected");
+                    closedCover=true;report.put("provider_navigation_close_count",1).put("provider_navigation_close_method","observed_cover_single_global_back");
+                    previous=null;stableSince=-1;Thread.sleep(200);continue;
+                }
                 if(bounds.equals(previous)&&SystemClock.uptimeMillis()-stableSince>=200){
                     // Capture only the provider's public synthetic filename list;
                     // never capture the Activity while a recovery code is displayed.
                     VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-before.png");
                     AccessibilityNodeInfo fresh=uniqueDocument(automation,name);Rect now=new Rect();if(fresh!=null)fresh.getBoundsInScreen(now);
-                    if(fresh!=null&&now.equals(bounds)){
+                    Rect finalNavigation=visibleRoots(automation);
+                    if(fresh!=null&&now.equals(bounds)&&(!closedCover||finalNavigation==null)
+                            &&(finalNavigation==null||!finalNavigation.contains(now.centerX(),now.centerY()))){
                         report.put("provider_touch_point",new JSONArray().put(now.centerX()).put(now.centerY()))
                                 .put("provider_selected_filename_bounds",new JSONArray().put(now.left).put(now.top).put(now.right).put(now.bottom))
                                 .put("provider_pointer_id",0).put("provider_pointer_count",1).put("provider_tool_type",MotionEvent.TOOL_TYPE_FINGER)
-                                .put("provider_event_source",InputDevice.SOURCE_TOUCHSCREEN);
+                                .put("provider_event_source",InputDevice.SOURCE_TOUCHSCREEN)
+                                .put("provider_selection_unoccluded",true).put("provider_cover_closed_before_selection",closedCover);
                         long began=SystemClock.uptimeMillis();MotionEvent down=VoiceKeyModelProbe.fingerEvent(began,began,MotionEvent.ACTION_DOWN,now.centerX(),now.centerY());boolean sent;
                         try{sent=automation.injectInputEvent(down,true);}finally{down.recycle();}SyncAccountProbe.check(sent,"recovery provider finger down rejected");Thread.sleep(50);
                         MotionEvent up=VoiceKeyModelProbe.fingerEvent(began,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,now.centerX(),now.centerY());
@@ -130,8 +161,8 @@ final class SyncPreparationUiProbe {
                 previous=null;stableSince=-1;AccessibilityNodeInfo root=automation.getRootInActiveWindow();
                 if(root!=null&&String.valueOf(root.getPackageName()).contains("documentsui")){
                     List<AccessibilityNodeInfo> nodes=VoiceKeyModelProbe.nodes(root);
-                    if(!downloadsOpened)for(AccessibilityNodeInfo node:nodes){String text=String.valueOf(node.getText());if(node.isVisibleToUser()&&(text.equals("Downloads")||text.equals("下载"))&&VoiceKeyModelProbe.click(node)){downloadsOpened=true;break;}}
-                    if(!downloadsOpened&&!rootsOpened)for(AccessibilityNodeInfo node:nodes){String desc=String.valueOf(node.getContentDescription());if(node.isVisibleToUser()&&(desc.equals("Show roots")||desc.equals("显示根目录")||desc.equals("显示导航抽屉"))){SyncAccountProbe.check(VoiceKeyModelProbe.click(node),"recovery document roots rejected");rootsOpened=true;break;}}
+                    if(!closedCover&&!downloadsOpened)for(AccessibilityNodeInfo node:nodes){String text=String.valueOf(node.getText());if(node.isVisibleToUser()&&(text.equals("Downloads")||text.equals("下载"))&&VoiceKeyModelProbe.click(node)){downloadsOpened=true;break;}}
+                    if(!closedCover&&!downloadsOpened&&!rootsOpened)for(AccessibilityNodeInfo node:nodes){String desc=String.valueOf(node.getContentDescription());if(node.isVisibleToUser()&&(desc.equals("Show roots")||desc.equals("显示根目录")||desc.equals("显示导航抽屉"))){SyncAccountProbe.check(VoiceKeyModelProbe.click(node),"recovery document roots rejected");rootsOpened=true;break;}}
                 }
             }
             Thread.sleep(200);

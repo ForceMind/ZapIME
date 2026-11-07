@@ -37,6 +37,9 @@ class SyncRecoveryUiReportTests(unittest.TestCase):
             "provider_pointer_id": 0, "provider_pointer_count": 1, "provider_tool_type": 1,
             "provider_event_source": 4098, "provider_physical_selection_count": 1,
             "provider_selection_method": "unique_stable_filename_single_finger",
+            "provider_selection_unoccluded": True, "provider_navigation_cover_detected": False,
+            "provider_occlusion_scope": "identified_DocumentsUI_roots_navigation_only",
+            "provider_navigation_close_count": 0,
             "button_activation_method": "production_View_performClick_and_visible_AlertDialog_confirmation",
             "code_entry_method": "synthetic_programmatic_EditText_normal_confirmation"}
         for flag in ("actual_provider_create", "actual_provider_open", "actual_native_recovery",
@@ -47,12 +50,15 @@ class SyncRecoveryUiReportTests(unittest.TestCase):
 
     def test_exact_ui_report_passes(self):
         verify_ui_report(self.report, 36)
+        self.report.update(provider_navigation_cover_detected=True, provider_navigation_close_count=1,
+                           provider_cover_closed_before_selection=True, provider_navigation_close_method="observed_cover_single_global_back")
+        verify_ui_report(self.report, 36)
 
     def test_ui_case_failure_scope_and_cleanup_cannot_be_skipped(self):
         for field in ("actual_provider_create", "actual_provider_open", "actual_native_recovery", "cleanup_completed", "fresh_fixture_owned", "provider_document_deleted"):
             report = copy.deepcopy(self.report); report[field] = False
             with self.subTest(field=field), self.assertRaises(ValueError): verify_ui_report(report)
-        for mutation in ("case", "size", "api", "logging", "pointer", "point"):
+        for mutation in ("case", "size", "api", "logging", "pointer", "point", "occluded", "close_count", "close_unobserved"):
             report = copy.deepcopy(self.report)
             if mutation == "case": report["cases"][0] = report["cases"][1]
             if mutation == "size": report["encrypted_package_bytes"] = 16385
@@ -60,6 +66,9 @@ class SyncRecoveryUiReportTests(unittest.TestCase):
             if mutation == "logging": report["secret_or_code_logged"] = True
             if mutation == "pointer": report["provider_tool_type"] = 0
             if mutation == "point": report["provider_touch_point"] = [100, 100]
+            if mutation == "occluded": report["provider_selection_unoccluded"] = False
+            if mutation == "close_count": report["provider_navigation_close_count"] = 2
+            if mutation == "close_unobserved": report["provider_navigation_cover_detected"] = True; report["provider_navigation_close_count"] = 1
             with self.subTest(mutation=mutation), self.assertRaises(ValueError): verify_ui_report(report)
 
 

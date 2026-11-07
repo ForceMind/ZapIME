@@ -53,7 +53,7 @@ def main():
             "sensitive_ui_dump_collected": False, "scope": "Raw instrumentation and sanitized reports retained; provider-only evidence below"}, indent=2) + "\n")
         raise
     finally:
-        for name in ("sync-preparation-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "backup-provider-ui-shape.json"):
+        for name in ("sync-preparation-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "sync-key-provider-nav-before.png", "backup-provider-ui-shape.json"):
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + name,
                 str(out / name), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout

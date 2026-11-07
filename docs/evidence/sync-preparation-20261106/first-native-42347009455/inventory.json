@@ -1,0 +1,113 @@
+{
+  "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+  "run_id": 42347009455,
+  "inventory_excludes_self": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2076,
+      "sha256": "448c10bd3fca97d22f4f6c14f50c560d62998dd6c85c0f2c3a5ba16b4d1c2b6e"
+    },
+    {
+      "path": "api28/activity-errors.txt",
+      "bytes": 58,
+      "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+    },
+    {
+      "path": "api28/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api28/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api28/offline-uid.json",
+      "bytes": 119,
+      "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+    },
+    {
+      "path": "api28/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+    },
+    {
+      "path": "api28/workflow-job-original.txt",
+      "bytes": 193358,
+      "sha256": "ae9c6a458608bb5b98fc8bec830516b8bd870253f8bc07d39799762995ef1011"
+    },
+    {
+      "path": "api35/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "3f37d49cfd23ae36e344a3c477da38d9bdf74aa684974dd11e4a638cf808cc69"
+    },
+    {
+      "path": "api35/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api35/offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+    },
+    {
+      "path": "api35/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+    },
+    {
+      "path": "api35/workflow-job-original.txt",
+      "bytes": 198660,
+      "sha256": "59c8a91c5db65bd6b34f5dd54ace08355c9e5f64af0c94c83d41e82883044190"
+    },
+    {
+      "path": "api36/activity-errors.txt",
+      "bytes": 118,
+      "sha256": "b9cf195a65543e8ec8a3a17bab3a70cff6f8dcd65b1b88f4eba3280802c2f535"
+    },
+    {
+      "path": "api36/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api36/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api36/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "api36/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+    },
+    {
+      "path": "api36/workflow-job-original.txt",
+      "bytes": 200105,
+      "sha256": "d23ce02ab93adfb94654970d69556e0581e98873fde6dd70dcbb5d36dd7e09fe"
+    },
+    {
+      "path": "github-artifact-metadata.json",
+      "bytes": 9260,
+      "sha256": "1916616e814a4b99b76c58a6833af28e421d86a37472d458ba40bcaff53c048e"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 5049,
+      "sha256": "7ec656d6de17a8bf4001fc2f01639bc8989b6c4b9d3650af6c399452d6ed50a1"
+    }
+  ],
+  "total_bytes_excluding_inventory": 613483
+}

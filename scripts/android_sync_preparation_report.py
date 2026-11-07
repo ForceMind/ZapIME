@@ -61,4 +61,12 @@ def verify_ui_report(report, api=None):
         raise ValueError("Missing actual test activation scope")
     if report.get("provider_selection_method") != "unique_stable_filename_single_finger":
         raise ValueError("Wrong provider selection method")
+    if report.get("provider_selection_unoccluded") is not True or report.get("provider_occlusion_scope") != "identified_DocumentsUI_roots_navigation_only":
+        raise ValueError("Provider filename touch was not checked for navigation occlusion")
+    covered = report.get("provider_navigation_cover_detected")
+    closes = report.get("provider_navigation_close_count")
+    if type(covered) is not bool or type(closes) is not int or closes != int(covered):
+        raise ValueError("Missing observed navigation-cover evidence")
+    if covered and (report.get("provider_cover_closed_before_selection") is not True or report.get("provider_navigation_close_method") != "observed_cover_single_global_back"):
+        raise ValueError("Provider cover not closed before filename selection")
     verify_finger_selection(report)

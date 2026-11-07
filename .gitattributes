@@ -137,3 +137,51 @@ docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/github-artifa
 
 # Preserve exact host test output bytes and their recorded SHA.
 docs/evidence/sync-preparation-20261106/host-rust-tests.log -text -whitespace
+
+# First local-sync-preparation CI originals: preserve recorded bytes/whitespace.
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api28/workflow-job-original.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api35/workflow-job-original.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/first-native-42347009455/api36/workflow-job-original.txt -text -whitespace
+
+# First positive-SAF run: keep successful and failed raw report/log bytes.
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/sync-key-provider-before.png -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/sync-preparation-ui-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api28/workflow-job-original.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/failure-scope.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/sync-key-provider-before.png -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/sync-preparation-ui-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api35/workflow-job-original.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/activity-errors.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/crash.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/failure-scope.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/instrumentation.txt -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/offline-uid.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/sync-key-provider-before.png -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/sync-preparation-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/sync-preparation-ui-report.json -text -whitespace
+docs/evidence/sync-preparation-20261106/saf-ui-42347662267/api36/workflow-job-original.txt -text -whitespace
