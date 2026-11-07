@@ -1,8 +1,8 @@
 [
   {
     "path": "README.md",
-    "bytes": 2004,
-    "sha256": "23084c4505147566c760fda6b38716e9850c82fc3605bd861f32f6a11e051a4a"
+    "bytes": 3240,
+    "sha256": "022419fbdc3c4d0a8410bdd081edd3b26ea8d52bc6f7d051b283d962238e56c7"
   },
   {
     "path": "api28/candidate-ime-host-lifecycle.txt",
@@ -75,6 +75,56 @@
     "sha256": "724517e3b76295a7a830a8d53eacaaf38c864126383cea90a9b5301a4c8e9342"
   },
   {
+    "path": "api35-retry/candidate-ime-host-lifecycle.txt",
+    "bytes": 1965,
+    "sha256": "a1c22351b2cb1b523c8d35bbb53c105ac9a52af34031a476d1f63d3de937893a"
+  },
+  {
+    "path": "api35-retry/candidate-ime-report.json",
+    "bytes": 1312,
+    "sha256": "59b9f4dfefcca77e52267fe02e392420d6a3db35a9be6e3b0cbf5145ff064bdd"
+  },
+  {
+    "path": "api35-retry/candidate-ime-service-after.txt",
+    "bytes": 149,
+    "sha256": "3e18d861a16e999fa3c168ea49b08b1c0b545337ec9b7ea60dcfa6d50b15fd70"
+  },
+  {
+    "path": "api35-retry/candidate-ime-service-before.txt",
+    "bytes": 147,
+    "sha256": "dbdbcf04ce19ebd689e8adb552ac11800b7191ade6487b7fc1ff5dc5d2405912"
+  },
+  {
+    "path": "api35-retry/candidate-ime-service-scored.txt",
+    "bytes": 149,
+    "sha256": "1f04e7f72493005b5e3954ed70735a70bc65dd170a6528496f8d0f54c56616cd"
+  },
+  {
+    "path": "api35-retry/candidate-ranking-report.json",
+    "bytes": 3684,
+    "sha256": "7fe0c41811cf72b7d8f9177e377f7d35fda2c73af07dcd41e6f7e8fd1d8e2766"
+  },
+  {
+    "path": "api35-retry/offline-uid.json",
+    "bytes": 119,
+    "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+  },
+  {
+    "path": "api35-retry/original.zip",
+    "bytes": 105354,
+    "sha256": "f85d81fde5349b9bc78572964700a41635b61915e19f8d0f5283c7bd7fa6217d"
+  },
+  {
+    "path": "api35-retry/provenance.json",
+    "bytes": 418,
+    "sha256": "d66d4a4d05949198f0276f97dcedf912b8e05ae7b6116d253208ae1a53274b7c"
+  },
+  {
+    "path": "api35-retry/run-summary.json",
+    "bytes": 522,
+    "sha256": "48934bc29bb7fabe642b367a1780c66595140da7cd0501ccbe110230b71b6c66"
+  },
+  {
     "path": "api36/candidate-ime-host-lifecycle.txt",
     "bytes": 1965,
     "sha256": "f1e8639ef00db61309e3a0eb908cc156ea518c268e1bd032f97a43643712ddc3"
@@ -115,6 +165,16 @@
     "sha256": "0c9e3cb089f72954fd906d52e6fce84fc9f928e0c4065bf2b43c9eeb022c24b8"
   },
   {
+    "path": "apk-local-verification.json",
+    "bytes": 765,
+    "sha256": "1f31ea50bffdd528be445e234aec6d7d116e2194e25f9ec8a3e05ae9f0478e13"
+  },
+  {
+    "path": "arm64-signature.txt",
+    "bytes": 943,
+    "sha256": "cd15d2e198cc632398245a830ed95c89285630697aa89c12321fae2d00433b2d"
+  },
+  {
     "path": "build-report.json",
     "bytes": 1146,
     "sha256": "9dcd8980515ddf09ddaed29d09609d541b0f84d3a1ea167a9d18ce883004ee0a"
@@ -123,5 +183,10 @@
     "path": "host-first-failure.log.gz",
     "bytes": 14257,
     "sha256": "ca1f9ccb3816b763e2ee956484a198d379fd6358dcec1c75fbc6bffffe7101ce"
+  },
+  {
+    "path": "x86-signature.txt",
+    "bytes": 943,
+    "sha256": "cd15d2e198cc632398245a830ed95c89285630697aa89c12321fae2d00433b2d"
   }
 ]

@@ -1,5 +1,18 @@
 # 默认离线候选增强：Android 开发包
 
+## 2026-11-07 更新：空上下文保守回退候选
+
+固定产品源码 `8df2793d8f54868dda75601f6f8ec27c90576d3b`（CI checkout `073511a083b150cb1c0671d68a96d9765cd1f051`）已包含“无可信上下文保留基础排序”，增强开关仍默认开启。先输入 `nihao` 并选中“你好”，再输入 `shijie` 可试验有上下文重排；空编辑器、换行后或位置不确定时不提交新的神经重排请求。
+
+[固定8df开发包ZIP](https://github.com/ForceMind/ZapIME/actions/runs/42388891657/artifacts/13580819027)已实际下载核验。日常手机仅安装其中 `android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk`；其大小58,745,799字节，SHA256 `a79adf68d87eda210fc3ec95569b0760255220dad35eb9070a5eeae2fbde1cf3`。x86_64产品包60,060,890字节，SHA256 `e81e1153a14f7e0bb73c4c074def963eadb01da1c3624050e36c05c1c638731a`。CI测试APK不供日常安装。
+
+原ZIP118,165,765字节、SHA256 `2da3880f3b1e3fc522a57690407d3c8715dd444dda62f337341c434319e462fc`；两产品包同开发证书SHA256 `58d4a72d4e5aed52d4a408934559a9988fce4406296213bc9bf7727300ad0866`，v3签名、16KiB对齐、固定模型、JNI、许可证及manifest已独立校验。该开发证书与下面旧包不同；请先备份，签名冲突时保留旧App及资料，不要直接卸载唯一数据副本。
+
+API28/36首轮与API35同源码复验均已通过schema2系统IME+真实模型方法门禁并下载独立重验，完整Android/VoiceKey等六条workflow成功。API35首轮曾出现ADB准备失败以及种子提交后的组字异常结束；复验成功不能证明唯一根因已解决。host候选workflow原因工具链组件冲突失败，修订后的CI另行核验。本包仍是有已知间歇失败记录的开发试用版，不是稳定发布或S25/ARM自然输入验收。详见[空上下文原始记录](evidence/context-guard-20261107/README.md)。
+
+下文保留旧5e1a87候选的固定身份和历史说明，不把旧包当作本次新包。
+
+
 Android 已接入 **MSIME 拼音解码 + chinese-ime-lm rerank-v2 8M 本机排序 + ONNX Runtime**。“离线候选增强”默认开启，固定模型随包提供，候选输入过程不联网。当前交付为开发版；本页固定源码和安装包，后续文档更新不会改变这些包的身份。
 
 ## 安装包

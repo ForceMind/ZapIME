@@ -1,5 +1,12 @@
 # ZapIME 项目执行状态
 
+## 固定ARM64候选与API35复验（2026-11-07）
+
+已下载并独立重验8df固定产品的API35第二轮14项方法/schema2真实系统IME/清理证据，与原API28/36成功分别保留。三API现各有同源码正向结果，API35首轮组字异常的唯一根因仍未解决，不能称稳定。
+
+两ABI产品包已下载校验同开发签名/v3/16KiB/固定模型/词库/JNI/许可；ARM64候选58,745,799字节，SHA a79adf68d87eda210fc3ec95569b0760255220dad35eb9070a5eeae2fbde1cf3。[安装与固定包](CANDIDATE_RANKING_TRYOUT.md)、[复验及签名原始记录](evidence/context-guard-20261107/README.md)已更新。后续9aff只改测试诊断和CI，最终workflow仍运行中；原host失败不改写。
+
+
 ## 空上下文回退首轮实际CI与复验（2026-11-07）
 
 PR #80的固定7ff77a9六条workflow已全部SUCCESS；PR #81固定8df2793的完整Android、VoiceKey、共享核心、Windows、同步、离线语音六条成功。新候选专项API28/36的14项方法门禁/schema2真实系统IME均通过并实际下载独立重验，原ZIP/固定身份/清理证据见[本轮归档](evidence/context-guard-20261107/README.md)。

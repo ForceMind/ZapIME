@@ -1,0 +1,17 @@
+{
+  "product_head": "8df2793d8f54868dda75601f6f8ec27c90576d3b",
+  "checkout": "073511a083b150cb1c0671d68a96d9765cd1f051",
+  "run_id": 42388891657,
+  "artifact_id": 13580819027,
+  "zip_bytes": 118165765,
+  "zip_sha256": "2da3880f3b1e3fc522a57690407d3c8715dd444dda62f337341c434319e462fc",
+  "certificate_sha256": "58d4a72d4e5aed52d4a408934559a9988fce4406296213bc9bf7727300ad0866",
+  "apk_signature_v3_verified": true,
+  "zipalign_16k_verified": true,
+  "model_jni_license_checks_verified": true,
+  "manifest_ime_network_boundary_verified": true,
+  "arm64_execution": false,
+  "phone_execution": false,
+  "stable_release": false,
+  "remaining": "First API35 composition failure retained; same-source retry passed, unique cause unresolved; host workflow fix pending"
+}
