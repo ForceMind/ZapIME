@@ -1,0 +1,320 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "source": "ZapIME authored synthetic fixtures; v2 corrects two independently reviewed phonetic encodings after v1 run; v1 bytes and results retained; not user or model-generated data",
+  "version": "synthetic-quality-v2",
+  "cases": [
+    {
+      "id": "q01",
+      "category": "homophone",
+      "code": "gongshi",
+      "context": "这道数学题需要套用",
+      "expected": [
+        "公式"
+      ]
+    },
+    {
+      "id": "q02",
+      "category": "everyday",
+      "code": "gongsi",
+      "context": "她正在一家软件",
+      "expected": [
+        "公司"
+      ]
+    },
+    {
+      "id": "q03",
+      "category": "homophone",
+      "code": "quanli",
+      "context": "公民依法享有的",
+      "expected": [
+        "权利"
+      ]
+    },
+    {
+      "id": "q04",
+      "category": "homophone",
+      "code": "quanli",
+      "context": "监督政府行使公共",
+      "expected": [
+        "权力"
+      ]
+    },
+    {
+      "id": "q05",
+      "category": "homophone",
+      "code": "jiaoshi",
+      "context": "学生们安静地坐在",
+      "expected": [
+        "教室"
+      ]
+    },
+    {
+      "id": "q06",
+      "category": "homophone",
+      "code": "jiaoshi",
+      "context": "她的职业是一名小学",
+      "expected": [
+        "教师"
+      ]
+    },
+    {
+      "id": "q07",
+      "category": "homophone",
+      "code": "shiyan",
+      "context": "化学课上老师演示了一个",
+      "expected": [
+        "实验"
+      ]
+    },
+    {
+      "id": "q08",
+      "category": "homophone",
+      "code": "shiyan",
+      "context": "他承诺的事情没有做到又一次",
+      "expected": [
+        "食言"
+      ]
+    },
+    {
+      "id": "q09",
+      "category": "homophone",
+      "code": "yiyi",
+      "context": "这次活动具有重要的",
+      "expected": [
+        "意义"
+      ]
+    },
+    {
+      "id": "q10",
+      "category": "homophone",
+      "code": "yiyi",
+      "context": "如对评审结果有不同意见可以提出",
+      "expected": [
+        "异议"
+      ]
+    },
+    {
+      "id": "q11",
+      "category": "homophone",
+      "code": "jishi",
+      "context": "发现故障后请",
+      "expected": [
+        "及时"
+      ]
+    },
+    {
+      "id": "q12",
+      "category": "homophone",
+      "code": "jishi",
+      "context": "比赛开始后裁判立即启动秒表进行",
+      "expected": [
+        "计时"
+      ]
+    },
+    {
+      "id": "q13",
+      "category": "homophone",
+      "code": "sheji",
+      "context": "这款产品需要重新",
+      "expected": [
+        "设计"
+      ]
+    },
+    {
+      "id": "q14",
+      "category": "homophone",
+      "code": "sheji",
+      "context": "这个问题可能",
+      "expected": [
+        "涉及"
+      ]
+    },
+    {
+      "id": "q15",
+      "category": "everyday",
+      "code": "shijie",
+      "context": "我们一起探索",
+      "expected": [
+        "世界"
+      ]
+    },
+    {
+      "id": "q16",
+      "category": "everyday",
+      "code": "tianqi",
+      "context": "今天的",
+      "expected": [
+        "天气"
+      ]
+    },
+    {
+      "id": "q17",
+      "category": "everyday",
+      "code": "nihao",
+      "context": "朋友见面先说",
+      "expected": [
+        "你好"
+      ]
+    },
+    {
+      "id": "q18",
+      "category": "everyday",
+      "code": "xiexie",
+      "context": "收到礼物后我说",
+      "expected": [
+        "谢谢"
+      ]
+    },
+    {
+      "id": "q19",
+      "category": "everyday",
+      "code": "beijing",
+      "context": "中国的首都是",
+      "expected": [
+        "北京"
+      ]
+    },
+    {
+      "id": "q20",
+      "category": "everyday",
+      "code": "shanghai",
+      "context": "这次旅行的目的地是",
+      "expected": [
+        "上海"
+      ]
+    },
+    {
+      "id": "q21",
+      "category": "single_character",
+      "code": "shi",
+      "context": "这件事情确实",
+      "expected": [
+        "是"
+      ]
+    },
+    {
+      "id": "q22",
+      "category": "single_character",
+      "code": "shi",
+      "context": "我们下周去那个城",
+      "expected": [
+        "市"
+      ]
+    },
+    {
+      "id": "q23",
+      "category": "single_character",
+      "code": "zhong",
+      "context": "这箱书很",
+      "expected": [
+        "重"
+      ]
+    },
+    {
+      "id": "q24",
+      "category": "single_character",
+      "code": "zhong",
+      "context": "请把花籽播",
+      "expected": [
+        "种"
+      ]
+    },
+    {
+      "id": "n01",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "466474",
+      "context": "这道数学题需要套用",
+      "expected": [
+        "公式"
+      ]
+    },
+    {
+      "id": "n02",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "782654",
+      "context": "公民依法享有的",
+      "expected": [
+        "权利"
+      ]
+    },
+    {
+      "id": "n03",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "5426744",
+      "context": "学生们安静地坐在",
+      "expected": [
+        "教室"
+      ]
+    },
+    {
+      "id": "n04",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "744543",
+      "context": "我们一起探索",
+      "expected": [
+        "世界"
+      ]
+    },
+    {
+      "id": "n05",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "842674",
+      "context": "今天的",
+      "expected": [
+        "天气"
+      ]
+    },
+    {
+      "id": "n06",
+      "category": "nine_key",
+      "layout": "nine_key",
+      "code": "64426",
+      "context": "朋友见面先说",
+      "expected": [
+        "你好"
+      ]
+    },
+    {
+      "id": "b01",
+      "category": "completion_boundary",
+      "code": "shijie",
+      "context": "这座球场正在举办",
+      "expected": [
+        "世界杯"
+      ]
+    },
+    {
+      "id": "b02",
+      "category": "completion_boundary",
+      "code": "tianqi",
+      "context": "出门前先看",
+      "expected": [
+        "天气预报"
+      ]
+    },
+    {
+      "id": "b03",
+      "category": "partial_boundary",
+      "code": "gongsh",
+      "context": "这道数学题需要套用",
+      "expected": [
+        "公式"
+      ]
+    },
+    {
+      "id": "b04",
+      "category": "partial_boundary",
+      "code": "nhao",
+      "context": "朋友见面先说",
+      "expected": [
+        "你好"
+      ]
+    }
+  ]
+}
