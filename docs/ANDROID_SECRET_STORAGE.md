@@ -1,6 +1,6 @@
 # Android 同步材料的本机保护（候选）
 
-`SyncSecrets` 为未来专用同步worker提供有界不透明材料的保存/读取/显式忘记接口。目前没有生产调用方、账号设置或HTTP同步；不能据此宣称已完成客户端登录、E2EE密钥托管接入或跨设备同步。
+`SyncSecrets` 为专用同步worker提供有界不透明材料的保存/读取接口。新增[本机同步准备](ANDROID_SYNC_PREPARATION.md)通过create-only接口保存typed根密钥材料并绑定资料库；对应新Android CI待运行。它没有实现HTTP资料同步、跨设备密钥传输或全局账号密钥登记。原save接口及连接域行为保留，材料域没有自动删除/重置用户流程。
 
 AndroidKeyStore生成256位AES保护密钥，GCM使用系统生成的随机IV、128位认证标签与版本/账号UUID绑定的AAD。材料最多64KiB；保护密钥不导出，实际硬件支持取决于设备，不强制StrongBox或每次生物识别。E2EE记录仍由共享Rust密码模块处理，系统密钥只封装本机同步材料。
 

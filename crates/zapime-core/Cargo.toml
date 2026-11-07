@@ -12,6 +12,7 @@ msime-engine = { path = "../../vendor/msime/crates/engine" }
 serde_json = "1"
 zapime-data = { path = "../zapime-data" }
 zapime-crypto = { path = "../zapime-crypto" }
+zapime-sync = { path = "../zapime-sync" }
 zeroize = "1"
 uuid = { version = "1", features = ["serde"] }
 

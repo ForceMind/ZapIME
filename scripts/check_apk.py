@@ -15,6 +15,11 @@ from prepare_android_voice import LOCK, model_config, verify_elf
 
 VOICEKEY_JNI = {"Java_org_zapime_android_NativeVoiceKey_" + name for name in
                 ("allocate", "start", "accept", "finish", "cancel", "close", "checkModel", "releaseCache")}
+CORE_JNI = {"Java_org_zapime_android_NativeCore_" + name for name in
+            ("open", "request", "queryPersonal", "syncProfile", "close",
+             "createLocalBackup", "restoreLocalBackup", "newSyncMaterial",
+             "syncMaterialInfo", "syncWorkspaceStatus", "prepareSync",
+             "createSyncRecovery", "restoreSyncRecovery")}
 
 
 def check_notice_inventory(apk, prefix, root_package, target_platform=None):
@@ -92,6 +97,14 @@ def check_voicekey_native(raw, abi):
     assert VOICEKEY_JNI <= exports, "missing VoiceKey JNI dynamic exports"
 
 
+def check_core_native(raw, abi):
+    with tempfile.NamedTemporaryFile(suffix=".so") as file:
+        file.write(raw); file.flush()
+        verify_elf(Path(file.name), abi)
+    _, exports = elf_metadata(raw)
+    assert CORE_JNI <= exports, "missing core or stateless sync JNI dynamic exports"
+
+
 def check_contents(path):
     with zipfile.ZipFile(path) as apk:
         names = apk.namelist()
@@ -109,6 +122,7 @@ def check_contents(path):
         assert directory == "lib/" + abi and abi in LOCK["libraries"], "unsupported native directory"
         libraries = {directory + "/" + name for name in ["libzapime_core.so", "libzapime_voice.so", "libsherpa-onnx-c-api.so", "libonnxruntime.so", "libzapime_voicekey_adapter.so"]}
         assert {name for name in entries if name.startswith("lib/")} == libraries, "missing/unexpected packaged runtime"
+        check_core_native(apk.read(cores[0]), abi)
         for name, spec in LOCK["libraries"][abi].items():
             member = directory + "/" + name
             assert apk.getinfo(member).file_size == spec["size"], "packaged runtime size mismatch"

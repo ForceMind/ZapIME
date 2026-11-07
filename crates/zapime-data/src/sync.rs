@@ -3,12 +3,132 @@
 use crate::{Error, Record, Store};
 use rusqlite::{params, OptionalExtension, Transaction, TransactionBehavior};
 use serde::{Deserialize, Serialize};
+use std::time::{Duration, Instant};
 use uuid::Uuid;
 
 #[derive(Debug, PartialEq, Eq, Serialize)]
 pub struct ProfileStatus {
     pub initialized: bool,
     pub account_id: Option<Uuid>,
+}
+
+/// Non-secret identity of the locally prepared key material. This is not a
+/// server registration or evidence that another device uses the same key.
+#[derive(Clone, PartialEq, Eq)]
+pub struct WorkspaceBinding {
+    pub profile_id: Uuid,
+    pub key_id: Uuid,
+    pub material_sha256: [u8; 32],
+}
+
+fn workspace_budget<T>(
+    db: &mut rusqlite::Connection,
+    work: impl FnOnce(&mut rusqlite::Connection) -> Result<T, Error>,
+) -> Result<T, Error> {
+    // A cooperative SQLite VM budget, not a hard disk-I/O deadline. These
+    // methods use an independent sync connection; never the input connection.
+    let started = Instant::now();
+    db.progress_handler(
+        1000,
+        Some(move || started.elapsed() >= Duration::from_millis(200)),
+    )?;
+    let result = work(db);
+    db.progress_handler(0, None::<fn() -> bool>)?;
+    result
+}
+
+fn canonical_id(value: &str) -> Result<Uuid, Error> {
+    let id = Uuid::parse_str(value).map_err(|_| Error::SyncWorkspace)?;
+    if id.is_nil() || id.to_string() != value {
+        return Err(Error::SyncWorkspace);
+    }
+    Ok(id)
+}
+
+/// Must be called inside the same transaction as preparation. Ordinary local
+/// operations/queue entries are allowed; evidence of an old sync relationship
+/// without the complete workspace identity is not silently adopted.
+fn workspace_binding(tx: &Transaction<'_>) -> Result<Option<WorkspaceBinding>, Error> {
+    if tx.query_row::<u32, _, _>("PRAGMA user_version", [], |row| row.get(0))? != 2 {
+        return Err(Error::Version);
+    }
+    let mut statement = tx.prepare(
+        "SELECT CASE WHEN length(CAST(key AS BLOB))<=64 THEN key END,
+                CASE WHEN length(CAST(value AS BLOB))<=128 THEN value END
+         FROM metadata WHERE substr(key,1,5)='sync_' ORDER BY key LIMIT 5",
+    )?;
+    let rows = statement
+        .query_map([], |row| {
+            Ok((row.get::<_, String>(0)?, row.get::<_, String>(1)?))
+        })?
+        .collect::<Result<Vec<_>, _>>()?;
+    let mut values = std::collections::BTreeMap::new();
+    for (key, value) in rows {
+        if values.insert(key, value).is_some() {
+            return Err(Error::SyncWorkspace);
+        }
+    }
+    if values.is_empty() {
+        let history: i64 = tx.query_row(
+            "SELECT EXISTS(SELECT 1 FROM sync_uploads) OR EXISTS(SELECT 1 FROM sync_versions)
+             OR EXISTS(SELECT 1 FROM sync_received) OR EXISTS(SELECT 1 FROM sync_retained_pulls)
+             OR EXISTS(SELECT 1 FROM operations WHERE pending<>1)",
+            [],
+            |row| row.get(0),
+        )?;
+        if history != 0 {
+            return Err(Error::SyncWorkspace);
+        }
+        return Ok(None);
+    }
+    if values.len() != 4 {
+        return Err(Error::SyncWorkspace);
+    }
+    let get = |name: &str| values.get(name).ok_or(Error::SyncWorkspace);
+    let profile_id = canonical_id(get("sync_profile")?)?;
+    let key_id = canonical_id(get("sync_key_id")?)?;
+    let cursor = get("sync_cursor")?;
+    let parsed: u64 = cursor.parse().map_err(|_| Error::SyncWorkspace)?;
+    if parsed > i64::MAX as u64 || parsed.to_string() != *cursor {
+        return Err(Error::SyncWorkspace);
+    }
+    let fingerprint = get("sync_material_sha256")?;
+    if fingerprint.len() != 64
+        || !fingerprint
+            .bytes()
+            .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+    {
+        return Err(Error::SyncWorkspace);
+    }
+    let material_sha256: [u8; 32] = hex::decode(fingerprint)
+        .map_err(|_| Error::SyncWorkspace)?
+        .try_into()
+        .map_err(|_| Error::SyncWorkspace)?;
+    // A prepared single-key workspace cannot adopt foreign/legacy frozen keys
+    // or malformed receipt state. Acknowledged revisions may legitimately be
+    // ahead of pull cursor; received revisions may not.
+    let invalid: i64 = tx.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sync_uploads s LEFT JOIN operations o ON o.id=s.operation_id
+           WHERE o.id IS NULL OR CASE WHEN json_valid(s.wire) THEN
+               json_type(s.wire,'$.key_id') IS NOT 'text'
+               OR json_extract(s.wire,'$.key_id')<>?1
+               OR json_extract(s.wire,'$.operation_id') IS NOT s.operation_id
+             ELSE 1 END
+           OR (s.ack_revision IS NULL AND o.pending<>1)
+           OR (s.ack_revision IS NOT NULL AND (typeof(s.ack_revision)<>'integer' OR s.ack_revision<=0 OR o.pending<>0)))
+         OR EXISTS(SELECT 1 FROM sync_versions WHERE typeof(server_revision)<>'integer' OR server_revision<=0)
+         OR EXISTS(SELECT 1 FROM sync_received WHERE typeof(server_revision)<>'integer' OR server_revision<=0 OR server_revision>?2)",
+        params![key_id.to_string(), parsed as i64],
+        |row| row.get(0),
+    )?;
+    if invalid != 0 {
+        return Err(Error::SyncWorkspace);
+    }
+    Ok(Some(WorkspaceBinding {
+        profile_id,
+        key_id,
+        material_sha256,
+    }))
 }
 
 /// Inspect only an existing v2 database. Never initialize, migrate or bind it.
@@ -120,6 +240,46 @@ pub(crate) fn server_revision(tx: &Transaction<'_>, record: Uuid) -> Result<u64,
 }
 
 impl Store {
+    /// Read one consistent identity snapshot; never prepares, migrates or
+    /// changes pending operations. Caller chooses an existing read-only store.
+    pub fn sync_workspace_binding(&mut self) -> Result<Option<WorkspaceBinding>, Error> {
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction()?;
+            workspace_binding(&tx)
+        })
+    }
+    /// Explicit local preparation, after the platform vault has committed and
+    /// read back this material. Only metadata is written; no network, queue
+    /// coalescing, record mutation, upload or bare cursor advancement occurs.
+    pub fn prepare_sync_workspace(&mut self, binding: &WorkspaceBinding) -> Result<(), Error> {
+        if binding.profile_id.is_nil() || binding.key_id.is_nil() {
+            return Err(Error::Invalid);
+        }
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+            if let Some(existing) = workspace_binding(&tx)? {
+                if existing != *binding {
+                    return Err(Error::SyncWorkspace);
+                }
+            } else {
+                tx.execute(
+                    "INSERT INTO metadata VALUES('sync_profile',?1)",
+                    [binding.profile_id.to_string()],
+                )?;
+                tx.execute("INSERT INTO metadata VALUES('sync_cursor','0')", [])?;
+                tx.execute(
+                    "INSERT INTO metadata VALUES('sync_key_id',?1)",
+                    [binding.key_id.to_string()],
+                )?;
+                tx.execute(
+                    "INSERT INTO metadata VALUES('sync_material_sha256',?1)",
+                    [hex::encode(binding.material_sha256)],
+                )?;
+            }
+            tx.commit()?;
+            Ok(())
+        })
+    }
     /// No binding is different from an unreadable or noncanonical binding.
     pub fn sync_profile(&self) -> Result<Option<Uuid>, Error> {
         let value: Option<String> = self
