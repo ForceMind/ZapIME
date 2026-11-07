@@ -40,6 +40,7 @@ final class CandidateImeProbe {
     private static final Pattern RANKING = Pattern.compile(
             "(?m)^\\s*ZapIME candidate ranking: enabled=(true|false) eligible=(true|false) state=([a-z_]+) scored=([0-9]+) inputRevision=([0-9]+) appliedRevision=(-1|[0-9]+)\\s*$");
     private static final Pattern SUBMITTED = Pattern.compile("(?m)^\\s*ZapIME candidate requests: submitted=([0-9]+)\\s*$");
+    private static final Pattern LIFECYCLE = Pattern.compile("(?m)^\\s*(ZapIME lifecycle: [^\\r\\n]+)$");
     private final Instrumentation instrumentation;
     private final UiAutomation automation;
     private final String token;
@@ -248,6 +249,8 @@ final class CandidateImeProbe {
         result.submitted = Integer.parseInt(requests.group(1));
         result.line += "\n" + requests.group().trim();
         require(!requests.find(), "ambiguous_request_diagnostic");
+        Matcher lifecycle = LIFECYCLE.matcher(text);
+        if (lifecycle.find()) result.line += "\n" + lifecycle.group(1);
         return result;
     }
 
@@ -460,6 +463,18 @@ final class CandidateImeProbe {
         } catch (Throwable error) {
             report.put("passed", false).put("failure_type", error.getClass().getSimpleName())
                     .put("failure_reason", error.getMessage() == null ? "unknown" : error.getMessage());
+            try {
+                Stats failure = stats();
+                write("candidate-ime-service-failure.txt", failure.line + "\n");
+            } catch (Exception ignored) { }
+            try {
+                Editor failure = editor();
+                report.put("failure_editor_text_units", failure.text.length())
+                        .put("failure_editor_committed_units", failure.committed.length())
+                        .put("failure_editor_composing", failure.composing)
+                        .put("failure_editor_focused", failure.focused)
+                        .put("failure_editor_served", failure.served);
+            } catch (Exception ignored) { }
             try { screenshot("candidate-ime-failure.png"); } catch (Exception ignored) { }
             throw new Exception("candidate_system_ime_gate_failed_at_" + stage, error);
         } finally {

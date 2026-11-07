@@ -1,0 +1,33 @@
+52844:create
+52873:resume
+54169:window focus=true
+54169:normal connection created; length=0 selection=0:0 composing=-1:-1
+54169:initial snapshot before length=0
+54180:show request; attempt=0 sent=true
+54230:normal connection created; length=0 selection=0:0 composing=-1:-1
+54230:initial snapshot before length=0
+55307:ime_animation_prepare active=1
+55328:ime_animation_end active=0
+56515:IME command on connection=1 operation=finish
+56515:IME command on connection=1 operation=batch-end
+57550:IME command on connection=1 operation=compose
+57551:IME command on connection=1 operation=batch-end
+58104:IME command on connection=1 operation=compose
+58104:IME command on connection=1 operation=batch-end
+58627:IME command on connection=1 operation=compose
+58628:IME command on connection=1 operation=batch-end
+59155:IME command on connection=1 operation=compose
+59156:IME command on connection=1 operation=batch-end
+59642:IME command on connection=1 operation=compose
+59642:IME command on connection=1 operation=batch-end
+61059:IME command on connection=1 operation=commit
+61059:IME command on connection=1 operation=finish
+61059:IME command on connection=1 operation=batch-end
+61452:IME command on connection=1 operation=compose
+61452:IME command on connection=1 operation=batch-end
+61926:IME command on connection=1 operation=compose
+61943:IME command on connection=1 operation=batch-end
+62494:IME command on connection=1 operation=finish
+62494:IME command on connection=1 operation=batch-end
+62942:IME command on connection=1 operation=compose
+62942:IME command on connection=1 operation=batch-end

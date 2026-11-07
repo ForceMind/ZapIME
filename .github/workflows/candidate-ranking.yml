@@ -50,7 +50,7 @@ jobs:
         run: |
           .venv-candidate/bin/python -m unittest discover -s integrations/candidate/tests -p 'test_quality_evaluation.py' -v
           python3 scripts/fetch_resources.py
-          cargo build --locked --release -p zapime-core
+          cargo +1.97.1 build --locked --release -p zapime-core
           .venv-candidate/bin/python integrations/candidate/tests/quality_evaluation.py --report target/candidate-host/quality-report.json
       - uses: actions/upload-artifact@v4
         if: always()
@@ -209,6 +209,7 @@ jobs:
             target/candidate-ime-android/candidate-ime-service-before.txt
             target/candidate-ime-android/candidate-ime-service-scored.txt
             target/candidate-ime-android/candidate-ime-service-after.txt
+            target/candidate-ime-android/candidate-ime-service-failure.txt
             target/candidate-ime-android/candidate-ime-host-lifecycle.txt
             target/candidate-ime-android/candidate-ime-candidates.png
             target/candidate-ime-android/candidate-ime-committed.png

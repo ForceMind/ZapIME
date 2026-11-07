@@ -35,6 +35,7 @@ PROBE_FILES = (
     "candidate-ime-service-before.txt",
     "candidate-ime-service-scored.txt",
     "candidate-ime-service-after.txt",
+    "candidate-ime-service-failure.txt",
     "candidate-ime-host-lifecycle.txt",
     "candidate-ime-candidates.png",
     "candidate-ime-committed.png",

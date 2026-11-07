@@ -1,0 +1,2 @@
+ZapIME candidate ranking: enabled=true eligible=true state=ready scored=2 inputRevision=29 appliedRevision=27
+ZapIME candidate requests: submitted=3
