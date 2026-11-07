@@ -6,6 +6,18 @@ final class NativeCore {
     static native String request(long handle, String json);
     static native String queryPersonal(String root, String json);
     static native String syncProfile(String root);
+    // Stateless sync-worker operations; never borrow a keyboard InputSession.
+    static native byte[] newSyncMaterial(String account);
+    static native String syncMaterialInfo(String account, byte[] material);
+    static native String syncKeyDescriptor(String account, byte[] material);
+    static native String syncWorkspaceStatus(String root, String account, byte[] material);
+    static native String prepareSync(String root, String account, byte[] material);
+    static native String stageSyncUpload(String root, String account, byte[] material);
+    static native String ackSyncUpload(String root, String account, String device, byte[] material, byte[] expectedWire, byte[] response);
+    static native String syncPullCursor(String root, String account, byte[] material);
+    static native String applySyncPage(String root, String account, byte[] material, long after, byte[] response);
+    static native byte[] createSyncRecovery(String account, byte[] material, byte[] codeOut);
+    static native byte[] restoreSyncRecovery(String account, byte[] code, byte[] encrypted);
     static native byte[] createLocalBackup(String root, byte[] codeOut);
     static native String restoreLocalBackup(String root, byte[] code, byte[] encrypted);
     static native void close(long handle);

@@ -1,0 +1,12 @@
+{
+  "scope": "Actual local PG16.11 and service binaries, inline storage; no Docker/S3/installer/public TLS/phone claim",
+  "private_material_removed": true,
+  "real_aead_descriptor": true,
+  "wrong_account_descriptor_refused": true,
+  "actual_v2_binary_refused_schema3": true,
+  "pg_dump_fresh_database_restore": true,
+  "descriptor_identity_and_timestamp_preserved": true,
+  "wrong_root_registration_and_push_refused": true,
+  "device_revocation_preserved": true,
+  "restored_ciphertext_authenticated": true
+}

@@ -1,0 +1,3 @@
+INSTRUMENTATION_RESULT: stream=PASS Android VoiceKey official model acceptance
+
+INSTRUMENTATION_CODE: -1

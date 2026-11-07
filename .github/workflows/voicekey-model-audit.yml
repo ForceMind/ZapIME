@@ -1,0 +1,26 @@
+name: VoiceKey official model integrity audit
+on:
+  pull_request:
+    paths:
+      - scripts/audit_voicekey_model.py
+      - .github/workflows/voicekey-model-audit.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  official-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Observe fixed official package and member SHA256 (no model redistribution)
+        run: python3 scripts/audit_voicekey_model.py --output-dir target/voicekey-model-audit
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: VoiceKey-official-integrity-metadata
+          path: target/voicekey-model-audit/audit.json
+          if-no-files-found: error

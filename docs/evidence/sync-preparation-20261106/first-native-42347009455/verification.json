@@ -1,0 +1,143 @@
+{
+  "saved_at_utc": "2026-11-07T06:39:53.883659+00:00",
+  "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+  "run_id": 42347009455,
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 128328754545,
+      "artifact_id": 13564276740,
+      "zip_bytes": 1376,
+      "zip_sha256": "5bf8b8d3c829f97620cc8aa42f5da3a38b525eafce7ec620f1b572ac40eac694",
+      "github_digest_match": true,
+      "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+      "strict_verify_report_pass": true,
+      "all_11_cases": 11,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "artifact_members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 58,
+          "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 193358,
+        "sha256": "ae9c6a458608bb5b98fc8bec830516b8bd870253f8bc07d39799762995ef1011",
+        "origin": "GitHub decoded workflow job logs API"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 128328754503,
+      "artifact_id": 13564315817,
+      "zip_bytes": 1465,
+      "zip_sha256": "8ddf22981c85ce43d1297c138e22ad26c11bef2a3dab61589a1ced8281402e6a",
+      "github_digest_match": true,
+      "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+      "strict_verify_report_pass": true,
+      "all_11_cases": 11,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "artifact_members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 206,
+          "sha256": "3f37d49cfd23ae36e344a3c477da38d9bdf74aa684974dd11e4a638cf808cc69"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 198660,
+        "sha256": "59c8a91c5db65bd6b34f5dd54ace08355c9e5f64af0c94c83d41e82883044190",
+        "origin": "GitHub decoded workflow job logs API"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 128328754500,
+      "artifact_id": 13564032740,
+      "zip_bytes": 1448,
+      "zip_sha256": "c8d96f6551106aa58ed82790f7deba6b4346f638e44b23215671aa9ce5aa49e3",
+      "github_digest_match": true,
+      "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+      "strict_verify_report_pass": true,
+      "all_11_cases": 11,
+      "cleanup_completed": true,
+      "dual_family_offline_and_removed": true,
+      "artifact_members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 118,
+          "sha256": "b9cf195a65543e8ec8a3a17bab3a70cff6f8dcd65b1b88f4eba3280802c2f535"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 200105,
+        "sha256": "d23ce02ab93adfb94654970d69556e0581e98873fde6dd70dcbb5d36dd7e09fe",
+        "origin": "GitHub decoded workflow job logs API"
+      }
+    }
+  ],
+  "scope": "11 native/local preparation cases only. This earlier source predates positive SAF recovery UI; no UI success is inferred for later code. No models, audio, APKs, key material or temporary signed download URLs retained."
+}

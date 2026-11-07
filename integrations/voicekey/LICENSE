@@ -1,0 +1,25 @@
+ZapIME VoiceKey integration: source and permission boundaries
+
+ZapIME-authored adapter code and modifications are GPL-3.0-only. The full text
+is in GPL-3.0.txt. This declaration does not relicense upstream VoiceKey code.
+
+Upstream source: https://github.com/J3n5en/voicekey
+Pinned revision: 3ba017826eef7fac405198510b03859eb5b6c8c4
+Authors: J3n5en and the contributors recorded in that pinned repository.
+The pristine source remains in vendor/voicekey. Local adapted files retain
+source/authorship notices and their relationship to that fixed revision.
+
+On 2026-11-06 the ZapIME project owner explicitly confirmed that the VoiceKey
+author agrees to incorporation of the author's source in ZapIME. The project
+uses that confirmation for this integration work; a standardized public
+upstream license or independently supplied distribution terms have not been
+recorded. Do not treat this notice as a grant of unrestricted redistribution
+rights or as a statement that all upstream source is GPL licensed. Broader
+binary distribution remains subject to documenting the relevant terms.
+
+The author's source permission does not cover third-party acoustic model
+weights, proprietary libraries, vendor services, extracted credentials or
+non-public protocols. Those rights require independent verification. No
+third-party VoiceKey model weights or vendor service credentials are bundled
+by this integration. ZapIME compiles only the documented offline adapter
+scope; importing the complete source submodule does not enable its services.

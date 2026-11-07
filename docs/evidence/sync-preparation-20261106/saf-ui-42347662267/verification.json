@@ -1,0 +1,365 @@
+{
+  "saved_at_utc": "2026-11-07T07:01:27.584480+00:00",
+  "source_commit": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba",
+  "run_id": 42347662267,
+  "validator": {
+    "source_path": "scripts/android_sync_preparation_report.py",
+    "source_commit": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba",
+    "bytes": 3965,
+    "sha256": "511a62a73229c02dd242dae0018b6c951cbfe4ff0c2bcf616087c18731c6185e",
+    "helper_path": "scripts/android_voicekey_model_smoke.py",
+    "helper_sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5",
+    "helper_matches_source": true,
+    "note": "Historical source validator was frozen to ignored target and imported; newer unoccluded-driver fields were not applied retroactively."
+  },
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 128331073967,
+      "artifact_id": 13564273197,
+      "zip_bytes": 11248,
+      "zip_sha256": "0e9da1e2efe138d309dfebf74f07acd2af5e7e8f74dabe30fd9e84ec6af935ce",
+      "github_digest_size_source_match": true,
+      "native_11_cases_strict_pass": true,
+      "native_cleanup_completed": true,
+      "historical_ui_strict_pass": true,
+      "historical_ui_validator_error": null,
+      "ui_status": "PASS",
+      "ui_cases": [
+        {
+          "id": "fresh_main_fixture",
+          "passed": true
+        },
+        {
+          "id": "normal_create_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual_saf_export",
+          "passed": true
+        },
+        {
+          "id": "actual_native_recovery_identity",
+          "passed": true
+        },
+        {
+          "id": "recovery_code_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual_saf_open",
+          "passed": true
+        },
+        {
+          "id": "normal_restore_identity_preserved",
+          "passed": true
+        },
+        {
+          "id": "missing_material_requires_restore",
+          "passed": true
+        },
+        {
+          "id": "provider_file_deleted_before_finish",
+          "passed": true
+        },
+        {
+          "id": "stop_clears_recovery_state",
+          "passed": true
+        }
+      ],
+      "ui_flags": {
+        "synthetic": true,
+        "actual_provider_create": true,
+        "actual_provider_open": true,
+        "actual_native_recovery": true,
+        "recovery_identity_unchanged": true,
+        "normal_buttons_and_dialogs_used": true,
+        "missing_material_restore_ui": true,
+        "secret_or_code_logged": false,
+        "provider_exit_observed": true,
+        "cleanup_completed": true,
+        "provider_document_deleted": true,
+        "fresh_fixture_owned": true
+      },
+      "provider_selection_count": 1,
+      "provider_touch_point": [
+        104,
+        313
+      ],
+      "provider_filename_bounds": [
+        66,
+        302,
+        142,
+        324
+      ],
+      "offline_reject_both_families_and_removed": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "1f54d4f58a2fc35244c5c5ebb2a9563a46cec0f233ed0425f63adfe32a762959"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 10041,
+          "sha256": "4722fc3713766ed2b83ba5a08e21b95e8eddaf2b1f5794980546b3c786736477"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2313,
+          "sha256": "0dd1d72f84fd8858c7d50028a8a11758845a374672c0c7ca2e36a9715debf17b"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 193637,
+        "sha256": "55a88f4068b530d6e6091382e940b1332cec7638be685a2d6d75780f4558e1b5",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 128331074027,
+      "artifact_id": 13564941009,
+      "zip_bytes": 13428,
+      "zip_sha256": "9babaf0de9e42df9328875a22c01288a380842790e05d8d0fcc3de73eeae1cf5",
+      "github_digest_size_source_match": true,
+      "native_11_cases_strict_pass": true,
+      "native_cleanup_completed": true,
+      "historical_ui_strict_pass": false,
+      "historical_ui_validator_error": "Incomplete sync recovery UI report",
+      "ui_status": "FAIL",
+      "ui_cases": [
+        {
+          "id": "fresh_main_fixture",
+          "passed": true
+        },
+        {
+          "id": "normal_create_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual_saf_export",
+          "passed": true
+        },
+        {
+          "id": "actual_native_recovery_identity",
+          "passed": true
+        },
+        {
+          "id": "recovery_code_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual SAF open",
+          "passed": false,
+          "failure_type": "IOException"
+        }
+      ],
+      "ui_flags": {
+        "synthetic": true,
+        "actual_provider_create": true,
+        "actual_provider_open": false,
+        "actual_native_recovery": true,
+        "recovery_identity_unchanged": false,
+        "normal_buttons_and_dialogs_used": false,
+        "missing_material_restore_ui": false,
+        "secret_or_code_logged": false,
+        "cleanup_completed": true,
+        "provider_document_deleted": true,
+        "fresh_fixture_owned": true
+      },
+      "provider_selection_count": 1,
+      "provider_touch_point": [
+        109,
+        381
+      ],
+      "provider_filename_bounds": [
+        74,
+        372,
+        144,
+        391
+      ],
+      "offline_reject_both_families_and_removed": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 294,
+          "sha256": "b01c8cdb23de45fa318ffd5923d326a64650cb4be53d3bd65e0499e48d958375"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "failure-scope.json",
+          "bytes": 172,
+          "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 178,
+          "sha256": "f803e996db2e42ab09e18fc3b99389e6b39310384e5011d50de7a373707ed0b8"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 12322,
+          "sha256": "85066bdf73033ba7a230749565998d060b8f76cfa7a803190af477b6c99c51b9"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 1994,
+          "sha256": "35991fb031f11e6bf979970ccebba6dd1b2b1b6668b06c893cbcd1a6faadcf3d"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 199750,
+        "sha256": "b8f2e9ac6b24f476df132d91fdab911d778a1455ad9832c515a218d8703e1dc6",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 128331073980,
+      "artifact_id": 13564726439,
+      "zip_bytes": 13316,
+      "zip_sha256": "fc917ca1cc24a97e87d0117b4297d4ce92d575f6f767c1e21d845a8cbe2e28cd",
+      "github_digest_size_source_match": true,
+      "native_11_cases_strict_pass": true,
+      "native_cleanup_completed": true,
+      "historical_ui_strict_pass": false,
+      "historical_ui_validator_error": "Incomplete sync recovery UI report",
+      "ui_status": "FAIL",
+      "ui_cases": [
+        {
+          "id": "fresh_main_fixture",
+          "passed": true
+        },
+        {
+          "id": "normal_create_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual_saf_export",
+          "passed": true
+        },
+        {
+          "id": "actual_native_recovery_identity",
+          "passed": true
+        },
+        {
+          "id": "recovery_code_confirmation",
+          "passed": true
+        },
+        {
+          "id": "actual SAF open",
+          "passed": false,
+          "failure_type": "IOException"
+        }
+      ],
+      "ui_flags": {
+        "synthetic": true,
+        "actual_provider_create": true,
+        "actual_provider_open": false,
+        "actual_native_recovery": true,
+        "recovery_identity_unchanged": false,
+        "normal_buttons_and_dialogs_used": false,
+        "missing_material_restore_ui": false,
+        "secret_or_code_logged": false,
+        "cleanup_completed": true,
+        "provider_document_deleted": true,
+        "fresh_fixture_owned": true
+      },
+      "provider_selection_count": 1,
+      "provider_touch_point": [
+        109,
+        381
+      ],
+      "provider_filename_bounds": [
+        74,
+        372,
+        144,
+        391
+      ],
+      "offline_reject_both_families_and_removed": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 382,
+          "sha256": "eacadefcec7fccef9ad34409fb543f34f129149356e2d8bd42932a4f451c0cb9"
+        },
+        {
+          "name": "failure-scope.json",
+          "bytes": 172,
+          "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 178,
+          "sha256": "f803e996db2e42ab09e18fc3b99389e6b39310384e5011d50de7a373707ed0b8"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 12245,
+          "sha256": "40adc07f21d9077730178bc6102efac867df04a754697abfed0c84fff8c77969"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 1994,
+          "sha256": "b1e6b4d056c4e67c28b305e60e1fae16821132d0495984e4271fd01e68efdac5"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 200774,
+        "sha256": "c78d77c232658c42d96f388311e0e7bca20b4a34d3d3db50409e0bed33d49259",
+        "origin": "GitHub decoded workflow job log API"
+      }
+    }
+  ],
+  "scope": "Raw successes and failures retained. API28 native11/UI10 passes; API35/36 native11 passes but UI actual SAF open fails. Does not prove later driver or server WIP."
+}

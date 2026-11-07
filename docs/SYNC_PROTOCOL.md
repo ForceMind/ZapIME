@@ -14,12 +14,38 @@ owner 可以授权最多 32 个当前有效设备并撤销同账号设备；memb
 
 | 方法 | 路径 | 内容 |
 | --- | --- | --- |
+| GET | `/v1/key-descriptor` | 读取本账号公开密钥身份；成员可核对，零R2读写 |
+| PUT | `/v1/key-descriptor` | owner明确首次登记；相同幂等，不同拒绝 |
 | GET | `/healthz` | 数据库就绪、协议版本，无账号资料 |
 | GET | `/v1/devices` | 本账号设备及授权状态，不含令牌/摘要 |
 | POST | `/v1/devices` | owner 显式授权，正文仅 `name`；返回一次新令牌 |
 | DELETE | `/v1/devices/{id}` | owner 撤销设备或 member 撤销自身 |
 | POST | `/v1/changes` | 单条密文操作，幂等写入 |
 | GET | `/v1/changes?after=0&limit=100` | 按账号单调修订拉取，不读其他账号 |
+
+## 账号密钥身份登记（服务端 schema 3）
+
+新增 `GET /v1/key-descriptor` 和 `PUT /v1/key-descriptor`。它们只处理公开的密钥身份描述符，不接收根密钥、72字节本机保护材料、恢复码或恢复包。Android本机准备不自动登记或上传，客户端网络接入仍需单独完成。
+
+PUT正文固定为三个字段：`version:1`、非零规范小写UUID的 `key_id`、64字符小写十六进制 `material_sha256`。摘要为 `SHA256(ZapIME v1 本机材料的72个字节)`，涵盖版本、账号UUID、key UUID及随机32字节根密钥。该公开摘要不是持有密钥的证明、配对核对码或授权凭据；服务无法验证客户端是否真的持有相应根密钥。
+
+新接口最大请求1024字节，要求 `application/json`；拒绝未知/重复字段、追加JSON、错误类型、未来版本和任何查询参数。GET不接收正文。账号只能来自当前设备令牌。读取和登记均在账号行锁内复核令牌摘要、有效期、撤销和角色，不读写R2，不推进changes修订、配额或客户端cursor。
+
+成功响应固定六字段：`protocol:1`、`account_id`、`state`、`descriptor`、`registered_by`、`registered_at`。state为：
+
+| state | 含义 | 后三个身份字段 |
+| --- | --- | --- |
+| `empty` | 未登记且没有同步历史 | descriptor/registered_by/registered_at均为null |
+| `legacy` | 未登记但已有修订、记账或记录/操作历史 | 三者均为null；禁止猜测或自动登记新根密钥 |
+| `registered` | 已固定一次密钥身份 | descriptor为上述三字段；by为首次登记设备UUID；at为其原始RFC3339时间 |
+
+当前有效owner才能PUT首次登记；member可GET核对恢复材料。已有完全相同描述符时owner重试幂等返回原六字段，包括原登记设备与时间；不同key ID或不同根摘要返回409 `key_descriptor_conflict`。无描述符但有旧历史返回409 `key_descriptor_legacy`。当前不提供替换、删除、轮换或legacy历史迁移接口。
+
+首次登记必须同时满足服务器head=0、stored_bytes=0、records和operations均无该账号记录；不能仅根据一次空页作判断。注册与原Push路径共用账号锁：已登记账号的新操作必须使用同key ID，否则409 `key_descriptor_mismatch`，且在对象写入及修订递增前拒绝。旧不可变请求的原样重放检查仍优先；无描述符的legacy账号保留原v1写入行为，新客户端则必须停止自动初始化并等待明确迁移。
+
+客户端必须比较返回账号、key ID和摘要，不能因服务报冲突而覆盖本机密钥、修改已stage的请求或丢弃未同步资料。两设备初次竞争时只有一套描述符成功；失败设备需保留原资料与恢复材料，通过后续显式迁移接入正确根密钥，当前没有原地一键换根。CAS不提供抗恶意服务器回滚或真正双设备配对证明。
+
+PostgreSQL schema从1/2升级到3，保留旧记录且不为其自动生成描述符；旧v1/v2二进制不能打开schema3。HTTP/密文协议仍v1、R2对象引用 `storage_version=2`、客户端SQLite仍v2，不能混淆这些版本。完整pg_dump会保存新 `zapime_account_keys` 表；迁移服务器必须保留该表、账号和原修订历史。细节及验证边界见[密钥身份说明](SYNC_KEY_DESCRIPTOR.md)。
 
 ## 密文操作
 
@@ -61,9 +87,9 @@ kind：1 词库、2 候选规则、3 短语、4 收藏、5 剪贴板。现有实
 
 API 默认仅回环监听，部署需 HTTPS。具备 100000 字节正文限制、固定 envelope 边界、32 个并行请求上限、数据库连接数/查询期限和通用错误；生产还需外层速率限制、防火墙、监控和安全审计。未声称已生产部署或通过第三方安全审计。
 
-## 可选 R2/S3 对象存储（服务器 schema v2）
+## 可选 R2/S3 对象存储（对象格式2，服务器 schema 3）
 
-线上 v1 API 与客户端密文封装不变。设置 `ZAPIME_OBJECT_BACKEND=s3` 时，新 Change 正文保存在私有 S3/R2 的 `zapime/v1/<account>/<sha256>.json`，PostgreSQL 两张表仅保存 storage_version=2、account_id 和 sha256 引用。旧内联 Change 可继续读取；已有外置引用而没有对象配置时启动拒绝。旧服务端 schema v1 程序不能打开升级后的数据库。
+线上 v1 API 与客户端密文封装不变。设置 `ZAPIME_OBJECT_BACKEND=s3` 时，新 Change 正文保存在私有 S3/R2 的 `zapime/v1/<account>/<sha256>.json`，PostgreSQL 两张表仅保存 storage_version=2、account_id 和 sha256 引用。旧内联 Change 可继续读取；已有外置引用而没有对象配置时启动拒绝。旧服务端 schema v1/v2 程序不能打开schema3数据库。升级前应保存完整备份；切回旧镜像不是数据库回滚。
 
 只有通过事务内授权、重放、冲突和配额校验后才执行外部写入，使用 If-None-Match 条件创建。对象写成功再提交修订；事务失败可能留下无引用密文，不自动清理。重试从不可变操作记录还原原结果，不覆盖或重新生成正文。R2 的 HTTP/S3 错误不直接返回给客户端，也不在日志暴露签名或凭据。
 

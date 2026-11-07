@@ -1,0 +1,236 @@
+warning: /workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+`license` should be used if the package license can be expressed with a standard SPDX expression.
+`license-file` should be used if the package uses a non-standard license.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+    Finished `test` profile [unoptimized] target(s) in 0.10s
+     Running unittests src/lib.rs (target/debug/deps/zapime_core-b9a29dfad6c7a1d6)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/ffi.rs (target/debug/deps/ffi-6173c9b3b0c570b2)
+
+running 3 tests
+test malformed_and_bounded_inputs_are_rejected_before_read ... ok
+test foreign_thread_cannot_access_or_close_a_session ... ok
+test native_buffer_roundtrip_and_session_lifetime ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/input.rs (target/debug/deps/input-c5e773a847936e4e)
+
+running 14 tests
+test invalid_unicode_and_out_of_range_selection_do_not_mutate_session ... ok
+test backspace_raw_commit_and_focus_reset ... ok
+test offline_pinyin_selects_and_clears_composition ... ok
+test persisted_user_candidate_rule_changes_selection_and_survives_reopen ... ok
+test personal_archive_api_restores_only_into_a_new_profile ... ok
+test pinning_another_candidate_replaces_the_previous_first_slot ... ok
+test candidate_pin_reorders_visible_rows_and_rejects_old_click ... ok
+test stale_candidate_cannot_commit_after_a_new_key_or_reset ... ok
+test shortcut_can_commit_custom_text_without_replacing_pinyin_decoder ... ok
+test nine_key_backspace_and_personal_shortcut_stay_local ... ok
+test nine_key_uses_upstream_decoder_and_generation_checked_spellings ... ok
+test nine_key_personal_words_respect_explicit_spelling_disambiguation ... ok
+test nine_key_pin_uses_real_pinyin_and_cannot_override_another_locked_reading ... ok
+test saved_candidate_provenance_covers_select_space_and_does_not_leak_to_later_replies ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running tests/local_backup.rs (target/debug/deps/local_backup-91f7670643bb4100)
+
+running 3 tests
+test generic_recovery_cannot_be_misread_as_a_local_snapshot ... ok
+test authenticated_restore_refuses_bound_profile_and_missing_database ... ok
+test encrypted_snapshot_recovers_exact_records_after_source_changes ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.86s
+
+     Running tests/personal_panel.rs (target/debug/deps/personal_panel-b4395674bb1d6af6)
+
+running 6 tests
+test private_sessions_cannot_query_commit_or_mutate_saved_data ... ok
+test expired_clipboard_never_inserts_even_if_pinned_and_favorites_remain ... ok
+test pin_favorite_and_delete_are_revision_checked_and_persisted ... ok
+test latest_store_revision_controls_full_body_insertion_and_deleted_rejection ... ok
+test settings_reload_sees_stateless_restore_and_rejects_active_or_private_sessions ... ok
+test queries_search_unicode_tags_and_bound_pages_without_changing_composition ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+
+     Running unittests src/lib.rs (target/debug/deps/zapime_crypto-cd3b2c5d1c491c04)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/recovery.rs (target/debug/deps/recovery-61c9bebd669fbc2c)
+
+running 4 tests
+test ciphertext_is_bound_to_record_and_rejects_wrong_key ... ok
+test explicit_protected_storage_roundtrip_preserves_real_aead_key ... ok
+test lost_device_recovery_restores_key_and_data_into_fresh_database ... ok
+test wrong_recovery_code_and_tampered_package_fail_closed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.95s
+
+     Running unittests src/lib.rs (target/debug/deps/zapime_data-d4dd1d454c71f62c)
+
+running 1 test
+test panel::tests::page_order_uses_index_without_a_temporary_sort ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/local_backup.rs (target/debug/deps/local_backup-71a9191ac1b77364)
+
+running 4 tests
+test backup_writer_never_initializes_or_downgrades ... ok
+test snapshot_matches_open_format_and_preserves_history ... ok
+test empty_records_do_not_allow_reusing_bound_or_historical_profile ... ok
+test partial_or_unknown_sync_metadata_is_not_a_fresh_restore_target ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/panel.rs (target/debug/deps/panel-8dd20f36e9dd5a0c)
+
+running 3 tests
+test readonly_open_never_creates_or_migrates_a_profile ... ok
+test sqlite_search_preserves_unicode_literals_tags_expiry_and_max_u64 ... ok
+test large_store_queries_return_only_indexed_summary_pages_from_a_readonly_connection ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+
+     Running tests/profile_status.rs (target/debug/deps/profile_status-278de1c993952d7e)
+
+running 2 tests
+test malformed_binding_and_future_schema_are_errors_not_unbound ... ok
+test inspection_never_initializes_and_preserves_existing_personal_history ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/quarantine.rs (target/debug/deps/quarantine-5044e62a9bf5eff1)
+
+running 2 tests
+test additive_v2_table_preparation_preserves_existing_records_and_pending_history ... ok
+test journal_byte_quota_does_not_evict_and_corruption_cannot_fake_deduplication ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.73s
+
+     Running tests/schedule.rs (target/debug/deps/schedule-2b4276a38277e169)
+
+running 8 tests
+test disabled_offline_background_and_unauthorized_never_arm_timers ... ok
+test clock_and_completion_validation_keep_the_current_flight ... ok
+test empty_polls_back_off_to_five_minutes_and_changes_reset_to_one_minute ... ok
+test local_edits_debounce_and_continuous_edits_flush_within_thirty_seconds ... ok
+test panel_refresh_cooldown_foreground_resume_and_manual_refresh ... ok
+test failures_keep_work_exponential_jitter_is_bounded_and_manual_does_not_bypass ... ok
+test one_flight_shares_triggers_and_preserves_edits_during_upload ... ok
+test rate_limit_is_respected_across_connectivity_and_authorization_changes ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/storage.rs (target/debug/deps/storage-4a65f0c6a8ac9a0f)
+
+running 8 tests
+test same_text_with_distinct_codes_is_not_collapsed ... ok
+test atomic_edit_is_idempotent_and_conflicting_replay_is_rejected ... ok
+test local_device_identity_is_stable_across_connections ... ok
+test candidate_slots_and_dictionary_identity_reject_ambiguous_duplicates ... ok
+test corrupt_or_future_archive_cannot_partially_restore ... ok
+test two_connections_cannot_silently_overwrite_each_other ... ok
+test clipboard_expiry_preserves_favorites_and_tombstones_survive_restore ... ok
+test correctly_checksummed_archive_with_conflicting_rules_is_still_rejected ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/sync_state.rs (target/debug/deps/sync_state-76163b72062bea8a)
+
+running 13 tests
+test corrupted_staged_metadata_cannot_acknowledge_a_different_record ... ok
+test acknowledgement_preserves_later_local_edit_and_does_not_jump_pull_cursor ... ok
+test coalescing_after_a_snapshot_is_read_prevents_staging_that_superseded_snapshot ... ok
+test coalescing_retains_the_last_delete_tombstone_and_does_not_restore_it_by_replay ... ok
+test pending_rows_are_immutable_operation_snapshots ... ok
+test coalescing_never_rewrites_or_skips_a_frozen_request ... ok
+test crash_retry_keeps_exact_first_wire_nonce_and_key_version ... ok
+test coalescing_keeps_last_unstaged_per_record_and_preserves_history_and_replay ... ok
+test coalescing_is_profile_checked_and_only_changes_the_bounded_window ... ok
+test profile_order_and_invalid_ack_rejections_are_atomic ... ok
+test explicit_queue_sequence_survives_vacuum_and_reopen ... ok
+test v1_database_migrates_without_losing_data_or_pending_operations ... ok
+test a_hundred_offline_edits_can_prepare_one_upload_without_equating_revisions ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running unittests src/lib.rs (target/debug/deps/zapime_sync-210025072b083d83)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/pull.rs (target/debug/deps/pull-beac8d9393fb8de4)
+
+running 18 tests
+test acknowledging_ahead_of_pull_does_not_regress_server_mapping_or_local_record ... ok
+test invalid_cross_account_and_stale_pages_are_not_retained_as_new_failures ... ok
+test even_authenticated_replacement_ciphertext_cannot_ack_a_different_frozen_snapshot ... ok
+test binding_tampering_and_outer_delete_forgery_are_rejected_before_writes ... ok
+test durable_conflict_preserves_both_remote_wire_and_local_frozen_request_without_partial_ack ... ok
+test failure_journal_deduplicates_without_writes_and_never_evicts_on_capacity ... ok
+test a_later_page_conflict_also_rolls_back_its_earlier_upload_acknowledgement ... ok
+test local_pending_conflict_rolls_back_the_whole_page_and_keeps_frozen_bytes ... ok
+test history_gaps_head_jumps_unknown_fields_and_bounded_pages_never_advance_cursor ... ok
+test tombstones_cannot_be_resurrected_by_renumbering_an_old_authenticated_operation ... ok
+test own_echo_acknowledges_only_the_frozen_request_and_preserves_later_edits ... ok
+test a_bad_second_cipher_or_missing_key_never_partially_applies_the_first ... ok
+test semantic_candidate_collisions_rollback_and_ordered_delete_frees_a_slot ... ok
+test stale_completion_and_wrong_profile_do_not_overwrite_edits_or_move_cursor ... ok
+test retained_tampered_cipher_and_bundle_never_gain_trust_from_the_journal ... ok
+test untracked_restored_data_requires_matching_content_before_adopting_remote_version ... ok
+test missing_key_page_is_durable_exportable_and_retried_only_with_fresh_authentication ... ok
+test two_databases_exchange_real_authenticated_snapshots_without_echo_uploads ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/workspace.rs (target/debug/deps/workspace-8e8d851f5074e952)
+
+running 10 tests
+test protected_format_is_fixed_bounded_and_account_scoped ... ok
+test orphaned_vault_material_survives_atomic_database_failure_and_retry ... ok
+test inspection_and_preparation_never_create_or_migrate ... ok
+test symlink_database_is_rejected_without_touching_target ... ok
+test explicit_prepare_only_binds_metadata_and_is_idempotent ... ok
+test retry_with_identical_material_preserves_frozen_uploads_receipts_and_cursor ... ok
+test incomplete_legacy_binding_and_unbound_sync_history_fail_closed ... ok
+test malformed_prepared_metadata_is_not_repaired_or_replaced ... ok
+test cooperative_sqlite_budget_interrupts_and_rolls_back_partial_preparation ... ok
+test key_only_recovery_authenticates_purpose_account_key_and_root ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.42s
+
+   Doc-tests zapime_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests zapime_crypto
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests zapime_data
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests zapime_sync
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

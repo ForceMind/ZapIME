@@ -53,7 +53,7 @@ sudo zapime verify-objects
 
 修改错误/失效的 R2 设置时使用 `sudoedit /opt/zapime/config.env`，只改 `ZAPIME_S3_*`；**保留 POSTGRES_PASSWORD**，不能删掉配置让安装器重新随机生成数据库密码。之后重新执行安装命令。不要执行 `docker compose config` 将凭据完整打印到普通日志；可用 `config --quiet` 校验。
 
-重复运行相同安装命令会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。安装文件保存于 `/opt/zapime/releases/<SHA>`；没有 `down --volumes` 或自动清空用户资料。数据库 schema v2 拒绝旧 v1 程序降级，不能把切换旧镜像当作数据库回滚；需要时从升级前备份恢复到全新库。
+重复运行相同安装命令会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。安装文件保存于 `/opt/zapime/releases/<SHA>`；没有 `down --volumes` 或自动清空用户资料。数据库 schema3 拒绝旧v1/v2程序降级；账号密钥身份表随完整数据库备份保存。新版保留旧内联/对象记录，legacy历史不会自动猜测根密钥，不能把切换旧镜像当作数据库回滚；需要时从升级前备份恢复到全新库。
 
 支持 systemd 时自动安装每日备份 timer。备份存放 `/opt/zapime/backups`，不自动删除旧归档；应监控磁盘并将成套备份复制到自己控制的异地位置。Docker 普通日志按 10 MB × 3 轮转，不记录正文/令牌。当前是可部署的开发服务，尚未完成第三方安全审计、外层限流与生产监控。
 
@@ -78,4 +78,6 @@ curl -fsSL https://raw.githubusercontent.com/ForceMind/ZapIME/main/deploy/instal
 
 ## 验证范围
 
-CI [39793985624](https://github.com/ForceMind/ZapIME/actions/runs/39793985624) 已使用实际 PostgreSQL、独立 S3 兼容对象服务、Docker，完成安装器重跑、全新数据库/另一空桶恢复及真实 Rust AEAD 解密验收（验证 head 3f8251f7ba0fc6ba0a75c09bf804dc4616c4c966）。兼容协议验收不等于已访问用户 Cloudflare 账号。没有用户 R2 凭据、域名和服务器 SSH 时，不宣称已完成真实 R2、公网证书或用户服务器部署。具体 CI 和结果记录见 STATUS.md。
+固定e8e016的[CI42350448294](https://github.com/ForceMind/ZapIME/actions/runs/42350448294)也已验证schema3密钥身份登记、保留原登记时间/设备的数据库恢复，以及一键/重复安装、全新DB与对象桶恢复。原日志与实际下载ZIP校验见[服务证据](evidence/manual-sync-20261106/server74-ci/README.md)；这不是后续手动客户端的Android HTTPS或生产R2验收。
+
+此前CI [39793985624](https://github.com/ForceMind/ZapIME/actions/runs/39793985624) 已使用实际 PostgreSQL、独立 S3 兼容对象服务、Docker，完成安装器重跑、全新数据库/另一空桶恢复及真实 Rust AEAD 解密验收（验证 head 3f8251f7ba0fc6ba0a75c09bf804dc4616c4c966）。兼容协议验收不等于已访问用户 Cloudflare 账号。没有用户 R2 凭据、域名和服务器 SSH 时，不宣称已完成真实 R2、公网证书或用户服务器部署。具体 CI 和结果记录见 STATUS.md。

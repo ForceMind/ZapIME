@@ -1,0 +1,11 @@
+Diff in /workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync/examples/manual_sync_fixture.rs:73:
+     // The fixture owns this temporary directory. Canonicalize its ancestors
+     // (macOS /var aliases /private/var), then preserve the database leaf for
+     // the production writer's NOFOLLOW check. Never resolve the database leaf.
+-    let parent = dir.canonicalize().expect("canonical owned fixture directory");
++    let parent = dir
++        .canonicalize()
++        .expect("canonical owned fixture directory");
+     Store::open_sync_writer(&database(&parent, device)).expect("fixture sync database")
+ }
+ fn edit(store: &mut Store, id: Uuid, text: &str) {

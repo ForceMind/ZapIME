@@ -3,23 +3,42 @@
 set -euo pipefail
 root=$(cd "$(dirname "$0")/.." && pwd)
 cd "$root"
+voicekey_only=false
+case "$#" in
+  0) ;;
+  1) if [[ "$1" == --voicekey-only ]]; then voicekey_only=true; else echo 'Usage: build_android_voice_tests.sh [--voicekey-only]' >&2; exit 2; fi ;;
+  *) echo 'Usage: build_android_voice_tests.sh [--voicekey-only]' >&2; exit 2 ;;
+esac
 sdk=${ANDROID_SDK_ROOT:?Set ANDROID_SDK_ROOT}
 tools="$sdk/build-tools/35.0.0"
 android_jar="$sdk/platforms/android-36/android.jar"
 build="$root/target/android-voice-tests"
-[[ -s target/ZapIME-XASR-model.zip && -s target/voice-probe/synthetic.wav ]] || { echo 'Verified model bundle and synthetic fixture must be prepared first' >&2; exit 1; }
+[[ -s target/voice-probe/synthetic.wav ]] || { echo 'Synthetic fixture must be prepared first' >&2; exit 1; }
+if ! "$voicekey_only"; then
+  [[ -s target/ZapIME-XASR-model.zip ]] || { echo 'Verified model bundle must be prepared first' >&2; exit 1; }
+fi
 rm -rf "$build"
 mkdir -p "$build"/{classes,dex,assets/voice-fixtures,assets/licenses}
-cp target/ZapIME-XASR-model.zip "$build/assets/voice-fixtures/model.zip"
 cp LICENSE "$build/assets/licenses/GPL-3.0.txt"
-cp third_party/licenses/X-ASR-Apache-2.0.txt "$build/assets/licenses/X-ASR-Apache-2.0.txt"
-cat > "$build/assets/NOTICE.txt" <<'NOTICE'
+if "$voicekey_only"; then
+  cat > "$build/assets/NOTICE.txt" <<'NOTICE'
+ZapIME synthetic Android VoiceKey-only acceptance harness, GPL-3.0-only.
+Corresponding source: https://github.com/ForceMind/ZapIME
+Only fixed public synthetic PCM is embedded; no X-ASR or VoiceKey model weights.
+The official VoiceKey model is explicitly imported through SAF on dedicated CI.
+Product ASR native libraries are in the separate target APK with their notices.
+NOTICE
+else
+  cp target/ZapIME-XASR-model.zip "$build/assets/voice-fixtures/model.zip"
+  cp third_party/licenses/X-ASR-Apache-2.0.txt "$build/assets/licenses/X-ASR-Apache-2.0.txt"
+  cat > "$build/assets/NOTICE.txt" <<'NOTICE'
 ZapIME synthetic Android acceptance harness, GPL-3.0-only.
 Corresponding source: https://github.com/ForceMind/ZapIME
 Only this test-only APK embeds the pinned model ZIP and synthetic PCM.
 X-ASR model and ONNX conversion attribution/LICENSE/NOTICE remain in model.zip.
 Product ASR native libraries are in the separate target APK with their notices.
 NOTICE
+fi
 python3 - target/voice-probe/synthetic.wav "$build/assets/voice-fixtures/synthetic.pcm" <<'PY'
 from pathlib import Path
 import sys,wave

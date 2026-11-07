@@ -42,6 +42,144 @@ fn packet(store: &mut Store, profile: Uuid) -> UploadOperation {
 }
 
 #[test]
+fn staged_read_never_creates_and_returns_original_bytes_after_new_edits_and_ack() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("staged-read.db");
+    let profile = Uuid::new_v4();
+    let mut store = Store::open(&path).unwrap();
+    store.bind_sync_profile(profile).unwrap();
+    let id = Uuid::new_v4();
+    let original = edit(&mut store, id, 0, "original immutable snapshot");
+    assert!(store.staged_upload(profile, original).unwrap().is_none());
+    let upload = packet(&mut store, profile);
+    let frozen = store.stage_upload(profile, upload).unwrap();
+    let wire = frozen.to_wire().unwrap();
+    edit(&mut store, id, 1, "newer local record");
+    let pending = store.pending_count().unwrap();
+    let before = store.export_plaintext().unwrap();
+    let mut reader = Store::open_panel_reader(&path).unwrap();
+    let stored = reader.staged_upload(profile, original).unwrap().unwrap();
+    assert!(stored.operation == frozen);
+    assert_eq!(stored.wire, wire);
+    assert_eq!(stored.snapshot.revision, 1);
+    assert_eq!(store.get(id).unwrap().unwrap().revision, 2);
+    assert_eq!(store.pending_count().unwrap(), pending);
+    assert_eq!(store.export_plaintext().unwrap(), before);
+    assert!(reader.staged_upload(Uuid::new_v4(), original).is_err());
+    assert!(reader.staged_upload(profile, Uuid::nil()).is_err());
+    store.acknowledge_upload(profile, original, 3).unwrap();
+    let acknowledged = reader.staged_upload(profile, original).unwrap().unwrap();
+    assert_eq!(acknowledged.wire, wire);
+    assert_eq!(acknowledged.snapshot.revision, 1);
+    assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+}
+
+#[test]
+fn staged_read_rejects_corrupt_wire_and_snapshot_with_no_mutation() {
+    let dir = tempfile::tempdir().unwrap();
+    let profile = Uuid::new_v4();
+    for fault in ["wire", "record", "oversized-wire", "oversized-snapshot"] {
+        let path = dir.path().join(format!("staged-{fault}.db"));
+        let mut store = Store::open(&path).unwrap();
+        store.bind_sync_profile(profile).unwrap();
+        let operation = edit(&mut store, Uuid::new_v4(), 0, "synthetic original");
+        let mut upload = packet(&mut store, profile);
+        upload = store.stage_upload(profile, upload).unwrap();
+        let raw = rusqlite::Connection::open(&path).unwrap();
+        match fault {
+            "wire" => {
+                upload.record_id = Uuid::new_v4();
+                raw.execute(
+                    "UPDATE sync_uploads SET wire=?1",
+                    [String::from_utf8(upload.to_wire().unwrap()).unwrap()],
+                )
+                .unwrap();
+            }
+            "record" => {
+                raw.execute("UPDATE operations SET result='{}'", [])
+                    .unwrap();
+            }
+            "oversized-wire" => {
+                raw.execute("UPDATE sync_uploads SET wire=?1", [" ".repeat(100001)])
+                    .unwrap();
+            }
+            _ => {
+                raw.execute(
+                    "UPDATE operations SET result=?1",
+                    [format!("{{\"padding\":\"{}\"}}", " ".repeat(1048577))],
+                )
+                .unwrap();
+            }
+        }
+        let saved: String = raw
+            .query_row("SELECT wire FROM sync_uploads", [], |row| row.get(0))
+            .unwrap();
+        let snapshot: String = raw
+            .query_row("SELECT result FROM operations", [], |row| row.get(0))
+            .unwrap();
+        assert!(store.staged_upload(profile, operation).is_err(), "{fault}");
+        assert_eq!(
+            raw.query_row::<String, _, _>("SELECT wire FROM sync_uploads", [], |row| row.get(0))
+                .unwrap(),
+            saved
+        );
+        assert_eq!(
+            raw.query_row::<String, _, _>("SELECT result FROM operations", [], |row| row.get(0))
+                .unwrap(),
+            snapshot
+        );
+        assert_eq!(store.pending_count().unwrap(), 1);
+        assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+    }
+}
+
+#[test]
+fn acknowledgement_vm_budget_rolls_back_earlier_mapping_and_allows_a_clean_retry() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("ack-budget.db");
+    let profile = Uuid::new_v4();
+    let mut store = Store::open(&path).unwrap();
+    store.bind_sync_profile(profile).unwrap();
+    let operation = edit(
+        &mut store,
+        Uuid::new_v4(),
+        0,
+        "synthetic acknowledgement budget",
+    );
+    let upload = packet(&mut store, profile);
+    store.stage_upload(profile, upload).unwrap();
+    let raw = rusqlite::Connection::open(&path).unwrap();
+    raw.execute_batch("CREATE TRIGGER slow_ack BEFORE UPDATE ON operations WHEN OLD.pending=1 AND NEW.pending=0 BEGIN SELECT sum(x) FROM (WITH RECURSIVE work(x) AS (VALUES(0) UNION ALL SELECT x+1 FROM work WHERE x<100000000) SELECT x FROM work); END").unwrap();
+    // This is a real cooperative VM interruption, not a disk/phone deadline.
+    let error = store
+        .acknowledge_upload(profile, operation, 5)
+        .err()
+        .unwrap();
+    match error {
+        Error::Storage(rusqlite::Error::SqliteFailure(sqlite, _)) => {
+            assert_eq!(sqlite.code, rusqlite::ErrorCode::OperationInterrupted)
+        }
+        _ => panic!("expected actual SQLite VM interruption"),
+    }
+    assert_eq!(
+        raw.query_row::<i64, _, _>("SELECT count(*) FROM sync_versions", [], |row| row.get(0))
+            .unwrap(),
+        0
+    );
+    assert!(raw
+        .query_row::<Option<i64>, _, _>("SELECT ack_revision FROM sync_uploads", [], |row| row
+            .get(0))
+        .unwrap()
+        .is_none());
+    assert_eq!(store.pending_count().unwrap(), 1);
+    assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+    raw.execute_batch("DROP TRIGGER slow_ack").unwrap();
+    store.acknowledge_upload(profile, operation, 5).unwrap();
+    assert_eq!(store.pending_count().unwrap(), 0);
+    assert_eq!(store.sync_cursor(profile).unwrap(), 0);
+}
+
+#[test]
 fn coalescing_keeps_last_unstaged_per_record_and_preserves_history_and_replay() {
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("data.sqlite3");

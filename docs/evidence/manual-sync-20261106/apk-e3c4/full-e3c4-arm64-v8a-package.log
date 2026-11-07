@@ -1,0 +1,3 @@
+PASS packaged APK native hashes, model catalog, notices and explicit model boundary: arm64-v8a
+APK package, native IME, notices, explicit network permission and no-cleartext checks passed
+SHA256 66ba85d9a4690cf0de5c410313692c148b3d0ebeb050fdc92a1246bc2b64999c

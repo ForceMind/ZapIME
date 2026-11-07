@@ -1,0 +1,16 @@
+warning: /workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+`license` should be used if the package license can be expressed with a standard SPDX expression.
+`license-file` should be used if the package uses a non-standard license.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+   Compiling zapime-data v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-data)
+    Finished `test` profile [unoptimized] target(s) in 0.70s
+     Running unittests src/lib.rs (target/debug/deps/zapime_data-ad5a2223cf51e5d9)
+
+running 4 tests
+test sync::writer_tests::sync_writer_rejects_parent_alias_but_accepts_canonical_existing_database ... ok
+test sync::writer_tests::sync_writer_never_creates_or_migrates_and_enforces_foreign_keys_and_busy_budget ... ok
+test sync::writer_tests::sync_writer_rejects_a_symlink_without_touching_its_target ... ok
+test sync::writer_tests::vm_budget_hook_is_cleared_before_a_panic_is_resumed ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.22s
+

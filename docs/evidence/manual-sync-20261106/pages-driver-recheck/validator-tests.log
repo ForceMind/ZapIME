@@ -1,0 +1,11 @@
+test_bounded_failure_substep_is_only_diagnostic_and_never_passes (test_android_sync_pages_report.SyncPagesUiReportTests.test_bounded_failure_substep_is_only_diagnostic_and_never_passes) ... ok
+test_case_duplicates_failures_unknown_and_extra_payload_rejected (test_android_sync_pages_report.SyncPagesUiReportTests.test_case_duplicates_failures_unknown_and_extra_payload_rejected) ... ok
+test_each_proof_and_scope_cannot_be_downgraded_or_inflated (test_android_sync_pages_report.SyncPagesUiReportTests.test_each_proof_and_scope_cannot_be_downgraded_or_inflated) ... ok
+test_exact_report_and_expected_api (test_android_sync_pages_report.SyncPagesUiReportTests.test_exact_report_and_expected_api) ... ok
+test_failure_substep_refuses_arbitrary_payload_and_type_coercion (test_android_sync_pages_report.SyncPagesUiReportTests.test_failure_substep_refuses_arbitrary_payload_and_type_coercion) ... ok
+test_missing_unknown_and_coerced_fields_rejected (test_android_sync_pages_report.SyncPagesUiReportTests.test_missing_unknown_and_coerced_fields_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.003s
+
+OK

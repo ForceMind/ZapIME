@@ -1,0 +1,30 @@
+warning: /workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/descriptor-save-jet0cb50/snapshot/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+`license` should be used if the package license can be expressed with a standard SPDX expression.
+`license-file` should be used if the package uses a non-standard license.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+   Compiling libc v0.2.191
+   Compiling serde_core v1.0.229
+   Compiling serde v1.0.229
+    Checking hashbrown v0.17.1
+    Checking hashlink v0.12.2
+    Checking rusqlite v0.40.2
+    Checking getrandom v0.2.17
+    Checking getrandom v0.4.3
+    Checking tempfile v3.27.0
+    Checking rand_core v0.6.4
+    Checking crypto-common v0.1.7
+    Checking password-hash v0.5.0
+    Checking cipher v0.4.4
+    Checking universal-hash v0.5.1
+    Checking digest v0.10.7
+    Checking aead v0.5.2
+    Checking poly1305 v0.8.0
+    Checking blake2 v0.10.6
+    Checking chacha20 v0.9.1
+    Checking chacha20poly1305 v0.10.1
+    Checking argon2 v0.5.3
+    Checking uuid v1.28.0
+    Checking serde_json v1.0.154
+    Checking zapime-data v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/descriptor-save-jet0cb50/snapshot/crates/zapime-data)
+    Checking zapime-crypto v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/descriptor-save-jet0cb50/snapshot/crates/zapime-crypto)
+    Finished `dev` profile [unoptimized] target(s) in 2.32s

@@ -1,0 +1,83 @@
+{
+  "head": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "checkout": "2c61712f9414f40f66017aeb1448642c1f5abb89",
+  "tree": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "run": 42351436401,
+  "artifact": 13565943719,
+  "zip_bytes": 235395045,
+  "zip_sha256": "432c753d0c84efefb01a37461bc27820249814a7de7358648fe5941c81681b09",
+  "actual_downloaded": true,
+  "zip_crc_all_members": "PASS",
+  "official_build_tools_35_archive_size": 61958799,
+  "official_build_tools_35_archive_sha1": "2cfaa0bbb2336e9ec18ed3ecea84fa2e2af607bc",
+  "package_native_notices_model_exclusion": "PASS both ABI",
+  "native_core_jni_exports": 18,
+  "signature_v3_and_same_signer": "PASS both ABI",
+  "zipalign_16k_page_mode": "PASS both ABI",
+  "new_activities_exported": false,
+  "product_network_security_config": null,
+  "product_debuggable": false,
+  "scope": "Actual signed APK bytes/ELF/JNI/notices/manifest and ZIP alignment; not ARM Android runtime, phone HTTPS, public-PKI/R2 or formal signing. 47-case emulator evidence is separate; macOS shared unit fixture failure is preserved separately.",
+  "files": [
+    {
+      "file": "focused-build-metadata.json",
+      "bytes": 957,
+      "sha256": "ba1b3d06e4e94d55d830eb05a89c10bca20b39e6ef89217d284a73e782639bfb"
+    },
+    {
+      "file": "full-e3c4-apks.json",
+      "bytes": 690,
+      "sha256": "622bce75b6e177838bfc8c75f7f0271341ad11b85756c52d50502902ed9d1cc8"
+    },
+    {
+      "file": "full-e3c4-arm64-v8a-manifest.txt",
+      "bytes": 5354,
+      "sha256": "f7bc8c440632cb965bf3c48f09c0678ed69cdf9b73d4eb5d3017c951689a37a6"
+    },
+    {
+      "file": "full-e3c4-arm64-v8a-package.log",
+      "bytes": 260,
+      "sha256": "c6d54e9b610b8a99ade9023ba08f70011041955217c3544b9b5733ebd1cf22e9"
+    },
+    {
+      "file": "full-e3c4-arm64-v8a-signature.log",
+      "bytes": 943,
+      "sha256": "d7a0521cf0ea4b194d6dfc691788c97554ed38494c4175713d52ce8aa41ce9ac"
+    },
+    {
+      "file": "full-e3c4-arm64-v8a-zipalign.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "full-e3c4-x86_64-manifest.txt",
+      "bytes": 5354,
+      "sha256": "f7bc8c440632cb965bf3c48f09c0678ed69cdf9b73d4eb5d3017c951689a37a6"
+    },
+    {
+      "file": "full-e3c4-x86_64-package.log",
+      "bytes": 257,
+      "sha256": "950bd34b1cd738ecaa6f6fc0a75a905cf05c058cc72ba73ada8d8f0da717d638"
+    },
+    {
+      "file": "full-e3c4-x86_64-signature.log",
+      "bytes": 943,
+      "sha256": "d7a0521cf0ea4b194d6dfc691788c97554ed38494c4175713d52ce8aa41ce9ac"
+    },
+    {
+      "file": "full-e3c4-x86_64-zipalign.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "github-full-artifact-metadata.json",
+      "bytes": 4119,
+      "sha256": "95afad5671d4b0fcf09c2d3b67963956a160aa2e1a19d305582c5e1a27624c4b"
+    },
+    {
+      "file": "github-merge-source.json",
+      "bytes": 259,
+      "sha256": "fcb7e5645b51fb36f31366645d3cfd5f98c6a89a9a52328f50ab901d3b642216"
+    }
+  ]
+}

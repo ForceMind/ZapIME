@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "scope": "Host validation against existing actual compiled aapt2 manifests; no Android HTTPS or system CA execution",
+  "inputs": [
+    {
+      "path": "target/manual-sync-apk-verification/full-e3c4-arm64-v8a-manifest.txt",
+      "sha256": "f7bc8c440632cb965bf3c48f09c0678ed69cdf9b73d4eb5d3017c951689a37a6"
+    },
+    {
+      "path": "target/manual-sync-apk-verification/full-e3c4-x86_64-manifest.txt",
+      "sha256": "f7bc8c440632cb965bf3c48f09c0678ed69cdf9b73d4eb5d3017c951689a37a6"
+    }
+  ]
+}

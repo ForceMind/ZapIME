@@ -1,0 +1,8 @@
+{
+  "status": "PREPARED",
+  "engine_id": "voicekey",
+  "model_id": "wechat-offline-20260710220526250",
+  "package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "source_download_hash_and_extraction_ms": 6781.039905999989,
+  "redistribution_permission": "NOT ESTABLISHED; no weights uploaded"
+}

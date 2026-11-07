@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 28,
+  "scope": "API28 disposable AOSP emulator; temporary system CA; unchanged product platform TLS and hostname verification; controlled loopback TLS to actual Go/PostgreSQL. Not stock trust, two phones, API35/36, public CA, R2 or production deployment.",
+  "cleanup_completed": true,
+  "exception_type": null,
+  "failure_code": null,
+  "ca": {
+    "installed": true,
+    "removed": true,
+    "staging_removed": true,
+    "baseline_restored": true,
+    "sha256_pem": "7cc42dffe7e7823c19cb4274f42f2606cd47fc15b0ab1d8484d8aabc74b199e9",
+    "sha256_der": "38e3d6c6fd68d0bea3ab66f6c0af2c1d1fd68ce27993bdcd6042ea253120ca68"
+  },
+  "network": {
+    "uid": 10067,
+    "ipv4_fixture_only": true,
+    "ipv6_reject": true,
+    "removed": true,
+    "checks": 7
+  },
+  "fixture": {
+    "schema_version": 1,
+    "scope": "Real isolated Go/PostgreSQL via temporary host TLS; no Android claim",
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/ci/bootstrap/<redacted>",
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/v1/changes",
+        "count": 8
+      },
+      {
+        "method": "GET",
+        "path": "/v1/key-descriptor",
+        "count": 6
+      },
+      {
+        "method": "GET",
+        "path": "/v1/session",
+        "count": 2
+      },
+      {
+        "method": "POST",
+        "path": "/v1/changes",
+        "count": 2
+      },
+      {
+        "method": "PUT",
+        "path": "/v1/key-descriptor",
+        "count": 1
+      }
+    ],
+    "bad_hostname_http_requests": 0,
+    "service_revision": 2,
+    "owner_session_valid": true,
+    "member_session_valid": true,
+    "bootstrap_response_bytes": 438,
+    "request_limit_bytes": 100000,
+    "response_limit_bytes": 10485760,
+    "cleanup_completed": true,
+    "go_process_stopped": true,
+    "tls_threads_stopped": true,
+    "private_temp_removed": true
+  },
+  "api35_36": "BLOCKED_NOT_RUN",
+  "product_trust_code_changed": false,
+  "fresh_install": true,
+  "owned_packages_removed": true,
+  "apk_sha256": [
+    "d07c2f39ef491ddc095fb7c7743723f47c648f7bf7f3f0c4fe6f85215c07c0d8",
+    "6ab9c6384257a9e19e5eb0f5417afe32f188050369f51a5a033b7bf4c066d0fb"
+  ],
+  "ca_cleanup_exception_types": [],
+  "package_cleanup_exception_types": []
+}

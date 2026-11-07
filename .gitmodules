@@ -1,3 +1,6 @@
 [submodule "vendor/msime"]
 	path = vendor/msime
 	url = https://github.com/metasequoiaime/msime.git
+[submodule "vendor/voicekey"]
+	path = vendor/voicekey
+	url = https://github.com/J3n5en/voicekey.git

@@ -1,0 +1,14 @@
+{
+  "run_id": 42350448294,
+  "job_id": 128337307776,
+  "head_sha": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "conclusion": "success",
+  "scope": "GitHub isolated PG16+S3-compatible fixture, container, vulnerability gate, old crypto recovery probes, fresh database/object bucket installer recovery; not new manual client, real Cloudflare R2, Android HTTPS or phone",
+  "test_top_level_pass": 23,
+  "skipped": 0,
+  "raw_job_log": {
+    "bytes": 165016,
+    "sha256": "bade455db043e72cd4960cf68efff6d80739ccc5da8d0cee724aa53b27e0c5fb"
+  },
+  "private_material_included": false
+}

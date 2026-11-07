@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scope": "Real PostgreSQL16.11 and service schema3, loopback HTTP, shared manual client, two real SQLite stores; inline backend, no Docker/S3/R2/Android claim",
+  "registered_descriptor": true,
+  "same_root_two_prepared_stores": true,
+  "frozen_retry_exact_bytes_after_restart": true,
+  "real_server_ack_authenticated_twice": true,
+  "remote_edit_and_echo_no_pending": true,
+  "whole_page_tamper_rollback_and_exact_ciphertext_retention": true,
+  "descriptor_mismatch_blocked_before_mutation": true,
+  "private_temporary_files_removed": true,
+  "stores": 2,
+  "server_revisions": 2,
+  "final_cursor_each": 2,
+  "final_pending_each": 0
+}

@@ -1,0 +1,1 @@
+PASS local real-AEAD descriptor/CAS/revocation/old-binary refusal/pg_dump+fresh DB restore; private fixtures removed

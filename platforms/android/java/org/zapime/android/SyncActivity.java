@@ -14,7 +14,7 @@ public final class SyncActivity extends Activity {
     private final Handler main=new Handler(Looper.getMainLooper());
     private EditText server,credential;
     private TextView status;
-    private Button connect,inspect,forget;
+    private Button connect,inspect,forget,prepare,keyIdentity,transfer;
     private int generation;
     private boolean active,busy;
     private SyncHttp.Cancellation cancellation;
@@ -22,7 +22,7 @@ public final class SyncActivity extends Activity {
     @Override public void onCreate(Bundle state){
         super.onCreate(state);getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         LinearLayout page=Ui.page(this);page.addView(Ui.text(this,"连接你的服务器",28,Ui.INK));
-        page.addView(Ui.text(this,"验证设备授权，连接信息仅加密保存在本机。\n当前不会上传词库、短语、收藏或剪贴板。",14,Ui.MUTED));
+        page.addView(Ui.text(this,"验证设备授权，连接信息仅加密保存在本机。\n默认不上传个人资料；手动同步须在专用页面明确确认。",14,Ui.MUTED));
         LinearLayout form=Ui.card(page);form.addView(Ui.text(this,"HTTPS 服务器地址",16,Ui.INK));
         server=new EditText(this);server.setHint("https://你的服务器域名");server.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_URI);server.setSingleLine(true);Ui.field(server);form.addView(server);
         server.setImeOptions(EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING|EditorInfo.IME_ACTION_NEXT);
@@ -37,19 +37,22 @@ public final class SyncActivity extends Activity {
         forget=Ui.button(this,"移除本机连接",Ui.BG,false);Ui.addButton(saved,forget);forget.setOnClickListener(v->new AlertDialog.Builder(this).setTitle("移除本机连接？")
                 .setMessage("之后需重新导入设备凭据。本机个人资料和端到端恢复材料保留；服务器端设备授权仍然有效。")
                 .setNegativeButton("取消",null).setPositiveButton("移除",(d,w)->run("正在移除…",cancel->{cancel.check();SyncConnectionStore.forget(getApplicationContext());return "本机连接已移除。个人资料保留。";})).show());
-        page.addView(Ui.text(this,"设备令牌只用于服务器授权，不能代替端到端解密密钥或恢复码。数据同步与新设备配对仍在开发。",12,Ui.MUTED));Ui.showPage(this,page);
+        prepare=Ui.button(this,"准备本机加密同步",Ui.BLUE,true);Ui.addButton(saved,prepare);prepare.setOnClickListener(v->{if(!busy)startActivity(new android.content.Intent(this,SyncPreparationActivity.class));});
+        keyIdentity=Ui.button(this,"核对服务器密钥",Ui.BG,false);Ui.addButton(saved,keyIdentity);keyIdentity.setOnClickListener(v->{if(!busy)startActivity(new android.content.Intent(this,SyncKeyRegistrationActivity.class));});
+        transfer=Ui.button(this,"手动同步个人资料",Ui.BLUE,true);Ui.addButton(saved,transfer);transfer.setOnClickListener(v->{if(!busy)startActivity(new android.content.Intent(this,SyncTransferActivity.class));});
+        page.addView(Ui.text(this,"设备令牌只用于服务器授权，不能代替端到端解密密钥或恢复码。可先准备本机密钥与恢复文件，再手动核对服务器登记的公开密钥身份；这些步骤不授权资料上传。手动同步需另行确认；新设备配对和历史迁移仍在开发。",12,Ui.MUTED));Ui.showPage(this,page);
     }
     @Override public void onStart(){super.onStart();active=true;run("正在读取本机连接…",cancel->{cancel.check();try(SyncConnection c=SyncConnectionStore.load(getApplicationContext())){return c==null?"尚未保存连接。输入服务器地址和设备凭据后验证。":"已保存连接（尚未检查当前授权状态）\n"+c.description();}});}
     @Override public void onStop(){active=false;++generation;if(cancellation!=null)cancellation.cancel();credential.setText("");super.onStop();}
-    private void busy(boolean value){busy=value;for(Button b:new Button[]{connect,inspect,forget})b.setEnabled(!value);server.setEnabled(!value);credential.setEnabled(!value);}
+    private void busy(boolean value){busy=value;for(Button b:new Button[]{connect,inspect,forget,prepare,keyIdentity,transfer})b.setEnabled(!value);server.setEnabled(!value);credential.setEnabled(!value);}
     private void run(String message,Work work){
         if(!active)return;if(cancellation!=null)cancellation.cancel();final SyncHttp.Cancellation request=new SyncHttp.Cancellation();cancellation=request;final int ticket=++generation;
         busy(true);status.setText(message);
-        SyncWorker.EXECUTOR.execute(()->{
+        try{SyncWorker.EXECUTOR.execute(()->{
             String result;
             try{request.check();result=work.run(request);}catch(Exception failure){result=message(failure);}
             final String visible=result;main.post(()->{if(!active||ticket!=generation)return;busy(false);status.setText(visible);});
-        });
+        });}catch(java.util.concurrent.RejectedExecutionException full){busy(false);status.setText("同步后台任务仍在处理，请稍后重试。普通输入不受影响。");}
     }
     private void connect(){
         if(busy)return;final String origin=server.getText().toString(),json=credential.getText().toString();credential.setText("");

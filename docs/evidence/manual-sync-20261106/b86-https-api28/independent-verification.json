@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "source_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "checkout_commit": "e38889af93144f1bd9076fd2723fd0c1d762f457",
+  "tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "run_id": 42353573084,
+  "job_id": 128347475674,
+  "artifact_id": 13567240720,
+  "validated_phase_cases": 14,
+  "ca_baseline_members": 137,
+  "ca": {
+    "installed": true,
+    "removed": true,
+    "staging_removed": true,
+    "baseline_restored": true,
+    "sha256_pem": "7cc42dffe7e7823c19cb4274f42f2606cd47fc15b0ab1d8484d8aabc74b199e9",
+    "sha256_der": "38e3d6c6fd68d0bea3ab66f6c0af2c1d1fd68ce27993bdcd6042ea253120ca68"
+  },
+  "network": {
+    "uid": 10067,
+    "ipv4_fixture_only": true,
+    "ipv6_reject": true,
+    "removed": true,
+    "checks": 7
+  },
+  "fixture": {
+    "schema_version": 1,
+    "scope": "Real isolated Go/PostgreSQL via temporary host TLS; no Android claim",
+    "requests": [
+      {
+        "method": "GET",
+        "path": "/ci/bootstrap/<redacted>",
+        "count": 1
+      },
+      {
+        "method": "GET",
+        "path": "/v1/changes",
+        "count": 8
+      },
+      {
+        "method": "GET",
+        "path": "/v1/key-descriptor",
+        "count": 6
+      },
+      {
+        "method": "GET",
+        "path": "/v1/session",
+        "count": 2
+      },
+      {
+        "method": "POST",
+        "path": "/v1/changes",
+        "count": 2
+      },
+      {
+        "method": "PUT",
+        "path": "/v1/key-descriptor",
+        "count": 1
+      }
+    ],
+    "bad_hostname_http_requests": 0,
+    "service_revision": 2,
+    "owner_session_valid": true,
+    "member_session_valid": true,
+    "bootstrap_response_bytes": 438,
+    "request_limit_bytes": 100000,
+    "response_limit_bytes": 10485760,
+    "cleanup_completed": true,
+    "go_process_stopped": true,
+    "tls_threads_stopped": true,
+    "private_temp_removed": true
+  },
+  "scope": "API28 disposable AOSP emulator; temporary system CA; unchanged product platform TLS and hostname verification; controlled loopback TLS to actual Go/PostgreSQL. Not stock trust, two phones, API35/36, public CA, R2 or production deployment.",
+  "phone": "NOT_RUN",
+  "api35_36": "BLOCKED_NOT_RUN"
+}

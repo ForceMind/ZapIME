@@ -1,0 +1,91 @@
+{
+  "recorded_at_utc": "2026-11-06T11:39:43.562286+00:00",
+  "source_parent": "20f68dcc0e11c14ae69f6db5692567ea72dfb1a2",
+  "scope": "Local cloud workspace implementation checks; not APK/Android runtime/model inference/phone acceptance",
+  "tests": {
+    "workspace_rust": {
+      "passed": 87,
+      "locked": true,
+      "fmt": "PASS",
+      "clippy_warnings_denied": "PASS"
+    },
+    "voicekey_rust": {
+      "passed": 20,
+      "locked": true,
+      "fmt": "PASS",
+      "clippy_all_targets": "PASS",
+      "aarch64_android_check": "PASS",
+      "aarch64_android_clippy": "PASS",
+      "arm_execution": "NOT RUN"
+    },
+    "engine_session_jvm": {
+      "passed": 12,
+      "model_inference": false
+    },
+    "model_installer_jvm": {
+      "passed": 17,
+      "enospc": "injected OutputStream failure; not real disk exhaustion",
+      "interrupt": "simulated directory states; not process kill"
+    },
+    "android_python_host": {
+      "passed": 30
+    },
+    "voicekey_cpu_boundary_python": {
+      "passed": 19,
+      "real_model": "BLOCKED locally; new CI pending"
+    },
+    "java_compile": {
+      "product": "PASS",
+      "voice_test_harness": "PASS",
+      "android_jar": "official API36 r02",
+      "compiler": "OpenJDK21.0.13 jdk.compiler -source 8 -target 8",
+      "device_execution": false
+    }
+  },
+  "source_sha256": {
+    "integrations/voicekey/Cargo.lock": "43053e363f40c0613716726ee858df76a0cc07f0122696cfa10a42b7526eb104",
+    "integrations/voicekey/Cargo.toml": "8a036bfb44a49e054887f6d57a895aaccbb01cd1d21661a36930b5c7381eaf03",
+    "integrations/voicekey/examples/offline_probe.rs": "3d27c91cdae77c0b070b751455ec3974ac04e04ed24a64fd537ad937be9f05ab",
+    "integrations/voicekey/src/android.rs": "8c076e19099cfd19e2a2f336d333adbcfd74e9a4fc34ff2c5937e40f94495fb2",
+    "integrations/voicekey/src/kernels.rs": "e985cb21a30add294f204a4dbda9b3c8edff03fbcc14c56755829c9f6ff6a96f",
+    "integrations/voicekey/src/lib.rs": "c4d922f9e0ba154d86448e1c179baa0af24a341aa57b7e539e934857696fac0e",
+    "integrations/voicekey/src/model.rs": "4eecb2d7580bd1b9c4b6d68f91272093f5f2f985677293dd8401958b3ccd57bf",
+    "integrations/voicekey/src/stream.rs": "8da0d3217243f8a07de408fc8c34107516639bbb226928f0ab50f40d11a864db",
+    "integrations/voicekey/src/tests.rs": "a3a34fe22059e09a6b4167872150b0551a2166702e4a528b65da7328f5a1cddd",
+    "platforms/android/java/org/zapime/android/NativeVoiceKey.java": "e5a0383296036f3743e92f2604f2a93d9e2574e13f13e49ad90f47184557b3b7",
+    "platforms/android/java/org/zapime/android/VoiceCapture.java": "11e53a337e204129dda7bce268297b7afe2a925eab4a776be6442dce6874872b",
+    "platforms/android/java/org/zapime/android/VoiceEngineSession.java": "2a7d4e1c1e6314c9fe484078eafe2b7ab24bee0bc3e98fb1c8b0389c9e8c7de8",
+    "platforms/android/java/org/zapime/android/VoiceKeyModelCatalog.java": "e02f631a3de70992ddde625479e58d072a84d0541287e6ed563469c832aa9960",
+    "platforms/android/java/org/zapime/android/VoiceKeyModelStore.java": "c99861be6624b4150e79fd4168988f1f9b4eba9354d70d7b25f8d8dfce349198",
+    "platforms/android/java/org/zapime/android/VoiceKeyModels.java": "d92e0b6cd3dfa4f333dc8136dea9490f58532f631261b01bcff704d75e4d1e42",
+    "platforms/android/java/org/zapime/android/VoicePreviewState.java": "5468e96853e818d12cb7b4e8dd2f50043cc763eba083a594dcfa3aba793ee6dd",
+    "platforms/android/java/org/zapime/android/VoiceWorker.java": "bc7ca66dfeb3e235d424ee80e7cd6e907c33baa5e6dd1f87077a2a74b53f0168",
+    "platforms/android/java/org/zapime/android/ZapInputMethodService.java": "ee3b8ad7eafb6783c01d125cdd4ef292fa25a8848db553ed975628781837d101",
+    "platforms/android/tests/jvm/VoiceEngineSessionSmoke.java": "3ef4cf4513700e3d416ab7f38562198d4f39affa2c9f95fa7d83b15de7cb863e",
+    "platforms/android/tests/jvm/VoiceKeyModelImportProbe.java": "ec48972e118ef5b5a95f7dddec2143ddf7253d4f43ee6a44bf4f6f69a0a42974",
+    "platforms/android/tests/jvm/VoiceKeyModelsSmoke.java": "6996150c1902804670077af09196d23283090d990c61903af10ed794351b5c9f",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "f396b8f5ed0f2ff3bbdc270fc3e5b01901548914694a3d2abfba647e21eca06c",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyBoundaryProbe.java": "359c42ed15a9b3819a7ea03d8de1e5d7ef87ca2e965825f7444d38e904bceae0",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyModelProbe.java": "4a9b3725132ee0394a6de235084dd0d15a7ca9580a7ca06126c61450016a1b4c",
+    "scripts/android_voice_smoke.py": "2881bffd0525234e6ef6b92516c7282ccb531636c083d43973f60bf80e39d623",
+    "scripts/android_voicekey_model_smoke.py": "96c69c0ccf9cbb7ecbaca1d34d17d4482b6639386254ae9424bbb5d8b31b5ac2",
+    "scripts/build_android.sh": "29a6c37b4279d830edbf1fb5aa7629f5e9ccfb2648a1a7a326376c48339136dc",
+    "scripts/check_apk.py": "fd576f0c4fd6ec5e215f768dbffe8e651b1829abe7cf4d0c91c4050b1ee9f0cc",
+    "scripts/collect_rust_notices.py": "050b1664ffd404a4ecf47bf8caa20d34122e5199c148e50e2097fe831b2190d4",
+    "scripts/generate_voicekey_catalog.py": "7877dc81fe6dcac760a9bd09838b2035d7f338dbe305fcda4d55eec98dec3456",
+    "scripts/probe_voicekey_model_import.sh": "349dda626cc72712add31feea750a9a83d84da03f8139ef471c21291a3039108",
+    "scripts/test_android_packaging.py": "f6ebb88d0a36743001f3de0a57bcc91881b9a567b9b67f64f1f3a8e99ebc385b",
+    "scripts/test_android_voice_engine.sh": "6a8003b57cbaae1aaeb166a8db3b42f9e086ba4d8ac9add43db6742dee920e14",
+    "scripts/test_android_voicekey_model_tools.py": "b9d49897b083dbb7e2deae37207b67b019836f21f5c143dfb4d5b1fed35b265d",
+    "scripts/test_android_voicekey_models.sh": "f2551abbecc753a7184ef25deb15423f860811a829afe1d587962e6c9e41ed2a",
+    "scripts/test_voicekey_cpu_probe.py": "122587d6ef94c80881ac3c10f3bd10f3131bab726b89ac205c0707b783f51dcb",
+    "scripts/voicekey_cpu_probe.py": "945a6fb74a281e2baada1989cf892b770cddbafee66f1d6bd4eddc7d783b317d"
+  },
+  "not_run": [
+    "new APK installation/signature verification",
+    "new actual JNI/VoiceKey-only/SAF model execution",
+    "native ARM runner numerical tests and real model",
+    "S25/natural speech/energy",
+    "stable release"
+  ]
+}

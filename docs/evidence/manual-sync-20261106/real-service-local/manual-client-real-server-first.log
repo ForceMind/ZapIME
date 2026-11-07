@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/manual-client-real-server.py", line 10, in <module>
+    assert status.returncode==3,'Own fixture must be stopped before this isolated run'
+           ^^^^^^^^^^^^^^^^^^^^
+AssertionError: Own fixture must be stopped before this isolated run

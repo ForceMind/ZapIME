@@ -12,6 +12,7 @@ import android.view.inputmethod.*;
 import android.widget.*;
 import android.graphics.Color;
 import android.content.Intent;
+import android.content.Context;
 import android.view.Gravity;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.RippleDrawable;
@@ -438,9 +439,11 @@ public final class ZapInputMethodService extends InputMethodService {
         if(!value.optBoolean("handled")&&fallback!=null){if(fallback.equals("⌫"))deleteQuery();else appendQuery(fallback);}
         preedit=value.optString("preedit","");refreshSearchLabel();refreshStatus();renderResult(value);
     }
+    private static boolean voicePermissionGranted(Context context){return context.checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)==android.content.pm.PackageManager.PERMISSION_GRANTED;}
     private void startVoice(){
         if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
-        if(checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)!=android.content.pm.PackageManager.PERMISSION_GRANTED||!(VoiceModels.installed(this)||VoiceModels.recoverable(this))){open(VoiceSettingsActivity.class);return;}
+        if(!voicePermissionGranted(this)){open(VoiceSettingsActivity.class);return;}
+        final VoiceEngineSession engine=new VoiceEngineSession(VoiceEnginePreferences.selected(this));
         learning.invalidate();cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
         worker.execute(()->main.post(()->{
@@ -450,12 +453,16 @@ public final class ZapInputMethodService extends InputMethodService {
             voiceTarget=target;voiceSelection=selectionVersion;voiceCursor=selectionStart;final int selected=voiceSelection;
             // Remote editor queries can wait seconds. Keep Cancel and the IME
             // main looper responsive even when the other App is not responding.
-            VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
+            VoiceWorker.EXECUTOR.execute(()->{
+                boolean modelReady=false;try{modelReady=engine.available(()->VoiceModels.installed(this)||VoiceModels.recoverable(this),()->VoiceKeyModels.installed(this)||VoiceKeyModels.recoverable(this));}catch(RuntimeException ignored){}
+                if(!modelReady){main.post(()->{if(ticket==voiceTicket&&epoch==active&&layer.equals("voice")){cancelVoice(true);open(VoiceSettingsActivity.class);}});return;}
+                String[] context=voiceContext(target);main.post(()->{
                 if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
                 if(context==null||target!=getCurrentInputConnection()||selected!=selectionVersion){cancelVoice(true);Toast.makeText(this,"输入位置不可用，请重试",Toast.LENGTH_SHORT).show();return;}
                 voiceBefore=context[0];voiceAfter=context[1];
-                voice=new VoiceCapture(this,(state,text)->{
+                voice=new VoiceCapture(this,engine,(state,text)->{
                     if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice"))return;
+                    if(!voicePermissionGranted(this)){cancelVoice(true);return;}
                     if(voiceCommit!=null)return;
                     if(state.equals("recording")&&voiceState.equals("decoding"))return;
                     voiceState=state;voiceText=text;updateVoicePanel();
@@ -483,17 +490,18 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voiceState.equals("empty"))label="没有识别到文字，可重新录音";
         if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
         if(voiceState.equals("microphone_silenced"))label="系统已暂停麦克风，请检查权限或占用后重试";
+        if(voiceState.equals("timeout"))label="识别超时，可重新录音";
         if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";
         if(!label.contentEquals(voiceLabel.getText()))voiceLabel.setText(label);
         String preview=voiceText.isEmpty()?"录音不保存、不上传":voiceText;
         if(!preview.contentEquals(voicePreview.getText())){boolean bottom=voicePreview.getHeight()-voiceScroll.getHeight()-voiceScroll.getScrollY()<=dp(24);voicePreview.setText(preview);if(bottom){final ScrollView scroll=voiceScroll;scroll.post(()->{if(scroll.isAttachedToWindow())scroll.fullScroll(View.FOCUS_DOWN);});}}
         voiceStop.setText(voiceTerminal()?"重新录音":"停止录音");voiceStop.setEnabled(voiceState.equals("recording")||voiceTerminal());voiceStop.setAlpha(voiceStop.isEnabled()?1f:.4f);voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());voiceInsert.setAlpha(voiceInsert.isEnabled()?1f:.4f);
     }
-    private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("microphone_error")||voiceState.equals("microphone_silenced");}
+    private boolean voiceTerminal(){return voiceState.equals("result")||voiceState.equals("empty")||voiceState.equals("error")||voiceState.equals("timeout")||voiceState.equals("microphone_error")||voiceState.equals("microphone_silenced");}
     private void insertVoice(){
         if(voiceCommit!=null||!voiceState.equals("result")||voiceText.trim().isEmpty())return;
         final InputConnection target=getCurrentInputConnection();
-        if(target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||searchActive||!ready||!preedit.isEmpty()
+        if(!voicePermissionGranted(this)||target==null||target!=voiceTarget||voiceSelection!=selectionVersion||privateSession||searchActive||!ready||!preedit.isEmpty()
                 ||voiceCursor<0||selectionStart!=voiceCursor||selectionEnd!=voiceCursor||voiceBefore==null||voiceAfter==null){cancelVoice(true);return;}
         final int ticket=voiceTicket,active=epoch;
         final VoiceCommitTransaction request=new VoiceCommitTransaction(
@@ -503,7 +511,7 @@ public final class ZapInputMethodService extends InputMethodService {
         VoiceWorker.EXECUTOR.execute(()->{String[] context=voiceContext(target);main.post(()->{
             if(ticket!=voiceTicket||active!=epoch||!layer.equals("voice")||voiceCommit!=request)return;
             VoiceCommitTransaction.Editor current=new VoiceCommitTransaction.Editor(getCurrentInputConnection(),voiceTicket,epoch,
-                    selectionVersion,selectionStart,selectionEnd,ready&&!privateSession&&!searchActive&&preedit.isEmpty()&&target==voiceTarget);
+                    selectionVersion,selectionStart,selectionEnd,voicePermissionGranted(this)&&ready&&!privateSession&&!searchActive&&preedit.isEmpty()&&target==voiceTarget);
             VoiceCommitTransaction.Outcome outcome=request.finish(current,context,()->{selectionEcho.invalidate();cancelVoice(true);});
             if(outcome==VoiceCommitTransaction.Outcome.REJECTED)Toast.makeText(this,"编辑器未接受文字，请重试",Toast.LENGTH_SHORT).show();
             else if(outcome==VoiceCommitTransaction.Outcome.INVALID)Toast.makeText(this,"输入位置已变化，请重新录音",Toast.LENGTH_SHORT).show();
@@ -516,7 +524,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}
     @Override public boolean onKeyUp(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK&&voiceBack){voiceBack=false;return true;}return super.onKeyUp(code,event);}
-    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);if(VoiceWorker.nativeLoaded)VoiceWorker.EXECUTOR.execute(()->NativeVoice.release(0));}}
+    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);VoiceWorker.EXECUTOR.execute(VoiceWorker::releaseCaches);}}
     private void delete(InputConnection c){
         learning.invalidate();
         selectionEcho.invalidate();

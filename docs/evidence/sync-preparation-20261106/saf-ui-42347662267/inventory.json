@@ -1,0 +1,153 @@
+{
+  "source_commit": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba",
+  "run_id": 42347662267,
+  "inventory_excludes_self": true,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3053,
+      "sha256": "a8e77b1d449beea6b3eaa374d87ac7b94ed0eea22a969ab144ed1494087472c8"
+    },
+    {
+      "path": "api28/activity-errors.txt",
+      "bytes": 2516,
+      "sha256": "1f54d4f58a2fc35244c5c5ebb2a9563a46cec0f233ed0425f63adfe32a762959"
+    },
+    {
+      "path": "api28/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api28/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api28/offline-uid.json",
+      "bytes": 119,
+      "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+    },
+    {
+      "path": "api28/sync-key-provider-before.png",
+      "bytes": 10041,
+      "sha256": "4722fc3713766ed2b83ba5a08e21b95e8eddaf2b1f5794980546b3c786736477"
+    },
+    {
+      "path": "api28/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+    },
+    {
+      "path": "api28/sync-preparation-ui-report.json",
+      "bytes": 2313,
+      "sha256": "0dd1d72f84fd8858c7d50028a8a11758845a374672c0c7ca2e36a9715debf17b"
+    },
+    {
+      "path": "api28/workflow-job-original.txt",
+      "bytes": 193637,
+      "sha256": "55a88f4068b530d6e6091382e940b1332cec7638be685a2d6d75780f4558e1b5"
+    },
+    {
+      "path": "api35/activity-errors.txt",
+      "bytes": 294,
+      "sha256": "b01c8cdb23de45fa318ffd5923d326a64650cb4be53d3bd65e0499e48d958375"
+    },
+    {
+      "path": "api35/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35/failure-scope.json",
+      "bytes": 172,
+      "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+    },
+    {
+      "path": "api35/instrumentation.txt",
+      "bytes": 178,
+      "sha256": "f803e996db2e42ab09e18fc3b99389e6b39310384e5011d50de7a373707ed0b8"
+    },
+    {
+      "path": "api35/offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+    },
+    {
+      "path": "api35/sync-key-provider-before.png",
+      "bytes": 12322,
+      "sha256": "85066bdf73033ba7a230749565998d060b8f76cfa7a803190af477b6c99c51b9"
+    },
+    {
+      "path": "api35/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+    },
+    {
+      "path": "api35/sync-preparation-ui-report.json",
+      "bytes": 1994,
+      "sha256": "35991fb031f11e6bf979970ccebba6dd1b2b1b6668b06c893cbcd1a6faadcf3d"
+    },
+    {
+      "path": "api35/workflow-job-original.txt",
+      "bytes": 199750,
+      "sha256": "b8f2e9ac6b24f476df132d91fdab911d778a1455ad9832c515a218d8703e1dc6"
+    },
+    {
+      "path": "api36/activity-errors.txt",
+      "bytes": 382,
+      "sha256": "eacadefcec7fccef9ad34409fb543f34f129149356e2d8bd42932a4f451c0cb9"
+    },
+    {
+      "path": "api36/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api36/failure-scope.json",
+      "bytes": 172,
+      "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+    },
+    {
+      "path": "api36/instrumentation.txt",
+      "bytes": 178,
+      "sha256": "f803e996db2e42ab09e18fc3b99389e6b39310384e5011d50de7a373707ed0b8"
+    },
+    {
+      "path": "api36/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "api36/sync-key-provider-before.png",
+      "bytes": 12245,
+      "sha256": "40adc07f21d9077730178bc6102efac867df04a754697abfed0c84fff8c77969"
+    },
+    {
+      "path": "api36/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+    },
+    {
+      "path": "api36/sync-preparation-ui-report.json",
+      "bytes": 1994,
+      "sha256": "b1e6b4d056c4e67c28b305e60e1fae16821132d0495984e4271fd01e68efdac5"
+    },
+    {
+      "path": "api36/workflow-job-original.txt",
+      "bytes": 200774,
+      "sha256": "c78d77c232658c42d96f388311e0e7bca20b4a34d3d3db50409e0bed33d49259"
+    },
+    {
+      "path": "github-artifact-metadata.json",
+      "bytes": 2605,
+      "sha256": "9b37e478ba2bda4f481c16245dc10ec8fbe552ee829bcddf3aaf28e30487a59a"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 11415,
+      "sha256": "a10b28fa08b654a31ddc728294d7a1b9b0eea32fff30d3b816ff790dd869ee11"
+    }
+  ],
+  "total_bytes_excluding_inventory": 660420
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/manual-client-real-server.py", line 13, in <module>
+    command([pg/'createdb',*connect,name]);created=True
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/manual-client-real-server.py", line 7, in command
+    result=subprocess.run([str(x) for x in args],env=env,capture_output=True,check=True);return result.stdout
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/postgresql-install/bin/createdb', '-h', '127.0.0.1', '-p', '33667', '-U', 'agent', 'manual_client_61ec27435cdd']' returned non-zero exit status 1.
