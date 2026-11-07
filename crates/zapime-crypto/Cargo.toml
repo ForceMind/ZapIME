@@ -16,6 +16,7 @@ uuid = "1"
 zeroize = "1"
 
 [dev-dependencies]
+sha2 = "0.11"
 tempfile = "3"
 zapime-data = { path = "../zapime-data" }
 uuid = { version = "1", features = ["v4"] }

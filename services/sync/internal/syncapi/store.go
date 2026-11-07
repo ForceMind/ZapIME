@@ -33,7 +33,7 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err = tx.QueryRowContext(ctx, `SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil {
 		return err
 	}
-	if version != 1 && version != 2 {
+	if version != 1 && version != 2 && version != 3 {
 		return errors.New("unsupported_database_version")
 	}
 	_, err = tx.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS zapime_accounts(
@@ -50,11 +50,18 @@ func (s *Store) Migrate(ctx context.Context) error {
     CREATE TABLE IF NOT EXISTS zapime_operations(
         account_id uuid NOT NULL REFERENCES zapime_accounts(id),operation_id uuid NOT NULL,
         device_id uuid NOT NULL REFERENCES zapime_devices(id),revision bigint NOT NULL,digest bytea NOT NULL,change jsonb NOT NULL,
-        PRIMARY KEY(account_id,operation_id),UNIQUE(account_id,revision));`)
+        PRIMARY KEY(account_id,operation_id),UNIQUE(account_id,revision));
+    CREATE TABLE IF NOT EXISTS zapime_account_keys(
+        account_id uuid PRIMARY KEY REFERENCES zapime_accounts(id),
+        version smallint NOT NULL CHECK(version=1),
+        key_id uuid NOT NULL CHECK(key_id<>'00000000-0000-0000-0000-000000000000'::uuid),
+        material_sha256 bytea NOT NULL CHECK(octet_length(material_sha256)=32),
+        registered_by uuid NOT NULL REFERENCES zapime_devices(id),
+        registered_at timestamptz NOT NULL DEFAULT now());`)
 	if err != nil {
 		return err
 	}
-	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=2 WHERE id=1`); err != nil {
+	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=3 WHERE id=1`); err != nil {
 		return err
 	}
 	return tx.Commit()
@@ -165,6 +172,16 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
 		return Change{}, err
+	}
+	// Existing immutable retries were checked first. Once a descriptor has been
+	// registered, an older API client must not bypass it by submitting a new
+	// operation with a different key ID. No object write happens before this.
+	descriptor, err := readKeyDescriptor(ctx, tx, actor.AccountID)
+	if err != nil {
+		return Change{}, err
+	}
+	if descriptor != nil && descriptor.Descriptor.KeyID != op.KeyID {
+		return Change{}, ErrKeyDescriptorMismatch
 	}
 	var revision int64
 	var kind int

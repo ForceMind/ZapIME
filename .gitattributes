@@ -1,4 +1,22 @@
 # Preserve the publisher's license bytes/SHA, including original whitespace.
+
+# Exact standalone service-descriptor verification log bytes.
+docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-clippy.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fixture-build.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fixture-check.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fixture-execution.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fmt.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/fixture-first-lowerhex-failure.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-fixture-build.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-fixture-check.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-fixture-clippy.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-fixture-fmt.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-go-first-build-failure.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-go-pg-lifetime-failure.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-go-tests.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/key-descriptor-go-vet.log -text -whitespace
+docs/evidence/sync-key-descriptor-20261106/local-key-descriptor-roundtrip.log -text -whitespace
+
 third_party/notices/opus-mt-zho-eng-20200717-CC-BY-4.0.txt -text -whitespace
 docs/evidence/english-learning-qwen-20261024/model-LICENSE.txt -text -whitespace
 docs/evidence/android-tools-launch-40103726412/workflow-job-excerpt.log -text -whitespace

@@ -10,7 +10,9 @@ import shutil
 import secrets
 import subprocess
 import tempfile
+import urllib.error
 import urllib.request
+import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 INSTALL = Path('/opt/zapime')
@@ -58,6 +60,13 @@ def main():
             headers={'Authorization':'Bearer '+token,'Content-Type':'application/json'},method=method)
         with urllib.request.urlopen(request,timeout=15) as response:
             return json.load(response)
+    def rejected_api(method, path, token, body, status, error):
+        try:
+            api(method, path, token, body)
+        except urllib.error.HTTPError as failure:
+            assert failure.code == status and json.load(failure) == {'error': error}
+        else:
+            raise AssertionError('Expected explicit descriptor rejection')
     def cleanup():
         command('systemctl','disable','--now','zapime-backup.timer',check=False)
         command('systemctl','stop','zapime-backup.service',check=False)
@@ -80,10 +89,20 @@ def main():
         command('/usr/local/bin/zapime','check-storage')
         with tempfile.TemporaryDirectory(prefix='zapime-installer-recovery-') as directory:
             directory=Path(directory)
-            fixture,packet,change_file=[directory/name for name in ('private.json','ciphertext.json','change.json')]
+            fixture,packet,change_file,descriptor_file=[directory/name for name in ('private.json','ciphertext.json','change.json','public-key-descriptor.json')]
             probe=ROOT/'target/debug/examples/sync_fixture'
             command(str(probe),'seal',owner['account_id'],str(fixture),str(packet))
+            command(str(probe),'descriptor',owner['account_id'],str(fixture),str(descriptor_file))
             operation=json.loads(packet.read_text())
+            descriptor=json.loads(descriptor_file.read_text())
+            assert descriptor['key_id']==operation['key_id']
+            assert api('GET','/v1/key-descriptor',owner['token'])['state']=='empty'
+            registered=api('PUT','/v1/key-descriptor',owner['token'],descriptor)
+            assert registered['account_id']==owner['account_id'] and registered['state']=='registered' and registered['descriptor']==descriptor
+            assert registered['registered_by']==owner['device_id']
+            assert api('PUT','/v1/key-descriptor',owner['token'],descriptor)==registered
+            changed_descriptor=dict(descriptor,key_id=str(uuid.uuid4()))
+            rejected_api('PUT','/v1/key-descriptor',owner['token'],changed_descriptor,409,'key_descriptor_conflict')
             first=api('POST','/v1/changes',owner['token'],operation)
             assert first['revision']==1
             assert api('GET','/v1/changes',owner['token'])['changes']==[first]
@@ -92,6 +111,7 @@ def main():
             install()  # same command: preserves credentials, records and configuration
             assert json.loads((INSTALL/'owner.json').read_text())==owner
             assert api('GET','/v1/changes',owner['token'])['changes']==[first]
+            assert api('GET','/v1/key-descriptor',owner['token'])==registered
             backup=directory/'server.dump'
             command('/usr/local/bin/zapime','backup',str(backup))
             assert backup.is_file() and Path(str(backup)+'.objects.tar').is_file()
@@ -101,10 +121,16 @@ def main():
             assert not (INSTALL/'owner.json').exists()  # no spurious new account on restore
             restored=api('GET','/v1/changes',owner['token'])
             assert restored['changes']==[first]
+            assert api('GET','/v1/key-descriptor',owner['token'])==registered
+            assert api('PUT','/v1/key-descriptor',owner['token'],descriptor)==registered
+            rejected_api('PUT','/v1/key-descriptor',owner['token'],changed_descriptor,409,'key_descriptor_conflict')
+            changed_operation=dict(operation,operation_id=str(uuid.uuid4()),record_id=str(uuid.uuid4()),key_id=str(uuid.uuid4()))
+            rejected_api('POST','/v1/changes',owner['token'],changed_operation,409,'key_descriptor_mismatch')
+            assert api('GET','/v1/changes',owner['token'])['head']==1
             change_file.write_text(json.dumps(restored['changes'][0]))
             command(str(probe),'verify',str(fixture),str(change_file))
             command('/usr/local/bin/zapime','verify-objects')
-        print('PASS installer: one entry command, repeat install preserves data, private credentials, fresh DB + alternate bucket restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested',flush=True)
+        print('PASS installer: one entry command, repeat install preserves data/key descriptor, private credentials, fresh DB + alternate bucket descriptor restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested',flush=True)
     finally:
         cleanup()
 
