@@ -1,0 +1,14 @@
+{
+  "source_commit": "e38889af93144f1bd9076fd2723fd0c1d762f457",
+  "focused_input_provenance_verified": true,
+  "platform_trust_configuration_unchanged": true,
+  "debuggable": false,
+  "cleartext": false,
+  "private_sync_activities": 3,
+  "same_signer_sha256": "4ab16ec667b95040145374014b900371490feacb3e844c56a8768c51a535276d",
+  "apk_sha256": [
+    "d07c2f39ef491ddc095fb7c7743723f47c648f7bf7f3f0c4fe6f85215c07c0d8",
+    "6ab9c6384257a9e19e5eb0f5417afe32f188050369f51a5a033b7bf4c066d0fb"
+  ],
+  "compiled_manifest_sha256": "f7bc8c440632cb965bf3c48f09c0678ed69cdf9b73d4eb5d3017c951689a37a6"
+}

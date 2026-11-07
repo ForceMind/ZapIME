@@ -1,6 +1,16 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-11-06 23:58 PST（America/Los_Angeles）。本轮已实际开发、测试、保存GitHub并下载核验APK。累计汇报次数无可靠连续记录。
+更新时间：2026-11-07 00:13 PST（America/Los_Angeles）。本轮已实际开发、测试、保存GitHub并下载核验APK。累计汇报次数无可靠连续记录。
+
+## b86实测结果与新页驱动复验（2026-11-07 00:13 PST）
+
+固定 `b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9` 的新API28 HTTPS作业 [128347475674](https://github.com/ForceMind/ZapIME/actions/runs/42353573084/job/128347475674) **SUCCESS且已实际下载重验**。三阶段2+10+2项全部通过：未信CA拒绝、临时系统CA后生产Android同步访问真实Go/PG、wrong SAN拒绝、删除CA后的新进程再次拒绝。双profile上传2条、cursor均2/head2，badSAN HTTP0；137项原系统CA基线、临时证书/staging、产品UID10067双族精确规则、测试包、Go/TLS/私密目录清理全部通过。[原ZIP/原joblog/独立验证](evidence/manual-sync-20261106/b86-https-api28/)保留精确head/checkout/tree及scope，不能称原厂根库、两台手机、35/36 HTTPS、公网/R2/配对已验。
+
+[共享42353573085](https://github.com/ForceMind/ZapIME/actions/runs/42353573085)四job全部SUCCESS：mac118、Ubuntu118、Windows115（3项Unix专用不参与Windows编译，非SKIP失败），AppleHost3个模拟器XCTest及macOS/iOS开发宿主编译通过。原mac夹具失败修复已在真正mac重验，未放宽NOFOLLOW。[完整原日志](evidence/manual-sync-20261106/b86-shared-ci/)保持原字节/CRLF；Apple ZIP只核元数据未下载，不虚构真机/公证。独立[服务42353573054](https://github.com/ForceMind/ZapIME/actions/runs/42353573054)的新client17命令、23个Go测试/0SKIP、PG/S3、安装及新DB/对象桶恢复也全部通过并下载核验。
+
+b86 focused整体**仍失败**：三端原47项均通过，但新增页面10项均在 `key_queued_cancel_before_io` 第4项失败，前三项通过且清理完成。[三端原失败](evidence/manual-sync-20261106/b86-pages-first-failure/)不改写，原报告只有wrapped Exception，没有伪造inner cause。源码显示测试在同一主线程点击正按钮后立即读request，尚未给AlertDialog异步派发listener的机会；这是修复依据与待复验推断。当前仅把正常点击与新鲜排队观察拆开，并等待主线程实际派发；真实queue==1、latch/drain/barrier、cancel/selection/generation/迟到、DB/vault及清理断言全部保留。失败阶段只增加固定白名单诊断，不使FAIL通过；drain第二错误保留为原异常suppressed。主机全Java编译与6项严格validator通过，新三端页面**待本次提交CI**。准确范围为真实finish后失活/迟到拒绝，未单独计数onStop回调或证明活动HTTPS强制中断。
+
+本次只修test-only驱动并归档证据，不改生产APK逻辑、平台信任或权限。累计汇报次数无可靠连续记录；当前手机/原厂PKI/实际R2、正式签名与四端完整产品仍未验收。
 
 ## 当前试用包与HTTPS验收接续（2026-11-06 23:58 PST）
 

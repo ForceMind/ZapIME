@@ -15,6 +15,12 @@ SCOPE = ("Actual non-exported Android Activities on a freshly owned prepared mai
          "active HTTPS interruption, successful network registration/transfer, phone or user data acceptance.")
 ACTIVATION = "production_View_performClick_and_AlertDialog_buttons"
 CANCEL_SCOPE = "actual_sync_worker_queued_cancel_before_work_io"
+FAILURE_SUBSTEPS = frozenset({
+    "case_body", "queued_worker_blocker", "queued_confirmation_dialog", "queued_positive_click",
+    "queued_positive_dispatch", "queued_request_capture", "queued_stop_invalidation",
+    "queued_cancellation_check", "queued_worker_drain", "queued_late_result_rejected",
+    "owned_fixture_cleanup",
+})
 PROOFS = frozenset({
     "actual_activities", "manifest_nonexported", "secure_window_flags",
     "displayed_selection_matches_local", "resume_local_only_seam_verified",
@@ -29,7 +35,20 @@ FIELDS = PROOFS | {"schema_version", "status", "synthetic", "api_level", "cases"
                   "secret_content_or_code_logged", "queued_cancelled_pages"}
 
 
+def failure_substep(report):
+    """Read one bounded failure observation; it never makes a report pass."""
+    if not isinstance(report, dict):
+        raise ValueError("Invalid sync page failure metadata")
+    if "failure_substep" not in report:
+        return None
+    step = report["failure_substep"]
+    if report.get("status") != "FAIL" or type(step) is not str or step not in FAILURE_SUBSTEPS:
+        raise ValueError("Invalid sync page fixed failure substep")
+    return step
+
+
 def verify_report(report, api=None):
+    failure_substep(report)
     if not isinstance(report, dict) or report.keys() != FIELDS:
         raise ValueError("Unknown or missing sync pages UI report fields")
     if type(report["schema_version"]) is not int or report["schema_version"] != 1 or report["status"] != "PASS" or report["synthetic"] is not True:

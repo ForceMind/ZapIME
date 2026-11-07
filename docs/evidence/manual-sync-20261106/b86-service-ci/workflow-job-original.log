@@ -1,0 +1,2135 @@
+﻿2026-11-07T08:00:10.7025109Z Current runner version: '2.338.2'
+2026-11-07T08:00:10.7050104Z ##[group]Runner Image Provisioner
+2026-11-07T08:00:10.7050990Z Hosted Compute Agent
+2026-11-07T08:00:10.7052326Z Version: 20261028.624
+2026-11-07T08:00:10.7053055Z Commit: 54898b74c23fde5556c9b3c3a2290865feef0dfe
+2026-11-07T08:00:10.7053847Z Build Date: 2026-10-28T21:51:42Z
+2026-11-07T08:00:10.7054658Z Worker ID: {286bf69f-e413-4c95-a2fc-86e4f1d997b4}
+2026-11-07T08:00:10.7055405Z Region: westus3
+2026-11-07T08:00:10.7056104Z Cloud: Azure
+2026-11-07T08:00:10.7056661Z ##[endgroup]
+2026-11-07T08:00:10.7058196Z ##[group]Operating System
+2026-11-07T08:00:10.7058954Z Ubuntu
+2026-11-07T08:00:10.7059511Z 24.04.5
+2026-11-07T08:00:10.7060085Z LTS
+2026-11-07T08:00:10.7060673Z ##[endgroup]
+2026-11-07T08:00:10.7061238Z ##[group]Runner Image
+2026-11-07T08:00:10.7062431Z Image: ubuntu-24.04
+2026-11-07T08:00:10.7063057Z Version: 20261101.360.1
+2026-11-07T08:00:10.7064456Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261101.360/images/ubuntu/Ubuntu2404-Readme.md
+2026-11-07T08:00:10.7066038Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261101.360
+2026-11-07T08:00:10.7067101Z ##[endgroup]
+2026-11-07T08:00:10.7068314Z ##[group]GITHUB_TOKEN Permissions
+2026-11-07T08:00:10.7070298Z Contents: read
+2026-11-07T08:00:10.7070982Z Metadata: read
+2026-11-07T08:00:10.7072037Z ##[endgroup]
+2026-11-07T08:00:10.7074284Z Secret source: Actions
+2026-11-07T08:00:10.7075276Z Cache mode: write
+2026-11-07T08:00:10.7076158Z Prepare workflow directory
+2026-11-07T08:00:10.7539887Z Prepare all required actions
+2026-11-07T08:00:10.7587892Z Getting action download info
+2026-11-07T08:00:11.0784985Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-11-07T08:00:11.2001914Z Download action repository 'dtolnay/rust-toolchain@1.97.1' (SHA:59a558e8c538bf4a23bbffa19e5a278b703f2920)
+2026-11-07T08:00:11.4374843Z Download action repository 'actions/setup-go@v6' (SHA:924ae3a1cded613372ab5595356fb5720e22ba16)
+2026-11-07T08:00:12.0600398Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-07T08:00:12.3176248Z Complete job name: postgres
+2026-11-07T08:00:12.3844167Z ##[group]Checking docker version
+2026-11-07T08:00:12.3857335Z ##[command]/usr/bin/docker version --format '{{.Server.APIVersion}}'
+2026-11-07T08:00:12.4954790Z '1.48'
+2026-11-07T08:00:12.4977692Z Docker daemon API version: '1.48'
+2026-11-07T08:00:12.4978596Z ##[command]/usr/bin/docker version --format '{{.Client.APIVersion}}'
+2026-11-07T08:00:12.5175560Z '1.48'
+2026-11-07T08:00:12.5213084Z Docker client API version: '1.48'
+2026-11-07T08:00:12.5219279Z ##[endgroup]
+2026-11-07T08:00:12.5224265Z ##[group]Clean up resources from previous jobs
+2026-11-07T08:00:12.5232489Z ##[command]/usr/bin/docker ps --all --quiet --no-trunc --filter "label=49f2ea"
+2026-11-07T08:00:12.5433266Z ##[command]/usr/bin/docker network prune --force --filter "label=49f2ea"
+2026-11-07T08:00:12.5599409Z ##[endgroup]
+2026-11-07T08:00:12.5600091Z ##[group]Create local container network
+2026-11-07T08:00:12.5611727Z ##[command]/usr/bin/docker network create --label 49f2ea github_network_833d0799ecf84ea8ad620a4143b382fc
+2026-11-07T08:00:12.6171086Z b9bfabf9daf097aa3b3a425c59b6780dc856df717ae2f26a026c72f07c162874
+2026-11-07T08:00:12.6192160Z ##[endgroup]
+2026-11-07T08:00:12.6217399Z ##[group]Starting postgres service container
+2026-11-07T08:00:12.6239302Z ##[command]/usr/bin/docker pull postgres:16
+2026-11-07T08:00:13.5988284Z 16: Pulling from library/postgres
+2026-11-07T08:00:13.9113315Z 37fb86c2a767: Pulling fs layer
+2026-11-07T08:00:13.9114830Z e9dd37612d7b: Pulling fs layer
+2026-11-07T08:00:13.9116186Z 369949eb0229: Pulling fs layer
+2026-11-07T08:00:13.9117015Z 7e0f86eb8508: Pulling fs layer
+2026-11-07T08:00:13.9118544Z da434b32d480: Pulling fs layer
+2026-11-07T08:00:13.9195857Z bcc75ab4e010: Pulling fs layer
+2026-11-07T08:00:13.9196791Z a28de24f57c0: Pulling fs layer
+2026-11-07T08:00:13.9197593Z 6d141360b363: Pulling fs layer
+2026-11-07T08:00:13.9198957Z 379ccbe62e26: Pulling fs layer
+2026-11-07T08:00:13.9199756Z 1244f763be36: Pulling fs layer
+2026-11-07T08:00:13.9200508Z 9732cf873eb7: Pulling fs layer
+2026-11-07T08:00:13.9201678Z c924699dde26: Pulling fs layer
+2026-11-07T08:00:13.9202602Z d9f83a042741: Pulling fs layer
+2026-11-07T08:00:13.9203472Z be193f0583fb: Pulling fs layer
+2026-11-07T08:00:13.9204291Z bcc75ab4e010: Waiting
+2026-11-07T08:00:13.9205067Z 9732cf873eb7: Waiting
+2026-11-07T08:00:13.9205832Z a28de24f57c0: Waiting
+2026-11-07T08:00:13.9206586Z c924699dde26: Waiting
+2026-11-07T08:00:13.9207329Z d9f83a042741: Waiting
+2026-11-07T08:00:13.9208110Z 6d141360b363: Waiting
+2026-11-07T08:00:13.9209169Z be193f0583fb: Waiting
+2026-11-07T08:00:13.9210239Z 379ccbe62e26: Waiting
+2026-11-07T08:00:13.9211313Z 1244f763be36: Waiting
+2026-11-07T08:00:13.9212579Z 7e0f86eb8508: Waiting
+2026-11-07T08:00:13.9213710Z da434b32d480: Waiting
+2026-11-07T08:00:14.1048041Z e9dd37612d7b: Verifying Checksum
+2026-11-07T08:00:14.1052400Z e9dd37612d7b: Download complete
+2026-11-07T08:00:14.2010144Z 369949eb0229: Verifying Checksum
+2026-11-07T08:00:14.2015316Z 369949eb0229: Download complete
+2026-11-07T08:00:14.2051987Z 37fb86c2a767: Verifying Checksum
+2026-11-07T08:00:14.2058582Z 37fb86c2a767: Download complete
+2026-11-07T08:00:14.3144320Z 7e0f86eb8508: Verifying Checksum
+2026-11-07T08:00:14.3147304Z 7e0f86eb8508: Download complete
+2026-11-07T08:00:14.3940520Z bcc75ab4e010: Verifying Checksum
+2026-11-07T08:00:14.3945375Z bcc75ab4e010: Download complete
+2026-11-07T08:00:14.5494416Z da434b32d480: Verifying Checksum
+2026-11-07T08:00:14.5496693Z da434b32d480: Download complete
+2026-11-07T08:00:14.5824402Z 6d141360b363: Verifying Checksum
+2026-11-07T08:00:14.5826920Z 6d141360b363: Download complete
+2026-11-07T08:00:14.7356912Z a28de24f57c0: Verifying Checksum
+2026-11-07T08:00:14.7382554Z a28de24f57c0: Download complete
+2026-11-07T08:00:14.9164298Z 1244f763be36: Verifying Checksum
+2026-11-07T08:00:14.9164983Z 1244f763be36: Download complete
+2026-11-07T08:00:14.9445323Z 9732cf873eb7: Download complete
+2026-11-07T08:00:15.1260620Z d9f83a042741: Verifying Checksum
+2026-11-07T08:00:15.1263747Z d9f83a042741: Download complete
+2026-11-07T08:00:15.1406704Z c924699dde26: Verifying Checksum
+2026-11-07T08:00:15.1407300Z c924699dde26: Download complete
+2026-11-07T08:00:15.1659139Z 379ccbe62e26: Verifying Checksum
+2026-11-07T08:00:15.1659738Z 379ccbe62e26: Download complete
+2026-11-07T08:00:15.3124585Z be193f0583fb: Verifying Checksum
+2026-11-07T08:00:15.3125446Z be193f0583fb: Download complete
+2026-11-07T08:00:15.3423641Z 37fb86c2a767: Pull complete
+2026-11-07T08:00:16.1747144Z e9dd37612d7b: Pull complete
+2026-11-07T08:00:16.3471231Z 369949eb0229: Pull complete
+2026-11-07T08:00:16.3841783Z 7e0f86eb8508: Pull complete
+2026-11-07T08:00:16.6905872Z da434b32d480: Pull complete
+2026-11-07T08:00:16.7542714Z bcc75ab4e010: Pull complete
+2026-11-07T08:00:16.7624566Z a28de24f57c0: Pull complete
+2026-11-07T08:00:16.7728595Z 6d141360b363: Pull complete
+2026-11-07T08:00:19.7830076Z 379ccbe62e26: Pull complete
+2026-11-07T08:00:19.7949649Z 1244f763be36: Pull complete
+2026-11-07T08:00:19.8051712Z 9732cf873eb7: Pull complete
+2026-11-07T08:00:19.8162806Z c924699dde26: Pull complete
+2026-11-07T08:00:19.8269802Z d9f83a042741: Pull complete
+2026-11-07T08:00:19.8352681Z be193f0583fb: Pull complete
+2026-11-07T08:00:19.8395103Z Digest: sha256:f9a7b9ebf6f56201f949db745e47bc423c0f0f8294bafe991cc10bf74b029657
+2026-11-07T08:00:19.8409641Z Status: Downloaded newer image for postgres:16
+2026-11-07T08:00:19.8418970Z docker.io/library/postgres:16
+2026-11-07T08:00:19.8487666Z ##[command]/usr/bin/docker create --name 482c1971f8f34d48a2271a82d5308a74_postgres16_6d1566 --label 49f2ea --network github_network_833d0799ecf84ea8ad620a4143b382fc --network-alias postgres -p 5432:5432 --health-cmd pg_isready --health-interval 5s --health-timeout 3s --health-retries 20 -e "POSTGRES_PASSWORD=zapime-ci-only" -e "POSTGRES_DB=zapime_test" -e GITHUB_ACTIONS=true -e CI=true postgres:16
+2026-11-07T08:00:19.8766169Z de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:19.8795235Z ##[command]/usr/bin/docker start de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:20.1127627Z de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:20.1160515Z ##[command]/usr/bin/docker ps --all --filter id=de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f --filter status=running --no-trunc --format "{{.ID}} {{.Status}}"
+2026-11-07T08:00:20.1335068Z de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f Up Less than a second (health: starting)
+2026-11-07T08:00:20.1363211Z ##[command]/usr/bin/docker port de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:20.1543687Z 5432/tcp -> 0.0.0.0:5432
+2026-11-07T08:00:20.1544521Z 5432/tcp -> [::]:5432
+2026-11-07T08:00:20.1599844Z ##[endgroup]
+2026-11-07T08:00:20.1608822Z ##[group]Waiting for all services to be ready
+2026-11-07T08:00:20.1623310Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:20.1789289Z starting
+2026-11-07T08:00:20.1824777Z postgres service is starting, waiting 2 seconds before checking again.
+2026-11-07T08:00:22.1827865Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:22.1983762Z starting
+2026-11-07T08:00:22.2001122Z postgres service is starting, waiting 4 seconds before checking again.
+2026-11-07T08:00:26.5586678Z ##[command]/usr/bin/docker inspect --format="{{if .Config.Healthcheck}}{{print .State.Health.Status}}{{end}}" de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:00:26.5734742Z healthy
+2026-11-07T08:00:26.5755835Z postgres service is healthy.
+2026-11-07T08:00:26.5756588Z ##[endgroup]
+2026-11-07T08:00:26.6068166Z ##[group]Run actions/checkout@v4
+2026-11-07T08:00:26.6068757Z with:
+2026-11-07T08:00:26.6068971Z   submodules: true
+2026-11-07T08:00:26.6069196Z   repository: ForceMind/ZapIME
+2026-11-07T08:00:26.6071731Z   token: ***
+2026-11-07T08:00:26.6071951Z   ssh-strict: true
+2026-11-07T08:00:26.6072166Z   ssh-user: git
+2026-11-07T08:00:26.6072379Z   persist-credentials: true
+2026-11-07T08:00:26.6072614Z   clean: true
+2026-11-07T08:00:26.6072827Z   sparse-checkout-cone-mode: true
+2026-11-07T08:00:26.6073084Z   fetch-depth: 1
+2026-11-07T08:00:26.6073282Z   fetch-tags: false
+2026-11-07T08:00:26.6073500Z   show-progress: true
+2026-11-07T08:00:26.6073705Z   lfs: false
+2026-11-07T08:00:26.6073897Z   set-safe-directory: true
+2026-11-07T08:00:26.6074140Z   allow-unsafe-pr-checkout: false
+2026-11-07T08:00:26.6074622Z env:
+2026-11-07T08:00:26.6075153Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:26.6075527Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:26.6075847Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:26.6076161Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:26.6076371Z ##[endgroup]
+2026-11-07T08:00:26.9009286Z Syncing repository: ForceMind/ZapIME
+2026-11-07T08:00:26.9010546Z ##[group]Getting Git version info
+2026-11-07T08:00:26.9010937Z Working directory is '/home/runner/work/ZapIME/ZapIME'
+2026-11-07T08:00:26.9011972Z [command]/usr/bin/git version
+2026-11-07T08:00:26.9127421Z git version 2.56.0
+2026-11-07T08:00:26.9149946Z ##[endgroup]
+2026-11-07T08:00:26.9167904Z Temporarily overriding HOME='/home/runner/work/_temp/ecf73df2-64a9-4b6b-bdd9-270609c220d1' before making global git config changes
+2026-11-07T08:00:26.9169404Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-07T08:00:26.9175127Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ZapIME/ZapIME
+2026-11-07T08:00:26.9238424Z Deleting the contents of '/home/runner/work/ZapIME/ZapIME'
+2026-11-07T08:00:26.9243358Z ##[group]Initializing the repository
+2026-11-07T08:00:26.9249947Z [command]/usr/bin/git init /home/runner/work/ZapIME/ZapIME
+2026-11-07T08:00:26.9390222Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-07T08:00:26.9391312Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-07T08:00:26.9392364Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-07T08:00:26.9393042Z hint: call:
+2026-11-07T08:00:26.9393354Z hint:
+2026-11-07T08:00:26.9393808Z hint: 	git config --global init.defaultBranch <name>
+2026-11-07T08:00:26.9394347Z hint:
+2026-11-07T08:00:26.9394834Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-07T08:00:26.9395647Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-07T08:00:26.9396278Z hint:
+2026-11-07T08:00:26.9396588Z hint: 	git branch -m <name>
+2026-11-07T08:00:26.9396946Z hint:
+2026-11-07T08:00:26.9397515Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-07T08:00:26.9402491Z Initialized empty Git repository in /home/runner/work/ZapIME/ZapIME/.git/
+2026-11-07T08:00:26.9416659Z [command]/usr/bin/git remote add origin https://github.com/ForceMind/ZapIME
+2026-11-07T08:00:26.9478387Z ##[endgroup]
+2026-11-07T08:00:26.9479059Z ##[group]Disabling automatic garbage collection
+2026-11-07T08:00:26.9483957Z [command]/usr/bin/git config --local gc.auto 0
+2026-11-07T08:00:26.9524536Z ##[endgroup]
+2026-11-07T08:00:26.9525170Z ##[group]Setting up auth
+2026-11-07T08:00:26.9534110Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-07T08:00:26.9603576Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-07T08:00:27.0043275Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-07T08:00:27.0088106Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-07T08:00:27.0334177Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-07T08:00:27.0384556Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-07T08:00:27.0639060Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-07T08:00:27.0706056Z ##[endgroup]
+2026-11-07T08:00:27.0706800Z ##[group]Fetching the repository
+2026-11-07T08:00:27.0722344Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +e38889af93144f1bd9076fd2723fd0c1d762f457:refs/remotes/pull/75/merge
+2026-11-07T08:00:28.3008117Z From https://github.com/ForceMind/ZapIME
+2026-11-07T08:00:28.3008878Z  * [new ref]         e38889af93144f1bd9076fd2723fd0c1d762f457 -> pull/75/merge
+2026-11-07T08:00:28.3014285Z ##[endgroup]
+2026-11-07T08:00:28.3014934Z ##[group]Determining the checkout info
+2026-11-07T08:00:28.3022778Z ##[endgroup]
+2026-11-07T08:00:28.3024278Z [command]/usr/bin/git sparse-checkout disable
+2026-11-07T08:00:28.3096880Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-07T08:00:28.3135230Z ##[group]Checking out the ref
+2026-11-07T08:00:28.3139223Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/75/merge
+2026-11-07T08:00:28.4537986Z Note: switching to 'refs/remotes/pull/75/merge'.
+2026-11-07T08:00:28.4538676Z 
+2026-11-07T08:00:28.4538965Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-11-07T08:00:28.4539471Z changes and commit them, and you can discard any commits you make in this
+2026-11-07T08:00:28.4539956Z state without impacting any branches by switching back to a branch.
+2026-11-07T08:00:28.4540281Z 
+2026-11-07T08:00:28.4541092Z If you want to create a new branch to retain commits you create, you may
+2026-11-07T08:00:28.4542105Z do so (now or later) by using -c with the switch command. Example:
+2026-11-07T08:00:28.4542528Z 
+2026-11-07T08:00:28.4542697Z   git switch -c <new-branch-name>
+2026-11-07T08:00:28.4542968Z 
+2026-11-07T08:00:28.4543128Z Or undo this operation with:
+2026-11-07T08:00:28.4543377Z 
+2026-11-07T08:00:28.4543533Z   git switch -
+2026-11-07T08:00:28.4543755Z 
+2026-11-07T08:00:28.4544083Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-11-07T08:00:28.4544563Z 
+2026-11-07T08:00:28.4545131Z HEAD is now at e38889a Merge b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9 into e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e
+2026-11-07T08:00:28.4556608Z ##[endgroup]
+2026-11-07T08:00:28.4557059Z ##[group]Setting up auth for fetching submodules
+2026-11-07T08:00:28.4562988Z [command]/usr/bin/git config --global http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-07T08:00:28.4615501Z [command]/usr/bin/git config --global --unset-all url.https://github.com/.insteadOf
+2026-11-07T08:00:28.4656752Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf git@github.com:
+2026-11-07T08:00:28.4702157Z [command]/usr/bin/git config --global --add url.https://github.com/.insteadOf org-88872598@github.com:
+2026-11-07T08:00:28.4742516Z ##[endgroup]
+2026-11-07T08:00:28.4743109Z ##[group]Fetching submodules
+2026-11-07T08:00:28.4746691Z [command]/usr/bin/git submodule sync
+2026-11-07T08:00:28.5001931Z [command]/usr/bin/git -c protocol.version=2 submodule update --init --force --depth=1
+2026-11-07T08:00:28.5254132Z Submodule 'vendor/msime' (https://github.com/metasequoiaime/msime.git) registered for path 'vendor/msime'
+2026-11-07T08:00:28.5258675Z Submodule 'vendor/voicekey' (https://github.com/J3n5en/voicekey.git) registered for path 'vendor/voicekey'
+2026-11-07T08:00:28.5286459Z Cloning into '/home/runner/work/ZapIME/ZapIME/vendor/msime'...
+2026-11-07T08:00:30.4986864Z Cloning into '/home/runner/work/ZapIME/ZapIME/vendor/voicekey'...
+2026-11-07T08:00:35.6586023Z From https://github.com/metasequoiaime/msime
+2026-11-07T08:00:35.6586939Z  * branch              97d652a49cabb0887355b84186af2aa9032d3814 -> FETCH_HEAD
+2026-11-07T08:00:36.5337072Z Submodule path 'vendor/msime': checked out '97d652a49cabb0887355b84186af2aa9032d3814'
+2026-11-07T08:00:36.5732350Z Submodule path 'vendor/voicekey': checked out '3ba017826eef7fac405198510b03859eb5b6c8c4'
+2026-11-07T08:00:36.5763811Z [command]/usr/bin/git submodule foreach git config --local gc.auto 0
+2026-11-07T08:00:36.5992197Z Entering 'vendor/msime'
+2026-11-07T08:00:36.6026722Z Entering 'vendor/voicekey'
+2026-11-07T08:00:36.6062623Z ##[endgroup]
+2026-11-07T08:00:36.6063258Z ##[group]Persisting credentials for submodules
+2026-11-07T08:00:36.6069135Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :"
+2026-11-07T08:00:36.6316216Z Entering 'vendor/msime'
+2026-11-07T08:00:36.6381259Z Entering 'vendor/voicekey'
+2026-11-07T08:00:36.6446406Z [command]/usr/bin/git submodule foreach sh -c "git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-11-07T08:00:36.6695809Z Entering 'vendor/msime'
+2026-11-07T08:00:36.6740276Z file:/home/runner/work/ZapIME/ZapIME/.git/modules/vendor/msime/config	remote.origin.url
+2026-11-07T08:00:36.6747071Z Entering 'vendor/voicekey'
+2026-11-07T08:00:36.6789883Z file:/home/runner/work/ZapIME/ZapIME/.git/modules/vendor/voicekey/config	remote.origin.url
+2026-11-07T08:00:36.6825501Z [command]/usr/bin/git submodule foreach git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'
+2026-11-07T08:00:36.7072594Z Entering 'vendor/msime'
+2026-11-07T08:00:36.7104208Z Entering 'vendor/voicekey'
+2026-11-07T08:00:36.7146303Z [command]/usr/bin/git submodule foreach git config --local --add 'url.https://github.com/.insteadOf' 'org-88872598@github.com:'
+2026-11-07T08:00:36.7387443Z Entering 'vendor/msime'
+2026-11-07T08:00:36.7414571Z Entering 'vendor/voicekey'
+2026-11-07T08:00:36.7452128Z ##[endgroup]
+2026-11-07T08:00:36.7518188Z [command]/usr/bin/git log -1 --format=%H
+2026-11-07T08:00:36.7554800Z e38889af93144f1bd9076fd2723fd0c1d762f457
+2026-11-07T08:00:36.7942182Z ##[group]Run dtolnay/rust-toolchain@1.97.1
+2026-11-07T08:00:36.7942528Z with:
+2026-11-07T08:00:36.7942719Z env:
+2026-11-07T08:00:36.7943332Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:36.7943733Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:36.7944020Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:36.7944329Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:36.7944542Z ##[endgroup]
+2026-11-07T08:00:36.8010090Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-11-07T08:00:36.8069223Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-11-07T08:00:36.8069676Z [36;1mif [[ -z $toolchain ]]; then[0m
+2026-11-07T08:00:36.8070220Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+2026-11-07T08:00:36.8070790Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+2026-11-07T08:00:36.8071080Z [36;1m  exit 1[0m
+2026-11-07T08:00:36.8071674Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+2026-11-07T08:00:36.8072117Z [36;1m  if [[ Linux == macOS ]]; then[0m
+2026-11-07T08:00:36.8072654Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:36.8073168Z [36;1m  else[0m
+2026-11-07T08:00:36.8073565Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:36.8074017Z [36;1m  fi[0m
+2026-11-07T08:00:36.8074319Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+2026-11-07T08:00:36.8074865Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:36.8075338Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+2026-11-07T08:00:36.8075870Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:36.8076392Z [36;1melse[0m
+2026-11-07T08:00:36.8076589Z [36;1m  delimiter=EOF[0m
+2026-11-07T08:00:36.8076895Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+2026-11-07T08:00:36.8077417Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:36.8077842Z [36;1mfi[0m
+2026-11-07T08:00:36.8104628Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:36.8104992Z env:
+2026-11-07T08:00:36.8105602Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:36.8106014Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:36.8106309Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:36.8106611Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:36.8106828Z   toolchain: 1.97.1
+2026-11-07T08:00:36.8107025Z ##[endgroup]
+2026-11-07T08:00:36.8205242Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=19]
+2026-11-07T08:00:36.8207703Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-11-07T08:00:36.8240783Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-11-07T08:00:36.8241265Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+2026-11-07T08:00:36.8261287Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:36.8261805Z env:
+2026-11-07T08:00:36.8262432Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:36.8262830Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:36.8263388Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:36.8263685Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:36.8263896Z ##[endgroup]
+2026-11-07T08:00:36.8318295Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=10]
+2026-11-07T08:00:36.8320754Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-11-07T08:00:36.8347001Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-11-07T08:00:36.8347394Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+2026-11-07T08:00:36.8348170Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+2026-11-07T08:00:36.8348930Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+2026-11-07T08:00:36.8349215Z [36;1mfi[0m
+2026-11-07T08:00:36.8368879Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:36.8369236Z env:
+2026-11-07T08:00:36.8369820Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:36.8370233Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:36.8370511Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:36.8370804Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:36.8371034Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:36.8371289Z ##[endgroup]
+2026-11-07T08:00:36.8418215Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=9]
+2026-11-07T08:00:36.8420517Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-11-07T08:00:36.8427857Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-11-07T08:00:36.8443851Z ##[start-action display=rustup toolchain install 1.97.1;id=__dtolnay_rust-toolchain.__run_4]
+2026-11-07T08:00:36.8463522Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-11-07T08:00:36.8464229Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+2026-11-07T08:00:36.8464688Z [36;1mflags=()[0m
+2026-11-07T08:00:36.8464974Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+2026-11-07T08:00:36.8465405Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+2026-11-07T08:00:36.8465914Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+2026-11-07T08:00:36.8466353Z [36;1mlog=$(mktemp)[0m
+2026-11-07T08:00:36.8466594Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+2026-11-07T08:00:36.8466853Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+2026-11-07T08:00:36.8467429Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+2026-11-07T08:00:36.8467997Z [36;1m    break[0m
+2026-11-07T08:00:36.8468196Z [36;1m  else[0m
+2026-11-07T08:00:36.8468398Z [36;1m    status=$?[0m
+2026-11-07T08:00:36.8468611Z [36;1m  fi[0m
+2026-11-07T08:00:36.8468901Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+2026-11-07T08:00:36.8469466Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+2026-11-07T08:00:36.8469934Z [36;1m    exit "$status"[0m
+2026-11-07T08:00:36.8470162Z [36;1m  fi[0m
+2026-11-07T08:00:36.8470514Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+2026-11-07T08:00:36.8470932Z [36;1m  sleep 30[0m
+2026-11-07T08:00:36.8471133Z [36;1mdone[0m
+2026-11-07T08:00:36.8491835Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:36.8492183Z env:
+2026-11-07T08:00:36.8492776Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:36.8493176Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:36.8493460Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:36.8493948Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:36.8494182Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:36.8494430Z   toolchain: 1.97.1
+2026-11-07T08:00:36.8494626Z   targets: 
+2026-11-07T08:00:36.8494808Z   components: 
+2026-11-07T08:00:36.8495016Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-11-07T08:00:36.8495251Z ##[endgroup]
+2026-11-07T08:00:36.9118268Z info: syncing channel updates for 1.97.1-x86_64-unknown-linux-gnu
+2026-11-07T08:00:37.1122465Z info: latest update on 2026-07-16 for version 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-07T08:00:37.1125581Z info: downloading 3 components
+2026-11-07T08:00:45.0884910Z 
+2026-11-07T08:00:45.0961365Z   1.97.1-x86_64-unknown-linux-gnu installed - rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-07T08:00:45.0962041Z 
+2026-11-07T08:00:45.1127612Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=8268]
+2026-11-07T08:00:45.1136208Z ##[start-action display=rustup default 1.97.1;id=__dtolnay_rust-toolchain.__run_5]
+2026-11-07T08:00:45.1159904Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-11-07T08:00:45.1160326Z [36;1mrustup default "$toolchain" --force-non-host[0m
+2026-11-07T08:00:45.1180159Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.1180518Z env:
+2026-11-07T08:00:45.1181257Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.1182019Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.1182314Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.1182630Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.1182855Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.1183142Z   toolchain: 1.97.1
+2026-11-07T08:00:45.1183349Z ##[endgroup]
+2026-11-07T08:00:45.1269820Z info: using existing install for 1.97.1-x86_64-unknown-linux-gnu
+2026-11-07T08:00:45.1276916Z info: default toolchain set to 1.97.1-x86_64-unknown-linux-gnu
+2026-11-07T08:00:45.1277377Z 
+2026-11-07T08:00:45.1346830Z   1.97.1-x86_64-unknown-linux-gnu unchanged - rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-07T08:00:45.1347442Z 
+2026-11-07T08:00:45.1349576Z info: note that the toolchain '1.97.1-x86_64-unknown-linux-gnu' is currently in use (overridden by '/home/runner/work/ZapIME/ZapIME/rust-toolchain.toml')
+2026-11-07T08:00:45.1366089Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=22]
+2026-11-07T08:00:45.1369794Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-11-07T08:00:45.1390159Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-11-07T08:00:45.1391048Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+2026-11-07T08:00:45.1392105Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+2026-11-07T08:00:45.1392658Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+2026-11-07T08:00:45.1412345Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.1412684Z env:
+2026-11-07T08:00:45.1413267Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.1413661Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.1413958Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.1414259Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.1414491Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.1414737Z   toolchain: 1.97.1
+2026-11-07T08:00:45.1414942Z ##[endgroup]
+2026-11-07T08:00:45.1741792Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=37]
+2026-11-07T08:00:45.1744464Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-11-07T08:00:45.1764696Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-11-07T08:00:45.1765152Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+2026-11-07T08:00:45.1765759Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+2026-11-07T08:00:45.1766101Z [36;1mfi[0m
+2026-11-07T08:00:45.1786109Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.1786640Z env:
+2026-11-07T08:00:45.1787362Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.1788258Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.1788719Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.1789118Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.1789537Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.1789869Z ##[endgroup]
+2026-11-07T08:00:45.1855949Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=11]
+2026-11-07T08:00:45.1858178Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-11-07T08:00:45.1877879Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-11-07T08:00:45.1878265Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+2026-11-07T08:00:45.1878630Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+2026-11-07T08:00:45.1878927Z [36;1mfi[0m
+2026-11-07T08:00:45.1897814Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.1898164Z env:
+2026-11-07T08:00:45.1898760Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.1899156Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.1899447Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.1899754Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.1899986Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.1900234Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:45.1900447Z ##[endgroup]
+2026-11-07T08:00:45.1947110Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=8]
+2026-11-07T08:00:45.1950465Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-11-07T08:00:45.1971128Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-11-07T08:00:45.1972012Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+2026-11-07T08:00:45.1972743Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+2026-11-07T08:00:45.1973523Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+2026-11-07T08:00:45.1974136Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-11-07T08:00:45.1974723Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+2026-11-07T08:00:45.1975272Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+2026-11-07T08:00:45.1975875Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-11-07T08:00:45.1976397Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+2026-11-07T08:00:45.1976754Z [36;1m  fi[0m
+2026-11-07T08:00:45.1976944Z [36;1mfi[0m
+2026-11-07T08:00:45.1995299Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.1995648Z env:
+2026-11-07T08:00:45.1996204Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.1996617Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.1996903Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.1997199Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.1997427Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.1997673Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:45.1997885Z   CARGO_TERM_COLOR: always
+2026-11-07T08:00:45.1998112Z   toolchain: 1.97.1
+2026-11-07T08:00:45.1998309Z ##[endgroup]
+2026-11-07T08:00:45.2289825Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=33]
+2026-11-07T08:00:45.2294105Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-11-07T08:00:45.2315012Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-11-07T08:00:45.2315758Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+2026-11-07T08:00:45.2316554Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+2026-11-07T08:00:45.2317051Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+2026-11-07T08:00:45.2317373Z [36;1mfi[0m
+2026-11-07T08:00:45.2336937Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.2337286Z env:
+2026-11-07T08:00:45.2337920Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.2338323Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.2338617Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.2338925Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.2339159Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.2339432Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:45.2339655Z   CARGO_TERM_COLOR: always
+2026-11-07T08:00:45.2339882Z   toolchain: 1.97.1
+2026-11-07T08:00:45.2340087Z ##[endgroup]
+2026-11-07T08:00:45.2513518Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=21]
+2026-11-07T08:00:45.2518450Z ##[start-action display=rustc +1.97.1 --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-11-07T08:00:45.2538739Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-11-07T08:00:45.2539115Z [36;1mrustc +"$toolchain" --version --verbose[0m
+2026-11-07T08:00:45.2558599Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-11-07T08:00:45.2558965Z env:
+2026-11-07T08:00:45.2559549Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.2559943Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.2560227Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.2560544Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.2560816Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.2561066Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:45.2561287Z   CARGO_TERM_COLOR: always
+2026-11-07T08:00:45.2561820Z   toolchain: 1.97.1
+2026-11-07T08:00:45.2562042Z ##[endgroup]
+2026-11-07T08:00:45.2713181Z rustc 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-07T08:00:45.2713766Z binary: rustc
+2026-11-07T08:00:45.2714235Z commit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452
+2026-11-07T08:00:45.2714767Z commit-date: 2026-07-14
+2026-11-07T08:00:45.2715069Z host: x86_64-unknown-linux-gnu
+2026-11-07T08:00:45.2715492Z release: 1.97.1
+2026-11-07T08:00:45.2715845Z LLVM version: 22.1.6
+2026-11-07T08:00:45.2731064Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=21]
+2026-11-07T08:00:45.2807992Z ##[group]Run actions/setup-go@v6
+2026-11-07T08:00:45.2808290Z with:
+2026-11-07T08:00:45.2808543Z   go-version-file: services/sync/go.mod
+2026-11-07T08:00:45.2808894Z   cache-dependency-path: services/sync/go.sum
+2026-11-07T08:00:45.2809198Z   check-latest: false
+2026-11-07T08:00:45.2811777Z   token: ***
+2026-11-07T08:00:45.2812032Z   cache: true
+2026-11-07T08:00:45.2812230Z env:
+2026-11-07T08:00:45.2812704Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:45.2813090Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:45.2813373Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:45.2813680Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:45.2813910Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:45.2814162Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:45.2814378Z   CARGO_TERM_COLOR: always
+2026-11-07T08:00:45.2814601Z ##[endgroup]
+2026-11-07T08:00:45.4347346Z Setup go version spec 1.27.3
+2026-11-07T08:00:45.4369213Z Attempting to download 1.27.3...
+2026-11-07T08:00:46.3263739Z matching 1.27.3...
+2026-11-07T08:00:46.3292570Z Acquiring 1.27.3 from https://github.com/actions/go-versions/releases/download/1.27.3-39437817176/go-1.27.3-linux-x64.tar.gz
+2026-11-07T08:00:46.9020458Z Extracting Go...
+2026-11-07T08:00:46.9158130Z [command]/usr/bin/tar xz --warning=no-unknown-keyword --overwrite -C /home/runner/work/_temp/3dc8f81b-3c32-47f3-89ee-fa630cb6f166 -f /home/runner/work/_temp/8ead1ecd-664c-4203-ba3f-8add7431604d
+2026-11-07T08:00:48.6140300Z Successfully extracted go to /home/runner/work/_temp/3dc8f81b-3c32-47f3-89ee-fa630cb6f166
+2026-11-07T08:00:48.6140836Z Adding to the cache ...
+2026-11-07T08:00:53.8662748Z Successfully cached go to /opt/hostedtoolcache/go/1.27.3/x64
+2026-11-07T08:00:53.8664724Z Added go to the path
+2026-11-07T08:00:53.8667235Z Successfully set up Go version 1.27.3
+2026-11-07T08:00:53.8928674Z [command]/opt/hostedtoolcache/go/1.27.3/x64/bin/go env GOMODCACHE
+2026-11-07T08:00:53.8981794Z [command]/opt/hostedtoolcache/go/1.27.3/x64/bin/go env GOCACHE
+2026-11-07T08:00:53.9030717Z /home/runner/go/pkg/mod
+2026-11-07T08:00:53.9053142Z /home/runner/.cache/go-build
+2026-11-07T08:00:54.1215767Z Cache hit for: setup-go-Linux-x64-ubuntu24-go-1.27.3-997ad6cb1a9a3c6f690ca5560446d276c2bc432efea1ec0acaf69a04b8b122bc
+2026-11-07T08:00:55.3524551Z Received 62914560 of 130717528 (48.1%), 59.9 MBs/sec
+2026-11-07T08:00:55.8099464Z Received 130717528 of 130717528 (100.0%), 85.5 MBs/sec
+2026-11-07T08:00:55.8100795Z Cache Size: ~125 MB (130717528 B)
+2026-11-07T08:00:55.8161912Z [command]/usr/bin/tar -xf /home/runner/work/_temp/c4cf1c00-9c47-46a5-ae6d-21779e39eacb/cache.tzst -P -C /home/runner/work/ZapIME/ZapIME --use-compress-program unzstd
+2026-11-07T08:00:56.9725975Z Cache restored successfully
+2026-11-07T08:00:56.9791043Z Cache restored from key: setup-go-Linux-x64-ubuntu24-go-1.27.3-997ad6cb1a9a3c6f690ca5560446d276c2bc432efea1ec0acaf69a04b8b122bc
+2026-11-07T08:00:56.9815760Z go version go1.27.3 linux/amd64
+2026-11-07T08:00:56.9816069Z 
+2026-11-07T08:00:56.9816513Z ##[group]go env
+2026-11-07T08:00:57.0782275Z AR='ar'
+2026-11-07T08:00:57.0782617Z CC='gcc'
+2026-11-07T08:00:57.0782889Z CGO_CFLAGS='-O2 -g'
+2026-11-07T08:00:57.0783149Z CGO_CPPFLAGS=''
+2026-11-07T08:00:57.0783422Z CGO_CXXFLAGS='-O2 -g'
+2026-11-07T08:00:57.0783689Z CGO_ENABLED='1'
+2026-11-07T08:00:57.0783924Z CGO_FFLAGS='-O2 -g'
+2026-11-07T08:00:57.0784166Z CGO_LDFLAGS='-O2 -g'
+2026-11-07T08:00:57.0784399Z CXX='g++'
+2026-11-07T08:00:57.0784609Z GCCGO='gccgo'
+2026-11-07T08:00:57.0784833Z GO111MODULE=''
+2026-11-07T08:00:57.0785049Z GOAMD64='v1'
+2026-11-07T08:00:57.0785262Z GOARCH='amd64'
+2026-11-07T08:00:57.0785475Z GOAUTH='netrc'
+2026-11-07T08:00:57.0785722Z GOBIN='/home/runner/go/bin'
+2026-11-07T08:00:57.0786040Z GOCACHE='/home/runner/.cache/go-build'
+2026-11-07T08:00:57.0786361Z GOCACHEPROG=''
+2026-11-07T08:00:57.0786591Z GODEBUG=''
+2026-11-07T08:00:57.0786845Z GOENV='/home/runner/.config/go/env'
+2026-11-07T08:00:57.0787147Z GOEXE=''
+2026-11-07T08:00:57.0787368Z GOEXPERIMENT=''
+2026-11-07T08:00:57.0787909Z GOFIPS140='off'
+2026-11-07T08:00:57.0788154Z GOFLAGS=''
+2026-11-07T08:00:57.0788938Z GOGCCFLAGS='-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=0 -ffile-prefix-map=/tmp/go-build52131347=/tmp/go-build -gno-record-gcc-switches'
+2026-11-07T08:00:57.0789773Z GOHOSTARCH='amd64'
+2026-11-07T08:00:57.0790031Z GOHOSTOS='linux'
+2026-11-07T08:00:57.0790273Z GOINSECURE=''
+2026-11-07T08:00:57.0790512Z GOMOD='/dev/null'
+2026-11-07T08:00:57.0790782Z GOMODCACHE='/home/runner/go/pkg/mod'
+2026-11-07T08:00:57.0791100Z GONOPROXY=''
+2026-11-07T08:00:57.0791328Z GONOSUMDB=''
+2026-11-07T08:00:57.0791870Z GOOS='linux'
+2026-11-07T08:00:57.0792110Z GOPACKAGESDRIVER=''
+2026-11-07T08:00:57.0792375Z GOPATH='/home/runner/go'
+2026-11-07T08:00:57.0792666Z GOPRIVATE=''
+2026-11-07T08:00:57.0792969Z GOPROXY='https://proxy.golang.org,direct'
+2026-11-07T08:00:57.0793367Z GOROOT='/opt/hostedtoolcache/go/1.27.3/x64'
+2026-11-07T08:00:57.0793726Z GOSUMDB='sum.golang.org'
+2026-11-07T08:00:57.0794003Z GOTELEMETRY='local'
+2026-11-07T08:00:57.0794328Z GOTELEMETRYDIR='/home/runner/.config/go/telemetry'
+2026-11-07T08:00:57.0794701Z GOTMPDIR=''
+2026-11-07T08:00:57.0794966Z GOTOOLCHAIN='local'
+2026-11-07T08:00:57.0795350Z GOTOOLDIR='/opt/hostedtoolcache/go/1.27.3/x64/pkg/tool/linux_amd64'
+2026-11-07T08:00:57.0795988Z GOVCS=''
+2026-11-07T08:00:57.0796235Z GOVERSION='go1.27.3'
+2026-11-07T08:00:57.0796488Z GOWORK=''
+2026-11-07T08:00:57.0796693Z PKG_CONFIG='pkg-config'
+2026-11-07T08:00:57.0796848Z 
+2026-11-07T08:00:57.0797197Z ##[endgroup]
+2026-11-07T08:00:57.1108359Z ##[group]Run docker build -t zapime-s3-fixture:ci scripts/fixtures/s3
+2026-11-07T08:00:57.1108937Z [36;1mdocker build -t zapime-s3-fixture:ci scripts/fixtures/s3[0m
+2026-11-07T08:00:57.1109799Z [36;1mdocker run -d --name zapime-object-test -p 127.0.0.1:9000:9000 -e MINIO_ROOT_USER=zapime-ci-key -e MINIO_ROOT_PASSWORD=zapime-ci-synthetic-secret zapime-s3-fixture:ci server /data[0m
+2026-11-07T08:00:57.1110576Z [36;1mfor attempt in $(seq 1 40); do[0m
+2026-11-07T08:00:57.1110977Z [36;1m  if curl -fsS http://127.0.0.1:9000/minio/health/live; then exit 0; fi[0m
+2026-11-07T08:00:57.1111384Z [36;1m  sleep 1[0m
+2026-11-07T08:00:57.1111929Z [36;1mdone[0m
+2026-11-07T08:00:57.1112137Z [36;1mexit 1[0m
+2026-11-07T08:00:57.1134754Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:00:57.1135016Z env:
+2026-11-07T08:00:57.1135629Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:00:57.1136038Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:00:57.1136363Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:00:57.1136669Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:00:57.1136901Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:00:57.1137150Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:00:57.1137373Z   CARGO_TERM_COLOR: always
+2026-11-07T08:00:57.1137603Z   GOTOOLCHAIN: local
+2026-11-07T08:00:57.1137817Z ##[endgroup]
+2026-11-07T08:00:57.7142210Z #0 building with "default" instance using docker driver
+2026-11-07T08:00:57.7142738Z 
+2026-11-07T08:00:57.7142972Z #1 [internal] load build definition from Dockerfile
+2026-11-07T08:00:57.7143383Z #1 transferring dockerfile: 630B done
+2026-11-07T08:00:57.7143697Z #1 DONE 0.0s
+2026-11-07T08:00:57.7143826Z 
+2026-11-07T08:00:57.7144065Z #2 [internal] load metadata for docker.io/library/golang:1.24.8
+2026-11-07T08:00:57.9111960Z #2 ...
+2026-11-07T08:00:57.9112193Z 
+2026-11-07T08:00:57.9112481Z #3 [auth] library/golang:pull token for registry-1.docker.io
+2026-11-07T08:00:57.9113108Z #3 DONE 0.0s
+2026-11-07T08:00:58.0618607Z 
+2026-11-07T08:00:58.0619214Z #2 [internal] load metadata for docker.io/library/golang:1.24.8
+2026-11-07T08:00:58.4991244Z #2 DONE 0.9s
+2026-11-07T08:00:58.6162819Z 
+2026-11-07T08:00:58.6163611Z #4 [internal] load .dockerignore
+2026-11-07T08:00:58.6164074Z #4 transferring context: 2B done
+2026-11-07T08:00:58.6164396Z #4 DONE 0.0s
+2026-11-07T08:00:58.6164557Z 
+2026-11-07T08:00:58.6165138Z #5 [build 1/4] FROM docker.io/library/golang:1.24.8@sha256:273d4e65baa782dbe293c9192d600b72b17d415c1429e16bed99efcc5e61efb8
+2026-11-07T08:00:58.6166150Z #5 resolve docker.io/library/golang:1.24.8@sha256:273d4e65baa782dbe293c9192d600b72b17d415c1429e16bed99efcc5e61efb8 done
+2026-11-07T08:00:58.6167171Z #5 sha256:273d4e65baa782dbe293c9192d600b72b17d415c1429e16bed99efcc5e61efb8 9.69kB / 9.69kB done
+2026-11-07T08:00:58.6168526Z #5 sha256:9cd858d436529e46e99a3dd977530cde0f410fe1e293464c16f165be8014abf0 2.94kB / 2.94kB done
+2026-11-07T08:00:58.6169393Z #5 sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c 0B / 49.28MB 0.1s
+2026-11-07T08:00:58.6170186Z #5 sha256:bd090f42c4b7844c5846f9b4c719994f496fac3befe1d30f0ff20794e742370a 0B / 25.61MB 0.1s
+2026-11-07T08:00:58.6170975Z #5 sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 1.05MB / 67.78MB 0.1s
+2026-11-07T08:00:58.6172136Z #5 sha256:dd80b4158d9c4ca750687719d1a4b79ec9f78f19c4b87b53b73d552ceccfb7a8 2.32kB / 2.32kB done
+2026-11-07T08:00:58.7273235Z #5 sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c 9.44MB / 49.28MB 0.2s
+2026-11-07T08:00:58.7274658Z #5 sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 9.44MB / 67.78MB 0.2s
+2026-11-07T08:00:58.8857503Z #5 sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c 49.28MB / 49.28MB 0.3s
+2026-11-07T08:00:58.8859219Z #5 sha256:bd090f42c4b7844c5846f9b4c719994f496fac3befe1d30f0ff20794e742370a 25.61MB / 25.61MB 0.3s
+2026-11-07T08:00:58.8860533Z #5 sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 20.97MB / 67.78MB 0.3s
+2026-11-07T08:00:58.8862231Z #5 extracting sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c
+2026-11-07T08:00:59.0004279Z #5 sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c 49.28MB / 49.28MB 0.3s done
+2026-11-07T08:00:59.0005884Z #5 sha256:bd090f42c4b7844c5846f9b4c719994f496fac3befe1d30f0ff20794e742370a 25.61MB / 25.61MB 0.3s done
+2026-11-07T08:00:59.0007197Z #5 sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 50.33MB / 67.78MB 0.4s
+2026-11-07T08:00:59.0009566Z #5 sha256:176d82c372858e34cf996dfb5a88a75a43470adce3bc792ffa33d9db7893656b 0B / 79.12MB 0.4s
+2026-11-07T08:00:59.0011157Z #5 sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c 2.10MB / 102.09MB 0.4s
+2026-11-07T08:00:59.1150450Z #5 sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 67.78MB / 67.78MB 0.5s done
+2026-11-07T08:00:59.1153567Z #5 sha256:176d82c372858e34cf996dfb5a88a75a43470adce3bc792ffa33d9db7893656b 32.51MB / 79.12MB 0.5s
+2026-11-07T08:00:59.1157302Z #5 sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c 23.07MB / 102.09MB 0.5s
+2026-11-07T08:00:59.1159140Z #5 sha256:e1e808e797ab5e6ebd9d28017cd7393651a7ce6b49d01741949c0a3681db0006 0B / 124B 0.5s
+2026-11-07T08:00:59.2155835Z #5 sha256:176d82c372858e34cf996dfb5a88a75a43470adce3bc792ffa33d9db7893656b 79.12MB / 79.12MB 0.6s done
+2026-11-07T08:00:59.2157221Z #5 sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c 102.09MB / 102.09MB 0.7s
+2026-11-07T08:00:59.2158420Z #5 sha256:e1e808e797ab5e6ebd9d28017cd7393651a7ce6b49d01741949c0a3681db0006 124B / 124B 0.6s done
+2026-11-07T08:00:59.2159625Z #5 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.7s done
+2026-11-07T08:00:59.4312110Z #5 sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c 102.09MB / 102.09MB 0.8s done
+2026-11-07T08:01:00.5032549Z #5 extracting sha256:cae3b572364a7d48f8485d67baee38e4e44e299b8c8c4d020ff7fb5fdd97f88c 1.6s done
+2026-11-07T08:01:00.5033397Z #5 extracting sha256:bd090f42c4b7844c5846f9b4c719994f496fac3befe1d30f0ff20794e742370a
+2026-11-07T08:01:01.2880253Z #5 extracting sha256:bd090f42c4b7844c5846f9b4c719994f496fac3befe1d30f0ff20794e742370a 0.6s done
+2026-11-07T08:01:04.3575926Z #5 extracting sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1
+2026-11-07T08:01:06.7416430Z #5 extracting sha256:f0c9d6d993ac93f222ba87ca01097d40f632be9b48f6b5e399f2c5da1b3133d1 2.2s done
+2026-11-07T08:01:06.9046432Z #5 extracting sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c
+2026-11-07T08:01:09.2646804Z #5 extracting sha256:f10e6c31c8020880afe92da063d27179175261da508776c9d8827a502928c40c 2.2s done
+2026-11-07T08:01:09.5943387Z #5 extracting sha256:176d82c372858e34cf996dfb5a88a75a43470adce3bc792ffa33d9db7893656b
+2026-11-07T08:01:14.1735201Z #5 extracting sha256:176d82c372858e34cf996dfb5a88a75a43470adce3bc792ffa33d9db7893656b 4.4s done
+2026-11-07T08:01:14.7152281Z #5 extracting sha256:e1e808e797ab5e6ebd9d28017cd7393651a7ce6b49d01741949c0a3681db0006
+2026-11-07T08:01:14.8809007Z #5 extracting sha256:e1e808e797ab5e6ebd9d28017cd7393651a7ce6b49d01741949c0a3681db0006 done
+2026-11-07T08:01:14.8810488Z #5 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 done
+2026-11-07T08:01:14.8811910Z #5 DONE 16.2s
+2026-11-07T08:01:14.8812442Z 
+2026-11-07T08:01:14.8814085Z #6 [build 2/4] RUN git init /src && git -C /src remote add origin https://github.com/minio/minio.git && git -C /src fetch --depth 1 origin 9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a && git -C /src checkout --detach FETCH_HEAD
+2026-11-07T08:01:14.8816163Z #6 0.124 hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-07T08:01:14.8817731Z #6 0.124 hint: is subject to change. To configure the initial branch name to use in all
+2026-11-07T08:01:14.8818888Z #6 0.124 hint: of your new repositories, which will suppress this warning, call:
+2026-11-07T08:01:14.8819648Z #6 0.124 hint:
+2026-11-07T08:01:14.8820188Z #6 0.124 hint: 	git config --global init.defaultBranch <name>
+2026-11-07T08:01:14.8820747Z #6 0.124 hint:
+2026-11-07T08:01:14.8821236Z #6 0.124 hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-07T08:01:14.8822086Z #6 0.124 hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-07T08:01:14.8822495Z #6 0.124 hint:
+2026-11-07T08:01:14.8822721Z #6 0.124 hint: 	git branch -m <name>
+2026-11-07T08:01:15.0315876Z #6 0.124 Initialized empty Git repository in /src/.git/
+2026-11-07T08:01:16.5857646Z #6 1.829 From https://github.com/minio/minio
+2026-11-07T08:01:16.5858594Z #6 1.829  * branch            9e49d5e7a648f00e26f2246f4dc28e6b07f8c84a -> FETCH_HEAD
+2026-11-07T08:01:16.7773656Z #6 2.021 HEAD is now at 9e49d5e update README.md and other docs to point to source only releases
+2026-11-07T08:01:16.9877643Z #6 DONE 2.1s
+2026-11-07T08:01:16.9877923Z 
+2026-11-07T08:01:16.9878060Z #7 [build 3/4] WORKDIR /src
+2026-11-07T08:01:16.9878340Z #7 DONE 0.0s
+2026-11-07T08:01:16.9878496Z 
+2026-11-07T08:01:16.9878890Z #8 [build 4/4] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -o /minio .
+2026-11-07T08:01:16.9879407Z #8 0.148 go: downloading cloud.google.com/go/storage v1.52.0
+2026-11-07T08:01:17.1230832Z #8 0.168 go: downloading github.com/Azure/azure-sdk-for-go/sdk/azcore v1.18.0
+2026-11-07T08:01:17.1232456Z #8 0.284 go: downloading github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.9.0
+2026-11-07T08:01:17.2511651Z #8 0.319 go: downloading cloud.google.com/go v0.120.1
+2026-11-07T08:01:17.2512542Z #8 0.338 go: downloading github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.6.1
+2026-11-07T08:01:17.2513184Z #8 0.412 go: downloading github.com/cespare/xxhash/v2 v2.3.0
+2026-11-07T08:01:17.3593505Z #8 0.412 go: downloading github.com/cheggaaa/pb v1.0.29
+2026-11-07T08:01:17.3596719Z #8 0.438 go: downloading github.com/coreos/go-oidc/v3 v3.14.1
+2026-11-07T08:01:17.3597722Z #8 0.441 go: downloading github.com/coreos/go-systemd/v22 v22.5.0
+2026-11-07T08:01:17.3598540Z #8 0.475 go: downloading github.com/cosnicolaou/pbzip2 v1.0.5
+2026-11-07T08:01:17.3599286Z #8 0.483 go: downloading github.com/dchest/siphash v1.2.3
+2026-11-07T08:01:17.3600004Z #8 0.518 go: downloading github.com/dustin/go-humanize v1.0.1
+2026-11-07T08:01:17.4674480Z #8 0.552 go: downloading github.com/fatih/color v1.18.0
+2026-11-07T08:01:17.4675162Z #8 0.556 go: downloading github.com/felixge/fgprof v0.9.5
+2026-11-07T08:01:17.4675662Z #8 0.576 go: downloading github.com/go-openapi/loads v0.22.0
+2026-11-07T08:01:17.4676309Z #8 0.592 go: downloading github.com/golang-jwt/jwt/v4 v4.5.2
+2026-11-07T08:01:17.4676763Z #8 0.628 go: downloading github.com/google/uuid v1.6.0
+2026-11-07T08:01:17.6488720Z #8 0.633 go: downloading github.com/inconshreveable/mousetrap v1.1.0
+2026-11-07T08:01:17.6490041Z #8 0.658 go: downloading github.com/json-iterator/go v1.1.12
+2026-11-07T08:01:17.6490547Z #8 0.659 go: downloading github.com/klauspost/compress v1.18.0
+2026-11-07T08:01:18.3182069Z #8 1.479 go: downloading github.com/klauspost/filepathx v1.1.1
+2026-11-07T08:01:18.3182956Z #8 1.479 go: downloading github.com/klauspost/pgzip v1.2.6
+2026-11-07T08:01:18.4572938Z #8 1.506 go: downloading github.com/klauspost/readahead v1.4.0
+2026-11-07T08:01:18.4573709Z #8 1.508 go: downloading github.com/klauspost/reedsolomon v1.12.4
+2026-11-07T08:01:18.4574269Z #8 1.535 go: downloading github.com/lithammer/shortuuid/v4 v4.2.0
+2026-11-07T08:01:18.4574737Z #8 1.564 go: downloading github.com/miekg/dns v1.1.65
+2026-11-07T08:01:18.4575155Z #8 1.578 go: downloading github.com/minio/cli v1.24.2
+2026-11-07T08:01:18.4575682Z #8 1.618 go: downloading github.com/minio/console v1.7.7-0.20250905210349-2017f33b26e1
+2026-11-07T08:01:19.0651123Z #8 2.226 go: downloading github.com/minio/dnscache v0.1.1
+2026-11-07T08:01:19.0652545Z #8 2.226 go: downloading github.com/minio/dperf v0.6.3
+2026-11-07T08:01:19.1829818Z #8 2.251 go: downloading github.com/minio/highwayhash v1.0.3
+2026-11-07T08:01:19.1830591Z #8 2.256 go: downloading github.com/minio/kms-go/kes v0.3.1
+2026-11-07T08:01:19.1831896Z #8 2.278 go: downloading github.com/minio/madmin-go/v3 v3.0.109
+2026-11-07T08:01:19.1832712Z #8 2.344 go: downloading github.com/minio/minio-go/v7 v7.0.91
+2026-11-07T08:01:19.3305265Z #8 2.427 go: downloading github.com/minio/mux v1.9.2
+2026-11-07T08:01:19.3305882Z #8 2.427 go: downloading github.com/minio/pkg/v3 v3.1.3
+2026-11-07T08:01:19.3306293Z #8 2.491 go: downloading github.com/minio/selfupdate v0.6.0
+2026-11-07T08:01:19.3306699Z #8 2.491 go: downloading github.com/minio/sio v0.4.1
+2026-11-07T08:01:19.4476612Z #8 2.525 go: downloading github.com/minio/xxml v0.0.3
+2026-11-07T08:01:19.4477325Z #8 2.532 go: downloading github.com/minio/zipindex v0.4.0
+2026-11-07T08:01:19.4478026Z #8 2.561 go: downloading github.com/mitchellh/go-homedir v1.1.0
+2026-11-07T08:01:19.4478743Z #8 2.583 go: downloading github.com/philhofer/fwd v1.2.0
+2026-11-07T08:01:19.4479397Z #8 2.608 go: downloading github.com/pierrec/lz4/v4 v4.1.22
+2026-11-07T08:01:19.5531076Z #8 2.635 go: downloading github.com/pkg/errors v0.9.1
+2026-11-07T08:01:19.5532215Z #8 2.661 go: downloading github.com/pkg/sftp v1.13.9
+2026-11-07T08:01:19.5533116Z #8 2.714 go: downloading github.com/pkg/xattr v0.4.10
+2026-11-07T08:01:19.6687138Z #8 2.739 go: downloading github.com/prometheus/client_golang v1.22.0
+2026-11-07T08:01:19.6687775Z #8 2.829 go: downloading github.com/prometheus/client_model v0.6.2
+2026-11-07T08:01:19.8306849Z #8 2.856 go: downloading github.com/prometheus/common v0.63.0
+2026-11-07T08:01:19.8307723Z #8 2.915 go: downloading github.com/prometheus/procfs v0.16.1
+2026-11-07T08:01:19.8308721Z #8 2.991 go: downloading github.com/puzpuzpuz/xsync/v3 v3.5.1
+2026-11-07T08:01:19.9590041Z #8 3.025 go: downloading github.com/rcrowley/go-metrics v0.0.0-20250401214520-65e299d6c5c9
+2026-11-07T08:01:19.9591254Z #8 3.058 go: downloading github.com/rs/cors v1.11.1
+2026-11-07T08:01:19.9592335Z #8 3.084 go: downloading github.com/secure-io/sio-go v0.3.1
+2026-11-07T08:01:19.9593217Z #8 3.120 go: downloading github.com/shirou/gopsutil/v3 v3.24.5
+2026-11-07T08:01:20.1063856Z #8 3.203 go: downloading github.com/tinylib/msgp v1.4.0
+2026-11-07T08:01:20.1064680Z #8 3.267 go: downloading github.com/valyala/bytebufferpool v1.0.0
+2026-11-07T08:01:20.2087255Z #8 3.291 go: downloading github.com/zeebo/xxh3 v1.0.2
+2026-11-07T08:01:20.2087991Z #8 3.334 go: downloading go.etcd.io/etcd/api/v3 v3.5.21
+2026-11-07T08:01:20.2088660Z #8 3.370 go: downloading go.etcd.io/etcd/client/v3 v3.5.21
+2026-11-07T08:01:20.3412159Z #8 3.421 go: downloading go.uber.org/atomic v1.11.0
+2026-11-07T08:01:20.3413352Z #8 3.462 go: downloading goftp.io/server/v2 v2.0.1
+2026-11-07T08:01:20.3413856Z #8 3.502 go: downloading golang.org/x/crypto v0.37.0
+2026-11-07T08:01:20.4923929Z #8 3.653 go: downloading golang.org/x/oauth2 v0.29.0
+2026-11-07T08:01:20.7229314Z #8 3.705 go: downloading golang.org/x/sync v0.13.0
+2026-11-07T08:01:20.7230049Z #8 3.734 go: downloading golang.org/x/sys v0.32.0
+2026-11-07T08:01:20.7230672Z #8 3.884 go: downloading golang.org/x/term v0.31.0
+2026-11-07T08:01:20.8987194Z #8 3.909 go: downloading google.golang.org/api v0.230.0
+2026-11-07T08:01:23.1644408Z #8 6.325 go: downloading gopkg.in/yaml.v2 v2.4.0
+2026-11-07T08:01:23.2732433Z #8 6.325 go: downloading gopkg.in/yaml.v3 v3.0.1
+2026-11-07T08:01:23.2733764Z #8 6.434 go: downloading github.com/Azure/azure-sdk-for-go/sdk/internal v1.11.1
+2026-11-07T08:01:23.4359609Z #8 6.475 go: downloading github.com/AzureAD/microsoft-authentication-library-for-go v1.4.2
+2026-11-07T08:01:23.4360423Z #8 6.529 go: downloading cloud.google.com/go/compute/metadata v0.6.0
+2026-11-07T08:01:23.4360977Z #8 6.529 go: downloading cloud.google.com/go/iam v1.5.2
+2026-11-07T08:01:23.4362295Z #8 6.597 go: downloading github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric v0.51.0
+2026-11-07T08:01:23.4363350Z #8 6.597 go: downloading github.com/googleapis/gax-go/v2 v2.14.1
+2026-11-07T08:01:23.6293760Z #8 6.640 go: downloading go.opentelemetry.io/contrib/detectors/gcp v1.35.0
+2026-11-07T08:01:23.6294685Z #8 6.640 go: downloading go.opentelemetry.io/otel v1.35.0
+2026-11-07T08:01:23.6362388Z #8 6.797 go: downloading go.opentelemetry.io/otel/sdk/metric v1.35.0
+2026-11-07T08:01:23.8712579Z #8 6.826 go: downloading go.opentelemetry.io/otel/sdk v1.35.0
+2026-11-07T08:01:23.8713159Z #8 6.870 go: downloading go.opentelemetry.io/otel/trace v1.35.0
+2026-11-07T08:01:23.8713802Z #8 6.882 go: downloading google.golang.org/genproto v0.0.0-20250422160041-2d3770c4ea7f
+2026-11-07T08:01:24.2870723Z #8 7.448 go: downloading google.golang.org/grpc v1.72.0
+2026-11-07T08:01:24.5769529Z #8 7.738 go: downloading google.golang.org/protobuf v1.36.6
+2026-11-07T08:01:24.8078872Z #8 7.968 go: downloading github.com/mattn/go-runewidth v0.0.16
+2026-11-07T08:01:24.9549011Z #8 7.968 go: downloading github.com/go-jose/go-jose/v4 v4.1.0
+2026-11-07T08:01:24.9551132Z #8 7.995 go: downloading github.com/mattn/go-colorable v0.1.14
+2026-11-07T08:01:24.9552303Z #8 8.016 go: downloading github.com/mattn/go-isatty v0.0.20
+2026-11-07T08:01:24.9553375Z #8 8.022 go: downloading github.com/google/pprof v0.0.0-20250422154841-e1f9c1950416
+2026-11-07T08:01:24.9554376Z #8 8.041 go: downloading github.com/go-openapi/analysis v0.23.0
+2026-11-07T08:01:24.9555251Z #8 8.116 go: downloading github.com/go-openapi/spec v0.21.0
+2026-11-07T08:01:25.0709338Z #8 8.197 go: downloading github.com/go-openapi/swag v0.23.1
+2026-11-07T08:01:25.0710190Z #8 8.231 go: downloading github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
+2026-11-07T08:01:25.2495614Z #8 8.232 go: downloading github.com/modern-go/reflect2 v1.0.2
+2026-11-07T08:01:25.2496287Z #8 8.259 go: downloading github.com/klauspost/cpuid/v2 v2.2.10
+2026-11-07T08:01:25.2496700Z #8 8.260 go: downloading golang.org/x/net v0.39.0
+2026-11-07T08:01:25.3026719Z #8 8.463 go: downloading github.com/go-openapi/errors v0.22.1
+2026-11-07T08:01:25.5000316Z #8 8.465 go: downloading github.com/go-openapi/runtime v0.28.0
+2026-11-07T08:01:25.5000950Z #8 8.521 go: downloading github.com/jessevdk/go-flags v1.6.1
+2026-11-07T08:01:25.5001769Z #8 8.521 go: downloading github.com/minio/mc v0.0.0-20250313080218-cf909e1063a9
+2026-11-07T08:01:25.5002331Z #8 8.661 go: downloading github.com/minio/websocket v1.6.0
+2026-11-07T08:01:25.6184137Z #8 8.661 go: downloading github.com/unrolled/secure v1.17.0
+2026-11-07T08:01:25.6185685Z #8 8.695 go: downloading github.com/go-openapi/strfmt v0.23.0
+2026-11-07T08:01:25.6186452Z #8 8.701 go: downloading github.com/ncw/directio v1.0.5
+2026-11-07T08:01:25.6186827Z #8 8.725 go: downloading aead.dev/mem v0.2.0
+2026-11-07T08:01:25.6187235Z #8 8.725 go: downloading github.com/prometheus/prom2json v1.4.2
+2026-11-07T08:01:25.6187846Z #8 8.751 go: downloading github.com/safchain/ethtool v0.5.10
+2026-11-07T08:01:25.6188262Z #8 8.757 go: downloading github.com/goccy/go-json v0.10.5
+2026-11-07T08:01:25.6188842Z #8 8.779 go: downloading github.com/minio/crc64nvme v1.0.1
+2026-11-07T08:01:25.7306071Z #8 8.805 go: downloading github.com/minio/md5-simd v1.1.2
+2026-11-07T08:01:25.7307359Z #8 8.812 go: downloading github.com/rs/xid v1.6.0
+2026-11-07T08:01:25.7308363Z #8 8.834 go: downloading github.com/go-ini/ini v1.67.0
+2026-11-07T08:01:25.7309238Z #8 8.838 go: downloading golang.org/x/time v0.11.0
+2026-11-07T08:01:25.7310253Z #8 8.867 go: downloading github.com/beevik/ntp v1.4.3
+2026-11-07T08:01:25.7310858Z #8 8.870 go: downloading go.uber.org/zap v1.27.0
+2026-11-07T08:01:25.7311271Z #8 8.891 go: downloading github.com/go-ldap/ldap/v3 v3.4.11
+2026-11-07T08:01:25.8613451Z #8 8.923 go: downloading github.com/rabbitmq/amqp091-go v1.10.0
+2026-11-07T08:01:25.8614105Z #8 8.932 go: downloading github.com/IBM/sarama v1.45.1
+2026-11-07T08:01:25.8614647Z #8 9.022 go: downloading github.com/eclipse/paho.mqtt.golang v1.5.0
+2026-11-07T08:01:25.9928615Z #8 9.022 go: downloading github.com/elastic/go-elasticsearch/v7 v7.17.10
+2026-11-07T08:01:25.9929651Z #8 9.078 go: downloading github.com/go-sql-driver/mysql v1.9.2
+2026-11-07T08:01:25.9930160Z #8 9.118 go: downloading github.com/gomodule/redigo v1.9.2
+2026-11-07T08:01:25.9930622Z #8 9.154 go: downloading github.com/lib/pq v1.10.9
+2026-11-07T08:01:26.1105495Z #8 9.188 go: downloading github.com/nats-io/nats.go v1.41.2
+2026-11-07T08:01:26.1106089Z #8 9.208 go: downloading github.com/nats-io/stan.go v0.10.4
+2026-11-07T08:01:26.1106570Z #8 9.242 go: downloading github.com/nsqio/go-nsq v1.1.0
+2026-11-07T08:01:26.1107010Z #8 9.271 go: downloading github.com/xdg/scram v1.0.5
+2026-11-07T08:01:26.2218353Z #8 9.281 go: downloading github.com/gobwas/ws v1.4.0
+2026-11-07T08:01:26.2219290Z #8 9.318 go: downloading github.com/buger/jsonparser v1.1.1
+2026-11-07T08:01:26.2219824Z #8 9.319 go: downloading aead.dev/mtls v0.2.1
+2026-11-07T08:01:26.2220427Z #8 9.348 go: downloading github.com/minio/kms-go/kms v0.5.1-0.20250225090116-4e64ce8d0f35
+2026-11-07T08:01:26.2221011Z #8 9.354 go: downloading github.com/minio/simdjson-go v0.4.5
+2026-11-07T08:01:26.2221746Z #8 9.383 go: downloading github.com/rjeczalik/notify v0.9.3
+2026-11-07T08:01:26.3466132Z #8 9.423 go: downloading github.com/lestrrat-go/jwx/v2 v2.1.4
+2026-11-07T08:01:26.3467381Z #8 9.507 go: downloading github.com/fatih/structs v1.1.0
+2026-11-07T08:01:26.4588310Z #8 9.508 go: downloading aead.dev/minisign v0.3.0
+2026-11-07T08:01:26.4589059Z #8 9.546 go: downloading github.com/kr/fs v0.1.0
+2026-11-07T08:01:26.4589748Z #8 9.548 go: downloading github.com/beorn7/perks v1.0.1
+2026-11-07T08:01:26.4590659Z #8 9.578 go: downloading github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
+2026-11-07T08:01:26.4591806Z #8 9.581 go: downloading github.com/tklauser/go-sysconf v0.3.15
+2026-11-07T08:01:26.4592587Z #8 9.604 go: downloading github.com/gogo/protobuf v1.3.2
+2026-11-07T08:01:26.4593238Z #8 9.620 go: downloading github.com/golang/protobuf v1.5.4
+2026-11-07T08:01:26.5725487Z #8 9.682 go: downloading go.etcd.io/etcd/client/pkg/v3 v3.5.21
+2026-11-07T08:01:26.5726389Z #8 9.733 go: downloading cloud.google.com/go/auth v0.16.0
+2026-11-07T08:01:26.7205476Z #8 9.829 go: downloading github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
+2026-11-07T08:01:26.7206453Z #8 9.881 go: downloading github.com/kylelemons/godebug v1.1.0
+2026-11-07T08:01:26.8342204Z #8 9.902 go: downloading google.golang.org/genproto/googleapis/api v0.0.0-20250422160041-2d3770c4ea7f
+2026-11-07T08:01:26.8343489Z #8 9.907 go: downloading google.golang.org/genproto/googleapis/rpc v0.0.0-20250422160041-2d3770c4ea7f
+2026-11-07T08:01:26.8344206Z #8 9.934 go: downloading cloud.google.com/go/monitoring v1.24.2
+2026-11-07T08:01:26.8345011Z #8 9.995 go: downloading github.com/GoogleCloudPlatform/opentelemetry-operations-go/internal/resourcemapping v0.51.0
+2026-11-07T08:01:26.9570341Z #8 9.995 go: downloading github.com/GoogleCloudPlatform/opentelemetry-operations-go/detectors/gcp v1.27.0
+2026-11-07T08:01:26.9571740Z #8 10.02 go: downloading github.com/go-logr/logr v1.4.2
+2026-11-07T08:01:26.9572570Z #8 10.02 go: downloading go.opentelemetry.io/otel/metric v1.35.0
+2026-11-07T08:01:26.9573425Z #8 10.05 go: downloading cloud.google.com/go/auth/oauth2adapt v0.2.8
+2026-11-07T08:01:26.9574480Z #8 10.05 go: downloading go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp v0.60.0
+2026-11-07T08:01:26.9575448Z #8 10.08 go: downloading github.com/rivo/uniseg v0.4.7
+2026-11-07T08:01:26.9576052Z #8 10.09 go: downloading github.com/go-openapi/jsonpointer v0.21.1
+2026-11-07T08:01:26.9576580Z #8 10.12 go: downloading github.com/go-openapi/jsonreference v0.21.0
+2026-11-07T08:01:27.0824425Z #8 10.13 go: downloading github.com/mailru/easyjson v0.9.0
+2026-11-07T08:01:27.0825592Z #8 10.17 go: downloading github.com/docker/go-units v0.5.0
+2026-11-07T08:01:27.0826873Z #8 10.18 go: downloading github.com/go-openapi/validate v0.24.0
+2026-11-07T08:01:27.0827698Z #8 10.20 go: downloading github.com/charmbracelet/bubbles v0.20.0
+2026-11-07T08:01:27.0828793Z #8 10.24 go: downloading github.com/charmbracelet/bubbletea v1.3.4
+2026-11-07T08:01:27.2252327Z #8 10.28 go: downloading github.com/charmbracelet/lipgloss v1.0.0
+2026-11-07T08:01:27.2253156Z #8 10.32 go: downloading github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510
+2026-11-07T08:01:27.2254008Z #8 10.32 go: downloading github.com/jedib0t/go-pretty/v6 v6.6.7
+2026-11-07T08:01:27.2254479Z #8 10.39 go: downloading github.com/mattn/go-ieproxy v0.0.12
+2026-11-07T08:01:27.3414403Z #8 10.39 go: downloading github.com/minio/colorjson v1.0.8
+2026-11-07T08:01:27.3415252Z #8 10.42 go: downloading github.com/minio/filepath v1.0.0
+2026-11-07T08:01:27.3415958Z #8 10.42 go: downloading github.com/muesli/reflow v0.3.0
+2026-11-07T08:01:27.3416595Z #8 10.45 go: downloading github.com/muesli/termenv v0.16.0
+2026-11-07T08:01:27.3417272Z #8 10.45 go: downloading github.com/olekukonko/tablewriter v0.0.5
+2026-11-07T08:01:27.3417975Z #8 10.47 go: downloading github.com/posener/complete v1.2.3
+2026-11-07T08:01:27.3418499Z #8 10.50 go: downloading github.com/tidwall/gjson v1.18.0
+2026-11-07T08:01:27.3418900Z #8 10.50 go: downloading github.com/vbauerster/mpb/v8 v8.9.3
+2026-11-07T08:01:27.4539451Z #8 10.55 go: downloading golang.org/x/text v0.24.0
+2026-11-07T08:01:27.4543200Z #8 10.55 go: downloading github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
+2026-11-07T08:01:27.4545571Z #8 10.59 go: downloading github.com/mitchellh/mapstructure v1.5.0
+2026-11-07T08:01:27.4546532Z #8 10.61 go: downloading github.com/oklog/ulid v1.3.1
+2026-11-07T08:01:27.6325483Z #8 10.64 go: downloading go.mongodb.org/mongo-driver v1.17.3
+2026-11-07T08:01:28.0771702Z #8 11.24 go: downloading github.com/matttproud/golang_protobuf_extensions v1.0.4
+2026-11-07T08:01:28.1975720Z #8 11.24 go: downloading github.com/Azure/go-ntlmssp v0.0.0-20221128193559-754e69321358
+2026-11-07T08:01:28.1976901Z #8 11.27 go: downloading github.com/go-asn1-ber/asn1-ber v1.5.8-0.20250403174932-29230038a667
+2026-11-07T08:01:28.1977582Z #8 11.27 go: downloading go.uber.org/multierr v1.11.0
+2026-11-07T08:01:28.1978093Z #8 11.30 go: downloading github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
+2026-11-07T08:01:28.1978622Z #8 11.30 go: downloading github.com/eapache/go-resiliency v1.7.0
+2026-11-07T08:01:28.1979180Z #8 11.33 go: downloading github.com/eapache/go-xerial-snappy v0.0.0-20230731223053-c322873962e3
+2026-11-07T08:01:28.1979695Z #8 11.33 go: downloading github.com/eapache/queue v1.1.0
+2026-11-07T08:01:28.1980096Z #8 11.36 go: downloading github.com/hashicorp/go-multierror v1.1.1
+2026-11-07T08:01:28.3160041Z #8 11.36 go: downloading github.com/jcmturner/gofork v1.7.6
+2026-11-07T08:01:28.3160838Z #8 11.38 go: downloading github.com/jcmturner/gokrb5/v8 v8.4.4
+2026-11-07T08:01:28.3161798Z #8 11.44 go: downloading github.com/gorilla/websocket v1.5.3
+2026-11-07T08:01:28.3162450Z #8 11.44 go: downloading filippo.io/edwards25519 v1.1.0
+2026-11-07T08:01:28.3163063Z #8 11.48 go: downloading github.com/nats-io/nuid v1.0.1
+2026-11-07T08:01:28.4600890Z #8 11.48 go: downloading github.com/golang/snappy v1.0.0
+2026-11-07T08:01:28.4601717Z #8 11.50 go: downloading github.com/nats-io/nkeys v0.4.11
+2026-11-07T08:01:28.4602361Z #8 11.51 go: downloading github.com/xdg/stringprep v1.0.3
+2026-11-07T08:01:28.4602837Z #8 11.53 go: downloading github.com/gobwas/httphead v0.1.0
+2026-11-07T08:01:28.4603280Z #8 11.53 go: downloading github.com/gobwas/pool v0.2.1
+2026-11-07T08:01:28.4603691Z #8 11.56 go: downloading github.com/minio/csvparser v1.0.0
+2026-11-07T08:01:28.4604134Z #8 11.56 go: downloading github.com/fraugster/parquet-go v0.12.0
+2026-11-07T08:01:28.4604620Z #8 11.62 go: downloading github.com/alecthomas/participle v0.7.1
+2026-11-07T08:01:28.5775461Z #8 11.66 go: downloading github.com/lestrrat-go/option v1.0.1
+2026-11-07T08:01:28.5776201Z #8 11.66 go: downloading github.com/lestrrat-go/iter v1.0.2
+2026-11-07T08:01:28.5776684Z #8 11.69 go: downloading github.com/lestrrat-go/blackmagic v1.0.2
+2026-11-07T08:01:28.5777193Z #8 11.69 go: downloading github.com/lestrrat-go/httprc v1.0.6
+2026-11-07T08:01:28.5777936Z #8 11.71 go: downloading github.com/tklauser/numcpus v0.10.0
+2026-11-07T08:01:28.5778386Z #8 11.72 go: downloading github.com/coreos/go-semver v0.3.1
+2026-11-07T08:01:28.5778826Z #8 11.74 go: downloading github.com/google/s2a-go v0.1.9
+2026-11-07T08:01:28.6804808Z #8 11.81 go: downloading github.com/golang-jwt/jwt/v5 v5.2.2
+2026-11-07T08:01:28.6806036Z #8 11.81 go: downloading go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.60.0
+2026-11-07T08:01:28.6807109Z #8 11.84 go: downloading github.com/go-logr/stdr v1.2.2
+2026-11-07T08:01:28.8691782Z #8 11.84 go: downloading go.opentelemetry.io/auto/sdk v1.1.0
+2026-11-07T08:01:28.8692754Z #8 11.87 go: downloading github.com/googleapis/enterprise-certificate-proxy v0.3.6
+2026-11-07T08:01:28.8693721Z #8 11.88 go: downloading github.com/envoyproxy/go-control-plane/envoy v1.32.4
+2026-11-07T08:01:29.2788201Z #8 12.44 go: downloading github.com/felixge/httpsnoop v1.0.4
+2026-11-07T08:01:29.3829636Z #8 12.44 go: downloading github.com/josharian/intern v1.0.0
+2026-11-07T08:01:29.3830790Z #8 12.46 go: downloading github.com/charmbracelet/x/ansi v0.8.0
+2026-11-07T08:01:29.3831865Z #8 12.47 go: downloading github.com/charmbracelet/x/term v0.2.1
+2026-11-07T08:01:29.3832774Z #8 12.49 go: downloading github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6
+2026-11-07T08:01:29.3833686Z #8 12.50 go: downloading github.com/muesli/cancelreader v0.2.2
+2026-11-07T08:01:29.3834467Z #8 12.52 go: downloading github.com/juju/ratelimit v1.0.2
+2026-11-07T08:01:29.3834983Z #8 12.53 go: downloading github.com/aymanbagabas/go-osc52/v2 v2.0.1
+2026-11-07T08:01:29.3835535Z #8 12.54 go: downloading github.com/lucasb-eyer/go-colorful v1.2.0
+2026-11-07T08:01:29.4968560Z #8 12.56 go: downloading github.com/tidwall/match v1.1.1
+2026-11-07T08:01:29.4969147Z #8 12.58 go: downloading github.com/tidwall/pretty v1.2.1
+2026-11-07T08:01:29.4969760Z #8 12.60 go: downloading github.com/VividCortex/ewma v1.2.0
+2026-11-07T08:01:29.4970304Z #8 12.61 go: downloading github.com/acarl005/stripansi v0.0.0-20180116102854-5a71ef0e047d
+2026-11-07T08:01:29.4971040Z #8 12.63 go: downloading github.com/prometheus/prometheus v0.303.0
+2026-11-07T08:01:29.4971814Z #8 12.63 go: downloading github.com/hashicorp/errwrap v1.1.0
+2026-11-07T08:01:29.4972476Z #8 12.66 go: downloading github.com/jcmturner/dnsutils/v2 v2.0.0
+2026-11-07T08:01:29.7007159Z #8 12.68 go: downloading github.com/hashicorp/go-uuid v1.0.3
+2026-11-07T08:01:29.7007988Z #8 12.71 go: downloading github.com/apache/thrift v0.21.0
+2026-11-07T08:01:29.9609095Z #8 13.12 go: downloading github.com/lestrrat-go/httpcc v1.0.1
+2026-11-07T08:01:30.1125024Z #8 13.15 go: downloading github.com/spiffe/go-spiffe/v2 v2.5.0
+2026-11-07T08:01:30.1126195Z #8 13.22 go: downloading github.com/cncf/xds/go v0.0.0-20250326154945-ae57f3c0d45f
+2026-11-07T08:01:30.1127342Z #8 13.27 go: downloading github.com/envoyproxy/protoc-gen-validate v1.2.1
+2026-11-07T08:01:30.2273825Z #8 13.33 go: downloading github.com/jcmturner/rpc/v2 v2.0.3
+2026-11-07T08:01:30.2282707Z #8 13.36 go: downloading github.com/zeebo/errs v1.4.0
+2026-11-07T08:01:30.2283372Z #8 13.36 go: downloading cel.dev/expr v0.23.1
+2026-11-07T08:01:30.2284020Z #8 13.39 go: downloading github.com/jcmturner/aescts/v2 v2.0.0
+2026-11-07T08:03:25.1759464Z #8 DONE 128.3s
+2026-11-07T08:03:26.7558848Z 
+2026-11-07T08:03:26.7559832Z #9 [stage-1 1/2] COPY --from=build /minio /minio
+2026-11-07T08:03:26.9301329Z #9 DONE 0.2s
+2026-11-07T08:03:27.0923498Z 
+2026-11-07T08:03:27.0924258Z #10 [stage-1 2/2] COPY --from=build /src/LICENSE /usr/share/licenses/minio/LICENSE
+2026-11-07T08:03:27.0924983Z #10 DONE 0.0s
+2026-11-07T08:03:27.0925188Z 
+2026-11-07T08:03:27.0925355Z #11 exporting to image
+2026-11-07T08:03:27.0925727Z #11 exporting layers
+2026-11-07T08:03:27.1751113Z #11 exporting layers 0.2s done
+2026-11-07T08:03:27.1752093Z #11 writing image sha256:e053b6d96322822cd6c973b5269fcc74b2851664bb3a35337e10cfdc2b3a0a76
+2026-11-07T08:03:27.1913811Z #11 writing image sha256:e053b6d96322822cd6c973b5269fcc74b2851664bb3a35337e10cfdc2b3a0a76 done
+2026-11-07T08:03:27.1915164Z #11 naming to docker.io/library/zapime-s3-fixture:ci done
+2026-11-07T08:03:27.1915729Z #11 DONE 0.2s
+2026-11-07T08:03:27.2221506Z 3b676b2dec34088e17b26037993c6ae885402e9bb00ff493ef47657e74ffaf32
+2026-11-07T08:03:27.3563100Z curl: (56) Recv failure: Connection reset by peer
+2026-11-07T08:03:28.3703785Z ##[group]Run set -euo pipefail
+2026-11-07T08:03:28.3704161Z [36;1mset -euo pipefail[0m
+2026-11-07T08:03:28.3704432Z [36;1mcd services/sync[0m
+2026-11-07T08:03:28.3704696Z [36;1mtest -z "$(gofmt -l .)"[0m
+2026-11-07T08:03:28.3705093Z [36;1mgo test -race -count=1 -v ./... | tee ../../sync-service-tests.log[0m
+2026-11-07T08:03:28.3705482Z [36;1mgo vet ./...[0m
+2026-11-07T08:03:28.3725174Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:03:28.3725439Z env:
+2026-11-07T08:03:28.3725988Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:03:28.3726399Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:03:28.3726714Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:03:28.3727032Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:03:28.3727271Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:03:28.3727532Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:03:28.3727756Z   CARGO_TERM_COLOR: always
+2026-11-07T08:03:28.3727988Z   GOTOOLCHAIN: local
+2026-11-07T08:03:28.3728233Z ##[endgroup]
+2026-11-07T08:03:28.5622119Z ?   	github.com/ForceMind/ZapIME/services/sync/cmd/collect-notices	[no test files]
+2026-11-07T08:03:29.1385812Z ?   	github.com/ForceMind/ZapIME/services/sync/cmd/zapime-sync	[no test files]
+2026-11-07T08:03:32.1362101Z === RUN   TestPostgresTransactions
+2026-11-07T08:03:32.1363121Z === RUN   TestPostgresTransactions/idempotency_replay_and_conflicting_reuse
+2026-11-07T08:03:32.1364233Z === RUN   TestPostgresTransactions/concurrent_stale_writes_keep_one_winner
+2026-11-07T08:03:32.1365287Z === RUN   TestPostgresTransactions/tombstones_reject_stale_resurrection
+2026-11-07T08:03:32.1366402Z === RUN   TestPostgresTransactions/pagination_preserves_every_operation
+2026-11-07T08:03:32.1367237Z === RUN   TestPostgresTransactions/account_isolation
+2026-11-07T08:03:32.1378874Z === RUN   TestPostgresTransactions/revocation_rejects_already_authenticated_actor
+2026-11-07T08:03:32.1379638Z === RUN   TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity
+2026-11-07T08:03:32.1380209Z === RUN   TestPostgresTransactions/database_never_stores_bearer_token
+2026-11-07T08:03:32.1380806Z === RUN   TestPostgresTransactions/quota_rejection_leaves_no_partial_revision
+2026-11-07T08:03:32.1381252Z --- PASS: TestPostgresTransactions (0.14s)
+2026-11-07T08:03:32.1382316Z     --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+2026-11-07T08:03:32.1383124Z     --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+2026-11-07T08:03:32.1383791Z     --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+2026-11-07T08:03:32.1384415Z     --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.03s)
+2026-11-07T08:03:32.1384965Z     --- PASS: TestPostgresTransactions/account_isolation (0.01s)
+2026-11-07T08:03:32.1385567Z     --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+2026-11-07T08:03:32.1386344Z     --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+2026-11-07T08:03:32.1387032Z     --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+2026-11-07T08:03:32.1387674Z     --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.01s)
+2026-11-07T08:03:32.1388251Z === RUN   TestHTTPAndPersistentCiphertext
+2026-11-07T08:03:32.1388596Z --- PASS: TestHTTPAndPersistentCiphertext (0.06s)
+2026-11-07T08:03:32.1388936Z === RUN   TestKeyDescriptorBoundary
+2026-11-07T08:03:32.1389227Z === RUN   TestKeyDescriptorBoundary/null
+2026-11-07T08:03:32.1389556Z === RUN   TestKeyDescriptorBoundary/version_future
+2026-11-07T08:03:32.1390125Z === RUN   TestKeyDescriptorBoundary/unknown
+2026-11-07T08:03:32.1390548Z === RUN   TestKeyDescriptorBoundary/duplicate
+2026-11-07T08:03:32.1390868Z === RUN   TestKeyDescriptorBoundary/empty
+2026-11-07T08:03:32.1391263Z === RUN   TestKeyDescriptorBoundary/array
+2026-11-07T08:03:32.1392006Z === RUN   TestKeyDescriptorBoundary/missing
+2026-11-07T08:03:32.1392723Z === RUN   TestKeyDescriptorBoundary/nil_key
+2026-11-07T08:03:32.1393175Z === RUN   TestKeyDescriptorBoundary/escaped_duplicate
+2026-11-07T08:03:32.1393563Z === RUN   TestKeyDescriptorBoundary/trailing_scalar
+2026-11-07T08:03:32.1393916Z === RUN   TestKeyDescriptorBoundary/version_string
+2026-11-07T08:03:32.1409485Z === RUN   TestKeyDescriptorBoundary/digest_type
+2026-11-07T08:03:32.1410257Z === RUN   TestKeyDescriptorBoundary/trailing_object
+2026-11-07T08:03:32.1410839Z === RUN   TestKeyDescriptorBoundary/version_float
+2026-11-07T08:03:32.1411771Z === RUN   TestKeyDescriptorBoundary/uppercase_key
+2026-11-07T08:03:32.1412455Z === RUN   TestKeyDescriptorBoundary/short_digest
+2026-11-07T08:03:32.1412860Z === RUN   TestKeyDescriptorBoundary/uppercase_digest
+2026-11-07T08:03:32.1413226Z === RUN   TestKeyDescriptorBoundary/oversized
+2026-11-07T08:03:32.1413570Z --- PASS: TestKeyDescriptorBoundary (0.01s)
+2026-11-07T08:03:32.1413980Z     --- PASS: TestKeyDescriptorBoundary/null (0.00s)
+2026-11-07T08:03:32.1414458Z     --- PASS: TestKeyDescriptorBoundary/version_future (0.00s)
+2026-11-07T08:03:32.1414913Z     --- PASS: TestKeyDescriptorBoundary/unknown (0.00s)
+2026-11-07T08:03:32.1415348Z     --- PASS: TestKeyDescriptorBoundary/duplicate (0.00s)
+2026-11-07T08:03:32.1415847Z     --- PASS: TestKeyDescriptorBoundary/empty (0.00s)
+2026-11-07T08:03:32.1416238Z     --- PASS: TestKeyDescriptorBoundary/array (0.00s)
+2026-11-07T08:03:32.1416641Z     --- PASS: TestKeyDescriptorBoundary/missing (0.00s)
+2026-11-07T08:03:32.1417119Z     --- PASS: TestKeyDescriptorBoundary/nil_key (0.00s)
+2026-11-07T08:03:32.1417573Z     --- PASS: TestKeyDescriptorBoundary/escaped_duplicate (0.00s)
+2026-11-07T08:03:32.1418134Z     --- PASS: TestKeyDescriptorBoundary/trailing_scalar (0.00s)
+2026-11-07T08:03:32.1418606Z     --- PASS: TestKeyDescriptorBoundary/version_string (0.00s)
+2026-11-07T08:03:32.1419132Z     --- PASS: TestKeyDescriptorBoundary/digest_type (0.00s)
+2026-11-07T08:03:32.1419591Z     --- PASS: TestKeyDescriptorBoundary/trailing_object (0.00s)
+2026-11-07T08:03:32.1420126Z     --- PASS: TestKeyDescriptorBoundary/version_float (0.00s)
+2026-11-07T08:03:32.1420580Z     --- PASS: TestKeyDescriptorBoundary/uppercase_key (0.00s)
+2026-11-07T08:03:32.1421025Z     --- PASS: TestKeyDescriptorBoundary/short_digest (0.00s)
+2026-11-07T08:03:32.1421965Z     --- PASS: TestKeyDescriptorBoundary/uppercase_digest (0.00s)
+2026-11-07T08:03:32.1422458Z     --- PASS: TestKeyDescriptorBoundary/oversized (0.00s)
+2026-11-07T08:03:32.1422876Z === RUN   TestPostgresKeyDescriptorCreateOnceAndPushGate
+2026-11-07T08:03:32.1423322Z --- PASS: TestPostgresKeyDescriptorCreateOnceAndPushGate (0.05s)
+2026-11-07T08:03:32.1423894Z === RUN   TestPostgresKeyDescriptorConcurrentOwners
+2026-11-07T08:03:32.1424392Z === RUN   TestPostgresKeyDescriptorConcurrentOwners/same_false
+2026-11-07T08:03:32.1424835Z === RUN   TestPostgresKeyDescriptorConcurrentOwners/same_true
+2026-11-07T08:03:32.1425343Z --- PASS: TestPostgresKeyDescriptorConcurrentOwners (0.05s)
+2026-11-07T08:03:32.1425981Z     --- PASS: TestPostgresKeyDescriptorConcurrentOwners/same_false (0.03s)
+2026-11-07T08:03:32.1426576Z     --- PASS: TestPostgresKeyDescriptorConcurrentOwners/same_true (0.01s)
+2026-11-07T08:03:32.1427116Z === RUN   TestPostgresKeyDescriptorLegacyAndWriteRace
+2026-11-07T08:03:32.1427764Z === RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/existing_history_stays_legacy_and_old_API_works
+2026-11-07T08:03:32.1428440Z === RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/quota_only
+2026-11-07T08:03:32.1428952Z === RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/rows_despite_zero_head
+2026-11-07T08:03:32.1429670Z === RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/register_serialized_with_original_push_route
+2026-11-07T08:03:32.1430660Z --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace (0.07s)
+2026-11-07T08:03:32.1431662Z     --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/existing_history_stays_legacy_and_old_API_works (0.02s)
+2026-11-07T08:03:32.1432761Z     --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/quota_only (0.00s)
+2026-11-07T08:03:32.1433447Z     --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/rows_despite_zero_head (0.01s)
+2026-11-07T08:03:32.1434464Z     --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/register_serialized_with_original_push_route (0.02s)
+2026-11-07T08:03:32.1435083Z === RUN   TestPostgresKeyDescriptorAuthorizationAndHTTP
+2026-11-07T08:03:32.1435620Z --- PASS: TestPostgresKeyDescriptorAuthorizationAndHTTP (0.06s)
+2026-11-07T08:03:32.1436116Z === RUN   TestPostgresKeyDescriptorSchemaMigration
+2026-11-07T08:03:32.1436513Z === RUN   TestPostgresKeyDescriptorSchemaMigration/from_1
+2026-11-07T08:03:32.1436927Z === RUN   TestPostgresKeyDescriptorSchemaMigration/from_2
+2026-11-07T08:03:32.1437417Z --- PASS: TestPostgresKeyDescriptorSchemaMigration (0.16s)
+2026-11-07T08:03:32.1437929Z     --- PASS: TestPostgresKeyDescriptorSchemaMigration/from_1 (0.08s)
+2026-11-07T08:03:32.1438539Z     --- PASS: TestPostgresKeyDescriptorSchemaMigration/from_2 (0.08s)
+2026-11-07T08:03:32.1439084Z === RUN   TestObjectCacheReadWriteIsolationAndDurability
+2026-11-07T08:03:32.1439521Z --- PASS: TestObjectCacheReadWriteIsolationAndDurability (0.00s)
+2026-11-07T08:03:32.1440030Z === RUN   TestObjectCacheExpiryEvictionAndFailedReads
+2026-11-07T08:03:32.1440516Z --- PASS: TestObjectCacheExpiryEvictionAndFailedReads (0.00s)
+2026-11-07T08:03:32.1440948Z === RUN   TestObjectCacheConcurrentReadersAndCancellation
+2026-11-07T08:03:32.1441725Z --- PASS: TestObjectCacheConcurrentReadersAndCancellation (0.00s)
+2026-11-07T08:03:32.1442180Z === RUN   TestObjectCacheWarmAfterSuccessfulWrite
+2026-11-07T08:03:32.1442665Z --- PASS: TestObjectCacheWarmAfterSuccessfulWrite (0.00s)
+2026-11-07T08:03:32.1443178Z === RUN   TestPostgresObjectCacheAuthorizationAndEmptyCursor
+2026-11-07T08:03:32.1443655Z --- PASS: TestPostgresObjectCacheAuthorizationAndEmptyCursor (0.04s)
+2026-11-07T08:03:32.1444131Z === RUN   TestS3Configuration
+2026-11-07T08:03:32.1444399Z --- PASS: TestS3Configuration (0.00s)
+2026-11-07T08:03:32.1444823Z === RUN   TestS3TransportIntegrityAndConditionalWrite
+2026-11-07T08:03:32.1445298Z --- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+2026-11-07T08:03:32.1445688Z === RUN   TestPostgresObjectFailureRollback
+2026-11-07T08:03:32.1446111Z --- PASS: TestPostgresObjectFailureRollback (0.02s)
+2026-11-07T08:03:32.1446448Z === RUN   TestRealS3Protocol
+2026-11-07T08:03:32.1446782Z --- PASS: TestRealS3Protocol (0.02s)
+2026-11-07T08:03:32.1447125Z === RUN   TestPostgresRealObjectStorageAndPortableArchive
+2026-11-07T08:03:32.1447575Z --- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.09s)
+2026-11-07T08:03:32.1448099Z === RUN   TestObjectArchiveRejectsTraversalAndTampering
+2026-11-07T08:03:32.1448612Z --- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+2026-11-07T08:03:32.1449055Z === RUN   TestEnvelopeBounds
+2026-11-07T08:03:32.1449317Z === RUN   TestEnvelopeBounds/nil_record
+2026-11-07T08:03:32.1449699Z === RUN   TestEnvelopeBounds/negative_revision
+2026-11-07T08:03:32.1450022Z === RUN   TestEnvelopeBounds/unknown_kind
+2026-11-07T08:03:32.1450397Z === RUN   TestEnvelopeBounds/future_cipher
+2026-11-07T08:03:32.1450700Z === RUN   TestEnvelopeBounds/short_nonce
+2026-11-07T08:03:32.1451075Z === RUN   TestEnvelopeBounds/short_tag
+2026-11-07T08:03:32.1451575Z === RUN   TestEnvelopeBounds/too_large
+2026-11-07T08:03:32.1452158Z === RUN   TestEnvelopeBounds/padding
+2026-11-07T08:03:32.1452457Z --- PASS: TestEnvelopeBounds (0.00s)
+2026-11-07T08:03:32.1452890Z     --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+2026-11-07T08:03:32.1453312Z     --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+2026-11-07T08:03:32.1453812Z     --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+2026-11-07T08:03:32.1454460Z     --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+2026-11-07T08:03:32.1454869Z     --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+2026-11-07T08:03:32.1455325Z     --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+2026-11-07T08:03:32.1455900Z     --- PASS: TestEnvelopeBounds/too_large (0.00s)
+2026-11-07T08:03:32.1456292Z     --- PASS: TestEnvelopeBounds/padding (0.00s)
+2026-11-07T08:03:32.1456616Z === RUN   TestTokenFormatAndHash
+2026-11-07T08:03:32.1456986Z --- PASS: TestTokenFormatAndHash (0.00s)
+2026-11-07T08:03:32.1457278Z === RUN   TestDeviceNameBounds
+2026-11-07T08:03:32.1457616Z --- PASS: TestDeviceNameBounds (0.00s)
+2026-11-07T08:03:32.1457923Z === RUN   TestSessionIdentityAndRevocation
+2026-11-07T08:03:32.1458330Z --- PASS: TestSessionIdentityAndRevocation (0.04s)
+2026-11-07T08:03:32.1458669Z === RUN   FuzzOperationBoundary
+2026-11-07T08:03:32.1459019Z === RUN   FuzzOperationBoundary/seed#0
+2026-11-07T08:03:32.1459331Z --- PASS: FuzzOperationBoundary (0.00s)
+2026-11-07T08:03:32.1459760Z     --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+2026-11-07T08:03:32.1460045Z PASS
+2026-11-07T08:03:32.1460433Z ok  	github.com/ForceMind/ZapIME/services/sync/internal/syncapi	1.843s
+2026-11-07T08:04:01.8259074Z ##[group]Run docker build -t zapime-sync:ci services/sync
+2026-11-07T08:04:01.8259604Z [36;1mdocker build -t zapime-sync:ci services/sync[0m
+2026-11-07T08:04:01.8279659Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:04:01.8279930Z env:
+2026-11-07T08:04:01.8280491Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:04:01.8280896Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:04:01.8281186Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:04:01.8281792Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:04:01.8282035Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:04:01.8282291Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:04:01.8282512Z   CARGO_TERM_COLOR: always
+2026-11-07T08:04:01.8282745Z   GOTOOLCHAIN: local
+2026-11-07T08:04:01.8282971Z ##[endgroup]
+2026-11-07T08:04:02.1165208Z #0 building with "default" instance using docker driver
+2026-11-07T08:04:02.1165815Z 
+2026-11-07T08:04:02.1166099Z #1 [internal] load build definition from Dockerfile
+2026-11-07T08:04:02.1166620Z #1 transferring dockerfile: 705B done
+2026-11-07T08:04:02.1166971Z #1 DONE 0.0s
+2026-11-07T08:04:02.1167123Z 
+2026-11-07T08:04:02.1167357Z #2 [internal] load metadata for docker.io/library/golang:1.27.3
+2026-11-07T08:04:02.4885490Z #2 DONE 0.5s
+2026-11-07T08:04:02.6071086Z 
+2026-11-07T08:04:02.6071575Z #3 [internal] load .dockerignore
+2026-11-07T08:04:02.6072220Z #3 transferring context: 71B done
+2026-11-07T08:04:02.6072495Z #3 DONE 0.0s
+2026-11-07T08:04:02.6073115Z 
+2026-11-07T08:04:02.6073225Z #4 [internal] load build context
+2026-11-07T08:04:02.6073521Z #4 transferring context: 156.04kB done
+2026-11-07T08:04:02.6073794Z #4 DONE 0.0s
+2026-11-07T08:04:02.6074305Z 
+2026-11-07T08:04:02.6074731Z #5 [build 1/7] FROM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e
+2026-11-07T08:04:02.6075938Z #5 resolve docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e done
+2026-11-07T08:04:02.6076708Z #5 sha256:a5406f41680f17b4aa0b49de641e00f116215f5c8829d548d29cb44c4f85aa4f 2.32kB / 2.32kB done
+2026-11-07T08:04:02.6077755Z #5 sha256:db8b033ac9840d095f91ef0f41e72bd03ed86f80fb32a90214a1c5997a9e423c 3.04kB / 3.04kB done
+2026-11-07T08:04:02.6078391Z #5 sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e 9.70kB / 9.70kB done
+2026-11-07T08:04:02.6079687Z #5 sha256:a6dd1c05fbba4f9028078a11f143cbb625d2408921eb8207bfa1dd1ad301276f 16.78MB / 49.41MB 0.1s
+2026-11-07T08:04:02.6080340Z #5 sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad 0B / 25.63MB 0.1s
+2026-11-07T08:04:02.6081847Z #5 sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665 0B / 67.82MB 0.1s
+2026-11-07T08:04:02.7345217Z #5 sha256:a6dd1c05fbba4f9028078a11f143cbb625d2408921eb8207bfa1dd1ad301276f 49.41MB / 49.41MB 0.2s done
+2026-11-07T08:04:02.7346881Z #5 sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad 18.87MB / 25.63MB 0.2s
+2026-11-07T08:04:02.7348078Z #5 sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 0B / 102.47MB 0.2s
+2026-11-07T08:04:02.7349178Z #5 extracting sha256:a6dd1c05fbba4f9028078a11f143cbb625d2408921eb8207bfa1dd1ad301276f
+2026-11-07T08:04:02.8387391Z #5 sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad 25.63MB / 25.63MB 0.2s done
+2026-11-07T08:04:02.8388991Z #5 sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665 36.70MB / 67.82MB 0.3s
+2026-11-07T08:04:02.8390595Z #5 sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 20.97MB / 102.47MB 0.3s
+2026-11-07T08:04:02.8392215Z #5 sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b 0B / 71.15MB 0.3s
+2026-11-07T08:04:02.9452570Z #5 sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665 67.82MB / 67.82MB 0.4s
+2026-11-07T08:04:02.9455019Z #5 sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 54.53MB / 102.47MB 0.4s
+2026-11-07T08:04:02.9457150Z #5 sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b 23.07MB / 71.15MB 0.4s
+2026-11-07T08:04:03.1052186Z #5 sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665 67.82MB / 67.82MB 0.4s done
+2026-11-07T08:04:03.1053582Z #5 sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 102.47MB / 102.47MB 0.6s
+2026-11-07T08:04:03.1054963Z #5 sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b 71.15MB / 71.15MB 0.6s
+2026-11-07T08:04:03.1056148Z #5 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.6s
+2026-11-07T08:04:03.1056891Z #5 sha256:65bcbc1cb0b36e4661f728a273fb845afda7c34d7d16b19a2f3cf5fbaf0f8761 126B / 126B 0.5s done
+2026-11-07T08:04:03.2772477Z #5 sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 102.47MB / 102.47MB 0.7s done
+2026-11-07T08:04:03.2773964Z #5 sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b 71.15MB / 71.15MB 0.7s done
+2026-11-07T08:04:03.2775287Z #5 sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 32B / 32B 0.7s done
+2026-11-07T08:04:04.5126427Z #5 extracting sha256:a6dd1c05fbba4f9028078a11f143cbb625d2408921eb8207bfa1dd1ad301276f 1.7s done
+2026-11-07T08:04:04.5127750Z #5 extracting sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad
+2026-11-07T08:04:05.2615566Z #5 extracting sha256:e8a88afca2bd37d4058d4b33d9d4d29b0557f8b811bb8c106942b5b51e1e4aad 0.6s done
+2026-11-07T08:04:05.6012833Z #5 extracting sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665
+2026-11-07T08:04:07.9707215Z #5 extracting sha256:411d2dc8717dbb4bb0d3cfa27e6e0275fca455c5220029d7a14dc7a75fbe8665 2.2s done
+2026-11-07T08:04:08.0986547Z #5 extracting sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c
+2026-11-07T08:04:10.4695493Z #5 extracting sha256:26bc8785a3af54c7ae3a041422519ea0723045576b856f82cf26e4c75aee4f9c 2.2s done
+2026-11-07T08:04:10.8027368Z #5 extracting sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b
+2026-11-07T08:04:15.5530141Z #5 extracting sha256:82e0bb27ae78502103ed383ed33346f88a83943fb7bd93977850d5890ee8fb3b 4.8s done
+2026-11-07T08:04:16.2317670Z #5 extracting sha256:65bcbc1cb0b36e4661f728a273fb845afda7c34d7d16b19a2f3cf5fbaf0f8761
+2026-11-07T08:04:16.4375767Z #5 extracting sha256:65bcbc1cb0b36e4661f728a273fb845afda7c34d7d16b19a2f3cf5fbaf0f8761 done
+2026-11-07T08:04:16.4376878Z #5 extracting sha256:4f4fb700ef54461cfa02571ae0db9a0dc1e0cdb5577484a6d75e68dc38e8acc1 done
+2026-11-07T08:04:16.4377502Z #5 DONE 13.8s
+2026-11-07T08:04:16.4377654Z 
+2026-11-07T08:04:16.4377792Z #6 [build 2/7] WORKDIR /src
+2026-11-07T08:04:16.4378094Z #6 DONE 0.0s
+2026-11-07T08:04:16.4378244Z 
+2026-11-07T08:04:16.4378388Z #7 [build 3/7] COPY go.mod go.sum ./
+2026-11-07T08:04:16.4379202Z #7 DONE 0.0s
+2026-11-07T08:04:16.4379347Z 
+2026-11-07T08:04:16.4379491Z #8 [build 4/7] RUN go mod download
+2026-11-07T08:04:17.5184237Z #8 DONE 1.2s
+2026-11-07T08:04:17.6831640Z 
+2026-11-07T08:04:17.6832108Z #9 [build 5/7] COPY . .
+2026-11-07T08:04:17.6832601Z #9 DONE 0.0s
+2026-11-07T08:04:17.6832771Z 
+2026-11-07T08:04:17.6833283Z #10 [build 6/7] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+2026-11-07T08:04:43.8192714Z #10 DONE 26.3s
+2026-11-07T08:04:43.9702090Z 
+2026-11-07T08:04:43.9702783Z #11 [build 7/7] RUN go run ./cmd/collect-notices /licenses
+2026-11-07T08:04:50.3010714Z #11 6.482 Collected runtime module notices: 19
+2026-11-07T08:04:50.5392757Z #11 DONE 6.5s
+2026-11-07T08:04:50.5402191Z 
+2026-11-07T08:04:50.5403024Z #12 [stage-1 1/4] COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+2026-11-07T08:04:50.5403777Z #12 DONE 0.0s
+2026-11-07T08:04:51.0818443Z 
+2026-11-07T08:04:51.0819377Z #13 [stage-1 2/4] COPY --from=build /zapime-sync /usr/local/bin/zapime-sync
+2026-11-07T08:04:51.2880122Z #13 DONE 0.0s
+2026-11-07T08:04:51.2880413Z 
+2026-11-07T08:04:51.2880763Z #14 [stage-1 3/4] COPY LICENSE /usr/share/licenses/ZapIME/LICENSE
+2026-11-07T08:04:51.2881197Z #14 DONE 0.0s
+2026-11-07T08:04:51.2882060Z 
+2026-11-07T08:04:51.2882386Z #15 [stage-1 4/4] COPY --from=build /licenses /usr/share/licenses/dependencies
+2026-11-07T08:04:51.2882874Z #15 DONE 0.0s
+2026-11-07T08:04:51.2883010Z 
+2026-11-07T08:04:51.2883132Z #16 exporting to image
+2026-11-07T08:04:51.2883401Z #16 exporting layers
+2026-11-07T08:04:52.0074843Z #16 exporting layers 0.9s done
+2026-11-07T08:04:52.0075651Z #16 writing image sha256:0702ea1a29f3d6dffbbf3dd36de965c7ca8605771d30f8f5e275c3104bb8058f
+2026-11-07T08:04:52.0214079Z #16 writing image sha256:0702ea1a29f3d6dffbbf3dd36de965c7ca8605771d30f8f5e275c3104bb8058f done
+2026-11-07T08:04:52.0215297Z #16 naming to docker.io/library/zapime-sync:ci done
+2026-11-07T08:04:52.0216211Z #16 DONE 0.9s
+2026-11-07T08:04:52.0315877Z ##[group]Run cd services/sync
+2026-11-07T08:04:52.0316210Z [36;1mcd services/sync[0m
+2026-11-07T08:04:52.0316573Z [36;1mgo run golang.org/x/vuln/cmd/govulncheck@v1.9.0 ./cmd/zapime-sync[0m
+2026-11-07T08:04:52.0336479Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:04:52.0336733Z env:
+2026-11-07T08:04:52.0337272Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:04:52.0337683Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:04:52.0337980Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:04:52.0338281Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:04:52.0338516Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:04:52.0338772Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:04:52.0338986Z   CARGO_TERM_COLOR: always
+2026-11-07T08:04:52.0339215Z   GOTOOLCHAIN: local
+2026-11-07T08:04:52.0339423Z ##[endgroup]
+2026-11-07T08:05:00.2831678Z No vulnerabilities found.
+2026-11-07T08:05:00.3728426Z ##[group]Run cargo build --locked -p zapime-crypto --example sync_fixture
+2026-11-07T08:05:00.3729001Z [36;1mcargo build --locked -p zapime-crypto --example sync_fixture[0m
+2026-11-07T08:05:00.3748922Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:05:00.3749185Z env:
+2026-11-07T08:05:00.3749736Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:05:00.3750145Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:05:00.3750442Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:05:00.3750754Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:05:00.3750994Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:05:00.3751250Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:05:00.3751773Z   CARGO_TERM_COLOR: always
+2026-11-07T08:05:00.3752016Z   GOTOOLCHAIN: local
+2026-11-07T08:05:00.3752227Z ##[endgroup]
+2026-11-07T08:05:00.4388509Z info: syncing channel updates for 1.97.1-x86_64-unknown-linux-gnu
+2026-11-07T08:05:00.5949535Z info: latest update on 2026-07-16 for version 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-07T08:05:00.6087971Z info: downloading 2 components
+2026-11-07T08:05:01.3708435Z [1m[33mwarning[0m: /home/runner/work/ZapIME/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+2026-11-07T08:05:01.3709762Z `license` should be used if the package license can be expressed with a standard SPDX expression.
+2026-11-07T08:05:01.3710665Z `license-file` should be used if the package uses a non-standard license.
+2026-11-07T08:05:01.3711671Z See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+2026-11-07T08:05:01.3909080Z [1m[92m    Updating[0m crates.io index
+2026-11-07T08:05:01.3914215Z [1m[92m    Updating[0m git repository `https://github.com/metasequoiaime/chinese-ime-lm`
+2026-11-07T08:05:02.2933466Z [1m[92m Downloading[0m crates ...
+2026-11-07T08:05:02.3215919Z [1m[92m  Downloaded[0m aead v0.5.2
+2026-11-07T08:05:02.3231527Z [1m[92m  Downloaded[0m crypto-common v0.1.7
+2026-11-07T08:05:02.3244749Z [1m[92m  Downloaded[0m argon2 v0.5.3
+2026-11-07T08:05:02.3265814Z [1m[92m  Downloaded[0m cipher v0.4.4
+2026-11-07T08:05:02.3280067Z [1m[92m  Downloaded[0m chacha20poly1305 v0.10.1
+2026-11-07T08:05:02.3296067Z [1m[92m  Downloaded[0m hashlink v0.12.2
+2026-11-07T08:05:02.3316071Z [1m[92m  Downloaded[0m crypto-common v0.2.2
+2026-11-07T08:05:02.3347702Z [1m[92m  Downloaded[0m fastrand v2.5.0
+2026-11-07T08:05:02.3364266Z [1m[92m  Downloaded[0m itoa v1.0.18
+2026-11-07T08:05:02.3380410Z [1m[92m  Downloaded[0m quote v1.0.47
+2026-11-07T08:05:02.3423206Z [1m[92m  Downloaded[0m inout v0.1.4
+2026-11-07T08:05:02.3440219Z [1m[92m  Downloaded[0m digest v0.10.7
+2026-11-07T08:05:02.3466623Z [1m[92m  Downloaded[0m foldhash v0.2.0
+2026-11-07T08:05:02.3482584Z [1m[92m  Downloaded[0m pkg-config v0.3.34
+2026-11-07T08:05:02.3496881Z [1m[92m  Downloaded[0m subtle v2.6.1
+2026-11-07T08:05:02.3508721Z [1m[92m  Downloaded[0m zeroize v1.9.1
+2026-11-07T08:05:02.3523670Z [1m[92m  Downloaded[0m serde_core v1.0.229
+2026-11-07T08:05:02.3550814Z [1m[92m  Downloaded[0m cpufeatures v0.3.1
+2026-11-07T08:05:02.3565956Z [1m[92m  Downloaded[0m digest v0.11.3
+2026-11-07T08:05:02.3589814Z [1m[92m  Downloaded[0m getrandom v0.2.17
+2026-11-07T08:05:02.3620085Z [1m[92m  Downloaded[0m bitflags v2.13.2
+2026-11-07T08:05:02.3668005Z [1m[92m  Downloaded[0m const-oid v0.10.2
+2026-11-07T08:05:02.3692138Z [1m[92m  Downloaded[0m fallible-streaming-iterator v0.1.9
+2026-11-07T08:05:02.3702136Z [1m[92m  Downloaded[0m tempfile v3.27.0
+2026-11-07T08:05:02.3727558Z [1m[92m  Downloaded[0m block-buffer v0.12.1
+2026-11-07T08:05:02.3739452Z [1m[92m  Downloaded[0m base64ct v1.8.3
+2026-11-07T08:05:02.3768662Z [1m[92m  Downloaded[0m thiserror-impl v2.0.21
+2026-11-07T08:05:02.3784194Z [1m[92m  Downloaded[0m opaque-debug v0.3.1
+2026-11-07T08:05:02.3793881Z [1m[92m  Downloaded[0m fallible-iterator v0.3.0
+2026-11-07T08:05:02.3807279Z [1m[92m  Downloaded[0m rand_core v0.6.4
+2026-11-07T08:05:02.3821924Z [1m[92m  Downloaded[0m sha2 v0.11.1
+2026-11-07T08:05:02.3857607Z [1m[92m  Downloaded[0m shlex v2.0.1
+2026-11-07T08:05:02.3870595Z [1m[92m  Downloaded[0m thiserror v2.0.21
+2026-11-07T08:05:02.3932730Z [1m[92m  Downloaded[0m cpufeatures v0.2.17
+2026-11-07T08:05:02.3946091Z [1m[92m  Downloaded[0m errno v0.3.14
+2026-11-07T08:05:02.3961839Z [1m[92m  Downloaded[0m generic-array v0.14.7
+2026-11-07T08:05:02.3975802Z [1m[92m  Downloaded[0m block-buffer v0.10.4
+2026-11-07T08:05:02.3986619Z [1m[92m  Downloaded[0m version_check v0.9.5
+2026-11-07T08:05:02.3998939Z [1m[92m  Downloaded[0m cfg-if v1.0.5
+2026-11-07T08:05:02.4012429Z [1m[92m  Downloaded[0m find-msvc-tools v0.1.15
+2026-11-07T08:05:02.4028838Z [1m[92m  Downloaded[0m zmij v1.0.23
+2026-11-07T08:05:02.4046718Z [1m[92m  Downloaded[0m hex v0.4.3
+2026-11-07T08:05:02.4061763Z [1m[92m  Downloaded[0m password-hash v0.5.0
+2026-11-07T08:05:02.4079303Z [1m[92m  Downloaded[0m universal-hash v0.5.1
+2026-11-07T08:05:02.4088081Z [1m[92m  Downloaded[0m poly1305 v0.8.0
+2026-11-07T08:05:02.4111474Z [1m[92m  Downloaded[0m once_cell v1.21.4
+2026-11-07T08:05:02.4136436Z [1m[92m  Downloaded[0m memchr v2.8.3
+2026-11-07T08:05:02.4190567Z [1m[92m  Downloaded[0m unicode-ident v1.0.27
+2026-11-07T08:05:02.4217096Z [1m[92m  Downloaded[0m blake2 v0.10.6
+2026-11-07T08:05:02.4241673Z [1m[92m  Downloaded[0m chacha20 v0.9.1
+2026-11-07T08:05:02.4259292Z [1m[92m  Downloaded[0m hybrid-array v0.4.15
+2026-11-07T08:05:02.4280821Z [1m[92m  Downloaded[0m getrandom v0.4.3
+2026-11-07T08:05:02.4318499Z [1m[92m  Downloaded[0m smallvec v1.16.3
+2026-11-07T08:05:02.4332332Z [1m[92m  Downloaded[0m proc-macro2 v1.0.107
+2026-11-07T08:05:02.4360777Z [1m[92m  Downloaded[0m serde_derive v1.0.229
+2026-11-07T08:05:02.4390391Z [1m[92m  Downloaded[0m uuid v1.28.0
+2026-11-07T08:05:02.4419796Z [1m[92m  Downloaded[0m base64 v0.22.1
+2026-11-07T08:05:02.4456784Z [1m[92m  Downloaded[0m typenum v1.20.1
+2026-11-07T08:05:02.4491458Z [1m[92m  Downloaded[0m serde v1.0.229
+2026-11-07T08:05:02.4525459Z [1m[92m  Downloaded[0m hashbrown v0.17.1
+2026-11-07T08:05:02.4577754Z [1m[92m  Downloaded[0m rusqlite v0.40.2
+2026-11-07T08:05:02.4644616Z [1m[92m  Downloaded[0m cc v1.9.0
+2026-11-07T08:05:02.4685740Z [1m[92m  Downloaded[0m serde_json v1.0.154
+2026-11-07T08:05:02.4757232Z [1m[92m  Downloaded[0m vcpkg v0.2.15
+2026-11-07T08:05:02.5263788Z [1m[92m  Downloaded[0m syn v3.0.9
+2026-11-07T08:05:02.5369108Z [1m[92m  Downloaded[0m rustix v1.1.5
+2026-11-07T08:05:02.5629390Z [1m[92m  Downloaded[0m libc v0.2.191
+2026-11-07T08:05:02.6090144Z [1m[92m  Downloaded[0m linux-raw-sys v0.12.1
+2026-11-07T08:05:02.6706557Z [1m[92m  Downloaded[0m libsqlite3-sys v0.38.2
+2026-11-07T08:05:02.7598060Z [1m[92m   Compiling[0m libc v0.2.191
+2026-11-07T08:05:02.7598886Z [1m[92m   Compiling[0m typenum v1.20.1
+2026-11-07T08:05:02.7599482Z [1m[92m   Compiling[0m cfg-if v1.0.5
+2026-11-07T08:05:02.7600085Z [1m[92m   Compiling[0m version_check v0.9.5
+2026-11-07T08:05:02.7929857Z [1m[92m   Compiling[0m proc-macro2 v1.0.107
+2026-11-07T08:05:03.0083377Z [1m[92m   Compiling[0m generic-array v0.14.7
+2026-11-07T08:05:03.1010407Z [1m[92m   Compiling[0m quote v1.0.47
+2026-11-07T08:05:03.1062555Z [1m[92m   Compiling[0m unicode-ident v1.0.27
+2026-11-07T08:05:03.2503490Z [1m[92m   Compiling[0m subtle v2.6.1
+2026-11-07T08:05:03.3503095Z [1m[92m   Compiling[0m serde_core v1.0.229
+2026-11-07T08:05:03.5478279Z [1m[92m   Compiling[0m getrandom v0.4.3
+2026-11-07T08:05:03.8030878Z [1m[92m   Compiling[0m shlex v2.0.1
+2026-11-07T08:05:03.9193017Z [1m[92m   Compiling[0m syn v3.0.9
+2026-11-07T08:05:03.9364404Z [1m[92m   Compiling[0m find-msvc-tools v0.1.15
+2026-11-07T08:05:04.1276048Z [1m[92m   Compiling[0m cc v1.9.0
+2026-11-07T08:05:04.2312951Z [1m[92m   Compiling[0m getrandom v0.2.17
+2026-11-07T08:05:04.3573186Z [1m[92m   Compiling[0m rand_core v0.6.4
+2026-11-07T08:05:04.3813391Z [1m[92m   Compiling[0m hybrid-array v0.4.15
+2026-11-07T08:05:04.4883093Z [1m[92m   Compiling[0m crypto-common v0.1.7
+2026-11-07T08:05:04.9675553Z [1m[92m   Compiling[0m cpufeatures v0.2.17
+2026-11-07T08:05:05.0033785Z [1m[92m   Compiling[0m zmij v1.0.23
+2026-11-07T08:05:05.1632975Z [1m[92m   Compiling[0m pkg-config v0.3.34
+2026-11-07T08:05:05.6897982Z [1m[92m   Compiling[0m vcpkg v0.2.15
+2026-11-07T08:05:06.1422940Z [1m[92m   Compiling[0m inout v0.1.4
+2026-11-07T08:05:06.2218306Z [1m[92m   Compiling[0m block-buffer v0.10.4
+2026-11-07T08:05:06.3032771Z [1m[92m   Compiling[0m bitflags v2.13.2
+2026-11-07T08:05:06.3293001Z [1m[92m   Compiling[0m libsqlite3-sys v0.38.2
+2026-11-07T08:05:06.4693161Z [1m[92m   Compiling[0m zeroize v1.9.1
+2026-11-07T08:05:06.5483223Z [1m[92m   Compiling[0m serde v1.0.229
+2026-11-07T08:05:06.5962946Z [1m[92m   Compiling[0m foldhash v0.2.0
+2026-11-07T08:05:06.6152816Z [1m[92m   Compiling[0m serde_json v1.0.154
+2026-11-07T08:05:06.7026778Z [1m[92m   Compiling[0m thiserror v2.0.21
+2026-11-07T08:05:06.7163005Z [1m[92m   Compiling[0m hashbrown v0.17.1
+2026-11-07T08:05:06.7263133Z [1m[92m   Compiling[0m serde_derive v1.0.229
+2026-11-07T08:05:06.9523585Z [1m[92m   Compiling[0m thiserror-impl v2.0.21
+2026-11-07T08:05:07.1505631Z [1m[92m   Compiling[0m cipher v0.4.4
+2026-11-07T08:05:07.3362896Z [1m[92m   Compiling[0m digest v0.10.7
+2026-11-07T08:05:07.7948166Z [1m[92m   Compiling[0m crypto-common v0.2.2
+2026-11-07T08:05:08.1692948Z [1m[92m   Compiling[0m block-buffer v0.12.1
+2026-11-07T08:05:08.2703323Z [1m[92m   Compiling[0m universal-hash v0.5.1
+2026-11-07T08:05:08.3283005Z [1m[92m   Compiling[0m const-oid v0.10.2
+2026-11-07T08:05:08.4680281Z [1m[92m   Compiling[0m base64ct v1.8.3
+2026-11-07T08:05:08.7133474Z [1m[92m   Compiling[0m opaque-debug v0.3.1
+2026-11-07T08:05:08.7423036Z [1m[92m   Compiling[0m rustix v1.1.5
+2026-11-07T08:05:08.8813158Z [1m[92m   Compiling[0m memchr v2.8.3
+2026-11-07T08:05:08.9523274Z [1m[92m   Compiling[0m itoa v1.0.18
+2026-11-07T08:05:09.1363121Z [1m[92m   Compiling[0m poly1305 v0.8.0
+2026-11-07T08:05:09.5595621Z [1m[92m   Compiling[0m password-hash v0.5.0
+2026-11-07T08:05:09.9063033Z [1m[92m   Compiling[0m digest v0.11.3
+2026-11-07T08:05:10.0652874Z [1m[92m   Compiling[0m blake2 v0.10.6
+2026-11-07T08:05:10.4103019Z [1m[92m   Compiling[0m chacha20 v0.9.1
+2026-11-07T08:05:10.5947418Z [1m[92m   Compiling[0m hashlink v0.12.2
+2026-11-07T08:05:10.6004007Z [1m[92m   Compiling[0m uuid v1.28.0
+2026-11-07T08:05:10.7112809Z [1m[92m   Compiling[0m aead v0.5.2
+2026-11-07T08:05:10.8062883Z [1m[92m   Compiling[0m fallible-iterator v0.3.0
+2026-11-07T08:05:10.8893448Z [1m[92m   Compiling[0m cpufeatures v0.3.1
+2026-11-07T08:05:10.9200230Z [1m[92m   Compiling[0m linux-raw-sys v0.12.1
+2026-11-07T08:05:10.9993263Z [1m[92m   Compiling[0m fallible-streaming-iterator v0.1.9
+2026-11-07T08:05:11.0973188Z [1m[92m   Compiling[0m smallvec v1.16.3
+2026-11-07T08:05:11.1227690Z [1m[92m   Compiling[0m sha2 v0.11.1
+2026-11-07T08:05:11.2990228Z [1m[92m   Compiling[0m chacha20poly1305 v0.10.1
+2026-11-07T08:05:11.3603550Z [1m[92m   Compiling[0m argon2 v0.5.3
+2026-11-07T08:05:11.8033429Z [1m[92m   Compiling[0m hex v0.4.3
+2026-11-07T08:05:12.0334214Z [1m[92m   Compiling[0m base64 v0.22.1
+2026-11-07T08:05:12.0413421Z [1m[92m   Compiling[0m fastrand v2.5.0
+2026-11-07T08:05:12.2093035Z [1m[92m   Compiling[0m once_cell v1.21.4
+2026-11-07T08:05:12.3173462Z [1m[92m   Compiling[0m zapime-crypto v0.1.0 (/home/runner/work/ZapIME/ZapIME/crates/zapime-crypto)
+2026-11-07T08:05:12.9028893Z [1m[92m   Compiling[0m tempfile v3.27.0
+2026-11-07T08:05:15.9444605Z [1m[92m   Compiling[0m rusqlite v0.40.2
+2026-11-07T08:05:16.6584528Z [1m[92m   Compiling[0m zapime-data v0.1.0 (/home/runner/work/ZapIME/ZapIME/crates/zapime-data)
+2026-11-07T08:05:17.7177812Z [1m[92m    Finished[0m `dev` profile [unoptimized] target(s) in 16.35s
+2026-11-07T08:05:17.7550564Z ##[group]Run cargo build --locked -p zapime-sync --example manual_sync_fixture
+2026-11-07T08:05:17.7551184Z [36;1mcargo build --locked -p zapime-sync --example manual_sync_fixture[0m
+2026-11-07T08:05:17.7571167Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:05:17.7571706Z env:
+2026-11-07T08:05:17.7572307Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:05:17.7572709Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:05:17.7573008Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:05:17.7573324Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:05:17.7573560Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:05:17.7573815Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:05:17.7574037Z   CARGO_TERM_COLOR: always
+2026-11-07T08:05:17.7574280Z   GOTOOLCHAIN: local
+2026-11-07T08:05:17.7574493Z ##[endgroup]
+2026-11-07T08:05:17.7988692Z [1m[33mwarning[0m: /home/runner/work/ZapIME/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+2026-11-07T08:05:17.7990407Z `license` should be used if the package license can be expressed with a standard SPDX expression.
+2026-11-07T08:05:17.7991833Z `license-file` should be used if the package uses a non-standard license.
+2026-11-07T08:05:17.7993194Z See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+2026-11-07T08:05:17.8514492Z [1m[92m   Compiling[0m zapime-sync v0.1.0 (/home/runner/work/ZapIME/ZapIME/crates/zapime-sync)
+2026-11-07T08:05:18.3755225Z [1m[92m    Finished[0m `dev` profile [unoptimized] target(s) in 0.58s
+2026-11-07T08:05:18.3888997Z ##[group]Run python3 scripts/sync_service_smoke.py
+2026-11-07T08:05:18.3889419Z [36;1mpython3 scripts/sync_service_smoke.py[0m
+2026-11-07T08:05:18.3909139Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:05:18.3909405Z env:
+2026-11-07T08:05:18.3909977Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:05:18.3910385Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:05:18.3910683Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:05:18.3910992Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:05:18.3911231Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:05:18.3911757Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:05:18.3912008Z   CARGO_TERM_COLOR: always
+2026-11-07T08:05:18.3912236Z   GOTOOLCHAIN: local
+2026-11-07T08:05:18.3912470Z ##[endgroup]
+2026-11-07T08:05:18.7985356Z #1 [internal] load local bake definitions
+2026-11-07T08:05:19.0002958Z #1 reading from stdin 402B done
+2026-11-07T08:05:19.0003356Z #1 DONE 0.0s
+2026-11-07T08:05:19.0003499Z 
+2026-11-07T08:05:19.0003735Z #2 [internal] load build definition from Dockerfile
+2026-11-07T08:05:19.0004114Z #2 transferring dockerfile: 705B done
+2026-11-07T08:05:19.0004407Z #2 DONE 0.0s
+2026-11-07T08:05:19.0004532Z 
+2026-11-07T08:05:19.0004726Z #3 [internal] load metadata for docker.io/library/golang:1.27.3
+2026-11-07T08:05:19.0743371Z #3 DONE 0.2s
+2026-11-07T08:05:19.1087151Z 
+2026-11-07T08:05:19.1087672Z #4 [internal] load .dockerignore
+2026-11-07T08:05:19.1088220Z #4 transferring context: 71B done
+2026-11-07T08:05:19.1088751Z #4 DONE 0.0s
+2026-11-07T08:05:19.1088946Z 
+2026-11-07T08:05:19.1089548Z #5 [build 1/7] FROM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e
+2026-11-07T08:05:19.1090424Z #5 DONE 0.0s
+2026-11-07T08:05:19.1090652Z 
+2026-11-07T08:05:19.1090865Z #6 [internal] load build context
+2026-11-07T08:05:19.1091299Z #6 transferring context: 1.16kB done
+2026-11-07T08:05:19.1091969Z #6 DONE 0.0s
+2026-11-07T08:05:19.1092156Z 
+2026-11-07T08:05:19.1092444Z #7 [stage-1 1/4] COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+2026-11-07T08:05:19.1092860Z #7 CACHED
+2026-11-07T08:05:19.1092976Z 
+2026-11-07T08:05:19.1093212Z #8 [build 3/7] COPY go.mod go.sum ./
+2026-11-07T08:05:19.1093565Z #8 CACHED
+2026-11-07T08:05:19.1093675Z 
+2026-11-07T08:05:19.1093769Z #9 [build 5/7] COPY . .
+2026-11-07T08:05:19.1093991Z #9 CACHED
+2026-11-07T08:05:19.1094098Z 
+2026-11-07T08:05:19.1094283Z #10 [stage-1 3/4] COPY LICENSE /usr/share/licenses/ZapIME/LICENSE
+2026-11-07T08:05:19.1094625Z #10 CACHED
+2026-11-07T08:05:19.1094734Z 
+2026-11-07T08:05:19.1094954Z #11 [stage-1 2/4] COPY --from=build /zapime-sync /usr/local/bin/zapime-sync
+2026-11-07T08:05:19.1095345Z #11 CACHED
+2026-11-07T08:05:19.1095452Z 
+2026-11-07T08:05:19.1095559Z #12 [build 4/7] RUN go mod download
+2026-11-07T08:05:19.1095809Z #12 CACHED
+2026-11-07T08:05:19.1095911Z 
+2026-11-07T08:05:19.1096010Z #13 [build 2/7] WORKDIR /src
+2026-11-07T08:05:19.1096244Z #13 CACHED
+2026-11-07T08:05:19.1096348Z 
+2026-11-07T08:05:19.1096514Z #14 [build 7/7] RUN go run ./cmd/collect-notices /licenses
+2026-11-07T08:05:19.1096830Z #14 CACHED
+2026-11-07T08:05:19.1096936Z 
+2026-11-07T08:05:19.1097321Z #15 [build 6/7] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+2026-11-07T08:05:19.1097993Z #15 CACHED
+2026-11-07T08:05:19.1098095Z 
+2026-11-07T08:05:19.1098331Z #16 [stage-1 4/4] COPY --from=build /licenses /usr/share/licenses/dependencies
+2026-11-07T08:05:19.1099069Z #16 CACHED
+2026-11-07T08:05:19.1099273Z 
+2026-11-07T08:05:19.1099381Z #17 exporting to image
+2026-11-07T08:05:19.1099633Z #17 exporting layers done
+2026-11-07T08:05:19.1100647Z #17 writing image sha256:0702ea1a29f3d6dffbbf3dd36de965c7ca8605771d30f8f5e275c3104bb8058f done
+2026-11-07T08:05:19.1101828Z #17 naming to docker.io/library/zapime-ci-671e74c77452-sync done
+2026-11-07T08:05:19.1102339Z #17 DONE 0.0s
+2026-11-07T08:05:19.1102537Z 
+2026-11-07T08:05:19.1102741Z #18 resolving provenance for metadata file
+2026-11-07T08:05:19.1103532Z #18 DONE 0.0s
+2026-11-07T08:05:19.1103939Z  sync  Built
+2026-11-07T08:05:19.1107730Z  Network zapime-ci-671e74c77452_default  Creating
+2026-11-07T08:05:19.1494072Z  Network zapime-ci-671e74c77452_default  Created
+2026-11-07T08:05:19.1540584Z  Volume "zapime-ci-671e74c77452_zapime-db"  Creating
+2026-11-07T08:05:19.1554159Z  Volume "zapime-ci-671e74c77452_zapime-db"  Created
+2026-11-07T08:05:19.1558510Z  Container zapime-ci-671e74c77452-db-1  Creating
+2026-11-07T08:05:19.6849028Z  Container zapime-ci-671e74c77452-db-1  Created
+2026-11-07T08:05:19.6849712Z  Container zapime-ci-671e74c77452-sync-1  Creating
+2026-11-07T08:05:19.7251893Z  Container zapime-ci-671e74c77452-sync-1  Created
+2026-11-07T08:05:19.7261136Z  Container zapime-ci-671e74c77452-db-1  Starting
+2026-11-07T08:05:19.8438224Z  Container zapime-ci-671e74c77452-db-1  Started
+2026-11-07T08:05:19.8439331Z  Container zapime-ci-671e74c77452-db-1  Waiting
+2026-11-07T08:05:25.3458510Z  Container zapime-ci-671e74c77452-db-1  Healthy
+2026-11-07T08:05:25.3459046Z  Container zapime-ci-671e74c77452-sync-1  Starting
+2026-11-07T08:05:25.4821634Z  Container zapime-ci-671e74c77452-sync-1  Started
+2026-11-07T08:05:25.4823320Z  Container zapime-ci-671e74c77452-sync-1  Waiting
+2026-11-07T08:05:25.4824732Z  Container zapime-ci-671e74c77452-db-1  Waiting
+2026-11-07T08:05:25.9837428Z  Container zapime-ci-671e74c77452-db-1  Healthy
+2026-11-07T08:05:30.9840624Z  Container zapime-ci-671e74c77452-sync-1  Healthy
+2026-11-07T08:05:31.9640570Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-11-07T08:05:32.7894456Z PASS: synthetic public key descriptor authenticated; root stays private
+2026-11-07T08:05:33.6658807Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-11-07T08:05:34.3459748Z Backup complete: /tmp/zapime-recovery-ci-xo4eryko/database.dump and /tmp/zapime-recovery-ci-xo4eryko/database.dump.objects.tar; keep BOTH files. Client keys are not included.
+2026-11-07T08:05:34.4328233Z  Container zapime-ci-671e74c77452-sync-1  Stopping
+2026-11-07T08:05:34.5372471Z  Container zapime-ci-671e74c77452-sync-1  Stopped
+2026-11-07T08:05:34.5373344Z  Container zapime-ci-671e74c77452-sync-1  Removing
+2026-11-07T08:05:34.5440177Z  Container zapime-ci-671e74c77452-sync-1  Removed
+2026-11-07T08:05:34.5441015Z  Container zapime-ci-671e74c77452-db-1  Stopping
+2026-11-07T08:05:34.6271709Z  Container zapime-ci-671e74c77452-db-1  Stopped
+2026-11-07T08:05:34.6272549Z  Container zapime-ci-671e74c77452-db-1  Removing
+2026-11-07T08:05:34.6328649Z  Container zapime-ci-671e74c77452-db-1  Removed
+2026-11-07T08:05:34.6338752Z  Volume zapime-ci-671e74c77452_zapime-db  Removing
+2026-11-07T08:05:34.6341816Z  Network zapime-ci-671e74c77452_default  Removing
+2026-11-07T08:05:34.7237387Z  Network zapime-ci-671e74c77452_default  Removed
+2026-11-07T08:05:34.7324027Z  Volume zapime-ci-671e74c77452_zapime-db  Removed
+2026-11-07T08:05:34.8230695Z  Network zapime-ci-671e74c77452_default  Creating
+2026-11-07T08:05:34.8601655Z  Network zapime-ci-671e74c77452_default  Created
+2026-11-07T08:05:34.8606159Z  Volume "zapime-ci-671e74c77452_zapime-db"  Creating
+2026-11-07T08:05:34.8616074Z  Volume "zapime-ci-671e74c77452_zapime-db"  Created
+2026-11-07T08:05:34.8620149Z  Container zapime-ci-671e74c77452-db-1  Creating
+2026-11-07T08:05:34.8792134Z  Container zapime-ci-671e74c77452-db-1  Created
+2026-11-07T08:05:34.8800293Z  Container zapime-ci-671e74c77452-db-1  Starting
+2026-11-07T08:05:34.9995175Z  Container zapime-ci-671e74c77452-db-1  Started
+2026-11-07T08:05:34.9996134Z  Container zapime-ci-671e74c77452-db-1  Waiting
+2026-11-07T08:05:40.5011630Z  Container zapime-ci-671e74c77452-db-1  Healthy
+2026-11-07T08:05:41.3741263Z Database and object import finished; start sync only after success. Client recovery keys are still required.
+2026-11-07T08:05:41.7040522Z  Container zapime-ci-671e74c77452-db-1  Running
+2026-11-07T08:05:41.7041336Z  Container zapime-ci-671e74c77452-sync-1  Creating
+2026-11-07T08:05:41.7208453Z  Container zapime-ci-671e74c77452-sync-1  Created
+2026-11-07T08:05:41.7216997Z  Container zapime-ci-671e74c77452-db-1  Waiting
+2026-11-07T08:05:42.2235464Z  Container zapime-ci-671e74c77452-db-1  Healthy
+2026-11-07T08:05:42.2236224Z  Container zapime-ci-671e74c77452-sync-1  Starting
+2026-11-07T08:05:42.3589049Z  Container zapime-ci-671e74c77452-sync-1  Started
+2026-11-07T08:05:42.3590253Z  Container zapime-ci-671e74c77452-db-1  Waiting
+2026-11-07T08:05:42.3591451Z  Container zapime-ci-671e74c77452-sync-1  Waiting
+2026-11-07T08:05:42.8606905Z  Container zapime-ci-671e74c77452-db-1  Healthy
+2026-11-07T08:05:47.8602229Z  Container zapime-ci-671e74c77452-sync-1  Healthy
+2026-11-07T08:05:48.7096171Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-11-07T08:05:49.0313076Z  Container zapime-ci-671e74c77452-sync-1  Stopping
+2026-11-07T08:05:49.1371000Z  Container zapime-ci-671e74c77452-sync-1  Stopped
+2026-11-07T08:05:49.1372549Z  Container zapime-ci-671e74c77452-sync-1  Removing
+2026-11-07T08:05:49.1438248Z  Container zapime-ci-671e74c77452-sync-1  Removed
+2026-11-07T08:05:49.1438948Z  Container zapime-ci-671e74c77452-db-1  Stopping
+2026-11-07T08:05:49.2411900Z  Container zapime-ci-671e74c77452-db-1  Stopped
+2026-11-07T08:05:49.2412606Z  Container zapime-ci-671e74c77452-db-1  Removing
+2026-11-07T08:05:49.2481385Z  Container zapime-ci-671e74c77452-db-1  Removed
+2026-11-07T08:05:49.2489771Z  Volume zapime-ci-671e74c77452_zapime-db  Removing
+2026-11-07T08:05:49.2490411Z  Network zapime-ci-671e74c77452_default  Removing
+2026-11-07T08:05:49.3228652Z  Network zapime-ci-671e74c77452_default  Removed
+2026-11-07T08:05:49.3465112Z  Volume zapime-ci-671e74c77452_zapime-db  Removed
+2026-11-07T08:05:49.3526768Z {"status": "PASS", "probe": "shared_manual_client_real_server", "commands": 17, "stores": 2, "server_revisions": 2, "records_each": 1, "pending_each": 0, "private_temporary_files_removed": true}
+2026-11-07T08:05:49.3528637Z PASS: two-device ciphertext exchange, create-once key identity, revoke, empty-server descriptor/database restore and client key recovery
+2026-11-07T08:05:49.3671993Z ##[group]Run sudo --preserve-env=GITHUB_ACTIONS,GITHUB_SHA python3 scripts/server_install_smoke.py
+2026-11-07T08:05:49.3672779Z [36;1msudo --preserve-env=GITHUB_ACTIONS,GITHUB_SHA python3 scripts/server_install_smoke.py[0m
+2026-11-07T08:05:49.3693051Z shell: /usr/bin/bash -e {0}
+2026-11-07T08:05:49.3693319Z env:
+2026-11-07T08:05:49.3693911Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:05:49.3694317Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:05:49.3694606Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:05:49.3694942Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:05:49.3695180Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:05:49.3695435Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:05:49.3695649Z   CARGO_TERM_COLOR: always
+2026-11-07T08:05:49.3695874Z   GOTOOLCHAIN: local
+2026-11-07T08:05:49.3696091Z ##[endgroup]
+2026-11-07T08:05:49.4824108Z fb650c6683312b766d66dbf1f0f53cda89e27854e9cf96220e57af9136ceca0d
+2026-11-07T08:05:55.4972155Z Preconfiguring packages ...
+2026-11-07T08:05:55.9909735Z (Reading database ... 
+2026-11-07T08:05:55.9910594Z (Reading database ... 5%
+2026-11-07T08:05:55.9911759Z (Reading database ... 10%
+2026-11-07T08:05:55.9912544Z (Reading database ... 15%
+2026-11-07T08:05:55.9912857Z (Reading database ... 20%
+2026-11-07T08:05:55.9913110Z (Reading database ... 25%
+2026-11-07T08:05:55.9913545Z (Reading database ... 30%
+2026-11-07T08:05:55.9914096Z (Reading database ... 35%
+2026-11-07T08:05:55.9914349Z (Reading database ... 40%
+2026-11-07T08:05:55.9914583Z (Reading database ... 45%
+2026-11-07T08:05:55.9914816Z (Reading database ... 50%
+2026-11-07T08:05:55.9974752Z (Reading database ... 55%
+2026-11-07T08:05:56.1773842Z (Reading database ... 60%
+2026-11-07T08:05:56.3397947Z (Reading database ... 65%
+2026-11-07T08:05:56.5314756Z (Reading database ... 70%
+2026-11-07T08:05:56.7402418Z (Reading database ... 75%
+2026-11-07T08:05:56.8766838Z (Reading database ... 80%
+2026-11-07T08:05:57.0825187Z (Reading database ... 85%
+2026-11-07T08:05:57.2395790Z (Reading database ... 90%
+2026-11-07T08:05:57.3951707Z (Reading database ... 95%
+2026-11-07T08:05:57.3952222Z (Reading database ... 100%
+2026-11-07T08:05:57.3952819Z (Reading database ... 215960 files and directories currently installed.)
+2026-11-07T08:05:57.3996846Z Preparing to unpack .../ca-certificates_20260816ubuntu0.24.04.2_all.deb ...
+2026-11-07T08:05:57.4086591Z Unpacking ca-certificates (20260816ubuntu0.24.04.2) over (20260816ubuntu0.24.04.1) ...
+2026-11-07T08:05:57.4947350Z Setting up ca-certificates (20260816ubuntu0.24.04.2) ...
+2026-11-07T08:05:59.1304482Z Updating certificates in /etc/ssl/certs...
+2026-11-07T08:05:59.6135374Z 0 added, 0 removed; done.
+2026-11-07T08:05:59.6135974Z Running hooks in /etc/ca-certificates/update.d...
+2026-11-07T08:05:59.6859485Z /etc/ssl/certs/adoptium/cacerts successfully populated.
+2026-11-07T08:05:59.6862446Z done.
+2026-11-07T08:05:59.7103885Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-11-07T08:05:59.7128694Z Not building database; man-db/auto-update is not 'true'.
+2026-11-07T08:06:00.4927080Z 
+2026-11-07T08:06:00.4927628Z Running kernel seems to be up-to-date.
+2026-11-07T08:06:00.4927928Z 
+2026-11-07T08:06:00.4928061Z No services need to be restarted.
+2026-11-07T08:06:00.4928292Z 
+2026-11-07T08:06:00.4928424Z No containers need to be restarted.
+2026-11-07T08:06:00.4928627Z 
+2026-11-07T08:06:00.4928780Z No user sessions are running outdated binaries.
+2026-11-07T08:06:00.4929025Z 
+2026-11-07T08:06:00.4929265Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-11-07T08:06:03.1621879Z #1 [internal] load local bake definitions
+2026-11-07T08:06:03.3599764Z #1 reading from stdin 446B done
+2026-11-07T08:06:03.3600585Z #1 DONE 0.0s
+2026-11-07T08:06:03.3600995Z 
+2026-11-07T08:06:03.3601255Z #2 [internal] load build definition from Dockerfile
+2026-11-07T08:06:03.3601963Z #2 transferring dockerfile: 778B done
+2026-11-07T08:06:03.3602271Z #2 DONE 0.0s
+2026-11-07T08:06:03.3602400Z 
+2026-11-07T08:06:03.3603120Z #3 [internal] load metadata for docker.io/library/golang:1.27.3
+2026-11-07T08:06:03.6906591Z #3 DONE 0.5s
+2026-11-07T08:06:03.8643374Z 
+2026-11-07T08:06:03.8643979Z #4 [internal] load .dockerignore
+2026-11-07T08:06:03.8644692Z #4 transferring context: 144B done
+2026-11-07T08:06:03.8645255Z #4 DONE 0.0s
+2026-11-07T08:06:03.8645483Z 
+2026-11-07T08:06:03.8646031Z #5 [build 1/7] FROM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e
+2026-11-07T08:06:03.8646812Z #5 DONE 0.0s
+2026-11-07T08:06:03.8646959Z 
+2026-11-07T08:06:03.8647079Z #6 [internal] load build context
+2026-11-07T08:06:03.8647709Z #6 transferring context: 158.53kB done
+2026-11-07T08:06:03.8663073Z #6 DONE 0.0s
+2026-11-07T08:06:03.8663257Z 
+2026-11-07T08:06:03.8663386Z #7 [build 2/7] WORKDIR /src
+2026-11-07T08:06:03.8663652Z #7 CACHED
+2026-11-07T08:06:03.8663771Z 
+2026-11-07T08:06:03.8663890Z #8 [build 3/7] COPY go.mod go.sum ./
+2026-11-07T08:06:03.9813906Z #8 DONE 0.3s
+2026-11-07T08:06:04.1331280Z 
+2026-11-07T08:06:04.1332345Z #9 [build 4/7] RUN go mod download
+2026-11-07T08:06:05.1002593Z #9 DONE 1.1s
+2026-11-07T08:06:05.2654148Z 
+2026-11-07T08:06:05.2654912Z #10 [build 5/7] COPY . .
+2026-11-07T08:06:05.2655400Z #10 DONE 0.0s
+2026-11-07T08:06:05.2655618Z 
+2026-11-07T08:06:05.2656295Z #11 [build 6/7] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+2026-11-07T08:06:31.1149530Z #11 DONE 26.0s
+2026-11-07T08:06:31.2671989Z 
+2026-11-07T08:06:31.2673025Z #12 [build 7/7] RUN go run ./cmd/collect-notices /licenses
+2026-11-07T08:06:37.7151053Z #12 6.599 Collected runtime module notices: 19
+2026-11-07T08:06:37.9266075Z #12 DONE 6.7s
+2026-11-07T08:06:38.4922706Z 
+2026-11-07T08:06:38.4923961Z #13 [stage-1 1/4] COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+2026-11-07T08:06:38.4924663Z #13 CACHED
+2026-11-07T08:06:38.4924828Z 
+2026-11-07T08:06:38.4925169Z #14 [stage-1 2/4] COPY --from=build /zapime-sync /usr/local/bin/zapime-sync
+2026-11-07T08:06:38.4925773Z #14 CACHED
+2026-11-07T08:06:38.6770752Z 
+2026-11-07T08:06:38.6771608Z #15 [stage-1 3/4] COPY LICENSE /usr/share/licenses/ZapIME/LICENSE
+2026-11-07T08:06:38.6772211Z #15 DONE 0.0s
+2026-11-07T08:06:38.6772373Z 
+2026-11-07T08:06:38.6772676Z #16 [stage-1 4/4] COPY --from=build /licenses /usr/share/licenses/dependencies
+2026-11-07T08:06:38.6773191Z #16 DONE 0.0s
+2026-11-07T08:06:38.6773342Z 
+2026-11-07T08:06:38.6773466Z #17 exporting to image
+2026-11-07T08:06:38.6773776Z #17 exporting layers
+2026-11-07T08:06:39.0056943Z #17 exporting layers 0.5s done
+2026-11-07T08:06:39.0298458Z #17 writing image sha256:2d8be32c0772766874dae74ebf7207485b7fbf1178d40ee608a0fcb475762b49 done
+2026-11-07T08:06:39.0299347Z  sync  Built
+2026-11-07T08:06:39.0299849Z #17 naming to docker.io/library/zapime-sync done
+2026-11-07T08:06:39.0300301Z #17 DONE 0.5s
+2026-11-07T08:06:39.0300509Z 
+2026-11-07T08:06:39.0300740Z #18 resolving provenance for metadata file
+2026-11-07T08:06:39.0301215Z #18 DONE 0.0s
+2026-11-07T08:06:39.1211844Z  Volume "zapime_zapime-db"  Creating
+2026-11-07T08:06:39.1222583Z  Volume "zapime_zapime-db"  Created
+2026-11-07T08:06:39.4382574Z  Container zapime-db-1  Creating
+2026-11-07T08:06:39.4561026Z  Container zapime-db-1  Created
+2026-11-07T08:06:39.4568136Z  Container zapime-db-1  Starting
+2026-11-07T08:06:39.5732533Z  Container zapime-db-1  Started
+2026-11-07T08:06:39.5733128Z  Container zapime-db-1  Waiting
+2026-11-07T08:06:45.0744960Z  Container zapime-db-1  Healthy
+2026-11-07T08:06:45.2852566Z  Container zapime-db-1  Running
+2026-11-07T08:06:45.2853475Z  Container zapime-sync-1  Creating
+2026-11-07T08:06:45.3067148Z  Container zapime-sync-1  Created
+2026-11-07T08:06:45.3076178Z  Container zapime-db-1  Waiting
+2026-11-07T08:06:45.8094093Z  Container zapime-db-1  Healthy
+2026-11-07T08:06:45.8094753Z  Container zapime-sync-1  Starting
+2026-11-07T08:06:45.9408237Z  Container zapime-sync-1  Started
+2026-11-07T08:06:45.9408885Z  Container zapime-sync-1  Waiting
+2026-11-07T08:06:45.9409750Z  Container zapime-db-1  Waiting
+2026-11-07T08:06:46.4436141Z  Container zapime-db-1  Healthy
+2026-11-07T08:06:51.4423030Z  Container zapime-sync-1  Healthy
+2026-11-07T08:06:51.8468719Z Created symlink /etc/systemd/system/timers.target.wants/zapime-backup.timer → /etc/systemd/system/zapime-backup.timer.
+2026-11-07T08:06:52.1305613Z 
+2026-11-07T08:06:52.1306282Z ZapIME installed: e38889af93144f1bd9076fd2723fd0c1d762f457
+2026-11-07T08:06:52.1306723Z Status: sudo zapime status
+2026-11-07T08:06:52.1307014Z Storage check: sudo zapime check-storage
+2026-11-07T08:06:52.1307362Z Backup: sudo zapime backup
+2026-11-07T08:06:52.1307769Z Access credentials: /opt/zapime/owner.json (root only; not your E2EE recovery key)
+2026-11-07T08:06:52.1308494Z HTTPS is delegated to your existing proxy. Point it to 127.0.0.1:8787; public HTTPS was not checked by this run.
+2026-11-07T08:06:52.2239660Z NAME            IMAGE         COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+2026-11-07T08:06:52.2241839Z zapime-db-1     postgres:16   "docker-entrypoint.s…"   db        13 seconds ago   Up 12 seconds (healthy)   5432/tcp
+2026-11-07T08:06:52.2243190Z zapime-sync-1   zapime-sync   "/usr/local/bin/zapi…"   sync      7 seconds ago    Up 6 seconds (healthy)    127.0.0.1:8787->8787/tcp
+2026-11-07T08:06:52.2369714Z {"protocol":1,"status":"ready"}
+2026-11-07T08:06:52.2378461Z 
+2026-11-07T08:06:53.4368940Z PASS: synthetic ciphertext sealed; recovery material kept outside server
+2026-11-07T08:06:54.2978940Z PASS: synthetic public key descriptor authenticated; root stays private
+2026-11-07T08:06:55.2184297Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-11-07T08:06:59.4562292Z Backup complete: /opt/zapime/backups/20261107T080658Z.dump and /opt/zapime/backups/20261107T080658Z.dump.objects.tar; keep BOTH files. Client keys are not included.
+2026-11-07T08:06:59.6123648Z #1 [internal] load local bake definitions
+2026-11-07T08:06:59.8090417Z #1 reading from stdin 446B done
+2026-11-07T08:06:59.8091002Z #1 DONE 0.0s
+2026-11-07T08:06:59.8091231Z 
+2026-11-07T08:06:59.8091800Z #2 [internal] load build definition from Dockerfile
+2026-11-07T08:06:59.8092446Z #2 transferring dockerfile: 778B done
+2026-11-07T08:06:59.8092934Z #2 DONE 0.0s
+2026-11-07T08:06:59.8093146Z 
+2026-11-07T08:06:59.8093466Z #3 [internal] load metadata for docker.io/library/golang:1.27.3
+2026-11-07T08:06:59.8985915Z #3 DONE 0.2s
+2026-11-07T08:06:59.9324256Z 
+2026-11-07T08:06:59.9324947Z #4 [internal] load .dockerignore
+2026-11-07T08:06:59.9325419Z #4 transferring context: 144B done
+2026-11-07T08:06:59.9325775Z #4 DONE 0.0s
+2026-11-07T08:06:59.9326022Z 
+2026-11-07T08:06:59.9326579Z #5 [build 1/7] FROM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e
+2026-11-07T08:06:59.9327457Z #5 DONE 0.0s
+2026-11-07T08:06:59.9327606Z 
+2026-11-07T08:06:59.9327833Z #6 [internal] load build context
+2026-11-07T08:06:59.9328351Z #6 transferring context: 3.66kB done
+2026-11-07T08:06:59.9328825Z #6 DONE 0.0s
+2026-11-07T08:06:59.9329048Z 
+2026-11-07T08:06:59.9329655Z #7 [build 6/7] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+2026-11-07T08:06:59.9330214Z #7 CACHED
+2026-11-07T08:06:59.9330326Z 
+2026-11-07T08:06:59.9330500Z #8 [build 7/7] RUN go run ./cmd/collect-notices /licenses
+2026-11-07T08:06:59.9330822Z #8 CACHED
+2026-11-07T08:06:59.9330933Z 
+2026-11-07T08:06:59.9331046Z #9 [build 3/7] COPY go.mod go.sum ./
+2026-11-07T08:06:59.9331311Z #9 CACHED
+2026-11-07T08:06:59.9331744Z 
+2026-11-07T08:06:59.9331928Z #10 [build 5/7] COPY . .
+2026-11-07T08:06:59.9332325Z #10 CACHED
+2026-11-07T08:06:59.9332498Z 
+2026-11-07T08:06:59.9332787Z #11 [stage-1 3/4] COPY LICENSE /usr/share/licenses/ZapIME/LICENSE
+2026-11-07T08:06:59.9333348Z #11 CACHED
+2026-11-07T08:06:59.9333518Z 
+2026-11-07T08:06:59.9333864Z #12 [stage-1 2/4] COPY --from=build /zapime-sync /usr/local/bin/zapime-sync
+2026-11-07T08:06:59.9334456Z #12 CACHED
+2026-11-07T08:06:59.9334628Z 
+2026-11-07T08:06:59.9335105Z #13 [build 2/7] WORKDIR /src
+2026-11-07T08:06:59.9335484Z #13 CACHED
+2026-11-07T08:06:59.9335648Z 
+2026-11-07T08:06:59.9336044Z #14 [stage-1 1/4] COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+2026-11-07T08:06:59.9336692Z #14 CACHED
+2026-11-07T08:06:59.9336861Z 
+2026-11-07T08:06:59.9337032Z #15 [build 4/7] RUN go mod download
+2026-11-07T08:06:59.9337432Z #15 CACHED
+2026-11-07T08:06:59.9337594Z 
+2026-11-07T08:06:59.9337945Z #16 [stage-1 4/4] COPY --from=build /licenses /usr/share/licenses/dependencies
+2026-11-07T08:06:59.9338542Z #16 CACHED
+2026-11-07T08:06:59.9338710Z 
+2026-11-07T08:06:59.9338877Z #17 exporting to image
+2026-11-07T08:06:59.9339252Z #17 exporting layers done
+2026-11-07T08:06:59.9339959Z #17 writing image sha256:2d8be32c0772766874dae74ebf7207485b7fbf1178d40ee608a0fcb475762b49 done
+2026-11-07T08:06:59.9340777Z #17 naming to docker.io/library/zapime-sync done
+2026-11-07T08:06:59.9341256Z #17 DONE 0.0s
+2026-11-07T08:06:59.9341642Z 
+2026-11-07T08:06:59.9341867Z #18 resolving provenance for metadata file
+2026-11-07T08:06:59.9342314Z #18 DONE 0.0s
+2026-11-07T08:06:59.9342649Z  sync  Built
+2026-11-07T08:07:00.3500038Z  Container zapime-db-1  Running
+2026-11-07T08:07:00.3508131Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:00.8529025Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:01.0343468Z  Container zapime-db-1  Running
+2026-11-07T08:07:01.0344113Z  Container zapime-sync-1  Running
+2026-11-07T08:07:01.0350744Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:01.5366832Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:01.5367510Z  Container zapime-sync-1  Waiting
+2026-11-07T08:07:01.5368437Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:02.0385121Z  Container zapime-sync-1  Healthy
+2026-11-07T08:07:02.0385714Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:02.6124920Z 
+2026-11-07T08:07:02.6125656Z ZapIME installed: e38889af93144f1bd9076fd2723fd0c1d762f457
+2026-11-07T08:07:02.6126195Z Status: sudo zapime status
+2026-11-07T08:07:02.6126686Z Storage check: sudo zapime check-storage
+2026-11-07T08:07:02.6127002Z Backup: sudo zapime backup
+2026-11-07T08:07:02.6127423Z Access credentials: /opt/zapime/owner.json (root only; not your E2EE recovery key)
+2026-11-07T08:07:02.6128359Z HTTPS is delegated to your existing proxy. Point it to 127.0.0.1:8787; public HTTPS was not checked by this run.
+2026-11-07T08:07:03.1522761Z Backup complete: /tmp/zapime-installer-recovery-mq5cauje/server.dump and /tmp/zapime-installer-recovery-mq5cauje/server.dump.objects.tar; keep BOTH files. Client keys are not included.
+2026-11-07T08:07:03.1682334Z Removed "/etc/systemd/system/timers.target.wants/zapime-backup.timer".
+2026-11-07T08:07:03.8870752Z  Container zapime-sync-1  Stopping
+2026-11-07T08:07:03.9954896Z  Container zapime-sync-1  Stopped
+2026-11-07T08:07:03.9955484Z  Container zapime-sync-1  Removing
+2026-11-07T08:07:04.0010400Z  Container zapime-sync-1  Removed
+2026-11-07T08:07:04.0010964Z  Container zapime-db-1  Stopping
+2026-11-07T08:07:04.0855495Z  Container zapime-db-1  Stopped
+2026-11-07T08:07:04.0856408Z  Container zapime-db-1  Removing
+2026-11-07T08:07:04.0925145Z  Container zapime-db-1  Removed
+2026-11-07T08:07:04.0940948Z  Volume zapime_zapime-db  Removing
+2026-11-07T08:07:04.0942579Z  Network zapime_default  Removing
+2026-11-07T08:07:04.1792888Z  Network zapime_default  Removed
+2026-11-07T08:07:04.1959182Z  Volume zapime_zapime-db  Removed
+2026-11-07T08:07:04.2624180Z 0eedef7ebe0cf578aaf726cb68175857abfef17a6c35ff6626a5109774e0af8c
+2026-11-07T08:07:08.0676275Z #1 [internal] load local bake definitions
+2026-11-07T08:07:08.2346689Z #1 reading from stdin 446B done
+2026-11-07T08:07:08.2347269Z #1 DONE 0.0s
+2026-11-07T08:07:08.2347545Z 
+2026-11-07T08:07:08.2347832Z #2 [internal] load build definition from Dockerfile
+2026-11-07T08:07:08.2348468Z #2 transferring dockerfile: 778B done
+2026-11-07T08:07:08.2348927Z #2 DONE 0.0s
+2026-11-07T08:07:08.2349137Z 
+2026-11-07T08:07:08.2349460Z #3 [internal] load metadata for docker.io/library/golang:1.27.3
+2026-11-07T08:07:08.2350085Z #3 DONE 0.1s
+2026-11-07T08:07:08.2759715Z 
+2026-11-07T08:07:08.2760228Z #4 [internal] load .dockerignore
+2026-11-07T08:07:08.2760795Z #4 transferring context: 144B done
+2026-11-07T08:07:08.2761283Z #4 DONE 0.0s
+2026-11-07T08:07:08.2761777Z 
+2026-11-07T08:07:08.2762660Z #5 [build 1/7] FROM docker.io/library/golang:1.27.3@sha256:e519d3b0a5b285e5aa53ab9eef02bc6bbb9cb04608389b743a136a9ce75f0d1e
+2026-11-07T08:07:08.2763722Z #5 DONE 0.0s
+2026-11-07T08:07:08.2763944Z 
+2026-11-07T08:07:08.2764144Z #6 [internal] load build context
+2026-11-07T08:07:08.2764634Z #6 transferring context: 158.53kB done
+2026-11-07T08:07:08.2765116Z #6 DONE 0.0s
+2026-11-07T08:07:08.2765341Z 
+2026-11-07T08:07:08.2765947Z #7 [build 6/7] RUN CGO_ENABLED=0 GOMAXPROCS=2 go build -p 2 -trimpath -ldflags="-s -w" -o /zapime-sync ./cmd/zapime-sync
+2026-11-07T08:07:08.2766768Z #7 CACHED
+2026-11-07T08:07:08.2766933Z 
+2026-11-07T08:07:08.2767085Z #8 [build 5/7] COPY . .
+2026-11-07T08:07:08.2767431Z #8 CACHED
+2026-11-07T08:07:08.2767596Z 
+2026-11-07T08:07:08.2767769Z #9 [build 4/7] RUN go mod download
+2026-11-07T08:07:08.2768168Z #9 CACHED
+2026-11-07T08:07:08.2768325Z 
+2026-11-07T08:07:08.2768509Z #10 [build 3/7] COPY go.mod go.sum ./
+2026-11-07T08:07:08.2768915Z #10 CACHED
+2026-11-07T08:07:08.2769082Z 
+2026-11-07T08:07:08.2769468Z #11 [stage-1 1/4] COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+2026-11-07T08:07:08.2770107Z #11 CACHED
+2026-11-07T08:07:08.2770269Z 
+2026-11-07T08:07:08.2770429Z #12 [build 2/7] WORKDIR /src
+2026-11-07T08:07:08.2770797Z #12 CACHED
+2026-11-07T08:07:08.2770962Z 
+2026-11-07T08:07:08.2771218Z #13 [build 7/7] RUN go run ./cmd/collect-notices /licenses
+2026-11-07T08:07:08.2772274Z #13 CACHED
+2026-11-07T08:07:08.2772441Z 
+2026-11-07T08:07:08.2772738Z #14 [stage-1 3/4] COPY LICENSE /usr/share/licenses/ZapIME/LICENSE
+2026-11-07T08:07:08.2773269Z #14 CACHED
+2026-11-07T08:07:08.2773436Z 
+2026-11-07T08:07:08.2773765Z #15 [stage-1 2/4] COPY --from=build /zapime-sync /usr/local/bin/zapime-sync
+2026-11-07T08:07:08.2774349Z #15 CACHED
+2026-11-07T08:07:08.2774519Z 
+2026-11-07T08:07:08.2774697Z  sync  Built
+2026-11-07T08:07:08.2775213Z #16 [stage-1 4/4] COPY --from=build /licenses /usr/share/licenses/dependencies
+2026-11-07T08:07:08.2775806Z #16 CACHED
+2026-11-07T08:07:08.2775969Z 
+2026-11-07T08:07:08.2776124Z #17 exporting to image
+2026-11-07T08:07:08.2776496Z #17 exporting layers done
+2026-11-07T08:07:08.2777207Z #17 writing image sha256:2d8be32c0772766874dae74ebf7207485b7fbf1178d40ee608a0fcb475762b49 done
+2026-11-07T08:07:08.2778013Z #17 naming to docker.io/library/zapime-sync done
+2026-11-07T08:07:08.2778485Z #17 DONE 0.0s
+2026-11-07T08:07:08.2778669Z 
+2026-11-07T08:07:08.2778865Z #18 resolving provenance for metadata file
+2026-11-07T08:07:08.2779305Z #18 DONE 0.0s
+2026-11-07T08:07:08.3692689Z  Volume "zapime_zapime-db"  Creating
+2026-11-07T08:07:08.3704053Z  Volume "zapime_zapime-db"  Created
+2026-11-07T08:07:08.7303692Z  Container zapime-db-1  Creating
+2026-11-07T08:07:08.7488902Z  Container zapime-db-1  Created
+2026-11-07T08:07:08.7497647Z  Container zapime-db-1  Starting
+2026-11-07T08:07:08.8657234Z  Container zapime-db-1  Started
+2026-11-07T08:07:08.8657636Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:14.3673694Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:15.5442072Z Database and object import finished; start sync only after success. Client recovery keys are still required.
+2026-11-07T08:07:15.7183789Z  Container zapime-db-1  Running
+2026-11-07T08:07:15.7184891Z  Container zapime-sync-1  Creating
+2026-11-07T08:07:15.7351673Z  Container zapime-sync-1  Created
+2026-11-07T08:07:15.7358558Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:16.2374245Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:16.2375011Z  Container zapime-sync-1  Starting
+2026-11-07T08:07:16.3629718Z  Container zapime-sync-1  Started
+2026-11-07T08:07:16.3630647Z  Container zapime-db-1  Waiting
+2026-11-07T08:07:16.3631514Z  Container zapime-sync-1  Waiting
+2026-11-07T08:07:16.8648297Z  Container zapime-db-1  Healthy
+2026-11-07T08:07:21.8643537Z  Container zapime-sync-1  Healthy
+2026-11-07T08:07:22.1508845Z Created symlink /etc/systemd/system/timers.target.wants/zapime-backup.timer → /etc/systemd/system/zapime-backup.timer.
+2026-11-07T08:07:22.4295198Z 
+2026-11-07T08:07:22.4295918Z ZapIME installed: e38889af93144f1bd9076fd2723fd0c1d762f457
+2026-11-07T08:07:22.4296583Z Status: sudo zapime status
+2026-11-07T08:07:22.4297288Z Storage check: sudo zapime check-storage
+2026-11-07T08:07:22.4297841Z Backup: sudo zapime backup
+2026-11-07T08:07:22.4298990Z Restored devices retain their original credentials. Use zapime recover-device only if necessary; E2EE keys are still client-owned.
+2026-11-07T08:07:22.4300899Z HTTPS is delegated to your existing proxy. Point it to 127.0.0.1:8787; public HTTPS was not checked by this run.
+2026-11-07T08:07:23.3230503Z PASS: fresh process restored key/archive and authenticated server ciphertext
+2026-11-07T08:07:23.6448480Z PASS installer: one entry command, repeat install preserves data/key descriptor, private credentials, fresh DB + alternate bucket descriptor restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested
+2026-11-07T08:07:23.6591152Z Removed "/etc/systemd/system/timers.target.wants/zapime-backup.timer".
+2026-11-07T08:07:24.3625038Z  Container zapime-sync-1  Stopping
+2026-11-07T08:07:24.4658591Z  Container zapime-sync-1  Stopped
+2026-11-07T08:07:24.4659810Z  Container zapime-sync-1  Removing
+2026-11-07T08:07:24.4710115Z  Container zapime-sync-1  Removed
+2026-11-07T08:07:24.4718586Z  Container zapime-db-1  Stopping
+2026-11-07T08:07:24.5616582Z  Container zapime-db-1  Stopped
+2026-11-07T08:07:24.5617419Z  Container zapime-db-1  Removing
+2026-11-07T08:07:24.5673866Z  Container zapime-db-1  Removed
+2026-11-07T08:07:24.5687177Z  Volume zapime_zapime-db  Removing
+2026-11-07T08:07:24.5689853Z  Network zapime_default  Removing
+2026-11-07T08:07:24.6484002Z  Network zapime_default  Removed
+2026-11-07T08:07:24.6662610Z  Volume zapime_zapime-db  Removed
+2026-11-07T08:07:24.6969028Z ##[group]Run actions/upload-artifact@v4
+2026-11-07T08:07:24.6969344Z with:
+2026-11-07T08:07:24.6969554Z   name: ZapIME-sync-service-tests
+2026-11-07T08:07:24.6969832Z   path: sync-service-tests.log
+2026-11-07T08:07:24.6970094Z   if-no-files-found: warn
+2026-11-07T08:07:24.6970330Z   compression-level: 6
+2026-11-07T08:07:24.6970548Z   overwrite: false
+2026-11-07T08:07:24.6970766Z   include-hidden-files: false
+2026-11-07T08:07:24.6971006Z env:
+2026-11-07T08:07:24.6972140Z   ZAPIME_TEST_DATABASE_URL: ***localhost:5432/zapime_test?sslmode=disable
+2026-11-07T08:07:24.6972651Z   ZAPIME_REQUIRE_DATABASE: 1
+2026-11-07T08:07:24.6972950Z   ZAPIME_TEST_S3_ENDPOINT: http://127.0.0.1:9000
+2026-11-07T08:07:24.6973271Z   ZAPIME_REQUIRE_S3: 1
+2026-11-07T08:07:24.6973503Z   CARGO_HOME: /home/runner/.cargo
+2026-11-07T08:07:24.6973762Z   CARGO_INCREMENTAL: 0
+2026-11-07T08:07:24.6973978Z   CARGO_TERM_COLOR: always
+2026-11-07T08:07:24.6974207Z   GOTOOLCHAIN: local
+2026-11-07T08:07:24.6974447Z ##[endgroup]
+2026-11-07T08:07:24.8756557Z (node:33932) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-07T08:07:24.8757436Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-07T08:07:24.8804430Z With the provided path, there will be 1 file uploaded
+2026-11-07T08:07:24.8810751Z Artifact name is valid!
+2026-11-07T08:07:24.8811721Z Root directory input is valid!
+2026-11-07T08:07:25.2126049Z Beginning upload of artifact content to blob storage
+2026-11-07T08:07:25.2371699Z (node:33932) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-07T08:07:25.4582512Z Uploaded bytes 1611
+2026-11-07T08:07:25.5212883Z Finished uploading artifact content to blob storage!
+2026-11-07T08:07:25.5213836Z SHA256 digest of uploaded artifact zip is 7fe01b01ddd2f4140cb968630ddabedda5e9c71b1f4b0400eb506f156922d301
+2026-11-07T08:07:25.5215424Z Finalizing artifact upload
+2026-11-07T08:07:25.9463532Z Artifact ZapIME-sync-service-tests.zip successfully finalized. Artifact ID 13566877658
+2026-11-07T08:07:25.9465013Z Artifact ZapIME-sync-service-tests has been successfully uploaded! Final size is 1611 bytes. Artifact ID is 13566877658
+2026-11-07T08:07:25.9471048Z Artifact download URL: https://github.com/ForceMind/ZapIME/actions/runs/42353573054/artifacts/13566877658
+2026-11-07T08:07:25.9664466Z Post job cleanup.
+2026-11-07T08:07:26.0975283Z [command]/opt/hostedtoolcache/go/1.27.3/x64/bin/go env GOMODCACHE
+2026-11-07T08:07:26.1031267Z [command]/opt/hostedtoolcache/go/1.27.3/x64/bin/go env GOCACHE
+2026-11-07T08:07:26.1069046Z /home/runner/go/pkg/mod
+2026-11-07T08:07:26.1098767Z /home/runner/.cache/go-build
+2026-11-07T08:07:26.1106645Z Cache hit occurred on the primary key setup-go-Linux-x64-ubuntu24-go-1.27.3-997ad6cb1a9a3c6f690ca5560446d276c2bc432efea1ec0acaf69a04b8b122bc, not saving cache.
+2026-11-07T08:07:26.1329173Z Post job cleanup.
+2026-11-07T08:07:26.2274467Z [command]/usr/bin/git version
+2026-11-07T08:07:26.2324540Z git version 2.56.0
+2026-11-07T08:07:26.2367075Z Temporarily overriding HOME='/home/runner/work/_temp/3b5e121f-413d-406a-8c4f-cf7a7b098cf0' before making global git config changes
+2026-11-07T08:07:26.2368689Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-07T08:07:26.2373216Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/ZapIME/ZapIME
+2026-11-07T08:07:26.2417941Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-07T08:07:26.2460222Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-07T08:07:26.2718352Z Entering 'vendor/msime'
+2026-11-07T08:07:26.2780673Z Entering 'vendor/voicekey'
+2026-11-07T08:07:26.2866802Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-07T08:07:26.2903197Z http.https://github.com/.extraheader
+2026-11-07T08:07:26.2929818Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-07T08:07:26.2967238Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-07T08:07:26.3241124Z Entering 'vendor/msime'
+2026-11-07T08:07:26.3266236Z http.https://github.com/.extraheader
+2026-11-07T08:07:26.3320790Z Entering 'vendor/voicekey'
+2026-11-07T08:07:26.3347811Z http.https://github.com/.extraheader
+2026-11-07T08:07:26.3403549Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-07T08:07:26.3450876Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-11-07T08:07:26.3689546Z Entering 'vendor/msime'
+2026-11-07T08:07:26.3708981Z file:/home/runner/work/ZapIME/ZapIME/.git/modules/vendor/msime/config	remote.origin.url
+2026-11-07T08:07:26.3744375Z Entering 'vendor/voicekey'
+2026-11-07T08:07:26.3764173Z file:/home/runner/work/ZapIME/ZapIME/.git/modules/vendor/voicekey/config	remote.origin.url
+2026-11-07T08:07:26.3803833Z [command]/usr/bin/git config --file /home/runner/work/ZapIME/ZapIME/.git/modules/vendor/msime/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-07T08:07:26.3856594Z [command]/usr/bin/git config --file /home/runner/work/ZapIME/ZapIME/.git/modules/vendor/voicekey/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-11-07T08:07:26.4034309Z Print service container logs: 482c1971f8f34d48a2271a82d5308a74_postgres16_6d1566
+2026-11-07T08:07:26.4038925Z ##[command]/usr/bin/docker logs --details de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:07:26.4200882Z  initdb: warning: enabling "trust" authentication for local connections
+2026-11-07T08:07:26.4201832Z  The files belonging to this database system will be owned by user "postgres".
+2026-11-07T08:07:26.4202537Z  This user must also own the server process.
+2026-11-07T08:07:26.4202937Z  
+2026-11-07T08:07:26.4203469Z  The database cluster will be initialized with locale "en_US.utf8".
+2026-11-07T08:07:26.4204245Z  The default database encoding has accordingly been set to "UTF8".
+2026-11-07T08:07:26.4204719Z  The default text search configuration will be set to "english".
+2026-11-07T08:07:26.4205057Z  
+2026-11-07T08:07:26.4205265Z  Data page checksums are disabled.
+2026-11-07T08:07:26.4205515Z  
+2026-11-07T08:07:26.4205867Z  fixing permissions on existing directory /var/lib/postgresql/data ... ok
+2026-11-07T08:07:26.4206283Z  creating subdirectories ... ok
+2026-11-07T08:07:26.4206604Z  selecting dynamic shared memory implementation ... posix
+2026-11-07T08:07:26.4206965Z  selecting default max_connections ... 100
+2026-11-07T08:07:26.4207275Z  selecting default shared_buffers ... 128MB
+2026-11-07T08:07:26.4207574Z  selecting default time zone ... Etc/UTC
+2026-11-07T08:07:26.4207864Z  creating configuration files ... ok
+2026-11-07T08:07:26.4208144Z  running bootstrap script ... ok
+2026-11-07T08:07:26.4208440Z  performing post-bootstrap initialization ... ok
+2026-11-07T08:07:26.4208757Z  syncing data to disk ... ok
+2026-11-07T08:07:26.4208994Z  
+2026-11-07T08:07:26.4209170Z  
+2026-11-07T08:07:26.4209403Z  Success. You can now start the database server using:
+2026-11-07T08:07:26.4209717Z  
+2026-11-07T08:07:26.4209977Z      pg_ctl -D /var/lib/postgresql/data -l logfile start
+2026-11-07T08:07:26.4210298Z  
+2026-11-07T08:07:26.4210967Z  waiting for server to start....2026-11-07 08:00:20.739 UTC [48] LOG:  starting PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-11-07T08:07:26.4212451Z  2026-11-07 08:00:20.740 UTC [48] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-11-07T08:07:26.4213055Z  2026-11-07 08:00:20.743 UTC [51] LOG:  database system was shut down at 2026-11-07 08:00:20 UTC
+2026-11-07T08:07:26.4213589Z  2026-11-07 08:00:20.747 UTC [48] LOG:  database system is ready to accept connections
+2026-11-07T08:07:26.4213989Z   done
+2026-11-07T08:07:26.4214180Z  server started
+2026-11-07T08:07:26.4214391Z  CREATE DATABASE
+2026-11-07T08:07:26.4214581Z  
+2026-11-07T08:07:26.4214746Z  
+2026-11-07T08:07:26.4215075Z  /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+2026-11-07T08:07:26.4215481Z  
+2026-11-07T08:07:26.4215746Z  2026-11-07 08:00:20.928 UTC [48] LOG:  received fast shutdown request
+2026-11-07T08:07:26.4216290Z  waiting for server to shut down....2026-11-07 08:00:20.928 UTC [48] LOG:  aborting any active transactions
+2026-11-07T08:07:26.4217131Z  initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+2026-11-07T08:07:26.4218080Z  2026-11-07 08:00:21.048 UTC [1] LOG:  starting PostgreSQL 16.15 (Debian 16.15-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-11-07T08:07:26.4218808Z  2026-11-07 08:00:21.048 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2026-11-07T08:07:26.4219285Z  2026-11-07 08:00:21.048 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2026-11-07T08:07:26.4219812Z  2026-11-07 08:00:21.049 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2026-11-07T08:07:26.4220375Z  2026-11-07 08:00:21.052 UTC [64] LOG:  database system was shut down at 2026-11-07 08:00:20 UTC
+2026-11-07T08:07:26.4221105Z  2026-11-07 08:00:21.056 UTC [1] LOG:  database system is ready to accept connections
+2026-11-07T08:07:26.4222265Z  2026-11-07 08:00:25.174 UTC [75] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4222949Z  2026-11-07 08:00:30.244 UTC [83] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4223599Z  2026-11-07 08:00:35.310 UTC [90] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4224266Z  2026-11-07 08:00:40.385 UTC [98] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4224932Z  2026-11-07 08:00:45.471 UTC [106] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4225604Z  2026-11-07 08:00:50.549 UTC [115] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4226266Z  2026-11-07 08:00:55.628 UTC [124] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4226949Z  2026-11-07 08:01:00.717 UTC [131] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4227612Z  2026-11-07 08:01:05.793 UTC [139] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4228292Z  2026-11-07 08:01:10.874 UTC [147] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4228986Z  2026-11-07 08:01:15.935 UTC [155] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4229662Z  2026-11-07 08:01:21.006 UTC [163] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4230325Z  2026-11-07 08:01:26.081 UTC [172] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4230955Z  2026-11-07 08:01:31.146 UTC [180] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4231845Z  2026-11-07 08:01:36.239 UTC [188] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4232512Z  2026-11-07 08:01:41.332 UTC [195] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4233193Z  2026-11-07 08:01:46.428 UTC [203] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4233871Z  2026-11-07 08:01:51.528 UTC [212] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4234549Z  2026-11-07 08:01:56.617 UTC [220] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4235216Z  2026-11-07 08:02:01.735 UTC [228] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4236149Z  2026-11-07 08:02:06.831 UTC [237] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4236811Z  2026-11-07 08:02:11.921 UTC [244] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4237467Z  2026-11-07 08:02:17.013 UTC [252] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4238122Z  2026-11-07 08:02:22.109 UTC [261] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4238777Z  2026-11-07 08:02:27.213 UTC [268] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4239437Z  2026-11-07 08:02:32.302 UTC [276] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4240106Z  2026-11-07 08:02:37.433 UTC [284] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4240774Z  2026-11-07 08:02:42.521 UTC [291] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4241600Z  2026-11-07 08:02:47.599 UTC [299] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4242304Z  2026-11-07 08:02:52.696 UTC [308] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4243212Z  2026-11-07 08:02:57.799 UTC [316] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4243925Z  2026-11-07 08:03:02.913 UTC [324] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4244629Z  2026-11-07 08:03:07.979 UTC [332] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4245159Z  2026-11-07 08:03:13.067 UTC [339] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4245576Z  2026-11-07 08:03:18.154 UTC [347] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4245974Z  2026-11-07 08:03:23.221 UTC [356] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4246368Z  2026-11-07 08:03:28.286 UTC [364] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4246759Z  2026-11-07 08:03:33.409 UTC [389] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4247155Z  2026-11-07 08:03:38.582 UTC [398] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4247553Z  2026-11-07 08:03:43.710 UTC [406] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4248005Z  2026-11-07 08:03:48.841 UTC [414] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4248601Z  2026-11-07 08:03:53.971 UTC [424] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4249006Z  2026-11-07 08:03:59.082 UTC [432] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4249406Z  2026-11-07 08:04:04.164 UTC [440] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4249799Z  2026-11-07 08:04:09.236 UTC [448] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4250198Z  2026-11-07 08:04:14.319 UTC [457] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4250602Z  2026-11-07 08:04:19.388 UTC [466] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4251002Z  2026-11-07 08:04:24.504 UTC [473] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4251635Z  2026-11-07 08:04:29.595 UTC [481] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4252097Z  2026-11-07 08:04:34.698 UTC [490] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4252498Z  2026-11-07 08:04:39.800 UTC [498] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4252904Z  2026-11-07 08:04:44.872 UTC [506] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4253306Z  2026-11-07 08:04:49.953 UTC [514] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4253704Z  2026-11-07 08:04:55.078 UTC [523] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4254105Z  2026-11-07 08:05:00.212 UTC [531] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4254501Z  2026-11-07 08:05:05.344 UTC [539] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4254907Z  2026-11-07 08:05:10.448 UTC [546] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4255303Z  2026-11-07 08:05:15.523 UTC [555] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4255704Z  2026-11-07 08:05:20.589 UTC [563] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4256106Z  2026-11-07 08:05:21.137 UTC [62] LOG:  checkpoint starting: time
+2026-11-07T08:07:26.4256522Z  2026-11-07 08:05:25.653 UTC [571] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4256929Z  2026-11-07 08:05:30.716 UTC [579] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4257479Z  2026-11-07 08:05:35.782 UTC [588] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4257878Z  2026-11-07 08:05:40.855 UTC [596] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4258963Z  2026-11-07 08:05:41.884 UTC [62] LOG:  checkpoint complete: wrote 210 buffers (1.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=20.744 s, sync=0.001 s, total=20.748 s; sync files=144, longest=0.001 s, average=0.001 s; distance=1270 kB, estimate=1270 kB; lsn=0/1A5CCD0, redo lsn=0/1A5CC98
+2026-11-07T08:07:26.4260048Z  2026-11-07 08:05:45.918 UTC [604] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4260464Z  2026-11-07 08:05:50.985 UTC [612] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4260860Z  2026-11-07 08:05:56.050 UTC [621] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4261263Z  2026-11-07 08:06:01.115 UTC [629] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4261938Z  2026-11-07 08:06:06.216 UTC [637] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4262343Z  2026-11-07 08:06:11.314 UTC [646] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4262741Z  2026-11-07 08:06:16.446 UTC [654] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4263131Z  2026-11-07 08:06:21.543 UTC [661] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4263530Z  2026-11-07 08:06:26.644 UTC [669] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4263921Z  2026-11-07 08:06:31.748 UTC [678] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4264319Z  2026-11-07 08:06:36.826 UTC [686] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4264714Z  2026-11-07 08:06:41.890 UTC [694] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4265109Z  2026-11-07 08:06:46.955 UTC [702] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4265503Z  2026-11-07 08:06:52.028 UTC [711] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4265904Z  2026-11-07 08:06:57.097 UTC [719] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4266527Z  2026-11-07 08:07:02.179 UTC [727] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4266929Z  2026-11-07 08:07:07.245 UTC [735] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4267325Z  2026-11-07 08:07:12.307 UTC [744] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4267720Z  2026-11-07 08:07:17.371 UTC [752] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4268120Z  2026-11-07 08:07:22.447 UTC [761] FATAL:  role "root" does not exist
+2026-11-07T08:07:26.4268697Z  2026-11-07 08:00:20.930 UTC [48] LOG:  background worker "logical replication launcher" (PID 54) exited with exit code 1
+2026-11-07T08:07:26.4269257Z  2026-11-07 08:00:20.930 UTC [49] LOG:  shutting down
+2026-11-07T08:07:26.4269658Z  2026-11-07 08:00:20.931 UTC [49] LOG:  checkpoint starting: shutdown immediate
+2026-11-07T08:07:26.4270769Z  2026-11-07 08:00:20.946 UTC [49] LOG:  checkpoint complete: wrote 926 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.003 s, total=0.017 s; sync files=301, longest=0.002 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/191F0F0, redo lsn=0/191F0F0
+2026-11-07T08:07:26.4272085Z  2026-11-07 08:00:20.954 UTC [48] LOG:  database system is shut down
+2026-11-07T08:07:26.4272430Z   done
+2026-11-07T08:07:26.4272628Z  server stopped
+2026-11-07T08:07:26.4272835Z  
+2026-11-07T08:07:26.4273083Z  PostgreSQL init process complete; ready for start up.
+2026-11-07T08:07:26.4273398Z  
+2026-11-07T08:07:26.4279128Z Stop and remove container: 482c1971f8f34d48a2271a82d5308a74_postgres16_6d1566
+2026-11-07T08:07:26.4284795Z ##[command]/usr/bin/docker rm --force de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:07:26.5597106Z de97f942af298eaa1a8e9df85c9668974f61cbe98a3bc294b47ff4329344210f
+2026-11-07T08:07:26.5638586Z Remove container network: github_network_833d0799ecf84ea8ad620a4143b382fc
+2026-11-07T08:07:26.5643559Z ##[command]/usr/bin/docker network rm github_network_833d0799ecf84ea8ad620a4143b382fc
+2026-11-07T08:07:26.6539624Z github_network_833d0799ecf84ea8ad620a4143b382fc
+2026-11-07T08:07:26.6621066Z Cleaning up orphan processes
+2026-11-07T08:07:26.7144125Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

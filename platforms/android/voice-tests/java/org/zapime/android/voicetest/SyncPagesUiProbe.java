@@ -47,6 +47,9 @@ final class SyncPagesUiProbe {
     private static final String ACTIVATION="production_View_performClick_and_AlertDialog_buttons";
     private static final String CANCEL_SCOPE="actual_sync_worker_queued_cancel_before_work_io";
     private static final String SCOPE="Actual non-exported Android Activities on a freshly owned prepared main fixture; local selection and resume seam, normal View.performClick and AlertDialog negative/positive controls, actual SyncWorker queued cancellation before work I/O, stopped-generation rejection, unchanged business/frozen/cursor/vault state and exact fixture cleanup. No physical input, active HTTPS interruption, successful network registration/transfer, phone or user data acceptance.";
+    private static final class Trace {
+        volatile String step="case_body",failed;
+    }
     private static final class Page {
         final Activity activity;
         final boolean key;
@@ -137,15 +140,29 @@ final class SyncPagesUiProbe {
         SyncAccountProbe.main(instrumentation,()->{check(!(Boolean)SyncAccountProbe.field(page.activity,"busy")&&SyncAccountProbe.field(page.activity,"cancellation")==null&&SyncAccountProbe.field(page.activity,"confirmation")==null&&SyncAccountProbe.field(page.activity,"selection")==selected,"negative sync confirmation mutated active selection");return null;});
         check(status.equals(result(instrumentation,page)),"negative sync confirmation changed request status");
     }
-    private static void queuedCancel(Instrumentation instrumentation,Page page,UUID account,UUID key,String digest,ThreadPoolExecutor executor)throws Exception {
-        Blocker blocker=new Blocker(executor);Object cancelled=null;String stopped=null;
+    private static void queuedCancel(Instrumentation instrumentation,Page page,UUID account,UUID key,String digest,ThreadPoolExecutor executor,Trace trace)throws Exception {
+        trace.failed=null;trace.step="queued_worker_blocker";Blocker blocker=new Blocker(executor);Object cancelled=null;String stopped=null;Throwable original=null;
         try{
+            trace.step="queued_confirmation_dialog";
             AlertDialog dialog=dialog(instrumentation,page,account,key,digest);
-            cancelled=SyncAccountProbe.main(instrumentation,()->{check(dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick(),"normal positive dialog click refused");Object request=SyncAccountProbe.field(page.activity,"cancellation");check(request!=null&&(Boolean)SyncAccountProbe.field(page.activity,"busy")&&executor.getQueue().size()==1,"positive sync request not queued behind actual worker");page.queuedGeneration=(Integer)SyncAccountProbe.field(page.activity,"generation");page.activity.finish();return request;});
+            trace.step="queued_positive_click";
+            SyncAccountProbe.main(instrumentation,()->{check(dialog.getButton(AlertDialog.BUTTON_POSITIVE).performClick(),"normal positive dialog click refused");return null;});
+            // AlertController dispatches its normal positive listener through a
+            // Handler. Observe its actual work only after that click is delivered.
+            trace.step="queued_positive_dispatch";instrumentation.waitForIdleSync();
+            trace.step="queued_request_capture";
+            cancelled=SyncAccountProbe.main(instrumentation,()->{Object request=SyncAccountProbe.field(page.activity,"cancellation");check(request!=null&&(Boolean)SyncAccountProbe.field(page.activity,"busy")&&executor.getQueue().size()==1,"positive sync request not queued behind actual worker");page.queuedGeneration=(Integer)SyncAccountProbe.field(page.activity,"generation");page.activity.finish();return request;});
+            trace.step="queued_stop_invalidation";
             await(()->SyncAccountProbe.main(instrumentation,()->!(Boolean)SyncAccountProbe.field(page.activity,"active")&&SyncAccountProbe.field(page.activity,"selection")==null&&SyncAccountProbe.field(page.activity,"cancellation")==null&&SyncAccountProbe.field(page.activity,"confirmation")==null&&(Integer)SyncAccountProbe.field(page.activity,"generation")>page.queuedGeneration),"stopped sync page retained selection or queued request");
             page.stoppedCleared=true;stopped=result(instrumentation,page);boolean rejected=false;
+            trace.step="queued_cancellation_check";
             try{SyncAccountProbe.call(cancelled.getClass(),cancelled,"check",new Class<?>[0]);}catch(IOException expected){rejected="sync_cancelled".equals(expected.getMessage());}check(rejected,"actual queued cancellation token did not stop before work I/O");page.queuedCancelled=true;
-        }finally{blocker.drain(instrumentation);}
+        }catch(Exception|Error error){original=error;trace.failed=trace.step;throw error;}
+        finally{
+            try{trace.step="queued_worker_drain";blocker.drain(instrumentation);}
+            catch(Exception|Error error){if(original!=null)original.addSuppressed(error);else{trace.failed=trace.step;throw error;}}
+        }
+        trace.step="queued_late_result_rejected";
         check(stopped!=null&&stopped.equals(result(instrumentation,page)),"stopped sync page accepted its late real worker callback");page.lateRejected=true;
     }
     private static Throwable add(Throwable previous,Throwable next){if(previous==null)return next;previous.addSuppressed(next);return previous;}
@@ -155,7 +172,7 @@ final class SyncPagesUiProbe {
         Class<?> core=Class.forName("org.zapime.android.NativeCore",true,loader),vault=Class.forName("org.zapime.android.SyncSecrets",true,loader),model=Class.forName("org.zapime.android.SyncConnection",true,loader),store=Class.forName("org.zapime.android.SyncConnectionStore",true,loader),preparation=Class.forName("org.zapime.android.SyncPreparation",true,loader),installer=Class.forName("org.zapime.android.ResourceInstaller",true,loader),worker=Class.forName("org.zapime.android.SyncWorker",true,loader);
         java.lang.reflect.Field field=worker.getDeclaredField("EXECUTOR");field.setAccessible(true);Object rawWorker=field.get(null);check(rawWorker instanceof ThreadPoolExecutor,"actual bounded SyncWorker required");ThreadPoolExecutor executor=(ThreadPoolExecutor)rawWorker;
         File root=new File(context.getFilesDir(),"zapime"),database=new File(root,"data/personal.sqlite3");UUID account=UUID.randomUUID(),device=UUID.randomUUID();
-        List<Activity> activities=new ArrayList<>();List<Page> pages=new ArrayList<>();JSONArray cases=new JSONArray();String stage="fresh_main_prepared_fixture";Throwable operationFailure=null;boolean owned=false;long handle=0;
+        List<Activity> activities=new ArrayList<>();List<Page> pages=new ArrayList<>();JSONArray cases=new JSONArray();Trace trace=new Trace();String stage="fresh_main_prepared_fixture";Throwable operationFailure=null;boolean owned=false;long handle=0;
         byte[] material=null,before=null,materialCipher=null,connectionCipher=null;
         JSONObject report=new JSONObject().put("schema_version",1).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("scope",SCOPE)
                 .put("button_activation_method",ACTIVATION).put("cancellation_scope",CANCEL_SCOPE).put("android_https","NOT RUN").put("active_https_interruption_tested",false).put("physical_input_tested",false).put("network_success_tested",false).put("secret_content_or_code_logged",false);
@@ -179,12 +196,12 @@ final class SyncPagesUiProbe {
                 Activity activity=instrumentation.startActivitySync(new Intent().setClassName(context,className).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));activities.add(activity);Page page=new Page(activity,keyPage);pages.add(page);
                 stage=keyPage?"key_page_secure_local_selection":"transfer_page_secure_local_selection";localSelection(instrumentation,page,account,device,key,digest);resumeLocal(instrumentation,context,page,account,device,key,digest,activities);SyncAccountProbe.passed(cases,stage);
                 stage=keyPage?"key_confirmation_negative_cancel":"transfer_confirmation_negative_cancel";negative(instrumentation,page,account,key,digest,executor);SyncAccountProbe.passed(cases,stage);
-                stage=keyPage?"key_queued_cancel_before_io":"transfer_queued_cancel_before_io";queuedCancel(instrumentation,page,account,key,digest,executor);SyncAccountProbe.passed(cases,stage);
+                stage=keyPage?"key_queued_cancel_before_io":"transfer_queued_cancel_before_io";queuedCancel(instrumentation,page,account,key,digest,executor,trace);SyncAccountProbe.passed(cases,stage);
             }
             stage="stopped_selection_and_generation_invalidated";check(pages.size()==2,"both sync pages not exercised");for(Page page:pages)check(page.stoppedCleared&&page.queuedCancelled&&page.lateRejected,"sync page lifecycle proof incomplete");SyncAccountProbe.passed(cases,stage);
             stage="prepared_business_and_vault_preserved";check(Arrays.equals(before,snapshot(database))&&Arrays.equals(materialCipher,Files.readAllBytes(new File(context.getNoBackupFilesDir(),"sync-material-"+account+".bin").toPath()))&&Arrays.equals(connectionCipher,Files.readAllBytes(new File(context.getNoBackupFilesDir(),"sync-connection-"+account+".bin").toPath())),"cancelled sync pages changed business, frozen rows, cursor or protected vault");SyncAccountProbe.passed(cases,stage);
             report.put("actual_activities",true).put("manifest_nonexported",true).put("secure_window_flags",true).put("displayed_selection_matches_local",true).put("resume_local_only_seam_verified",true).put("negative_dialog_cancel_no_task",true).put("actual_sync_worker_queued_cancel",true).put("captured_cancellation_checked",true).put("late_result_rejected",true).put("business_queue_frozen_cursor_preserved",true).put("vault_ciphertext_preserved",true).put("queued_cancelled_pages",pages.size());
-        }catch(Throwable error){operationFailure=error;cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic sync pages UI case: "+stage,error);}
+        }catch(Throwable error){operationFailure=error;report.put("failure_substep",stage.endsWith("queued_cancel_before_io")?(trace.failed==null?trace.step:trace.failed):"case_body");cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic sync pages UI case: "+stage,error);}
         finally{
             Throwable cleanup=null;
             for(Activity activity:activities)try{SyncAccountProbe.main(instrumentation,()->{activity.finish();return null;});}catch(Throwable error){cleanup=add(cleanup,error);}
@@ -204,7 +221,7 @@ final class SyncPagesUiProbe {
             for(byte[] bytes:new byte[][]{material,before,materialCipher,connectionCipher})if(bytes!=null)Arrays.fill(bytes,(byte)0);
             report.put("fresh_fixture_owned",owned).put("cleanup_completed",cleanup==null);
             if(cleanup==null&&operationFailure==null){SyncAccountProbe.passed(cases,"owned_main_fixture_cleanup");report.put("status","PASS");}
-            if(cleanup!=null){report.put("cleanup_failure_type",cleanup.getClass().getSimpleName());if(operationFailure!=null)operationFailure.addSuppressed(cleanup);}
+            if(cleanup!=null){report.put("cleanup_failure_type",cleanup.getClass().getSimpleName());if(operationFailure!=null)operationFailure.addSuppressed(cleanup);else report.put("failure_substep","owned_fixture_cleanup");}
             Files.write(new File(output,"sync-pages-ui-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
             if(cleanup!=null&&operationFailure==null)throw new Exception("sync pages fixture cleanup failed",cleanup);
         }

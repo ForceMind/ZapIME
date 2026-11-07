@@ -1,0 +1,70 @@
+{
+  "source_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "expected_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "focused_run_id": 42353573084,
+  "source": "Parent supplied SHA/tree and connector commit-workflow association below",
+  "github": {
+    "workflow_runs": [
+      {
+        "id": 42353573118,
+        "name": "Windows native TSF development",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 261,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573118/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573118/logs",
+        "workflow_id": 392037100
+      },
+      {
+        "id": 42353573084,
+        "name": "VoiceKey Android model acceptance (focused)",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 12,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573084/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573084/logs",
+        "workflow_id": 409287107
+      },
+      {
+        "id": 42353573039,
+        "name": "Android native input acceptance",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 234,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573039/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573039/logs",
+        "workflow_id": 392138455
+      },
+      {
+        "id": 42353573054,
+        "name": "Independent ciphertext sync service",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 253,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/logs",
+        "workflow_id": 392053540
+      },
+      {
+        "id": 42353573022,
+        "name": "Offline speech CPU probe",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 209,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573022/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573022/logs",
+        "workflow_id": 393617199
+      },
+      {
+        "id": 42353573085,
+        "name": "ZapIME development checks",
+        "status": "in_progress",
+        "conclusion": null,
+        "run_number": 292,
+        "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573085/jobs",
+        "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573085/logs",
+        "workflow_id": 390189548
+      }
+    ]
+  }
+}

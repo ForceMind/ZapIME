@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 28,
+  "phase": "roundtrip",
+  "cases": [
+    {
+      "id": "strict_https_bootstrap",
+      "passed": true
+    },
+    {
+      "id": "actual_owner_member_session_and_vault",
+      "passed": true
+    },
+    {
+      "id": "same_root_local_recovery",
+      "passed": true
+    },
+    {
+      "id": "owner_register_member_inspect",
+      "passed": true
+    },
+    {
+      "id": "trusted_ca_wrong_san_rejected",
+      "passed": true
+    },
+    {
+      "id": "owner_upload_actual_https",
+      "passed": true
+    },
+    {
+      "id": "member_download_decrypted_no_echo",
+      "passed": true
+    },
+    {
+      "id": "member_upload_owner_download_actual_https",
+      "passed": true
+    },
+    {
+      "id": "final_cursors_head_and_pending",
+      "passed": true
+    },
+    {
+      "id": "production_worker_platform_defaults",
+      "passed": true
+    }
+  ],
+  "cleanup_completed": true,
+  "worker_name_verified": true,
+  "platform_defaults_unchanged": true,
+  "secret_content_or_ciphertext_logged": false,
+  "scope": "One API28 temporary CI emulator with a temporary host-installed system CA, two isolated profiles, production Android HTTPS and actual Go\/PostgreSQL service. Local same-root recovery, bidirectional synthetic favorites and strict hostname rejection; not two devices, stock root-store\/public-PKI, R2, IME input, pairing or phone acceptance.",
+  "android_https": "PASS_FIXTURE_CA",
+  "server_exchange": "actual_go_postgresql",
+  "profiles": 2,
+  "server_head": 2,
+  "final_cursors": [
+    2,
+    2
+  ],
+  "uploaded_operations": 2,
+  "tls_failure_code": "tls"
+}

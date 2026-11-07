@@ -1,0 +1,22 @@
+{
+  "artifact_id": 13567240720,
+  "run_id": 42353573084,
+  "job_id": 128347475674,
+  "source_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "zip_bytes": 10287,
+  "zip_sha256": "1ef886f2cee06caaf264a035bedc80f50b418fda9501cf04c4b4f3b9aacbfd62",
+  "github_digest_matched": true,
+  "original_log_bytes": 232942,
+  "original_log_sha256": "cfa75943a5817d5167086a8828af161667cad9a78ea3ad1a08658ebe1ca7e854",
+  "members": [
+    "ca-store-baseline.json",
+    "compiled-apk-gates.json",
+    "sync-https-after-execution.json",
+    "sync-https-after-report.json",
+    "sync-https-before-execution.json",
+    "sync-https-before-report.json",
+    "sync-https-driver-report.json",
+    "sync-https-roundtrip-execution.json",
+    "sync-https-roundtrip-report.json"
+  ]
+}

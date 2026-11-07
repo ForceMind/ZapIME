@@ -1,0 +1,5 @@
+{
+  "failure_type": "RuntimeError",
+  "sensitive_ui_dump_collected": false,
+  "scope": "Raw instrumentation and sanitized reports retained; provider-only evidence below"
+}

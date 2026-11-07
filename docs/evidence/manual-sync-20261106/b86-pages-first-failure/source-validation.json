@@ -1,0 +1,12 @@
+{
+  "head_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "actual_checkout_commit": "e38889af93144f1bd9076fd2723fd0c1d762f457",
+  "head_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "actual_checkout_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "git_api_tree_equality": true,
+  "build_metadata_artifact_id": 13566408012,
+  "build_metadata_zip_bytes": 669,
+  "build_metadata_zip_sha256": "571b00b3aac7d9b78929d63363c88d6df4eb189ad88b7a76f9c4b7cd1c447c87",
+  "actual_build_metadata_source_matches_checkout": true,
+  "note": "GitHub PR merge checkout and head have the exact same Git tree; source differences are not inferred from differing commit IDs. Build ZIP actually downloaded, sized and hashed against original GitHub artifact digest. No APK/audio/model bytes downloaded by this verifier."
+}

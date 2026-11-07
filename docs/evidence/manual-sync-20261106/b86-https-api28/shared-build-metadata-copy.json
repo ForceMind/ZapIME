@@ -1,0 +1,16 @@
+{
+  "source": "Actual artifact downloaded and checksum-verified by independent Android review agent",
+  "artifact_id": 13566408012,
+  "items": [
+    {
+      "path": "focused-build-metadata.zip",
+      "bytes": 669,
+      "sha256": "571b00b3aac7d9b78929d63363c88d6df4eb189ad88b7a76f9c4b7cd1c447c87"
+    },
+    {
+      "path": "focused-build-metadata-original.json",
+      "bytes": 957,
+      "sha256": "b315f6d63779b79cba37b4164cf8687f0fc26061500252d735b51f9554bda41c"
+    }
+  ]
+}

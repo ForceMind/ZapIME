@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 import copy
 import unittest
-from android_sync_pages_report import (ACTIVATION, CANCEL_SCOPE, CASES, FIELDS, PROOFS, SCOPE, verify_report)
+from android_sync_pages_report import (ACTIVATION, CANCEL_SCOPE, CASES, FAILURE_SUBSTEPS, FIELDS, PROOFS, SCOPE,
+                                       failure_substep, verify_report)
 
 
 class SyncPagesUiReportTests(unittest.TestCase):
@@ -57,6 +58,22 @@ class SyncPagesUiReportTests(unittest.TestCase):
                             ("secret_content_or_code_logged", True), ("button_activation_method", "physical_touch"),
                             ("cancellation_scope", "active_https_abort"), ("scope", SCOPE + " Success")):
             report = copy.deepcopy(self.report); report[name] = value
+            self.reject(report)
+
+    def test_bounded_failure_substep_is_only_diagnostic_and_never_passes(self):
+        self.assertIsNone(failure_substep(self.report))
+        for step in FAILURE_SUBSTEPS:
+            report = copy.deepcopy(self.report); report.update(status="FAIL", failure_substep=step)
+            self.assertEqual(failure_substep(report), step)
+            self.reject(report)
+            report["status"] = "PASS"
+            with self.assertRaises(ValueError): failure_substep(report)
+            self.reject(report)
+
+    def test_failure_substep_refuses_arbitrary_payload_and_type_coercion(self):
+        for value in ("unknown", "queued_request_capture\nsecret", {"step": "queued_positive_click"}, 1, True, None):
+            report = copy.deepcopy(self.report); report.update(status="FAIL", failure_substep=value)
+            with self.assertRaises(ValueError): failure_substep(report)
             self.reject(report)
 
 

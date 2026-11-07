@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 28,
+  "phase": "after",
+  "cases": [
+    {
+      "id": "untrusted_ca_rejected_as_tls",
+      "passed": true
+    },
+    {
+      "id": "production_worker_platform_defaults",
+      "passed": true
+    }
+  ],
+  "cleanup_completed": true,
+  "worker_name_verified": true,
+  "platform_defaults_unchanged": true,
+  "secret_content_or_ciphertext_logged": false,
+  "scope": "One API28 temporary CI emulator, production SyncHttp and unchanged platform TLS defaults; a valid dummy credential must fail specifically as tls before fixture CA installation or after its removal in a fresh process. No profile, server data exchange, public-PKI, phone or R2 acceptance.",
+  "android_https": "TLS_REJECTED",
+  "server_exchange": "not_attempted_untrusted_tls",
+  "profiles": 0,
+  "server_head": null,
+  "final_cursors": [],
+  "uploaded_operations": 0,
+  "tls_failure_code": "tls"
+}

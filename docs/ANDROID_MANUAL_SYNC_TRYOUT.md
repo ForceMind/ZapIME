@@ -42,6 +42,6 @@ curl -fsSL https://raw.githubusercontent.com/ForceMind/ZapIME/e3c4da10b5f90917c2
 
 固定e3c4：focused三端每端47项（14密钥、12传输JNI、11准备、10系统文件）通过并实际下载重验，原键盘/X-ASR/VoiceKey/资料/备份/隐私及真实系统IME退出的API28/35/36完整回归通过。真实服务CI的新共享client17命令、PG/S3、漏洞、容器、安装器及灾备通过。[源码/原件/包校验](evidence/manual-sync-20261106/)与[当前状态](STATUS.md)区分各层。
 
-这份Android离线传输探针使用合成服务器外层，实际服务探针在主机HTTP执行；两者不能合并声称Android手机HTTPS已经通过。新增受控API28真实HTTPS测试、两页生命周期与macOS规范路径夹具修复分别等待新源码CI。e3c4共享检查的原macOS夹具失败已保留，不把Android成功写成全平台成功。
+这份Android离线传输探针使用合成服务器外层，实际服务探针在主机HTTP执行；两者不能合并声称Android手机HTTPS已经通过。后续b86已在真正macOS/Linux/Windows通过规范路径修复，共享检查分别118/118/115，Apple模拟器XCTest3通过；API28临时系统CA真实HTTPS14项也已下载重验，通过真实Go/PG双profile同步与信任前后负检查。它不是原厂根库或手机公网PKI证明，不能把它倒填成旧e3 APK的相同字节运行。新增两页取消流程的测试驱动存在异步派发观察问题，原三端失败保留，最小驱动修复待复验；产品逻辑不变。
 
 三星S25、自然人声、手机HTTPS、原厂信任库/公网证书、实际Cloudflare R2、两台物理设备、正式签名与升级、冲突解决、旧密钥迁移、完整配对/灾备和四端同步仍未完成相应验收。界面与文档的具体限制见[手动同步契约](ANDROID_MANUAL_SYNC.md)。
