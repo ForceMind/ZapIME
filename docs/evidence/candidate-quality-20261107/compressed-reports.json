@@ -1,0 +1,26 @@
+[
+  {
+    "file": "host-v1-final.json.gz",
+    "raw_sha256": "21e3a4bd43f81cd6d47daeceda8cec5235874254ffe16763b548e197a8fde101",
+    "raw_bytes": 193327,
+    "encoding": "gzip"
+  },
+  {
+    "file": "host-v2-ort128.json.gz",
+    "raw_sha256": "52e949001afdd054ea6ee4688a1c629a1d3711c056b9df7c4a9aa854b40e3dc3",
+    "raw_bytes": 193521,
+    "encoding": "gzip"
+  },
+  {
+    "file": "host-v2-ort124.json.gz",
+    "raw_sha256": "6b1166d2e947a52fda4b664fb43d21ce18ba637f9dc5da34854dbaf61d20df89",
+    "raw_bytes": 193555,
+    "encoding": "gzip"
+  },
+  {
+    "file": "host-v1-first-completed.json.gz",
+    "raw_sha256": "8af2192b71388432a43190e0f7f6914059b10ea4210d4fcfd2c152da0e70bd32",
+    "raw_bytes": 193324,
+    "encoding": "gzip"
+  }
+]

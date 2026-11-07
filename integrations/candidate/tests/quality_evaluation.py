@@ -7,6 +7,7 @@ The frozen corpus is intentionally small and is not a population accuracy set.
 """
 import argparse
 import datetime
+import ctypes
 import json
 import math
 import os
@@ -25,14 +26,27 @@ from default_pool_probe import Core, MODEL_ID, HOST_ORT_VERSION, ROOT, digest, v
 sys.path.insert(0, str(ROOT / "scripts"))
 from candidate_evaluation import summarize  # noqa: E402
 
-CORPUS = Path(__file__).with_name("quality-corpus-v1.json")
-CORPUS_SHA256 = "c78d359e6e396befcddbf16eab286b8055bd8b16a748545aebc3856ac89109da"
-FROZEN_COMMIT = "75ae851acb570abbd5295aafa52eda41b33f9c2b"
+CORPORA = {
+    "v1": ("c78d359e6e396befcddbf16eab286b8055bd8b16a748545aebc3856ac89109da",
+           "75ae851acb570abbd5295aafa52eda41b33f9c2b"),
+    "v2": ("3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
+           "452a7660c6a6f40663841a7b53692f3b90ba2d51"),
+}
+CORPUS = Path(__file__).with_name("quality-corpus-v2.json")
 
 
 def require(condition):
     if not condition:
         raise ValueError("candidate_quality_contract_failed")
+
+
+def runtime_version(path):
+    library = ctypes.CDLL(str(path))
+    class ApiBase(ctypes.Structure):
+        _fields_ = [("get_api", ctypes.c_void_p),
+                    ("get_version", ctypes.CFUNCTYPE(ctypes.c_char_p))]
+    library.OrtGetApiBase.restype = ctypes.POINTER(ApiBase)
+    return library.OrtGetApiBase().contents.get_version().decode("ascii")
 
 
 def memory(pid):
@@ -132,7 +146,7 @@ def observation(case, baseline, ranked, elapsed):
 
 
 def load_corpus(path):
-    require(digest(path) == CORPUS_SHA256)
+    require(digest(path) in {spec[0] for spec in CORPORA.values()})
     corpus = json.loads(path.read_text())
     require(corpus["synthetic"] is True and len(corpus["cases"]) == 34)
     require(len({(x.get("layout", "qwerty"), x["code"], x["context"]) for x in corpus["cases"]}) == 34)
@@ -177,6 +191,17 @@ def distribution(values):
                 p95=values[math.ceil(len(values) * .95) - 1], maximum=values[-1], method="nearest_rank")
 
 
+def selection_cost(samples):
+    result = {}
+    for name in ("baseline", "ranked"):
+        positions = [next((i for i, identifier in enumerate(s[name]) if identifier in s["expected"]), None)
+                     for s in samples]
+        covered = [i for i in positions if i is not None]
+        result[name] = dict(covered_cases=len(covered), missing_cases=len(samples) - len(covered),
+                            mean_visible_index=sum(covered) / len(covered) if covered else None)
+    return result
+
+
 def evaluate(core, probe, resources, corpus, reports):
     with tempfile.TemporaryDirectory(prefix="candidate-quality-", dir=ROOT / "target") as temporary:
         for mode in ("empty_context", "contextual"):
@@ -201,10 +226,16 @@ def evaluate(core, probe, resources, corpus, reports):
             report["latency_scope"] = "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time"
             report["score_roundtrip_ms"] = distribution([s["latency_ms"] for s, d in zip(samples, details, strict=True) if d["model_called"]])
             report["warm_roundtrip_ms"] = distribution([d["warm_roundtrip_ms"] for d in details if d["model_called"]])
-            report["model_calls"] = sum(d["model_called"] for d in details)
+            report["scored_cases"] = sum(d["model_called"] for d in details)
+            report["native_score_calls"] = 2 * report["scored_cases"]
+            report["cache_clear_calls"] = report["scored_cases"]
+            report["selection_cost_proxy"] = selection_cost(samples)
             report["by_category"] = {category: summarize(dict(schema_version=1, synthetic=True,
                                        cases=[s for s, d in zip(samples, details, strict=True) if d["category"] == category]))
                                      for category in sorted({x["category"] for x in details})}
+            for group in report["by_category"].values():
+                group.pop("model_executed")
+                group["scope"] = "aggregation_of_this_mode_subset"
             report["observations"] = samples
             report["details"] = details
             reports[mode] = report
@@ -217,10 +248,15 @@ def main():
     parser.add_argument("--model-dir", type=Path, default=ROOT / "target/candidate-model" / MODEL_ID)
     parser.add_argument("--probe", type=Path, default=ROOT / "target/candidate-host/ranker_probe")
     parser.add_argument("--report", type=Path, required=True)
+    parser.add_argument("--runtime", type=Path, help="optional official host runtime; record actual version and hash")
+    parser.add_argument("--corpus-version", choices=tuple(CORPORA), default="v2")
     args = parser.parse_args()
     require(platform.system() == "Linux" and onnxruntime.__version__ == HOST_ORT_VERSION)
-    corpus = load_corpus(CORPUS)
-    runtime = next((Path(onnxruntime.__file__).parent / "capi").glob("libonnxruntime.so*")).resolve()
+    corpus_path = Path(__file__).with_name("quality-corpus-" + args.corpus_version + ".json")
+    corpus = load_corpus(corpus_path)
+    runtime = (args.runtime or next((Path(onnxruntime.__file__).parent / "capi").glob("libonnxruntime.so*"))).resolve()
+    actual_runtime_version = runtime_version(runtime)
+    require(actual_runtime_version in (HOST_ORT_VERSION, "1.28.2"))
     lock_path = ROOT / "third_party/candidate-model-lock.json"
     lock = json.loads(lock_path.read_text())
     for name, spec in lock["files"].items():
@@ -236,10 +272,12 @@ def main():
     report = dict(schema_version=1, scope="frozen_synthetic_linux_host_quality_not_android_or_population_accuracy",
                   completed=False, phone_performance_evaluated=False, energy_evaluated=False,
                   utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                  corpus_sha256=CORPUS_SHA256, corpus_frozen_commit=FROZEN_COMMIT,
+                  corpus_sha256=CORPORA[args.corpus_version][0],
+                  corpus_frozen_commit=CORPORA[args.corpus_version][1], corpus_version=args.corpus_version,
                   host=dict(os=platform.system(), kernel=platform.release(), machine=platform.machine(),
                             logical_cpus=os.cpu_count(), python=platform.python_version()),
-                  runtime_version=HOST_ORT_VERSION, model_id=MODEL_ID,
+                  runtime_version=actual_runtime_version, model_id=MODEL_ID,
+                  runtime_origin="caller-selected" if args.runtime else "pinned-host-python-package",
                   configured_threads=dict(intra_op=2, inter_op=1, spinning=False),
                   identity={name: digest(path) for name, path in {
                       "core_binary": args.core, "native_probe": args.probe,

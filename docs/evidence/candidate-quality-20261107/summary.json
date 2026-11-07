@@ -1,0 +1,1246 @@
+{
+  "124": {
+    "schema_version": 1,
+    "scope": "frozen_synthetic_linux_host_quality_not_android_or_population_accuracy",
+    "completed": true,
+    "phone_performance_evaluated": false,
+    "energy_evaluated": false,
+    "utc": "2026-11-07T15:48:34.949820+00:00",
+    "corpus_sha256": "3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
+    "corpus_frozen_commit": "452a7660c6a6f40663841a7b53692f3b90ba2d51",
+    "corpus_version": "v2",
+    "host": {
+      "os": "Linux",
+      "kernel": "6.18.57",
+      "machine": "x86_64",
+      "logical_cpus": 9,
+      "python": "3.12.14"
+    },
+    "runtime_version": "1.24.4",
+    "model_id": "msime-keystroke-8m-rerank-v2",
+    "runtime_origin": "pinned-host-python-package",
+    "configured_threads": {
+      "intra_op": 2,
+      "inter_op": 1,
+      "spinning": false
+    },
+    "identity": {
+      "core_binary": "f9ec93a87ede615e032297d36242cbccb2372d8a5bd5b269a8c695c4fe4f076e",
+      "native_probe": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+      "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+      "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+      "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+      "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+      "runner": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7",
+      "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+    },
+    "model_process_load_ms": 56.85546099994099,
+    "loaded_worker_memory_kib": {
+      "VmHWM": 53612,
+      "VmRSS": 37104,
+      "Threads": 2
+    },
+    "final_worker_memory_kib": {
+      "VmHWM": 53612,
+      "VmRSS": 38492,
+      "Threads": 2
+    },
+    "modes": {
+      "empty_context": {
+        "schema_version": 1,
+        "scope": "supplied_unique_synthetic_paired_observations",
+        "model_executed": true,
+        "phone_performance_evaluated": false,
+        "cases": 34,
+        "target_covered": 34,
+        "target_missing": 0,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 14,
+            "top3": 27,
+            "top1_rate": 0.4117647058823529,
+            "top3_rate": 0.7941176470588235,
+            "mrr": 0.6062388591800357
+          }
+        },
+        "improved": 2,
+        "regressed": 6,
+        "unchanged": 26,
+        "top1_rescued": 0,
+        "top1_harmed": 3,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 1.9443780038272962,
+          "p95": 3.221473001758568,
+          "maximum": 3.2855959943844937
+        },
+        "completed": true,
+        "latency_scope": "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time",
+        "score_roundtrip_ms": {
+          "samples": 32,
+          "p50": 2.015287995163817,
+          "p95": 3.221473001758568,
+          "maximum": 3.2855959943844937,
+          "method": "nearest_rank"
+        },
+        "warm_roundtrip_ms": {
+          "samples": 32,
+          "p50": 0.27277499611955136,
+          "p95": 0.3880459989886731,
+          "maximum": 0.4548459983197972,
+          "method": "nearest_rank"
+        },
+        "scored_cases": 32,
+        "native_score_calls": 64,
+        "cache_clear_calls": 32,
+        "selection_cost_proxy": {
+          "baseline": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.264705882352941
+          },
+          "ranked": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.0588235294117645
+          }
+        },
+        "by_category": {
+          "completion_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 1.7923400009749457,
+              "p95": 2.2302290017250925,
+              "maximum": 2.2302290017250925
+            }
+          },
+          "everyday": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 7,
+            "target_covered": 7,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              },
+              "ranked": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 7,
+              "method": "nearest_rank",
+              "p50": 1.7884140033856966,
+              "p95": 2.435397000226658,
+              "maximum": 2.435397000226658
+            }
+          },
+          "homophone": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 13,
+            "target_covered": 13,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 6,
+                "top3": 11,
+                "top1_rate": 0.46153846153846156,
+                "top3_rate": 0.8461538461538461,
+                "mrr": 0.6602564102564101
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 10,
+                "top1_rate": 0.3076923076923077,
+                "top3_rate": 0.7692307692307693,
+                "mrr": 0.5378205128205128
+              }
+            },
+            "improved": 1,
+            "regressed": 5,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 2,
+            "latency_ms": {
+              "samples": 13,
+              "method": "nearest_rank",
+              "p50": 2.4632129934616387,
+              "p95": 3.221473001758568,
+              "maximum": 3.221473001758568
+            }
+          },
+          "nine_key": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 6,
+            "target_covered": 6,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 3,
+                "top3": 5,
+                "top1_rate": 0.5,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7000000000000001
+              },
+              "ranked": {
+                "top1": 2,
+                "top3": 5,
+                "top1_rate": 0.3333333333333333,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.5888888888888889
+              }
+            },
+            "improved": 0,
+            "regressed": 1,
+            "unchanged": 5,
+            "top1_rescued": 0,
+            "top1_harmed": 1,
+            "latency_ms": {
+              "samples": 6,
+              "method": "nearest_rank",
+              "p50": 2.23746999836294,
+              "p95": 3.2855959943844937,
+              "maximum": 3.2855959943844937
+            }
+          },
+          "partial_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 0,
+              "p95": 0,
+              "maximum": 0
+            }
+          },
+          "single_character": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 4,
+            "target_covered": 4,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.4722222222222222
+              },
+              "ranked": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.5208333333333333
+              }
+            },
+            "improved": 1,
+            "regressed": 0,
+            "unchanged": 3,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 4,
+              "method": "nearest_rank",
+              "p50": 1.2890530051663518,
+              "p95": 1.5271860029315576,
+              "maximum": 1.5271860029315576
+            }
+          }
+        }
+      },
+      "contextual": {
+        "schema_version": 1,
+        "scope": "supplied_unique_synthetic_paired_observations",
+        "model_executed": true,
+        "phone_performance_evaluated": false,
+        "cases": 34,
+        "target_covered": 34,
+        "target_missing": 0,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 25,
+            "top3": 30,
+            "top1_rate": 0.7352941176470589,
+            "top3_rate": 0.8823529411764706,
+            "mrr": 0.8148172905525847
+          }
+        },
+        "improved": 11,
+        "regressed": 0,
+        "unchanged": 23,
+        "top1_rescued": 8,
+        "top1_harmed": 0,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 3.16192299942486,
+          "p95": 8.540041999367531,
+          "maximum": 10.033842001575977
+        },
+        "completed": true,
+        "latency_scope": "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time",
+        "score_roundtrip_ms": {
+          "samples": 32,
+          "p50": 3.2481499947607517,
+          "p95": 8.540041999367531,
+          "maximum": 10.033842001575977,
+          "method": "nearest_rank"
+        },
+        "warm_roundtrip_ms": {
+          "samples": 32,
+          "p50": 0.4450109991012141,
+          "p95": 6.767250997654628,
+          "maximum": 11.73998599551851,
+          "method": "nearest_rank"
+        },
+        "scored_cases": 32,
+        "native_score_calls": 64,
+        "cache_clear_calls": 32,
+        "selection_cost_proxy": {
+          "baseline": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.264705882352941
+          },
+          "ranked": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 1.2941176470588236
+          }
+        },
+        "by_category": {
+          "completion_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 3.16192299942486,
+              "p95": 5.145745999470819,
+              "maximum": 5.145745999470819
+            }
+          },
+          "everyday": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 7,
+            "target_covered": 7,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              },
+              "ranked": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 7,
+              "method": "nearest_rank",
+              "p50": 2.4799099992378615,
+              "p95": 8.540041999367531,
+              "maximum": 8.540041999367531
+            }
+          },
+          "homophone": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 13,
+            "target_covered": 13,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 6,
+                "top3": 11,
+                "top1_rate": 0.46153846153846156,
+                "top3_rate": 0.8461538461538461,
+                "mrr": 0.6602564102564101
+              },
+              "ranked": {
+                "top1": 10,
+                "top3": 12,
+                "top1_rate": 0.7692307692307693,
+                "top3_rate": 0.9230769230769231,
+                "mrr": 0.8461538461538463
+              }
+            },
+            "improved": 7,
+            "regressed": 0,
+            "unchanged": 6,
+            "top1_rescued": 4,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 13,
+              "method": "nearest_rank",
+              "p50": 3.3103329988080077,
+              "p95": 4.599760002747644,
+              "maximum": 4.599760002747644
+            }
+          },
+          "nine_key": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 6,
+            "target_covered": 6,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 3,
+                "top3": 5,
+                "top1_rate": 0.5,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7000000000000001
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 5,
+                "top1_rate": 0.6666666666666666,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7833333333333333
+              }
+            },
+            "improved": 1,
+            "regressed": 0,
+            "unchanged": 5,
+            "top1_rescued": 1,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 6,
+              "method": "nearest_rank",
+              "p50": 3.449820003879722,
+              "p95": 10.033842001575977,
+              "maximum": 10.033842001575977
+            }
+          },
+          "partial_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 0,
+              "p95": 0,
+              "maximum": 0
+            }
+          },
+          "single_character": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 4,
+            "target_covered": 4,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.4722222222222222
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 4,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 3,
+            "regressed": 0,
+            "unchanged": 1,
+            "top1_rescued": 3,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 4,
+              "method": "nearest_rank",
+              "p50": 1.7023049949784763,
+              "p95": 2.21479800529778,
+              "maximum": 2.21479800529778
+            }
+          }
+        }
+      }
+    }
+  },
+  "128": {
+    "schema_version": 1,
+    "scope": "frozen_synthetic_linux_host_quality_not_android_or_population_accuracy",
+    "completed": true,
+    "phone_performance_evaluated": false,
+    "energy_evaluated": false,
+    "utc": "2026-11-07T15:48:23.447903+00:00",
+    "corpus_sha256": "3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
+    "corpus_frozen_commit": "452a7660c6a6f40663841a7b53692f3b90ba2d51",
+    "corpus_version": "v2",
+    "host": {
+      "os": "Linux",
+      "kernel": "6.18.57",
+      "machine": "x86_64",
+      "logical_cpus": 9,
+      "python": "3.12.14"
+    },
+    "runtime_version": "1.28.2",
+    "model_id": "msime-keystroke-8m-rerank-v2",
+    "runtime_origin": "caller-selected",
+    "configured_threads": {
+      "intra_op": 2,
+      "inter_op": 1,
+      "spinning": false
+    },
+    "identity": {
+      "core_binary": "f9ec93a87ede615e032297d36242cbccb2372d8a5bd5b269a8c695c4fe4f076e",
+      "native_probe": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+      "runtime": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+      "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+      "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+      "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+      "runner": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7",
+      "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+    },
+    "model_process_load_ms": 54.44682099914644,
+    "loaded_worker_memory_kib": {
+      "VmHWM": 54620,
+      "VmRSS": 37620,
+      "Threads": 2
+    },
+    "final_worker_memory_kib": {
+      "VmHWM": 54620,
+      "VmRSS": 38896,
+      "Threads": 2
+    },
+    "modes": {
+      "empty_context": {
+        "schema_version": 1,
+        "scope": "supplied_unique_synthetic_paired_observations",
+        "model_executed": true,
+        "phone_performance_evaluated": false,
+        "cases": 34,
+        "target_covered": 34,
+        "target_missing": 0,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 14,
+            "top3": 27,
+            "top1_rate": 0.4117647058823529,
+            "top3_rate": 0.7941176470588235,
+            "mrr": 0.6062388591800357
+          }
+        },
+        "improved": 2,
+        "regressed": 6,
+        "unchanged": 26,
+        "top1_rescued": 0,
+        "top1_harmed": 3,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 3.113799000857398,
+          "p95": 5.476795005961321,
+          "maximum": 7.793493001372553
+        },
+        "completed": true,
+        "latency_scope": "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time",
+        "score_roundtrip_ms": {
+          "samples": 32,
+          "p50": 3.2580749975750223,
+          "p95": 5.476795005961321,
+          "maximum": 7.793493001372553,
+          "method": "nearest_rank"
+        },
+        "warm_roundtrip_ms": {
+          "samples": 32,
+          "p50": 0.40178599738283083,
+          "p95": 6.357521997415461,
+          "maximum": 19.267056006356142,
+          "method": "nearest_rank"
+        },
+        "scored_cases": 32,
+        "native_score_calls": 64,
+        "cache_clear_calls": 32,
+        "selection_cost_proxy": {
+          "baseline": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.264705882352941
+          },
+          "ranked": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.0588235294117645
+          }
+        },
+        "by_category": {
+          "completion_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 3.2580749975750223,
+              "p95": 3.5185610031476244,
+              "maximum": 3.5185610031476244
+            }
+          },
+          "everyday": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 7,
+            "target_covered": 7,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              },
+              "ranked": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 7,
+              "method": "nearest_rank",
+              "p50": 2.4124999981722794,
+              "p95": 5.476795005961321,
+              "maximum": 5.476795005961321
+            }
+          },
+          "homophone": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 13,
+            "target_covered": 13,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 6,
+                "top3": 11,
+                "top1_rate": 0.46153846153846156,
+                "top3_rate": 0.8461538461538461,
+                "mrr": 0.6602564102564101
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 10,
+                "top1_rate": 0.3076923076923077,
+                "top3_rate": 0.7692307692307693,
+                "mrr": 0.5378205128205128
+              }
+            },
+            "improved": 1,
+            "regressed": 5,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 2,
+            "latency_ms": {
+              "samples": 13,
+              "method": "nearest_rank",
+              "p50": 3.632369000115432,
+              "p95": 7.793493001372553,
+              "maximum": 7.793493001372553
+            }
+          },
+          "nine_key": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 6,
+            "target_covered": 6,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 3,
+                "top3": 5,
+                "top1_rate": 0.5,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7000000000000001
+              },
+              "ranked": {
+                "top1": 2,
+                "top3": 5,
+                "top1_rate": 0.3333333333333333,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.5888888888888889
+              }
+            },
+            "improved": 0,
+            "regressed": 1,
+            "unchanged": 5,
+            "top1_rescued": 0,
+            "top1_harmed": 1,
+            "latency_ms": {
+              "samples": 6,
+              "method": "nearest_rank",
+              "p50": 3.355859997100197,
+              "p95": 5.034681998949964,
+              "maximum": 5.034681998949964
+            }
+          },
+          "partial_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 0,
+              "p95": 0,
+              "maximum": 0
+            }
+          },
+          "single_character": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 4,
+            "target_covered": 4,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.4722222222222222
+              },
+              "ranked": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.5208333333333333
+              }
+            },
+            "improved": 1,
+            "regressed": 0,
+            "unchanged": 3,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 4,
+              "method": "nearest_rank",
+              "p50": 1.517261000117287,
+              "p95": 2.194216001953464,
+              "maximum": 2.194216001953464
+            }
+          }
+        }
+      },
+      "contextual": {
+        "schema_version": 1,
+        "scope": "supplied_unique_synthetic_paired_observations",
+        "model_executed": true,
+        "phone_performance_evaluated": false,
+        "cases": 34,
+        "target_covered": 34,
+        "target_missing": 0,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 26,
+            "top3": 30,
+            "top1_rate": 0.7647058823529411,
+            "top3_rate": 0.8823529411764706,
+            "mrr": 0.8295231729055258
+          }
+        },
+        "improved": 11,
+        "regressed": 0,
+        "unchanged": 23,
+        "top1_rescued": 9,
+        "top1_harmed": 0,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 3.600832998927217,
+          "p95": 6.262812996283174,
+          "maximum": 6.343242996081244
+        },
+        "completed": true,
+        "latency_scope": "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time",
+        "score_roundtrip_ms": {
+          "samples": 32,
+          "p50": 3.622914999141358,
+          "p95": 6.262812996283174,
+          "maximum": 6.343242996081244,
+          "method": "nearest_rank"
+        },
+        "warm_roundtrip_ms": {
+          "samples": 32,
+          "p50": 0.4039089981233701,
+          "p95": 1.5488480057683773,
+          "maximum": 4.608778996043839,
+          "method": "nearest_rank"
+        },
+        "scored_cases": 32,
+        "native_score_calls": 64,
+        "cache_clear_calls": 32,
+        "selection_cost_proxy": {
+          "baseline": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 2.264705882352941
+          },
+          "ranked": {
+            "covered_cases": 34,
+            "missing_cases": 0,
+            "mean_visible_index": 1.2647058823529411
+          }
+        },
+        "by_category": {
+          "completion_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 0,
+                "top1_rate": 0.0,
+                "top3_rate": 0.0,
+                "mrr": 0.08522727272727273
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 2.7226000020164065,
+              "p95": 3.6889940020046197,
+              "maximum": 3.6889940020046197
+            }
+          },
+          "everyday": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 7,
+            "target_covered": 7,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              },
+              "ranked": {
+                "top1": 7,
+                "top3": 7,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 7,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 7,
+              "method": "nearest_rank",
+              "p50": 3.6986680061090738,
+              "p95": 5.002212004910689,
+              "maximum": 5.002212004910689
+            }
+          },
+          "homophone": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 13,
+            "target_covered": 13,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 6,
+                "top3": 11,
+                "top1_rate": 0.46153846153846156,
+                "top3_rate": 0.8461538461538461,
+                "mrr": 0.6602564102564101
+              },
+              "ranked": {
+                "top1": 11,
+                "top3": 12,
+                "top1_rate": 0.8461538461538461,
+                "top3_rate": 0.9230769230769231,
+                "mrr": 0.8846153846153848
+              }
+            },
+            "improved": 7,
+            "regressed": 0,
+            "unchanged": 6,
+            "top1_rescued": 5,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 13,
+              "method": "nearest_rank",
+              "p50": 4.430133994901553,
+              "p95": 6.343242996081244,
+              "maximum": 6.343242996081244
+            }
+          },
+          "nine_key": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 6,
+            "target_covered": 6,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 3,
+                "top3": 5,
+                "top1_rate": 0.5,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7000000000000001
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 5,
+                "top1_rate": 0.6666666666666666,
+                "top3_rate": 0.8333333333333334,
+                "mrr": 0.7833333333333333
+              }
+            },
+            "improved": 1,
+            "regressed": 0,
+            "unchanged": 5,
+            "top1_rescued": 1,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 6,
+              "method": "nearest_rank",
+              "p50": 3.622914999141358,
+              "p95": 5.390248996263836,
+              "maximum": 5.390248996263836
+            }
+          },
+          "partial_boundary": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 2,
+            "target_covered": 2,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              },
+              "ranked": {
+                "top1": 0,
+                "top3": 2,
+                "top1_rate": 0.0,
+                "top3_rate": 1.0,
+                "mrr": 0.41666666666666663
+              }
+            },
+            "improved": 0,
+            "regressed": 0,
+            "unchanged": 2,
+            "top1_rescued": 0,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 2,
+              "method": "nearest_rank",
+              "p50": 0,
+              "p95": 0,
+              "maximum": 0
+            }
+          },
+          "single_character": {
+            "schema_version": 1,
+            "scope": "aggregation_of_this_mode_subset",
+            "phone_performance_evaluated": false,
+            "cases": 4,
+            "target_covered": 4,
+            "target_missing": 0,
+            "metrics": {
+              "baseline": {
+                "top1": 1,
+                "top3": 3,
+                "top1_rate": 0.25,
+                "top3_rate": 0.75,
+                "mrr": 0.4722222222222222
+              },
+              "ranked": {
+                "top1": 4,
+                "top3": 4,
+                "top1_rate": 1.0,
+                "top3_rate": 1.0,
+                "mrr": 1.0
+              }
+            },
+            "improved": 3,
+            "regressed": 0,
+            "unchanged": 1,
+            "top1_rescued": 3,
+            "top1_harmed": 0,
+            "latency_ms": {
+              "samples": 4,
+              "method": "nearest_rank",
+              "p50": 2.181757001380902,
+              "p95": 2.935456002887804,
+              "maximum": 2.935456002887804
+            }
+          }
+        }
+      }
+    }
+  }
+}

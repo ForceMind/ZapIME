@@ -3,8 +3,9 @@ import copy
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from quality_evaluation import apply_order, distribution, load_corpus, CORPUS, observation
+from quality_evaluation import apply_order, distribution, load_corpus, CORPUS, observation, selection_cost, evaluate
 
 
 class CoreResult:
@@ -66,6 +67,29 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(sample["expected"], ["absent-target"])
         self.assertFalse(set(sample["expected"]) & set(sample["baseline"]))
         self.assertNotIn("丁", str(sample))
+
+    def test_selection_cost_does_not_hide_missing_targets(self):
+        samples = [dict(expected=["a"], baseline=["b", "a"], ranked=["a", "b"]),
+                   dict(expected=["absent"], baseline=["a", "b"], ranked=["b", "a"])]
+        cost = selection_cost(samples)
+        self.assertEqual(cost["baseline"], dict(covered_cases=1, missing_cases=1, mean_visible_index=1))
+        self.assertEqual(cost["ranked"]["mean_visible_index"], 0)
+        self.assertIsNone(selection_cost(samples[1:])["ranked"]["mean_visible_index"])
+
+    def test_failed_case_keeps_completed_observations_without_success(self):
+        reports = {}
+        cases = [dict(id="first", context=""), dict(id="second", context="")]
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "target").mkdir()
+            with patch("quality_evaluation.ROOT", root), patch("quality_evaluation.run_case") as run:
+                run.side_effect = [(dict(id="first"), dict(category="synthetic")), ValueError("fixed")]
+                with self.assertRaises(ValueError):
+                    evaluate(None, None, None, dict(cases=cases), reports)
+        self.assertFalse(reports["empty_context"]["completed"])
+        self.assertEqual(reports["empty_context"]["failed_case_id"], "second")
+        self.assertEqual(len(reports["empty_context"]["observations"]), 1)
+        self.assertNotIn("contextual", reports)
 
     def test_inference_distribution_does_not_count_noop_cases(self):
         self.assertEqual(distribution([]), dict(samples=0))
