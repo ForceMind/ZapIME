@@ -1,0 +1,46 @@
+{
+  "source_commit": "4985350e8a7e30257afb58f12cf938c056ab8618",
+  "verified": true,
+  "artifacts": [
+    {
+      "path": "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+      "bytes": 60060890,
+      "sha256": "5077e7ba7ad068a927d9576f9fe5f54bc0cb1ca4ac8cb0c938eb33edd401737d",
+      "certificate_sha256": "4767658e806a82f10565ab48f2547e98b4c0754ba2202dad3398718a1cf220d5",
+      "signature_v3": true,
+      "zip_16k_alignment_passed": true,
+      "apk_entry_changes_from_implementation_build": [
+        "META-INF/ZAPIME-D.RSA"
+      ],
+      "product_payload_unchanged": true
+    },
+    {
+      "path": "android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+      "bytes": 58745799,
+      "sha256": "ac13a27b5271173483b4b7270f3dca21e459e0e5a1d733764b77eacba0629f2e",
+      "certificate_sha256": "4767658e806a82f10565ab48f2547e98b4c0754ba2202dad3398718a1cf220d5",
+      "signature_v3": true,
+      "zip_16k_alignment_passed": true,
+      "apk_entry_changes_from_implementation_build": [
+        "META-INF/ZAPIME-D.RSA"
+      ],
+      "product_payload_unchanged": true
+    },
+    {
+      "path": "android-tests/ZapIME-tests.apk",
+      "bytes": 53748,
+      "sha256": "65269af64f70afed9c18269243fcc41db2fb66c1cd04ad6b610737a733a238d4",
+      "certificate_sha256": "4767658e806a82f10565ab48f2547e98b4c0754ba2202dad3398718a1cf220d5",
+      "signature_v3": true,
+      "zip_16k_alignment_passed": true
+    },
+    {
+      "path": "android-voice-tests/ZapIME-voice-tests.apk",
+      "bytes": 861235,
+      "sha256": "da27fc44ff3608e368500dee431a4254d499287aa2fa65499ac1b60652f57145",
+      "certificate_sha256": "4767658e806a82f10565ab48f2547e98b4c0754ba2202dad3398718a1cf220d5",
+      "signature_v3": true,
+      "zip_16k_alignment_passed": true
+    }
+  ]
+}

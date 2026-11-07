@@ -1,0 +1,423 @@
+// SPDX-License-Identifier: GPL-3.0-only
+package org.zapime.android.test;
+
+import android.app.Instrumentation;
+import android.app.UiAutomation;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.os.SystemClock;
+import android.text.Editable;
+import android.view.InputDevice;
+import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.InputMethodManager;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/**
+ * Production system-IME path, from injected touchscreen key events to an
+ * independent Editable. No product reflection, JNI calls, preference writes,
+ * dictionary replacement, fake scores or direct editor writes are permitted.
+ */
+final class CandidateImeProbe {
+    private static final String SCOPE = "production-system-ime-candidate-ranking";
+    private static final String MODEL_ID = "msime-keystroke-8m-rerank-v2";
+    private static final String[] FIXTURES = {"shijie", "tianqi"};
+    private static final Pattern RANKING = Pattern.compile(
+            "(?m)^\\s*ZapIME candidate ranking: enabled=(true|false) eligible=(true|false) state=([a-z_]+) scored=([0-9]+) inputRevision=([0-9]+) appliedRevision=(-1|[0-9]+)\\s*$");
+    private final Instrumentation instrumentation;
+    private final UiAutomation automation;
+    private final String token;
+    private final File output;
+    private final JSONObject report = new JSONObject();
+    private final JSONArray attempts = new JSONArray();
+    private String stage = "launch";
+    private int keyTaps;
+
+    private static final class Editor {
+        String text, committed;
+        boolean composing, served, focused;
+        int animations, animationVersion;
+    }
+
+    private static final class Stats {
+        boolean enabled, eligible;
+        int scored;
+        long inputRevision, appliedRevision;
+        String state, line;
+    }
+
+    private static final class Choice {
+        final String text;
+        final Rect bounds;
+        Choice(String text, Rect bounds) { this.text = text; this.bounds = bounds; }
+    }
+
+    private CandidateImeProbe(Instrumentation instrumentation, UiAutomation automation, String token) throws Exception {
+        this.instrumentation = instrumentation;
+        this.automation = automation;
+        this.token = token;
+        output = instrumentation.getTargetContext().getExternalFilesDir(null);
+        require(output != null && output.isDirectory(), "report_directory_unavailable");
+    }
+
+    static void run(Instrumentation instrumentation, UiAutomation automation, String token) throws Exception {
+        require(token != null && token.matches("[0-9]+-[0-9]+"), "candidate_ci_token_required");
+        new CandidateImeProbe(instrumentation, automation, token).execute();
+    }
+
+    private static void require(boolean condition, String reason) throws Exception {
+        if (!condition) throw new Exception(reason);
+    }
+
+    private Editor editor() throws Exception {
+        final Editor[] result = new Editor[1];
+        instrumentation.runOnMainSync(() -> {
+            ProbeActivity activity = ProbeActivity.current.get();
+            if (activity == null) return;
+            Editable value = activity.normal.getText();
+            int start = BaseInputConnection.getComposingSpanStart(value);
+            int end = BaseInputConnection.getComposingSpanEnd(value);
+            Editor state = new Editor();
+            state.text = value.toString();
+            state.composing = start >= 0 && end >= start;
+            state.committed = state.composing ? state.text.substring(0, start) + state.text.substring(end) : state.text;
+            state.focused = activity.normal.hasWindowFocus() && activity.normal.hasFocus();
+            state.served = ((InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE)).isActive(activity.normal);
+            state.animations = activity.activeImeAnimations;
+            state.animationVersion = activity.imeAnimationVersion;
+            result[0] = state;
+        });
+        require(result[0] != null, "independent_editor_unavailable");
+        return result[0];
+    }
+
+    private AccessibilityNodeInfo button(AccessibilityNodeInfo node, String label) {
+        if (node == null || !node.refresh()) return null;
+        if ("android.widget.Button".contentEquals(node.getClassName() == null ? "" : node.getClassName())
+                && node.isVisibleToUser() && node.isEnabled()
+                && (label.contentEquals(node.getText() == null ? "" : node.getText())
+                    || label.contentEquals(node.getContentDescription() == null ? "" : node.getContentDescription()))) return node;
+        for (int i = 0; i < node.getChildCount(); ++i) {
+            AccessibilityNodeInfo found = button(node.getChild(i), label);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private AccessibilityNodeInfo imeButton(String label) {
+        for (AccessibilityWindowInfo window : automation.getWindows()) {
+            if (window.getType() != AccessibilityWindowInfo.TYPE_INPUT_METHOD) continue;
+            AccessibilityNodeInfo root = window.getRoot();
+            if (root == null || !"org.zapime.android".contentEquals(root.getPackageName() == null ? "" : root.getPackageName())) continue;
+            AccessibilityNodeInfo found = button(root, label);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    private boolean hasLabel(AccessibilityNodeInfo node, String label) {
+        if (node == null || !node.refresh()) return false;
+        if (node.isVisibleToUser() && (label.contentEquals(node.getText() == null ? "" : node.getText())
+                || label.contentEquals(node.getContentDescription() == null ? "" : node.getContentDescription()))) return true;
+        for (int i = 0; i < node.getChildCount(); ++i) if (hasLabel(node.getChild(i), label)) return true;
+        return false;
+    }
+
+    private void awaitReadyEditor() throws Exception {
+        long end = SystemClock.uptimeMillis() + 15000;
+        while (SystemClock.uptimeMillis() < end) {
+            final boolean[] created = new boolean[1];
+            instrumentation.runOnMainSync(() -> {
+                ProbeActivity host = ProbeActivity.current.get();
+                created[0] = host != null && host.normal != null;
+            });
+            if (created[0]) {
+                Editor state = editor();
+                if (state.served && state.focused) for (AccessibilityWindowInfo window : automation.getWindows()) {
+                    if (window.getType() != AccessibilityWindowInfo.TYPE_INPUT_METHOD) continue;
+                    AccessibilityNodeInfo root = window.getRoot();
+                    if (root != null && "org.zapime.android".contentEquals(root.getPackageName() == null ? "" : root.getPackageName())
+                            && hasLabel(root, "⚡ 闪电 · 离线")) return;
+                }
+            }
+            SystemClock.sleep(50);
+        }
+        throw new Exception("production_editor_did_not_become_ready");
+    }
+
+    private Rect stableButton(String label) throws Exception {
+        Rect previous = null;
+        long stableAt = 0, end = SystemClock.uptimeMillis() + 15000;
+        int animation = -1;
+        while (SystemClock.uptimeMillis() < end) {
+            Editor host = editor();
+            AccessibilityNodeInfo node = imeButton(label);
+            Rect current = new Rect();
+            if (node != null) node.getBoundsInScreen(current);
+            if (host.served && host.focused && host.animations == 0 && !current.isEmpty()) {
+                if (!current.equals(previous) || animation != host.animationVersion) {
+                    previous = current; animation = host.animationVersion; stableAt = SystemClock.uptimeMillis();
+                } else if (SystemClock.uptimeMillis() - stableAt >= 100) {
+                    // Fresh geometry immediately before this single injection;
+                    // no stale coordinates or accessibility-click fallback.
+                    AccessibilityNodeInfo fresh = imeButton(label);
+                    Rect checked = new Rect();
+                    if (fresh != null) fresh.getBoundsInScreen(checked);
+                    if (checked.equals(current)) return checked;
+                    stableAt = 0; previous = null;
+                }
+            } else { stableAt = 0; previous = null; }
+            SystemClock.sleep(25);
+        }
+        throw new Exception("stable_product_key_unavailable");
+    }
+
+    private void tap(Rect bounds) throws Exception {
+        long downAt = SystemClock.uptimeMillis();
+        MotionEvent down = MotionEvent.obtain(downAt, downAt, MotionEvent.ACTION_DOWN, bounds.centerX(), bounds.centerY(), 0);
+        down.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try { require(automation.injectInputEvent(down, true), "touch_down_rejected"); }
+        finally { down.recycle(); }
+        SystemClock.sleep(35);
+        MotionEvent up = MotionEvent.obtain(downAt, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, bounds.centerX(), bounds.centerY(), 0);
+        up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+        try { require(automation.injectInputEvent(up, true), "touch_up_rejected"); }
+        finally { up.recycle(); }
+    }
+
+    private void key(String label, String expectedCode) throws Exception {
+        tap(stableButton(label));
+        ++keyTaps;
+        long end = SystemClock.uptimeMillis() + 4000;
+        while (SystemClock.uptimeMillis() < end) {
+            Editor state = editor();
+            String raw = state.text.replace("'", "").replace(" ", "");
+            if (raw.equals(expectedCode) && state.committed.isEmpty()
+                    && (expectedCode.isEmpty() || state.composing)) return;
+            require(state.committed.isEmpty(), "key_committed_unexpected_text");
+            SystemClock.sleep(25);
+        }
+        throw new Exception("touch_key_not_observed_in_editable");
+    }
+
+    private Stats stats() throws Exception {
+        String text;
+        try (ParcelFileDescriptor descriptor = automation.executeShellCommand(
+                    "dumpsys -t 3 activity service org.zapime.android/.ZapInputMethodService");
+                ParcelFileDescriptor.AutoCloseInputStream input = new ParcelFileDescriptor.AutoCloseInputStream(descriptor);
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                require(bytes.size() + count <= 262144, "service_dump_overflow");
+                bytes.write(buffer, 0, count);
+            }
+            text = new String(bytes.toByteArray(), StandardCharsets.UTF_8);
+        }
+        Matcher found = RANKING.matcher(text);
+        require(found.find(), "production_ranking_diagnostic_missing");
+        Stats result = new Stats();
+        result.enabled = Boolean.parseBoolean(found.group(1));
+        result.eligible = Boolean.parseBoolean(found.group(2));
+        result.state = found.group(3);
+        result.scored = Integer.parseInt(found.group(4));
+        result.inputRevision = Long.parseLong(found.group(5));
+        result.appliedRevision = Long.parseLong(found.group(6));
+        result.line = found.group().trim();
+        require(!found.find(), "ambiguous_ranking_diagnostic");
+        return result;
+    }
+
+    private static boolean han(String value) {
+        if (value.isEmpty() || value.codePointCount(0, value.length()) > 64) return false;
+        for (int offset = 0; offset < value.length();) {
+            int cp = value.codePointAt(offset);
+            if (!(cp >= 0x3400 && cp <= 0x4dbf || cp >= 0x4e00 && cp <= 0x9fff
+                    || cp >= 0xf900 && cp <= 0xfaff || cp >= 0x20000 && cp <= 0x323af)) return false;
+            offset += Character.charCount(cp);
+        }
+        return true;
+    }
+
+    private void candidates(AccessibilityNodeInfo node, Rect rail, List<Choice> choices) {
+        if (node == null || !node.refresh()) return;
+        CharSequence className = node.getClassName();
+        Rect currentRail = rail;
+        if ("android.widget.HorizontalScrollView".contentEquals(className == null ? "" : className)) {
+            currentRail = new Rect(); node.getBoundsInScreen(currentRail);
+        }
+        if (currentRail != null && "android.widget.Button".contentEquals(className == null ? "" : className)
+                && node.isVisibleToUser() && node.isEnabled() && node.getText() != null) {
+            String value = node.getText().toString();
+            Rect bounds = new Rect(); node.getBoundsInScreen(bounds);
+            if (han(value) && bounds.intersect(currentRail) && bounds.width() >= 20 && bounds.height() >= 20) choices.add(new Choice(value, bounds));
+        }
+        for (int i = 0; i < node.getChildCount(); ++i) candidates(node.getChild(i), currentRail, choices);
+    }
+
+    private List<Choice> choices() {
+        ArrayList<Choice> choices = new ArrayList<>();
+        for (AccessibilityWindowInfo window : automation.getWindows()) {
+            if (window.getType() != AccessibilityWindowInfo.TYPE_INPUT_METHOD) continue;
+            AccessibilityNodeInfo root = window.getRoot();
+            if (root != null && "org.zapime.android".contentEquals(root.getPackageName() == null ? "" : root.getPackageName())) candidates(root, null, choices);
+        }
+        return choices;
+    }
+
+    private Choice settledChoice() throws Exception {
+        String previous = "";
+        long stableAt = 0, end = SystemClock.uptimeMillis() + 5000;
+        while (SystemClock.uptimeMillis() < end) {
+            List<Choice> visible = choices();
+            StringBuilder signature = new StringBuilder();
+            Choice selected = null;
+            for (Choice choice : visible) {
+                signature.append(choice.text).append(':').append(choice.bounds.toShortString()).append(';');
+                // Both frozen codes have two syllables. Choose a currently
+                // visible two-Han candidate, without predicting its wording or
+                // whether the model promotes a particular word.
+                if (selected == null && choice.text.codePointCount(0, choice.text.length()) == 2) selected = choice;
+            }
+            Editor host = editor();
+            if (visible.size() >= 2 && selected != null && host.served && host.focused && host.animations == 0) {
+                if (!signature.toString().equals(previous)) { previous = signature.toString(); stableAt = SystemClock.uptimeMillis(); }
+                else if (SystemClock.uptimeMillis() - stableAt >= 200) {
+                    report.put("visible_han_candidates", visible.size());
+                    return selected;
+                }
+            } else { previous = ""; stableAt = 0; }
+            SystemClock.sleep(25);
+        }
+        throw new Exception("stable_chinese_candidate_unavailable");
+    }
+
+    private void write(String name, String value) throws Exception {
+        try (FileOutputStream stream = new FileOutputStream(new File(output, name))) {
+            stream.write(value.getBytes(StandardCharsets.UTF_8));
+        }
+    }
+
+    private void screenshot(String name) throws Exception {
+        Bitmap image = automation.takeScreenshot();
+        require(image != null, "screenshot_unavailable");
+        try (FileOutputStream stream = new FileOutputStream(new File(output, name))) {
+            require(image.compress(Bitmap.CompressFormat.PNG, 100, stream), "screenshot_write_failed");
+        } finally { image.recycle(); }
+    }
+
+    private void execute() throws Exception {
+        report.put("schema_version", 1).put("scope", SCOPE).put("run_attempt", token)
+                .put("api_level", Build.VERSION.SDK_INT).put("model_id", MODEL_ID)
+                .put("synthetic", true).put("system_ime_executed", false)
+                .put("production_lexicon", false).put("production_model", false)
+                .put("product_preferences_written", false).put("attempts", attempts)
+                .put("passed", false).put("human_touch_or_phone_latency", false);
+        try {
+            Intent intent = new Intent().setClassName("org.zapime.android.test", "org.zapime.android.test.ProbeActivity")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            instrumentation.getContext().startActivity(intent);
+            stage = "wait_product_keyboard";
+            awaitReadyEditor();
+            stableButton("q");
+            require(editor().text.isEmpty(), "fresh_editor_not_empty");
+            Stats initial = stats();
+            require(initial.enabled && initial.eligible, "default_ranking_not_enabled");
+            report.put("system_ime_executed", true);
+            write("candidate-ime-service-before.txt", initial.line + "\n");
+            report.put("ranking_enabled", initial.enabled).put("ranking_eligible", initial.eligible)
+                    .put("scored_before", initial.scored);
+
+            Stats successful = null;
+            for (int attempt = 0; attempt < FIXTURES.length; ++attempt) {
+                String code = FIXTURES[attempt];
+                Stats before = stats();
+                JSONObject evidence = new JSONObject().put("code", code).put("scored_before", before.scored)
+                        .put("attempt", attempt + 1).put("scored_increased", false).put("current_ranking_applied", false);
+                attempts.put(evidence);
+                stage = "touch_pinyin_" + (attempt + 1);
+                for (int i = 0; i < code.length(); ++i) key(code.substring(i, i + 1), code.substring(0, i + 1));
+                stage = "wait_real_ranking_" + (attempt + 1);
+                long deadline = SystemClock.uptimeMillis() + 3500;
+                Stats observed;
+                do {
+                    observed = stats();
+                    require(observed.enabled && observed.eligible, "ranking_became_ineligible");
+                    if (observed.scored > before.scored && observed.state.equals("ready")
+                            && observed.appliedRevision == observed.inputRevision) break;
+                    SystemClock.sleep(100);
+                } while (SystemClock.uptimeMillis() < deadline);
+                evidence.put("scored_after", observed.scored).put("state", observed.state)
+                        .put("input_revision", observed.inputRevision).put("applied_revision", observed.appliedRevision)
+                        .put("scored_increased", observed.scored > before.scored)
+                        .put("current_ranking_applied", observed.scored > before.scored && observed.state.equals("ready")
+                                && observed.appliedRevision == observed.inputRevision);
+                if (evidence.getBoolean("current_ranking_applied")) { successful = observed; break; }
+                // The first cold load can exceed the production deadline. Keep
+                // its failure in the report, clear using real keys, and allow
+                // only the second frozen code to exercise the warmed model.
+                if (attempt + 1 < FIXTURES.length) {
+                    stage = "clear_cold_attempt";
+                    for (int i = code.length(); i > 0; --i) key("⌫", code.substring(0, i - 1));
+                }
+            }
+            require(successful != null, "production_scored_counter_did_not_increase");
+            report.put("production_model", true).put("production_lexicon", true);
+            stage = "touch_visible_candidate";
+            Choice choice = settledChoice();
+            screenshot("candidate-ime-candidates.png");
+            Stats beforeTouch = stats();
+            require(beforeTouch.inputRevision == successful.inputRevision
+                    && beforeTouch.appliedRevision == beforeTouch.inputRevision && beforeTouch.state.equals("ready"),
+                    "current_ranking_changed_before_candidate_touch");
+            write("candidate-ime-service-scored.txt", beforeTouch.line + "\n");
+            // Screenshot acquisition may yield; reacquire this exact visible
+            // label and fresh geometry before injecting a single real tap.
+            tap(stableButton(choice.text));
+            long commitDeadline = SystemClock.uptimeMillis() + 5000;
+            Editor committed;
+            do {
+                committed = editor();
+                if (!committed.composing && committed.text.equals(choice.text)) break;
+                require(committed.committed.isEmpty() || committed.committed.equals(choice.text), "candidate_committed_different_text");
+                SystemClock.sleep(25);
+            } while (SystemClock.uptimeMillis() < commitDeadline);
+            require(!committed.composing && committed.text.equals(choice.text), "candidate_touch_did_not_commit_exact_visible_text");
+            Stats after = stats();
+            require(after.enabled && after.eligible && after.scored > initial.scored, "production_ranking_evidence_lost");
+            write("candidate-ime-service-after.txt", after.line + "\n");
+            report.put("scored_after", after.scored).put("selected_text", choice.text)
+                    .put("current_ranking_applied", true).put("scoring_input_revision", successful.inputRevision)
+                    .put("scoring_applied_revision", successful.appliedRevision)
+                    .put("actual_editable", committed.text).put("editor_composing", committed.composing)
+                    .put("candidate_touch", true).put("touch_keypresses", keyTaps)
+                    .put("observed_connection_serial", ProbeActivity.normalCommandConnection.get()).put("passed", true);
+            screenshot("candidate-ime-committed.png");
+            stage = "completed";
+        } catch (Throwable error) {
+            report.put("passed", false).put("failure_type", error.getClass().getSimpleName())
+                    .put("failure_reason", error.getMessage() == null ? "unknown" : error.getMessage());
+            try { screenshot("candidate-ime-failure.png"); } catch (Exception ignored) { }
+            throw new Exception("candidate_system_ime_gate_failed_at_" + stage, error);
+        } finally {
+            report.put("stage", stage).put("touch_keypresses", keyTaps);
+            write("candidate-ime-host-lifecycle.txt", ProbeActivity.lifecycle());
+            write("candidate-ime-report.json", report.toString(2) + "\n");
+        }
+    }
+}

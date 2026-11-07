@@ -1,0 +1,11 @@
+{
+  "tested_merge_commit": "697155198b205dbb3cada79468b8000667471dea",
+  "implementation_commit": "3a11177b7d0b2ef054183f5297a282dcb650a14f",
+  "test_revision": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+  "merge_tree": "a1d396aeef8fffa06ad53e8d407d2e326ad1630a",
+  "head_tree": "a1d396aeef8fffa06ad53e8d407d2e326ad1630a",
+  "parents": [
+    "f727d2031f438881fbfaf99aa474517cde66cd29",
+    "a73eea01a4ed0b561dbf2540e837565e99a8c04f"
+  ]
+}

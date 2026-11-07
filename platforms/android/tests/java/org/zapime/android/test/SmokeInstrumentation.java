@@ -18,11 +18,13 @@ public final class SmokeInstrumentation extends Instrumentation {
     private UiAutomation automation;
     private String stage="launch";
     private boolean voiceOnly;
+    private boolean candidateOnly;
+    private String candidateToken;
     private boolean voiceEmptyInsertVerified;
     private boolean ciDiagnostics;
     private final java.util.ArrayDeque<String> driverEvents=new java.util.ArrayDeque<>();
     private void noteDriver(String code){if(driverEvents.size()==64)driverEvents.removeFirst();driverEvents.addLast(SystemClock.uptimeMillis()+":"+code);}
-    @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only"));String ci=args==null?null:args.getString("zapime_ci_diagnostics");ciDiagnostics=ci!=null&&ci.matches("[0-9]+-[0-9]+");start(); }
+    @Override public void onCreate(Bundle args) { super.onCreate(args);voiceOnly=args!=null&&"true".equals(args.getString("voice_only"));candidateOnly=args!=null&&"true".equals(args.getString("candidate_only"));candidateToken=args==null?null:args.getString("zapime_ci_candidate_ime");String ci=args==null?null:args.getString("zapime_ci_diagnostics");ciDiagnostics=ci!=null&&ci.matches("[0-9]+-[0-9]+");start(); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text) { return walk(node,text,false); }
     private AccessibilityNodeInfo walk(AccessibilityNodeInfo node,String text,boolean button) {
         if(node==null || !node.refresh())return null;
@@ -411,6 +413,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         Bundle result=new Bundle();
         try {
             automation=getUiAutomation(); AccessibilityServiceInfo info=automation.getServiceInfo(); info.flags|=AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS; automation.setServiceInfo(info);
+            if(candidateOnly){if(voiceOnly)throw new Exception("Conflicting candidate/voice modes");CandidateImeProbe.run(this,automation,candidateToken);result.putString("stream","PASS ZapIME system IME candidate enhancement: production default-on worker and model, touchscreen pinyin keys, scored counter increase and exact visible-candidate Editable commit; no phone latency claim\n");finish(Activity.RESULT_OK,result);return;}
             if(voiceOnly){voiceAcceptance();dumpHostLifecycle();result.putString("stream","PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked="+voiceEmptyInsertVerified+"\n");finish(Activity.RESULT_OK,result);return;}
             Intent intent=new Intent(); intent.setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity"); intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); getContext().startActivity(intent);
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");awaitServedConnectionCommand(0);screenshot("keyboard.png");toolsRestartAcceptance();
@@ -438,6 +441,6 @@ public final class SmokeInstrumentation extends Instrumentation {
             appearanceAcceptance(intent);
             localDataAcceptance();
             screenshot("smoke.png");dumpHostLifecycle();result.putString("stream","PASS ZapIME native keyboard: API30+ same-editor restart continuity and changed-context rejection, offline pinyin, real commit, English, backspace, private field, focus isolation, shift, numeric/symbol panels, tools, saved shortcut UI, nine-key spelling/commit/backspace/shortcut/numeric/privacy and layout switching, QQ-reference light/dark palettes, settings, retype, rail punctuation, emoji, explicit clipboard actions, repeat/cancel/move/focus deletion, Unicode/grapheme and selected delete; local panel insert/search/pin/favorite/delete, sensitive clipboard rejection, isolated English/Chinese search and focus/restart/no-learning privacy\n"); finish(Activity.RESULT_OK,result);
-        } catch(Throwable error) { dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){}dumpCiState();result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
+        } catch(Throwable error) { if(candidateOnly){result.putString("stream","FAIL ZapIME system IME candidate enhancement: "+error.getClass().getSimpleName()+"\n");finish(Activity.RESULT_CANCELED,result);return;}dumpHierarchy();try{screenshot("smoke.png");}catch(Exception ignored){}dumpCiState();result.putString("stream","FAIL ZapIME native keyboard at "+stage+": "+error.getClass().getSimpleName()+": "+error.getMessage()+"\n"); finish(Activity.RESULT_CANCELED,result); }
     }
 }

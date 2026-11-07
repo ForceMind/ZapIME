@@ -1,5 +1,29 @@
 # ZapIME 项目执行状态
 
+## 工作对话交接同步（2026-11-07）
+
+[当前交接提示](WORK_HANDOFF_PROMPT.md)和[开发计划](DEVELOPMENT_PLAN.md)已统一为 `feat/offline-candidate-ranking` / PR #78，并明确其手动同步基线、已验源码身份及候选质量/资源的后续任务。旧交接按原字节保存在[历史文件](history/WORK_HANDOFF_PROMPT_PRE_CANDIDATE_20261107.md)，不再将早期语音分支或已完成的 `startVoice()` 修复作为当前入口。本次仅更新文档；以下七条成功 workflow 仍属于固定测试修订 `5e1a87c`，不声称在文档提交上重复执行。
+
+## 默认开启的本机候选增强（2026-11-07）
+
+**Android 开发版已接入并默认开启本机候选增强，三端专项实测全部通过，固定双 ABI 安装包已下载复核。** [试用包与开启说明](CANDIDATE_RANKING_TRYOUT.md)、[实现契约](CANDIDATE_RANKING.md)、[完整原始验收](evidence/candidate-ranking-20261107/accepted-42361234304/README.md)均已保存。
+
+[PR #78](https://github.com/ForceMind/ZapIME/pull/78) 的产品实现固定 `3a11177b7d0b2ef054183f5297a282dcb650a14f`，最终测试修订 `5e1a87ccc345cbdb41635059c35cb63ce988b197`。从手动同步基线 `f727d203` 接续，采用固定 MSIME + chinese-ime-lm rerank-v2 8M + APK 已有 ORT 1.28.2。实际 CI merge checkout `4985350e8a7e30257afb58f12cf938c056ab8618` 与测试修订树相同。分支保持开发审查状态，尚未合并 main 或发布稳定版。
+
+Android 新偏好默认开启，用户明确关闭的值保留。基础候选先显示，独立有界 worker 只重排最终可见的精确读音候选；个人规则、补全、部分上屏与原候选 ID 保留，输入线程不等待模型。当前会话最多 64 个码点上下文，敏感/禁止学习/无建议/搜索字段排除，资源或推理失败沿用基础候选。模型随包固定校验，不上传输入。其他三个原生宿主尚未加载该模型。
+
+[候选专项 42361234304](https://github.com/ForceMind/ZapIME/actions/runs/42361234304) 五作业全部 SUCCESS。API28/35/36 各 **14/14** 实际模型/JNI/MSIME/Editable 检查通过，生产分数与固定上游张量的同运行库独立参考误差均 **0**，门槛仍 0.001。另三条真实系统 IME 路径均通过：默认偏好、生产词库/模型、6 次 `shijie` 触屏输入、当前 revision 的排序发布、点击所见“世界”精确进入 Editable、无 composing span；原系统键盘/设置、服务退出、合成资料与 IPv4/IPv6 规则清理全部验证。不是用方法探针替代系统键盘，截图也不作为绘制帧或真人上屏证明。
+
+主机完整 workspace **134 项**（其中候选 **16 项**）、fmt、严格 Clippy 通过；Android Python **95 项**、资源准备 **14 项**、三组 JVM worker/上下文/资源检查通过。最终 CI 实际执行 native **15 组**、生产 JNI/JVM **36 项**及独立 oracle；普通页误差 0，本轮分批差 0.017479419708251953，仅描述该主机环境。真实生产库 3 组合成排序提交及过度补全/可见页修复前后原报告保留，不将机械通过冒充输入准确率。
+
+既有回归分别保留身份：相同产品载荷的 a73 完整 Android [42360463238](https://github.com/ForceMind/ZapIME/actions/runs/42360463238) 六作业全过，VoiceKey focused [42360463313](https://github.com/ForceMind/ZapIME/actions/runs/42360463313) 八作业全过。最终测试修订 5e 的[完整 Android 42361234345](https://github.com/ForceMind/ZapIME/actions/runs/42361234345)六作业和[VoiceKey focused 42361234391](https://github.com/ForceMind/ZapIME/actions/runs/42361234391)八作业均已完成成功；三端实际系统 IME/服务退出/共享文件/网络清理原件已核。该固定修订的七条 workflow 已全部 SUCCESS，包括候选、共享核心/Apple、完整 Android、VoiceKey、Windows、离线语音 CPU 和独立同步服务。最终元数据另存，较早的进行中快照保持原样；后续文档提交不改写已验源码身份。
+
+两份产品 APK 已实际下载，复验 SHA256、v3 签名、16 KiB 对齐、固定模型、原生库和许可证。后两次修订只有测试与证据变化；APK 内容逐成员相对首轮实现仅开发签名证书不同。首轮跨 ORT 参考失败、第二轮 adb shell 分号设置恢复失败均保留原字节，修正未放宽数值/读回/清理门槛；完整过程见验收目录。
+
+S25/ARM 手机、长时间输入、真实语料首选率/误排序率、RSS/P95/能耗、25M 对比、其他三端模型宿主、正式签名/稳定发行及训练来源声明差异的最终澄清仍分别验收。本次没有操作用户设备或服务器。
+
+## 前序手动同步进度（保留原记录）
+
 更新时间：2026-11-07 00:13 PST（America/Los_Angeles）。本轮已实际开发、测试、保存GitHub并下载核验APK。累计汇报次数无可靠连续记录。
 
 ## b86实测结果与新页驱动复验（2026-11-07 00:13 PST）

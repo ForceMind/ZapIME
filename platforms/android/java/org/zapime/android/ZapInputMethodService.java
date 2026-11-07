@@ -41,6 +41,16 @@ public final class ZapInputMethodService extends InputMethodService {
     private String layer="letters";
     private String preedit = "";
     private final SelectionEchoTracker selectionEcho=new SelectionEchoTracker();
+    private final CandidateRankingContext rankingContext=new CandidateRankingContext();
+    private CandidateRankingWorker rankingWorker;
+    private Runnable pendingRanking;
+    private volatile long rankingInputRevision;
+    private volatile long rankedInputRevision=-1;
+    private boolean rankingEnabled=true,rankingEligible,rankingContextEligible,rankingVisible;
+    private String rankingState="idle",firstCandidateId;
+    private long shownCompositionRevision=-1;
+    private JSONObject latestCandidateView;
+    private int rankedSnapshots;
     // No provider or enable control yet: the default session retains no text.
     private final EnglishLearningSession learning=new EnglishLearningSession();
     private String editorPackage;
@@ -79,10 +89,10 @@ public final class ZapInputMethodService extends InputMethodService {
     private void refreshTheme() {
         if(body!=null&&theme.dark!=KeyboardTheme.load(this).dark){setInputView(onCreateInputView());try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}}
     }
-    @Override public void onStartInputView(EditorInfo info,boolean restarting){super.onStartInputView(info,restarting);refreshTheme();learning.beginEditor(EnglishLearningEligibility.allows(info,privateSession));}
-    @Override public void onConfigurationChanged(android.content.res.Configuration config){learning.suspend();cancelVoice(true);touches.cancel();super.onConfigurationChanged(config);refreshTheme();}
-    @Override public void onFinishInputView(boolean finishingInput){learning.suspend();cancelVoice(true);touches.cancel();super.onFinishInputView(finishingInput);}
-    @Override public void onWindowHidden(){learning.suspend();cancelVoice(true);touches.cancel();super.onWindowHidden();}
+    @Override public void onStartInputView(EditorInfo info,boolean restarting){super.onStartInputView(info,restarting);refreshTheme();learning.beginEditor(EnglishLearningEligibility.allows(info,privateSession));resumeRanking(info);}
+    @Override public void onConfigurationChanged(android.content.res.Configuration config){invalidateRanking(true,false);learning.suspend();cancelVoice(true);touches.cancel();super.onConfigurationChanged(config);refreshTheme();}
+    @Override public void onFinishInputView(boolean finishingInput){suspendRanking();learning.suspend();cancelVoice(true);touches.cancel();super.onFinishInputView(finishingInput);}
+    @Override public void onWindowHidden(){suspendRanking();learning.suspend();cancelVoice(true);touches.cancel();super.onWindowHidden();}
     @Override public void onUpdateSelection(int oldStart,int oldEnd,int start,int end,int candidatesStart,int candidatesEnd){
         super.onUpdateSelection(oldStart,oldEnd,start,end,candidatesStart,candidatesEnd);
         cancelMarkerLoss();
@@ -90,6 +100,7 @@ public final class ZapInputMethodService extends InputMethodService {
         // the exact owned range briefly so the new connection can verify it.
         if(candidatesStart==-1&&candidatesEnd==-1&&ready&&!privateSession&&!searchActive&&!preedit.isEmpty()
                 &&selectionEcho.matchesRestartComposition(start,end,preedit.length())){
+            invalidateRanking(true,false);
             learning.invalidate();
             pendingMarkerLoss=()->{pendingMarkerLoss=null;updateSelectionState(oldStart,oldEnd,start,end,candidatesStart,candidatesEnd);drainInputReplies();};
             main.postDelayed(pendingMarkerLoss,100);return;
@@ -101,6 +112,11 @@ public final class ZapInputMethodService extends InputMethodService {
     private void updateSelectionState(int oldStart,int oldEnd,int start,int end,int composingStart,int composingEnd){
         boolean ownEcho=selectionEcho.acknowledge(start,end,composingStart,composingEnd);
         if(!ownEcho)learning.invalidate();
+        if(!ownEcho||(start==0&&end==0&&composingStart<0&&composingEnd<0)){
+            // A cleared editor is a message boundary even if an old zero-length
+            // selection echo happens to have the same numeric coordinates.
+            invalidateRanking(true,false);rankingContext.rebase(rankingContextEligible&&rankingVisible&&!searchActive,start,end);
+        }
         selectionStart=start;selectionEnd=end;
         if(oldStart!=start||oldEnd!=end){++selectionVersion;if(voiceTarget!=null)cancelVoice(true);}
         if(!ownEcho&&ready&&!privateSession&&!searchActive&&!preedit.isEmpty()
@@ -109,7 +125,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void abandonComposition(){
         // The App owns the changed range now. Finish its marker in place,
         // reset the decoder, and never replace the new text/selection.
-        learning.invalidate();cancelMarkerLoss();inputReplies.clear();replyUnits=0;touches.cancel();selectionEcho.invalidate();final int active=++epoch;
+        invalidateRanking(true,false);learning.invalidate();cancelMarkerLoss();inputReplies.clear();replyUnits=0;touches.cancel();selectionEcho.invalidate();final int active=++epoch;
         preedit="";readingChoices=new JSONArray();renderReadingRail();idleToolbar();refreshStatus();
         InputConnection connection=getCurrentInputConnection();if(connection!=null)connection.finishComposingText();
         worker.execute(()->{try{if(handle==0)return;JSONObject reset=new JSONObject(NativeCore.request(handle,new JSONObject().put("op","reset").toString()));if(reset.has("error"))throw new IOException();
@@ -120,6 +136,7 @@ public final class ZapInputMethodService extends InputMethodService {
         super.dump(fd,writer,args);
         writer.println("ZapIME lifecycle: starts="+inputStarts+" restarts="+inputRestarts+" decision="+restartDecision+" pendingMarkerLoss="+(pendingMarkerLoss!=null)+" heldReplies="+inputReplies.size());
         writer.println("ZapIME panel events (uptime-ms:fixed-code): "+panelEvents);
+        writer.println("ZapIME candidate ranking: enabled="+rankingEnabled+" eligible="+rankingEligible+" state="+rankingState+" scored="+rankedSnapshots+" inputRevision="+rankingInputRevision+" appliedRevision="+rankedInputRevision);
         // Counts/reason codes only. No input, context, package, key or token.
     }
     private void bind(Button button,Runnable action,boolean repeat){touches.bind(button,action,repeat,()->getCurrentInputConnection()!=null);}
@@ -145,8 +162,8 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void renderReadingRail() {
         if(readingRail==null)return;readingRail.removeAllViews();
-        if(readingChoices.length()>0){final long shownGeneration=generation;
-            for(int i=0;i<readingChoices.length();i++){final int index=i;String spelling=readingChoices.optString(i);Button b=Ui.button(this,spelling,theme.key,false);b.setTextColor(theme.ink);b.setPadding(0,0,0,0);b.setTextSize(16);b.setContentDescription("九键读音 "+spelling);readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(45)));bind(b,()->{try{send(new JSONObject().put("op","nine_spelling").put("index",index).put("generation",shownGeneration),null);}catch(JSONException ignored){}},false);}
+        if(readingChoices.length()>0){final long shownGeneration=generation,shownComposition=shownCompositionRevision;
+            for(int i=0;i<readingChoices.length();i++){final int index=i;String spelling=readingChoices.optString(i);Button b=Ui.button(this,spelling,theme.key,false);b.setTextColor(theme.ink);b.setPadding(0,0,0,0);b.setTextSize(16);b.setContentDescription("九键读音 "+spelling);readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(45)));bind(b,()->{try{JSONObject choice=new JSONObject().put("op","nine_spelling").put("index",index).put("generation",shownGeneration);if(shownComposition>=0)choice.put("composition_revision",shownComposition);send(choice,null);}catch(JSONException ignored){}},false);}
         }else{String[] punctuation={"，","。","？","！"};for(int i=0;i<punctuation.length;i++){String text=punctuation[i];Button b=key(text,text,false);b.setElevation(0);b.setBackground(new RippleDrawable(ColorStateList.valueOf(theme.ripple),Ui.shape(this,theme.key,7),null));readingRail.addView(b,new LinearLayout.LayoutParams(-1,dp(i<3?44:45)));if(i<3){View line=new View(this);line.setBackgroundColor(theme.stroke);LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(-1,dp(1));lp.setMargins(dp(8),0,dp(8),0);readingRail.addView(line,lp);}}}
     }
     private void addRow(String keys,int indent) {
@@ -186,6 +203,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void open(Class<?> activity){startActivity(new Intent(this,activity).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));}
     private void idleToolbar(){
+        firstCandidateId=null;
         if(candidates==null)return;candidates.removeAllViews();
         if(layer.equals("voice")){TextView hint=Ui.text(this,"离线语音 · 确认后插入",14,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button hide=Ui.button(this,"",theme.toolbar,false);hide.setContentDescription("收起语音键盘");hide.setCompoundDrawablesRelativeWithIntrinsicBounds(null,Ui.icon(this,"hide",theme.ink),null,null);candidates.addView(hide,new LinearLayout.LayoutParams(dp(52),dp(46)));bind(hide,()->{cancelVoice(true);requestHideSelf(0);},false);return;}
         if(searchActive){TextView hint=Ui.text(this,searchChinese?"中文搜索 · 仅本机":"English 搜索 · 仅本机",13,theme.muted);hint.setPadding(dp(12),0,0,0);hint.setGravity(Gravity.CENTER_VERTICAL);candidates.addView(hint,new LinearLayout.LayoutParams(0,dp(46),1));Button clear=Ui.button(this,"清空搜索",theme.toolbar,false);clear.setTextColor(theme.ink);clear.setTextSize(14);clear.setContentDescription("清空搜索");candidates.addView(clear,new LinearLayout.LayoutParams(dp(90),dp(46)));bind(clear,()->clearDataSearch(),false);return;}
@@ -217,15 +235,18 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private static final class InitialContext {
         static boolean matches(EditorInfo info,String text){CharSequence before=info.getInitialTextBeforeCursor(text.length(),0);return before!=null&&text.contentEquals(before);}
+        static String rankingBefore(EditorInfo info){CharSequence before=info.getInitialTextBeforeCursor(CandidateRankingContext.MAX_INITIAL_UNITS,0);return before==null||before.length()>CandidateRankingContext.MAX_INITIAL_UNITS?null:before.toString();}
     }
     @Override public void onStartInput(EditorInfo info, boolean restarting) {
         final boolean keepTools=restarting&&canKeepTools(info);
         notePanel(restarting?"input_restart":"input_new");
         if(keepTools)notePanel("restart_keep_tools");
+        invalidateRanking(true,false);rankingContext.suspend();rankingVisible=false;
         learning.beginEditor(false); // Before the retained-composition early return, on EVERY restart.
         cancelMarkerLoss();++inputStarts;if(restarting)++inputRestarts;else restartDecision="new_editor";
         cancelVoice(false);super.onStartInput(info,restarting);touches.cancel();
-        if(restarting&&retainRestartedComposition(info))return;
+        if(restarting&&retainRestartedComposition(info)){beginRankingEditor(info,false);configureRanking();return;}
+        latestCandidateView=null;firstCandidateId=null;shownCompositionRevision=-1;
         inputReplies.clear();replyUnits=0;
         editorPackage=info.packageName;editorField=info.fieldId;editorType=info.inputType;editorOptions=info.imeOptions;
         selectionEcho.reset(info.initialSelStart,info.initialSelEnd);
@@ -235,9 +256,11 @@ public final class ZapInputMethodService extends InputMethodService {
         int type = info.inputType & InputType.TYPE_MASK_CLASS;
         sensitive = variation == InputType.TYPE_TEXT_VARIATION_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD || type == InputType.TYPE_CLASS_NUMBER || type == InputType.TYPE_CLASS_PHONE;
         privateSession = sensitive || (info.imeOptions & EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING) != 0;
+        beginRankingEditor(info,true);
         chinese = !sensitive;nineKey=getSharedPreferences("keyboard",MODE_PRIVATE).getBoolean("nine_key",false); shift=false;layer=keepTools?"tools":"letters";readingChoices=new JSONArray();renderKeys();
         final boolean privateMode = privateSession;
         final boolean useNine=chinese&&nineKey;
+        final boolean enhance=rankingEligible;
         refreshStatus();idleToolbar();
         worker.execute(() -> {
             closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; }
@@ -245,6 +268,7 @@ public final class ZapInputMethodService extends InputMethodService {
                 ResourceInstaller.prepare(this);
                 handle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(), privateMode);
                 final boolean success = handle!=0;
+                if(success)NativeCore.request(handle,new JSONObject().put("op","candidate_ranking").put("enabled",enhance).toString());
                 final JSONObject initial=success?new JSONObject(NativeCore.request(handle,new JSONObject().put("op","layout").put("name",useNine?"nine_key":"qwerty").toString())):null;
                 main.post(() -> { if(epoch==active) { ready=success;if(initial!=null)apply(initial,null,null); refreshStatus(); } });
             } catch (Exception | LinkageError error) {
@@ -257,13 +281,119 @@ public final class ZapInputMethodService extends InputMethodService {
         if(searchActive){status.setText(preedit.isEmpty()?(searchReady?"搜索资料 · 本机":"正在准备搜索键盘…"):"搜索："+preedit);status.setContentDescription(searchReady?"搜索资料 · 本机":"正在准备搜索键盘…");status.setTextColor(theme.accent);return;}
         String state=privateSession?"隐私输入 · 不学习":ready?(chinese?"⚡ 闪电 · 离线":"⚡ ZapIME · English"):"正在准备离线词库…";
         status.setContentDescription(preedit.isEmpty()?state:preedit);
-        status.setText(preedit.isEmpty()?(privateSession?"隐私输入 · 不学习":ready?"闪电输入法  /  "+(chinese?(nineKey?"九键拼音":"中文拼音"):"English")+"  ·  离线":"正在准备离线词库…"):preedit);
+        status.setText(preedit.isEmpty()?(privateSession?"隐私输入 · 不学习":ready?"闪电输入法  /  "+(chinese?(nineKey?"九键拼音":"中文拼音"):"English")+"  ·  "+(rankingEligible&&rankingState.equals("unavailable")?"基础候选":"离线"):"正在准备离线词库…"):preedit);
         status.setTextColor(preedit.isEmpty()?theme.muted:theme.accent);
+    }
+    private void beginRankingEditor(EditorInfo info,boolean initialSnapshot) {
+        rankingEnabled=CandidateRankingPreferences.enabled(this);
+        rankingEligible=rankingEnabled&&CandidateRankingPreferences.eligible(info,privateSession);
+        rankingContextEligible=rankingEligible&&EnglishLearningEligibility.allows(info,privateSession);
+        String before=null;
+        if(initialSnapshot&&rankingContextEligible&&info.initialSelStart>=0
+                &&info.initialSelStart==info.initialSelEnd&&android.os.Build.VERSION.SDK_INT>=30){
+            try{before=InitialContext.rankingBefore(info);}catch(RuntimeException unavailable){before=null;}
+        }
+        rankingContext.begin(rankingContextEligible,before,info.initialSelStart,info.initialSelEnd);
+        rankingState=!rankingEnabled?"disabled":rankingEligible?"idle":"excluded";
+        if(!rankingEligible&&rankingWorker!=null)rankingWorker.invalidate(true,true);
+    }
+    private void resumeRanking(EditorInfo info) {
+        rankingVisible=true;
+        boolean enabled=CandidateRankingPreferences.enabled(this);
+        boolean eligible=enabled&&CandidateRankingPreferences.eligible(info,privateSession);
+        boolean changed=enabled!=rankingEnabled||eligible!=rankingEligible;
+        if(changed){invalidateRanking(true,!eligible);beginRankingEditor(info,false);configureRanking();}
+        if(!rankingContext.active())rankingContext.rebase(rankingContextEligible&&!searchActive,selectionStart,selectionEnd);
+        if(latestCandidateView!=null)scheduleRanking(latestCandidateView);
+        refreshStatus();
+    }
+    private void configureRanking() {
+        if(!ready||searchActive||searchClosing)return;
+        try{send(new JSONObject().put("op","candidate_ranking").put("enabled",rankingEligible),null);}catch(JSONException ignored){}
+    }
+    private void invalidateRanking(boolean clearContext,boolean releaseModel) {
+        ++rankingInputRevision;
+        if(pendingRanking!=null)main.removeCallbacks(pendingRanking);
+        pendingRanking=null;
+        if(clearContext)rankingContext.clear();
+        if(rankingWorker!=null)rankingWorker.invalidate(clearContext,releaseModel);
+    }
+    private void suspendRanking() {
+        rankingVisible=false;
+        invalidateRanking(true,true);
+        rankingContext.suspend();
+    }
+    private boolean canRank() {
+        return rankingVisible&&rankingEligible&&ready&&chinese&&!privateSession&&!searchActive&&!searchClosing
+                &&layer.equals("letters")&&!preedit.isEmpty()&&getCurrentInputConnection()!=null;
+    }
+    private void scheduleRanking(JSONObject view) {
+        if(!canRank()||pendingMarkerLoss!=null||!inputReplies.isEmpty())return;
+        JSONObject ranking=view.optJSONObject("ranking");
+        if(ranking==null||!ranking.optBoolean("enabled")||ranking.optBoolean("applied"))return;
+        JSONArray rows=ranking.optJSONArray("candidates");
+        if(rows==null||rows.length()<2||rows.length()>32)return;
+        final String[] ids=new String[rows.length()],texts=new String[rows.length()];
+        for(int i=0;i<rows.length();++i){JSONObject row=rows.optJSONObject(i);if(row==null)return;ids[i]=row.optString("id",null);texts[i]=row.optString("text",null);}
+        if(pendingRanking!=null)main.removeCallbacks(pendingRanking);
+        final int active=epoch;
+        final long inputRevision=rankingInputRevision,candidateGeneration=view.optLong("generation",-1),contextVersion=rankingContext.version();
+        final String context=rankingContext.text();
+        pendingRanking=()->{
+            pendingRanking=null;
+            if(!canRank()||epoch!=active||rankingInputRevision!=inputRevision||generation!=candidateGeneration
+                    ||rankingContext.version()!=contextVersion||touches.isActive()||pendingMarkerLoss!=null)return;
+            try{
+                CandidateRankingWorker.Request request=new CandidateRankingWorker.Request(active,candidateGeneration,inputRevision,contextVersion,context,ids,texts,400);
+                if(rankingWorker==null)rankingWorker=new CandidateRankingWorker(new NativeCandidateRankingBackend(this),task->main.post(task),this::rankingCompleted);
+                rankingWorker.submit(request);
+            }catch(IllegalArgumentException unavailable){rankingState="unavailable";}
+        };
+        // The local list is already visible. This bounded pause coalesces typing
+        // without placing model work, file I/O or remote editor reads on it.
+        main.postDelayed(pendingRanking,80);
+    }
+    private void rankingCompleted(CandidateRankingWorker.Request request,String[] orderedIds,String state) {
+        if(request.expired()||!canRank()||request.epoch!=epoch||request.inputRevision!=rankingInputRevision
+                ||request.contextVersion!=rankingContext.version()||request.generation!=generation)return;
+        rankingState=state;
+        if(orderedIds==null||touches.isActive()||pendingMarkerLoss!=null||!inputReplies.isEmpty())return;
+        final String encoded;
+        try{encoded=new JSONObject().put("op","candidate_rank").put("generation",request.generation)
+                .put("ids",new JSONArray(orderedIds)).put("model",CandidateModelCatalog.MODEL_ID).toString();}
+        catch(JSONException invalid){return;}
+        worker.execute(()->{
+            // Only the original input owner mutates the core. New main-thread
+            // input invalidates this token before its operation enters the queue.
+            if(request.expired()||request.inputRevision!=rankingInputRevision||handle==0)return;
+            try{
+                JSONObject result=new JSONObject(NativeCore.request(handle,encoded));
+                main.post(()->publishRanking(request,result));
+            }catch(Exception|LinkageError unavailable){main.post(()->{if(request.epoch==epoch&&request.inputRevision==rankingInputRevision)rankingState="unavailable";});}
+        });
+    }
+    private void publishRanking(CandidateRankingWorker.Request request,JSONObject result) {
+        // A touch/marker handoff can begin while the core owner applies the
+        // permutation. Do not detach the still-visible button in that interval.
+        // Its original ID+composition revision remains valid across pure ranks.
+        if(touches.isActive()||pendingMarkerLoss!=null||!inputReplies.isEmpty())return;
+        if(request.expired()||!canRank()||request.epoch!=epoch||request.inputRevision!=rankingInputRevision
+                ||request.contextVersion!=rankingContext.version()||request.generation!=generation
+                ||result.has("error")||!result.isNull("commit"))return;
+        rankedInputRevision=request.inputRevision;
+        ++rankedSnapshots;
+        generation=result.optLong("generation");
+        // Display-only: never rewrite marked text or submit a commit here.
+        renderResult(result);
     }
     private void send(JSONObject request, String fallback) {
         finishMarkerLoss();
         final int active=epoch;final boolean toSearch=searchActive;
         final String op=request.optString("op"),name=request.optString("name");
+        invalidateRanking(op.equals("reset")||(op.equals("command")&&(name.equals("Backspace")||name.equals("Cancel"))),false);
+        if(!toSearch&&firstCandidateId!=null&&(op.equals("key")||(op.equals("command")&&name.equals("CommitCandidate")))){
+            try{request.put("first_candidate_id",firstCandidateId).put("composition_revision",shownCompositionRevision);}catch(JSONException ignored){}
+        }
         if(op.equals("reset")||(op.equals("command")&&(name.equals("Backspace")||name.equals("Cancel"))))learning.invalidate();
         final EnglishLearningSession.Ticket learningTicket=(op.equals("key")||op.equals("select")||(op.equals("command")&&(name.equals("CommitRaw")||name.equals("CommitCandidate"))))?captureLearning():null;
         if(!ready||searchClosing||(toSearch&&!searchReady))return;
@@ -310,12 +440,13 @@ public final class ZapInputMethodService extends InputMethodService {
             // Empty layout/view replies must not replace an editor selection.
             // Only clear a composition that this IME actually owns and cancelled.
             if(!wroteText&&!previousPreedit.isEmpty())trackCompose(connection,"");
-            if(connection.finishComposingText())selectionEcho.finish();else {learning.invalidate();selectionEcho.invalidate();}
+            if(connection.finishComposingText())selectionEcho.finish();else {invalidateRanking(true,false);learning.invalidate();selectionEcho.invalidate();}
             selectionEcho.expect();
         }
         } finally { connection.endBatchEdit(); }
         refreshStatus();
         renderResult(value);
+        scheduleRanking(value);
     }
     private EnglishLearningSession.Ticket captureLearning(){
         return !privateSession&&!searchActive&&(layer.equals("letters")||layer.equals("symbols")||layer.equals("numbers")||layer.equals("emoji"))?learning.capture():null;
@@ -325,27 +456,39 @@ public final class ZapInputMethodService extends InputMethodService {
         // Personal candidate extensions share select/CommitCandidate operations,
         // so the request name alone cannot distinguish saved text from typing.
         Object source=result.opt("commit_source");
-        trackCommit(connection,result.optString("commit"),source instanceof String&&source.equals("engine")?ticket:null);
+        boolean typed=source instanceof String&&source.equals("engine");
+        trackCommit(connection,result.optString("commit"),typed?ticket:null,typed);
     }
     private void trackCommit(InputConnection connection,String text,EnglishLearningSession.Ticket ticket){
+        trackCommit(connection,text,ticket,true);
+    }
+    private void trackCommit(InputConnection connection,String text,EnglishLearningSession.Ticket ticket,boolean typed){
+        final int active=epoch;final long contextVersion=rankingContext.version();
         boolean accepted=false;
         try{accepted=connection.commitText(text,1);}
         finally{
             if(accepted)selectionEcho.commit(text.length());else selectionEcho.invalidate();selectionEcho.expect();
             if(ticket==null)learning.invalidate();else learning.committed(ticket,text,accepted,android.os.SystemClock.uptimeMillis());
+            if(active==epoch&&connection==getCurrentInputConnection()&&contextVersion==rankingContext.version()){
+                invalidateRanking(false,false);rankingContext.committed(text,accepted,typed&&!privateSession&&!searchActive);
+            }
         }
     }
-    private void trackCompose(InputConnection connection,String text){if(connection.setComposingText(text,1))selectionEcho.compose(text.length());else {learning.invalidate();selectionEcho.invalidate();}selectionEcho.expect();}
+    private void trackCompose(InputConnection connection,String text){if(connection.setComposingText(text,1))selectionEcho.compose(text.length());else {invalidateRanking(true,false);learning.invalidate();selectionEcho.invalidate();}selectionEcho.expect();}
     private void renderResult(JSONObject value){
+        latestCandidateView=value;firstCandidateId=null;shownCompositionRevision=value.optLong("composition_revision",-1);
         // Readings replace the punctuation rail; all key hit targets stay fixed.
         JSONArray choices=value.optJSONArray("spellings");readingChoices=preedit.isEmpty()||choices==null?new JSONArray():choices;renderReadingRail();
         if(candidates==null)return; candidates.removeAllViews(); JSONArray words=value.optJSONArray("candidates"); if(preedit.isEmpty()){idleToolbar();return;}if(words==null)return;
-        final long shownGeneration=generation;
-        for(int i=0;i<words.length();i++) { final int index=i; Button b=Ui.button(this,words.optString(i),theme.toolbar,false);b.setTextSize(21);b.setTextColor(i==0?theme.accent:theme.ink);b.setPadding(dp(16),0,dp(16),0);candidates.addView(b,new LinearLayout.LayoutParams(-2,dp(44))); bind(b,() -> { try { send(new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration),null); } catch(JSONException ignored) {} },false); b.setOnLongClickListener(v -> { if(privateSession||searchActive)return false; try { send(new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration),null); return true; } catch(JSONException ignored) { return false; } }); }
+        final long shownGeneration=generation,shownComposition=shownCompositionRevision;
+        JSONArray ids=value.optJSONArray("candidate_ids");
+        if(ids!=null&&ids.length()==words.length()&&words.length()>0)firstCandidateId=ids.optString(0,null);
+        for(int i=0;i<words.length();i++) { final int index=i;final String candidateId=ids!=null&&ids.length()==words.length()?ids.optString(i,null):null; Button b=Ui.button(this,words.optString(i),theme.toolbar,false);b.setTextSize(21);b.setTextColor(i==0?theme.accent:theme.ink);b.setPadding(dp(16),0,dp(16),0);candidates.addView(b,new LinearLayout.LayoutParams(-2,dp(44))); bind(b,() -> { try { JSONObject selection=new JSONObject().put("op","select").put("index",index).put("generation",shownGeneration);if(candidateId!=null&&shownComposition>=0)selection.put("id",candidateId).put("composition_revision",shownComposition);send(selection,null); } catch(JSONException ignored) {} },false); b.setOnLongClickListener(v -> { if(privateSession||searchActive)return false; try { JSONObject pin=new JSONObject().put("op","personal_pin").put("index",index).put("generation",shownGeneration);if(candidateId!=null&&shownComposition>=0)pin.put("id",candidateId).put("composition_revision",shownComposition);send(pin,null); return true; } catch(JSONException ignored) { return false; } }); }
     }
     private void press(String key) {
         InputConnection connection=getCurrentInputConnection(); if(connection==null)return;
         if(searchClosing||(searchActive&&!searchReady))return;
+        invalidateRanking(false,false);
         final boolean toSearch=searchActive;
         boolean inputChinese=toSearch?searchChinese:chinese;
         if(toSearch&&key.equals("↵")){finishDataSearch(true);return;}
@@ -353,7 +496,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(key.equals("符")){layer="symbols";renderKeys();return;}
         if(key.equals("表情")){layer="emoji";renderKeys();return;}
         if(layer.equals("edit")&&!key.equals("返回")&&!key.equals("空格")&&!key.equals("⌫")&&!key.equals("↵")&&!key.equals("，")&&!key.equals("。")){
-            learning.invalidate();final int active=epoch;command("CommitRaw",null);Runnable edit=()->{if(epoch!=active)return;InputConnection c=getCurrentInputConnection();if(c==null)return;learning.invalidate();selectionEcho.invalidate();
+            invalidateRanking(true,false);learning.invalidate();final int active=epoch;command("CommitRaw",null);Runnable edit=()->{if(epoch!=active)return;InputConnection c=getCurrentInputConnection();if(c==null)return;invalidateRanking(true,false);learning.invalidate();selectionEcho.invalidate();
                 int code=key.equals("←")?21:key.equals("→")?22:key.equals("↑")?19:key.equals("↓")?20:0;
                 if(code!=0){c.sendKeyEvent(new android.view.KeyEvent(0,code));c.sendKeyEvent(new android.view.KeyEvent(1,code));}
                 else {int id=key.equals("全选")?android.R.id.selectAll:key.equals("复制")?android.R.id.copy:key.equals("剪切")?android.R.id.cut:android.R.id.paste;if(!privateSession||id==android.R.id.paste||id==android.R.id.selectAll)c.performContextMenuAction(id);}
@@ -401,7 +544,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void dataRequest(JSONObject input,java.util.function.Consumer<JSONObject> done){
         if(privateSession||!ready||!layer.equals("data"))return;final int active=epoch;final LocalDataPanel owner=dataPanel;
-        if(input.optString("op").equals("personal_commit"))learning.invalidate();
+        if(input.optString("op").equals("personal_commit")){invalidateRanking(true,false);learning.invalidate();}
         final boolean query=input.optString("op").equals("personal_query");final int serial=query?++dataQuerySerial:0;
         (query?reader:worker).execute(()->{if(query?serial!=dataQuerySerial:handle==0)return;JSONObject result;try{result=new JSONObject(query?NativeCore.queryPersonal(new File(getFilesDir(),"zapime").getAbsolutePath(),input.toString()):NativeCore.request(handle,input.toString()));}catch(Exception error){result=new JSONObject();try{result.put("error","local_failure");}catch(JSONException ignored){}}final JSONObject value=result;
             main.post(()->{if(epoch!=active||privateSession||dataPanel!=owner||!layer.equals("data")||(query&&serial!=dataQuerySerial))return;if(!value.has("error")&&input.optString("op").equals("personal_commit"))deliverInputReply(active,value,null,null);done.accept(value);});});
@@ -420,6 +563,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private void startDataSearch(){
         if(privateSession||!ready||dataPanel==null)return;dataKind=dataPanel.kind;searchQuery=dataPanel.query;searchBefore=searchQuery;
+        invalidateRanking(true,false);rankingContext.suspend();
         command("CommitRaw",null);learning.invalidate();searchActive=true;searchReady=false;searchClosing=false;searchChinese=true;shift=false;layer="letters";renderKeys();idleToolbar();refreshStatus();final int active=epoch;
         worker.execute(()->{closeSearchCore();try{searchHandle=NativeCore.open(new File(getFilesDir(),"zapime").getAbsolutePath(),true);if(searchHandle==0)throw new IOException();JSONObject initial=new JSONObject(NativeCore.request(searchHandle,new JSONObject().put("op","layout").put("name","qwerty").toString()));main.post(()->{if(epoch==active&&searchActive){searchReady=true;applySearch(initial,null);}});}catch(Exception|LinkageError error){main.post(()->{if(epoch==active){searchReady=false;status.setText("搜索键盘准备失败，请取消后重试");}});}});
     }
@@ -427,7 +571,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private void finishDataSearch(boolean keep){
         if(!searchActive||searchClosing)return;
         if(searchReady)command(keep?"CommitCandidate":"Cancel",null);searchClosing=true;final int active=epoch;
-        worker.execute(()->{closeSearchCore();main.post(()->{if(epoch!=active)return;if(!keep)searchQuery=searchBefore;searchActive=false;searchReady=false;searchClosing=false;preedit="";shift=false;layer="data";renderKeys();idleToolbar();refreshStatus();try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}});});
+        worker.execute(()->{closeSearchCore();main.post(()->{if(epoch!=active)return;if(!keep)searchQuery=searchBefore;searchActive=false;searchReady=false;searchClosing=false;rankingContext.rebase(rankingContextEligible&&rankingVisible,selectionStart,selectionEnd);preedit="";shift=false;layer="data";renderKeys();idleToolbar();refreshStatus();try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}});});
     }
     private void refreshSearchLabel(){if(searchLabel!=null)searchLabel.setText("查找："+searchQuery+(preedit.isEmpty()?"":"  "+preedit));}
     private void clearDataSearch(){if(!searchActive||!searchReady||searchClosing)return;command("Cancel",null);final int active=epoch;worker.execute(()->main.post(()->{if(epoch==active&&searchActive){searchQuery="";refreshSearchLabel();}}));}
@@ -444,6 +588,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(!ready||privateSession||searchActive||!preedit.isEmpty()){Toast.makeText(this,"请先完成当前输入，语音不用于隐私输入框",Toast.LENGTH_SHORT).show();return;}
         if(!voicePermissionGranted(this)){open(VoiceSettingsActivity.class);return;}
         final VoiceEngineSession engine=new VoiceEngineSession(VoiceEnginePreferences.selected(this));
+        invalidateRanking(true,true);
         learning.invalidate();cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
         worker.execute(()->main.post(()->{
@@ -524,8 +669,9 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}
     @Override public boolean onKeyUp(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK&&voiceBack){voiceBack=false;return true;}return super.onKeyUp(code,event);}
-    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){cancelVoice(true);VoiceWorker.EXECUTOR.execute(VoiceWorker::releaseCaches);}}
+    @Override public void onTrimMemory(int level){super.onTrimMemory(level);if(level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW||level==android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL||level>=android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND){invalidateRanking(true,true);cancelVoice(true);VoiceWorker.EXECUTOR.execute(VoiceWorker::releaseCaches);}}
     private void delete(InputConnection c){
+        invalidateRanking(true,false);
         learning.invalidate();
         selectionEcho.invalidate();
         CharSequence selected=c.getSelectedText(0);
@@ -545,8 +691,8 @@ public final class ZapInputMethodService extends InputMethodService {
         c.deleteSurroundingText(text.length()-Math.max(0,start),0);
     }
     private void command(String name, String fallback) { try { send(new JSONObject().put("op","command").put("name",name),fallback); } catch(JSONException ignored) {} }
-    private void enter(InputConnection connection) { learning.invalidate();selectionEcho.invalidate();EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
-    @Override public void onFinishInput() { learning.suspend();cancelMarkerLoss();inputReplies.clear();replyUnits=0;selectionEcho.invalidate();editorPackage=null;cancelVoice(false);touches.cancel();++epoch;++dataQuerySerial; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
+    private void enter(InputConnection connection) { invalidateRanking(true,false);learning.invalidate();selectionEcho.invalidate();EditorInfo info=getCurrentInputEditorInfo(); int action=info==null?0:info.imeOptions & EditorInfo.IME_MASK_ACTION; if(action!=0 && action!=EditorInfo.IME_ACTION_NONE && action!=EditorInfo.IME_ACTION_UNSPECIFIED && (info.imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION)==0)connection.performEditorAction(action); else connection.commitText("\n",1); }
+    @Override public void onFinishInput() { suspendRanking();latestCandidateView=null;firstCandidateId=null;shownCompositionRevision=-1;learning.suspend();cancelMarkerLoss();inputReplies.clear();replyUnits=0;selectionEcho.invalidate();editorPackage=null;cancelVoice(false);touches.cancel();++epoch;++dataQuerySerial; ready=false;searchReady=false;searchActive=false;searchClosing=false;searchQuery="";dataPanel=null; preedit=""; if(getCurrentInputConnection()!=null)getCurrentInputConnection().finishComposingText(); worker.execute(() -> { closeSearchCore();if(handle!=0) { NativeCore.close(handle); handle=0; } }); super.onFinishInput(); }
     @Override public void onDestroy() {
         // InputMethodService.onDestroy invokes our onFinishInput. Keep the worker
         // accepting that final close before shutting it down; both closes are queued
@@ -554,6 +700,7 @@ public final class ZapInputMethodService extends InputMethodService {
         learning.suspend();touches.cancel();++epoch;ready=false;
         try { super.onDestroy(); }
         finally {
+            if(rankingWorker!=null)rankingWorker.close();
             worker.execute(() -> { closeSearchCore();if(handle!=0){NativeCore.close(handle);handle=0;} });
             worker.shutdown();
             ++dataQuerySerial;reader.shutdownNow();

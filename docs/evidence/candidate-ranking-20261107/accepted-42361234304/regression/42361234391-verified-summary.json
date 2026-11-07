@@ -1,0 +1,77 @@
+{
+  "head_sha": "5e1a87ccc345cbdb41635059c35cb63ce988b197",
+  "run_id": 42361234391,
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 128369879889,
+      "name": "Signed x86_64 product and model-free harnesses",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556449,
+      "name": "Focused VoiceKey-only API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556457,
+      "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556469,
+      "name": "Focused VoiceKey-only API 36",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556471,
+      "name": "Local sync preparation API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556480,
+      "name": "Local sync preparation API 36",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556487,
+      "name": "Local sync preparation API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128370556494,
+      "name": "Focused VoiceKey-only API 28",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13569832686,
+      "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+      "size_in_bytes": 240364,
+      "digest": "sha256:cb81460a8224fb71b74d3423228dc9312171d735b1be85520ad731544c1f5b84"
+    },
+    {
+      "id": 13569643348,
+      "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+      "size_in_bytes": 241767,
+      "digest": "sha256:d5513cb9cbef32e506fdca48e4a858e68683d3ce965a7607f96af4adc9bd6cf1"
+    },
+    {
+      "id": 13569308709,
+      "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+      "size_in_bytes": 200225,
+      "digest": "sha256:88d624d4b2b1daa09f18f55416a9635b28be7f7e637156f002408169efc194c5"
+    }
+  ],
+  "scope": "This focused workflow passed at the exact quoted head; the separate full Android workflow is not implied. Three API VoiceKey original ZIPs SHA-checked; original 3a failures remain separately archived."
+}

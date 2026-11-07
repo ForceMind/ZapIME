@@ -45,6 +45,7 @@ EOF
 python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/rust-licenses"
 cp "target/$rust_target/release/libzapime_core.so" "$build/lib/$abi/"
 bash scripts/build_android_voice.sh "$abi" "$build"
+bash scripts/build_android_candidates.sh "$abi" "$build"
 # Optional VoiceKey Rust JNI is a separate dynamic library. No third-party
 # model weights, reverse-engineered cloud clients or microphone recording are
 # automatically activated by its presence.

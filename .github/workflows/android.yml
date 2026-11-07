@@ -43,6 +43,10 @@ jobs:
         run: bash scripts/test_android_voice_engine.sh
       - name: English learning privacy and asynchronous lifecycle policy
         run: bash scripts/test_android_learning.sh
+      - name: Offline candidate context, bounded worker and pinned model resources
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_prepare_candidate_model.py' -v
+          bash scripts/test_android_candidates.sh
       - name: Voice dependency and model packaging boundaries
         run: python3 -m unittest discover -s scripts -p 'test_android_*.py' -v
       - name: Exact-zero PCM result policy (host C++ unit, not JNI acceptance)

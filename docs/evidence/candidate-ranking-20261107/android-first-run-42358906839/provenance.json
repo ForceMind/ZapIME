@@ -1,0 +1,110 @@
+{
+  "workflow_run": 42358906839,
+  "implementation_commit": "3a11177b7d0b2ef054183f5297a282dcb650a14f",
+  "tested_merge_commit": "431a0cdb0fa84a25f19bde1daa3217a37a5afdee",
+  "implementation_and_merge_tree": "6316761c0641aef8c7175800d79e703f8ca37f07",
+  "outcome": "FAIL",
+  "system_ime_executed": false,
+  "artifacts": [
+    {
+      "api": 28,
+      "artifact_id": 13568478491,
+      "zip_bytes": 2471,
+      "zip_sha256": "620f7b7e89567c039fba4ec2c45c4f7c277360914b41cb9b97e97d322f85c09a",
+      "files": [
+        {
+          "path": "api-28/candidate-ranking-report.json",
+          "bytes": 1921,
+          "sha256": "e1da5f0237abc6805df9d4c0952502ee1391a8988b94b63b45f153adb0b509de"
+        },
+        {
+          "path": "api-28/offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "path": "api-28/instrumentation.txt",
+          "bytes": 202,
+          "sha256": "06278950f65dd838238df1fa3b00af1a2f4a1049f2bd0c0299e67952ecc676f1"
+        },
+        {
+          "path": "api-28/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "api-28/activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "953443aaeafed46cb694b18b6805f1ee95e89bd7cdf5c8fdf130105d6cfa4f78"
+        }
+      ]
+    },
+    {
+      "api": 35,
+      "artifact_id": 13568808083,
+      "zip_bytes": 2208,
+      "zip_sha256": "4284b151410376e03a39255fa195f4cfacfa267ba5053be928d2b0904646b81a",
+      "files": [
+        {
+          "path": "api-35/candidate-ranking-report.json",
+          "bytes": 1922,
+          "sha256": "5d5c6baa37962b29f7df1c3ad41540b472a85bdb4968844eaa0cee6084576bad"
+        },
+        {
+          "path": "api-35/offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "path": "api-35/instrumentation.txt",
+          "bytes": 202,
+          "sha256": "06278950f65dd838238df1fa3b00af1a2f4a1049f2bd0c0299e67952ecc676f1"
+        },
+        {
+          "path": "api-35/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "api-35/activity-errors.txt",
+          "bytes": 118,
+          "sha256": "2d08d75a5f069398362f56dba5cc63e74e165df7d8a875bfe57a4564146c1e0b"
+        }
+      ]
+    },
+    {
+      "api": 36,
+      "artifact_id": 13568833100,
+      "zip_bytes": 2208,
+      "zip_sha256": "dbeba434fab3475b500706a5b03d6b38bc0450653e08cc30f6a1e7c20ccb6db3",
+      "files": [
+        {
+          "path": "api-36/candidate-ranking-report.json",
+          "bytes": 1922,
+          "sha256": "2a55c4d0e0702edfd885e4d9e642c3d2c2afd72d4ed09b26353e6790fccc1347"
+        },
+        {
+          "path": "api-36/offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "path": "api-36/instrumentation.txt",
+          "bytes": 202,
+          "sha256": "06278950f65dd838238df1fa3b00af1a2f4a1049f2bd0c0299e67952ecc676f1"
+        },
+        {
+          "path": "api-36/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "api-36/activity-errors.txt",
+          "bytes": 118,
+          "sha256": "5f9e480a44173d1c2841e1f22b878e17fd659f1c14228a5e7ec536b92b953380"
+        }
+      ]
+    }
+  ],
+  "scope": "Original downloaded API28/35/36 failure bytes preserved. The strict cross-version numerical comparison failed at case 3; no Android pass or system keyboard execution is inferred."
+}

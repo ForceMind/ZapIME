@@ -10,6 +10,7 @@ import subprocess
 import sys
 import zipfile
 from prepare_android_voice import LOCK, model_config, verify_elf
+from prepare_candidate_model import load_lock as candidate_lock
 
 
 
@@ -21,6 +22,8 @@ CORE_JNI = {"Java_org_zapime_android_NativeCore_" + name for name in
              "syncMaterialInfo", "syncKeyDescriptor", "syncWorkspaceStatus", "prepareSync",
              "createSyncRecovery", "restoreSyncRecovery", "stageSyncUpload",
              "ackSyncUpload", "syncPullCursor", "applySyncPage")}
+CANDIDATE_JNI = {"Java_org_zapime_android_NativeCandidateRanker_" + name for name in
+                 ("open", "score", "clear", "cancel", "close")}
 
 
 def check_notice_inventory(apk, prefix, root_package, target_platform=None):
@@ -106,6 +109,28 @@ def check_core_native(raw, abi):
     assert CORE_JNI <= exports, "missing core or stateless sync JNI dynamic exports"
 
 
+def check_candidate_native(raw, abi):
+    with tempfile.NamedTemporaryFile(suffix=".so") as file:
+        file.write(raw); file.flush()
+        verify_elf(Path(file.name), abi)
+    needed, exports = elf_metadata(raw)
+    assert "libc.so" in needed and needed <= {"libc.so", "libm.so", "libdl.so"}, "unexpected candidate runtime dependency"
+    assert CANDIDATE_JNI <= exports, "missing candidate JNI dynamic exports"
+
+
+def check_candidate_assets(apk):
+    lock = candidate_lock()
+    prefix = "assets/" + lock["asset_directory"] + "/"
+    names = {name for name in apk.namelist() if name.startswith(prefix) and not name.endswith("/")}
+    assert names == {prefix + name for name in lock["files"]}, "incomplete or unexpected candidate model assets"
+    for name, spec in lock["files"].items():
+        member = prefix + name
+        assert apk.getinfo(member).file_size == spec["size"], "candidate model asset size mismatch"
+        with apk.open(member) as source:
+            assert hashlib.file_digest(source, "sha256").hexdigest() == spec["sha256"], "candidate model asset digest mismatch"
+    assert {name for name in apk.namelist() if name.lower().endswith(".ort")} == {prefix + "lm_step.ort"}, "unreviewed ORT model in APK"
+
+
 def check_contents(path):
     with zipfile.ZipFile(path) as apk:
         names = apk.namelist()
@@ -121,9 +146,11 @@ def check_contents(path):
         directory = cores[0].rsplit("/", 1)[0]
         abi = directory.split("/")[-1]
         assert directory == "lib/" + abi and abi in LOCK["libraries"], "unsupported native directory"
-        libraries = {directory + "/" + name for name in ["libzapime_core.so", "libzapime_voice.so", "libsherpa-onnx-c-api.so", "libonnxruntime.so", "libzapime_voicekey_adapter.so"]}
+        libraries = {directory + "/" + name for name in ["libzapime_core.so", "libzapime_voice.so", "libsherpa-onnx-c-api.so", "libonnxruntime.so", "libzapime_voicekey_adapter.so", "libzapime_candidate.so"]}
         assert {name for name in entries if name.startswith("lib/")} == libraries, "missing/unexpected packaged runtime"
         check_core_native(apk.read(cores[0]), abi)
+        check_candidate_native(apk.read(directory + "/libzapime_candidate.so"), abi)
+        check_candidate_assets(apk)
         for name, spec in LOCK["libraries"][abi].items():
             member = directory + "/" + name
             assert apk.getinfo(member).file_size == spec["size"], "packaged runtime size mismatch"
@@ -140,7 +167,7 @@ def check_contents(path):
         attribution = apk.read("assets/voice-licenses/voicekey-source.txt").decode("utf-8")
         assert "https://github.com/J3n5en/voicekey" in attribution and "3ba017826eef7fac405198510b03859eb5b6c8c4" in attribution, "wrong VoiceKey source attribution"
         assert json.loads(apk.read("assets/voice-model.json")) == model_config(), "untrusted packaged model catalog"
-        assert not any(name.lower().endswith((".onnx", ".xnet", ".pcm", ".wav")) for name in entries), "model weights must remain an explicit import"
+        assert not any(name.lower().endswith((".onnx", ".xnet", ".pcm", ".wav")) for name in entries), "voice weights and recordings must remain outside the APK"
     print("PASS packaged APK native hashes, model catalog, notices and explicit model boundary:", abi)
 
 

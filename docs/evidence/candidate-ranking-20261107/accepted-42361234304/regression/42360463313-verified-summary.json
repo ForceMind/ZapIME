@@ -1,0 +1,75 @@
+{
+  "head_sha": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+  "run_id": 42360463313,
+  "jobs": [
+    {
+      "id": 128367554985,
+      "name": "Signed x86_64 product and model-free harnesses",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205576,
+      "name": "Focused VoiceKey-only API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205592,
+      "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205629,
+      "name": "Local sync preparation API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205632,
+      "name": "Local sync preparation API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205652,
+      "name": "Focused VoiceKey-only API 36",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205664,
+      "name": "Focused VoiceKey-only API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128368205688,
+      "name": "Local sync preparation API 36",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13570131085,
+      "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+      "size_in_bytes": 207603,
+      "digest": "sha256:eafac54f63497e68f4c36259615257255f5319e026130d293fad9fb8ec081d68"
+    },
+    {
+      "id": 13569841558,
+      "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+      "size_in_bytes": 241276,
+      "digest": "sha256:7d1c58819eaf5ba78483360353033c0a9455a25a253d0acb43e317548803886f"
+    },
+    {
+      "id": 13569223082,
+      "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+      "size_in_bytes": 239295,
+      "digest": "sha256:1aec2e75603d7a1c616689c0d32ce4c2cd581979cfb226208717e4fc71517bff"
+    }
+  ],
+  "scope": "All workflow jobs passed at this exact head. Three API VoiceKey original ZIPs SHA-checked and summaries confirm actual execution, service exit, fixture deletion and network-rule cleanup. Original 3a failures remain separately archived."
+}

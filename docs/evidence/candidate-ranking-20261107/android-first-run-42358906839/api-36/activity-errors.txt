@@ -1,0 +1,2 @@
+--------- beginning of system
+11-07 09:22:14.212   661  2006 E ActivityManager: Unable to freeze binder for 2701: -11

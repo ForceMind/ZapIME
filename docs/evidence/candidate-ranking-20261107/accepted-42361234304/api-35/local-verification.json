@@ -1,0 +1,21 @@
+{
+  "api": 35,
+  "artifact_id": 13569363599,
+  "zip_bytes": 103908,
+  "zip_sha256": "1ec65732575024ac8d7da8b99419617386d53a5b4f459480ddb8de3963573bc5",
+  "method_checks": 14,
+  "method_reference_max_abs_error": 0,
+  "runtime": "1.28.2",
+  "current_input_revision": 15,
+  "applied_revision": 15,
+  "selected_text": "世界",
+  "actual_editable": "世界",
+  "system_input_verified": true,
+  "all_cleanup_verified": true,
+  "both_stage_exit_codes": [
+    0,
+    0
+  ],
+  "verified": true,
+  "scope": "Dedicated x86_64 Android emulator real model and system IME; not phone/ARM/latency/language-accuracy acceptance"
+}
