@@ -75,3 +75,5 @@
 - 新同步恢复页SAF验收仅在数字CI独立模式、主资料根和连接原本不存在后创建合成fixture；不在原完整输入gate中清空主库。只删本轮唯一文档且先删后finish，清理失败拒绝成功。页面可能显示实际合成恢复码，专用脚本禁止通用Activity/a11y/页面截图诊断，只取阶段/严格报告/provider列表。控制worker排队上限8，拒绝须显示失败，不能阻塞/无限排队或宣称阻塞IO必然中止。
 
 - 最新Android手动同步契约见docs/ANDROID_MANUAL_SYNC.md与ADR-022：原准备页保持零HTTP；核对/首次登记和逐轮资料传输为独立显式页面。所有副作用先锁定用户确认的公开Selection(server/account/device/keySHA)，HTTP前后核当前完整connection和实际vault字节的DB指纹。无默认上传/后台轮询；原冻结字节才可POST，ACK必须与真实stage及AEAD原快照匹配，不动pull cursor；整页只走共享preserving认证边界。既有“宿主尚未接入”描述为早期基线，不得用来删新接缝或跳过新实际CI/真机验收。
+
+- ADR-023新增唯一测试例外：只有专用sync HTTPS API28 GitHub作业和scripts/android_sync_https_smoke.py在numeric run/attempt+emulator/qemu/API28/userdebug/root/SELinux Enforcing全部核实后，才可在全新writable-system/no-snapshot AVD的临时系统副本添加本轮唯一CA；不在用户设备/生产使用。生产APK默认TLS/hostname不改，不加调试CA或自定义TrustManager/SSL工厂；before/after实际TLS拒绝、错误SAN拒绝、根库基线恢复与本轮CA/精确UID规则清理全过才PASS。禁止关闭SELinux、disable-verity、隐藏cert开关、改APEX或flush规则。秘密/正文/CA私钥不入参数/日志/artifact，test-only bootstrap凭据仍需生产身份验证。单模拟器双profile/临时系统CA不等于手机、公网、R2或配对。旧JVM/离线原报告scope保留；35/36单列BLOCKED，不能借API28。

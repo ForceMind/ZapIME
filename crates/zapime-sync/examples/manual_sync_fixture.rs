@@ -70,7 +70,13 @@ fn database(dir: &Path, device: &str) -> std::path::PathBuf {
     dir.join(format!("{device}.sqlite3"))
 }
 fn open(dir: &Path, device: &str) -> Store {
-    Store::open_sync_writer(&database(dir, device)).expect("fixture sync database")
+    // The fixture owns this temporary directory. Canonicalize its ancestors
+    // (macOS /var aliases /private/var), then preserve the database leaf for
+    // the production writer's NOFOLLOW check. Never resolve the database leaf.
+    let parent = dir
+        .canonicalize()
+        .expect("canonical owned fixture directory");
+    Store::open_sync_writer(&database(&parent, device)).expect("fixture sync database")
 }
 fn edit(store: &mut Store, id: Uuid, text: &str) {
     let revision = store

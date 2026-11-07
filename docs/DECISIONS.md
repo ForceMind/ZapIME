@@ -1,5 +1,9 @@
 # 技术决策
 
+## ADR-023 · 2026-11-06 · 一次性API28真实HTTPS同步测试
+
+新增[独立测试契约](ADR_023_ANDROID_SYNC_HTTPS_CI.md)：仅受保护的GitHub临时API28 writable-system作业可添加/移除本轮系统CA，产品默认TLS与主机名校验不变，before/after必须实际不信任、wrong SAN必须拒绝、证书/UID规则清理和根库基线完整恢复才可成功。真实业务由原Go+PG执行，不mock ACK；两个本地profile不冒充两台手机。旧独立JVM和离线报告scope不追改，Android35/36 APEX与真机、公网/R2分别验收。
+
 ## ADR-022 · 2026-11-06 · 公开密钥身份CAS与显式有界手动同步
 
 先在账号行锁与当前设备授权复核下登记一次公开的key ID/72B材料SHA256。无历史空账号才允许owner首次写入；相同幂等、不同拒绝、legacy不猜根。schema3保留旧历史，旧服务拒绝降级；不接收根密钥或恢复码，不把摘要视为持有证明。

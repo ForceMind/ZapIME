@@ -1,6 +1,18 @@
 # ZapIME 项目执行状态
 
-更新时间：2026-11-06 23:28 PST（America/Los_Angeles）。本轮已实际修改产品、运行测试、推送代码并下载核验 APK。累计汇报次数及此前汇报间隔没有可靠连续记录，不补造。
+更新时间：2026-11-06 23:58 PST（America/Los_Angeles）。本轮已实际开发、测试、保存GitHub并下载核验APK。累计汇报次数无可靠连续记录。
+
+## 当前试用包与HTTPS验收接续（2026-11-06 23:58 PST）
+
+最新已实际取得的Android候选仍固定 `e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9`，已提供[双ABI试用与固定版本一键部署](ANDROID_MANUAL_SYNC_TRYOUT.md)。原ZIP235395045字节/摘要、两APK、相同开发签名v3、18 core JNI、许可证、模型排除、16KiB与默认TLS/private页面均已实际检查；[包校验原件](evidence/manual-sync-20261106/apk-e3c4/README.md)。没有安装或操作用户手机/服务器。
+
+固定e3的focused42351436372七作业及full Android42351436401六作业全SUCCESS，三端各47项严格重验和原键盘/语音/资料/备份/隐私/系统IME退出结果分别保留；新共享客户端服务42351436402全SUCCESS，实际17命令真服务/双库、PG/S3与安装灾备完整通过。完整证据已保存[本轮目录](evidence/manual-sync-20261106/)。
+
+共享checks42351436378的macOS测试**实际失败**：SQLite NOFOLLOW拒绝 `/var` 祖先系统别名下的临时路径。原log与Linux精确反例保留；只把有效测试/自有示例父目录规范化，保留产品writer函数体、Android JNI、Cargo.lock和全部符号链接/schema/预算保护；新增父别名拒绝、规范路径通过回归。修复后主机workspace118/fmt/strictClippy及JNI host3通过；修复后的macOS必须等新CI，不用Ubuntu结果代填。
+
+继续新增test-only验证：10项真实新页面确认/负取消/实际worker排队取消/恢复本机读取与清理，以及独立API28真实HTTPS作业。原产品平台TLS/hostname不改，仅在严格受保护的一次性API28系统副本加入本轮CA；必须before不信任、真实Go/PG双profile传输、wrong SAN拒绝、after再次不信任及根库/自有网络规则恢复。细节见[ADR-023](ADR_023_ANDROID_SYNC_HTTPS_CI.md)。主机Java编译、80项Android Python（含29个HTTPS guard/report检查）、真实host TLS/Go/PG已通过，Android新增页面10项及系统CA/HTTPS三阶段仍NOT RUN，待新源码CI。
+
+e3旧候选没有手机HTTPS/公网PKI/实际R2证明；未来受控CA测试也不等于原厂信任库、两台手机、S25、配对或四端同步完成。仍不合并/发布稳定版，不触碰用户设备、DNS或生产服务。距23:28收口约30分钟；累计汇报次数无可靠连续记录。
 
 ## 新工作切片：显式手动加密同步（2026-11-06 23:20 PST）
 

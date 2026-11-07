@@ -1,0 +1,30 @@
+{
+  "scope": "Host compilation, strict metadata/guard tests and actual host TLS to Go/PostgreSQL only. No Android CA install or Android HTTPS result.",
+  "android_ca_execution": "NOT RUN",
+  "page_ui_android_execution": "NOT RUN",
+  "root_java_compile": "PASS API36 source8 target8",
+  "python_android_tests": 80,
+  "driver_report_tests": 29,
+  "files": [
+    {
+      "file": "sync-https-java-host-final.log",
+      "bytes": 802,
+      "sha256": "c4c5d2c2a4785aac8f84fcc8c6b5517a93f5ab652f77197f704365a77421a8e9"
+    },
+    {
+      "file": "sync-https-all-python-host-final.log",
+      "bytes": 1270,
+      "sha256": "880821235846c89bc02422bc1291b766acb253c20e56f524f6294bdfb02413fc"
+    },
+    {
+      "file": "sync-https-driver-host-tests.log",
+      "bytes": 4776,
+      "sha256": "f9012897e669f7f5a7990d0498a7c7081cd3c7e4936555e308f0e52d371e494e"
+    },
+    {
+      "file": "sync-https-driver-manifest-host.json",
+      "bytes": 522,
+      "sha256": "f096859bda5de2b52a84b3b5f09f8b1b24edb38da0fd1c69b856e5c66eac335e"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+warning: /workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+`license` should be used if the package license can be expressed with a standard SPDX expression.
+`license-file` should be used if the package uses a non-standard license.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+    Blocking waiting for file lock on package cache
+   Compiling zapime-data v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-data)
+   Compiling zapime-sync v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync)
+   Compiling sync-jni-host-typecheck v0.0.0 (/workspace/scratch/99fcacf9684b/ZapIME/target/sync-jni-typecheck)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.08s
+     Running unittests ../../crates/zapime-core/src/android_sync.rs (target/sync-jni-typecheck/target/debug/deps/sync_jni_host_typecheck-b8cb2755b021b9b7)
+
+running 3 tests
+test tests::native_failure_json_distinguishes_saved_not_eligible_and_failed_retention ... ok
+test tests::database_path_rejects_symlink_roots_and_data_directories ... ok
+test tests::database_path_is_canonical_for_existing_roots_and_does_not_create_absent_profiles ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests sync_jni_host_typecheck
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

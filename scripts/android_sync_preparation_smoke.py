@@ -12,6 +12,7 @@ from android_offline_uid import offline_product
 from android_sync_preparation_report import verify_report, verify_ui_report
 from android_sync_key_report import verify_report as verify_key_report
 from android_sync_transfer_report import verify_report as verify_transfer_report
+from android_sync_pages_report import verify_report as verify_pages_report
 
 
 def main():
@@ -45,7 +46,7 @@ def main():
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-report.json",
                 str(out / "sync-preparation-report.json"))
             verify_report(json.loads((out / "sync-preparation-report.json").read_text()), api)
-            for filename, validator in (("sync-key-registration-report.json", verify_key_report), ("sync-transfer-report.json", verify_transfer_report)):
+            for filename, validator in (("sync-key-registration-report.json", verify_key_report), ("sync-transfer-report.json", verify_transfer_report), ("sync-pages-ui-report.json", verify_pages_report)):
                 run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + filename, str(out / filename))
                 validator(json.loads((out / filename).read_text()), api)
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-ui-report.json",
@@ -58,7 +59,7 @@ def main():
             "sensitive_ui_dump_collected": False, "scope": "Raw instrumentation and sanitized reports retained; provider-only evidence below"}, indent=2) + "\n")
         raise
     finally:
-        for name in ("sync-preparation-report.json", "sync-key-registration-report.json", "sync-transfer-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "sync-key-provider-nav-before.png", "backup-provider-ui-shape.json"):
+        for name in ("sync-preparation-report.json", "sync-key-registration-report.json", "sync-transfer-report.json", "sync-pages-ui-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "sync-key-provider-nav-before.png", "backup-provider-ui-shape.json"):
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + name,
                 str(out / name), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout

@@ -1,0 +1,20 @@
+[
+  {
+    "abi": "arm64-v8a",
+    "bytes": 52002892,
+    "sha256": "66ba85d9a4690cf0de5c410313692c148b3d0ebeb050fdc92a1246bc2b64999c",
+    "signer_sha256": "779a121b3ea1de8c317b01dc3ce5964f871bad47e49360c9f71a6a67a22b16e4",
+    "signature_v3_verified": true,
+    "private_new_activities": true,
+    "platform_default_tls_configuration": true
+  },
+  {
+    "abi": "x86_64",
+    "bytes": 53330274,
+    "sha256": "9dcc1af83c6c1e179b395b2acce273a1631c4ae98acbb0f591d30090c18afdb7",
+    "signer_sha256": "779a121b3ea1de8c317b01dc3ce5964f871bad47e49360c9f71a6a67a22b16e4",
+    "signature_v3_verified": true,
+    "private_new_activities": true,
+    "platform_default_tls_configuration": true
+  }
+]

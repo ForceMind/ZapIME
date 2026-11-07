@@ -1,0 +1,74 @@
+{
+  "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "files": [
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "source_sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a",
+      "local_test_sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a",
+      "matches": true
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "source_sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c",
+      "local_test_sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c",
+      "matches": true
+    },
+    {
+      "path": ".github/workflows/sync-service.yml",
+      "source_sha256": "aad9ee0813d5519bb9aae82280146ad4c68340d9f8ba34c62acae9c5160d83ab",
+      "local_test_sha256": "aad9ee0813d5519bb9aae82280146ad4c68340d9f8ba34c62acae9c5160d83ab",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "source_sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e",
+      "local_test_sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/src/workspace.rs",
+      "source_sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a",
+      "local_test_sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/src/lib.rs",
+      "source_sha256": "cd71cdeb6b84b37ede562c41d1c982a7627660ed41ba4ef3dce35122892d7cd0",
+      "local_test_sha256": "cd71cdeb6b84b37ede562c41d1c982a7627660ed41ba4ef3dce35122892d7cd0",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/lib.rs",
+      "source_sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456",
+      "local_test_sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "source_sha256": "e3dee336f3ff8e4822a8940192ce65bd83846458685e461f68c766b7742a7499",
+      "local_test_sha256": "e3dee336f3ff8e4822a8940192ce65bd83846458685e461f68c766b7742a7499",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/pull.rs",
+      "source_sha256": "6d66937094cfe1f604e1c9ccb8b074c3ac915f7e65cf75fc4f48fd284c0d4509",
+      "local_test_sha256": "6d66937094cfe1f604e1c9ccb8b074c3ac915f7e65cf75fc4f48fd284c0d4509",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/quarantine.rs",
+      "source_sha256": "349ed885922d4c6024260f1a01c8cde74c436fffc9c6657d4e96d99e38a86049",
+      "local_test_sha256": "349ed885922d4c6024260f1a01c8cde74c436fffc9c6657d4e96d99e38a86049",
+      "matches": true
+    },
+    {
+      "path": "Cargo.lock",
+      "source_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "local_test_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "matches": true
+    }
+  ],
+  "all_match": true,
+  "tree_sha": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "tree_matches_remote_commit_metadata": true
+}

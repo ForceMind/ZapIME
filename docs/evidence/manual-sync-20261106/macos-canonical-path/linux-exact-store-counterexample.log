@@ -1,0 +1,4 @@
+linked libzapime_data-f9d64ca6454b3bed.rlib
+leaf_is_regular=true
+aliased_parent_error=Storage(SqliteFailure(Error { code: CannotOpen, extended_code: 1550 }, Some("unable to open database file: /tmp/zapime-nofollow-pk959v_i/alias/data.sqlite3")))
+canonical_parent_accepted=true

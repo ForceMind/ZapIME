@@ -1,0 +1,150 @@
+{
+  "saved_at_utc": "2026-11-07T07:50:31.692253+00:00",
+  "status": "PASS",
+  "scope": "Host normally verified TLS/real Go/PostgreSQL/shared manual client only; not Android HTTPS/system CA/R2",
+  "source_files": [
+    {
+      "path": "scripts/fixtures/sync_https_server.py",
+      "bytes": 20890,
+      "sha256": "6a23ba85d8a957abb663f247699f4145380220f61dd50b20611ed88bcd347460"
+    },
+    {
+      "path": "scripts/test_sync_https_server.py",
+      "bytes": 7290,
+      "sha256": "4a222e8a1d8bfb54994a6280ddb12c0d276ba1eea744031c9641861fca74a213"
+    },
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "bytes": 12207,
+      "sha256": "3f6392a9f72f042e6d75c02515addc94ba0971ef9dff4017d39a4959b3c78a27"
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "bytes": 12891,
+      "sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c"
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "bytes": 7976,
+      "sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e"
+    },
+    {
+      "path": "crates/zapime-sync/src/workspace.rs",
+      "bytes": 9410,
+      "sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a"
+    },
+    {
+      "path": "crates/zapime-data/src/lib.rs",
+      "bytes": 18137,
+      "sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456"
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "bytes": 30416,
+      "sha256": "ae6fc830971dc391fd6d7e9b42246af8b676518d49cd9a1112d3a850e9f90497"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 38603,
+      "sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0"
+    }
+  ],
+  "checks": {
+    "private_ca_standard_sslcontext": true,
+    "trusted_valid_ip_san": true,
+    "untrusted_ca_refused": true,
+    "same_ca_wrong_ip_san_refused": true,
+    "shared_client_17_commands": true,
+    "strict_example_clippy": true,
+    "locked_example_build": true,
+    "example_rustfmt": true,
+    "python_compile": true,
+    "private_files_0600": true,
+    "request_bound_100000": true,
+    "exact_bootstrap_only_valid_listener": true,
+    "malformed_absolute_uri_400_and_counted": true,
+    "all_resources_and_private_files_cleaned": true,
+    "fixture_parent_only_canonicalization_preserves_leaf_nofollow": true
+  },
+  "safe_summary": {
+    "bad_hostname_http_requests": 0,
+    "bootstrap_response_bytes": 438,
+    "cleanup_completed": true,
+    "go_process_stopped": true,
+    "member_session_valid": true,
+    "owner_session_valid": true,
+    "private_temp_removed": true,
+    "request_limit_bytes": 100000,
+    "requests": [
+      {
+        "count": 1,
+        "method": "GET",
+        "path": "/<other>"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/ci/bootstrap/<redacted>"
+      },
+      {
+        "count": 3,
+        "method": "GET",
+        "path": "/v1/changes"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/v1/key-descriptor"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/v1/session"
+      },
+      {
+        "count": 4,
+        "method": "POST",
+        "path": "/v1/changes"
+      },
+      {
+        "count": 1,
+        "method": "PUT",
+        "path": "/v1/key-descriptor"
+      }
+    ],
+    "response_limit_bytes": 10485760,
+    "schema_version": 1,
+    "scope": "Real isolated Go/PostgreSQL via temporary host TLS; no Android claim",
+    "service_revision": 2,
+    "tls_threads_stopped": true
+  },
+  "logs": [
+    {
+      "path": "target/service-toolchains/https-fixture-canonical-evidence/https-fixture-canonical-example-build.log",
+      "bytes": 720,
+      "sha256": "31959c1382f13c14194b98bf825c3d800f33b8cd8f6328596767c809d3639c22"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-canonical-evidence/https-fixture-canonical-example-clippy.log",
+      "bytes": 666,
+      "sha256": "d6553c3eb2bf912fef91f8ae7d6ba9b7325a423dc465d41aec7be0d51fddc6ec"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-canonical-evidence/https-fixture-canonical-example-first-fmt-failure.log",
+      "bytes": 668,
+      "sha256": "e3d6ade87c4b487de10b06847e7610186583620d2edb73883f94fc76d516fabe"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-canonical-evidence/https-fixture-canonical-example-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-canonical-evidence/https-fixture-host-canonical-example.log",
+      "bytes": 1409,
+      "sha256": "ff9f7cb9aec04249c4ba8a5e4e4d1f8447317e11c36680504e9e4edf379e05b2"
+    }
+  ],
+  "old_e3_and_prior_https_evidence_untouched": true,
+  "history": "First fmt failure preserved; formatting corrected and current source fully retested. Prior host first/failure/final evidence remains in sibling https-fixture-host-evidence."
+}

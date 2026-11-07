@@ -264,6 +264,10 @@ impl Store {
     /// Dedicated sync connection: existing regular SQLite v2 only. No CREATE,
     /// schema/index migrations or input engine; foreign keys are enforced on
     /// this connection and SQLite lock waits are limited to 200ms.
+    /// Pass an absolute physical path with canonical ancestors: SQLite
+    /// NOFOLLOW also rejects ancestor aliases (for example macOS `/var`).
+    /// The Android JNI canonicalizes its root and rejects root/data leaf
+    /// symlinks before deriving this path; this method does not resolve aliases.
     pub fn open_sync_writer(path: &std::path::Path) -> Result<Self, Error> {
         if !path.is_absolute()
             || !std::fs::symlink_metadata(path).is_ok_and(|metadata| metadata.file_type().is_file())
@@ -648,6 +652,7 @@ mod writer_tests {
         assert!(Store::open_sync_writer(dir.path()).is_err());
         let path = dir.path().join("data.sqlite3");
         drop(Store::open(&path).unwrap());
+        let path = std::fs::canonicalize(path).unwrap();
         let raw = rusqlite::Connection::open(&path).unwrap();
         let schema = |db: &rusqlite::Connection| {
             db.prepare("SELECT name,sql FROM sqlite_schema ORDER BY name")
@@ -708,6 +713,33 @@ mod writer_tests {
         let alias = dir.path().join("alias.sqlite3");
         symlink(&path, &alias).unwrap();
         assert!(Store::open_sync_writer(&alias).is_err());
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn sync_writer_rejects_parent_alias_but_accepts_canonical_existing_database() {
+        use std::os::unix::fs::symlink;
+        let dir = tempfile::tempdir().unwrap();
+        let physical = std::fs::canonicalize(dir.path()).unwrap();
+        let real = physical.join("real");
+        std::fs::create_dir(&real).unwrap();
+        let path = real.join("data.sqlite3");
+        drop(Store::open(&path).unwrap());
+        let before = std::fs::read(&path).unwrap();
+        let alias = physical.join("alias");
+        symlink(&real, &alias).unwrap();
+        let aliased = alias.join("data.sqlite3");
+        assert!(std::fs::symlink_metadata(&aliased).unwrap().is_file());
+        assert!(matches!(
+            Store::open_sync_writer(&aliased),
+            Err(Error::Storage(rusqlite::Error::SqliteFailure(error, _)))
+                if error.extended_code == rusqlite::ffi::SQLITE_CANTOPEN_SYMLINK
+        ));
+        assert_eq!(std::fs::read(&path).unwrap(), before);
+        let canonical = std::fs::canonicalize(&aliased).unwrap();
+        assert_eq!(canonical, path);
+        drop(Store::open_sync_writer(&canonical).unwrap());
         assert_eq!(std::fs::read(&path).unwrap(), before);
     }
 

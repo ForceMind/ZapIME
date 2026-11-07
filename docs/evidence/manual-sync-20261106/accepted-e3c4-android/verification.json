@@ -1,0 +1,273 @@
+{
+  "run_id": 42351436372,
+  "head_commit": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "checkout_commit": "2c61712f9414f40f66017aeb1448642c1f5abb89",
+  "same_tree": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "verified_at_utc": "2026-11-07T07:38:28.020317+00:00",
+  "frozen_validator_sources": [
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "bytes": 4750,
+      "sha256": "35441f135be3c0da36b05ed9cb0c98b5dfa31ec31bffd684ad21a1eb7b91b153"
+    },
+    {
+      "path": "scripts/android_sync_key_report.py",
+      "bytes": 2841,
+      "sha256": "3715981c681207dda95358e8db9315989fb8a48f4e633a940d4ae0a0efa0c599"
+    },
+    {
+      "path": "scripts/android_sync_transfer_report.py",
+      "bytes": 3066,
+      "sha256": "d913f5ccd7574e9af4edd7d0c556838d6a9f3db83e420e30f27887aa85c86e06"
+    },
+    {
+      "path": "scripts/android_voicekey_model_smoke.py",
+      "bytes": 21847,
+      "sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5"
+    },
+    {
+      "path": "scripts/android_ci_device.py",
+      "bytes": 3665,
+      "sha256": "86f3715c99d4975648619a30864f8972814cd07f76fdb8e4b379ba504a5991a1"
+    },
+    {
+      "path": "scripts/android_offline_uid.py",
+      "bytes": 2570,
+      "sha256": "2482b08db6aa455d9fbaf15114081754320104cd17147bbc4f16c41fa0afa75b"
+    },
+    {
+      "path": "scripts/voicekey_cpu_probe.py",
+      "bytes": 15376,
+      "sha256": "945a6fb74a281e2baada1989cf892b770cddbafee66f1d6bd4eddc7d783b317d"
+    },
+    {
+      "path": "scripts/voice_quality_metrics.py",
+      "bytes": 2800,
+      "sha256": "adb0f956e05d8dafa5094d8ac2fe92fae137bb7fc958ac6501a9822281baf61f"
+    }
+  ],
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 128340904559,
+      "artifact_id": 13566330057,
+      "zip_bytes": 12610,
+      "zip_sha256": "24ad763f82bd05914f22be61310cf1e7ac09053a85057236be3699e539bf9b78",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "cleanup_completed": true,
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "provider_selection_unoccluded": true,
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "6623e3069818eda9f97db375d7984f15305975228710bf7318b26c5482a20247"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 9703,
+          "sha256": "46a882e1577d3a84957c824bec83ab10a04d81f7fdf652bdf6cbe134e7e7331f"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "d11e5eaee9c651ebf62dbdb04ff8b7906fe559994f90d359e1b7062940ad5a84"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "c43cc271f31874c5429b9da8aba56fbfae304a81424b595c8270f5d270099081"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "2d2d834eb1a166b49ae6c7e6fbf42e720e446080e87601d865e752c74da145b6"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 194096,
+        "sha256": "6f17486cc7fd46a47f45ccbbe24db0641fa6201285864dc8f306e65f04b044a2"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 128340904517,
+      "artifact_id": 13566280175,
+      "zip_bytes": 22070,
+      "zip_sha256": "df1d9ae91814aab7ac2420a9cb21a8ad52f8cf6a875fc0adbd64db3c7d0642dc",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "cleanup_completed": true,
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "provider_selection_unoccluded": true,
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 206,
+          "sha256": "622d2ca665179c4ab04d815c165a0e91ee9830ad0029bc08541545b266222702"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 19508,
+          "sha256": "b5782f21a2cec2f3057478c88a749ce4e7ad08e6f606b190d9ca0430572c3992"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "4265757950248b269ca3622955b6e72d3180622fcfdad2e8fdbe68110ad0105a"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "bb0caa5b0327fdd6f0405f69d065945d4065bdc62e4c1db85128d5800b9ff796"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "52106ddd2565455cef449199e804e8d2b13aeb1ac8acd9bf4862fdfb6875c3a5"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 198611,
+        "sha256": "d29c0df3839936d657cf669598c791aec21769a6ec960304ad5d43eee18ba8bc"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 128340904744,
+      "artifact_id": 13565303361,
+      "zip_bytes": 32713,
+      "zip_sha256": "d4b5e37d845cf91150533847c8bbf67409c4ad71566d04f22d0cebff444a4146",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "cleanup_completed": true,
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": true,
+      "navigation_close_count": 1,
+      "provider_selection_unoccluded": true,
+      "provider_physical_selection_count": 1,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 294,
+          "sha256": "1daa6f783e11af7dbbd88d3155993491ea062746c7c7e68e100e6dc72c09a454"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 19589,
+          "sha256": "c8b5e242cf4294bf5f9dc8b7cafaa404c5286fff771029b3b9ca37e554e1d058"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "c31f2885c21e51fd52dfa283bdccf8b8183edc04bdaed8191c27fa1099505640"
+        },
+        {
+          "name": "sync-key-provider-nav-before.png",
+          "bytes": 12162,
+          "sha256": "f0408a40ae91406fe0d5187a829b985e3af218c7fb6d280b80fe7f920430323e"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2714,
+          "sha256": "d98fbfc016830027db78bac746f542825399f3139418c9a7cec0860988f28104"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "902ab5d1e2ff0abe1d875c7f58d2b98c60c67aa9c3dc5fc939aacefce0eb1b02"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 200674,
+        "sha256": "14e8c54b554e85aa581fa3b4e44473e3c4a19c67a79dc5f19409fe0365040183"
+      }
+    }
+  ],
+  "scope": "Per API 14 offline key +12 real JNI transfer +11 preparation +10 actual SAF UI. Android HTTPS/server exchange remains NOT RUN; synthetic outer server fields are identified in original reports. No later cache/source can inherit this success."
+}

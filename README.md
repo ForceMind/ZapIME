@@ -28,6 +28,8 @@ Android 双离线引擎 Alpha 已提供[固定 APK、模型准备与试用指南
 
 规划中的[英语伴学](docs/ENGLISH_LEARNING.md)将在中文上屏后展示参考英译，并通过主动收藏积累中英对照。请求生命周期策略已有基线；Android增加接受提交来源隔离与有界短句组装，生产默认不捕获，仍无可用翻译开关；已完成[OPUS 2020预处理对照](docs/ENGLISH_TRANSLATION_PREPROCESSING.md)、[Qwen固定配置CPU研究](docs/ENGLISH_TRANSLATION_QWEN_PROBE.md)和[OPUS 2021研究](docs/ENGLISH_TRANSLATION_OPUS_2021_PROBE.md)，保留全部合成样本及语义问题。翻译模型尚未接入输入法宿主/界面，当前探针不作为默认英语教学输出。
 
+Android已提供[手动加密同步试用候选与固定版本一键部署](docs/ANDROID_MANUAL_SYNC_TRYOUT.md)：固定e3c4双ABI包、签名和摘要已实际核验，三端47项及原输入/语音完整回归通过；手机HTTPS、实际R2与新受控CA作业结果仍单独验收，不宣称四端完成。
+
 服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。服务器新增[密钥身份登记](docs/SYNC_KEY_DESCRIPTOR.md)；完整四端互通、配对与灾备仍需独立验收。
 
 Android 的[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)提供显式HTTPS授权验证及独立Keystore凭据保护；[本机密钥准备](docs/ANDROID_SYNC_PREPARATION.md)提供创建/恢复、资料库身份绑定和独立恢复文件。固定源码931d30的API28/35/36实际JNI与新页SAF流程已通过并下载重验。最新源码继续接入独立密钥核对/首次登记页面及[手动加密同步](docs/ANDROID_MANUAL_SYNC.md)：用户确认一次才传输，冻结请求重试、严格ACK与整页认证，不开启后台轮询。新传输切片的对应CI、Android HTTPS与真机证据单独记录，不能沿用931准备层通过结论。固定08e84980语音Alpha包不包含这些后续功能。

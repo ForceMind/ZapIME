@@ -1,0 +1,46 @@
+{
+  "saved_at_utc": "2026-11-07T07:35:49.704709+00:00",
+  "source_head": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "source_tree": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "run_id": 42351436402,
+  "job_id": 128340247272,
+  "conclusion": "success",
+  "scope": "Actual new shared manual client on two SQLite stores through real isolated Go/PG16 HTTP, plus S3-compatible fixture and one-command installer/fresh DB+bucket recovery. Does not claim Android system IME/HTTPS or actual Cloudflare R2.",
+  "new_client_report": {
+    "status": "PASS",
+    "probe": "shared_manual_client_real_server",
+    "commands": 17,
+    "stores": 2,
+    "server_revisions": 2,
+    "records_each": 1,
+    "pending_each": 0,
+    "private_temporary_files_removed": true
+  },
+  "all_11_related_source_hashes_match_local_test": true,
+  "go_top_level_tests_passed": 23,
+  "skipped_tests": 0,
+  "artifact": {
+    "id": 13565283311,
+    "name": "ZapIME-sync-service-tests",
+    "zip_bytes": 1600,
+    "github_digest": "sha256:d4ea1861c1a1d8ca3fb714d33f1c4d3153a5d02d0bba0f4ac3740c719dc5e8bb",
+    "actual_zip_sha256": "d4ea1861c1a1d8ca3fb714d33f1c4d3153a5d02d0bba0f4ac3740c719dc5e8bb",
+    "digest_matches": true,
+    "members": [
+      {
+        "path": "sync-service-tests.log",
+        "bytes": 8118,
+        "sha256": "5f892e49802543d67ca76c2daa57c3bc1f4a8b6616d52c574bf01b98cf097272",
+        "zip_crc32": "df93e832",
+        "crc_verified": true
+      }
+    ]
+  },
+  "raw_job_log": {
+    "bytes": 166881,
+    "sha256": "5f720b645cd33c5bce3dbd5f7da0d5d218ec02a9529ad6af701d814261795645"
+  },
+  "credential_like_count": 0,
+  "recovery_code_fields": 0,
+  "old_failure_evidence_untouched": true
+}

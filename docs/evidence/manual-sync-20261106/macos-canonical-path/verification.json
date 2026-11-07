@@ -1,0 +1,192 @@
+{
+  "scope": "Linux host regression correction; original macOS CI failure retained. Corrected macOS CI NOT RUN in this evidence.",
+  "baseline_head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "baseline_pr_merge_sha": "2c61712f9414f40f66017aeb1448642c1f5abb89",
+  "baseline_base_sha": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "original_ci": {
+    "run_id": 42351436378,
+    "failed_job_id": 128340247337,
+    "job_name": "Shared core (macos-latest)",
+    "runner_image": "macos-26-arm64",
+    "failed_step": "Run cargo test --workspace --locked",
+    "failed_source_location": "crates/zapime-data/src/sync.rs:663:53",
+    "log_failure_lines": [
+      677,
+      678
+    ],
+    "sqlite_extended_code": 1550,
+    "sqlite_extended_name": "SQLITE_CANTOPEN_SYMLINK",
+    "failure_artifact_present": false,
+    "only_run_artifact": {
+      "id": 13565803638,
+      "name": "ZapIME-Apple-native-development",
+      "scope": "successful independent Apple native-host job; not failure evidence"
+    }
+  },
+  "original_log_raw_attributes": {
+    "bytes": 57834,
+    "sha256": "04e814c602752dd51eba1bad5c6614271e991e404f31db9b90f92487c9700936",
+    "encoding": "UTF-8",
+    "utf8_bom": true,
+    "lf_count": 717,
+    "crlf_count": 0,
+    "final_lf": true,
+    "trimmed_or_reformatted": false
+  },
+  "change_scope": [
+    "writer API documentation only; runtime function unchanged",
+    "canonicalize already-created valid unit fixture path",
+    "new Unix direct ancestor-alias rejection and canonical physical-path acceptance test",
+    "three new real-engine encrypted-sync candidate tests with canonical fixture database paths",
+    "command-line fixture parent canonicalization is separately owned and included only in validation/source hashes"
+  ],
+  "runtime_writer_body": {
+    "unchanged_from_baseline": true,
+    "sha256": "3d08e6ff362c0ae11d519deea666b7bcbd55f412d65b9ac4f32c3215a8e82982"
+  },
+  "android_database_path_function": {
+    "unchanged_from_baseline": true,
+    "sha256": "d09771d442bfbf7ab6bbf6fdc8d346a6cff00556bb4f1595d4553fbb1a8badfa"
+  },
+  "source_hashes": {
+    "crates/zapime-data/src/sync.rs": {
+      "sha256": "ae6fc830971dc391fd6d7e9b42246af8b676518d49cd9a1112d3a850e9f90497",
+      "bytes": 30416,
+      "baseline_sha256": "e3dee336f3ff8e4822a8940192ce65bd83846458685e461f68c766b7742a7499"
+    },
+    "crates/zapime-core/tests/synced_candidates.rs": {
+      "sha256": "8f4a21fdc0bd026dabb06ae6018bcba6690b42a083f436c022eb122fb8fed24e",
+      "bytes": 13190
+    },
+    "crates/zapime-core/src/android_sync.rs": {
+      "sha256": "caa7262f4a1054d57d5cbbbfd82667be0d638378fdccbd464b7b741b11962af3",
+      "bytes": 18100,
+      "baseline_sha256": "caa7262f4a1054d57d5cbbbfd82667be0d638378fdccbd464b7b741b11962af3"
+    },
+    "crates/zapime-sync/examples/manual_sync_fixture.rs": {
+      "sha256": "3f6392a9f72f042e6d75c02515addc94ba0971ef9dff4017d39a4959b3c78a27",
+      "bytes": 12207,
+      "baseline_sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a"
+    },
+    "Cargo.lock": {
+      "sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "bytes": 38603,
+      "baseline_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0"
+    }
+  },
+  "checks": [
+    {
+      "command": "cargo test --locked -p zapime-data --lib writer_tests",
+      "exit_code": 0,
+      "log": "canonical-writer-targeted.log",
+      "passed": 4,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo test --workspace --locked",
+      "exit_code": 0,
+      "log": "canonical-workspace-tests.log",
+      "passed": 118,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo fmt --all --check",
+      "exit_code": 0,
+      "log": "canonical-workspace-fmt.log"
+    },
+    {
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+      "exit_code": 0,
+      "log": "canonical-workspace-clippy.log"
+    },
+    {
+      "command": "cargo test --manifest-path target/sync-jni-typecheck/Cargo.toml --locked",
+      "exit_code": 0,
+      "log": "canonical-jni-host-tests.log",
+      "passed": 3,
+      "failed": 0,
+      "ignored": 0
+    },
+    {
+      "command": "cargo clippy --manifest-path target/sync-jni-typecheck/Cargo.toml --all-targets --locked -- -D warnings",
+      "exit_code": 0,
+      "log": "canonical-jni-host-clippy.log"
+    },
+    {
+      "command": "cargo check --manifest-path target/sync-jni-typecheck/Cargo.toml --locked",
+      "exit_code": 0,
+      "log": "canonical-jni-host-typecheck.log"
+    }
+  ],
+  "not_claimed": [
+    "corrected macOS CI result",
+    "Android JNI/runtime",
+    "HTTPS or real server",
+    "phone",
+    "live candidate cache refresh"
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 3018,
+      "sha256": "42693a28428267924f32fbec22205a4a93f69efee8f48c20a7c3093bbefd6e35"
+    },
+    "artifacts-42351436378.json": {
+      "bytes": 849,
+      "sha256": "5afca221be300683fccf5465ebe6e6dcde1e0e41d9a97cab20fbbe715f82b30a"
+    },
+    "canonical-jni-host-clippy.log": {
+      "bytes": 789,
+      "sha256": "792d1e9e4f24063e54fe3b8a2e13082bbca89919275e35de7d6962eb1d839477"
+    },
+    "canonical-jni-host-tests.log": {
+      "bytes": 1530,
+      "sha256": "032723b0c8e539846595aa97a9825a832b397890ee1a3f952b77bbff6e634828"
+    },
+    "canonical-jni-host-typecheck.log": {
+      "bytes": 789,
+      "sha256": "3b07ec25851f6b19c6485ef586455d1847633f39afc5d2da148973c5eaeb3f1a"
+    },
+    "canonical-workspace-clippy.log": {
+      "bytes": 906,
+      "sha256": "a13ec7eb3ece278aa6028f698f87fef5210810f14cf52ca05c34db0e4b8fb076"
+    },
+    "canonical-workspace-fmt.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "canonical-workspace-tests.log": {
+      "bytes": 14590,
+      "sha256": "0adefa6f4913eb08efdd321f7e033518aed04d162c32736416d8ec91c0b4b2f8"
+    },
+    "canonical-writer-targeted.log": {
+      "bytes": 1162,
+      "sha256": "00b8e64a50c96434cbe66c1a930b88bcca8ffd34a7a9ae3723178e047558515f"
+    },
+    "jni-host-typecheck-manifest.txt": {
+      "bytes": 394,
+      "sha256": "0e06c544efca872abd13a3473487e1e7ff9360040bc006e686f34261ed03bb62"
+    },
+    "jobs-42351436378.json": {
+      "bytes": 8198,
+      "sha256": "ceaddc22d359f8a414be2213e20981e6d387e33220b3e67fafe8a5926ae6312b"
+    },
+    "linux-exact-store-counterexample.log": {
+      "bytes": 277,
+      "sha256": "fa8695166def3088d8cb40039ce59d64056f2923379745cbc8b2690faf873b76"
+    },
+    "macos-job-128340247337.log": {
+      "bytes": 57834,
+      "sha256": "04e814c602752dd51eba1bad5c6614271e991e404f31db9b90f92487c9700936"
+    },
+    "macos-job-response.json": {
+      "bytes": 63259,
+      "sha256": "06fa1164d73ef0a7cc88336564dc76f4488354b9708cde4b574dc7f5a134b7e1"
+    },
+    "nofollow_ancestor_reproducer.rs": {
+      "bytes": 582,
+      "sha256": "a78c244ec2f816f4376c92a53642937f0348a8afc1f64b7f3a7257f10c74f104"
+    }
+  }
+}

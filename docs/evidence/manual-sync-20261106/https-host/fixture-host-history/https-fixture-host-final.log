@@ -1,0 +1,32 @@
+test_real_certificate_proxy_manual_client_and_resource_cleanup (test_sync_https_server.RealHttpsFixtureTests.test_real_certificate_proxy_manual_client_and_resource_cleanup) ... ERROR
+
+======================================================================
+ERROR: test_real_certificate_proxy_manual_client_and_resource_cleanup (test_sync_https_server.RealHttpsFixtureTests.test_real_certificate_proxy_manual_client_and_resource_cleanup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/99fcacf9684b/ZapIME/scripts/test_sync_https_server.py", line 85, in test_real_certificate_proxy_manual_client_and_resource_cleanup
+    status, _ = request(fixture.origin, trusted, "GET", "http://[bad")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/99fcacf9684b/ZapIME/scripts/test_sync_https_server.py", line 34, in request
+    connection.request(method, path, body=raw if raw is not None else
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 1386, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 1397, in _send_request
+    self.putrequest(method, url, **skips)
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/http/client.py", line 1257, in putrequest
+    nil, netloc, nil, nil, nil = urlsplit(url)
+                                 ^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/parse.py", line 514, in urlsplit
+    raise ValueError("Invalid IPv6 URL")
+ValueError: Invalid IPv6 URL
+
+----------------------------------------------------------------------
+Ran 1 test in 0.654s
+
+FAILED (errors=1)
+{"status": "PASS", "probe": "shared_manual_client_real_server", "commands": 17, "stores": 2, "server_revisions": 2, "records_each": 1, "pending_each": 0, "private_temporary_files_removed": true}
+Traceback (most recent call last):
+  File "/workspace/scratch/99fcacf9684b/ZapIME/target/service-toolchains/run-https-fixture-host-test.py", line 13, in <module>
+    if result.returncode:raise RuntimeError('host_fixture_tests_failed')
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: host_fixture_tests_failed
