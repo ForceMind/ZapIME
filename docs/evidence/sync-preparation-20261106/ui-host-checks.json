@@ -1,0 +1,36 @@
+{
+  "saved_at_utc": "2026-11-07T06:34:32.202432+00:00",
+  "first_implementation_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+  "source_state": "second slice, enclosing commit fixes source",
+  "python_tests": 40,
+  "loopback_tls_checks": 31,
+  "sync_worker_backlog_test": "PASS explicit reject then actual worker recovery",
+  "jni_rust_host_typecheck": "PASS ignored isolated manifest compiled the real Android JNI Rust source against JNI0.21.1 on Linux host; NOT Android ABI/runtime proof",
+  "android_saf_ui": "PENDING actual CI",
+  "logs": [
+    {
+      "file": "host-python-tests-ui.log",
+      "bytes": 8403,
+      "sha256": "0e35477064ccecfb928972514ba0047e8f5c894ecd97e2478a2ba54127d4f9e3",
+      "exit_code": 0
+    },
+    {
+      "file": "host-java-compile-ui.log",
+      "bytes": 456,
+      "sha256": "3f29516099c0ea797a6209ede9f40af25764f1a8c6746d5a15779f18941a008d",
+      "exit_code": 0
+    },
+    {
+      "file": "host-http-worker.log",
+      "bytes": 561,
+      "sha256": "db43cb82007ed309bd789c25e59f3efda4f6ed2d463a778a0a3888c2d0e24860",
+      "exit_code": 0
+    },
+    {
+      "file": "host-jni-typecheck.log",
+      "bytes": 3126,
+      "sha256": "c90e93d1d02a93bee2562ec9b4ddf75f33a31d084224e421b74aa0b1a3b9a7d5",
+      "exit_code": 0
+    }
+  ]
+}

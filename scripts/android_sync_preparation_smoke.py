@@ -7,9 +7,9 @@ from pathlib import Path
 import subprocess
 import sys
 
-from android_ci_device import dedicated_ci, collect_failure_state, assert_no_app_anr
+from android_ci_device import dedicated_ci, assert_no_app_anr
 from android_offline_uid import offline_product
-from android_sync_preparation_report import verify_report
+from android_sync_preparation_report import verify_report, verify_ui_report
 
 
 def main():
@@ -43,12 +43,19 @@ def main():
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-report.json",
                 str(out / "sync-preparation-report.json"))
             verify_report(json.loads((out / "sync-preparation-report.json").read_text()), api)
-    except BaseException:
-        collect_failure_state(command, out)
+            run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-ui-report.json",
+                str(out / "sync-preparation-ui-report.json"))
+            verify_ui_report(json.loads((out / "sync-preparation-ui-report.json").read_text()), api)
+    except BaseException as failure:
+        # This page can show a synthetic but real recovery code. Never collect
+        # generic Activity/a11y/window text or screenshots while it is visible.
+        (out / "failure-scope.json").write_text(json.dumps({"failure_type": type(failure).__name__,
+            "sensitive_ui_dump_collected": False, "scope": "Raw instrumentation and sanitized reports retained; provider-only evidence below"}, indent=2) + "\n")
         raise
     finally:
-        run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-report.json",
-            str(out / "sync-preparation-report.json"), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        for name in ("sync-preparation-report.json", "sync-preparation-ui-report.json", "sync-key-provider-before.png", "backup-provider-ui-shape.json"):
+            run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + name,
+                str(out / name), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout
         (out / "crash.txt").write_text(log)
         if "org.zapime.android" in log and ("FATAL EXCEPTION" in log or "Fatal signal" in log):

@@ -71,3 +71,5 @@
 - VoiceKey背压仅在独立语音worker有界等待，不增队列、不跳帧、不重复计入PCM证据；停止后drain/final使用同一30秒预算且不能重复stop延长。watchdog只发协作取消，物理解码槽到实际线程退出才释放。JNI finish唯一native参数为(long,int)，旧long Java wrapper默认30000；真实JNI须验证无效预算不消耗句柄。专项PCM使用独立单调时钟生产者及实际VoicePcmQueue，不用同步consumer阻塞稀释生产速率。
 
 - 本机同步准备见docs/ANDROID_SYNC_PREPARATION.md：typed材料不得普通JSON/日志化；先create-only vault保存并读回，再existing-v2事务绑定account/key ID/根指纹。文件与DB不是跨存储原子事务；中断复用旧材料，bound缺材料须恢复，旧cipher不可读不自动重置。准备/本地绑定不是上传授权或账号全局密钥登记；无HTTP/自动上传。新页面的SAF/生命周期、方法JNI/Keystore、手机及全设备灾备分别记证据，不能沿用旧备份页成功。
+
+- 新同步恢复页SAF验收仅在数字CI独立模式、主资料根和连接原本不存在后创建合成fixture；不在原完整输入gate中清空主库。只删本轮唯一文档且先删后finish，清理失败拒绝成功。页面可能显示实际合成恢复码，专用脚本禁止通用Activity/a11y/页面截图诊断，只取阶段/严格报告/provider列表。控制worker排队上限8，拒绝须显示失败，不能阻塞/无限排队或宣称阻塞IO必然中止。

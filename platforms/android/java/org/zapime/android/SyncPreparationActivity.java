@@ -35,9 +35,9 @@ public final class SyncPreparationActivity extends Activity {
     private EditText confirmCode,restoreCode;
     private Button create,export,choose,restore,confirm,reload;
     private UUID currentAccount,pickerAccount,restoreAccount,pendingAccount;
-    private Uri pendingUri,restoreUri;
+    private Uri pendingUri,restoreUri,lastExportUri;
     private int pendingOperation,generation;
-    private boolean active,busy,initialized,prepared;
+    private boolean active,busy,initialized,prepared,requiresRecovery;
     private byte[] expectedCode;
     private AtomicBoolean cancelled=new AtomicBoolean();
 
@@ -96,7 +96,7 @@ public final class SyncPreparationActivity extends Activity {
     private void controls(){
         if(create==null)return;
         reload.setEnabled(active&&!busy);
-        boolean ready=canUse();create.setEnabled(ready&&!prepared);export.setEnabled(ready&&prepared);
+        boolean ready=canUse();create.setEnabled(ready&&!prepared&&!requiresRecovery);export.setEnabled(ready&&prepared);
         choose.setEnabled(ready);restore.setEnabled(ready&&restoreUri!=null&&currentAccount.equals(restoreAccount));
         confirm.setEnabled(active&&!busy&&expectedCode!=null);confirmCode.setEnabled(!busy);restoreCode.setEnabled(!busy);
     }
@@ -107,13 +107,15 @@ public final class SyncPreparationActivity extends Activity {
     private boolean current(int ticket){return active&&ticket==generation;}
     private void render(SyncPreparation.State state,String message){
         UUID previous=currentAccount;currentAccount=state.connectedAccount;initialized=state.initialized;prepared=state.prepared;
+        requiresRecovery=state.account!=null&&!state.materialPresent;
         if(previous!=null&&!previous.equals(currentAccount)){restoreUri=null;restoreAccount=null;}
         String text;
         if(!state.initialized)text="本机资料库尚未初始化。请返回个人资料页打开资料库后，再来准备。";
+        else if(requiresRecovery)text="资料库已有账号绑定，但本机缺少原同步密钥。须导入原密钥恢复文件，不能创建新密钥替代。";
         else if(state.prepared)text="本机同步材料已准备，资料未上传。\n请保存密钥恢复文件和对应恢复码。";
         else if(state.materialPresent)text="密钥已保存在本机，资料库准备尚未完成。请继续完成准备；不会重新生成密钥。";
         else text="尚未准备本机同步材料。首次使用可创建；已有其他设备请导入同一份恢复文件。";
-        create.setText(state.materialPresent?"继续完成本机准备":"为首次使用准备密钥…");
+        create.setText(requiresRecovery?"请导入原密钥恢复文件":state.materialPresent?"继续完成本机准备":"为首次使用准备密钥…");
         status.setText((message==null?text:message+"\n"+text)+"\n账号："+state.connectedAccount);
         controls();
     }
@@ -126,13 +128,13 @@ public final class SyncPreparationActivity extends Activity {
         });}catch(RejectedExecutionException failure){fail(ticket,failure,true);}
     }
     private void confirmCreate(){
-        if(!canUse()||prepared)return;final UUID account=currentAccount;
+        if(!canUse()||prepared||requiresRecovery)return;final UUID account=currentAccount;
         new AlertDialog.Builder(this).setTitle("准备首次使用的同步密钥？")
                 .setMessage("仅在首次为这个账号设置加密资料时创建。已有其他设备或恢复文件，请改用导入，避免产生另一套密钥。此处无法判断其他设备的密钥状态。准备仅在本机完成，不会上传资料或向服务器登记。")
                 .setNegativeButton("取消",null).setPositiveButton("准备本机密钥",(d,w)->create(account)).show();
     }
     private void create(UUID account){
-        if(!canUse()||!account.equals(currentAccount))return;
+        if(!canUse()||requiresRecovery||!account.equals(currentAccount))return;
         final int ticket=begin("正在准备本机同步材料…");final AtomicBoolean stop=cancelled;
         try{SyncWorker.EXECUTOR.execute(()->{
             try{BackupFiles.check(stop::get);final SyncPreparation.State state=SyncPreparation.create(getApplicationContext(),account);BackupFiles.check(stop::get);
@@ -154,6 +156,7 @@ public final class SyncPreparationActivity extends Activity {
         if(operation!=SAVE_RECOVERY&&operation!=OPEN_RECOVERY)return;
         UUID account=pickerAccount;pickerAccount=null;
         if(result!=RESULT_OK||intent==null||intent.getData()==null||account==null)return;
+        if(operation==SAVE_RECOVERY)lastExportUri=intent.getData();
         pendingOperation=operation;pendingUri=intent.getData();pendingAccount=account;
         if(active&&!busy)consumePending();
     }
@@ -205,7 +208,7 @@ public final class SyncPreparationActivity extends Activity {
     }
     private void fail(int ticket,Throwable failure,boolean reading){
         final String text=message(failure);
-        main.post(()->{if(!current(ticket))return;if(reading){currentAccount=null;initialized=false;prepared=false;}setBusy(false);status.setText(text);});
+        main.post(()->{if(!current(ticket))return;if(reading){currentAccount=null;initialized=false;prepared=false;requiresRecovery=false;}setBusy(false);status.setText(text);});
     }
     private static String message(Throwable failure){
         String code=failure.getMessage();

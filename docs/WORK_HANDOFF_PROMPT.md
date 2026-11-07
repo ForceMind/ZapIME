@@ -1,5 +1,8 @@
 # ZapIME（闪电输入法）｜双离线语音引擎与 Android Alpha 持续研发接管
 
+> 2026-11-06 后续同步切片：新工作在 `feat/android-sync-preparation` / PR #73，基于下面已固定的双离线Alpha分支。新增本机密钥创建/恢复、受保护材料与SQLite身份绑定、独立JNI和页面；读 `docs/ANDROID_SYNC_PREPARATION.md` 与最新STATUS核对实际CI。它不启用HTTP同步/全局密钥登记，不能误报四端已同步。接续这项工作应取新分支；原 `08e84980` APK仍只对应原语音候选。
+
+
 > 2026-11-06 实施接续：本轮已交付 [Android 双离线引擎 Alpha 固定候选](DUAL_VOICE_ALPHA_TRYOUT.md)。产品源码为 `08e84980562ecc8fab436ffcdab6e5aee8c567e7`，其双 ABI APK 已实际下载核验。产品不变的测试提交 `be79d084eef1f835e7504f134f46ba315b36df18` 在 focused run42227414903 的 API28/35/36 全部通过真实 VoiceKey 模型/JNI/Editable及离线系统IME门禁。原失败与修补证据完整保留；S25/自然人声/正式签名仍 NOT RUN。先读最新 STATUS、试用指南及本轮证据，下面历史 e24 基线与“先修入口”等任务不能覆盖已完成实现。
 >
 > 本地 Codex 现在可以接续：`git clone --branch feat/voicekey-engine-import --recurse-submodules https://github.com/ForceMind/ZapIME.git`。已有仓库先 `git status --short` / `git fetch origin`，保留未提交改动，不 reset/force。读取 AGENTS、STATUS、本文、整合与验收文档。复用 PR #71 / Issue #72，不重复提交计划。限定隔离 GitHub 模拟器的验收脚本不可在个人设备执行；本地可运行无需设备的 Rust/JVM/host 测试。下一步以手机集中验收和同机语料对比为主；源代码集成、候选试用、合并及稳定发布分层处理。

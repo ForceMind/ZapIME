@@ -8,6 +8,8 @@
 
 主机工作区99测试/fmt/严格Clippy、Android Python38、文件IO9、全部产品和voice-tests API36 Java编译、133包核心许可收集通过。对应Android JNI/Keystore/页面与双ABI构建尚待新CI；正向SAF与手机未运行，不能使用旧包代填。详见[本机准备实现及限制](ANDROID_SYNC_PREPARATION.md)。原密文存在但包装密钥丢失时仍拒绝原地重置；没有完成远端密钥登记/配对、实际HTTP同步或完整恢复。
 
+第一实现提交 `9e095fccd78dbb2240e147d60d9543143f8c7d43` 已保存于 [PR #73](https://github.com/ForceMind/ZapIME/pull/73)，base为PR #71开发分支。后续增加严格10项新页SAF UI作业、缺材料禁创建UX和同步worker8项队列上限；新主机Python40、实际TLS31/队列恢复、全部Java编译通过。Android构建/11项方法与10项提供程序UI仍等待真实结果，不把测试代码存在写作通过。
+
 这是本轮首个有明确时间的工程检查点；距2026-11-06 05:56 PST的上个固定交付约16小时27分，累计汇报次数无可靠连续记录。后面的双离线候选结论对应其原固定源码与产物。
 
 ## 当前交付结论

@@ -46,11 +46,11 @@ public final class SyncActivity extends Activity {
     private void run(String message,Work work){
         if(!active)return;if(cancellation!=null)cancellation.cancel();final SyncHttp.Cancellation request=new SyncHttp.Cancellation();cancellation=request;final int ticket=++generation;
         busy(true);status.setText(message);
-        SyncWorker.EXECUTOR.execute(()->{
+        try{SyncWorker.EXECUTOR.execute(()->{
             String result;
             try{request.check();result=work.run(request);}catch(Exception failure){result=message(failure);}
             final String visible=result;main.post(()->{if(!active||ticket!=generation)return;busy(false);status.setText(visible);});
-        });
+        });}catch(java.util.concurrent.RejectedExecutionException full){busy(false);status.setText("同步后台任务仍在处理，请稍后重试。普通输入不受影响。");}
     }
     private void connect(){
         if(busy)return;final String origin=server.getText().toString(),json=credential.getText().toString();credential.setText("");

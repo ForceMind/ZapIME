@@ -26,3 +26,39 @@ def verify_report(report, api=None):
         raise ValueError("Unknown or duplicate local sync preparation case")
     if not isinstance(report.get("scope"), str) or not report["scope"]:
         raise ValueError("Missing local-only acceptance scope")
+
+
+UI_CASES = frozenset({
+    "fresh_main_fixture", "normal_create_confirmation", "actual_saf_export",
+    "actual_native_recovery_identity", "recovery_code_confirmation", "actual_saf_open",
+    "normal_restore_identity_preserved", "missing_material_requires_restore",
+    "provider_file_deleted_before_finish", "stop_clears_recovery_state",
+})
+
+
+def verify_ui_report(report, api=None):
+    from android_voicekey_model_smoke import verify_finger_selection
+    if not isinstance(report, dict) or report.get("schema_version") != 1 or report.get("status") != "PASS" or report.get("synthetic") is not True:
+        raise ValueError("Incomplete sync recovery UI report")
+    level = report.get("api_level")
+    if type(level) is not int or level not in (28, 35, 36) or api is not None and api != level:
+        raise ValueError("Wrong sync recovery UI API")
+    rows = report.get("cases")
+    if not isinstance(rows, list) or len(rows) != len(UI_CASES) or any(not isinstance(row, dict) or row.get("passed") is not True for row in rows):
+        raise ValueError("Missing sync recovery UI cases")
+    if {row.get("id") for row in rows} != UI_CASES:
+        raise ValueError("Unknown or duplicate sync recovery UI case")
+    for flag in ("actual_provider_create", "actual_provider_open", "actual_native_recovery",
+                 "recovery_identity_unchanged", "normal_buttons_and_dialogs_used",
+                 "missing_material_restore_ui", "provider_exit_observed", "fresh_fixture_owned",
+                 "provider_document_deleted", "cleanup_completed"):
+        if report.get(flag) is not True:
+            raise ValueError("Incomplete sync recovery UI or cleanup evidence")
+    size = report.get("encrypted_package_bytes")
+    if type(size) is not int or not 0 < size <= 16 * 1024 or report.get("secret_or_code_logged") is not False:
+        raise ValueError("Invalid recovery UI file budget or logging policy")
+    if report.get("button_activation_method") != "production_View_performClick_and_visible_AlertDialog_confirmation" or report.get("code_entry_method") != "synthetic_programmatic_EditText_normal_confirmation":
+        raise ValueError("Missing actual test activation scope")
+    if report.get("provider_selection_method") != "unique_stable_filename_single_finger":
+        raise ValueError("Wrong provider selection method")
+    verify_finger_selection(report)
