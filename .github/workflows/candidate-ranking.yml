@@ -46,6 +46,7 @@ jobs:
           path: |
             target/candidate-host/native-report.json
             target/candidate-host/jni-report.json
+            target/candidate-host/oracle-report.json
           if-no-files-found: error
           retention-days: 14
   build:
@@ -175,13 +176,15 @@ jobs:
           emulator-boot-timeout: 300
           script: |
             adb install -r target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk
-            python3 scripts/android_candidate_ranking_smoke.py "$(command -v adb)" emulator-5554
-            python3 scripts/android_candidate_ime_smoke.py "$(command -v adb)" emulator-5554
+            python3 scripts/android_candidate_suite.py "$(command -v adb)" emulator-5554
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ZapIME-candidate-ranking-API-${{ matrix.api }}-metadata
           path: |
+            target/candidate-suite-summary.json
+            target/candidate-suite-method.log
+            target/candidate-suite-system-ime.log
             target/candidate-ranking-android/candidate-ranking-report.json
             target/candidate-ranking-android/instrumentation.txt
             target/candidate-ranking-android/offline-uid.json

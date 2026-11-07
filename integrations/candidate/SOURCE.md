@@ -26,6 +26,28 @@ UTF-8/UTF-16 and shapes, confines session ownership, and uses the ORT C API.
 a provenance header; it is test code, not part of the APK. The native test
 report includes the copied file's SHA-256 in addition to the upstream Git blob.
 
+## Independent test oracle
+
+`tests/generate_oracle_fixture.py` executes those unchanged upstream Python feed
+builders against the locked vocabulary and fixed synthetic text. It requires
+the copied feed source SHA-256
+`2268e105d6da10b7e2baab44ae739f9da0db86c031c8886e95b77d57fa35707d`.
+The generated `tests/oracle-fixture.json` is 4,760 bytes, SHA-256
+`1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076`.
+It contains inputs and provenance, not scores copied from an Android run.
+
+`tests/raw_ort_oracle.cpp` and `tests/oracle_jni.cpp` are separate GPL-3.0-only
+test code. They do not import or link the product ranker. They execute the two
+frozen tensor calls without tokenization or a prefix-cache implementation,
+passing the first graph's raw cache outputs to the second graph. Only the
+synthetic candidate test APK includes this library and generated input fixture.
+The numerical acceptance threshold remains `0.001` between production and the
+independent oracle on the **same** device/model/runtime. The host-only verifier
+also compares the raw executor with the original upstream Python execution.
+This avoids treating a different runtime build's outputs as a universal golden
+value for dynamically quantized kernels. A cross-version numeric difference
+alone is not evidence of its specific optimization or kernel cause.
+
 ## Model and runtime are separate components
 
 The pinned model is `rerank-v2` / `rerank-6x256.ort`:

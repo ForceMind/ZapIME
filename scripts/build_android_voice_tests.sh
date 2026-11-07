@@ -28,12 +28,45 @@ rm -rf "$build"
 mkdir -p "$build"/{classes,dex,assets/voice-fixtures,assets/licenses}
 cp LICENSE "$build/assets/licenses/GPL-3.0.txt"
 if "$candidate_only"; then
+  # This independent raw-tensor oracle is confined to the x86_64 CI harness.
+  # It loads the target APK's pinned ORT; it embeds neither weights nor another runtime.
+  ndk="$sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64"
+  python3 integrations/candidate/tests/generate_oracle_fixture.py --check
+  mkdir -p "$build/lib/x86_64"
+  cp integrations/candidate/tests/oracle-fixture.json "$build/assets/candidate-oracle-fixture.json"
+  "$ndk/bin/x86_64-linux-android28-clang++" -std=c++17 -O2 -shared -fPIC -Wall -Wextra -Werror \
+    -pthread -static-libstdc++ -Wl,--no-undefined -Wl,-z,max-page-size=16384 \
+    -Wl,-soname,libzapime_candidate_oracle.so \
+    integrations/candidate/tests/raw_ort_oracle.cpp integrations/candidate/tests/oracle_jni.cpp \
+    -Iintegrations/candidate/tests -Itarget/candidate-runtime/include -Itarget/voice-json/single_include \
+    -ldl -o "$build/lib/x86_64/libzapime_candidate_oracle.so"
+  python3 - "$build/lib/x86_64/libzapime_candidate_oracle.so" <<'PY'
+from pathlib import Path
+import sys
+sys.path.insert(0, 'scripts')
+from prepare_android_voice import verify_elf
+from check_apk import elf_metadata
+library = Path(sys.argv[1])
+verify_elf(library, 'x86_64')
+needed, exports = elf_metadata(library.read_bytes())
+if 'libc.so' not in needed or not needed <= {'libc.so', 'libm.so', 'libdl.so'}:
+    raise SystemExit('Unexpected raw-oracle runtime dependency')
+if 'Java_org_zapime_android_voicetest_NativeCandidateOracle_evaluate' not in exports:
+    raise SystemExit('Missing raw-oracle JNI entry point')
+print('PASS test-only raw ORT oracle JNI, dependency and 16 KiB ELF checks')
+PY
+  cp target/voice-json/LICENSE.MIT "$build/assets/licenses/nlohmann-json-MIT.txt"
+  cp vendor/msime/platforms/linux/data/licenses/onnxruntime-MIT.txt "$build/assets/licenses/onnxruntime-MIT.txt"
+  cp "$ndk/NOTICE" "$build/assets/licenses/ndk-toolchain.txt"
+  cp "$ndk/sysroot/NOTICE" "$build/assets/licenses/ndk-sysroot.txt"
   cat > "$build/assets/NOTICE.txt" <<'NOTICE'
 ZapIME synthetic Android candidate ranking acceptance harness, GPL-3.0-only.
 Corresponding source: https://github.com/ForceMind/ZapIME
 This harness embeds no model weights, PCM, personal dictionaries or user input.
 Fixed synthetic dictionary rows are constructed by the instrumentation probe.
 The actual pinned candidate model is in the separate target APK with its notices.
+The independent raw tensor oracle and its fixed upstream feed fixture are test-only.
+JSON and native toolchain notices accompany the oracle; ORT is loaded from the target APK.
 NOTICE
 elif "$voicekey_only"; then
   cat > "$build/assets/NOTICE.txt" <<'NOTICE'
@@ -71,5 +104,8 @@ find "$build/classes" -name '*.class' > "$build/classes.txt"
 "$tools/d8" --lib "$android_jar" --min-api 28 --output "$build/dex" @"$build/classes.txt"
 cp "$build/dex/classes.dex" "$build/classes.dex"
 (cd "$build" && zip -q -u base.apk classes.dex)
-"$tools/zipalign" -f 4 "$build/base.apk" "$build/aligned.apk"
+if "$candidate_only"; then
+  (cd "$build" && zip -q -u base.apk lib/x86_64/libzapime_candidate_oracle.so)
+fi
+"$tools/zipalign" -P 16 -f 4 "$build/base.apk" "$build/aligned.apk"
 "$tools/apksigner" sign --ks target/android-dev.keystore --ks-pass pass:android --key-pass pass:android --out "$build/ZapIME-voice-tests.apk" "$build/aligned.apk"

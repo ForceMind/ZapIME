@@ -1,0 +1,274 @@
+{
+  "schema_version": 1,
+  "fixture_id": "candidate-upstream-8m-two-stage-v1",
+  "model_id": "msime-keystroke-8m-rerank-v2",
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "metadata_sha256": "33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+  "vocab_sha256": "d7fb2e70de9f0c2c65b822a8fbf604655bfef6d0dcd8f1975d73f1cd5ea7f038",
+  "upstream": {
+    "repository": "https://github.com/metasequoiaime/chinese-ime-lm",
+    "commit": "5b82758eaf3419dff9555f41bbda2744a56e45c4",
+    "path": "neural/choice/model.py",
+    "git_blob_sha1": "933af7444124970a221b3bf1f10a81599c9170d1",
+    "copied_feeds_sha256": "2268e105d6da10b7e2baab44ae739f9da0db86c031c8886e95b77d57fa35707d"
+  },
+  "synthetic_context": "\u670b\u53cb\u89c1\u9762\u5148\u8bf4",
+  "synthetic_candidates": [
+    "\u62df\u597d",
+    "\u9006\u53f7",
+    "\u4f60\u597d"
+  ],
+  "dimensions": {
+    "layers": 6,
+    "heads": 4,
+    "head_dim": 64,
+    "width": 256
+  },
+  "empty_cache_shapes": [
+    [
+      6,
+      4,
+      0,
+      64
+    ],
+    [
+      6,
+      4,
+      0,
+      64
+    ],
+    [
+      0,
+      256
+    ],
+    [
+      0
+    ]
+  ],
+  "calls": [
+    {
+      "nodes": {
+        "type": "int64",
+        "shape": [
+          7
+        ],
+        "values": [
+          2,
+          452,
+          257,
+          224,
+          135,
+          378,
+          49
+        ]
+      },
+      "positions": {
+        "type": "int64",
+        "shape": [
+          7
+        ],
+        "values": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ]
+      },
+      "visible": {
+        "type": "bool",
+        "shape": [
+          7,
+          7
+        ],
+        "values": [
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "candidates": {
+        "type": "int64",
+        "shape": [
+          1,
+          1
+        ],
+        "values": [
+          2
+        ]
+      },
+      "steps": {
+        "type": "int64",
+        "shape": [
+          1,
+          1
+        ],
+        "values": [
+          0
+        ]
+      },
+      "lengths": {
+        "type": "int64",
+        "shape": [
+          1
+        ],
+        "values": [
+          1
+        ]
+      }
+    },
+    {
+      "nodes": {
+        "type": "int64",
+        "shape": [
+          3
+        ],
+        "values": [
+          1783,
+          1830,
+          11
+        ]
+      },
+      "positions": {
+        "type": "int64",
+        "shape": [
+          3
+        ],
+        "values": [
+          7,
+          7,
+          7
+        ]
+      },
+      "visible": {
+        "type": "bool",
+        "shape": [
+          3,
+          10
+        ],
+        "values": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          true,
+          false,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          false,
+          false,
+          true
+        ]
+      },
+      "candidates": {
+        "type": "int64",
+        "shape": [
+          3,
+          2
+        ],
+        "values": [
+          1783,
+          15,
+          1830,
+          348,
+          11,
+          15
+        ]
+      },
+      "steps": {
+        "type": "int64",
+        "shape": [
+          3,
+          2
+        ],
+        "values": [
+          6,
+          7,
+          6,
+          8,
+          6,
+          9
+        ]
+      },
+      "lengths": {
+        "type": "int64",
+        "shape": [
+          3
+        ],
+        "values": [
+          2,
+          2,
+          2
+        ]
+      }
+    }
+  ],
+  "scope": "Independent upstream tensors; no device-derived expected scores. Both stages must run with unchanged batching on the same model and device runtime as production."
+}

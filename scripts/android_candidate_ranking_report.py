@@ -14,8 +14,11 @@ MODEL_SHA = "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c"
 FIXTURE_ID = "candidate-ranking-android-v1"
 FIXTURE = "ni/你/900\nhao/好/900\nni'hao/拟好/900\nni'hao/逆号/800\nni'hao/你好/100\ncontext=朋友见面先说\nscore-order=拟好|逆号|你好\n"
 FIXTURE_SHA = hashlib.sha256(FIXTURE.encode()).hexdigest()
-REFERENCE = [-9.413619995117188, -11.37354850769043, -3.759044647216797]
-SCOPE = ("Actual Android JNI on APK-pinned 8M model and real MSIME with a synthetic lexicon; "
+LEGACY_HOST_REFERENCE = [-9.413619995117188, -11.37354850769043, -3.759044647216797]
+ORACLE_FIXTURE_SHA = "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076"
+REFERENCE_KIND = "upstream-frozen-tensors-same-apk-runtime-v1"
+SCOPE = ("Actual Android JNI on APK-pinned 8M model, independent upstream tensor execution on the same APK runtime, "
+         "and real MSIME with a synthetic lexicon; "
          "original-ID selection enters production trackCoreCommit and an independent EditText Editable. "
          "Not activated system IME, physical taps, phone latency, active-inference kill or heap-leak acceptance.")
 CASES = frozenset({
@@ -30,7 +33,7 @@ CASES = frozenset({
 PROOFS = frozenset({
     "real_model_executed", "real_msime_executed", "actual_editable_verified",
     "production_commit_path_used", "default_on_verified", "private_pool_empty",
-    "non_main_model_thread", "cleanup_completed",
+    "non_main_model_thread", "cleanup_completed", "independent_reference_verified",
 })
 LIMITS = frozenset({"system_ime_executed", "phone_executed", "active_inference_cancel_tested",
                    "heap_leak_tested", "probe_opens_network"})
@@ -38,6 +41,7 @@ FIELDS = PROOFS | LIMITS | {
     "schema_version", "passed", "status", "synthetic", "checks", "cases", "api_level", "abi",
     "fixture_id", "fixture_sha256", "model_id", "model_sha256", "model_revision", "runtime_sha256",
     "scores", "score_tolerance", "reference_runtime_version", "apk_runtime_version_expected",
+    "reference_kind", "reference", "reference_max_abs_error", "legacy_host_reference",
     "model_load_ms", "old_click_index", "ranked_index_for_same_id", "score_calls", "completed_scores",
     "open_native_handles_at_exit", "open_core_handles_at_exit", "scope",
 }
@@ -67,7 +71,7 @@ def verify_report(report, api=None):
     """Reject missing, inflated, altered-fixture or mock-only success reports."""
     if not isinstance(report, dict) or report.keys() != FIELDS:
         raise ValueError("Unknown or missing Android candidate report fields")
-    if (type(report["schema_version"]) is not int or report["schema_version"] != 1
+    if (type(report["schema_version"]) is not int or report["schema_version"] != 2
             or report["passed"] is not True or report["status"] != "PASS" or report["synthetic"] is not True):
         raise ValueError("Incomplete Android candidate probe")
     level = report["api_level"]
@@ -88,21 +92,47 @@ def verify_report(report, api=None):
         raise ValueError("Candidate method probe scope overstated")
     expected = {"fixture_id": FIXTURE_ID, "fixture_sha256": FIXTURE_SHA, "model_id": MODEL_ID,
                 "model_sha256": MODEL_SHA, "model_revision": expected_revision(),
-                "reference_runtime_version": "1.24.4", "apk_runtime_version_expected": "1.28.2"}
+                "reference_runtime_version": "1.28.2", "apk_runtime_version_expected": "1.28.2",
+                "reference_kind": REFERENCE_KIND}
     if any(report[field] != value for field, value in expected.items()):
         raise ValueError("Candidate model, fixed fixture or reference identity mismatch")
-    if type(report["abi"]) is not str or report["runtime_sha256"] != runtime_sha(report["abi"]):
+    # The independent native runner is currently bundled only in the x86_64
+    # dedicated CI harness. ARM and phone acceptance require separate evidence.
+    if report["abi"] != "x86_64" or report["runtime_sha256"] != runtime_sha(report["abi"]):
         raise ValueError("Actual APK runtime differs from reviewed ABI library")
     tolerance = report["score_tolerance"]
     if not finite_number(tolerance) or abs(tolerance - 0.001) > 1e-12:
         raise ValueError("Candidate reference tolerance changed")
     scores = report["scores"]
-    if (not isinstance(scores, list) or len(scores) != len(REFERENCE)
-            or any(not finite_number(value) or abs(value - reference) > 0.001
-                   for value, reference in zip(scores, REFERENCE))):
-        raise ValueError("Actual candidate scores differ from fixed 8M reference")
+    reference = report["reference"]
+    if (not isinstance(reference, dict) or reference.keys() != {
+            "executed", "runtime_version", "graph_calls", "scores", "context_cache_nodes",
+            "candidate_cache_nodes", "session_closed", "fixture_sha256"}
+            or reference["executed"] is not True or reference["session_closed"] is not True
+            or reference["runtime_version"] != "1.28.2" or reference["fixture_sha256"] != ORACLE_FIXTURE_SHA):
+        raise ValueError("Independent upstream same-runtime oracle evidence missing")
+    for field, expected_value in (("graph_calls", 2), ("context_cache_nodes", 7), ("candidate_cache_nodes", 10)):
+        if type(reference[field]) is not int or reference[field] != expected_value:
+            raise ValueError("Independent upstream frozen tensor shape changed")
+    values = reference["scores"]
+    if any(not isinstance(row, list) or len(row) != len(LEGACY_HOST_REFERENCE)
+           or any(not finite_number(value) for value in row) for row in (scores, values)):
+        raise ValueError("Actual model or independent scores are invalid")
+    maximum_error = max(abs(actual - expected) for actual, expected in zip(scores, values))
+    if (maximum_error > 0.001 or not finite_number(report["reference_max_abs_error"])
+            or abs(report["reference_max_abs_error"] - maximum_error) > 1e-12):
+        raise ValueError("Actual candidate scores differ from independent same-runtime reference")
     if not scores[2] > max(scores[:2]):
         raise ValueError("Actual model did not select the frozen fixture winner")
+    if not values[2] > max(values[:2]):
+        raise ValueError("Independent model did not select the frozen fixture winner")
+    legacy = report["legacy_host_reference"]
+    if (not isinstance(legacy, dict)
+            or legacy.keys() != {"runtime_version", "scores", "max_abs_error", "used_as_android_oracle"}
+            or legacy["runtime_version"] != "1.24.4" or legacy["used_as_android_oracle"] is not False
+            or legacy["scores"] != LEGACY_HOST_REFERENCE or not finite_number(legacy["max_abs_error"])
+            or abs(legacy["max_abs_error"] - max(abs(value - old) for value, old in zip(scores, LEGACY_HOST_REFERENCE))) > 1e-12):
+        raise ValueError("Legacy cross-runtime diagnostic was omitted or altered")
     for field, expected_value in (("score_calls", 9), ("completed_scores", 7),
                                   ("open_native_handles_at_exit", 0), ("open_core_handles_at_exit", 0)):
         if type(report[field]) is not int or report[field] != expected_value:
@@ -120,4 +150,4 @@ if __name__ == "__main__":
     parser.add_argument("--api", type=int, choices=(28, 35, 36))
     arguments = parser.parse_args()
     verify_report(json.loads(arguments.report.read_text(encoding="utf-8")), arguments.api)
-    print("PASS 14 fixed Android candidate model/JNI/MSIME/Editable checks; system IME and phone scope remain separate")
+    print("PASS 14 fixed Android candidate model/JNI/MSIME/Editable checks with independent same-runtime oracle; system IME and phone scope remain separate")

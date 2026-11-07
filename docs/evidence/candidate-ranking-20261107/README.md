@@ -21,4 +21,10 @@
 
 主机耗时只描述该执行环境，不能用作 Android 1.28.2、ARM、S25、功耗、P95 或 RSS 指标。Android 方法与实际系统键盘有各自独立报告，只有对应固定提交的真实 CI 成功后才补入。
 
+## Android 首轮实测
+
+[42358906839 原失败](android-first-run-42358906839/README.md)保留 API28/35/36 三份下载原件及 artifact 摘要。三端真实模型分数一致，但相对 Linux ORT 1.24.4 的旧参考超出 0.001，因此明确失败；系统 IME 尚未执行。后续验收使用固定上游输入张量在同一 APK 运行库独立计算参考，原误差阈值和全部检查保持不变，不能把 Android 实测值写成新的常量后自证通过。
+
+[独立上游张量与运行库对照](host/oracle-runtime-comparison.json)在同一 Linux 主机保持模型、输入与执行器不变，仅切换实际加载的官方运行库。1.24.4 精确复现原 Python 参考；1.28.2 的输出与 Android 首轮观测最大差为 `9.5367431640625e-7`。生产 C++ 与独立 raw-tensor runner 在各自相同运行库上最大差均为 0，跨版本最大差 `0.09152984619140625` 得到复现。该实验定位了运行库版本相关的数值差异，但没有进一步证明具体量化内核原因，也不能替代新 Android 验收。原失败仅作描述性对照，`used_as_expected_values=false`。复现脚本为 `integrations/candidate/tests/test_oracle.py`，官方 Linux 包固定摘要与命令在集成 README。
+
 可复现入口为 `integrations/candidate/tests/test_host.sh` 与 `integrations/candidate/tests/default_pool_probe.py`；所需词库、头文件、原生 core 和 Python 环境命令在该目录 README 中。正式探针记录脚本、锁文件、模型、词库、core、运行库及 scorer 二进制身份，`language_accuracy_evaluated=false` 和 `android_performance_evaluated=false` 不可改写为成功。

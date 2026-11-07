@@ -137,3 +137,46 @@ observations including pipe/process overhead; they do not establish Android
 latency. The report records the executed core, native probe, runtime, model,
 locks and script hashes. Build the core first: a source hash alone does not
 prove an old shared library contains those sources.
+
+### Independent oracle on the device runtime
+
+The Android synthetic test APK also packages a separate `libzapime_candidate_oracle.so`.
+It executes the fixed tensors in `tests/oracle-fixture.json` directly through
+the product APK's ORT library. It does not call the production ranker, tokenizer,
+prefix planner or cache policy. `generate_oracle_fixture.py` creates its two
+inputs using the verbatim pinned upstream `context_inputs` and `step_inputs`
+functions. The fixture contains input token IDs and shapes, source/model hashes,
+and no numerical expected outputs. The first graph encodes seven context nodes;
+its raw cache outputs become the second graph's inputs, ending at ten nodes.
+Changing this into token-by-token or per-candidate execution would change
+dynamic-quantization batching and would not be the same numerical oracle.
+
+The device compares production scores against this independent execution on
+the same model, runtime and CPU, still at the fixed absolute tolerance `0.001`.
+The JNI result hashes the actual fixture bytes and marks `session_closed` only
+after all per-call ORT values, session and environment have left scope. This is
+a resource-lifetime contract, not a measured heap-leak result. Historical
+cross-runtime failures remain evidence; they are not replaced with device
+observations as expected values.
+
+After the earlier host preparation, verify generation and the raw executor:
+
+```sh
+python3 integrations/candidate/tests/generate_oracle_fixture.py --check
+target/candidate-python/bin/python integrations/candidate/tests/test_oracle.py \
+  --report target/candidate-host/oracle-report.json
+```
+
+The host test builds only the independent raw executor, compares it with the
+original upstream Python feeds and the already-built production probe, checks
+the actual fixture hash, two graph calls, cache shapes and scoped cleanup, and
+rejects two malformed fixtures. Optional `--runtime /absolute/path/libonnxruntime.so`
+arguments add host runtime comparisons; each production/oracle pair retains
+`0.001`, while differences between runtime versions are recorded separately.
+For the diagnostic official Linux 1.28.2 library, use Microsoft's
+[v1.28.2 CPU release archive](https://github.com/microsoft/onnxruntime/releases/download/v1.28.2/onnxruntime-linux-x64-1.28.2.tgz),
+whose reviewed download was 9,128,991 bytes with SHA-256
+`d7209b8751b27b862b0c76332c2e20e203396edb5dab700ecf4bb485cf147415`.
+This diagnostic host library is never included in the product. The report
+records each executed library hash and actual API version; it does not infer
+which runtime optimization or CPU kernel caused a cross-version difference.

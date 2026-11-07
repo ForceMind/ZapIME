@@ -30,3 +30,6 @@ candidate_flags=(-std=c++17 -O2 -Wall -Wextra -Werror -pedantic)
 "$candidate_jdk/bin/java" -Djava.library.path="$candidate_build" -cp "$candidate_build/java" \
   org.zapime.android.NativeCandidateRankerSmoke "$candidate_model" "$candidate_runtime" \
   "$candidate_build/jni-report.json"
+"$candidate_python" integrations/candidate/tests/test_oracle.py \
+  --model-dir "$candidate_model" --production-probe "$candidate_build/ranker_probe" \
+  --report "$candidate_build/oracle-report.json"

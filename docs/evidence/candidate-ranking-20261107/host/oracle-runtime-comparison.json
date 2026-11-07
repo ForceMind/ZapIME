@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "scope": "host_independent_upstream_tensors_and_same_runtime_numerics",
+  "mechanical_passed": true,
+  "android_acceptance": false,
+  "language_accuracy_evaluated": false,
+  "score_tolerance": 0.001,
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+  "fixture_bytes": 4760,
+  "upstream": {
+    "repository": "https://github.com/metasequoiaime/chinese-ime-lm",
+    "commit": "5b82758eaf3419dff9555f41bbda2744a56e45c4",
+    "path": "neural/choice/model.py",
+    "git_blob_sha1": "933af7444124970a221b3bf1f10a81599c9170d1",
+    "copied_feeds_sha256": "2268e105d6da10b7e2baab44ae739f9da0db86c031c8886e95b77d57fa35707d"
+  },
+  "generator_sha256": "cab3a9292d6d45c2a6fc1c5f6085140e2fdbd49f797609ed9009ff410b23b089",
+  "oracle_source_sha256": "a5e46bd2fcc7b03377ab17b5a90c3e4e201dc98ba19a8d564a384abc136ec6f0",
+  "oracle_binary_sha256": "686acec71ec7295ce7974e54718e357ce9a1bea801cbbafe481e7d90d38ca5b3",
+  "production_probe_sha256": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+  "test_script_sha256": "89cf0829c8e4e2e7ebd021a23a07039eef23df298fe7a581574b700927b33b6c",
+  "python_reference_version": "1.24.4",
+  "python_reference_scores": [
+    -9.413619995117188,
+    -11.37354850769043,
+    -3.759044647216797
+  ],
+  "runtime_runs": [
+    {
+      "runtime_path": "/workspace/scratch/b54f512167ed/ZapIME/target/candidate-python/lib/python3.12/site-packages/onnxruntime/capi/libonnxruntime.so.1.24.4",
+      "runtime_sha256": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+      "oracle": {
+        "candidate_cache_nodes": 10,
+        "context_cache_nodes": 7,
+        "executed": true,
+        "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+        "graph_calls": 2,
+        "runtime_version": "1.24.4",
+        "scores": [
+          -9.413619995117188,
+          -11.37354850769043,
+          -3.759044647216797
+        ],
+        "session_closed": true
+      },
+      "production_scores": [
+        -9.413619995117188,
+        -11.37354850769043,
+        -3.759044647216797
+      ],
+      "same_runtime_max_abs_error": 0.0,
+      "versus_python_1_24_4_max_abs_error": 0.0
+    },
+    {
+      "runtime_path": "/workspace/scratch/b54f512167ed/ZapIME/target/candidate-runtime-1282/onnxruntime-linux-x64-1.28.2/lib/libonnxruntime.so.1.28.2",
+      "runtime_sha256": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+      "oracle": {
+        "candidate_cache_nodes": 10,
+        "context_cache_nodes": 7,
+        "executed": true,
+        "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+        "graph_calls": 2,
+        "runtime_version": "1.28.2",
+        "scores": [
+          -9.505149841308594,
+          -11.410219192504883,
+          -3.7541024684906006
+        ],
+        "session_closed": true
+      },
+      "production_scores": [
+        -9.505149841308594,
+        -11.410219192504883,
+        -3.7541024684906006
+      ],
+      "same_runtime_max_abs_error": 0.0,
+      "versus_python_1_24_4_max_abs_error": 0.09152984619140625
+    }
+  ],
+  "negative_checks": [
+    "node_shape_value_mismatch",
+    "malformed_json"
+  ],
+  "historical_android_observation": {
+    "source_sha256": "e1da5f0237abc6805df9d4c0952502ee1391a8988b94b63b45f153adb0b509de",
+    "source_status": "FAIL",
+    "runtime_sha256": "087e84297cad64acb823c3d901d6e0cc934e91add7cdb20da802cd1c0bea5c3e",
+    "scores": [
+      -9.505149841308594,
+      -11.410218238830566,
+      -3.7541027069091797
+    ],
+    "used_as_expected_values": false,
+    "diagnostic_differences": [
+      {
+        "host_runtime": "1.24.4",
+        "max_abs_error": 0.09152984619140625
+      },
+      {
+        "host_runtime": "1.28.2",
+        "max_abs_error": 9.5367431640625e-07
+      }
+    ]
+  }
+}

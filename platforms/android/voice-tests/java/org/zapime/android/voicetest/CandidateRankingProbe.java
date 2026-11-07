@@ -18,6 +18,7 @@ import android.view.inputmethod.InputConnection;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilterInputStream;
@@ -58,9 +59,13 @@ final class CandidateRankingProbe {
     private static final String FIXTURE = "ni/你/900\nhao/好/900\nni'hao/拟好/900\nni'hao/逆号/800\nni'hao/你好/100\ncontext=朋友见面先说\nscore-order=拟好|逆号|你好\n";
     private static final String CONTEXT = "朋友见面先说";
     private static final String[] WORDS = {"拟好", "逆号", "你好"};
-    private static final float[] REFERENCE = {-9.413619995117188f, -11.37354850769043f, -3.759044647216797f};
+    // Retained for diagnosis of the original cross-runtime failure, never used
+    // as the same-runtime oracle or silently replaced with Android observations.
+    private static final float[] LEGACY_HOST_REFERENCE = {-9.413619995117188f, -11.37354850769043f, -3.759044647216797f};
+    private static final String ORACLE_FIXTURE_SHA = "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076";
+    private static final String REFERENCE_KIND = "upstream-frozen-tensors-same-apk-runtime-v1";
     private static final double TOLERANCE = 0.001;
-    private static final String SCOPE = "Actual Android JNI on APK-pinned 8M model and real MSIME with a synthetic lexicon; original-ID selection enters production trackCoreCommit and an independent EditText Editable. Not activated system IME, physical taps, phone latency, active-inference kill or heap-leak acceptance.";
+    private static final String SCOPE = "Actual Android JNI on APK-pinned 8M model, independent upstream tensor execution on the same APK runtime, and real MSIME with a synthetic lexicon; original-ID selection enters production trackCoreCommit and an independent EditText Editable. Not activated system IME, physical taps, phone latency, active-inference kill or heap-leak acceptance.";
 
     private interface Task<T> { T run() throws Exception; }
     private final Instrumentation instrumentation;
@@ -75,7 +80,9 @@ final class CandidateRankingProbe {
     private long rankHandle, coreHandle, privateHandle;
     private String stage = "initialization";
     private int scoreCalls, completedScores;
-    private boolean realModel, realCore, editableVerified, defaultVerified, privateVerified;
+    private boolean realModel, realCore, editableVerified, defaultVerified, privateVerified, referenceVerified;
+    private float[] referenceScores;
+    private String referenceRuntimeVersion;
     private JSONObject actualRankedResult;
 
     private CandidateRankingProbe(Instrumentation instrumentation, File output) {
@@ -269,6 +276,49 @@ final class CandidateRankingProbe {
         realCore = true;
     }
 
+    private void independentReference() throws Exception {
+        // These are frozen input tensors, produced by the pinned upstream
+        // Python feed builders before device execution. The raw runner imports
+        // no production tokenizer, trie, cache planner or CandidateRanker code.
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        try (InputStream input = instrumentation.getContext().getAssets().open("candidate-oracle-fixture.json")) {
+            byte[] chunk = new byte[4096];
+            int count;
+            while ((count = input.read(chunk)) != -1) {
+                check(bytes.size() + count <= 65536, "independent tensor fixture exceeds bound");
+                bytes.write(chunk, 0, count);
+            }
+        }
+        byte[] fixture = bytes.toByteArray();
+        String fixtureHash = hex(MessageDigest.getInstance("SHA-256").digest(fixture));
+        check(ORACLE_FIXTURE_SHA.equals(fixtureHash), "independent upstream tensor fixture SHA differs");
+        String raw = NativeCandidateOracle.evaluate(new File(model, "lm_step.ort").getAbsolutePath(),
+                runtime.getAbsolutePath(), new String(fixture, StandardCharsets.UTF_8));
+        check(raw != null && raw.length() <= 4096, "independent raw ORT execution failed");
+        JSONObject reference = new JSONObject(raw);
+        Set<String> expected = new HashSet<>(Arrays.asList("executed", "runtime_version", "graph_calls", "scores",
+                "context_cache_nodes", "candidate_cache_nodes", "session_closed", "fixture_sha256"));
+        java.util.Iterator<String> keys = reference.keys();
+        Set<String> actual = new HashSet<>();
+        while (keys.hasNext()) actual.add(keys.next());
+        check(actual.equals(expected), "independent reference result schema changed");
+        report.put("reference", reference).put("reference_kind", REFERENCE_KIND);
+        check(reference.getBoolean("executed") && reference.getBoolean("session_closed"), "independent ORT session not executed and released");
+        check(reference.getInt("graph_calls") == 2 && reference.getInt("context_cache_nodes") == 7
+                && reference.getInt("candidate_cache_nodes") == 10, "independent frozen graph shape changed");
+        check(ORACLE_FIXTURE_SHA.equals(reference.getString("fixture_sha256")), "independent native tensor SHA differs");
+        referenceRuntimeVersion = reference.getString("runtime_version");
+        check("1.28.2".equals(referenceRuntimeVersion), "independent actual runtime version differs");
+        JSONArray values = reference.getJSONArray("scores");
+        check(values.length() == WORDS.length, "independent reference row count changed");
+        referenceScores = new float[values.length()];
+        for (int i = 0; i < referenceScores.length; ++i) {
+            referenceScores[i] = (float)values.getDouble(i);
+            check(Float.isFinite(referenceScores[i]), "independent ORT reference is nonfinite");
+        }
+        check(referenceScores[2] > Math.max(referenceScores[0], referenceScores[1]), "independent model changed frozen fixture winner");
+    }
+
     private void rankingCases() throws Exception {
         stage = "real_model_msime_pool";
         JSONObject original = typeCode(coreHandle);
@@ -284,6 +334,7 @@ final class CandidateRankingProbe {
             check(observed.add(texts[i]), "duplicate MSIME fixture text");
         }
         check(observed.equals(new HashSet<>(Arrays.asList(WORDS))), "MSIME fixture candidate set changed");
+        independentReference();
         long begin = SystemClock.elapsedRealtimeNanos();
         rankHandle = openRanker(model);
         report.put("model_load_ms", (SystemClock.elapsedRealtimeNanos() - begin) / 1000000.0);
@@ -294,7 +345,18 @@ final class CandidateRankingProbe {
         JSONArray canonicalScores = new JSONArray();
         for (String word : WORDS) canonicalScores.put((double)scores[Arrays.asList(texts).indexOf(word)]);
         report.put("scores", canonicalScores);
-        for (int i = 0; i < WORDS.length; ++i) check(Math.abs(canonicalScores.getDouble(i) - REFERENCE[i]) <= TOLERANCE, "real model fixed reference score");
+        double maximumReferenceError = 0, maximumLegacyError = 0;
+        JSONArray legacyReference = new JSONArray();
+        for (int i = 0; i < WORDS.length; ++i) {
+            maximumReferenceError = Math.max(maximumReferenceError, Math.abs(canonicalScores.getDouble(i) - referenceScores[i]));
+            maximumLegacyError = Math.max(maximumLegacyError, Math.abs(canonicalScores.getDouble(i) - LEGACY_HOST_REFERENCE[i]));
+            legacyReference.put((double)LEGACY_HOST_REFERENCE[i]);
+        }
+        report.put("reference_max_abs_error", maximumReferenceError)
+                .put("legacy_host_reference", new JSONObject().put("runtime_version", "1.24.4").put("scores", legacyReference)
+                        .put("max_abs_error", maximumLegacyError).put("used_as_android_oracle", false));
+        check(maximumReferenceError <= TOLERANCE, "real model differs from independent same-runtime reference");
+        referenceVerified = true;
         Integer[] order = new Integer[scores.length];
         for (int i = 0; i < order.length; ++i) order[i] = i;
         Arrays.sort(order, (a, b) -> scores[a] == scores[b] ? Integer.compare(a, b) : Float.compare(scores[b], scores[a]));
@@ -513,7 +575,7 @@ final class CandidateRankingProbe {
         stage = "clear_context_isolation";
         check(rankBoolean("clear", rankHandle), "native clear failed");
         float[] original = score(rankHandle, CONTEXT, WORDS);
-        sameScores(original, REFERENCE);
+        sameScores(original, referenceScores);
         check(score(rankHandle, "另一位编辑器的合成上文", WORDS) != null, "second context did not score");
         check(rankBoolean("clear", rankHandle), "native context clear failed");
         sameScores(score(rankHandle, CONTEXT, WORDS), original);
@@ -596,7 +658,7 @@ final class CandidateRankingProbe {
             finally { throw new AssertionError("native accepted a corrupt ORT graph"); }
         }
         check(MODEL_SHA.equals(digest(new File(model, "lm_step.ort"))), "corrupt fixture altered verified model");
-        sameScores(score(rankHandle, CONTEXT, WORDS), REFERENCE);
+        sameScores(score(rankHandle, CONTEXT, WORDS), referenceScores);
         passed(stage);
     }
 
@@ -651,12 +713,13 @@ final class CandidateRankingProbe {
             Throwable cleanup = probe.cleanup();
             if (cleanup != null) { if (failure == null) failure = cleanup; else failure.addSuppressed(cleanup); }
             boolean passed = complete && cleanup == null;
-            probe.report.put("schema_version", 1).put("passed", passed).put("status", passed ? "PASS" : "FAIL")
+            probe.report.put("schema_version", 2).put("passed", passed).put("status", passed ? "PASS" : "FAIL")
                     .put("synthetic", true).put("checks", probe.cases.length()).put("cases", probe.cases)
                     .put("api_level", Build.VERSION.SDK_INT).put("abi", Build.SUPPORTED_ABIS[0])
                     .put("fixture_id", FIXTURE_ID).put("fixture_sha256", hex(MessageDigest.getInstance("SHA-256").digest(FIXTURE.getBytes(StandardCharsets.UTF_8))))
                     .put("model_id", MODEL_ID).put("model_sha256", MODEL_SHA).put("score_tolerance", (double)TOLERANCE)
-                    .put("reference_runtime_version", "1.24.4").put("apk_runtime_version_expected", "1.28.2")
+                    .put("reference_runtime_version", probe.referenceRuntimeVersion == null ? JSONObject.NULL : probe.referenceRuntimeVersion)
+                    .put("apk_runtime_version_expected", "1.28.2").put("independent_reference_verified", probe.referenceVerified)
                     .put("real_model_executed", probe.realModel).put("real_msime_executed", probe.realCore)
                     .put("actual_editable_verified", probe.editableVerified).put("production_commit_path_used", probe.editableVerified)
                     .put("default_on_verified", probe.defaultVerified).put("private_pool_empty", probe.privateVerified)
