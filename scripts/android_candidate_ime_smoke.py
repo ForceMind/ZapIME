@@ -55,13 +55,14 @@ def restore_setting_args(name, value):
 
 def verify_report(report, token, api):
     """Keep a model/Editable method probe distinct from this system-IME gate."""
-    if (not isinstance(report, dict) or report.get("schema_version") != 1
+    if (not isinstance(report, dict) or report.get("schema_version") != 2
             or report.get("scope") != "production-system-ime-candidate-ranking"
             or report.get("run_attempt") != token or report.get("api_level") != api
             or report.get("model_id") != MODEL):
         raise ValueError("Wrong system-IME report identity")
     for field in ("passed", "synthetic", "system_ime_executed", "production_lexicon",
-                  "production_model", "ranking_enabled", "ranking_eligible", "candidate_touch", "current_ranking_applied"):
+                  "production_model", "ranking_enabled", "ranking_eligible", "candidate_touch", "current_ranking_applied",
+                  "empty_context_base_order", "context_seed_touch"):
         if report.get(field) is not True:
             raise ValueError("Missing system-IME evidence: " + field)
     for field in ("product_preferences_written", "human_touch_or_phone_latency", "editor_composing"):
@@ -73,11 +74,19 @@ def verify_report(report, token, api):
     current, applied = report.get("scoring_input_revision"), report.get("scoring_applied_revision")
     if type(current) is not int or type(applied) is not int or current < 0 or applied != current:
         raise ValueError("Only an earlier input prefix was ranked")
+    submitted, empty, submitted_after = (report.get("submitted_before"), report.get("submitted_after_empty"),
+                                          report.get("submitted_after"))
+    if (type(submitted) is not int or type(empty) is not int or type(submitted_after) is not int
+            or not 0 <= submitted == empty < submitted_after):
+        raise ValueError("Empty context submitted work or contextual inference was not submitted")
+    seed = report.get("context_seed_text")
+    if (not isinstance(seed, str) or len(seed) not in (2, 4) or not all(0x3400 <= ord(char) <= 0x9fff for char in seed)):
+        raise ValueError("No real accepted context seed")
     selected = report.get("selected_text")
     if (not isinstance(selected, str) or len(selected) != 2
             or not all(0x3400 <= ord(char) <= 0x4DBF or 0x4E00 <= ord(char) <= 0x9FFF
                        or 0xF900 <= ord(char) <= 0xFAFF or 0x20000 <= ord(char) <= 0x323AF for char in selected)
-            or selected != report.get("actual_editable")):
+            or seed + selected != report.get("actual_editable")):
         raise ValueError("Visible candidate was not committed exactly")
     if (type(report.get("visible_han_candidates")) is not int or report["visible_han_candidates"] < 2
             or type(report.get("touch_keypresses")) is not int or report["touch_keypresses"] < 6
@@ -86,7 +95,10 @@ def verify_report(report, token, api):
     attempts = report.get("attempts")
     if not isinstance(attempts, list) or not 1 <= len(attempts) <= 2:
         raise ValueError("Unbounded or missing cold/warm attempts")
-    if report["touch_keypresses"] != (6 if len(attempts) == 1 else 18):
+    if (type(report.get("context_seed_commits")) is not int
+            or report["context_seed_commits"] != len(attempts) or len(seed) != 2 * len(attempts)):
+        raise ValueError("Missing accepted context after a clearing backspace")
+    if report["touch_keypresses"] != (11 if len(attempts) == 1 else 28):
         raise ValueError("Unexpected touchscreen retry outside the frozen attempts")
     for index, attempt in enumerate(attempts):
         if (not isinstance(attempt, dict) or attempt.get("code") != ("shijie", "tianqi")[index]

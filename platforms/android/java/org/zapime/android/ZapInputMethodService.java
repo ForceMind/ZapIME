@@ -50,7 +50,7 @@ public final class ZapInputMethodService extends InputMethodService {
     private String rankingState="idle",firstCandidateId;
     private long shownCompositionRevision=-1;
     private JSONObject latestCandidateView;
-    private int rankedSnapshots;
+    private int rankedSnapshots,rankingSubmitted;
     // No provider or enable control yet: the default session retains no text.
     private final EnglishLearningSession learning=new EnglishLearningSession();
     private String editorPackage;
@@ -137,6 +137,7 @@ public final class ZapInputMethodService extends InputMethodService {
         writer.println("ZapIME lifecycle: starts="+inputStarts+" restarts="+inputRestarts+" decision="+restartDecision+" pendingMarkerLoss="+(pendingMarkerLoss!=null)+" heldReplies="+inputReplies.size());
         writer.println("ZapIME panel events (uptime-ms:fixed-code): "+panelEvents);
         writer.println("ZapIME candidate ranking: enabled="+rankingEnabled+" eligible="+rankingEligible+" state="+rankingState+" scored="+rankedSnapshots+" inputRevision="+rankingInputRevision+" appliedRevision="+rankedInputRevision);
+        writer.println("ZapIME candidate requests: submitted="+rankingSubmitted);
         // Counts/reason codes only. No input, context, package, key or token.
     }
     private void bind(Button button,Runnable action,boolean repeat){touches.bind(button,action,repeat,()->getCurrentInputConnection()!=null);}
@@ -324,7 +325,7 @@ public final class ZapInputMethodService extends InputMethodService {
         rankingContext.suspend();
     }
     private boolean canRank() {
-        return rankingVisible&&rankingEligible&&ready&&chinese&&!privateSession&&!searchActive&&!searchClosing
+        return rankingVisible&&rankingEligible&&rankingContext.hasContext()&&ready&&chinese&&!privateSession&&!searchActive&&!searchClosing
                 &&layer.equals("letters")&&!preedit.isEmpty()&&getCurrentInputConnection()!=null;
     }
     private void scheduleRanking(JSONObject view) {
@@ -346,6 +347,7 @@ public final class ZapInputMethodService extends InputMethodService {
             try{
                 CandidateRankingWorker.Request request=new CandidateRankingWorker.Request(active,candidateGeneration,inputRevision,contextVersion,context,ids,texts,400);
                 if(rankingWorker==null)rankingWorker=new CandidateRankingWorker(new NativeCandidateRankingBackend(this),task->main.post(task),this::rankingCompleted);
+                ++rankingSubmitted;
                 rankingWorker.submit(request);
             }catch(IllegalArgumentException unavailable){rankingState="unavailable";}
         };

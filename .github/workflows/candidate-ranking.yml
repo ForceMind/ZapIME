@@ -35,7 +35,9 @@ jobs:
         with:
           python-version: '3.12'
       - name: Validate paired evaluation metrics
-        run: python3 -m unittest discover -s scripts -p 'test_candidate_evaluation.py' -v
+        run: |
+          python3 -m unittest discover -s scripts -p 'test_candidate_evaluation.py' -v
+          python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v
       - name: Prepare fixed model, C headers and JSON dependency
         run: |
           python3 scripts/prepare_candidate_model.py --headers target/candidate-runtime/include

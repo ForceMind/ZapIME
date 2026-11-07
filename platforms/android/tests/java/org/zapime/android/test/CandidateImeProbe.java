@@ -39,6 +39,7 @@ final class CandidateImeProbe {
     private static final String[] FIXTURES = {"shijie", "tianqi"};
     private static final Pattern RANKING = Pattern.compile(
             "(?m)^\\s*ZapIME candidate ranking: enabled=(true|false) eligible=(true|false) state=([a-z_]+) scored=([0-9]+) inputRevision=([0-9]+) appliedRevision=(-1|[0-9]+)\\s*$");
+    private static final Pattern SUBMITTED = Pattern.compile("(?m)^\\s*ZapIME candidate requests: submitted=([0-9]+)\\s*$");
     private final Instrumentation instrumentation;
     private final UiAutomation automation;
     private final String token;
@@ -46,7 +47,8 @@ final class CandidateImeProbe {
     private final JSONObject report = new JSONObject();
     private final JSONArray attempts = new JSONArray();
     private String stage = "launch";
-    private int keyTaps;
+    private int keyTaps,contextSeedCommits;
+    private String committedPrefix="";
 
     private static final class Editor {
         String text, committed;
@@ -56,7 +58,7 @@ final class CandidateImeProbe {
 
     private static final class Stats {
         boolean enabled, eligible;
-        int scored;
+        int scored, submitted;
         long inputRevision, appliedRevision;
         String state, line;
     }
@@ -206,10 +208,11 @@ final class CandidateImeProbe {
         long end = SystemClock.uptimeMillis() + 4000;
         while (SystemClock.uptimeMillis() < end) {
             Editor state = editor();
-            String raw = state.text.replace("'", "").replace(" ", "");
-            if (raw.equals(expectedCode) && state.committed.isEmpty()
+            require(state.text.startsWith(committedPrefix), "committed_context_changed");
+            String raw = state.text.substring(committedPrefix.length()).replace("'", "").replace(" ", "");
+            if (raw.equals(expectedCode) && state.committed.equals(committedPrefix)
                     && (expectedCode.isEmpty() || state.composing)) return;
-            require(state.committed.isEmpty(), "key_committed_unexpected_text");
+            require(state.committed.equals(committedPrefix), "key_committed_unexpected_text");
             SystemClock.sleep(25);
         }
         throw new Exception("touch_key_not_observed_in_editable");
@@ -240,6 +243,10 @@ final class CandidateImeProbe {
         result.appliedRevision = Long.parseLong(found.group(6));
         result.line = found.group().trim();
         require(!found.find(), "ambiguous_ranking_diagnostic");
+        Matcher requests = SUBMITTED.matcher(text);
+        require(requests.find(), "production_request_diagnostic_missing");
+        result.submitted = Integer.parseInt(requests.group(1));
+        require(!requests.find(), "ambiguous_request_diagnostic");
         return result;
     }
 
@@ -321,8 +328,27 @@ final class CandidateImeProbe {
         } finally { image.recycle(); }
     }
 
+    private void acceptContextSeed() throws Exception {
+        // Only an actual visible-candidate tap can add this context. The
+        // existing prefix stays in the host; no direct editor write occurs.
+        Choice contextChoice = settledChoice();
+        String expected = committedPrefix + contextChoice.text;
+        tap(stableButton(contextChoice.text));
+        long end = SystemClock.uptimeMillis() + 5000;
+        while (SystemClock.uptimeMillis() < end) {
+            Editor state = editor();
+            if (!state.composing && state.text.equals(expected)) break;
+            SystemClock.sleep(25);
+        }
+        require(!editor().composing && editor().text.equals(expected), "context_seed_not_committed");
+        committedPrefix = expected;
+        ++contextSeedCommits;
+        report.put("context_seed_touch", true).put("context_seed_text", committedPrefix)
+                .put("context_seed_commits", contextSeedCommits);
+    }
+
     private void execute() throws Exception {
-        report.put("schema_version", 1).put("scope", SCOPE).put("run_attempt", token)
+        report.put("schema_version", 2).put("scope", SCOPE).put("run_attempt", token)
                 .put("api_level", Build.VERSION.SDK_INT).put("model_id", MODEL_ID)
                 .put("synthetic", true).put("system_ime_executed", false)
                 .put("production_lexicon", false).put("production_model", false)
@@ -342,6 +368,22 @@ final class CandidateImeProbe {
             write("candidate-ime-service-before.txt", initial.line + "\n");
             report.put("ranking_enabled", initial.enabled).put("ranking_eligible", initial.eligible)
                     .put("scored_before", initial.scored);
+
+            // First exercise an empty editor through real keys. The product
+            // must preserve base order without even submitting an LM job.
+            stage = "empty_context_base_order";
+            String seed = "nihao";
+            for (int i = 0; i < seed.length(); ++i) key(seed.substring(i, i + 1), seed.substring(0, i + 1));
+            long baseUntil = SystemClock.uptimeMillis() + 600;
+            do {
+                Stats base = stats();
+                require(base.submitted == initial.submitted && base.scored == initial.scored,
+                        "empty_context_submitted_inference");
+                SystemClock.sleep(50);
+            } while (SystemClock.uptimeMillis() < baseUntil);
+            report.put("empty_context_base_order", true).put("submitted_before", initial.submitted)
+                    .put("submitted_after_empty", stats().submitted);
+            acceptContextSeed();
 
             Stats successful = null;
             for (int attempt = 0; attempt < FIXTURES.length; ++attempt) {
@@ -374,6 +416,11 @@ final class CandidateImeProbe {
                 if (attempt + 1 < FIXTURES.length) {
                     stage = "clear_cold_attempt";
                     for (int i = code.length(); i > 0; --i) key("⌫", code.substring(0, i - 1));
+                    // Backspace intentionally clears trusted context. Rebuild
+                    // it by another actual accepted candidate, never by copying
+                    // the editor text back into the product's context object.
+                    for (int i = 0; i < seed.length(); ++i) key(seed.substring(i, i + 1), seed.substring(0, i + 1));
+                    acceptContextSeed();
                 }
             }
             require(successful != null, "production_scored_counter_did_not_increase");
@@ -393,15 +440,15 @@ final class CandidateImeProbe {
             Editor committed;
             do {
                 committed = editor();
-                if (!committed.composing && committed.text.equals(choice.text)) break;
-                require(committed.committed.isEmpty() || committed.committed.equals(choice.text), "candidate_committed_different_text");
+                if (!committed.composing && committed.text.equals(committedPrefix+choice.text)) break;
+                require(committed.committed.equals(committedPrefix) || committed.committed.equals(committedPrefix+choice.text), "candidate_committed_different_text");
                 SystemClock.sleep(25);
             } while (SystemClock.uptimeMillis() < commitDeadline);
-            require(!committed.composing && committed.text.equals(choice.text), "candidate_touch_did_not_commit_exact_visible_text");
+            require(!committed.composing && committed.text.equals(committedPrefix+choice.text), "candidate_touch_did_not_commit_exact_visible_text");
             Stats after = stats();
             require(after.enabled && after.eligible && after.scored > initial.scored, "production_ranking_evidence_lost");
             write("candidate-ime-service-after.txt", after.line + "\n");
-            report.put("scored_after", after.scored).put("selected_text", choice.text)
+            report.put("scored_after", after.scored).put("submitted_after", after.submitted).put("selected_text", choice.text)
                     .put("current_ranking_applied", true).put("scoring_input_revision", successful.inputRevision)
                     .put("scoring_applied_revision", successful.appliedRevision)
                     .put("actual_editable", committed.text).put("editor_composing", committed.composing)

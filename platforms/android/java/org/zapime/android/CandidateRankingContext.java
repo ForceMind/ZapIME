@@ -54,6 +54,9 @@ final class CandidateRankingContext {
 
     long version() { return version; }
     boolean active() { return allowed; }
+    // The LM's unconditional word probabilities are not a replacement for the
+    // dictionary's base frequencies. No verified context means base order.
+    boolean hasContext() { return allowed && !text.isEmpty(); }
     String text() { return allowed ? text : ""; }
 
     private static String tail(String value) {
