@@ -9,6 +9,7 @@ import time
 import wave
 import json
 from android_voicekey_model_smoke import verify_permission_cases, verify_boundary_report
+from android_sync_preparation_report import verify_report as verify_sync_preparation
 from android_ci_device import system_keyboard, collect_failure_state, assert_no_app_anr, diagnostic_args, dedicated_ci
 
 if os.environ.get("GITHUB_ACTIONS") != "true" or len(sys.argv) != 3:
@@ -48,7 +49,7 @@ try:
     print(result.stdout)
     if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
         raise SystemExit("Native voice acceptance failed")
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "sync-preparation-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name))
     evidence=json.loads((out/"empty-pcm-report.json").read_text())
     expected={"no_samples", "all_zero", "ignored_tail", "positive_lsb", "negative_lsb", "cancelled_empty"}
@@ -71,6 +72,7 @@ try:
     cases=profile.get("cases", [])
     if profile.get("synthetic") is not True or len(cases)!=len(expected_profile) or {row.get("id") for row in cases}!=expected_profile or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing persistent account guard evidence")
+    verify_sync_preparation(json.loads((out/"sync-preparation-report.json").read_text()))
     backup=json.loads((out/"local-backup-report.json").read_text())
     expected_backup={"native_snapshot", "authentication_and_recovery", "nonempty_bound_preserved", "worker_and_limits", "sensitive_activity", "system_saf_export_and_recovery", "explicit_sensitive_copy_and_clear", "stop_clears_sensitive_state"}
     cases=backup.get("cases", [])
@@ -104,7 +106,7 @@ finally:
     # Always retain its actual failure hierarchy/screenshot before checking fatals.
     for name in ("voice-recording.png","voice-stopped.png","hierarchy.txt","smoke.png","host-lifecycle.txt","ci-activity-top.txt","ci-activity-state.txt","ci-window-state.txt","ci-input-service.txt","ci-system-runtime.txt"):
         run("pull","/sdcard/Android/data/org.zapime.android.test/files/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
+    for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "sync-preparation-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/backup-provider-ui-shape.json",str(out/"backup-provider-ui-shape.json"),check=False,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
     log = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout

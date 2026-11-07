@@ -1,0 +1,57 @@
+{
+  "saved_at_utc": "2026-11-07T06:24:54.563032+00:00",
+  "base_commit": "af40cd6571bf1ce32fa5516ff2dcfb6f1ef311a7",
+  "source_state": "uncommitted first sync-preparation slice; source commit will be its enclosing GitHub commit",
+  "workspace_tests": 99,
+  "python_tests": 38,
+  "file_io_tests": 9,
+  "android_java": "all product/voice-tests compiled using official API36r02 jar, source8 target8",
+  "android_jni_keystore_activity": "PENDING actual CI",
+  "new_page_saf_positive": "NOT RUN",
+  "phone": "NOT RUN",
+  "http_sync": "NOT IMPLEMENTED",
+  "logs": [
+    {
+      "file": "host-rust-tests.log",
+      "bytes": 12051,
+      "sha256": "951ccf060696087f987242a3881e7dcd1f405f230960218da01a6eb7c5a9f9bc",
+      "exit_code": 0
+    },
+    {
+      "file": "host-clippy.log",
+      "bytes": 482,
+      "sha256": "83e3f06fe5aef3787b04f0a858ff5c136c1a490aadb80b74161961798391e954",
+      "exit_code": 0
+    },
+    {
+      "file": "host-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "exit_code": 0
+    },
+    {
+      "file": "host-python-tests.log",
+      "bytes": 8089,
+      "sha256": "bb701acedee739e04b58f0597236a067be4ae42b4d4a8667008955df00d4e9a1",
+      "exit_code": 0
+    },
+    {
+      "file": "host-file-tests.log",
+      "bytes": 399,
+      "sha256": "0117475438c3aa7d0b11f35e1bd21d5a2db435dad59a614a2c4a4c848e6216e5",
+      "exit_code": 0
+    },
+    {
+      "file": "host-java-compile.log",
+      "bytes": 456,
+      "sha256": "3f29516099c0ea797a6209ede9f40af25764f1a8c6746d5a15779f18941a008d",
+      "exit_code": 0
+    },
+    {
+      "file": "host-notices.log",
+      "bytes": 126,
+      "sha256": "f81336a41d72480f7764115940dcf36fc221a279b156f494ab5e15144c3ca7bb",
+      "exit_code": 0
+    }
+  ]
+}

@@ -2,6 +2,14 @@
 
 更新时间：2026-11-06 05:51 PST（America/Los_Angeles）。本轮已实际修改产品、运行测试、推送代码并下载核验 APK。累计汇报次数及此前汇报间隔没有可靠连续记录，不补造。
 
+## 新工作切片：本机同步材料准备（2026-11-06 22:23 PST）
+
+新分支 `feat/android-sync-preparation` 从本页固定Android候选源码接续，单独审查同步准备，不改变候选包的源码/摘要身份。实际新增typed密钥与专用恢复包、受保护create-only存储、SQLite账号/key ID/根指纹原子绑定、独立JNI、准备页与严格11项Android探针。用户显式操作，零HTTP/零自动上传。
+
+主机工作区99测试/fmt/严格Clippy、Android Python38、文件IO9、全部产品和voice-tests API36 Java编译、133包核心许可收集通过。对应Android JNI/Keystore/页面与双ABI构建尚待新CI；正向SAF与手机未运行，不能使用旧包代填。详见[本机准备实现及限制](ANDROID_SYNC_PREPARATION.md)。原密文存在但包装密钥丢失时仍拒绝原地重置；没有完成远端密钥登记/配对、实际HTTP同步或完整恢复。
+
+这是本轮首个有明确时间的工程检查点；距2026-11-06 05:56 PST的上个固定交付约16小时27分，累计汇报次数无可靠连续记录。后面的双离线候选结论对应其原固定源码与产物。
+
 ## 当前交付结论
 
 **Android 双离线引擎 Alpha 候选现已可供试用，也可以交本地 Codex 接续。** 产品源码固定 `08e84980562ecc8fab436ffcdab6e5aee8c567e7`；后续测试提交 `be79d084eef1f835e7504f134f46ba315b36df18` 未改变产品路径，在 focused [run42227414903](https://github.com/ForceMind/ZapIME/actions/runs/42227414903) 完成 API28/35/36 全部专项。固定 APK、SHA、签名、独立模型准备、离线使用和备份说明见 [Alpha 试用指南](DUAL_VOICE_ALPHA_TRYOUT.md)。

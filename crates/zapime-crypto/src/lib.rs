@@ -35,6 +35,24 @@ impl SecretKey {
         random(key.as_mut())?;
         Ok(Self(key))
     }
+    /// Explicit platform-vault boundary. Never use this for ordinary records,
+    /// preferences, logs or an unencrypted export. The caller owns and must
+    /// clear any platform copy after protected storage has completed.
+    pub fn from_protected_storage(bytes: &[u8]) -> Result<Self, Error> {
+        if bytes.len() != 32 {
+            return Err(Error::Invalid);
+        }
+        let mut key = Zeroizing::new([0; 32]);
+        key.copy_from_slice(bytes);
+        Ok(Self(key))
+    }
+    /// Export only into a platform's protected-storage envelope. Deliberately
+    /// not Serialize/Debug/Display; the returned buffer zeroizes on drop.
+    pub fn to_protected_storage(&self) -> Zeroizing<[u8; 32]> {
+        let mut bytes = Zeroizing::new([0; 32]);
+        bytes.copy_from_slice(self.0.as_ref());
+        bytes
+    }
 }
 impl RecoveryCode {
     /// 仅在向用户显示或写入受保护恢复资料时调用，不可写入日志。

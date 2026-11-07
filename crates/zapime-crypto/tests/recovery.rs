@@ -79,3 +79,19 @@ fn wrong_recovery_code_and_tampered_package_fail_closed() {
     .into();
     assert!(restore_recovery(&code, &serde_json::to_vec(&json).unwrap()).is_err());
 }
+
+#[test]
+fn explicit_protected_storage_roundtrip_preserves_real_aead_key() {
+    let original = SecretKey::generate().unwrap();
+    let exported = original.to_protected_storage();
+    let restored = SecretKey::from_protected_storage(exported.as_ref()).unwrap();
+    let binding = binding();
+    let ciphertext = seal(&original, &binding, b"synthetic vault roundtrip").unwrap();
+    assert_eq!(
+        open(&restored, &binding, &ciphertext).unwrap().as_slice(),
+        b"synthetic vault roundtrip"
+    );
+    for size in [0, 31, 33, 1024] {
+        assert!(SecretKey::from_protected_storage(&vec![0; size]).is_err());
+    }
+}

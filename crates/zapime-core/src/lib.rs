@@ -8,6 +8,8 @@ use zapime_data::{Content, Record, Store};
 
 #[cfg(target_os = "android")]
 mod android;
+#[cfg(target_os = "android")]
+mod android_sync;
 pub mod ffi;
 pub mod local_backup;
 mod personal;

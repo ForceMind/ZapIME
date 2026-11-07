@@ -58,6 +58,21 @@ final class SyncSecrets {
     static void save(Context context,UUID profile,byte[] material)throws IOException {
         worker();synchronized(SyncSecrets.class){saveLocked(context,profile,material,Purpose.MATERIAL);}
     }
+    /** First installation only. An identical committed value is an idempotent
+     * retry; any different or unreadable value must be explicitly recovered,
+     * never replaced by initialization. Returns true only after a new write.
+     */
+    static boolean saveIfAbsent(Context context,UUID profile,byte[] material)throws IOException {
+        worker();synchronized(SyncSecrets.class){
+            if(material==null||material.length==0||material.length>MAX_MATERIAL)throw new IOException("sync_material_size");
+            byte[] previous=loadLocked(context,profile,Purpose.MATERIAL);
+            if(previous!=null){
+                try{if(!MessageDigest.isEqual(previous,material))throw new IOException("sync_material_exists");return false;}
+                finally{Arrays.fill(previous,(byte)0);}
+            }
+            saveLocked(context,profile,material,Purpose.MATERIAL);return true;
+        }
+    }
     private static void saveLocked(Context context,UUID profile,byte[] material,Purpose purpose)throws IOException {
         if(material==null||material.length==0||material.length>MAX_MATERIAL)throw new IOException("sync_material_size");
         File file=file(context,profile,purpose);

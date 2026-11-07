@@ -116,3 +116,6 @@ docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/api36/workflo
 
 # Preserve the downloaded final GitHub artifact metadata bytes and recorded hash.
 docs/evidence/voicekey-runtime-20261106/accepted-model-42227414903/github-artifact-metadata.json -text -whitespace
+
+# Preserve exact host test output bytes and their recorded SHA.
+docs/evidence/sync-preparation-20261106/host-rust-tests.log -text -whitespace

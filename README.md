@@ -30,7 +30,7 @@ Android 双离线引擎 Alpha 已提供[固定 APK、模型准备与试用指南
 
 服务器一键安装、自有服务器中转与 Cloudflare R2 密文存储见 [服务器部署](docs/SERVER_DEPLOY.md)。客户端同步接入仍未完成。
 
-Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动 HTTPS 验证设备凭据、独立 Keystore 保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；保存连接前核对已有资料库账号，拒绝跨账号替换。完整配对和数据同步仍未接入。
+Android 已新增[服务器与设备连接](docs/ACCOUNT_CONNECTION.md)：手动 HTTPS 验证设备凭据、独立 Keystore 保存、再次检查及移除本机连接。当前只验证授权，不上传个人资料；保存连接前核对已有资料库账号，拒绝跨账号替换。完整配对和数据同步仍未接入。 新增独立开发中的[本机同步密钥准备](docs/ANDROID_SYNC_PREPARATION.md)，提供显式创建、密钥恢复文件和资料库身份绑定；主机已验证，Android新系统证据待运行。固定语音Alpha包不包含这一新切片。
 
 ## VoiceKey 双离线引擎整合
 

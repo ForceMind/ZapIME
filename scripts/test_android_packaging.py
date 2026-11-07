@@ -9,7 +9,7 @@ import unittest
 import zipfile
 
 from collect_rust_notices import collect, graph
-from check_apk import check_notice_inventory, check_voicekey_native, elf_metadata, VOICEKEY_JNI
+from check_apk import check_notice_inventory, check_voicekey_native, check_core_native, elf_metadata, VOICEKEY_JNI, CORE_JNI
 
 
 def package(directory, name, license_id="MIT", declared=None):
@@ -83,17 +83,17 @@ class RustNoticeTests(unittest.TestCase):
         with archive(listed=invalid) as z, self.assertRaises(AssertionError): check_notice_inventory(z, "notices", "adapter")
 
 
-def synthetic_elf():
+def synthetic_elf(exports=VOICEKEY_JNI):
     raw = bytearray(120 + 4 * 64)
     raw[:6] = b"\x7fELF\x02\x01"; struct.pack_into("<Q", raw, 40, 120); struct.pack_into("<HH", raw, 58, 64, 4)
     struct.pack_into("<H", raw, 18, 183); struct.pack_into("<Q", raw, 32, 64); struct.pack_into("<HH", raw, 54, 56, 1)
     struct.pack_into("<IIQQQQQQ", raw, 64, 1, 5, 0, 0, 0, 0, 0, 16384)
     names = b"\0"; offsets = {}
-    for name in sorted(VOICEKEY_JNI | {"libc.so", "libdl.so", "libm.so"}): offsets[name] = len(names); names += name.encode() + b"\0"
+    for name in sorted(exports | {"libc.so", "libdl.so", "libm.so"}): offsets[name] = len(names); names += name.encode() + b"\0"
     def section(index, kind, payload, link=0, width=0):
         offset = len(raw); raw.extend(payload); struct.pack_into("<IIQQQQIIQQ", raw, 120 + index * 64, 0, kind, 0, 0, offset, len(payload), link, 0, 1, width)
     section(1, 3, names)
-    symbols = bytes(24) + b"".join(struct.pack("<IBBHQQ", offsets[name], 0x12, 0, 1, 1, 0) for name in sorted(VOICEKEY_JNI))
+    symbols = bytes(24) + b"".join(struct.pack("<IBBHQQ", offsets[name], 0x12, 0, 1, 1, 0) for name in sorted(exports))
     section(2, 11, symbols, 1, 24)
     dynamic = b"".join(struct.pack("<qQ", 1, offsets[name]) for name in ["libc.so", "libdl.so", "libm.so"]) + bytes(16)
     section(3, 6, dynamic, 1, 16)
@@ -101,6 +101,12 @@ def synthetic_elf():
 
 
 class VoiceKeyElfTests(unittest.TestCase):
+    def test_core_gate_requires_every_stateless_sync_export(self):
+        check_core_native(synthetic_elf(CORE_JNI), "arm64-v8a")
+        for missing in CORE_JNI:
+            with self.subTest(missing=missing), self.assertRaises(AssertionError):
+                check_core_native(synthetic_elf(CORE_JNI - {missing}), "arm64-v8a")
+
     def test_dynamic_symbols_and_dependencies_read_without_execution(self):
         needed, exports = elf_metadata(synthetic_elf())
         self.assertEqual(needed, {"libc.so", "libdl.so", "libm.so"})

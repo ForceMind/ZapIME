@@ -25,8 +25,9 @@ public final class VoiceInstrumentation extends Instrumentation {
     private File fixtures;
     private boolean backupCI;
     private String voiceKeyModelCI;
+    private String syncPreparationCI;
     private static final Class<?>[] NONE=new Class<?>[0];
-    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");voiceKeyModelCI=args==null?null:args.getString("zapime_ci_voicekey_model");start();}
+    @Override public void onCreate(Bundle args){super.onCreate(args);backupCI=args!=null&&args.getString("zapime_ci_backup","").matches("[0-9]+-[0-9]+");voiceKeyModelCI=args==null?null:args.getString("zapime_ci_voicekey_model");syncPreparationCI=args==null?null:args.getString("zapime_ci_sync_preparation");start();}
     private Object invoke(Class<?> type,String name,Class<?>[] signature,Object...args)throws Exception {Method method=type.getDeclaredMethod(name,signature);method.setAccessible(true);return method.invoke(null,args);}
     private Object nativeCall(String name,Class<?>[] signature,Object...args)throws Exception{return invoke(nativeVoice,name,signature,args);}
     private JSONObject json(Object bytes)throws Exception{return new JSONObject(new String((byte[])bytes,StandardCharsets.UTF_8));}
@@ -158,6 +159,13 @@ public final class VoiceInstrumentation extends Instrumentation {
     @Override public void onStart(){
         Bundle result=new Bundle();
         try{
+            if(syncPreparationCI!=null){
+                require(syncPreparationCI.matches("[0-9]+-[0-9]+"),"dedicated sync preparation CI required");
+                fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
+                if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
+                stage="local sync material preparation";SyncPreparationProbe.run(this,fixtures);
+                result.putString("stream","PASS Android local sync preparation acceptance\n");finish(Activity.RESULT_OK,result);return;
+            }
             if(voiceKeyModelCI!=null){
                 require(voiceKeyModelCI.matches("[0-9]+-[0-9]+"),"dedicated VoiceKey model CI required");
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
@@ -200,6 +208,7 @@ public final class VoiceInstrumentation extends Instrumentation {
             nativeCall("release",new Class<?>[]{long.class},0L);pass("permission-denied AudioRecord failure and explicitly stopped emulator microphone capture (silence)");
             stage="local account connection";SyncAccountProbe.run(this,fixtures);
             stage="persistent account guard";SyncProfileProbe.run(this,fixtures);
+            stage="local sync material preparation";SyncPreparationProbe.run(this,fixtures);
             stage="VoiceKey JNI boundaries (no model)";VoiceKeyBoundaryProbe.run(this,fixtures);
             stage="encrypted local backup";BackupProbe.run(this,fixtures,backupCI);
             pass("synthetic account JSON identity binding, real Keystore connection/material isolation, local store and secure Activity lifecycle; no Android HTTPS success or data sync claim");
