@@ -1,0 +1,65 @@
+{
+  "head_sha": "5e1a87ccc345cbdb41635059c35cb63ce988b197",
+  "run_id": 42361234345,
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 128371024543,
+      "name": "Android development APK",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128372825818,
+      "name": "Android API 35 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128372825866,
+      "name": "VoiceKey-only real model API 28",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128372825876,
+      "name": "VoiceKey-only real model API 36",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128372825890,
+      "name": "VoiceKey-only real model API 35",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 128372825969,
+      "name": "Android API 36 native acceptance",
+      "status": "completed",
+      "conclusion": "success"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": 13570485586,
+      "name": "ZapIME-VoiceKey-only-API-28",
+      "size_in_bytes": 185881,
+      "digest": "sha256:a57e79aec56f545ceed25d2ae0df25d21b89a8c415a27f4ece9ea12e648a3452"
+    },
+    {
+      "id": 13570133563,
+      "name": "ZapIME-VoiceKey-only-API-36",
+      "size_in_bytes": 182947,
+      "digest": "sha256:9c3323a28f3ecec0d49cc9943e06daf6ef483e1524f91ba838fe030edd889dd6"
+    },
+    {
+      "id": 13569757884,
+      "name": "ZapIME-VoiceKey-only-API-35",
+      "size_in_bytes": 240120,
+      "digest": "sha256:5a3dee6dccbd989a733c3b3c4336f4b4f529d49620e293920edb7b3753ebc884"
+    }
+  ],
+  "scope": "All six full-Android workflow jobs passed at the exact quoted head, including real API28 native smoke in the build job. Three API VoiceKey ZIPs SHA-checked; original summaries prove actual execution, service exit, fixture deletion, system-policy restoration and IPv4/IPv6 UID-rule cleanup. This is emulator evidence, not physical-device or natural-speech acceptance."
+}

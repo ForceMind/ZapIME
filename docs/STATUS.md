@@ -12,7 +12,7 @@ Android 新偏好默认开启，用户明确关闭的值保留。基础候选先
 
 主机完整 workspace **134 项**（其中候选 **16 项**）、fmt、严格 Clippy 通过；Android Python **95 项**、资源准备 **14 项**、三组 JVM worker/上下文/资源检查通过。最终 CI 实际执行 native **15 组**、生产 JNI/JVM **36 项**及独立 oracle；普通页误差 0，本轮分批差 0.017479419708251953，仅描述该主机环境。真实生产库 3 组合成排序提交及过度补全/可见页修复前后原报告保留，不将机械通过冒充输入准确率。
 
-既有回归分别保留身份：相同产品载荷的 a73 完整 Android [42360463238](https://github.com/ForceMind/ZapIME/actions/runs/42360463238) 六作业全过，VoiceKey focused [42360463313](https://github.com/ForceMind/ZapIME/actions/runs/42360463313) 八作业全过；5e 的 [VoiceKey focused 42361234391](https://github.com/ForceMind/ZapIME/actions/runs/42361234391) 八作业亦全过，三端实际系统 IME/服务退出/共享文件/网络清理原件已核。5e 的完整 Android 复跑在本次归档快照时仍运行，不能据旧运行写成新 HEAD 全部 CI 通过。当前 Windows、离线语音 CPU、独立同步服务对应 5e 的 CI 已成功。
+既有回归分别保留身份：相同产品载荷的 a73 完整 Android [42360463238](https://github.com/ForceMind/ZapIME/actions/runs/42360463238) 六作业全过，VoiceKey focused [42360463313](https://github.com/ForceMind/ZapIME/actions/runs/42360463313) 八作业全过。最终测试修订 5e 的[完整 Android 42361234345](https://github.com/ForceMind/ZapIME/actions/runs/42361234345)六作业和[VoiceKey focused 42361234391](https://github.com/ForceMind/ZapIME/actions/runs/42361234391)八作业均已完成成功；三端实际系统 IME/服务退出/共享文件/网络清理原件已核。该固定修订的七条 workflow 已全部 SUCCESS，包括候选、共享核心/Apple、完整 Android、VoiceKey、Windows、离线语音 CPU 和独立同步服务。最终元数据另存，较早的进行中快照保持原样；后续文档提交不改写已验源码身份。
 
 两份产品 APK 已实际下载，复验 SHA256、v3 签名、16 KiB 对齐、固定模型、原生库和许可证。后两次修订只有测试与证据变化；APK 内容逐成员相对首轮实现仅开发签名证书不同。首轮跨 ORT 参考失败、第二轮 adb shell 分号设置恢复失败均保留原字节，修正未放宽数值/读回/清理门槛；完整过程见验收目录。
 

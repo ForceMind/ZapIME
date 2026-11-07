@@ -40,7 +40,9 @@ ARM64 APK 58,745,799 字节，SHA256 `ac13a27b5271173483b4b7270f3dca21e459e0e5a1
 
 ## 回归与未覆盖项
 
-`regression/` 保存相同产品载荷的 a73 完整 Android 回归（42360463238，6 jobs）及 VoiceKey focused（42360463313，8 jobs）成功元数据。5e 的 VoiceKey focused 42361234391 也已全部通过，三端实际报告确认语音系统 IME/服务退出、共享文件与网络规则清理。5e 的完整 Android 复跑在保存本轮快照时仍运行；不将旧运行代填为新 HEAD 全部 CI 通过。
+`regression/` 保存相同产品载荷的 a73 完整 Android 回归（42360463238，6 jobs）及 VoiceKey focused（42360463313，8 jobs）成功元数据。最终测试修订 5e 的完整 Android 42361234345（6 jobs）与 VoiceKey focused 42361234391（8 jobs）也均已全部通过；三端实际报告确认语音系统 IME/服务退出、共享文件与网络规则清理。完整 Android 含 build job 内 API28 原生键盘门禁，以及独立 API35/36 原生输入和三端 VoiceKey。
+
+最终再次读取 GitHub 状态，固定修订 5e 的七条 workflow 全部 completed/success，见 `github-completed-workflows.json` 与 `github-full-android-final-jobs.json`。较早的进行中快照按当时原状态保留，最终通过没有回写历史。后续只有文档与证据的提交不被宣称为另一个已运行过的产品版本。
 
 5e 的共享检查 42361234284 已完成，Linux/macOS/Windows 共享核心及 Apple 开发宿主四个 job 全部成功，另存 `github-shared-final-jobs.json`。早一份 workflow 快照仍保留抓取时的进行中状态，不把该历史快照改写为当时已完成。
 
