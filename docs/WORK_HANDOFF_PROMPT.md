@@ -34,6 +34,10 @@ python3 scripts/verify_upstream.py
 
 #86 focused42459710009 API35/36已下载严格复验，API28仍排队；#89两版主机v3基础38/64、上下文50/64，缺失5、上下文名次退步1均保留；#90本机9组race×10/vet/build通过，但真实PG事务仍待CI。#91尚未模拟器执行，不称复现/根因解决。详见STATUS当前检查点，后续先实时回读所有CI/Review再继续修复和按范围合并。一次集中真机操作见[S25总单](S25_ACCEPTANCE_CHECKLIST.md)，不能在个人设备运行CI脚本。
 
+## 最新原生失败与正在进行的修复
+
+#87/#89候选workflow的API36系统IME均出现配置重置后的真实组字FAIL。#87事件环已定位到旧EditorInfo/选区保留拒绝→重建→空初始化finish原组字；无模型请求在先，原连接仍同一。原始证据已在STATUS新章节归档。继续保留fix/android-verified-configuration-restart的新worker验证切片；它还在编码，不能把未提交改动或#91实验当作通过。其他旧失败/成功的来源范围不改。
+
 ## 下一轮优先级
 
 1. 核对最新main/CI及已公开源码Alpha的证据。发布首轮None错误原件保留；健壮性修复已在#85合入并完成对应回归，不重复实现，继续核对新main结果与未合并切片。保留已有tag/Release和资产，不重发布覆盖。全量Android最终已FAILURE：常规API28/35/36及VoiceKey API28/35成功，VoiceKey API36在adb root/device offline阶段失败，随后共享包清理失败；未进入模型测试。[最终原件](evidence/main-android-final-20261107/README.md)已核SHA保存。按新切片重新验收，不能代填成功。
