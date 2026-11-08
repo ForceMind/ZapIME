@@ -54,6 +54,21 @@ fn binding(profile: Uuid, operation: &UploadOperation) -> Binding {
         kind: operation.kind,
     }
 }
+
+/// Read-only, bounded local evidence. Untracked rows are not upload permission;
+/// the caller must not infer remote absence or completeness from this preview.
+pub fn inventory_page(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    after: Option<Uuid>,
+    limit: usize,
+) -> Result<zapime_data::inventory::InventoryPage, Error> {
+    material.validate(profile).map_err(Error::Workspace)?;
+    store
+        .sync_inventory_page(&material.binding(), after, limit)
+        .map_err(Error::Storage)
+}
 fn checked_frozen(
     store: &mut Store,
     profile: Uuid,

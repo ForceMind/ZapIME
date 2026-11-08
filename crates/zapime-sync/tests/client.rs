@@ -93,6 +93,128 @@ fn snapshot(path: &Path) -> Vec<(String, Vec<Vec<String>>)> {
 }
 
 #[test]
+fn inventory_keeps_restore_pending_ack_and_authenticated_download_evidence_distinct() {
+    use zapime_data::inventory::InventoryState;
+    let dir = tempfile::tempdir().unwrap();
+    let profile = Uuid::new_v4();
+    let material = Material::generate(profile).unwrap();
+    let source_path = dir.path().join("inventory-source.db");
+    let receiver_path = dir.path().join("inventory-receiver.db");
+    let restored_path = dir.path().join("inventory-restored.db");
+    let mut source = new_store(&source_path, profile, &material);
+    let mut receiver = new_store(&receiver_path, profile, &material);
+    let id = Uuid::new_v4();
+    edit(&mut source, id, 0, "synthetic initial body");
+    let first_archive = source.export_plaintext().unwrap();
+    let initial = client::inventory_page(&mut source, profile, &material, None, 1).unwrap();
+    assert_eq!(
+        initial.items[0].state,
+        InventoryState::PendingLocalOperation
+    );
+    assert!(initial.items[0].current_snapshot_pending);
+    let first = client::stage_next(&mut source, profile, &material)
+        .unwrap()
+        .unwrap();
+    let frozen = client::frozen_wire(&mut source, profile, &material, &first).unwrap();
+    let server_device = Uuid::new_v4();
+    client::acknowledge(
+        &mut source,
+        profile,
+        server_device,
+        &material,
+        &first,
+        &response(profile, server_device, &first, 1),
+    )
+    .unwrap();
+    assert_eq!(
+        client::pull_cursor(&mut source, profile, &material).unwrap(),
+        0
+    );
+    let before = snapshot(&source_path);
+    let acknowledged = client::inventory_page(&mut source, profile, &material, None, 1).unwrap();
+    assert_eq!(
+        acknowledged.items[0].state,
+        InventoryState::ServerVersionKnown
+    );
+    assert_eq!(acknowledged.items[0].known_server_revision, Some(1));
+    assert!(!acknowledged.items[0].has_pending_local_operation);
+    assert!(acknowledged.items[0].current_snapshot_has_local_operation);
+    assert_eq!(
+        client::frozen_wire(&mut source, profile, &material, &first).unwrap(),
+        frozen
+    );
+    assert_eq!(snapshot(&source_path), before);
+
+    let change = Change {
+        account_id: profile,
+        device_id: server_device,
+        revision: 1,
+        operation: first,
+    };
+    let bytes = page(0, vec![change.clone()]);
+    client::apply_page(&mut receiver, profile, &material, 0, &bytes).unwrap();
+    assert_eq!(receiver.pending_count().unwrap(), 0);
+    let before = snapshot(&receiver_path);
+    let received = client::inventory_page(&mut receiver, profile, &material, None, 1).unwrap();
+    assert_eq!(received.items[0].state, InventoryState::ServerVersionKnown);
+    assert!(!received.items[0].has_local_operation_history);
+    assert!(!received.items[0].current_snapshot_has_local_operation);
+    assert_eq!(snapshot(&receiver_path), before);
+
+    let mut restored = Store::open(&restored_path).unwrap();
+    restored.restore_unbound_plaintext(&first_archive).unwrap();
+    workspace::prepare(&restored_path, profile, &material).unwrap();
+    let before = snapshot(&restored_path);
+    let untracked = client::inventory_page(&mut restored, profile, &material, None, 1).unwrap();
+    assert_eq!(untracked.items[0].state, InventoryState::Untracked);
+    assert_eq!(restored.pending_count().unwrap(), 0);
+    assert_eq!(snapshot(&restored_path), before);
+    let adopt = client::apply_page(&mut restored, profile, &material, 0, &bytes).unwrap();
+    assert_eq!(adopt.unchanged, 1);
+    let adopted = client::inventory_page(&mut restored, profile, &material, None, 1).unwrap();
+    assert_eq!(adopted.items[0].state, InventoryState::ServerVersionKnown);
+    assert!(!adopted.items[0].has_local_operation_history);
+    assert_eq!(restored.pending_count().unwrap(), 0);
+    assert!(client::stage_next(&mut restored, profile, &material)
+        .unwrap()
+        .is_none());
+
+    // A normal authenticated update supersedes old local history. A known
+    // server revision must never claim that the old local operation is the
+    // current snapshot merely because its record ID matches.
+    edit(&mut receiver, id, 1, "synthetic remote update");
+    let second = client::stage_next(&mut receiver, profile, &material)
+        .unwrap()
+        .unwrap();
+    let next = Change {
+        account_id: profile,
+        device_id: Uuid::new_v4(),
+        revision: 2,
+        operation: second,
+    };
+    client::apply_page(
+        &mut source,
+        profile,
+        &material,
+        0,
+        &page(0, vec![change, next]),
+    )
+    .unwrap();
+    let before = snapshot(&source_path);
+    let updated = client::inventory_page(&mut source, profile, &material, None, 1).unwrap();
+    assert_eq!(updated.items[0].known_server_revision, Some(2));
+    assert_eq!(updated.items[0].local_revision, 2);
+    assert!(updated.items[0].has_local_operation_history);
+    assert!(!updated.items[0].current_snapshot_has_local_operation);
+    assert!(!updated.items[0].has_pending_local_operation);
+    assert_eq!(snapshot(&source_path), before);
+    let wrong = Material::generate(profile).unwrap();
+    assert!(client::inventory_page(&mut source, profile, &wrong, None, 1).is_err());
+    assert!(client::inventory_page(&mut source, Uuid::new_v4(), &material, None, 1).is_err());
+    assert_eq!(snapshot(&source_path), before);
+}
+
+#[test]
 fn descriptor_is_strict_public_identity_of_the_exact_prepared_bytes() {
     use sha2::{Digest, Sha256};
     let profile = Uuid::new_v4();
