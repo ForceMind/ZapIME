@@ -1,0 +1,118 @@
+{
+  "artifacts": [
+    {
+      "id": 13588975136,
+      "name": "ZapIME-candidate-ranking-API-28-metadata",
+      "size_in_bytes": 97921,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588975136",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588975136/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:55:35Z",
+      "expires_at": "2026-11-21T19:55:34Z",
+      "updated_at": "2026-11-07T19:55:35Z",
+      "digest": "sha256:080f67c9a887742842269d07618502582765dba6daaaeef7feba5684bff9c46d",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    },
+    {
+      "id": 13588427727,
+      "name": "ZapIME-candidate-ranking-API-36-metadata",
+      "size_in_bytes": 106875,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588427727",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588427727/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:56:26Z",
+      "expires_at": "2026-11-21T19:56:26Z",
+      "updated_at": "2026-11-07T19:56:26Z",
+      "digest": "sha256:d33a669c8bdb501242857808436ba0c3a6f88e1a25c1b74ea77d5b27d8474181",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    },
+    {
+      "id": 13588416673,
+      "name": "ZapIME-candidate-ranking-host-metadata",
+      "size_in_bytes": 12237,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588416673",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588416673/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:49:10Z",
+      "expires_at": "2026-11-21T19:49:09Z",
+      "updated_at": "2026-11-07T19:49:10Z",
+      "digest": "sha256:a2ecbc2728b29cc2b6ffefdcd41565d61dd13c2beda77670d2c0055daec5777e",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    },
+    {
+      "id": 13588392756,
+      "name": "ZapIME-candidate-ranking-API-35-metadata",
+      "size_in_bytes": 105865,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588392756",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13588392756/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:56:25Z",
+      "expires_at": "2026-11-21T19:56:24Z",
+      "updated_at": "2026-11-07T19:56:25Z",
+      "digest": "sha256:44c5dabbba64877b6f72be4fd085ca92dc73d55529a21e0eb67564241167197f",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    },
+    {
+      "id": 13587967776,
+      "name": "ZapIME-candidate-ranking-build-metadata",
+      "size_in_bytes": 722,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13587967776",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13587967776/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:50:37Z",
+      "expires_at": "2026-11-21T19:50:37Z",
+      "updated_at": "2026-11-07T19:50:37Z",
+      "digest": "sha256:c80e7c9345425c9ea0cb6fa2de1397b751d13fbe3b81503e1331abe768a3ce79",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    },
+    {
+      "id": 13587932787,
+      "name": "ZapIME-candidate-ranking-inputs",
+      "size_in_bytes": 118166027,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13587932787",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13587932787/zip",
+      "expired": false,
+      "created_at": "2026-11-07T19:50:36Z",
+      "expires_at": "2026-11-21T19:50:32Z",
+      "updated_at": "2026-11-07T19:50:36Z",
+      "digest": "sha256:eab1933825d7d1ad1f4b3790daaff450a7390d6717a19ad0d655274ad7cd9f61",
+      "workflow_run": {
+        "id": 42407415284,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/candidate-empty-context",
+        "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+      }
+    }
+  ]
+}

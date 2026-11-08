@@ -1,5 +1,17 @@
 # ZapIME 项目执行状态
 
+## 源码 Alpha 整合与最终 CI 回读（2026-11-07）
+
+功能/文档基线5d976f578a2b11d14b9050ff0ec01e5d18d9e538的七条workflow均为SUCCESS：候选42407415284、完整Android42407415282、VoiceKey42407415283、共享/Apple42407415237、Windows42407415301、同步42407415255、CPU42407415336。9aff370候选专项42407002808亦全部成功。早期pending/failed记录保留为当时快照，不再代表最终结果；原API35间歇组字失败未确证根因。
+
+最新候选运行的原始ZIP、固定build checkout与严格复验结果另存于[源码Alpha证据](evidence/source-alpha-20261107/README.md)。
+
+本轮本地134项workspace测试、fmt、严格Clippy、4项配对统计、7项质量runner以及15项源码发布真实Git/状态机测试通过；YAML与177处当前文档本地链接检查通过。发布整理没有修改产品输入、模型或同步实现。
+
+本轮以release/open-source-alpha承接整个已验开发栈，新增中英文首页、社区规范、问题/PR模板、文档索引、路线图、变更记录、可追溯源码发布流程和新接管入口；更新过时SECURITY联网/同步描述。发布状态以GitHub Release及对应workflow为准。源码Alpha只含根Git树，不附子模块内容、APK或模型权重；不将开发证书包装为稳定升级签名。
+
+VoiceKey公开分发条款及候选训练来源声明差异仍未决。ARM/S25、自然语音、长期质量/能耗、Apple/Windows系统输入与四端同步/配对/完整灾备尚未完成。当前工作与后续任务见[接管入口](WORK_HANDOFF_PROMPT.md)、[路线图](ROADMAP.md)与[发布说明](releases/v0.1.0-alpha.1.md)。
+
 ## 固定ARM64候选与API35复验（2026-11-07）
 
 已下载并独立重验8df固定产品的API35第二轮14项方法/schema2真实系统IME/清理证据，与原API28/36成功分别保留。三API现各有同源码正向结果，API35首轮组字异常的唯一根因仍未解决，不能称稳定。

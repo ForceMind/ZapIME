@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "scope": "android-candidate-gates",
+  "run_attempt": "42407415284-1",
+  "passed": true,
+  "completed": true,
+  "stages": [
+    {
+      "name": "method",
+      "status": "completed",
+      "exit_code": 0,
+      "passed": true,
+      "timeout_seconds": 360,
+      "log": "target/candidate-suite-method.log",
+      "elapsed_seconds": 3.372
+    },
+    {
+      "name": "system-ime",
+      "status": "completed",
+      "exit_code": 0,
+      "passed": true,
+      "timeout_seconds": 360,
+      "log": "target/candidate-suite-system-ime.log",
+      "elapsed_seconds": 8.789
+    }
+  ],
+  "errors": []
+}

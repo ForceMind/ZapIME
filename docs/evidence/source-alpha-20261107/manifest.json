@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "workflow_run": 42407415284,
+  "artifacts": [
+    {
+      "label": "api28",
+      "artifact_id": 13588975136,
+      "artifact_name": "ZapIME-candidate-ranking-API-28-metadata",
+      "zip_path": "api28/original.zip",
+      "zip_bytes": 97921,
+      "zip_sha256": "080f67c9a887742842269d07618502582765dba6daaaeef7feba5684bff9c46d",
+      "github_size_and_digest_match": true,
+      "safe_extraction_verified": true,
+      "members": [
+        {
+          "path": "candidate-suite-summary.json",
+          "bytes": 621,
+          "sha256": "3076995eb8d4519538386259d4bceeb6bf92424cee0686d2a7be8dd396bd0135"
+        },
+        {
+          "path": "candidate-suite-system-ime.log",
+          "bytes": 932,
+          "sha256": "c9826be88b6bcbd6b2d6255026a18c54b21ee7e6d8f31d4236c67b51421ae20f"
+        },
+        {
+          "path": "candidate-suite-method.log",
+          "bytes": 351,
+          "sha256": "0c9bff6255ccd712290d2be8a42cf37a038c9c9b671ff8ce737b2ca5cdb651d9"
+        },
+        {
+          "path": "candidate-ranking-android/candidate-ranking-report.json",
+          "bytes": 3685,
+          "sha256": "71fbd258ffef61a7cc278f4bfbc6505684e505669d5b39dd1478dac48ddcb9e2"
+        },
+        {
+          "path": "candidate-ranking-android/instrumentation.txt",
+          "bytes": 107,
+          "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+        },
+        {
+          "path": "candidate-ranking-android/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ranking-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "path": "candidate-ranking-android/activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "86b8807ec1162c51b489b56f14fcce7d8e88f636684b50c20fdc75833922b1b1"
+        },
+        {
+          "path": "candidate-ime-android/instrumentation.txt",
+          "bytes": 260,
+          "sha256": "0b1405e85de5ab6d1393a523735f29998991e120d255516e902de7cdfd6670cb"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-report.json",
+          "bytes": 1312,
+          "sha256": "b2dd94fc7e63b5b13120ffd811aca20ca1885c39fc7562a5302c31e2098732c5"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-before.txt",
+          "bytes": 243,
+          "sha256": "559c6be774ee1c770aa6c07d27435d5c77d957d1d0c890443356747f077c3970"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-scored.txt",
+          "bytes": 245,
+          "sha256": "b5a8d13ecca95007618c822da23c8b7566c945b94175df99f47ff605f84b96f2"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-after.txt",
+          "bytes": 245,
+          "sha256": "6652baf577e0afe7261b8688bef1cc947c2fbab156c42bacce16374fa59c430c"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+          "bytes": 1817,
+          "sha256": "a9afa716274975cc3294ad4ebf9ad546caa0e64219661a9a0d7e4897381f7b9b"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-candidates.png",
+          "bytes": 43355,
+          "sha256": "f5a15a9ed4fddef0a8e5675372899de35ddca0765eaa285d07b88d8731b77263"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-committed.png",
+          "bytes": 44400,
+          "sha256": "c0e8029fa8c1d97280ee2efbaa7cc1f0f1929913bc2eac77cdffe6bd791614f8"
+        },
+        {
+          "path": "candidate-ime-android/system-keyboard.json",
+          "bytes": 431,
+          "sha256": "6d46345bebd0f764adf135521ce344e7017921f0809a5ca7317c3bbdcbf5efaa"
+        },
+        {
+          "path": "candidate-ime-android/input-method-state.txt",
+          "bytes": 11984,
+          "sha256": "3926e0b79b6c8bcf7e50ffa3308d69150e49a920d62bd325f4be424aa1f03bdf"
+        },
+        {
+          "path": "candidate-ime-android/ime-teardown.txt",
+          "bytes": 65,
+          "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+        },
+        {
+          "path": "candidate-ime-android/runtime-errors.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ime-android/activity-errors.txt",
+          "bytes": 58,
+          "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+        },
+        {
+          "path": "candidate-ime-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "path": "candidate-ime-android/run-summary.json",
+          "bytes": 522,
+          "sha256": "aa39657badab8381a2917857dcd03274a21264f08722fcbf576bf3618b92a60d"
+        }
+      ]
+    },
+    {
+      "label": "api35",
+      "artifact_id": 13588392756,
+      "artifact_name": "ZapIME-candidate-ranking-API-35-metadata",
+      "zip_path": "api35/original.zip",
+      "zip_bytes": 105865,
+      "zip_sha256": "44c5dabbba64877b6f72be4fd085ca92dc73d55529a21e0eb67564241167197f",
+      "github_size_and_digest_match": true,
+      "safe_extraction_verified": true,
+      "members": [
+        {
+          "path": "candidate-suite-summary.json",
+          "bytes": 623,
+          "sha256": "3f899a20bbe7ea1ea2fe673598d89ef46ab9496ff760a388a27ac56cf1a005d2"
+        },
+        {
+          "path": "candidate-suite-method.log",
+          "bytes": 351,
+          "sha256": "a9feb4e60077c5d418cfb59d4454fe607d6ac55e44e40e7c15a6f081478820ad"
+        },
+        {
+          "path": "candidate-suite-system-ime.log",
+          "bytes": 1267,
+          "sha256": "6282320dd45d54c2cad9d47d2bd30c6dc5161329c5bacf19bf31f42641ee8e64"
+        },
+        {
+          "path": "candidate-ranking-android/candidate-ranking-report.json",
+          "bytes": 3685,
+          "sha256": "6897491f2969d4a0f7db54203a987dd61560c54ed215d7e761536a7d36934f1a"
+        },
+        {
+          "path": "candidate-ranking-android/instrumentation.txt",
+          "bytes": 107,
+          "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+        },
+        {
+          "path": "candidate-ranking-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "path": "candidate-ranking-android/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ranking-android/activity-errors.txt",
+          "bytes": 118,
+          "sha256": "dfb56df26ba7f7d38a9b543c72f58db116788fa1c911fa840d9d9d71be9156b4"
+        },
+        {
+          "path": "candidate-ime-android/instrumentation.txt",
+          "bytes": 260,
+          "sha256": "0b1405e85de5ab6d1393a523735f29998991e120d255516e902de7cdfd6670cb"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-report.json",
+          "bytes": 1312,
+          "sha256": "7f7c5008bac894758dfed43ef4254b7a6c307afdeca5f4e898bd20ccd0541135"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-before.txt",
+          "bytes": 243,
+          "sha256": "cae504d141683da27fd0262d5a3e63551cb2b0471ff0fee1cca9ea85d6bb368a"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-scored.txt",
+          "bytes": 245,
+          "sha256": "d6b0a4971b0107c42a297c2dece7f63e04145b5934b0cf2b36e2c5789f3b5a0b"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-after.txt",
+          "bytes": 245,
+          "sha256": "4ee7a4d4e54d1eb34af27f0370f3a1b1e8f4d7abae6cab642be18ebfa1d03d64"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+          "bytes": 1965,
+          "sha256": "b954bdb35434b5a6705b26e250e49f5ab47ff96dfe7be7d8d33ac72f8d2e055b"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-candidates.png",
+          "bytes": 45253,
+          "sha256": "567d3aa47751a45bb438698487aae36377dac51fb522eead9fa65cb95141291b"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-committed.png",
+          "bytes": 45621,
+          "sha256": "31507a560f4dd1d4eb8ffb39bbb182f4e2eb5bf5bdd9f93c9d57357cabaa7d88"
+        },
+        {
+          "path": "candidate-ime-android/system-keyboard.json",
+          "bytes": 739,
+          "sha256": "7c75b420c495ca982658716a4cb6932354306fa41ecd009c26f901334179870f"
+        },
+        {
+          "path": "candidate-ime-android/input-method-state.txt",
+          "bytes": 64776,
+          "sha256": "bcc086c0c7dcbf7ec302341ffb651393df10b5c79365b423f1e51792053613b8"
+        },
+        {
+          "path": "candidate-ime-android/ime-teardown.txt",
+          "bytes": 65,
+          "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+        },
+        {
+          "path": "candidate-ime-android/runtime-errors.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ime-android/activity-errors.txt",
+          "bytes": 206,
+          "sha256": "b6795e28799169c444bd32ec8f72577135d458e357251225a38f47c80687cf99"
+        },
+        {
+          "path": "candidate-ime-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "path": "candidate-ime-android/run-summary.json",
+          "bytes": 522,
+          "sha256": "a9c33c04ca036736c33353bedbf0d392909825d955ad477806f3900b782ef2eb"
+        }
+      ]
+    },
+    {
+      "label": "api36",
+      "artifact_id": 13588427727,
+      "artifact_name": "ZapIME-candidate-ranking-API-36-metadata",
+      "zip_path": "api36/original.zip",
+      "zip_bytes": 106875,
+      "zip_sha256": "d33a669c8bdb501242857808436ba0c3a6f88e1a25c1b74ea77d5b27d8474181",
+      "github_size_and_digest_match": true,
+      "safe_extraction_verified": true,
+      "members": [
+        {
+          "path": "candidate-suite-summary.json",
+          "bytes": 623,
+          "sha256": "8b997ede1de041f479d45562f061b6b41582219d2a72fc1830214068d8fb8c06"
+        },
+        {
+          "path": "candidate-suite-system-ime.log",
+          "bytes": 1267,
+          "sha256": "dc878d6ae3f94bf4d24b607a40bc607ec9ece8d57f51cb874ad6ae88b18ef1c3"
+        },
+        {
+          "path": "candidate-suite-method.log",
+          "bytes": 351,
+          "sha256": "9234653796d208f14403c5032d12b16ccc20a12da3fc281bdf7abe8066106562"
+        },
+        {
+          "path": "candidate-ranking-android/candidate-ranking-report.json",
+          "bytes": 3686,
+          "sha256": "0e78d15701fa7405b814bb02b6157c856a121c1e23c77fb73ac80610bd3687c4"
+        },
+        {
+          "path": "candidate-ranking-android/instrumentation.txt",
+          "bytes": 107,
+          "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+        },
+        {
+          "path": "candidate-ranking-android/crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ranking-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "path": "candidate-ranking-android/activity-errors.txt",
+          "bytes": 382,
+          "sha256": "78daba70e5fecf69965de2bd143ed560a484b5df38e7f2c76128ac601037ecf3"
+        },
+        {
+          "path": "candidate-ime-android/instrumentation.txt",
+          "bytes": 260,
+          "sha256": "0b1405e85de5ab6d1393a523735f29998991e120d255516e902de7cdfd6670cb"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-report.json",
+          "bytes": 1312,
+          "sha256": "0a4e92b52d48c1633acbc2bb47be2db907f92dc91df151090ad3f970f6766e9a"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-before.txt",
+          "bytes": 243,
+          "sha256": "cae504d141683da27fd0262d5a3e63551cb2b0471ff0fee1cca9ea85d6bb368a"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-scored.txt",
+          "bytes": 245,
+          "sha256": "9b9c8efafd124afede970505f0c4efe50e5a33e9952ec4b0e487eea75a6134a7"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-service-after.txt",
+          "bytes": 245,
+          "sha256": "49911ee3ef16c1db4e2abb1cecbb1ac40880ea5424532f362e07aebe29d59a04"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+          "bytes": 1965,
+          "sha256": "9246a4fd587f0b70fb4aec12e2911eed92546d96025f97854122633d9aac0e57"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-candidates.png",
+          "bytes": 45219,
+          "sha256": "b3c5da77eda99317af65679b9033850cb46b871e39a68ffef2cc687ef8eee402"
+        },
+        {
+          "path": "candidate-ime-android/candidate-ime-committed.png",
+          "bytes": 45587,
+          "sha256": "0930c891b3cdf513eda2b7a0f425cbc87d7a3c02c95a86269a3358e12783da76"
+        },
+        {
+          "path": "candidate-ime-android/system-keyboard.json",
+          "bytes": 739,
+          "sha256": "f75e30b999637253065193a58fe80415d0338aab14b6ff3263ace2fc24d5365d"
+        },
+        {
+          "path": "candidate-ime-android/input-method-state.txt",
+          "bytes": 78358,
+          "sha256": "528a26e310e5515466cf9fc9f995fccfcd4f352601601c88a8aa1533af26bfa0"
+        },
+        {
+          "path": "candidate-ime-android/ime-teardown.txt",
+          "bytes": 65,
+          "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+        },
+        {
+          "path": "candidate-ime-android/runtime-errors.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "candidate-ime-android/activity-errors.txt",
+          "bytes": 118,
+          "sha256": "1932da359c8de56ba78b5c74a71dafe56233145e290722ac7d0b82ff36251c4a"
+        },
+        {
+          "path": "candidate-ime-android/offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "path": "candidate-ime-android/run-summary.json",
+          "bytes": 522,
+          "sha256": "7349131702b4c0b1cd0b731908824bf91ee97861a3fd2d08c71a211163b1ed92"
+        }
+      ]
+    },
+    {
+      "label": "host",
+      "artifact_id": 13588416673,
+      "artifact_name": "ZapIME-candidate-ranking-host-metadata",
+      "zip_path": "host/original.zip",
+      "zip_bytes": 12237,
+      "zip_sha256": "a2ecbc2728b29cc2b6ffefdcd41565d61dd13c2beda77670d2c0055daec5777e",
+      "github_size_and_digest_match": true,
+      "safe_extraction_verified": true,
+      "members": [
+        {
+          "path": "native-report.json",
+          "bytes": 1687,
+          "sha256": "67ca229811ae557df8a06fbbd4dd83f83b6287c9a69995ebb7f7964e5d8d53c7"
+        },
+        {
+          "path": "oracle-report.json",
+          "bytes": 2384,
+          "sha256": "8dbc36d9d97f49d1d1f3ab79a5a6ed362137f106642a5eb19872484bae11d98f"
+        },
+        {
+          "path": "jni-report.json",
+          "bytes": 264,
+          "sha256": "de4915a7b471b069b02559d4dbf4dc86718195e1f51962318896a3c92f6b56a2"
+        },
+        {
+          "path": "quality-report.json",
+          "bytes": 193576,
+          "sha256": "e63a2b5a8345b2ac0859e2870efda10802718f686f747428f246580aecd3bf73"
+        }
+      ]
+    },
+    {
+      "label": "build",
+      "artifact_id": 13587967776,
+      "artifact_name": "ZapIME-candidate-ranking-build-metadata",
+      "zip_path": "build/original.zip",
+      "zip_bytes": 722,
+      "zip_sha256": "c80e7c9345425c9ea0cb6fa2de1397b751d13fbe3b81503e1331abe768a3ce79",
+      "github_size_and_digest_match": true,
+      "safe_extraction_verified": true,
+      "members": [
+        {
+          "path": "candidate-ranking-build.json",
+          "bytes": 1146,
+          "sha256": "66939d8ce89239638a96ad5ffe51e4b0c72d644769a55d13cd8aa70c2c4774f2"
+        }
+      ]
+    }
+  ]
+}

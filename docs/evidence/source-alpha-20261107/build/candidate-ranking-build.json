@@ -1,0 +1,32 @@
+{
+  "source_commit": "6060ccad8466cc965f177e1f19e2d8e42050b652",
+  "status": "BUILT",
+  "inputs": [
+    {
+      "path": "target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+      "bytes": 60060890,
+      "sha256": "22078a2634dd42692996b70d802f5044c7cc49a0f0f127fd93e061e14de95123"
+    },
+    {
+      "path": "target/android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+      "bytes": 58745799,
+      "sha256": "baabc0f9685da87657dad0778320e24f82115a20c4c2180fb19eb2c88c4dd000"
+    },
+    {
+      "path": "target/android-tests/ZapIME-tests.apk",
+      "bytes": 53748,
+      "sha256": "ee72477f7faf267e61e32c855bdc805e6e69dd3373bd34973a7ebe8d0b648699"
+    },
+    {
+      "path": "target/android-voice-tests/ZapIME-voice-tests.apk",
+      "bytes": 861235,
+      "sha256": "bc2f666614763d22e6bdf5096471ea5214844a77459f148993354658dc2634f4"
+    },
+    {
+      "path": "third_party/candidate-model-lock.json",
+      "bytes": 3540,
+      "sha256": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01"
+    }
+  ],
+  "scope": "Development arm64-v8a/x86_64 products and synthetic candidate harnesses; real model execution is a separate gate."
+}

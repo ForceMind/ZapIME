@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "scope": "host_independent_upstream_tensors_and_same_runtime_numerics",
+  "mechanical_passed": true,
+  "android_acceptance": false,
+  "language_accuracy_evaluated": false,
+  "score_tolerance": 0.001,
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+  "fixture_bytes": 4760,
+  "upstream": {
+    "repository": "https://github.com/metasequoiaime/chinese-ime-lm",
+    "commit": "5b82758eaf3419dff9555f41bbda2744a56e45c4",
+    "path": "neural/choice/model.py",
+    "git_blob_sha1": "933af7444124970a221b3bf1f10a81599c9170d1",
+    "copied_feeds_sha256": "2268e105d6da10b7e2baab44ae739f9da0db86c031c8886e95b77d57fa35707d"
+  },
+  "generator_sha256": "cab3a9292d6d45c2a6fc1c5f6085140e2fdbd49f797609ed9009ff410b23b089",
+  "oracle_source_sha256": "a5e46bd2fcc7b03377ab17b5a90c3e4e201dc98ba19a8d564a384abc136ec6f0",
+  "oracle_binary_sha256": "4f53684680a50a67d90cc4d811e587dda660e132c6251034cea4fe2ad68bf60e",
+  "production_probe_sha256": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+  "test_script_sha256": "89cf0829c8e4e2e7ebd021a23a07039eef23df298fe7a581574b700927b33b6c",
+  "python_reference_version": "1.24.4",
+  "python_reference_scores": [
+    -9.413619995117188,
+    -11.37354850769043,
+    -3.759044647216797
+  ],
+  "runtime_runs": [
+    {
+      "runtime_path": "/home/runner/work/ZapIME/ZapIME/.venv-candidate/lib/python3.12/site-packages/onnxruntime/capi/libonnxruntime.so.1.24.4",
+      "runtime_sha256": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+      "oracle": {
+        "candidate_cache_nodes": 10,
+        "context_cache_nodes": 7,
+        "executed": true,
+        "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+        "graph_calls": 2,
+        "runtime_version": "1.24.4",
+        "scores": [
+          -9.413619995117188,
+          -11.37354850769043,
+          -3.759044647216797
+        ],
+        "session_closed": true
+      },
+      "production_scores": [
+        -9.413619995117188,
+        -11.37354850769043,
+        -3.759044647216797
+      ],
+      "same_runtime_max_abs_error": 0.0,
+      "versus_python_1_24_4_max_abs_error": 0.0
+    }
+  ],
+  "negative_checks": [
+    "node_shape_value_mismatch",
+    "malformed_json"
+  ]
+}

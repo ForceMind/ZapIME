@@ -1,0 +1,99 @@
+name: 缺陷报告 / Bug report
+description: 使用合成数据报告可重复的行为问题。
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ZapIME 处于开发 / Android Alpha 阶段。请说明精确版本与实际验证范围。
+        公开内容只使用合成数据；不要上传真实输入、录音、剪贴板、数据库、恢复材料、令牌、凭据或私钥。
+        安全问题先读 [SECURITY.md](https://github.com/ForceMind/ZapIME/blob/main/SECURITY.md)，不要公开敏感细节。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前 / Before submitting
+      options:
+        - label: 我已检查现有 Issue、项目状态和相关试用说明。
+          required: true
+        - label: 本报告及附件只含可公开的合成复现数据，已检查隐私信息。
+          required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本或 commit / Version or commit
+      description: 提供完整 commit、开发包名称或发布标签；安装包问题可补充 APK SHA256。不要只写“最新版”。
+      placeholder: "commit / tag / APK filename + SHA256"
+    validations:
+      required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 平台 / Platform
+      options:
+        - Android
+        - iOS
+        - macOS
+        - Windows
+        - Go / PostgreSQL 同步服务
+        - 共享核心 / 构建工具
+        - 文档 / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境 / Environment
+      description: 系统版本、设备或模拟器、API / ABI、键盘布局；构建问题注明工具链。使用合成账号，不填写账号标识、凭据或完整私人路径。
+      placeholder: "Android API 35 / x86_64 emulator / 全键拼音 / 固定开发包"
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现步骤 / Steps to reproduce
+      description: 使用合成文本或合成音频，说明起始状态、操作顺序及复现次数。不要以卸载应用或清空个人资料作为默认排查步骤。
+      placeholder: |
+        1. 在专用测试编辑器打开键盘。
+        2. 输入合成内容……
+        3. 点击……
+        复现次数：…… / ……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为 / Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为 / Actual behavior
+      description: 保留失败事实；若重试成功，请分别说明首次失败与重试条件。
+    validations:
+      required: true
+  - type: dropdown
+    id: evidence_scope
+    attributes:
+      label: 观察范围 / Evidence scope
+      description: 选择直接观察到问题的层级；编译成功不能替代系统输入或真机验收。
+      options:
+        - 源码 / 单元测试
+        - 构建 / 打包 / 安装
+        - 模拟器上的真实系统 IME / 编辑器
+        - 真机上的真实系统 IME / 编辑器
+        - 主机模型 / JNI / 合成音频探针
+        - 真实 PostgreSQL / 服务 / 隔离部署
+        - 文档 / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: models
+    attributes:
+      label: 模型与资源（如相关）/ Models and resources
+      description: 提供引擎、模型版本 / SHA、启用的功能、冷 / 热状态；不要上传模型权重或真实录音。
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 安全的证据 / Sanitized evidence
+      description: 可提供 CI 链接、命令、错误码、合成截图及已检查的最小日志。不要上传完整 logcat、数据库、恢复包或秘密；无需附件也可报告。

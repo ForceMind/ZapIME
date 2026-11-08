@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 当前状态与已知限制 / Project status
+    url: https://github.com/ForceMind/ZapIME/blob/main/docs/STATUS.md
+    about: 查看开发 / Alpha 能力、固定提交证据和未完成验收。
+  - name: 贡献与构建 / Contributing and builds
+    url: https://github.com/ForceMind/ZapIME/blob/main/CONTRIBUTING.md
+    about: 查看工程约定、锁定工具链、隐私及验证要求。
+  - name: 安全说明 / Security policy
+    url: https://github.com/ForceMind/ZapIME/blob/main/SECURITY.md
+    about: 安全问题先读此说明，不在公开 Issue 提交秘密或敏感漏洞细节。
