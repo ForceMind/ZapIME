@@ -1,0 +1,50 @@
+[
+  {
+    "job_id": 128688078544,
+    "path": "build-job.log.gz",
+    "decoded_utf8_bytes": 234247,
+    "decoded_utf8_sha256": "97954d5ddde8dfbda2d46586f9aa28e63c3b656a78930695d45efe13053423b8",
+    "gzip_sha256": "ff1a589e2a07052c6413c5f9605149e971a60596bb8a2488cae2890665c24002",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128688487617,
+    "path": "downstream/128688487617.log.gz",
+    "decoded_utf8_bytes": 171137,
+    "decoded_utf8_sha256": "0b4960e2b2e0d1e3dd9d08cd7be144e60d122d4a7fa2230f72881ae0516f4534",
+    "gzip_sha256": "be9d5d532ebe1f19936faad40093c0b953aaba13f41a2a6f6398c12fb05a9d94",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128688487646,
+    "path": "downstream/128688487646.log.gz",
+    "decoded_utf8_bytes": 171136,
+    "decoded_utf8_sha256": "90d7a3db0521bc4cedf3c95e5ea09792f4d373b41fd5c79991278dad164ee72c",
+    "gzip_sha256": "d65b04dfe684b6eab40b7b403d92c241265eae1f6c5061fe56061ba5206e8e14",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128688487652,
+    "path": "downstream/128688487652.log.gz",
+    "decoded_utf8_bytes": 173717,
+    "decoded_utf8_sha256": "e440895e8c55c3198db8e0ed45910d4a49716dc34ee8c858e6d063c591ab8456",
+    "gzip_sha256": "811d2e4116c084879f386fc844793e9a3a2df776317b393a08d17f1d5d4305ed",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128688487680,
+    "path": "downstream/128688487680.log.gz",
+    "decoded_utf8_bytes": 173709,
+    "decoded_utf8_sha256": "0830f27cc6122d68c73462efcdba2e5dd2687b9d3c8221916374c40f93f36672",
+    "gzip_sha256": "2ca994757a84d482d1b5f18a08a73f9e5bd01b00046b3b05ae61638990306607",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128688487808,
+    "path": "downstream/128688487808.log.gz",
+    "decoded_utf8_bytes": 173710,
+    "decoded_utf8_sha256": "ff3eb2d34986556f2b540304e084212a6d63b0f914a0271da8621b1d71095ce5",
+    "gzip_sha256": "9f712846269608a397ea358f79d1c11dc2cc86f19ed3245b331b7eb1904a42aa",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  }
+]

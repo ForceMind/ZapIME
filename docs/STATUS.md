@@ -2,15 +2,15 @@
 
 ## 构建固定依赖的受限重试（独立切片）
 
-实际#94/#95/#96的固定模型/词库GET曾HTTP504，本切片不改原失败。三条构建链新增最多3次只读重试，仅在open/read明确的暂时HTTP429/500/502/503/504及网络异常触发；TLS、磁盘、完整性、永久错误与离线缺失直接失败。每轮唯一暂存文件、从零读取、固定size/SHA与原子发布保持；Retry-After不提前截短，模型/语音180秒、词库360秒为协作检查预算，不承诺硬杀DNS/阻塞socket。产品运行时联网、同步、默认模型/语音不改。
+实际#94/#95/#96的固定模型/词库GET曾HTTP504，本切片不改原失败。三条构建链新增最多3次顶层下载尝试（含首次与2次重试），仅在open/read明确的暂时HTTP429/500/502/503/504及网络异常触发；TLS、磁盘、完整性、永久错误与离线缺失直接失败。每轮唯一暂存文件、从零读取、固定size/SHA与原子发布保持；Retry-After不提前截短，模型/语音180秒、词库360秒为协作检查预算，不承诺硬杀DNS/阻塞socket。产品运行时联网、同步、默认模型/语音不改。
 
-新增28项真实文件/故障回归、既有候选/Android/语音/源码工具检查逐命令通过，三条持久CI已接入；这些本机检查不能证明实际网络恢复或新原生输入验收。原504、冻结测试及本机证明见[下载重试证据](evidence/build-download-retry-20261108/README.md)。
+新增28项真实文件/故障回归、既有候选/Android/语音/源码工具检查逐命令通过，三条持久CI已接入；#98已合并，实际SourceAlpha30项/根134项及fmt/严格Clippy通过；真实下载也按两次退避后保留最终504，网络未恢复，原生未执行。原504、冻结测试及本机证明见[下载重试实现证据](evidence/build-download-retry-20261108/README.md)，[实际CI原件](evidence/build-download-retry-ci-20261108/README.md)严格区分合成测试、顶层尝试与未执行的原生范围。
 
 ## 当前接续检查点（2026-11-08 UTC 审计）
 
-本次回读的固定 main 为 `901330f400821913be0d733cc9b16a1d232f6f22`，tree `2fee68ef8694ca2b3fc9838cfe4cd57f5f81d032`（#94 已合并，#86 祖先随之整合）。这是一份固定源码快照，接续仍须查询实时 GitHub。仓库保持 Public，公开源码 `v0.1.0-alpha.1` 仍固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件；不移动标签或覆盖资产。
+本次回读的固定 main 为 `3241c811d9b97fcd85b63489bc0ca5065379c43b`，tree `f99bbff5cc9ca044e5e9fe190f0f58c243434930`（#85/#90/#94/#97/#98 已合并，#86祖先随#94整合）。这是一份固定源码快照，接续仍须查询实时 GitHub。仓库保持 Public，公开源码 `v0.1.0-alpha.1` 仍固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件；不移动标签或覆盖资产。
 
-最近已复验的完整 main 回归固定于前一源码 `5a0dc562`：Android `42462698530` attempt1最终6/6 SUCCESS，全部原报告按其固定源码严格复验，见[完整原件](evidence/main-android-42462698530/README.md)。这不是后续组字修复或所有间歇问题已解决的证据；901330f 的新运行另按实际回读。发布固定源码的旧运行 `42441322518` 已最终 FAILURE，VoiceKey API36 在准备阶段 adb root/device offline 与清理失败，未进入模型测试；[旧最终原件](evidence/main-android-final-20261107/README.md)保留，不能用另一源码的成功改写。后续候选、完整 Android、SAF、语音、主机模型和服务分别按精确源码与对应报告验收。
+最近已复验的完整 main 回归固定于前一源码 `5a0dc562`：Android `42462698530` attempt1最终6/6 SUCCESS，全部原报告按其固定源码严格复验，见[完整原件](evidence/main-android-42462698530/README.md)。这不是后续组字修复或所有间歇问题已解决的证据；后续main的新运行另按实际回读。发布固定源码的旧运行 `42441322518` 已最终 FAILURE，VoiceKey API36 在准备阶段 adb root/device offline 与清理失败，未进入模型测试；[旧最终原件](evidence/main-android-final-20261107/README.md)保留，不能用另一源码的成功改写。后续候选、完整 Android、SAF、语音、主机模型和服务分别按精确源码与对应报告验收。
 
 | 切片 | 当前交付及证据边界 |
 | --- | --- |
@@ -28,11 +28,21 @@
 
 缺少真机时继续所有可执行工程。ARM/S25、自然语音、资源/能耗、正式签名与可恢复升级、公开分发条款分别待验；一次集中的手机操作只使用 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)，不在个人设备运行临时 CI 的清资料/root/CA/网络规则脚本。
 
-## 新组字修复的固定候选：尚未通过原生验收
+## 新组字修复：源码准备通过，原生被外部依赖下载阻断
 
-[草稿#96](https://github.com/ForceMind/ZapIME/pull/96) 固定 head `42f4562193f8d13a684aa7b656ca2adaa27de216` / tree `02b21f6d4e1897bbde801b5096c0bd59fa5e258e` 保留#87/#89/#91/#94/#95全部进展。API31+窄路径使用独立物理单槽的新鲜有限状态证明，普通restart强校验不减；800ms逻辑预算、有界旧回复/新动作屏障、焦点/隐私/超时/重入失效与App正文保护均已实现/独立审查。合后本机108项Android Python、12项quality runner、5统计/4固定runtime/5配置报告、3+2 JVM及60产品/4宿主/20语音测试源编译通过。
+[草稿#96](https://github.com/ForceMind/ZapIME/pull/96) 当前已核对固定head `94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8` / tree `78d00ce936aafd38b7073e1dc688f502128a0e46`，包含#87/#89/#91/#94/#95及已合并#98全部进展。API31+新鲜有界独立证明、进程物理单槽、旧回复屏障及取消/重入/隐私保护已实现并独立审查，普通restart强校验保留。真实触摸、候选身份、独立Editable、连续焦点/连接、原清理与服务退出门禁不减。
 
-candidate42464855505的build/host在固定候选资源HTTPS下载HTTP504失败，实际checkout `49186be44237965669f314ebbe768f3684297a45` 的tree与head完全相同；无构建artifact，三API、四项Editable方法及schema2配置实验全部未执行。[首轮原日志/固定源码/未执行范围](evidence/pr96-candidate-download-42464855505/README.md)。完整Android/focused/Apple/Windows亦有独立下载504，不能全部归为同一下载点；SourceAlpha则正确拒绝未检查tar.gz，未执行publish。[全部原始失败及阶段](evidence/pr96-android-build-failure-42464855387/README.md)。该派生原件已在本地逐成员保真转换为现有检查器支持的ZIP，旧tar/SHA/固定父提交指针保留，原打包器不变且完整源码prepare通过；修正尚待与构建健壮性切片更新远端head。新源码仍为草稿，不用旧main成功代填；需要修正后重新按新head验收。
+| 新固定源码门禁 | 实际结果 |
+| --- | --- |
+| SourceAlpha42466801643 / prepare128688077584 | SUCCESS：30项回归、134根workspace、fmt/严格Clippy及精确源码prepare；publish条件SKIP，不是新公开版本。[源码原件](evidence/pr96-source-validation-42466801643/README.md)；source artifact仅API元数据，没有宣称独立下载复验。 |
+| candidate42466801775 / build128688078512、host128688078317 | FAILURE：28项新回归已过，固定HTTPS GET两次1s/2s退避后第三次顶层尝试仍504；不是wire抓包计数。无APK/构建artifact，三API、四项Editable方法、schema2配置实验全部未执行。[新失败原件](evidence/pr96-candidate-download-42466801775/README.md)。 |
+| 完整Android42466801834 | FAILURE：common build128688078544同样在固定模型下载失败，下游五job仅缺构建附件，实际native/语音步骤未执行。[完整本轮原件](evidence/pr96-android-build-failure-42466801834/README.md)。不得把构建前合成单测PASS当系统输入成功。 |
+
+首轮head42f4562/tree02b21f6的下载504和source未检查tar.gz拒绝均保留：[候选首轮](evidence/pr96-candidate-download-42464855505/README.md)、[其他首轮失败](evidence/pr96-android-build-failure-42464855387/README.md)。后续仅把24个安全成员逐字节转换成现有检查器支持的ZIP，旧tar/SHA/固定父提交指针仍保留，publisher政策未放宽；新SourceAlpha成功确认格式问题已收口。公开v0.1.0-alpha.1标签/源码/三个资产未变。
+
+本机合后108项Android Python（含5项配置报告）及28项下载回归通过；另12质量runner、5统计、4运行库准备、3+2 JVM及60产品/4宿主/20语音测试源编译通过。测试组存在包含关系，不相加当独立样本；本机与旧main/SAF成功均不代填新系统IME/Binder/ARM。固定依赖恢复可获取后从#96最新head继续真实门禁，不从main丢掉未合并栈，也不修改语料或弱化断言制造通过。
+
+v2历史26/34（ORT1.28.2）与#89复跑25/34（ORT1.24.4）是不同运行库；三份1.24.4完整候选页一致，q10跨库首选差1。新v2/1.28.2未执行；[四原报告只读归因](evidence/candidate-v2-runtime-attribution-20261108/README.md)保留全部排序差异，不重推理、不声称真实用户准确率。
 
 ## 历史固定快照
 

@@ -1,0 +1,59 @@
+{
+  "originals": "/workspace/scratch/128287f34f42/download98-source-shared",
+  "source_summary_sha256": "dfefecd240f4b16b8df9977c546f1802d462b42f92f3d6e8119731fcf149d889",
+  "checks": [
+    {
+      "job": 128687392092,
+      "raw_sha256": "59efbc7b2bce94b157b7c107665cbec2bf1611dbe508b2c305856ac721f786a4",
+      "independently_recomputed_rust_counts": [
+        134,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "job": 128687393145,
+      "raw_sha256": "c33639635f1d5157bd13d5fdbb1c90942a46099225ac707ad21dde76fec46059",
+      "independently_recomputed_rust_counts": [
+        131,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "job": 128687393170,
+      "raw_sha256": "b9a12c87ffb50ed62682787cda516808a947078f8af970d1a06dde6c0bcdb180",
+      "first_failure": "fixed dictionary GET HTTP504 before native compilation",
+      "real_retry_lines": [
+        "2026-11-08T09:19:02.7198730Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1",
+        "2026-11-08T09:19:03.8242170Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2"
+      ]
+    },
+    {
+      "job": 128687393218,
+      "raw_sha256": "f73852b646026ee04e21733f24a968899ab2b70ca9c6471fbeb91f3f39ca915c",
+      "independently_recomputed_rust_counts": [
+        134,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "job": 128687393261,
+      "raw_sha256": "bf637a987c98acbd0467b77b7c1ab497e754e2baa1d89c38f9f688e6def248c7",
+      "independently_recomputed_rust_counts": [
+        134,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "read_only_evidence_checks": true,
+  "network_requested": false,
+  "rerun_requested": false,
+  "checks": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "docs/evidence/build-download-retry-ci-20261108/verify.py"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "docs/evidence/build-download-retry-ci-20261108",
+        "-p",
+        "test_verify.py",
+        "-v"
+      ],
+      "exit_code": 0
+    },
+    {
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0
+    }
+  ]
+}
