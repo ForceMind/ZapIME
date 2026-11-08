@@ -33,6 +33,12 @@ class ConfigurationReportTests(unittest.TestCase):
     def test_exact_fresh_same_connection_sequence(self):
         verify_configuration_report(complete(), "42-1", 35)
 
+    def test_schema_version_rejects_boolean_float_and_string(self):
+        for value in (True, False, 1.0, "1", None):
+            changed = complete(); changed["schema_version"] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                verify_configuration_report(changed, "42-1", 35)
+
     def test_interruption_never_counts_as_same_editor_reproduction(self):
         variants = [("classification", "interrupted_not_same_editor"),
                     ("classification", "same_editor_composition_failure"),

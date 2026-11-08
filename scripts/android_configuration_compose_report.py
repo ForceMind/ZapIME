@@ -3,7 +3,8 @@
 
 
 def verify_configuration_report(report, token, api):
-    if (not isinstance(report, dict) or report.get("schema_version") != 1 or api != 35
+    if (not isinstance(report, dict) or type(report.get("schema_version")) is not int
+            or report["schema_version"] != 1 or api != 35
             or report.get("api_level") != api or report.get("run_attempt") != token
             or report.get("scope") != "production-system-ime-configuration-restart"):
         raise ValueError("Wrong configuration experiment identity")
