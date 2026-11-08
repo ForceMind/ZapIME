@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "58a3a546c758378d1887aeeaa99b4bd4d3a25c77",
+  "scope": "offline synthetic/real-Git regression; no remote mutation",
+  "files": [
+    {
+      "path": "scripts/prepare_source_release.py",
+      "bytes": 22229,
+      "sha256": "daeadc243ed1a78ab2b5dfc756745540a44b83c468a5f6ff8ea8d5dfd5ecbaf9"
+    },
+    {
+      "path": "scripts/test_prepare_source_release.py",
+      "bytes": 28255,
+      "sha256": "fff33a779537fb86e73ab67fbe9b4990b177a465c28b18c0cb798fa4bdea8a93"
+    },
+    {
+      "path": "docs/evidence/release-draft-recovery-20261107/baseline-reproduction.json",
+      "bytes": 534,
+      "sha256": "e56a71a03ed5ea2e51119272a45f9dc1579d4e4584ea44e8d42d5c2be1c81702"
+    },
+    {
+      "path": "docs/evidence/release-draft-recovery-20261107/local-tests.log",
+      "bytes": 5307,
+      "sha256": "2d106a386d01c3eab8d7f96ce1bd832935ff351b41ca5c85ca850a0bc79a4c9d"
+    },
+    {
+      "path": "docs/evidence/release-draft-recovery-20261107/README.md",
+      "bytes": 3003,
+      "sha256": "43ccb9497ab06719f3a515ed7a7a2aaaf7a93c4980fce3754215198a2b160bee"
+    },
+    {
+      "path": "docs/RELEASING.md",
+      "bytes": 3641,
+      "sha256": "f3e4c71c5e49176ff120afc6190663c4011d8a4d0c8747322988828ada84202d"
+    }
+  ]
+}
