@@ -1,0 +1,12 @@
+{
+  "api_level": 35,
+  "selected_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+  "system_package_verified": true,
+  "source": "pm list packages -s",
+  "aosp": false,
+  "original_default": "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME",
+  "restore_ime": "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME",
+  "original_system_default": true,
+  "original_enabled": "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME;1594443099:com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+  "original_hardware_keyboard": "1"
+}

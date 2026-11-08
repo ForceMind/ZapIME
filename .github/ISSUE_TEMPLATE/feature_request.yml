@@ -1,0 +1,65 @@
+name: 功能建议 / Feature request
+description: 描述具体的用户需求、使用场景与可验证结果。
+title: "[Feature]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        请先查看 [开发计划](https://github.com/ForceMind/ZapIME/blob/main/docs/DEVELOPMENT_PLAN.md) 与现有 Issue。
+        ZapIME 目前处于开发 / Android Alpha 阶段，功能建议不代表已安排发布。
+        请使用合成示例，不提交真实输入、录音、个人资料或秘密。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前 / Before submitting
+      options:
+        - label: 我已检查现有计划和 Issue，或会在下文链接相关讨论。
+          required: true
+        - label: 本建议及附件不包含真实个人数据、凭据或未经授权的素材。
+          required: true
+  - type: dropdown
+    id: platform
+    attributes:
+      label: 目标平台 / Target platform
+      multiple: true
+      options:
+        - Android
+        - iOS
+        - macOS
+        - Windows
+        - 同步服务 / 备份恢复
+        - 共享核心 / 模型 / 工具
+        - 文档 / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 需要解决的问题 / Problem
+      description: 描述谁在什么操作中遇到什么困难。使用合成例子说明影响。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 期望的行为 / Proposed behavior
+      description: 描述用户如何使用、预期结果及完成标准；可提供草图或相关讨论。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 当前办法与替代方案 / Workarounds and alternatives
+      description: 说明现有功能是否能部分解决，以及已考虑的其他方案。
+  - type: textarea
+    id: privacy
+    attributes:
+      label: 离线、隐私与资源影响 / Offline, privacy and resource impact
+      description: 说明是否涉及联网、学习、录音、剪贴板、资料保留、新模型或额外权限；没有影响或尚不确定也请说明。默认输入不能等待网络，上传须显式授权。
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: 来源与补充信息 / Sources and context
+      description: 如建议引入模型、依赖或素材，请提供官方来源及许可信息；不要上传权重或受限文件。

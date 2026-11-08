@@ -1,0 +1,29 @@
+warning: /workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-sync/Cargo.toml: only one of `license` or `license-file` is necessary
+`license` should be used if the package license can be expressed with a standard SPDX expression.
+`license-file` should be used if the package uses a non-standard license.
+See https://doc.rust-lang.org/cargo/reference/manifest.html#the-license-and-license-file-fields for more information.
+    Checking zapime-data v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-data)
+    Checking zapime-crypto v0.1.0 (/workspace/scratch/99fcacf9684b/ZapIME/crates/zapime-crypto)
+error[E0277]: the trait bound `Array<u8, UInt<UInt<UInt<UInt<..., ...>, ...>, ...>, ...>>: LowerHex` is not satisfied
+  --> crates/zapime-crypto/examples/sync_fixture.rs:86:47
+   |
+86 |             let fingerprint = format!("{:x}", Sha256::digest(material.as_slice()));
+   |                                        ----   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `LowerHex` is not implemented for `Array<u8, UInt<UInt<UInt<UInt<UInt<..., ...>, ...>, ...>, ...>, ...>>`
+   |                                        |
+   |                                        required by this formatting parameter
+   |
+   = help: the following other types implement trait `LowerHex`:
+             &T
+             &mut T
+             Braced
+             Hyphenated
+             Saturating<T>
+             Simple
+             Urn
+             Uuid
+           and 66 others
+   = note: the full name for the type has been written to '/workspace/scratch/99fcacf9684b/ZapIME/target/debug/examples/sync_fixture-272bb06d75019ff8.long-type-9205486428553400670.txt'
+   = note: consider using `--verbose` to print the full type name to the console
+
+For more information about this error, try `rustc --explain E0277`.
+error: could not compile `zapime-crypto` (example "sync_fixture") due to 1 previous error

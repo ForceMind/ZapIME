@@ -1,0 +1,63 @@
+{
+  "run_id": 42347662267,
+  "source_commit": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba",
+  "artifacts": [
+    {
+      "id": 13564941009,
+      "name": "ZapIME-local-sync-preparation-API-35",
+      "size_in_bytes": 13428,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564941009",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564941009/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:49:17Z",
+      "expires_at": "2026-11-21T06:49:16Z",
+      "updated_at": "2026-11-07T06:49:17Z",
+      "digest": "sha256:9babaf0de9e42df9328875a22c01288a380842790e05d8d0fcc3de73eeae1cf5",
+      "workflow_run": {
+        "id": 42347662267,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba"
+      }
+    },
+    {
+      "id": 13564726439,
+      "name": "ZapIME-local-sync-preparation-API-36",
+      "size_in_bytes": 13316,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564726439",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564726439/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:48:54Z",
+      "expires_at": "2026-11-21T06:48:53Z",
+      "updated_at": "2026-11-07T06:48:54Z",
+      "digest": "sha256:fc917ca1cc24a97e87d0117b4297d4ce92d575f6f767c1e21d845a8cbe2e28cd",
+      "workflow_run": {
+        "id": 42347662267,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba"
+      }
+    },
+    {
+      "id": 13564273197,
+      "name": "ZapIME-local-sync-preparation-API-28",
+      "size_in_bytes": 11248,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564273197",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564273197/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:47:32Z",
+      "expires_at": "2026-11-21T06:47:31Z",
+      "updated_at": "2026-11-07T06:47:32Z",
+      "digest": "sha256:0e9da1e2efe138d309dfebf74f07acd2af5e7e8f74dabe30fd9e84ec6af935ce",
+      "workflow_run": {
+        "id": 42347662267,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "5b2d9488fbd0eecd6e4be63d8f8ac0840fe838ba"
+      }
+    }
+  ]
+}

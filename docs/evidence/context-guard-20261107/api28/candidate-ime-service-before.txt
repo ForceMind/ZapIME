@@ -1,0 +1,2 @@
+ZapIME candidate ranking: enabled=true eligible=true state=idle scored=0 inputRevision=4 appliedRevision=-1
+ZapIME candidate requests: submitted=0

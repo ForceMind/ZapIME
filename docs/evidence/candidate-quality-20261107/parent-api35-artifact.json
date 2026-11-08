@@ -1,0 +1,10 @@
+{
+  "run_id": 42366817647,
+  "job_id": 128389448339,
+  "artifact_id": 13572319233,
+  "sha256": "b634bb43feb50ea3d839e069892eecc48a31f0670cea1b8fa6582a95b2745e5b",
+  "bytes": 807537,
+  "source": "https://github.com/ForceMind/ZapIME/actions/runs/42366817647/artifacts/13572319233",
+  "downloaded_and_inspected": true,
+  "scope": "Raw selected nonsecret reports copied; synthetic recovery-code screenshots and other unrelated files are not re-published"
+}

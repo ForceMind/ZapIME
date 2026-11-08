@@ -1,0 +1,32 @@
+{
+  "recorded_at": "2026-11-06T04:53:59.192521-08:00",
+  "source_parent": "45d9057b19f78f8b35599cfe1c1b19a50f493184",
+  "scope": "Local source checks only; new Android JNI/decode/independent producer/SAF/watchdog acceptance pending CI",
+  "rust_adapter_tests": 26,
+  "rust_fmt": "PASS",
+  "clippy_native": "PASS",
+  "clippy_aarch64_android": "PASS",
+  "jvm_engine_preview_stop_budget_cases": 14,
+  "jvm_model_installer_cases": 17,
+  "android_python_host_tests": 34,
+  "java_compile": "PASS API36 OpenJDK21 source8 target8",
+  "source_sha256": {
+    "integrations/voicekey/src/android.rs": "6b4706452f3bd48d61f06d76472be32efa28b49784463e9d127c2508ebe0fe83",
+    "integrations/voicekey/src/lib.rs": "1bfbf09eba441ab6d87a36d60ad8344115e9075f5f4022d1913bf942e6c02985",
+    "integrations/voicekey/src/tests.rs": "ea30b03c67ddcd22ae0f16ee829235ccb70e64d1f267ff2f5f1b5b2fd44ecab2",
+    "platforms/android/java/org/zapime/android/NativeVoiceKey.java": "9085ba59d9668a9cb12bcb2cb3a6fab6386e47e33031bc55f044ed3291a1a9bc",
+    "platforms/android/java/org/zapime/android/VoiceCapture.java": "b17726a933f91046fae7c5ef3bd6d30cc6b2c260c6e049caa58f098c861321ca",
+    "platforms/android/java/org/zapime/android/VoiceStopBudget.java": "da67c9be0688c9586951e0bbf11407ee0e21b6868aa0eabbdcfc1ab1e893170b",
+    "platforms/android/java/org/zapime/android/ZapInputMethodService.java": "d80ebe30dc0c04dd4b52dcb31bffdfabce4d8ac15d62c12b75690cb9a568bc73",
+    "platforms/android/tests/jvm/VoiceEngineSessionSmoke.java": "0df666b4880d35ba7603942c44db271c9d8a0081c6f6d4058f0f0ed89406698a",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java": "ab72f0381762a737f931c5f0ccbad3a1f525ee51fec8cb66bb0553c740f9b46f",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyBoundaryProbe.java": "0d4f984f75c42249012f387a0b593873f1bfb530502ac62f10f665fe7e49da6d",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyModelProbe.java": "695c457cf93ae75e0be1531c1a1f99f6bf705efa4bfbc77f78b8058ea1754877",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyWatchdogProbe.java": "4653179c4040115b769f3c147f83c974d945022f00d38c3fe4392611537bc6a9",
+    "scripts/android_voice_smoke.py": "e164a7d5053fc787bb0bba2f71749af4ce1e3911544c4640f1c39bd5e204666d",
+    "scripts/android_voicekey_model_smoke.py": "87bab3389e8e2eea212fd51895482bd08e9d14689828c0a58bda64a794f46b09",
+    "scripts/test_android_voice_engine.sh": "9580c09cdee16eac8e81717a611e0329a06bd2a8f37faca3d66c5b4c61b6cd76",
+    "scripts/test_android_voicekey_model_tools.py": "e2485d76015bb8ff75fa33c6717502e2b9488ccfb358528a6d8bb15644b6ae13"
+  },
+  "android_watchdog_probe": "Added real30s Android Handler plus model-backed idle native worker, controlled capture state. NOT RUN until CI; no active matrix, AudioRecord or IME claim."
+}

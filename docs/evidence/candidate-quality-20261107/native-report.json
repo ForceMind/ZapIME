@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "scope": "synthetic_real_model_native_cpu_not_android_accuracy",
+  "passed": true,
+  "model_id": "msime-keystroke-8m-rerank-v2",
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "native_probe_sha256": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+  "runtime_file_sha256": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+  "reference_source": {
+    "repository": "https://github.com/metasequoiaime/chinese-ime-lm",
+    "commit": "5b82758eaf3419dff9555f41bbda2744a56e45c4",
+    "path": "neural/choice/model.py",
+    "git_blob_sha1": "933af7444124970a221b3bf1f10a81599c9170d1",
+    "copied_feeds_sha256": "2268e105d6da10b7e2baab44ae739f9da0db86c031c8886e95b77d57fa35707d"
+  },
+  "python_ort_version": "1.24.4",
+  "numpy_version": "2.5.4",
+  "checks": [
+    "greeting",
+    "single_character",
+    "shared_prefix",
+    "mixed_ascii",
+    "unicode",
+    "empty_context",
+    "context_tail",
+    "different_lengths",
+    "incremental_repeat_backspace_branch",
+    "owner_isolation",
+    "cross_thread_cancel_clear",
+    "context_clipping",
+    "invalid_input_bounds_and_recovery",
+    "bounded_batch_reference",
+    "maximum_page_cache_eviction"
+  ],
+  "normal_feed_max_abs_error": 0.0,
+  "bounded_batch_max_abs_error": 0.035329580307006836,
+  "maximum_page": {
+    "context_nodes": 7,
+    "prefix_nodes": 504,
+    "new_nodes": 2020,
+    "batches": 17,
+    "evictions": 3
+  },
+  "illustrative_host_roundtrip_ms": {
+    "samples": 8,
+    "max": 7.325560000026599
+  },
+  "not_validated": [
+    "Android_ORT_1.28.2",
+    "ARM_device",
+    "input_accuracy",
+    "energy",
+    "RSS"
+  ]
+}

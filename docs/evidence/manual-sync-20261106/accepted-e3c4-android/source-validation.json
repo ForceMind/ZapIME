@@ -1,0 +1,12 @@
+{
+  "head_commit": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+  "actual_checkout_commit": "2c61712f9414f40f66017aeb1448642c1f5abb89",
+  "head_tree": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "actual_checkout_tree": "d242254a6c62f02ed3b4b10a04086a0708e15845",
+  "git_api_tree_equality": true,
+  "build_metadata_zip_bytes": 670,
+  "build_metadata_zip_sha256": "46958b9c9d6f22bdd2999f2f8bf3cc1741fd0273bc53c083cdf357366fc5c089",
+  "actual_build_metadata_source_matches_checkout": true,
+  "build_metadata_json_sha256": "ba1b3d06e4e94d55d830eb05a89c10bca20b39e6ef89217d284a73e782639bfb",
+  "note": "GitHub pull-request merge checkout differs in SHA but has the exact head tree; all frozen validators and product/test source are therefore identical. No APK/audio/model bytes downloaded by this verifier."
+}

@@ -1,0 +1,61 @@
+{
+  "source_head": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "files": [
+    {
+      "path": "scripts/fixtures/sync_https_server.py",
+      "head_sha256": "6a23ba85d8a957abb663f247699f4145380220f61dd50b20611ed88bcd347460",
+      "local_host_tls_test_sha256": "6a23ba85d8a957abb663f247699f4145380220f61dd50b20611ed88bcd347460",
+      "matches": true
+    },
+    {
+      "path": "scripts/test_sync_https_server.py",
+      "head_sha256": "4a222e8a1d8bfb54994a6280ddb12c0d276ba1eea744031c9641861fca74a213",
+      "local_host_tls_test_sha256": "4a222e8a1d8bfb54994a6280ddb12c0d276ba1eea744031c9641861fca74a213",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "head_sha256": "3f6392a9f72f042e6d75c02515addc94ba0971ef9dff4017d39a4959b3c78a27",
+      "local_host_tls_test_sha256": "3f6392a9f72f042e6d75c02515addc94ba0971ef9dff4017d39a4959b3c78a27",
+      "matches": true
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "head_sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c",
+      "local_host_tls_test_sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "head_sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e",
+      "local_host_tls_test_sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-sync/src/workspace.rs",
+      "head_sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a",
+      "local_host_tls_test_sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/lib.rs",
+      "head_sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456",
+      "local_host_tls_test_sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456",
+      "matches": true
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "head_sha256": "ae6fc830971dc391fd6d7e9b42246af8b676518d49cd9a1112d3a850e9f90497",
+      "local_host_tls_test_sha256": "ae6fc830971dc391fd6d7e9b42246af8b676518d49cd9a1112d3a850e9f90497",
+      "matches": true
+    },
+    {
+      "path": "Cargo.lock",
+      "head_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "local_host_tls_test_sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0",
+      "matches": true
+    }
+  ],
+  "all_match_local_host_tls_test": true
+}

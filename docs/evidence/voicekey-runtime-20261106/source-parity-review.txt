@@ -1,0 +1,23 @@
+Read-only VoiceKey source parity review
+Reviewed adapter: 5bbfe310e716762b36cdb0cf28b09ad5a2e1818c
+Pinned upstream: J3n5en/voicekey 3ba017826eef7fac405198510b03859eb5b6c8c4
+Method: compare formatted copies of upstream model/stream/kernels with adapter; do not alter vendor.
+
+Model: no unintended arithmetic or decoding order change found by source inspection.
+Shape/stride/padding, norm/GELU/attention, quantization, argmax/CTC/text and model-thread policy are unchanged.
+Changes are cooperative cancellation/Result propagation, independent-row fallible iteration and tiny-header rejection.
+
+Stream: PREV200/BLK400/POST100/PAD50/WHOLE_MAX2000, blank-tail handling, tidy and final-decode branches unchanged.
+Intentional differences are cancellation and accepted-nonzero gating. Fbank/xnet use direct pinned source.
+
+Kernels: stable signed-product NEON replacement and AVX2 -128 correction are intentional.
+Separate native-runner evidence covers actual ARM/x86 extreme/tail i64 numerical checks.
+No fixed-weight -128 distribution audit or upstream full-model transcript parity was executed.
+
+Scheduling: upstream drains queued PCM before partial, adapter considers partial per frame with the same fresh/cost gate.
+This can change preview scheduling and unpaced compute cost. Partial text is not fed back into final decoding.
+For <=2000 feature frames final decoding recomputes the entire sequence. No runtime change made for this difference.
+
+Limits: source review is not full-model token parity, speech quality, Android JNI, AudioRecord, system IME or handset evidence.
+One synthetic-fixture ARM/x86 agreement cannot establish natural-speech quality or upstream-reference parity.
+No source, corpus, model, defaults or CI was changed. See JSON for file hashes and precise boundaries.

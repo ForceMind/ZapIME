@@ -1,0 +1,64 @@
+{
+  "source_commit": "c7b98ebb7a0707ea622a6799a8d1d0246751e759",
+  "run_id": 42213679453,
+  "artifact_id": 13500587615,
+  "artifact_zip_sha256": "e891aab11d24f659309d591bb2bf23bb3a16e0deb89a5480cc5848c6f5325695",
+  "scope": "Raw JSON extracted only from the already-downloaded and SHA-verified development ZIP. Existing X-ASR actual JNI/Editable transaction and model-free VoiceKey JNI boundary tests; not VoiceKey model recognition or OS permission revocation.",
+  "members": {
+    "voice-android/voice-commit-report.json": {
+      "output": "c7-API28-voice-commit-report.json",
+      "bytes": 5302,
+      "sha256": "afce4ccb180600d4280eb3fc1e9906d4a2eaa6d9c2c00914e96e576791aa204d"
+    },
+    "voice-android/voicekey-boundary-report.json": {
+      "output": "c7-API28-voicekey-boundary-report.json",
+      "bytes": 637,
+      "sha256": "ae1e0e2b9bb1c25826a9a4cb323351b52fc5471baa073dda26a577794664d95f"
+    },
+    "voice-android/native-report.json": {
+      "output": "c7-API28-native-report.json",
+      "bytes": 649,
+      "sha256": "1cdba6600d73bdabc01f2567363f454099a9b2d4f96578c40d76dc1d29edebf2"
+    }
+  },
+  "confirmation_cases": 23,
+  "permission_cases": [
+    {
+      "id": "permission_granted",
+      "outcome": "COMMITTED",
+      "commit_attempts": 1,
+      "actual_editable_verified": true,
+      "passed": true,
+      "initial_permission_granted": true,
+      "final_permission_granted": true,
+      "production_permission_queries": 2,
+      "permission_state_scope": "Simulated ContextWrapper permission state queried through the production helper; not Android OS permission revocation.",
+      "os_permission_revocation_tested": false
+    },
+    {
+      "id": "permission_denied",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true,
+      "initial_permission_granted": false,
+      "final_permission_granted": false,
+      "production_permission_queries": 2,
+      "permission_state_scope": "Simulated ContextWrapper permission state queried through the production helper; not Android OS permission revocation.",
+      "os_permission_revocation_tested": false
+    },
+    {
+      "id": "permission_revoked_before_confirmation",
+      "outcome": "INVALID",
+      "commit_attempts": 0,
+      "actual_editable_verified": true,
+      "passed": true,
+      "initial_permission_granted": true,
+      "final_permission_granted": false,
+      "production_permission_queries": 2,
+      "permission_state_scope": "Simulated ContextWrapper permission state queried through the production helper; not Android OS permission revocation.",
+      "os_permission_revocation_tested": false
+    }
+  ],
+  "voicekey_boundary_cases": 5
+}

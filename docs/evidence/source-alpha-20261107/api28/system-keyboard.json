@@ -1,0 +1,12 @@
+{
+  "api_level": 28,
+  "selected_ime": "com.android.inputmethod.latin/.LatinIME",
+  "system_package_verified": true,
+  "source": "pm list packages -s",
+  "aosp": true,
+  "original_default": "com.android.inputmethod.latin/.LatinIME",
+  "restore_ime": "com.android.inputmethod.latin/.LatinIME",
+  "original_system_default": true,
+  "original_enabled": "com.android.inputmethod.latin/.LatinIME",
+  "original_hardware_keyboard": "1"
+}

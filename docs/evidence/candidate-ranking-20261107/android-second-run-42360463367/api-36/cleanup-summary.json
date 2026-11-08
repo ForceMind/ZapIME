@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "scope": "production-system-ime-candidate-ranking",
+  "run_attempt": "42360463367-1",
+  "passed": false,
+  "instrumentation_verified": true,
+  "system_keyboard_restored": true,
+  "service_exited": true,
+  "settings_restored": false,
+  "initial_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "final_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "errors": [
+    {
+      "stage": "restore_ime_settings",
+      "type": "CalledProcessError",
+      "reason": "Command '['/usr/local/lib/android/sdk/platform-tools/adb', '-s', 'emulator-5554', 'shell', 'settings', 'put', 'secure', 'enabled_input_methods', 'com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME;1594443099:com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService']' returned non-zero exit status 127."
+    }
+  ],
+  "api_level": 36,
+  "offline_uid_verified": true
+}

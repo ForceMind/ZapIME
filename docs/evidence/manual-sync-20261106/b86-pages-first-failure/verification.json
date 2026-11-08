@@ -1,0 +1,353 @@
+{
+  "run_id": 42353573084,
+  "head_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "source_validation": {
+    "head_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+    "actual_checkout_commit": "e38889af93144f1bd9076fd2723fd0c1d762f457",
+    "head_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+    "actual_checkout_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+    "git_api_tree_equality": true,
+    "build_metadata_artifact_id": 13566408012,
+    "build_metadata_zip_bytes": 669,
+    "build_metadata_zip_sha256": "571b00b3aac7d9b78929d63363c88d6df4eb189ad88b7a76f9c4b7cd1c447c87",
+    "actual_build_metadata_source_matches_checkout": true,
+    "note": "GitHub PR merge checkout and head have the exact same Git tree; source differences are not inferred from differing commit IDs. Build ZIP actually downloaded, sized and hashed against original GitHub artifact digest. No APK/audio/model bytes downloaded by this verifier."
+  },
+  "frozen_validator_sources": [
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "bytes": 4750,
+      "sha256": "35441f135be3c0da36b05ed9cb0c98b5dfa31ec31bffd684ad21a1eb7b91b153"
+    },
+    {
+      "path": "scripts/android_sync_key_report.py",
+      "bytes": 2841,
+      "sha256": "3715981c681207dda95358e8db9315989fb8a48f4e633a940d4ae0a0efa0c599"
+    },
+    {
+      "path": "scripts/android_sync_transfer_report.py",
+      "bytes": 3066,
+      "sha256": "d913f5ccd7574e9af4edd7d0c556838d6a9f3db83e420e30f27887aa85c86e06"
+    },
+    {
+      "path": "scripts/android_sync_pages_report.py",
+      "bytes": 3807,
+      "sha256": "5f04a0e1cc1c32eaba1c91cf34889e43efde9b6d2bc1f33795bbf9566dbbbad2"
+    },
+    {
+      "path": "scripts/android_voicekey_model_smoke.py",
+      "bytes": 21847,
+      "sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5"
+    },
+    {
+      "path": "scripts/android_ci_device.py",
+      "bytes": 3665,
+      "sha256": "86f3715c99d4975648619a30864f8972814cd07f76fdb8e4b379ba504a5991a1"
+    },
+    {
+      "path": "scripts/android_offline_uid.py",
+      "bytes": 2570,
+      "sha256": "2482b08db6aa455d9fbaf15114081754320104cd17147bbc4f16c41fa0afa75b"
+    },
+    {
+      "path": "scripts/voicekey_cpu_probe.py",
+      "bytes": 15376,
+      "sha256": "945a6fb74a281e2baada1989cf892b770cddbafee66f1d6bd4eddc7d783b317d"
+    },
+    {
+      "path": "scripts/voice_quality_metrics.py",
+      "bytes": 2800,
+      "sha256": "adb0f956e05d8dafa5094d8ac2fe92fae137bb7fc958ac6501a9822281baf61f"
+    },
+    {
+      "path": "scripts/audit_voicekey_model.py",
+      "bytes": 6051,
+      "sha256": "d6026b6bcc2e6703d7ca88d70c5e14a1cccb389506a151041ae7144a0f4517bf"
+    },
+    {
+      "path": "scripts/voice_probe.py",
+      "bytes": 10390,
+      "sha256": "84fb04af6b3a8f4324df9060409da02c00f65be0a8be886162b063c26bc3d738"
+    },
+    {
+      "path": "scripts/qwen_translation_probe/network.py",
+      "bytes": 2466,
+      "sha256": "7dfde627b37556312a9df0ac0c5651f26f1758371d99ba14d4be5a0194b811fa"
+    }
+  ],
+  "cases": [
+    {
+      "api": 28,
+      "job_id": 128347475743,
+      "job_status": "completed",
+      "job_conclusion": "failure",
+      "artifact_id": 13566567813,
+      "zip_bytes": 14229,
+      "zip_sha256": "383e9b8074af1fc43d94bb1f0e499a8d3b82b3dc4d0a886cc40f7ea2c737110f",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "strict_failures": [
+        {
+          "report": "sync-pages-ui-report.json",
+          "failure_type": "ValueError",
+          "reason": "Unknown or missing sync pages UI report fields"
+        }
+      ],
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "provider_selection_unoccluded": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "b2529b08d169b8c4f897a0139b6e47e46df595b71af8e3dc76d32a7eec3d9da1"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "failure-scope.json",
+          "bytes": 172,
+          "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 181,
+          "sha256": "45e856f8b0df1a43f1a4e843a11d618c9587376da374c8ce6c32fadd137d58c6"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 10230,
+          "sha256": "cf04a6aad2087d4b9619346472335f9ed8349c812131afc0660a30786e50ff4c"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "d11e5eaee9c651ebf62dbdb04ff8b7906fe559994f90d359e1b7062940ad5a84"
+        },
+        {
+          "name": "sync-pages-ui-report.json",
+          "bytes": 1341,
+          "sha256": "685ca16c6adc72f9ac69c47099239bed7dae7f994949dd1e5475a58f8293ee59"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "c43cc271f31874c5429b9da8aba56fbfae304a81424b595c8270f5d270099081"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "2d2d834eb1a166b49ae6c7e6fbf42e720e446080e87601d865e752c74da145b6"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 193161,
+        "sha256": "da409e7ae14f963a1bb89d10e7a8f175eb075db3a29c2ca3d44a1d598923d8f7"
+      }
+    },
+    {
+      "api": 35,
+      "job_id": 128347475686,
+      "job_status": "completed",
+      "job_conclusion": "failure",
+      "artifact_id": 13566722796,
+      "zip_bytes": 23183,
+      "zip_sha256": "4662c332272171051a1b67458fc28bfd334aeaf0724166300c574af2f7815d8a",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "strict_failures": [
+        {
+          "report": "sync-pages-ui-report.json",
+          "failure_type": "ValueError",
+          "reason": "Unknown or missing sync pages UI report fields"
+        }
+      ],
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": false,
+      "navigation_close_count": 0,
+      "provider_selection_unoccluded": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 206,
+          "sha256": "c20a2b98773190a6760539bd54e39706ce50ce4529f0d0f48fff92198e94db8b"
+        },
+        {
+          "name": "failure-scope.json",
+          "bytes": 172,
+          "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 181,
+          "sha256": "45e856f8b0df1a43f1a4e843a11d618c9587376da374c8ce6c32fadd137d58c6"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 19541,
+          "sha256": "7c0bf56d5f2a32a043d2c89e0cea92085c537685ae7160c3f86b490032641c05"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "4265757950248b269ca3622955b6e72d3180622fcfdad2e8fdbe68110ad0105a"
+        },
+        {
+          "name": "sync-pages-ui-report.json",
+          "bytes": 1341,
+          "sha256": "0b5d3aa9a59238676fc8f59e2f05eb0ece639e5885a8ebd2027ddc6dcc970213"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2570,
+          "sha256": "bb0caa5b0327fdd6f0405f69d065945d4065bdc62e4c1db85128d5800b9ff796"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "52106ddd2565455cef449199e804e8d2b13aeb1ac8acd9bf4862fdfb6875c3a5"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 198529,
+        "sha256": "338f18a775b466239a8511ad41d7140c1f7dc79ffe8844dcfef699225e434613"
+      }
+    },
+    {
+      "api": 36,
+      "job_id": 128347475690,
+      "job_status": "completed",
+      "job_conclusion": "failure",
+      "artifact_id": 13566283141,
+      "zip_bytes": 34346,
+      "zip_sha256": "7e6b84e5b99bbb8cabe6c018e1573e5d3ad8dd70c51bc384a72039e3150bce55",
+      "github_digest_size_head_match": true,
+      "strict_case_counts": {
+        "sync-preparation-report.json": 11,
+        "sync-key-registration-report.json": 14,
+        "sync-transfer-report.json": 12,
+        "sync-preparation-ui-report.json": 10
+      },
+      "total_strict_cases": 47,
+      "strict_failures": [
+        {
+          "report": "sync-pages-ui-report.json",
+          "failure_type": "ValueError",
+          "reason": "Unknown or missing sync pages UI report fields"
+        }
+      ],
+      "exact_product_uid_dual_family_offline_removed": true,
+      "navigation_cover_detected": true,
+      "navigation_close_count": 1,
+      "provider_selection_unoccluded": true,
+      "members": [
+        {
+          "name": "activity-errors.txt",
+          "bytes": 206,
+          "sha256": "ce44ed2e48db35dc009ce8a905d2188563a98d4c2b18269ddbfc7974b217614e"
+        },
+        {
+          "name": "failure-scope.json",
+          "bytes": 172,
+          "sha256": "c3d7408c9c78b06d9c0e330a6ce64d69f93737df98b89fabec3bcd2b19befbcd"
+        },
+        {
+          "name": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "name": "instrumentation.txt",
+          "bytes": 181,
+          "sha256": "45e856f8b0df1a43f1a4e843a11d618c9587376da374c8ce6c32fadd137d58c6"
+        },
+        {
+          "name": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "name": "sync-key-provider-nav-before.png",
+          "bytes": 12296,
+          "sha256": "c7cb727134970d031af5d6594cc7caf4e7ff172784282913a14f9d0983b2be5d"
+        },
+        {
+          "name": "sync-key-provider-before.png",
+          "bytes": 19874,
+          "sha256": "a894ea6c9eb369f582402f0c9960a036d0187d31c4d0e73caa3518d5176174f1"
+        },
+        {
+          "name": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "c31f2885c21e51fd52dfa283bdccf8b8183edc04bdaed8191c27fa1099505640"
+        },
+        {
+          "name": "sync-pages-ui-report.json",
+          "bytes": 1341,
+          "sha256": "9f7cd2cc33fb688c2dbf40e2bb7856731f9a02084e2b09702c5247eb4fff4494"
+        },
+        {
+          "name": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        },
+        {
+          "name": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "902ab5d1e2ff0abe1d875c7f58d2b98c60c67aa9c3dc5fc939aacefce0eb1b02"
+        },
+        {
+          "name": "sync-preparation-ui-report.json",
+          "bytes": 2714,
+          "sha256": "d98fbfc016830027db78bac746f542825399f3139418c9a7cec0860988f28104"
+        }
+      ],
+      "workflow_log": {
+        "bytes": 200559,
+        "sha256": "90411df030d20f110211825ae0204cf69814512c939211565b9bf82834518d58"
+      }
+    }
+  ],
+  "scope": "Per API 14 offline key +12 real JNI transfer +11 preparation +10 actual SAF +10 actual protected Activities/queued cancellation. Separate TLS fixture is not part of this offline gate. No phone or natural speech acceptance."
+}

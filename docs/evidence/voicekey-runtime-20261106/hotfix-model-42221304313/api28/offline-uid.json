@@ -1,0 +1,7 @@
+{
+  "package": "org.zapime.android",
+  "uid": 10067,
+  "ipv4_reject": true,
+  "ipv6_reject": true,
+  "removed": true
+}

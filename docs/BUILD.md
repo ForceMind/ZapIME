@@ -1,7 +1,7 @@
 # 源码构建
 
 ```sh
-git clone --recurse-submodules <有访问权限的 ZapIME 仓库地址>
+git clone --recurse-submodules https://github.com/ForceMind/ZapIME.git
 cd ZapIME
 python3 scripts/verify_upstream.py
 cargo test --workspace --locked
@@ -9,7 +9,7 @@ cargo fmt --all --check
 cargo clippy --workspace --all-targets -- -D warnings
 ```
 
-工具链由 rust-toolchain.toml 固定。上游源码使用 Git submodule，首次必须初始化，不用 develop 最新值替代锁定提交。构建时可联网获取 Cargo 依赖和校验过的词库；运行时离线。所有生成内容放 target，不把资源缓存和开发密钥提交仓库。
+工具链由 rust-toolchain.toml 固定。上游源码使用 Git submodule，首次必须初始化两个子模块（vendor/msime 与 vendor/voicekey），不用 develop 最新值替代锁定提交。GitHub 自动源码包和本项目源码 Alpha 附件都不含子模块内容；完整构建推荐上面的递归 clone。构建时可联网获取 Cargo 依赖和校验过的词库；运行时离线。所有生成内容放 target，不把资源缓存和开发密钥提交仓库。
 
 ## Android 开发包
 

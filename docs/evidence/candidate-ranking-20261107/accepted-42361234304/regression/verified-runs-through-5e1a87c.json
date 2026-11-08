@@ -1,0 +1,324 @@
+{
+  "successful_runs": [
+    {
+      "head_sha": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+      "run_id": 42360463313,
+      "jobs": [
+        {
+          "id": 128367554985,
+          "name": "Signed x86_64 product and model-free harnesses",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205576,
+          "name": "Focused VoiceKey-only API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205592,
+          "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205629,
+          "name": "Local sync preparation API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205632,
+          "name": "Local sync preparation API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205652,
+          "name": "Focused VoiceKey-only API 36",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205664,
+          "name": "Focused VoiceKey-only API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128368205688,
+          "name": "Local sync preparation API 36",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13570131085,
+          "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+          "size_in_bytes": 207603,
+          "digest": "sha256:eafac54f63497e68f4c36259615257255f5319e026130d293fad9fb8ec081d68"
+        },
+        {
+          "id": 13569841558,
+          "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+          "size_in_bytes": 241276,
+          "digest": "sha256:7d1c58819eaf5ba78483360353033c0a9455a25a253d0acb43e317548803886f"
+        },
+        {
+          "id": 13569223082,
+          "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+          "size_in_bytes": 239295,
+          "digest": "sha256:1aec2e75603d7a1c616689c0d32ce4c2cd581979cfb226208717e4fc71517bff"
+        }
+      ],
+      "scope": "All workflow jobs passed at this exact head. Three API VoiceKey original ZIPs SHA-checked and summaries confirm actual execution, service exit, fixture deletion and network-rule cleanup. Original 3a failures remain separately archived."
+    },
+    {
+      "head_sha": "a73eea01a4ed0b561dbf2540e837565e99a8c04f",
+      "run_id": 42360463238,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 128367554790,
+          "name": "Android development APK",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128369638310,
+          "name": "Android API 36 native acceptance",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128369638331,
+          "name": "VoiceKey-only real model API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128369638333,
+          "name": "VoiceKey-only real model API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128369638374,
+          "name": "Android API 35 native acceptance",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128369638393,
+          "name": "VoiceKey-only real model API 36",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13569762333,
+          "name": "ZapIME-VoiceKey-only-API-36",
+          "size_in_bytes": 239555,
+          "digest": "sha256:33bf482375a808ce16be5a007160ab31ecd908294b074865f5826fb113477274"
+        },
+        {
+          "id": 13569697414,
+          "name": "ZapIME-VoiceKey-only-API-35",
+          "size_in_bytes": 180784,
+          "digest": "sha256:ee89c83edf0861c95a6fae9a8caec5995a11df7804ff47a5046f722d685a58d7"
+        },
+        {
+          "id": 13569661578,
+          "name": "ZapIME-VoiceKey-only-API-28",
+          "size_in_bytes": 187355,
+          "digest": "sha256:d46e9389c231011cf7d8a25785c9df988c4e988a1f2dbb7ba8aa7c9241711074"
+        }
+      ],
+      "scope": "All workflow jobs passed at this exact head, including API28 native keyboard acceptance in the build job. Three API VoiceKey original ZIPs SHA-checked and actual summaries confirm execution, service exit, fixture deletion and UID-rule cleanup. Previous 3a failures remain separately archived."
+    },
+    {
+      "head_sha": "5e1a87ccc345cbdb41635059c35cb63ce988b197",
+      "run_id": 42361234391,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 128369879889,
+          "name": "Signed x86_64 product and model-free harnesses",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556449,
+          "name": "Focused VoiceKey-only API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556457,
+          "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556469,
+          "name": "Focused VoiceKey-only API 36",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556471,
+          "name": "Local sync preparation API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556480,
+          "name": "Local sync preparation API 36",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556487,
+          "name": "Local sync preparation API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128370556494,
+          "name": "Focused VoiceKey-only API 28",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13569832686,
+          "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+          "size_in_bytes": 240364,
+          "digest": "sha256:cb81460a8224fb71b74d3423228dc9312171d735b1be85520ad731544c1f5b84"
+        },
+        {
+          "id": 13569643348,
+          "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+          "size_in_bytes": 241767,
+          "digest": "sha256:d5513cb9cbef32e506fdca48e4a858e68683d3ce965a7607f96af4adc9bd6cf1"
+        },
+        {
+          "id": 13569308709,
+          "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+          "size_in_bytes": 200225,
+          "digest": "sha256:88d624d4b2b1daa09f18f55416a9635b28be7f7e637156f002408169efc194c5"
+        }
+      ],
+      "scope": "This focused workflow passed at the exact quoted head; the separate full Android workflow is not implied. Three API VoiceKey original ZIPs SHA-checked; original 3a failures remain separately archived."
+    },
+    {
+      "head_sha": "5e1a87ccc345cbdb41635059c35cb63ce988b197",
+      "run_id": 42361234345,
+      "status": "completed",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "id": 128371024543,
+          "name": "Android development APK",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128372825818,
+          "name": "Android API 35 native acceptance",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128372825866,
+          "name": "VoiceKey-only real model API 28",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128372825876,
+          "name": "VoiceKey-only real model API 36",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128372825890,
+          "name": "VoiceKey-only real model API 35",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "id": 128372825969,
+          "name": "Android API 36 native acceptance",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ],
+      "artifacts": [
+        {
+          "id": 13570485586,
+          "name": "ZapIME-VoiceKey-only-API-28",
+          "size_in_bytes": 185881,
+          "digest": "sha256:a57e79aec56f545ceed25d2ae0df25d21b89a8c415a27f4ece9ea12e648a3452"
+        },
+        {
+          "id": 13570133563,
+          "name": "ZapIME-VoiceKey-only-API-36",
+          "size_in_bytes": 182947,
+          "digest": "sha256:9c3323a28f3ecec0d49cc9943e06daf6ef483e1524f91ba838fe030edd889dd6"
+        },
+        {
+          "id": 13569757884,
+          "name": "ZapIME-VoiceKey-only-API-35",
+          "size_in_bytes": 240120,
+          "digest": "sha256:5a3dee6dccbd989a733c3b3c4336f4b4f529d49620e293920edb7b3753ebc884"
+        }
+      ],
+      "scope": "All six full-Android workflow jobs passed at the exact quoted head, including real API28 native smoke in the build job. Three API VoiceKey ZIPs SHA-checked; original summaries prove actual execution, service exit, fixture deletion, system-policy restoration and IPv4/IPv6 UID-rule cleanup. This is emulator evidence, not physical-device or natural-speech acceptance."
+    }
+  ],
+  "old_failure_diagnosis": {
+    "source": "3a11177b7d0b2ef054183f5297a282dcb650a14f",
+    "read_only": true,
+    "rerun_requested": false,
+    "product_candidate_execution_observed": false,
+    "failure": "adb root exit 1 before entering instrumentation; subsequent fixture cleanup fails with device offline",
+    "root_diagnostics_limit": "root stdout/stderr were captured by subprocess but not printed in original log; exact root failure cause cannot be distinguished",
+    "cleanup": "Original acceptance-summary status FAIL and shared_document_removed false; no model instrumentation reports",
+    "source_review": "scripts/android_offline_uid.py and scripts/android_voicekey_model_smoke.py unchanged from f727d203 to 3a11177",
+    "recommendation": "Keep failures. If natural new run reproduces, inspect bounded root stdout/stderr and device readiness before considering shared-helper fix; never bypass root, UID rules or cleanup.",
+    "rows": [
+      {
+        "run": 42358906785,
+        "api": 28,
+        "job_id": 128363745453,
+        "job": "Focused VoiceKey-only API 28",
+        "step_number": 10,
+        "step": "Actual offline VoiceKey SAF, JNI, Editable and system IME lifecycle",
+        "root_failure_utc": "2026-11-07T09:20:24.8393061Z",
+        "zip_sha256": "a2124bf0f1018ce9aab03c56221e17a4cdf679c725fc60f50137189c14d5b3ef"
+      },
+      {
+        "run": 42358906716,
+        "api": 35,
+        "job_id": 128365631134,
+        "job": "VoiceKey-only real model API 35",
+        "step_number": 11,
+        "step": "Actual VoiceKey-only SAF, JNI, Editable and offline system IME lifecycle",
+        "root_failure_utc": "2026-11-07T09:29:37.7475888Z",
+        "zip_sha256": "865a7b4c402c45e3412c4b4bf1ba7f510ff1fa5501779cf5917dab4ea53ad7dc"
+      }
+    ]
+  },
+  "read_only_monitoring": true,
+  "manually_rerun": false,
+  "product_or_voice_scripts_changed": false,
+  "old_failures_retained": true,
+  "scope": "Each success belongs only to its exact source/run. Original 3a root/cleanup failures are preserved, not converted to success; no root-helper change was necessary because fresh runs did not reproduce them."
+}

@@ -85,3 +85,32 @@ fn backup_writer_never_initializes_or_downgrades() {
         3
     );
 }
+
+#[test]
+fn partial_or_unknown_sync_metadata_is_not_a_fresh_restore_target() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut source = Store::open(&dir.path().join("source.db")).unwrap();
+    edit(&mut source);
+    let archive = source.export_plaintext().unwrap();
+    for key in ["sync_key_id", "sync_material_sha256", "sync_unknown_state"] {
+        let path = dir.path().join(format!("{key}.db"));
+        let mut target = Store::open(&path).unwrap();
+        let raw = rusqlite::Connection::open(&path).unwrap();
+        raw.execute(
+            "INSERT INTO metadata VALUES(?1,'synthetic partial state')",
+            [key],
+        )
+        .unwrap();
+        assert!(target.restore_unbound_plaintext(&archive).is_err(), "{key}");
+        assert!(target.records(true).unwrap().is_empty());
+        assert_eq!(
+            raw.query_row::<String, _, _>(
+                "SELECT value FROM metadata WHERE key=?1",
+                [key],
+                |row| row.get(0)
+            )
+            .unwrap(),
+            "synthetic partial state"
+        );
+    }
+}

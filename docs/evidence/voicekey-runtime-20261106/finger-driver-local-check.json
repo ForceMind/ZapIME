@@ -1,0 +1,27 @@
+{
+  "recorded_at": "2026-11-06T05:14:29.896566-08:00",
+  "source_parent": "08e84980562ecc8fab436ffcdab6e5aee8c567e7",
+  "scope": "TEST DRIVER ONLY; product source paths unchanged from fixed APK source; new modern execution pending CI",
+  "product_paths_compared": [
+    "platforms/android/java",
+    "integrations/voicekey/src",
+    "crates",
+    "platforms/android/AndroidManifest.xml",
+    "platforms/android/res",
+    "scripts/build_android.sh",
+    "scripts/build_android_voice.sh",
+    "scripts/collect_rust_notices.py",
+    "Cargo.toml",
+    "Cargo.lock",
+    "integrations/voicekey/Cargo.lock",
+    "third_party/voicekey-model-lock.json"
+  ],
+  "product_changed_paths": [],
+  "source_sha256": {
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceKeyModelProbe.java": "20fa34dd5fbe6a6b4f729f71537d5a83c77c596ba576c64ff51d4399adf157ad",
+    "scripts/android_voicekey_model_smoke.py": "efccd4f2aa65e52ef96595da3de6cc410d3745acc7809113bc8b08c0ccc5aac6",
+    "scripts/test_android_voicekey_model_tools.py": "b49160c4a7a9e312947c39c04b72cd776f5657d2ee3597c2e87d9b42587b3302"
+  },
+  "python_model_tool_tests": 10,
+  "full_java_test_compile": "PASS API36 source8 target8"
+}

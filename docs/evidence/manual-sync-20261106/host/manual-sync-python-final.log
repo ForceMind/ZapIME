@@ -1,0 +1,16 @@
+....Verified system teardown keyboard: {'api_level': 28, 'selected_ime': 'com.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': True}
+.Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': True}
+.Verified system teardown keyboard: {'api_level': 35, 'selected_ime': 'com.google.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+..Verified kernel IPv4/IPv6 REJECT for exact product UID 10123
+.......................................
+----------------------------------------------------------------------
+Ran 47 tests in 0.033s
+
+OK
+Collected 1 dependency entries; no bundled license file: []
+Collected 1 dependency entries; no bundled license file: ['adapter']
+Collected 1 dependency entries; no bundled license file: ['adapter']
+Collected 1 dependency entries; no bundled license file: []
+Collected 1 dependency entries; no bundled license file: ['zapime-core']
+PASS offline model bundle /tmp/tmpgbjdmnkk/first.zip 770
+PASS offline model bundle /tmp/tmpgbjdmnkk/second.zip 770

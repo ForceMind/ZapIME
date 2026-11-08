@@ -1,0 +1,76 @@
+{
+  "at_utc": "2026-11-07T08:12:49.836680+00:00",
+  "base_commit": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "scope": "Host recheck of working test-driver changes after source-b86 Android failure; Java compilation and six validator tests only, not Android execution.",
+  "files": [
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPagesUiProbe.java",
+      "bytes": 26959,
+      "sha256": "1c1c3e81fdb8ee860dfcfc03aa4d2e8070050d5e0feeff93e8a55e32f107055e"
+    },
+    {
+      "path": "scripts/android_sync_pages_report.py",
+      "bytes": 4654,
+      "sha256": "3977ee8a5f7cd53fef5428f9455d385ab6f4862f302718cbdc738162b6ef57d9"
+    },
+    {
+      "path": "scripts/test_android_sync_pages_report.py",
+      "bytes": 4310,
+      "sha256": "7f11f4082ba8cf64baaf7d8657a0af3cbc8f334785e9ed7d37d9a5378cf90302"
+    }
+  ],
+  "results": [
+    {
+      "log": "validator-tests.log",
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_android_sync_pages_report.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "bytes": 1152,
+      "sha256": "23bc736c67359e70042125404073b14d061036d17eaff880380fedbf7bca9baa"
+    },
+    {
+      "log": "java-compile.log",
+      "command": [
+        "target/toolchains/javac",
+        "-source",
+        "8",
+        "-target",
+        "8",
+        "-encoding",
+        "UTF-8",
+        "-classpath",
+        "target/android-compile/android.jar",
+        "-d",
+        "target/sync-pages-java-classes",
+        "@target/sync-pages-java-sources.txt"
+      ],
+      "exit_code": 0,
+      "bytes": 456,
+      "sha256": "3f29516099c0ea797a6209ede9f40af25764f1a8c6746d5a15779f18941a008d"
+    },
+    {
+      "log": "diff-check.log",
+      "command": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPagesUiProbe.java",
+        "scripts/android_sync_pages_report.py",
+        "scripts/test_android_sync_pages_report.py"
+      ],
+      "exit_code": 0,
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

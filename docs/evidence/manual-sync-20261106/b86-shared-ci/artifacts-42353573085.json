@@ -1,0 +1,23 @@
+{
+  "artifacts": [
+    {
+      "id": 13566942345,
+      "name": "ZapIME-Apple-native-development",
+      "size_in_bytes": 128833616,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566942345",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566942345/zip",
+      "expired": false,
+      "created_at": "2026-11-07T08:07:01Z",
+      "expires_at": "2027-02-05T08:00:07Z",
+      "updated_at": "2026-11-07T08:07:01Z",
+      "digest": "sha256:a5f0909f44dff86bbfa954e375e43a38167aad393f63a487d57ca3d456a7f621",
+      "workflow_run": {
+        "id": 42353573085,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9"
+      }
+    }
+  ]
+}

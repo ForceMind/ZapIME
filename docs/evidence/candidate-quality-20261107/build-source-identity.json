@@ -1,0 +1,8 @@
+{
+  "product_source_matches": "ce26c14b29d0ff189c5635fe8e8e3f99408a237b",
+  "scope": "crates/vendor/platforms/android unchanged; host core built --release --locked with Rust 1.97.1; native probe built -O2 against pinned model and ORT headers",
+  "native_probe_sha256": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+  "core_binary_sha256": "f9ec93a87ede615e032297d36242cbccb2372d8a5bd5b269a8c695c4fe4f076e",
+  "runner_sha256": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7",
+  "source_note": "Binary hashes identify actual tested artifacts; local JDK was installed from an official checksum-verified Temurin17 archive"
+}

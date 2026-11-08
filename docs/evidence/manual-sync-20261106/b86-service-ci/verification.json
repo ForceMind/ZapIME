@@ -1,0 +1,45 @@
+{
+  "saved_at_utc": "2026-11-07T08:09:21.916214+00:00",
+  "source_head": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "source_tree": "7617e97ec42399c1d0f9f01db953a2b352375912",
+  "run_id": 42353573054,
+  "job_id": 128346702928,
+  "conclusion": "success",
+  "scope": "Independent service CI: real Go/PostgreSQL/S3-compatible fixture, shared manual client via loopback HTTP, old crypto disaster recovery and one-command installer/fresh DB+bucket restore. Android temporary-system-CA HTTPS has separate focused job128347475674 and separately verified evidence. No public-PKI/R2/phone claim.",
+  "new_client_report": {
+    "status": "PASS",
+    "probe": "shared_manual_client_real_server",
+    "commands": 17,
+    "stores": 2,
+    "server_revisions": 2,
+    "records_each": 1,
+    "pending_each": 0,
+    "private_temporary_files_removed": true
+  },
+  "go_top_level_tests_passed": 23,
+  "skipped_tests": 0,
+  "all_9_local_host_tls_related_source_hashes_match": true,
+  "artifact": {
+    "id": 13566877658,
+    "name": "ZapIME-sync-service-tests",
+    "zip_bytes": 1611,
+    "github_digest": "sha256:7fe01b01ddd2f4140cb968630ddabedda5e9c71b1f4b0400eb506f156922d301",
+    "actual_zip_sha256": "7fe01b01ddd2f4140cb968630ddabedda5e9c71b1f4b0400eb506f156922d301",
+    "digest_matches": true,
+    "members": [
+      {
+        "path": "sync-service-tests.log",
+        "bytes": 8118,
+        "sha256": "70a87a4c622a18058bfd294708d6e2155bbe29fce11ab6c8bc0565027321942b",
+        "zip_crc32": "00dc8fa5",
+        "crc_verified": true
+      }
+    ]
+  },
+  "raw_job_log": {
+    "bytes": 168407,
+    "sha256": "7382a2ed7c1a7792039f804463371151f17e44b8eaf8097a8c6b235d3ba36920"
+  },
+  "credentials_or_root_in_evidence": false,
+  "old_e3_evidence_untouched": true
+}

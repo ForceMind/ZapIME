@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 //! Authenticate complete pages before transactional application. No network or key storage.
 #![forbid(unsafe_code)]
+pub mod client;
+pub mod workspace;
+
 use serde::{
     de::{SeqAccess, Visitor},
     Deserialize, Deserializer, Serialize,

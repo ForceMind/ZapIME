@@ -1,0 +1,26 @@
+{
+  "api": 35,
+  "source_commit": "be79d084eef1f835e7504f134f46ba315b36df18",
+  "downloaded_source_validators_pass": true,
+  "model_cases": 14,
+  "editable_cases": 23,
+  "model_id": "wechat-offline-20260710220526250",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "independent_producer": true,
+  "produced_samples": 125861,
+  "accepted_samples": 125861,
+  "first_partial_ms": 1400,
+  "partial_updates": 2,
+  "producer_eof_to_final_ms": 2173,
+  "watchdog_ms": 30029,
+  "actual_ime_service_exit": true,
+  "kernel_offline_both_families_and_removed": true,
+  "keyboard_policy": {
+    "before": "1",
+    "applied_and_read_back": "1",
+    "scope": "Dedicated CI only; product system keyboard policy unchanged"
+  },
+  "keyboard_policy_restored": true,
+  "whole_job_conclusion": "success",
+  "scope": "Actual synthetic model/JNI/Editable and emulator AudioRecord/system IME acceptance; no natural speech, ARM handset, signed stable release or engine quality comparison."
+}

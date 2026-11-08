@@ -1,0 +1,492 @@
+{
+  "scope": "GitHub shared core and Apple native development hosts; no phone or Android acceptance inferred",
+  "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "tested_pr_merge_sha": "e38889af93144f1bd9076fd2723fd0c1d762f457",
+  "base_sha": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "run_id": 42353573085,
+  "checks": [
+    {
+      "job_id": 128346703317,
+      "os": "macos",
+      "conclusion": "success",
+      "log": "macos-job-128346703317.log",
+      "raw_bytes": 89075,
+      "sha256": "1faa807771633b0d2bf02c3b1bf4faebaf89b1277d20bd4d3e5797f78a4aa8d4",
+      "utf8_bom": true,
+      "lf_count": 1105,
+      "crlf_count": 0,
+      "final_lf": true,
+      "tests": {
+        "passed": 118,
+        "failed": 0,
+        "ignored": 0
+      },
+      "new_candidate_tests_passed": [
+        "synced_candidate_rule_is_used_after_reopen_while_old_composition_retains_its_snapshot",
+        "synced_dictionary_entries_work_in_nine_key_and_obey_explicit_reading_and_private_mode",
+        "synced_candidate_rule_tombstone_stays_deleted_in_new_sessions_and_records_backup"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python scripts/verify_upstream.py",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run cargo fmt --all --check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run cargo test --workspace --locked",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run cargo clippy --workspace --all-targets --locked -- -D warnings",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "iOS simulator shared library check (not native keyboard acceptance)",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ]
+    },
+    {
+      "job_id": 128346703200,
+      "os": "ubuntu",
+      "conclusion": "success",
+      "log": "ubuntu-job-128346703200.log",
+      "raw_bytes": 80816,
+      "sha256": "360d082b242a7c906e7a33e13d172b129951f3ecc3ee8536f3eed12ba305d8e7",
+      "utf8_bom": true,
+      "lf_count": 1010,
+      "crlf_count": 0,
+      "final_lf": true,
+      "tests": {
+        "passed": 118,
+        "failed": 0,
+        "ignored": 0
+      },
+      "new_candidate_tests_passed": [
+        "synced_candidate_rule_is_used_after_reopen_while_old_composition_retains_its_snapshot",
+        "synced_dictionary_entries_work_in_nine_key_and_obey_explicit_reading_and_private_mode",
+        "synced_candidate_rule_tombstone_stays_deleted_in_new_sessions_and_records_backup"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python scripts/verify_upstream.py",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run cargo fmt --all --check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run cargo test --workspace --locked",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run cargo clippy --workspace --all-targets --locked -- -D warnings",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "iOS simulator shared library check (not native keyboard acceptance)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ]
+    },
+    {
+      "job_id": 128346703002,
+      "os": "windows",
+      "conclusion": "success",
+      "log": "windows-job-128346703002.log",
+      "raw_bytes": 82193,
+      "sha256": "216df9ef4d5aeb63c573801d2f86c8a57438965ef924c18778223e012040ccb5",
+      "utf8_bom": true,
+      "lf_count": 1001,
+      "crlf_count": 1001,
+      "final_lf": true,
+      "tests": {
+        "passed": 115,
+        "failed": 0,
+        "ignored": 0
+      },
+      "new_candidate_tests_passed": [
+        "synced_candidate_rule_is_used_after_reopen_while_old_composition_retains_its_snapshot",
+        "synced_dictionary_entries_work_in_nine_key_and_obey_explicit_reading_and_private_mode",
+        "synced_candidate_rule_tombstone_stays_deleted_in_new_sessions_and_records_backup"
+      ],
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run python scripts/verify_upstream.py",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run cargo fmt --all --check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run cargo test --workspace --locked",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run cargo clippy --workspace --all-targets --locked -- -D warnings",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "iOS simulator shared library check (not native keyboard acceptance)",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        }
+      ]
+    },
+    {
+      "job_id": 128346703282,
+      "os": "apple",
+      "conclusion": "success",
+      "log": "apple-job-128346703282.log",
+      "raw_bytes": 261109,
+      "sha256": "8dd5d85b152aa0da89d5f077e7bef00e3017db7d126d3fbc4e00288d6eb4ede2",
+      "utf8_bom": true,
+      "lf_count": 1841,
+      "crlf_count": 0,
+      "final_lf": true,
+      "tests": {
+        "passed": 3,
+        "failed": 0,
+        "scope": "iOS simulator XCTest",
+        "cases": [
+          {
+            "name": "KeyboardProxyTests testOwnDocumentNotificationsDoNotDropQueuedEnglishKeys",
+            "duration": "0.410 seconds"
+          },
+          {
+            "name": "NativeCoreTests testBundledOfflinePinyinAndPrivateBoundary",
+            "duration": "0.252 seconds"
+          },
+          {
+            "name": "NativeCoreTests testWorkerKeepsNativeSessionOnOneThread",
+            "duration": "0.207 seconds"
+          }
+        ]
+      },
+      "device": {
+        "kind": "simulator",
+        "name": "iPhone 17 Pro",
+        "os": "iOS 26.4.1",
+        "arch": "arm64",
+        "xcode": "26.6",
+        "sdk": "iphonesimulator26.5"
+      },
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run brew install xcodegen",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Compile real InputMethodKit bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Compile real iOS app and keyboard extension",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Select available iPhone simulator",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run iOS native bridge and dedicated worker tests",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Package ad-hoc macOS development bundle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Post Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        }
+      ]
+    }
+  ],
+  "windows_compiled_out_unix_tests": [
+    "sync::writer_tests::sync_writer_rejects_a_symlink_without_touching_its_target",
+    "sync::writer_tests::sync_writer_rejects_parent_alias_but_accepts_canonical_existing_database",
+    "symlink_database_is_rejected_without_touching_target"
+  ],
+  "source_hashes_at_head": {
+    ".github/workflows/ci.yml": {
+      "sha256": "c24d519b64a794faf844dc5a580c8f534bf8bea3295140b85ed2f94b2852e3d6"
+    },
+    "Cargo.lock": {
+      "sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0"
+    },
+    "crates/zapime-core/src/android_sync.rs": {
+      "sha256": "caa7262f4a1054d57d5cbbbfd82667be0d638378fdccbd464b7b741b11962af3"
+    },
+    "crates/zapime-data/src/sync.rs": {
+      "sha256": "ae6fc830971dc391fd6d7e9b42246af8b676518d49cd9a1112d3a850e9f90497"
+    },
+    "crates/zapime-core/tests/synced_candidates.rs": {
+      "sha256": "8f4a21fdc0bd026dabb06ae6018bcba6690b42a083f436c022eb122fb8fed24e"
+    }
+  },
+  "unchanged_source_comparisons": {
+    "baseline_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+    "android_sync_rs_byte_identical": true,
+    "android_sync_rs_sha256": "caa7262f4a1054d57d5cbbbfd82667be0d638378fdccbd464b7b741b11962af3",
+    "production_open_sync_writer_body_identical": true,
+    "production_open_sync_writer_body_sha256": "3d08e6ff362c0ae11d519deea666b7bcbd55f412d65b9ac4f32c3215a8e82982"
+  },
+  "artifact_verification": {
+    "level": "GitHub metadata and upload log only; ZIP not independently downloaded",
+    "artifacts": [
+      {
+        "id": 13566942345,
+        "name": "ZapIME-Apple-native-development",
+        "size_in_bytes": 128833616,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566942345",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566942345/zip",
+        "expired": false,
+        "created_at": "2026-11-07T08:07:01Z",
+        "expires_at": "2027-02-05T08:00:07Z",
+        "updated_at": "2026-11-07T08:07:01Z",
+        "digest": "sha256:a5f0909f44dff86bbfa954e375e43a38167aad393f63a487d57ca3d456a7f621",
+        "workflow_run": {
+          "id": 42353573085,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/android-manual-sync",
+          "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9"
+        }
+      }
+    ]
+  },
+  "log_retrieval_events": [
+    {
+      "job_id": 128346703282,
+      "type": "transient retrieval error before complete final log became available",
+      "observed_by": "apple_log_review",
+      "reported_time": "2026-11-07T08:07:19.9162138Z",
+      "http_status": 404,
+      "code": "BlobNotFound",
+      "message": "The specified blob does not exist.",
+      "request_id": "486e3ffe-101e-005e-2b8f-6e38e2000000",
+      "later_complete_raw_log_retrieval": "success",
+      "not_a_product_test_failure": true
+    }
+  ],
+  "not_claimed": [
+    "phone",
+    "activated third-party system keyboard",
+    "Android JNI execution",
+    "Android HTTPS",
+    "public server or R2",
+    "notarization",
+    "stable release"
+  ],
+  "files": {
+    "README.md": {
+      "bytes": 3152,
+      "sha256": "b8486f0fd892289738963695860c896acd7d1a90ca0a9c2e07b845e0c001bd7d"
+    },
+    "apple-job-128346703282.log": {
+      "bytes": 261109,
+      "sha256": "8dd5d85b152aa0da89d5f077e7bef00e3017db7d126d3fbc4e00288d6eb4ede2"
+    },
+    "artifacts-42353573085.json": {
+      "bytes": 849,
+      "sha256": "b053c5afcc256bd77307b65aefdf250854935ae876fdc63d1fcb7b8e4248c90b"
+    },
+    "jobs-42353573085.json": {
+      "bytes": 8198,
+      "sha256": "a588feeebb2e676fbf111ed77624f332820b7ce86ba9f64670adee5573df4718"
+    },
+    "macos-job-128346703317.log": {
+      "bytes": 89075,
+      "sha256": "1faa807771633b0d2bf02c3b1bf4faebaf89b1277d20bd4d3e5797f78a4aa8d4"
+    },
+    "ubuntu-job-128346703200.log": {
+      "bytes": 80816,
+      "sha256": "360d082b242a7c906e7a33e13d172b129951f3ecc3ee8536f3eed12ba305d8e7"
+    },
+    "windows-job-128346703002.log": {
+      "bytes": 82193,
+      "sha256": "216df9ef4d5aeb63c573801d2f86c8a57438965ef924c18778223e012040ccb5"
+    }
+  }
+}

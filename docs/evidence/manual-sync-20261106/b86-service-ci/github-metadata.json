@@ -1,0 +1,487 @@
+{
+  "run": {
+    "id": 42353573054,
+    "name": "Independent ciphertext sync service",
+    "node_id": "WFR_kwLOVQdT8c8AAAAJ3Hg8vg",
+    "head_branch": "feat/android-manual-sync",
+    "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+    "path": ".github/workflows/sync-service.yml",
+    "display_title": "feat(android): add explicit bounded encrypted sync and key identity checks",
+    "run_number": 253,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_id": 392053540,
+    "check_suite_id": 114751392607,
+    "check_suite_node_id": "CS_kwDOVQdT8c8AAAAat7dLXw",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054",
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42353573054",
+    "pull_requests": [
+      {
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/pulls/75",
+        "id": 5199488049,
+        "number": 75,
+        "head": {
+          "ref": "feat/android-manual-sync",
+          "sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+          "repo": {
+            "id": 1426543601,
+            "url": "https://api.github.com/repos/ForceMind/ZapIME",
+            "name": "ZapIME"
+          }
+        },
+        "base": {
+          "ref": "feat/sync-key-descriptor",
+          "sha": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+          "repo": {
+            "id": 1426543601,
+            "url": "https://api.github.com/repos/ForceMind/ZapIME",
+            "name": "ZapIME"
+          }
+        }
+      }
+    ],
+    "created_at": "2026-11-07T08:00:07Z",
+    "updated_at": "2026-11-07T08:07:30Z",
+    "actor": {
+      "login": "ForceMind",
+      "id": 88872598,
+      "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ForceMind",
+      "html_url": "https://github.com/ForceMind",
+      "followers_url": "https://api.github.com/users/ForceMind/followers",
+      "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+      "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+      "repos_url": "https://api.github.com/users/ForceMind/repos",
+      "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-11-07T08:00:07Z",
+    "triggering_actor": {
+      "login": "ForceMind",
+      "id": 88872598,
+      "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ForceMind",
+      "html_url": "https://github.com/ForceMind",
+      "followers_url": "https://api.github.com/users/ForceMind/followers",
+      "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+      "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+      "repos_url": "https://api.github.com/users/ForceMind/repos",
+      "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/jobs",
+    "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/logs",
+    "check_suite_url": "https://api.github.com/repos/ForceMind/ZapIME/check-suites/114751392607",
+    "artifacts_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/artifacts",
+    "cancel_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/cancel",
+    "rerun_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/workflows/392053540",
+    "head_commit": {
+      "id": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+      "tree_id": "7617e97ec42399c1d0f9f01db953a2b352375912",
+      "message": "test(android): verify manual sync pages and real TLS against isolated Go service\n\nAdd a separately guarded API28 temporary-system-CA gate with pre/post trust refusal, wrong-SAN rejection, actual Go/PostgreSQL exchange and exact cleanup. Keep production trust and all existing offline gates unchanged.\n\nPreserve downloaded e3c4 APK/Android/service evidence and the original macOS fixture failure. Resolve owned test/example parent aliases while retaining NOFOLLOW, add real candidate/dictionary/tombstone use checks, and document the pinned trial package/deployment command.",
+      "timestamp": "2026-11-07T08:00:00Z",
+      "author": {
+        "name": "ForceMind",
+        "email": "88872598+ForceMind@users.noreply.github.com"
+      },
+      "committer": {
+        "name": "ForceMind",
+        "email": "88872598+ForceMind@users.noreply.github.com"
+      }
+    },
+    "repository": {
+      "id": 1426543601,
+      "node_id": "R_kgDOVQdT8Q",
+      "name": "ZapIME",
+      "full_name": "ForceMind/ZapIME",
+      "private": false,
+      "owner": {
+        "login": "ForceMind",
+        "id": 88872598,
+        "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/ForceMind",
+        "html_url": "https://github.com/ForceMind",
+        "followers_url": "https://api.github.com/users/ForceMind/followers",
+        "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+        "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+        "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+        "repos_url": "https://api.github.com/users/ForceMind/repos",
+        "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/ForceMind/ZapIME",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME",
+      "forks_url": "https://api.github.com/repos/ForceMind/ZapIME/forks",
+      "keys_url": "https://api.github.com/repos/ForceMind/ZapIME/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/ForceMind/ZapIME/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/ForceMind/ZapIME/teams",
+      "hooks_url": "https://api.github.com/repos/ForceMind/ZapIME/hooks",
+      "issue_events_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/ForceMind/ZapIME/events",
+      "assignees_url": "https://api.github.com/repos/ForceMind/ZapIME/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/ForceMind/ZapIME/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/ForceMind/ZapIME/tags",
+      "blobs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/ForceMind/ZapIME/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/ForceMind/ZapIME/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/ForceMind/ZapIME/languages",
+      "stargazers_url": "https://api.github.com/repos/ForceMind/ZapIME/stargazers",
+      "contributors_url": "https://api.github.com/repos/ForceMind/ZapIME/contributors",
+      "subscribers_url": "https://api.github.com/repos/ForceMind/ZapIME/subscribers",
+      "subscription_url": "https://api.github.com/repos/ForceMind/ZapIME/subscription",
+      "commits_url": "https://api.github.com/repos/ForceMind/ZapIME/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/ForceMind/ZapIME/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/ForceMind/ZapIME/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/ForceMind/ZapIME/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/ForceMind/ZapIME/merges",
+      "archive_url": "https://api.github.com/repos/ForceMind/ZapIME/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/ForceMind/ZapIME/downloads",
+      "issues_url": "https://api.github.com/repos/ForceMind/ZapIME/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/ForceMind/ZapIME/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/ForceMind/ZapIME/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/ForceMind/ZapIME/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/ForceMind/ZapIME/labels{/name}",
+      "releases_url": "https://api.github.com/repos/ForceMind/ZapIME/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/ForceMind/ZapIME/deployments"
+    },
+    "head_repository": {
+      "id": 1426543601,
+      "node_id": "R_kgDOVQdT8Q",
+      "name": "ZapIME",
+      "full_name": "ForceMind/ZapIME",
+      "private": false,
+      "owner": {
+        "login": "ForceMind",
+        "id": 88872598,
+        "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/ForceMind",
+        "html_url": "https://github.com/ForceMind",
+        "followers_url": "https://api.github.com/users/ForceMind/followers",
+        "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+        "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+        "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+        "repos_url": "https://api.github.com/users/ForceMind/repos",
+        "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/ForceMind/ZapIME",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME",
+      "forks_url": "https://api.github.com/repos/ForceMind/ZapIME/forks",
+      "keys_url": "https://api.github.com/repos/ForceMind/ZapIME/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/ForceMind/ZapIME/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/ForceMind/ZapIME/teams",
+      "hooks_url": "https://api.github.com/repos/ForceMind/ZapIME/hooks",
+      "issue_events_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/ForceMind/ZapIME/events",
+      "assignees_url": "https://api.github.com/repos/ForceMind/ZapIME/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/ForceMind/ZapIME/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/ForceMind/ZapIME/tags",
+      "blobs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/ForceMind/ZapIME/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/ForceMind/ZapIME/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/ForceMind/ZapIME/languages",
+      "stargazers_url": "https://api.github.com/repos/ForceMind/ZapIME/stargazers",
+      "contributors_url": "https://api.github.com/repos/ForceMind/ZapIME/contributors",
+      "subscribers_url": "https://api.github.com/repos/ForceMind/ZapIME/subscribers",
+      "subscription_url": "https://api.github.com/repos/ForceMind/ZapIME/subscription",
+      "commits_url": "https://api.github.com/repos/ForceMind/ZapIME/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/ForceMind/ZapIME/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/ForceMind/ZapIME/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/ForceMind/ZapIME/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/ForceMind/ZapIME/merges",
+      "archive_url": "https://api.github.com/repos/ForceMind/ZapIME/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/ForceMind/ZapIME/downloads",
+      "issues_url": "https://api.github.com/repos/ForceMind/ZapIME/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/ForceMind/ZapIME/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/ForceMind/ZapIME/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/ForceMind/ZapIME/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/ForceMind/ZapIME/labels{/name}",
+      "releases_url": "https://api.github.com/repos/ForceMind/ZapIME/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/ForceMind/ZapIME/deployments"
+    }
+  },
+  "jobs": {
+    "total_count": 1,
+    "jobs": [
+      {
+        "id": 128346702928,
+        "run_id": 42353573054,
+        "workflow_name": "Independent ciphertext sync service",
+        "head_branch": "feat/android-manual-sync",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42353573054",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd4g9EUA",
+        "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128346702928",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42353573054/job/128346702928",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-07T08:00:07Z",
+        "started_at": "2026-11-07T08:00:09Z",
+        "completed_at": "2026-11-07T08:07:30Z",
+        "name": "postgres",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-07T08:00:10Z",
+            "completed_at": "2026-11-07T08:00:12Z"
+          },
+          {
+            "name": "Initialize containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-07T08:00:12Z",
+            "completed_at": "2026-11-07T08:00:26Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-07T08:00:26Z",
+            "completed_at": "2026-11-07T08:00:36Z"
+          },
+          {
+            "name": "Run dtolnay/rust-toolchain@1.97.1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-07T08:00:36Z",
+            "completed_at": "2026-11-07T08:00:45Z"
+          },
+          {
+            "name": "Run actions/setup-go@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-07T08:00:45Z",
+            "completed_at": "2026-11-07T08:00:57Z"
+          },
+          {
+            "name": "Start isolated S3-compatible storage for R2 protocol acceptance",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-07T08:00:57Z",
+            "completed_at": "2026-11-07T08:03:28Z"
+          },
+          {
+            "name": "PostgreSQL transaction, HTTP, isolation and revoke tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-07T08:03:28Z",
+            "completed_at": "2026-11-07T08:04:01Z"
+          },
+          {
+            "name": "Verify container build",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-07T08:04:01Z",
+            "completed_at": "2026-11-07T08:04:52Z"
+          },
+          {
+            "name": "Known Go vulnerability gate",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-07T08:04:52Z",
+            "completed_at": "2026-11-07T08:05:00Z"
+          },
+          {
+            "name": "Build real Rust encryption/recovery probe",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-07T08:05:00Z",
+            "completed_at": "2026-11-07T08:05:17Z"
+          },
+          {
+            "name": "Build shared manual client real-server acceptance probe",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-11-07T08:05:17Z",
+            "completed_at": "2026-11-07T08:05:18Z"
+          },
+          {
+            "name": "Two-device ciphertext and fresh-server recovery exercise",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-11-07T08:05:18Z",
+            "completed_at": "2026-11-07T08:05:49Z"
+          },
+          {
+            "name": "One-command installer, repeat install and fresh DB + object bucket recovery",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-11-07T08:05:49Z",
+            "completed_at": "2026-11-07T08:07:24Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-11-07T08:07:24Z",
+            "completed_at": "2026-11-07T08:07:25Z"
+          },
+          {
+            "name": "Post Run actions/setup-go@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26,
+            "started_at": "2026-11-07T08:07:25Z",
+            "completed_at": "2026-11-07T08:07:26Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-11-07T08:07:26Z",
+            "completed_at": "2026-11-07T08:07:26Z"
+          },
+          {
+            "name": "Stop containers",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-11-07T08:07:26Z",
+            "completed_at": "2026-11-07T08:07:26Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-11-07T08:07:26Z",
+            "completed_at": "2026-11-07T08:07:26Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128346702928",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000048430,
+        "runner_name": "GitHub Actions 1000048430",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      }
+    ]
+  },
+  "commit": {
+    "sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+    "node_id": "C_kwDOVQdT8doAKGI4NmU0ZjI3ZmNjZTJjNWQwYmQzOTRiMTM5NDYzYmI1MmVhNWZiZjk",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+    "html_url": "https://github.com/ForceMind/ZapIME/commit/b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+    "author": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-07T08:00:00Z"
+    },
+    "committer": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-07T08:00:00Z"
+    },
+    "tree": {
+      "sha": "7617e97ec42399c1d0f9f01db953a2b352375912",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/7617e97ec42399c1d0f9f01db953a2b352375912"
+    },
+    "message": "test(android): verify manual sync pages and real TLS against isolated Go service\n\nAdd a separately guarded API28 temporary-system-CA gate with pre/post trust refusal, wrong-SAN rejection, actual Go/PostgreSQL exchange and exact cleanup. Keep production trust and all existing offline gates unchanged.\n\nPreserve downloaded e3c4 APK/Android/service evidence and the original macOS fixture failure. Resolve owned test/example parent aliases while retaining NOFOLLOW, add real candidate/dictionary/tombstone use checks, and document the pinned trial package/deployment command.",
+    "parents": [
+      {
+        "sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "artifacts": {
+    "total_count": 1,
+    "artifacts": [
+      {
+        "id": 13566877658,
+        "node_id": "MDg6QXJ0aWZhY3QxMzU2Njg3NzY1OA==",
+        "name": "ZapIME-sync-service-tests",
+        "size_in_bytes": 1611,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566877658",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566877658/zip",
+        "expired": false,
+        "digest": "sha256:7fe01b01ddd2f4140cb968630ddabedda5e9c71b1f4b0400eb506f156922d301",
+        "created_at": "2026-11-07T08:07:25Z",
+        "updated_at": "2026-11-07T08:07:25Z",
+        "expires_at": "2027-02-05T08:00:07Z",
+        "workflow_run": {
+          "id": 42353573054,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/android-manual-sync",
+          "head_sha": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9"
+        }
+      }
+    ]
+  }
+}

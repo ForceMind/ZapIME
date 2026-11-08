@@ -1,0 +1,9 @@
+{
+  "artifact_id": 13587179959,
+  "job_id": 128506053746,
+  "source_head": "8df2793d8f54868dda75601f6f8ec27c90576d3b",
+  "run_attempt": "42388891657-2",
+  "sha256": "f85d81fde5349b9bc78572964700a41635b61915e19f8d0f5283c7bd7fa6217d",
+  "independently_verified": true,
+  "scope": "Same-source rerun passed both method and system IME gates with exact teardown/network/fixture cleanup; first failure remains unresolved"
+}

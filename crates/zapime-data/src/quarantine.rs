@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-only
 //! Bounded, persistent untrusted ciphertext journal. Not conflict resolution.
-use crate::{sync::require_profile, Error, Store};
+use crate::{
+    sync::{require_profile, workspace_budget},
+    Error, Store,
+};
 use rusqlite::{params, OptionalExtension, Transaction, TransactionBehavior};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -97,54 +100,54 @@ impl Store {
             return Err(Error::Invalid);
         }
         let id = fingerprint(profile, after, wire);
-        let tx = self
-            .db
-            .transaction_with_behavior(TransactionBehavior::Immediate)?;
-        require_profile(&tx, profile)?;
-        let saved: String = tx.query_row(
-            "SELECT value FROM metadata WHERE key='sync_cursor'",
-            [],
-            |r| r.get(0),
-        )?;
-        if saved.parse::<u64>().map_err(|_| Error::Invalid)? != after {
-            return Err(Error::SyncCursor);
-        }
-        let old: Option<(i64, String, String, String, i64)> = tx.query_row("SELECT sequence,reason,wire,profile_id,after_cursor FROM sync_retained_pulls WHERE id=?1", [&id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?))).optional()?;
-        let (sequence, first_reason) = if let Some((
-            sequence,
-            old_reason,
-            old_wire,
-            old_profile,
-            old_after,
-        )) = old
-        {
-            if sequence < 1
-                || old_wire != wire
-                || old_profile != profile.to_string()
-                || old_after != after as i64
-            {
-                return Err(Error::Integrity);
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+            require_profile(&tx, profile)?;
+            let saved: String = tx.query_row(
+                "SELECT value FROM metadata WHERE key='sync_cursor'",
+                [],
+                |r| r.get(0),
+            )?;
+            if saved.parse::<u64>().map_err(|_| Error::Invalid)? != after {
+                return Err(Error::SyncCursor);
             }
-            // Repeated failure does not update bytes, timestamps or counters.
-            (sequence, reason_from_sql(old_reason)?)
-        } else {
-            let (count, bytes): (i64, i64) = tx.query_row("SELECT count(*),coalesce(sum(length(CAST(wire AS BLOB))),0) FROM sync_retained_pulls", [], |r| Ok((r.get(0)?, r.get(1)?)))?;
-            if count >= MAX_RETAINED_PAGES
-                || bytes < 0
-                || bytes as usize > MAX_RETAINED_BYTES - wire.len()
+            let old: Option<(i64, String, String, String, i64)> = tx.query_row("SELECT sequence,reason,wire,profile_id,after_cursor FROM sync_retained_pulls WHERE id=?1", [&id], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?, r.get(3)?, r.get(4)?))).optional()?;
+            let (sequence, first_reason) = if let Some((
+                sequence,
+                old_reason,
+                old_wire,
+                old_profile,
+                old_after,
+            )) = old
             {
-                return Err(Error::RetainedFull);
-            }
-            tx.execute("INSERT INTO sync_retained_pulls(id,profile_id,after_cursor,reason,wire) VALUES(?1,?2,?3,?4,?5)", params![id, profile.to_string(), after as i64, serde_json::to_string(&reason)?, wire])?;
-            (tx.last_insert_rowid(), reason)
-        };
-        tx.commit()?;
-        Ok(RetainedSummary {
-            id,
-            sequence: sequence as u64,
-            after_cursor: after,
-            reason: first_reason,
-            bytes: wire.len(),
+                if sequence < 1
+                    || old_wire != wire
+                    || old_profile != profile.to_string()
+                    || old_after != after as i64
+                {
+                    return Err(Error::Integrity);
+                }
+                // Repeated failure does not update bytes, timestamps or counters.
+                (sequence, reason_from_sql(old_reason)?)
+            } else {
+                let (count, bytes): (i64, i64) = tx.query_row("SELECT count(*),coalesce(sum(length(CAST(wire AS BLOB))),0) FROM sync_retained_pulls", [], |r| Ok((r.get(0)?, r.get(1)?)))?;
+                if count >= MAX_RETAINED_PAGES
+                    || bytes < 0
+                    || bytes as usize > MAX_RETAINED_BYTES - wire.len()
+                {
+                    return Err(Error::RetainedFull);
+                }
+                tx.execute("INSERT INTO sync_retained_pulls(id,profile_id,after_cursor,reason,wire) VALUES(?1,?2,?3,?4,?5)", params![id, profile.to_string(), after as i64, serde_json::to_string(&reason)?, wire])?;
+                (tx.last_insert_rowid(), reason)
+            };
+            tx.commit()?;
+            Ok(RetainedSummary {
+                id,
+                sequence: sequence as u64,
+                after_cursor: after,
+                reason: first_reason,
+                bytes: wire.len(),
+            })
         })
     }
     /// Summaries only: SQL paging must not materialize every retained body.
@@ -157,39 +160,41 @@ impl Store {
         if after_sequence > i64::MAX as u64 || !(1..=20).contains(&limit) {
             return Err(Error::Invalid);
         }
-        let tx = self.db.transaction()?;
-        require_profile(&tx, profile)?;
-        let mut statement = tx.prepare("SELECT id,sequence,after_cursor,reason,length(CAST(wire AS BLOB)) FROM sync_retained_pulls WHERE profile_id=?1 AND sequence>?2 ORDER BY sequence LIMIT ?3")?;
-        let mut summaries = Vec::new();
-        for row in statement.query_map(
-            params![profile.to_string(), after_sequence as i64, limit as i64],
-            |r| {
-                Ok((
-                    r.get::<_, String>(0)?,
-                    r.get::<_, i64>(1)?,
-                    r.get::<_, i64>(2)?,
-                    r.get::<_, String>(3)?,
-                    r.get::<_, i64>(4)?,
-                ))
-            },
-        )? {
-            let (id, sequence, after, reason, bytes) = row?;
-            if !valid_id(&id)
-                || sequence < 1
-                || after < 0
-                || !(1..=MAX_PAGE_BYTES as i64).contains(&bytes)
-            {
-                return Err(Error::Integrity);
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction()?;
+            require_profile(&tx, profile)?;
+            let mut statement = tx.prepare("SELECT id,sequence,after_cursor,reason,length(CAST(wire AS BLOB)) FROM sync_retained_pulls WHERE profile_id=?1 AND sequence>?2 ORDER BY sequence LIMIT ?3")?;
+            let mut summaries = Vec::new();
+            for row in statement.query_map(
+                params![profile.to_string(), after_sequence as i64, limit as i64],
+                |r| {
+                    Ok((
+                        r.get::<_, String>(0)?,
+                        r.get::<_, i64>(1)?,
+                        r.get::<_, i64>(2)?,
+                        r.get::<_, String>(3)?,
+                        r.get::<_, i64>(4)?,
+                    ))
+                },
+            )? {
+                let (id, sequence, after, reason, bytes) = row?;
+                if !valid_id(&id)
+                    || sequence < 1
+                    || after < 0
+                    || !(1..=MAX_PAGE_BYTES as i64).contains(&bytes)
+                {
+                    return Err(Error::Integrity);
+                }
+                summaries.push(RetainedSummary {
+                    id,
+                    sequence: sequence as u64,
+                    after_cursor: after as u64,
+                    reason: reason_from_sql(reason)?,
+                    bytes: bytes as usize,
+                });
             }
-            summaries.push(RetainedSummary {
-                id,
-                sequence: sequence as u64,
-                after_cursor: after as u64,
-                reason: reason_from_sql(reason)?,
-                bytes: bytes as usize,
-            });
-        }
-        Ok(summaries)
+            Ok(summaries)
+        })
     }
     pub fn retained_pull(
         &mut self,
@@ -199,37 +204,39 @@ impl Store {
         if !valid_id(id) {
             return Err(Error::Invalid);
         }
-        let tx = self.db.transaction()?;
-        require_profile(&tx, profile)?;
-        let found: Option<(i64, String, String)> = tx.query_row("SELECT after_cursor,reason,wire FROM sync_retained_pulls WHERE id=?1 AND profile_id=?2", params![id, profile.to_string()], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).optional()?;
-        let Some((after, reason, wire)) = found else {
-            return Ok(None);
-        };
-        let pull = RetainedPull {
-            version: 1,
-            profile_id: profile,
-            after_cursor: after as u64,
-            reason: reason_from_sql(reason)?,
-            digest: id.to_owned(),
-            wire,
-        };
-        pull.validate_integrity()?;
-        Ok(Some(pull))
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction()?;
+            require_profile(&tx, profile)?;
+            let found: Option<(i64, String, String)> = tx.query_row("SELECT after_cursor,reason,wire FROM sync_retained_pulls WHERE id=?1 AND profile_id=?2", params![id, profile.to_string()], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?))).optional()?;
+            let Some((after, reason, wire)) = found else {
+                return Ok(None);
+            };
+            let pull = RetainedPull {
+                version: 1,
+                profile_id: profile,
+                after_cursor: after as u64,
+                reason: reason_from_sql(reason)?,
+                digest: id.to_owned(),
+                wire,
+            };
+            pull.validate_integrity()?;
+            Ok(Some(pull))
+        })
     }
     /// Explicit user action, never automatic TTL/eviction or a cursor advance.
     pub fn discard_retained_pull(&mut self, profile: Uuid, id: &str) -> Result<bool, Error> {
         if !valid_id(id) {
             return Err(Error::Invalid);
         }
-        let tx = self
-            .db
-            .transaction_with_behavior(TransactionBehavior::Immediate)?;
-        require_profile(&tx, profile)?;
-        let changed = tx.execute(
-            "DELETE FROM sync_retained_pulls WHERE id=?1 AND profile_id=?2",
-            params![id, profile.to_string()],
-        )?;
-        tx.commit()?;
-        Ok(changed == 1)
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
+            require_profile(&tx, profile)?;
+            let changed = tx.execute(
+                "DELETE FROM sync_retained_pulls WHERE id=?1 AND profile_id=?2",
+                params![id, profile.to_string()],
+            )?;
+            tx.commit()?;
+            Ok(changed == 1)
+        })
     }
 }

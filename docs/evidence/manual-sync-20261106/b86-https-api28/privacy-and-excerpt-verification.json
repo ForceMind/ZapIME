@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "original_log_sha256": "cfa75943a5817d5167086a8828af161667cad9a78ea3ad1a08658ebe1ca7e854",
+  "sensitive_test_material_matches": {
+    "device_token": 0,
+    "bootstrap_capability": 0,
+    "private_key": 0,
+    "authorization_value": 0
+  },
+  "archive_contains_metadata_only": true,
+  "phase_reports_strictly_validated": true,
+  "excerpt_sha256": "08309f5ee30d86255375259578af3aad7ed33bbe9fd2e7a04e2c2721983914bd"
+}

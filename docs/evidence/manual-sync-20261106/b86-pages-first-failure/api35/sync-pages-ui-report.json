@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "synthetic": true,
+  "api_level": 35,
+  "cases": [
+    {
+      "id": "fresh_main_prepared_fixture",
+      "passed": true
+    },
+    {
+      "id": "key_page_secure_local_selection",
+      "passed": true
+    },
+    {
+      "id": "key_confirmation_negative_cancel",
+      "passed": true
+    },
+    {
+      "id": "key_queued_cancel_before_io",
+      "passed": false,
+      "failure_type": "Exception"
+    }
+  ],
+  "scope": "Actual non-exported Android Activities on a freshly owned prepared main fixture; local selection and resume seam, normal View.performClick and AlertDialog negative\/positive controls, actual SyncWorker queued cancellation before work I\/O, stopped-generation rejection, unchanged business\/frozen\/cursor\/vault state and exact fixture cleanup. No physical input, active HTTPS interruption, successful network registration\/transfer, phone or user data acceptance.",
+  "button_activation_method": "production_View_performClick_and_AlertDialog_buttons",
+  "cancellation_scope": "actual_sync_worker_queued_cancel_before_work_io",
+  "android_https": "NOT RUN",
+  "active_https_interruption_tested": false,
+  "physical_input_tested": false,
+  "network_success_tested": false,
+  "secret_content_or_code_logged": false,
+  "fresh_fixture_owned": true,
+  "cleanup_completed": true
+}

@@ -1,0 +1,50 @@
+ZapIME 离线候选排序模型：来源与声明核对
+核对日期：2026-11-07
+
+模型标识：msime-keystroke-8m-rerank-v2
+上游：metasequoiaime/chinese-ime-lm，rerank-v2，6x256 / 7.96M 参数。
+用途：给固定 MSIME 引擎已经生成的中文候选打分；模型本身不做拼音解码。
+本次接入用于默认离线候选增强的 Alpha 验证。运行时不下载模型、不上传输入。
+
+1. 权重与署名
+
+上游将本版本模型权重声明为 Apache-2.0。训练仓库的 GPL-3.0 与模型权重
+许可是不同声明；reference/ 的许可为 Apache-2.0。随包 LICENSE.txt 是
+上游 reference/LICENSE 的原始字节，NOTICE.txt 是下述文档提交的原始字节。
+
+模型的 lm_step.ort、model.json、vocab.json 原样保留，并分别校验固定 SHA256。
+model.json 及图中的 license / attribution 元数据均不改写。NOTICE 包括
+C4 中文、FineWeb-2 cmn_Hani、LCCC，以及 rerank-v2 新增的 DeepSeek 合成聊天
+来源。上游文档的许可描述在本文件中记作上游声明，不等于独立法律结论。
+
+模型发布：
+https://github.com/metasequoiaime/chinese-ime-lm/releases/tag/rerank-v2
+模型卡与说明固定提交：1c90f5ee1b76ecf18d5171ef78a4dc076a0bb0d8
+https://github.com/metasequoiaime/chinese-ime-lm/blob/1c90f5ee1b76ecf18d5171ef78a4dc076a0bb0d8/docs/hf/pinyin-ime-keystroke-reranker-8M.md
+https://github.com/metasequoiaime/chinese-ime-lm/blob/1c90f5ee1b76ecf18d5171ef78a4dc076a0bb0d8/NOTICE
+https://github.com/metasequoiaime/chinese-ime-lm/blob/1c90f5ee1b76ecf18d5171ef78a4dc076a0bb0d8/reference/LICENSE
+
+2. 已发现的训练来源声明差异
+
+上游模型卡、NOTICE 和 model.json 将 LCCC 标作 MIT。LCCC 原始项目
+thu-coai/CDial-GPT 的仓库 LICENSE 是 MIT，但同一项目 README 明确写道：
+“本项目所提供的 LCCC 数据集和预训练对话模型仅限科研用途。”
+
+核对时该原始项目提交：81064865221d3503251d633f3d0b651004c938a6
+https://github.com/thu-coai/CDial-GPT/blob/81064865221d3503251d633f3d0b651004c938a6/README.md
+https://github.com/thu-coai/CDial-GPT/blob/81064865221d3503251d633f3d0b651004c938a6/LICENSE
+
+核对上述来源及公开 issue / PR 后，未找到明确解释这处声明差异的上游答复。
+chinese-ime-lm 的 #19、#21、#22 处理署名、权重许可或完整性，不能据此
+认定原始数据声明差异已解决。本记录不把该差异推断为模型权重必然违法，
+也不宣称商业再分发范围已获完整澄清。后续发行评估须保留这一未决事项。
+
+3. 运行库与发布边界
+
+APK 复用已固定的 ONNX Runtime 运行库；构建使用 v1.28.2 官方 C API 头，
+MIT 许可。模型准备脚本只在构建时从固定 HTTPS 来源下载，检查逐项长度和
+SHA256 后打包。安装器使用编译进 APK 的目录清单再次校验，不能用包内
+自报的校验值替代可信来源。模型文件版本或随包说明变化都会改变目录修订。
+
+资源完整性通过不等于候选质量、手机延迟或许可问题已全部验收；本说明
+不把上游测量替代 ZapIME 自身的实际推理、系统输入和真机验收。

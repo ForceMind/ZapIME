@@ -1,0 +1,119 @@
+  Class descriptor  : 'Lorg/zapime/android/NativeVoiceKey;'
+  Access flags      : 0x0010 (FINAL)
+  Superclass        : 'Ljava/lang/Object;'
+  Interfaces        -
+  Static fields     -
+  Instance fields   -
+  Direct methods    -
+    #0              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : '<clinit>'
+      type          : '()V'
+      access        : 0x10008 (STATIC CONSTRUCTOR)
+      method_idx    : 960
+      code          -
+      registers     : 1
+      ins           : 0
+      outs          : 1
+      insns size    : 6 16-bit code units
+      catches       : (none)
+      positions     :
+        0x0000 line=9
+      locals        :
+    #1              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : '<init>'
+      type          : '()V'
+      access        : 0x10000 (CONSTRUCTOR)
+      method_idx    : 961
+      code          -
+      registers     : 1
+      ins           : 1
+      outs          : 1
+      insns size    : 4 16-bit code units
+      catches       : (none)
+      positions     :
+        0x0000 line=8
+      locals        :
+        0x0000 - 0x0004 reg=0 this Lorg/zapime/android/NativeVoiceKey;
+    #2              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'accept'
+      type          : '(J[SI)[B'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 962
+      code          : (none)
+    #3              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'allocate'
+      type          : '()J'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 963
+      code          : (none)
+    #4              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'cancel'
+      type          : '(J)V'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 964
+      code          : (none)
+    #5              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'checkModel'
+      type          : '(Ljava/lang/String;)Z'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 965
+      code          : (none)
+    #6              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'close'
+      type          : '(J)Z'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 966
+      code          : (none)
+    #7              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'finish'
+      type          : '(J)[B'
+      access        : 0x0008 (STATIC)
+      method_idx    : 967
+      code          -
+      registers     : 3
+      ins           : 2
+      outs          : 3
+      insns size    : 7 16-bit code units
+      catches       : (none)
+      positions     :
+        0x0000 line=14
+      locals        :
+        0x0000 - 0x0007 reg=1 (null) J
+    #8              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'finish'
+      type          : '(JI)[B'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 968
+      code          : (none)
+    #9              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'releaseCache'
+      type          : '()Z'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 969
+      code          : (none)
+    #10              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'result'
+      type          : '([B)Lorg/json/JSONObject;'
+      access        : 0x0008 (STATIC)
+      method_idx    : 970
+      code          -
+      registers     : 4
+      ins           : 1
+      outs          : 3
+      insns size    : 23 16-bit code units
+      catches       : (none)
+      positions     :
+        0x0000 line=22
+        0x0002 line=23
+        0x000f line=22
+      locals        :
+        0x0000 - 0x0017 reg=3 (null) [B
+    #11              : (in Lorg/zapime/android/NativeVoiceKey;)
+      name          : 'start'
+      type          : '(J[B[B)[B'
+      access        : 0x0108 (STATIC NATIVE)
+      method_idx    : 971
+      code          : (none)
+  Virtual methods   -
+  source_file_idx   : 650 (NativeVoiceKey.java)
+

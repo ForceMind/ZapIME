@@ -1,0 +1,208 @@
+{
+  "source_commit": "e24f1bd21ecd4fca99d909a972116e5a36e5f6c2",
+  "run_id": 42199407235,
+  "artifact_id": 13494970099,
+  "artifact_zip": {
+    "bytes": 234930585,
+    "sha256": "0669c42660866c3ed41ff2126810f42f15453bfe30f30f84ae4f203cc345271e",
+    "download_size_and_github_digest_verified": true
+  },
+  "tooling": {
+    "java": "OpenJDK21.0.13",
+    "build_tools": "35.0.0 official Google build-tools_r35_linux.zip",
+    "official_archive_sha1": "2cfaa0bbb2336e9ec18ed3ecea84fa2e2af607bc",
+    "download_archive_bytes": 61958799,
+    "download_archive_sha256": "bd3a4966912eb8b30ed0d00b0cda6b6543b949d5ffe00bea54c04c81e1561d88"
+  },
+  "apks": {
+    "arm64-v8a": {
+      "bytes": 51677499,
+      "sha256": "c4c7d4eebc65add88f0b3adb1a44e8606e14422d5ad4d7e004a0acf9efc4e774",
+      "signature_verify_exit": 0,
+      "zipalign_16k_check_exit": 0,
+      "certificate_sha256": "e6fc2a324ca8dd88a5c9a74dcf2a9555428281c056013e6071e0887fed637f2c",
+      "signature_v3_verified": true,
+      "native": {
+        "lib/arm64-v8a/libonnxruntime.so": {
+          "bytes": 22249560,
+          "sha256": "33847ad43bffe204699fd4a27f7f3603452a8cdaf2f9a44983a0bc31ffcf2da1",
+          "elf_machine": 183,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/arm64-v8a/libsherpa-onnx-c-api.so": {
+          "bytes": 4465168,
+          "sha256": "c85e2382e2ca12b0513826be926eaccfea896b4cbf568182e287671ba526f80d",
+          "elf_machine": 183,
+          "load_alignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/arm64-v8a/libzapime_core.so": {
+          "bytes": 13619528,
+          "sha256": "2bf41ba239c61ec3e489755d5f6512ac806cdd83eae2048ad404f794a8c24048",
+          "elf_machine": 183,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/arm64-v8a/libzapime_voice.so": {
+          "bytes": 4627704,
+          "sha256": "818f3e59bf04bef31cdd7c1609c16f0ac3f78b821b88031bdea89cb2d46ff85b",
+          "elf_machine": 183,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/arm64-v8a/libzapime_voicekey_adapter.so": {
+          "bytes": 1536944,
+          "sha256": "aad675ffddc97188f0112caca43d9bbde4ecd89a7ba857ca0709d022af7684c1",
+          "elf_machine": 183,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        }
+      },
+      "no_model_or_audio_members_by_known_extensions": true,
+      "dex_bytes": 206852,
+      "dex_sha256": "6895920ce1b7ce7c3d76eeac307ffa380c2157caa652eae41a4272e3cb229d8c",
+      "engine_type_descriptors_present": true,
+      "test_probe_descriptors_absent": true,
+      "gpl_sha256": "5e376676c81ad41e9b690711db575bfd2623467b21814d7767373fda14aff80f",
+      "voicekey_attribution_sha256": "ebec008829632df26a4059d06193afdaf28d716fa1f53801a4b2de1231729287",
+      "core_license_inventory_entries": 132,
+      "adapter_declared_packages_missing_inventory": [
+        "tokio",
+        "rayon",
+        "async-trait"
+      ],
+      "voicekey_jni_exports": [
+        "Java_org_zapime_android_NativeVoiceKey_accept",
+        "Java_org_zapime_android_NativeVoiceKey_allocate",
+        "Java_org_zapime_android_NativeVoiceKey_cancel",
+        "Java_org_zapime_android_NativeVoiceKey_checkModel",
+        "Java_org_zapime_android_NativeVoiceKey_close",
+        "Java_org_zapime_android_NativeVoiceKey_finish",
+        "Java_org_zapime_android_NativeVoiceKey_start"
+      ],
+      "voicekey_needed_libraries": [
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ]
+    },
+    "x86_64": {
+      "bytes": 53000785,
+      "sha256": "60b94bcb8acf726e3d1934c57465f738a8da31e59314afe72daffe07202fd0b6",
+      "signature_verify_exit": 0,
+      "zipalign_16k_check_exit": 0,
+      "certificate_sha256": "e6fc2a324ca8dd88a5c9a74dcf2a9555428281c056013e6071e0887fed637f2c",
+      "signature_v3_verified": true,
+      "native": {
+        "lib/x86_64/libonnxruntime.so": {
+          "bytes": 25581120,
+          "sha256": "087e84297cad64acb823c3d901d6e0cc934e91add7cdb20da802cd1c0bea5c3e",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libsherpa-onnx-c-api.so": {
+          "bytes": 4927096,
+          "sha256": "631ca2828e47b61d8afe4b3c75a157423cbafaba6f8c0db89c27d21f1b173d9a",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_core.so": {
+          "bytes": 13739912,
+          "sha256": "9f5c4acd268caca73ef679e0df9f374b7d02422e2f9ddddd5f530559632093a6",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_voice.so": {
+          "bytes": 4340224,
+          "sha256": "5617155e843ba7cd16b727bf38915983ba7b5a4ef5d9a154a4fd57c475e51c10",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        },
+        "lib/x86_64/libzapime_voicekey_adapter.so": {
+          "bytes": 1466456,
+          "sha256": "49f4f960120b01e1c1f7970bdf54028dfe4e858a06038f51399bd4852be821c2",
+          "elf_machine": 62,
+          "load_alignments": [
+            16384,
+            16384,
+            16384,
+            16384
+          ]
+        }
+      },
+      "no_model_or_audio_members_by_known_extensions": true,
+      "dex_bytes": 206852,
+      "dex_sha256": "6895920ce1b7ce7c3d76eeac307ffa380c2157caa652eae41a4272e3cb229d8c",
+      "engine_type_descriptors_present": true,
+      "test_probe_descriptors_absent": true,
+      "gpl_sha256": "5e376676c81ad41e9b690711db575bfd2623467b21814d7767373fda14aff80f",
+      "voicekey_attribution_sha256": "ebec008829632df26a4059d06193afdaf28d716fa1f53801a4b2de1231729287",
+      "core_license_inventory_entries": 133,
+      "adapter_declared_packages_missing_inventory": [
+        "tokio",
+        "rayon",
+        "async-trait"
+      ],
+      "voicekey_jni_exports": [
+        "Java_org_zapime_android_NativeVoiceKey_accept",
+        "Java_org_zapime_android_NativeVoiceKey_allocate",
+        "Java_org_zapime_android_NativeVoiceKey_cancel",
+        "Java_org_zapime_android_NativeVoiceKey_checkModel",
+        "Java_org_zapime_android_NativeVoiceKey_close",
+        "Java_org_zapime_android_NativeVoiceKey_finish",
+        "Java_org_zapime_android_NativeVoiceKey_start"
+      ],
+      "voicekey_needed_libraries": [
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ]
+    }
+  },
+  "limitations": [
+    "This exact baseline still contains the VoiceKey-only entry bug; do not label as verified dual-engine Alpha.",
+    "APK byte/ABI/JNI/manifest/signature/alignment checks do not execute VoiceKey model inference, AudioRecord or real ARM code.",
+    "No acoustic-model weights or license to redistribute them were obtained or assumed.",
+    "VoiceKey source attribution exists, but the baseline core-only Rust license collector misses adapter-specific tokio/rayon/async-trait notices; complete locked dependency inventory remains necessary.",
+    "Source compile-boundary checks are not a general proof that arbitrary binary bytes contain no secrets."
+  ]
+}

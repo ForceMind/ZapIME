@@ -1,0 +1,129 @@
+{
+  "runtime_sha256": "087e84297cad64acb823c3d901d6e0cc934e91add7cdb20da802cd1c0bea5c3e",
+  "model_revision": "c019da067fda7b2488cfd787bd2ab56cbabfc3a992e1caf8df87bda2aa73aa8d",
+  "reference": {
+    "candidate_cache_nodes": 10,
+    "context_cache_nodes": 7,
+    "executed": true,
+    "fixture_sha256": "1687b8e30cf49ba532ad70346447bf6c851ab3562cc97bf04da23ac61d1bc076",
+    "graph_calls": 2,
+    "runtime_version": "1.28.2",
+    "scores": [
+      -9.505149841308594,
+      -11.410218238830566,
+      -3.7541027069091797
+    ],
+    "session_closed": true
+  },
+  "reference_kind": "upstream-frozen-tensors-same-apk-runtime-v1",
+  "model_load_ms": 23.979939,
+  "scores": [
+    -9.505149841308594,
+    -11.410218238830566,
+    -3.7541027069091797
+  ],
+  "reference_max_abs_error": 0,
+  "legacy_host_reference": {
+    "runtime_version": "1.24.4",
+    "scores": [
+      -9.413619995117188,
+      -11.37354850769043,
+      -3.759044647216797
+    ],
+    "max_abs_error": 0.09152984619140625,
+    "used_as_android_oracle": false
+  },
+  "old_click_index": 0,
+  "ranked_index_for_same_id": 1,
+  "schema_version": 2,
+  "passed": true,
+  "status": "PASS",
+  "synthetic": true,
+  "checks": 14,
+  "cases": [
+    {
+      "id": "default_on_preference",
+      "passed": true
+    },
+    {
+      "id": "pinned_apk_resources",
+      "passed": true
+    },
+    {
+      "id": "real_model_msime_pool",
+      "passed": true
+    },
+    {
+      "id": "invalid_rank_requests_preserve_view",
+      "passed": true
+    },
+    {
+      "id": "model_rank_changes_display_only",
+      "passed": true
+    },
+    {
+      "id": "stale_generation_and_bad_id",
+      "passed": true
+    },
+    {
+      "id": "original_id_click_after_rank_commits_editable",
+      "passed": true
+    },
+    {
+      "id": "old_composition_revision_rejected",
+      "passed": true
+    },
+    {
+      "id": "blocked_rank_publication_preserves_view",
+      "passed": true
+    },
+    {
+      "id": "private_pool_cannot_enable",
+      "passed": true
+    },
+    {
+      "id": "clear_context_isolation",
+      "passed": true
+    },
+    {
+      "id": "cross_thread_cancel_and_owner_guards",
+      "passed": true
+    },
+    {
+      "id": "close_stale_handle_and_reopen",
+      "passed": true
+    },
+    {
+      "id": "corrupt_model_rejected_valid_bundle_preserved",
+      "passed": true
+    }
+  ],
+  "api_level": 28,
+  "abi": "x86_64",
+  "fixture_id": "candidate-ranking-android-v1",
+  "fixture_sha256": "93e86396ac5f12e83bfacd42c2f990b4766321242c50b3d90d6d9c19e46ae730",
+  "model_id": "msime-keystroke-8m-rerank-v2",
+  "model_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+  "score_tolerance": 0.001,
+  "reference_runtime_version": "1.28.2",
+  "apk_runtime_version_expected": "1.28.2",
+  "independent_reference_verified": true,
+  "real_model_executed": true,
+  "real_msime_executed": true,
+  "actual_editable_verified": true,
+  "production_commit_path_used": true,
+  "default_on_verified": true,
+  "private_pool_empty": true,
+  "score_calls": 9,
+  "completed_scores": 7,
+  "non_main_model_thread": true,
+  "cleanup_completed": true,
+  "open_native_handles_at_exit": 0,
+  "open_core_handles_at_exit": 0,
+  "system_ime_executed": false,
+  "phone_executed": false,
+  "active_inference_cancel_tested": false,
+  "heap_leak_tested": false,
+  "probe_opens_network": false,
+  "scope": "Actual Android JNI on APK-pinned 8M model, independent upstream tensor execution on the same APK runtime, and real MSIME with a synthetic lexicon; original-ID selection enters production trackCoreCommit and an independent EditText Editable. Not activated system IME, physical taps, phone latency, active-inference kill or heap-leak acceptance."
+}

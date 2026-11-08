@@ -1,0 +1,23 @@
+2026-11-06T11:41:45.1005232Z ##[group]Run cargo fmt --manifest-path integrations/voicekey/Cargo.toml --all --check
+2026-11-06T11:41:45.1005977Z [36;1mcargo fmt --manifest-path integrations/voicekey/Cargo.toml --all --check[0m
+2026-11-06T11:41:45.1006653Z [36;1mcargo build --locked --manifest-path integrations/voicekey/Cargo.toml --release --example offline_probe[0m
+2026-11-06T11:41:45.1040361Z shell: /usr/bin/bash -e {0}
+2026-11-06T11:41:45.1040864Z env:
+2026-11-06T11:41:45.1041109Z   CARGO_HOME: /home/runner/.cargo
+2026-11-06T11:41:45.1041817Z   CARGO_INCREMENTAL: 0
+2026-11-06T11:41:45.1042149Z   CARGO_TERM_COLOR: always
+2026-11-06T11:41:45.1042488Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.16/arm64
+2026-11-06T11:41:45.1042993Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.16/arm64/lib/pkgconfig
+2026-11-06T11:41:45.1043461Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/arm64
+2026-11-06T11:41:45.1043880Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/arm64
+2026-11-06T11:41:45.1044499Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.16/arm64
+2026-11-06T11:41:45.1044969Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.16/arm64/lib
+2026-11-06T11:41:45.1045468Z   JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/arm64
+2026-11-06T11:41:45.1046004Z   JAVA_HOME_17_ARM64: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.21-9/arm64
+2026-11-06T11:41:45.1046502Z ##[endgroup]
+2026-11-06T11:41:45.1555058Z info: syncing channel updates for 1.97.1-aarch64-unknown-linux-gnu
+2026-11-06T11:41:45.2240502Z info: latest update on 2026-07-16 for version 1.97.1 (8bab26f4f 2026-07-14)
+2026-11-06T11:41:45.2347643Z info: downloading 2 components
+2026-11-06T11:41:45.6963317Z info: rolling back changes
+2026-11-06T11:41:45.6993263Z error: failed to install component: 'rustfmt-preview-aarch64-unknown-linux-gnu', detected conflict: 'bin/cargo-fmt'
+2026-11-06T11:41:45.7040995Z ##[error]Process completed with exit code 1.

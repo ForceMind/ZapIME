@@ -13,3 +13,5 @@
 *.dump
 __pycache__/
 *.pyc
+
+/integrations/voicekey/target/

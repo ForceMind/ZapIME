@@ -65,3 +65,15 @@
 - 本机加密备份独立有界worker，不在输入/同步/UI线程做KDF/IO；仅4MiB归档/6MiB密文，固定既有KDF，用途前缀区分同步恢复包，不读取/替换SyncSecrets材料。恢复只打开已存在v2库，同事务拒绝记录、绑定和操作/同步历史；不自动创建/迁移/清空。SAF写后读回不是跨提供程序原子或永久持久保证，代码另存/核对不虚构外部保存，离开不承诺回滚已经开始事务。只有dedicated_ci核实数字run/attempt/emulator后才能传zapime_ci_backup启用系统文档夹具，只删除自己新建的合成文档；正向独立空库JNI与真实SAF导出/正向导入UI/真机分别记证据，日志不含恢复码、正文或秘密页文本。
 
 - 受保护CI的SAF夹具须在Activity临时URI授权失效前删除自己的新建文档；逐项清理并保留原始操作失败，报告必须即使清理失败也写出且要求cleanup_completed=true。不得增加产品存储权限、持久化授权或跳过提供程序来让门禁通过。
+
+- VoiceKey 接续先读 docs/VOICEKEY_INTEGRATION.md、docs/VOICEKEY_ACCEPTANCE.md、integrations/voicekey/README.md。固定 vendor 仅直接引用 fbank/xnet；model/stream/kernels 是保留固定来源的本地适配，不改脏 vendor。独立 Cargo.lock，构建/测试/许可收集 --locked，严格格式与 native ARM 门禁不可软失败。物理 blocking worker 实际退出前持有容量，close 超时不等于计算被杀死。模型信任仅来自 third_party/voicekey-model-lock.json 生成的 APK 目录；官方完整性审计不等于识别或再分发许可。产品及公开测试产物不捆绑权重。test_android_voice_engine.sh、test_android_voicekey_models.sh、test_android_packaging.py 分别覆盖主机路由/存储/打包；新模型 CPU/JNI/系统 IME/ARM workflow 各自保留真实结果，不能借旧 X-ASR 或 APK 通过。原始记录见 docs/evidence/voicekey-runtime-20261106，真机任务见 docs/S25_DUAL_VOICE_CHECKLIST.md。
+
+- VoiceKey背压仅在独立语音worker有界等待，不增队列、不跳帧、不重复计入PCM证据；停止后drain/final使用同一30秒预算且不能重复stop延长。watchdog只发协作取消，物理解码槽到实际线程退出才释放。JNI finish唯一native参数为(long,int)，旧long Java wrapper默认30000；真实JNI须验证无效预算不消耗句柄。专项PCM使用独立单调时钟生产者及实际VoicePcmQueue，不用同步consumer阻塞稀释生产速率。
+
+- 本机同步准备见docs/ANDROID_SYNC_PREPARATION.md：typed材料不得普通JSON/日志化；先create-only vault保存并读回，再existing-v2事务绑定account/key ID/根指纹。文件与DB不是跨存储原子事务；中断复用旧材料，bound缺材料须恢复，旧cipher不可读不自动重置。准备/本地绑定不是上传授权或账号全局密钥登记；无HTTP/自动上传。新页面的SAF/生命周期、方法JNI/Keystore、手机及全设备灾备分别记证据，不能沿用旧备份页成功。
+
+- 新同步恢复页SAF验收仅在数字CI独立模式、主资料根和连接原本不存在后创建合成fixture；不在原完整输入gate中清空主库。只删本轮唯一文档且先删后finish，清理失败拒绝成功。页面可能显示实际合成恢复码，专用脚本禁止通用Activity/a11y/页面截图诊断，只取阶段/严格报告/provider列表。控制worker排队上限8，拒绝须显示失败，不能阻塞/无限排队或宣称阻塞IO必然中止。
+
+- 最新Android手动同步契约见docs/ANDROID_MANUAL_SYNC.md与ADR-022：原准备页保持零HTTP；核对/首次登记和逐轮资料传输为独立显式页面。所有副作用先锁定用户确认的公开Selection(server/account/device/keySHA)，HTTP前后核当前完整connection和实际vault字节的DB指纹。无默认上传/后台轮询；原冻结字节才可POST，ACK必须与真实stage及AEAD原快照匹配，不动pull cursor；整页只走共享preserving认证边界。既有“宿主尚未接入”描述为早期基线，不得用来删新接缝或跳过新实际CI/真机验收。
+
+- ADR-023新增唯一测试例外：只有专用sync HTTPS API28 GitHub作业和scripts/android_sync_https_smoke.py在numeric run/attempt+emulator/qemu/API28/userdebug/root/SELinux Enforcing全部核实后，才可在全新writable-system/no-snapshot AVD的临时系统副本添加本轮唯一CA；不在用户设备/生产使用。生产APK默认TLS/hostname不改，不加调试CA或自定义TrustManager/SSL工厂；before/after实际TLS拒绝、错误SAN拒绝、根库基线恢复与本轮CA/精确UID规则清理全过才PASS。禁止关闭SELinux、disable-verity、隐藏cert开关、改APEX或flush规则。秘密/正文/CA私钥不入参数/日志/artifact，test-only bootstrap凭据仍需生产身份验证。单模拟器双profile/临时系统CA不等于手机、公网、R2或配对。旧JVM/离线原报告scope保留；35/36单列BLOCKED，不能借API28。

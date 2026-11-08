@@ -1,0 +1,20 @@
+{
+  "source_head": "e8e016cb6fe932d58cad2b04ed5ed6ab0f89ed9e",
+  "run_id": 42350448294,
+  "artifact_id": 13565866875,
+  "artifact_name": "ZapIME-sync-service-tests",
+  "zip_bytes": 1613,
+  "github_digest": "sha256:be9254e564eec7655091ec5977e3c5f40d86e967ea443f86f5fbf9073e04a3dd",
+  "actual_zip_sha256": "be9254e564eec7655091ec5977e3c5f40d86e967ea443f86f5fbf9073e04a3dd",
+  "digest_matches": true,
+  "members": [
+    {
+      "path": "sync-service-tests.log",
+      "bytes": 8118,
+      "sha256": "5c8d4685cb7824675f8a87fbd0a5b7bf0e2b88b93498d4725aa04f337c0d6d88",
+      "zip_crc32": "c3ef5f85",
+      "crc_verified": true
+    }
+  ],
+  "scope": "Actual downloaded and CRC/SHA checked server74 log artifact. Does not execute or validate the new manual client."
+}

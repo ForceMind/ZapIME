@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "reviewed_at_utc": "2026-11-06T11:57:37+00:00",
+  "review_type": "read-only source parity inspection, not executed model-output parity",
+  "repository": "ForceMind/ZapIME",
+  "reviewed_head": "5bbfe310e716762b36cdb0cf28b09ad5a2e1818c",
+  "upstream_repository": "J3n5en/voicekey",
+  "upstream_commit": "3ba017826eef7fac405198510b03859eb5b6c8c4",
+  "files": [
+    {
+      "upstream_path": "vendor/voicekey/crates/wtlocal/src/model.rs",
+      "upstream_sha256": "62108e205777a4b8e82b0451d5ba09e05a312ec142b821628ca4dfd1f4896ad0",
+      "adapter_path": "integrations/voicekey/src/model.rs",
+      "adapter_sha256": "4eecb2d7580bd1b9c4b6d68f91272093f5f2f985677293dd8401958b3ccd57bf",
+      "normalized_diff_sha256": "24a8c388b3d4bf28952b89da50417f28ab2ecd1ef0d6f0c66b39a74139aa16e9",
+      "normalized_diff_scope": "Pinned upstream copy formatted using rustfmt 1.97.1 edition2021 skip_children=true, compared against adapter; vendor was not modified."
+    },
+    {
+      "upstream_path": "vendor/voicekey/crates/wtlocal/src/stream.rs",
+      "upstream_sha256": "5e6f7f1215d10f644675a7d5b6f50dec3f1e486a01974306a9bef1acdda1a8c2",
+      "adapter_path": "integrations/voicekey/src/stream.rs",
+      "adapter_sha256": "8da0d3217243f8a07de408fc8c34107516639bbb226928f0ab50f40d11a864db",
+      "normalized_diff_sha256": "f4f3c0995aef0be310649d50dbc230150c60eaeb985a3c53c8de76202955807a",
+      "normalized_diff_scope": "Pinned upstream copy formatted using rustfmt 1.97.1 edition2021 skip_children=true, compared against adapter; vendor was not modified."
+    },
+    {
+      "upstream_path": "vendor/voicekey/crates/wtlocal/src/kernels.rs",
+      "upstream_sha256": "718334f5e0802f05d3b45c5a8956413c3a8b21343902fe8684775649bec0a6ab",
+      "adapter_path": "integrations/voicekey/src/kernels.rs",
+      "adapter_sha256": "e985cb21a30add294f204a4dbda9b3c8edff03fbcc14c56755829c9f6ff6a96f",
+      "normalized_diff_sha256": "1456c345b73752e11f0e2b564734e8881f2f9956b415565e9c2b44e6f27ccd4d",
+      "normalized_diff_scope": "Pinned upstream copy formatted using rustfmt 1.97.1 edition2021 skip_children=true, compared against adapter; vendor was not modified."
+    }
+  ],
+  "direct_pinned_modules": [
+    {
+      "path": "vendor/voicekey/crates/wtlocal/src/fbank.rs",
+      "sha256": "08809501b422f23c46082586fed0ff478f390d5dd062b6db665e4c206b9d24ff",
+      "adapter_use": "Direct #[path] reference; no local adaptation"
+    },
+    {
+      "path": "vendor/voicekey/crates/wtlocal/src/xnet.rs",
+      "sha256": "6eae15982d7b5f70544e1719149d2a0dd9dc15885ff33e496baea67b534b539c",
+      "adapter_use": "Direct #[path] reference; no local adaptation"
+    }
+  ],
+  "findings": [
+    {
+      "area": "model",
+      "status": "NO_UNINTENDED_ARITHMETIC_CHANGE_FOUND_BY_SOURCE_REVIEW",
+      "unchanged": "Dimensions, convolution stride/padding and operation order, dynamic quantization, normalization, attention scalar loops, GELU, output argmax, CTC/text and Rayon available_parallelism.min(4) policy.",
+      "intentional": "Cancellation checkpoints and Result propagation, parallel for_each to fallible try_for_each over independent output rows, tiny XNET header rejection. Q/K/V matrix operations remain in the same order with intervening cancellation checks."
+    },
+    {
+      "area": "stream",
+      "status": "NO_UNINTENDED_DECODING_CHANGE_FOUND_BY_SOURCE_REVIEW",
+      "unchanged": "PREV=200, BLK=400, POST=100, PAD=50, WHOLE_MAX=2000; stream window boundaries, blank-tail truncation, CTC/tidy punctuation rules, full-sequence final decode for <=2000 feature frames.",
+      "intentional": "Cancellation checks and accepted-nonzero gate; exact-zero sessions suppress model partial/final decode."
+    },
+    {
+      "area": "kernels",
+      "status": "INTENTIONAL_INTEGER_KERNEL_CHANGES",
+      "unchanged": "Quantization, f32 dot, output scaling/bias arithmetic; iteration/write helper refactor preserves output cells and scalar operation order.",
+      "intentional": "Stable NEON signed widening products replace unstable vdot intrinsic; AVX2 signed i8 widening replaces maddubs/sign approach to correctly handle -128. Native ARM/x86 optimized outputs were checked against independent i64 sums by the separate native-runner evidence.",
+      "limit": "Fixed model weight distribution has not been audited for -128. The AVX2 repair may intentionally change output relative to the original buggy AVX2 path. Native scalar equivalence is not a complete upstream model token comparison."
+    },
+    {
+      "area": "partial_scheduling",
+      "status": "KNOWN_RUNTIME_SCHEDULING_DIFFERENCE",
+      "upstream": "The engine drains already queued PCM via try_recv before considering a partial decode.",
+      "adapter": "The worker considers a partial after each accepted frame, while retaining all queued frames and using the same fresh>=30 / previous-cost*3 gate.",
+      "implication": "Unpaced input can produce more partial computations and different preview timing, affecting compute cost/latency. Partial output is not fed back into model or committed token state. Short final sequences are recomputed in full; this source review cannot attribute poor short-fixture CER to partial scheduling. No product scheduling change was made."
+    }
+  ],
+  "limits": [
+    "No actual licensed weights were available in this local review, and no local full-model inference was run.",
+    "No upstream-versus-adapter scalar/full-model token or transcript parity has been executed.",
+    "Source review and cloud kernel parity do not establish natural speech recognition quality or a handset recommendation.",
+    "Agreement between ARM/x86 on one fixed synthetic PCM, if separately observed, establishes cross-architecture agreement for that sample only; it does not establish upstream-reference parity or natural speech quality.",
+    "The incomplete final Fbank window retains upstream snip-edges behavior; no tail-flush quality change was introduced.",
+    "Only evidence documents were added for this review; no runtime source, corpus, model, product defaults or CI was changed."
+  ],
+  "possible_follow_up": "After the current Alpha model gates, an isolated offline-only harness can compile pinned upstream model/stream with a scalar kernel reference and compare feature frames, token IDs and transcripts on the identical locked PCM/model. No cloud client crate is required. This has not been implemented or executed."
+}

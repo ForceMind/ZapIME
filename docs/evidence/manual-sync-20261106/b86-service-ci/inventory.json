@@ -1,0 +1,36 @@
+{
+  "source_head": "b86e4f27fcce2c5d0bd394b139463bb52ea5fbf9",
+  "files": [
+    {
+      "name": "github-metadata.json",
+      "bytes": 24184,
+      "sha256": "240accf22b9475c234ffc01690d7fc1cd22549141eef3d5e13e5a35ea1b8c012"
+    },
+    {
+      "name": "service-tests-artifact.zip",
+      "bytes": 1611,
+      "sha256": "7fe01b01ddd2f4140cb968630ddabedda5e9c71b1f4b0400eb506f156922d301"
+    },
+    {
+      "name": "source-verification.json",
+      "bytes": 2675,
+      "sha256": "62ea9955a531b725aeb5d96b5deb0720366751fd6c52e9eaa6b10640a5d7b9ed"
+    },
+    {
+      "name": "sync-service-tests.log",
+      "bytes": 8118,
+      "sha256": "70a87a4c622a18058bfd294708d6e2155bbe29fce11ab6c8bc0565027321942b"
+    },
+    {
+      "name": "verification.json",
+      "bytes": 1748,
+      "sha256": "0cf3330c325d1713d8b6dcc420ec52b91a25559b2c86b08687bf73af52acfdbe"
+    },
+    {
+      "name": "workflow-job-original.log",
+      "bytes": 168407,
+      "sha256": "7382a2ed7c1a7792039f804463371151f17e44b8eaf8097a8c6b235d3ba36920"
+    }
+  ],
+  "zip_should_remain_target_only": true
+}

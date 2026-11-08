@@ -1,0 +1,49 @@
+chinese-ime-lm
+Copyright 2026 chinese-ime-lm contributors
+
+本产品包含由 chinese-ime-lm 项目开发的软件，以 Apache License 2.0 授权。
+
+————————————————————————————————————————
+
+模型权重的语料署名
+
+本仓库发布的模型权重使用以下语料训练。各语料的许可均要求署名随衍生成果传播；
+该署名同时写在权重文件的 safetensors `__metadata__` 头的 `attribution` 字段中，
+以保证它无法与权重分离。再分发权重时必须保留该字段。
+
+- C4 中文部分（ODC-BY）
+  https://huggingface.co/datasets/allenai/c4
+
+- LCCC（MIT）
+  https://github.com/thu-coai/CDial-GPT
+
+- FineWeb-2 中文（cmn_Hani）部分（ODC-BY）
+  https://huggingface.co/datasets/HuggingFaceFW/fineweb-2
+
+按键重排模型（`rerank-v1` 起，ORT 格式的 `lm_step.ort`）不是 safetensors，署名写在 ONNX 图的
+元数据 `attribution` 字段里（ORT 格式保留它），同一句话也写在随模型发布的 `model.json` 中。
+再分发时两处都必须保留。
+
+按键重排模型从 `rerank-v2` 起另用了合成数据：DeepSeek deepseek-v4-pro 为本项目生成的单人连发聊天（neural/teacher/gen_chat.py）。DeepSeek 使用条款把生成内容归用户，并允许用来训练其他模型，没有相同方式共享的义务。这部分在署名里标明是合成的。
+  https://cdn.deepseek.com/policies/en-US/deepseek-terms-of-use.html
+
+————————————————————————————————————————
+
+评测数据
+
+eval/quanpin-words-v1.tsv 中的用例派生自 MSIME 引擎的示例全拼词库，该词库以
+MIT 许可发布。
+
+eval/sentences-v1.tsv 为本项目原创。
+
+————————————————————————————————————————
+
+可选语料
+
+corpus/fetch.py 另外支持从以下来源构建语料。它们带有 share-alike 义务，
+本仓库发布的权重不使用这些来源；自行使用时请自行承担相应义务。
+
+- 中文维基百科（CC BY-SA 4.0）
+- MDN Web Docs 中文翻译（CC BY-SA 2.5）
+- Kubernetes 文档中文版（CC BY 4.0）
+- TensorFlow 文档中文版（Apache-2.0）

@@ -66,6 +66,22 @@ final class SyncConnection implements AutoCloseable {
     byte[] inspect(SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
         if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.session(server,token,cancellation);
     }
+    byte[] keyDescriptor(byte[] registration,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
+        if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.keyDescriptor(server,token,registration,cancellation);
+    }
+    byte[] push(byte[] frozen,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
+        if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.push(server,token,frozen,cancellation);
+    }
+    byte[] pull(long after,int limit,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
+        if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.pull(server,token,after,limit,cancellation);
+    }
+    /** Compare the live protected credential as well as its public identity.
+     * A token rotation or role/expiry update invalidates an in-flight snapshot.
+     */
+    boolean matchesSnapshot(SyncConnection previous){
+        return previous!=null&&!closed&&!previous.closed&&server.equals(previous.server)&&account.equals(previous.account)
+                &&device.equals(previous.device)&&role.equals(previous.role)&&expires.equals(previous.expires)&&Arrays.equals(token,previous.token);
+    }
     byte[] encode()throws SyncHttp.Failure {
         if(closed||role.isEmpty())throw new SyncHttp.Failure("credential");
         try{return new JSONObject().put("version",1).put("server",server.toString()).put("account_id",account.toString()).put("device_id",device.toString())

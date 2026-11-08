@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "engine_id": "voicekey",
+  "native_engine_id": "voicekey-wechat",
+  "model_id": "wechat-offline-20260710220526250",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "synthetic": true,
+  "model_weights_uploaded": false,
+  "natural_speech": "NOT RUN",
+  "phone_and_arm": "NOT RUN",
+  "scope": "Real SAF official-model import, actual JNI synthetic decoding and Editable transaction, followed by activated system IME emulator microphone/stop/retry/cancel/focus/cursor/hide lifecycle. Synthetic result insertion is method-level production transaction; not physical system-IME confirmation or natural speech quality.",
+  "saf_jni_editable": "PASS",
+  "actual_ime_service_exit": true,
+  "reason": "selected_voicekey_system_ime_lifecycle_failed",
+  "shared_document_removed": true
+}

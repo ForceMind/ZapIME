@@ -1,0 +1,76 @@
+{
+  "workflow_run": 42361234304,
+  "implementation_commit": "3a11177b7d0b2ef054183f5297a282dcb650a14f",
+  "test_revision": "5e1a87ccc345cbdb41635059c35cb63ce988b197",
+  "tested_merge_commit": "4985350e8a7e30257afb58f12cf938c056ab8618",
+  "status": "PASS",
+  "api_results": [
+    {
+      "api": 28,
+      "artifact_id": 13570027111,
+      "zip_bytes": 96316,
+      "zip_sha256": "f5a63a55ff933d51715d8a627a18d6735f0687df22f3df640433018ddf4e2f6a",
+      "method_checks": 14,
+      "method_reference_max_abs_error": 0,
+      "runtime": "1.28.2",
+      "current_input_revision": 17,
+      "applied_revision": 17,
+      "selected_text": "世界",
+      "actual_editable": "世界",
+      "system_input_verified": true,
+      "all_cleanup_verified": true,
+      "both_stage_exit_codes": [
+        0,
+        0
+      ],
+      "verified": true,
+      "scope": "Dedicated x86_64 Android emulator real model and system IME; not phone/ARM/latency/language-accuracy acceptance",
+      "job_id": 128370718841
+    },
+    {
+      "api": 35,
+      "artifact_id": 13569363599,
+      "zip_bytes": 103908,
+      "zip_sha256": "1ec65732575024ac8d7da8b99419617386d53a5b4f459480ddb8de3963573bc5",
+      "method_checks": 14,
+      "method_reference_max_abs_error": 0,
+      "runtime": "1.28.2",
+      "current_input_revision": 15,
+      "applied_revision": 15,
+      "selected_text": "世界",
+      "actual_editable": "世界",
+      "system_input_verified": true,
+      "all_cleanup_verified": true,
+      "both_stage_exit_codes": [
+        0,
+        0
+      ],
+      "verified": true,
+      "scope": "Dedicated x86_64 Android emulator real model and system IME; not phone/ARM/latency/language-accuracy acceptance",
+      "job_id": 128370718811
+    },
+    {
+      "api": 36,
+      "artifact_id": 13569453349,
+      "zip_bytes": 104692,
+      "zip_sha256": "15f53b6702e0ef1af241dd0879d03177dc1281ce221119da37bc63a4d0327b8c",
+      "method_checks": 14,
+      "method_reference_max_abs_error": 0,
+      "runtime": "1.28.2",
+      "current_input_revision": 15,
+      "applied_revision": 15,
+      "selected_text": "世界",
+      "actual_editable": "世界",
+      "system_input_verified": true,
+      "all_cleanup_verified": true,
+      "both_stage_exit_codes": [
+        0,
+        0
+      ],
+      "verified": true,
+      "scope": "Dedicated x86_64 Android emulator real model and system IME; not phone/ARM/latency/language-accuracy acceptance",
+      "job_id": 128370718805
+    }
+  ],
+  "scope": "Independent real-model methods and actual production system IME on x86_64 Android API28/35/36. ARM package built only; no phone/latency/energy/language-accuracy evidence."
+}

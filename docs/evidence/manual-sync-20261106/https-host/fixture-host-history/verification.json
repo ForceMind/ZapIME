@@ -1,0 +1,126 @@
+{
+  "saved_at_utc": "2026-11-07T07:48:49.186890+00:00",
+  "scope": "Actual host normally verified TLS/Go/PostgreSQL16.11/shared client; not Android system trust, production HTTPS or Cloudflare R2",
+  "status": "PASS",
+  "python": "3.12.14",
+  "python_ssl": "OpenSSL 3.5.8 25 Aug 2026",
+  "source_files": [
+    {
+      "path": "scripts/fixtures/sync_https_server.py",
+      "bytes": 20890,
+      "sha256": "6a23ba85d8a957abb663f247699f4145380220f61dd50b20611ed88bcd347460"
+    },
+    {
+      "path": "scripts/test_sync_https_server.py",
+      "bytes": 7290,
+      "sha256": "4a222e8a1d8bfb54994a6280ddb12c0d276ba1eea744031c9641861fca74a213"
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "bytes": 12891,
+      "sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c"
+    },
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "bytes": 11869,
+      "sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a"
+    }
+  ],
+  "go_binary": {
+    "path": "target/service-toolchains/zapime-sync-key-descriptor",
+    "bytes": 19644985,
+    "sha256": "4e54b788f726999d3521012b8fe327c618cfc9465ad49bc0a99175091ab07494"
+  },
+  "cases": {
+    "untrusted_ca_rejected": true,
+    "same_ca_wrong_ip_san_rejected": true,
+    "bad_hostname_http_requests": 0,
+    "real_bootstrap_original_credentials": true,
+    "real_owner_member_sessions": true,
+    "real_shared_manual_client_17_commands_tls": true,
+    "request_over_100000_refused_413": true,
+    "bootstrap_extra_query_refused": true,
+    "malformed_absolute_uri_refused_400": true,
+    "all_certificate_and_private_key_files_mode_0600": true,
+    "service_final_revision": 2,
+    "close_go_threads_sockets_keys_and_own_directory": true,
+    "close_idempotent": true,
+    "summary_secret_identifiers_and_capability_redacted": true
+  },
+  "final_safe_summary": {
+    "bad_hostname_http_requests": 0,
+    "bootstrap_response_bytes": 438,
+    "cleanup_completed": true,
+    "go_process_stopped": true,
+    "member_session_valid": true,
+    "owner_session_valid": true,
+    "private_temp_removed": true,
+    "request_limit_bytes": 100000,
+    "requests": [
+      {
+        "count": 1,
+        "method": "GET",
+        "path": "/<other>"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/ci/bootstrap/<redacted>"
+      },
+      {
+        "count": 3,
+        "method": "GET",
+        "path": "/v1/changes"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/v1/key-descriptor"
+      },
+      {
+        "count": 2,
+        "method": "GET",
+        "path": "/v1/session"
+      },
+      {
+        "count": 4,
+        "method": "POST",
+        "path": "/v1/changes"
+      },
+      {
+        "count": 1,
+        "method": "PUT",
+        "path": "/v1/key-descriptor"
+      }
+    ],
+    "response_limit_bytes": 10485760,
+    "schema_version": 1,
+    "scope": "Real isolated Go/PostgreSQL via temporary host TLS; no Android claim",
+    "service_revision": 2,
+    "tls_threads_stopped": true
+  },
+  "history": {
+    "https-fixture-host-first.log": "Earlier host PASS before audit improvements; not used as final source validation",
+    "https-fixture-host-final.log": "Preserved test-harness failure: http.client rejected malformed URI before transport; then corrected raw HTTP send after normally verified TLS",
+    "https-fixture-host-verified-final.log": "Final current sources: complete host test PASS"
+  },
+  "logs": [
+    {
+      "path": "target/service-toolchains/https-fixture-host-evidence/https-fixture-host-final.log",
+      "bytes": 2448,
+      "sha256": "e5fd9868e0e6647ff8950e77af94be88d0216dec647ab4016c4725f591d4c344"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-host-evidence/https-fixture-host-first.log",
+      "bytes": 1358,
+      "sha256": "0bf23727bb7f095568c0b42b2c7cce7ddd5a45aa6bed2bdf83efd55be523ecc1"
+    },
+    {
+      "path": "target/service-toolchains/https-fixture-host-evidence/https-fixture-host-verified-final.log",
+      "bytes": 1409,
+      "sha256": "0df1ed3f4bb1e306a9db74f35a67486df6ff8434c1dc0524a6db8e10658857ae"
+    }
+  ],
+  "no_credentials_root_or_ca_private_keys_in_evidence": true,
+  "pg_stopped_and_only_own_created_test_database_dropped_by_outer_runner": true
+}

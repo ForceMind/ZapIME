@@ -1,0 +1,16 @@
+{
+  "repository": "ForceMind/ZapIME",
+  "workflow_run": 42407415284,
+  "head_sha": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538",
+  "head_tree": "b9f4c62a752d196b0d1dfad50acb5fc9da73aff5",
+  "actual_checkout": "6060ccad8466cc965f177e1f19e2d8e42050b652",
+  "actual_checkout_tree": "b9f4c62a752d196b0d1dfad50acb5fc9da73aff5",
+  "checkout_parents": [
+    "7ff77a9ab25d91fc3ec9c61d5d6f96d996c699ae",
+    "5d976f578a2b11d14b9050ff0ec01e5d18d9e538"
+  ],
+  "checkout_message": "Merge 5d976f578a2b11d14b9050ff0ec01e5d18d9e538 into 7ff77a9ab25d91fc3ec9c61d5d6f96d996c699ae",
+  "github_api_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/6060ccad8466cc965f177e1f19e2d8e42050b652",
+  "build_report": "build/candidate-ranking-build.json",
+  "apk_bytes_downloaded_for_this_archive": false
+}

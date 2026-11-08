@@ -15,6 +15,7 @@ tools="$sdk/build-tools/35.0.0"
 android_jar="$sdk/platforms/android-36/android.jar"
 [[ -x "$ndk/$compiler" && -x "$tools/aapt2" && -f "$android_jar" ]] || { echo 'Android API 36, build-tools 35 and NDK 28.2.13676358 required' >&2; exit 1; }
 python3 scripts/verify_upstream.py
+python3 scripts/generate_voicekey_catalog.py --check
 python3 scripts/fetch_resources.py
 # 构建密钥只用于开发包；正式签名在发布阶段另行配置。
 export PATH="$ndk:$PATH"
@@ -29,9 +30,41 @@ cp target/resources/* "$build/assets/dictionary/"
 cp LICENSE "$build/assets/licenses/GPL-3.0.txt"
 cp third_party/licenses/* "$build/assets/licenses/"
 cp third_party/NOTICE.txt "$build/assets/NOTICE.txt"
+mkdir -p "$build/assets/voice-licenses"
+cat > "$build/assets/voice-licenses/voicekey-source.txt" <<'EOF'
+VoiceKey by J3n5en and contributors
+Source: https://github.com/J3n5en/voicekey
+Pinned source version: 3ba017826eef7fac405198510b03859eb5b6c8c4
+Imported as a separate Git submodule under vendor/voicekey.
+Use of the author's code is authorized by the project owner, who
+confirmed the author's permission. Separate third-party acoustic model
+and proprietary service API rights are not granted by that permission.
+No VoiceKey third-party model data is bundled into the APK.
+This Android build uses only the optional offline recognizer adapter.
+EOF
 python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/rust-licenses"
 cp "target/$rust_target/release/libzapime_core.so" "$build/lib/$abi/"
 bash scripts/build_android_voice.sh "$abi" "$build"
+bash scripts/build_android_candidates.sh "$abi" "$build"
+# Optional VoiceKey Rust JNI is a separate dynamic library. No third-party
+# model weights, reverse-engineered cloud clients or microphone recording are
+# automatically activated by its presence.
+# Offline-only adapter directly uses the pinned VoiceKey wtlocal Rust kernels.
+# VoiceKey cloud protocol core and Opus dependencies are NOT compiled here.
+# Stable NEON alternative to the upstream unstable AArch64 dot-product
+# intrinsic, without assuming all ARM64 CPUs have dotprod.
+RUSTFLAGS="-C link-arg=-Wl,-z,max-page-size=16384" \
+  cargo build --locked --release --manifest-path integrations/voicekey/Cargo.toml --target "$rust_target"
+python3 scripts/collect_rust_notices.py "$rust_target" "$build/assets/voicekey-rust-licenses" --manifest-path integrations/voicekey/Cargo.toml --root-package zapime-voicekey-adapter
+voicekey_so="$root/integrations/voicekey/target/$rust_target/release/libzapime_voicekey_adapter.so"
+[[ -s "$voicekey_so" ]] || { echo "VoiceKey JNI library missing" >&2; exit 1; }
+cp "$voicekey_so" "$build/lib/$abi/libzapime_voicekey_adapter.so"
+for method in allocate start accept finish cancel close checkModel releaseCache; do
+  symbol="Java_org_zapime_android_NativeVoiceKey_$method"
+  "$ndk/llvm-nm" -D "$voicekey_so" | grep -Fq "$symbol" || { echo "Missing VoiceKey JNI export: $symbol" >&2; exit 1; }
+done
+"$ndk/llvm-readelf" -l "$build/lib/$abi/libzapime_voicekey_adapter.so" | \
+  awk '/LOAD/{if ($NF != "0x4000" && $NF != "0x10000" ) {print "Unexpected LOAD alignment:",$NF; exit 1}}'
 "$tools/aapt2" compile --dir platforms/android/res -o "$build/resources.zip"
 "$tools/aapt2" link -o "$build/base.apk" --manifest platforms/android/AndroidManifest.xml -I "$android_jar" -A "$build/assets" "$build/resources.zip" --java "$build/generated"
 find platforms/android/java "$build/generated" -name '*.java' > "$build/java-sources.txt"

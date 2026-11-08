@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "engine_id": "voicekey",
+  "native_engine_id": "voicekey-wechat",
+  "model_id": "wechat-offline-20260710220526250",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "api_level": 36,
+  "synthetic": true,
+  "model_decode_executed": false,
+  "cases": [
+    {
+      "id": "fresh_voicekey_only_profile",
+      "passed": true
+    },
+    {
+      "id": "SAF import completion",
+      "passed": false,
+      "failure_type": "IOException",
+      "failure_reason": "official document provider did not return after one selection"
+    }
+  ],
+  "scope": "Real system ACTION_OPEN_DOCUMENT import into clean dedicated CI profile, selected VoiceKey model only, actual JNI synthetic PCM, and separate real Editable\/production VoiceCommitTransaction probe. Not natural speech, phone\/ARM performance or physical confirmation in a system IME. Separate UI instrumentation covers emulator AudioRecord\/IME lifecycle.",
+  "provider_selection_method": "stable_observed_filename_physical_touch",
+  "cleanup_completed": true,
+  "voicekey_selected_for_following_ime_probe": false
+}

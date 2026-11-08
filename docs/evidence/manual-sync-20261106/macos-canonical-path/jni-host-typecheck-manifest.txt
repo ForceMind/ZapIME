@@ -1,0 +1,18 @@
+[package]
+name = "sync-jni-host-typecheck"
+version = "0.0.0"
+edition = "2021"
+[workspace]
+[lib]
+crate-type = ["rlib", "cdylib"]
+path = "../../crates/zapime-core/src/android_sync.rs"
+[dependencies]
+jni = "=0.21.1"
+serde_json = "1"
+uuid = "1"
+zeroize = "1"
+zapime-sync = { path = "../../crates/zapime-sync" }
+zapime-data = { path = "../../crates/zapime-data" }
+
+[dev-dependencies]
+tempfile = "3"

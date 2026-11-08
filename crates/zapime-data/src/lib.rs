@@ -51,6 +51,8 @@ pub enum Error {
     SyncHistory,
     #[error("sync_local_conflict")]
     SyncLocalConflict,
+    #[error("sync_workspace_binding_mismatch")]
+    SyncWorkspace,
     #[error("retained_pull_capacity_reached")]
     RetainedFull,
 }
@@ -441,7 +443,7 @@ impl Store {
                 return Err(Error::Version);
             }
             let state: bool = tx.query_row(
-                "SELECT EXISTS(SELECT 1 FROM metadata WHERE key IN ('sync_profile','sync_cursor'))
+                "SELECT EXISTS(SELECT 1 FROM metadata WHERE substr(key,1,5)='sync_')
                  OR EXISTS(SELECT 1 FROM operations) OR EXISTS(SELECT 1 FROM sync_queue)
                  OR EXISTS(SELECT 1 FROM sync_uploads) OR EXISTS(SELECT 1 FROM sync_versions)
                  OR EXISTS(SELECT 1 FROM sync_received) OR EXISTS(SELECT 1 FROM sync_retained_pulls)",

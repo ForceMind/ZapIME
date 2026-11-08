@@ -1,0 +1,30 @@
+{
+  "engine_id": "voicekey",
+  "api_level": 28,
+  "synthetic": true,
+  "model_decode_executed": false,
+  "finish_timeout_contract_checked": true,
+  "cases": [
+    {
+      "id": "bounded_allocation",
+      "passed": true
+    },
+    {
+      "id": "foreign_owner",
+      "passed": true
+    },
+    {
+      "id": "invalid_parameters",
+      "passed": true
+    },
+    {
+      "id": "cancel_close_stale",
+      "passed": true
+    },
+    {
+      "id": "reclaimed_idle_release",
+      "passed": true
+    }
+  ],
+  "scope": "Actual VoiceKey JNI loading\/ownership\/invalid arguments\/cancel\/stale\/idle cleanup only. No model, PCM decoding, AudioRecord, IME or natural speech acceptance."
+}

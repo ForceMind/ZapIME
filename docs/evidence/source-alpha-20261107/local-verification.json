@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "verified_at_utc": "2026-11-08T02:50:03.130022+00:00",
+  "scope": "Offline revalidation of retained synthetic CI reports and artifact integrity; no new device or model inference run.",
+  "workflow_run": 42407415284,
+  "run_attempt": "42407415284-1",
+  "head_commit": "5d976f578a2b11d14b9050ff0ec01e5d18d9e538",
+  "head_tree": "b9f4c62a752d196b0d1dfad50acb5fc9da73aff5",
+  "actual_build_checkout": "6060ccad8466cc965f177e1f19e2d8e42050b652",
+  "validator_source_sha256": {
+    "scripts/android_candidate_ranking_report.py": "7f5d12dd9655915af5d9acb4c09cc3f419a75a1291385864391f2f8862d52cd0",
+    "scripts/android_candidate_ime_smoke.py": "2dc5d1d62942a839af0576660480b7da74177e1174149ce02e75c8bea8a1ccd4",
+    "scripts/candidate_evaluation.py": "cacb7e7328a3d4770c55326f57138afa3c57a564310552a04dbb0fadad1f7a7f"
+  },
+  "android": [
+    {
+      "api_level": 28,
+      "method_checks": 14,
+      "method_schema": 2,
+      "system_schema": 2,
+      "validators_passed": true,
+      "run_attempt": "42407415284-1",
+      "independent_same_runtime_max_abs_error": 0,
+      "empty_context_submitted": [
+        0,
+        0
+      ],
+      "submitted_after_context": 3,
+      "scored": [
+        0,
+        1
+      ],
+      "touch_keypresses": 11,
+      "context_seed_commits": 1,
+      "actual_editable": "你好世界",
+      "editor_composing": false,
+      "system_keyboard_restore_component": "com.android.inputmethod.latin/.LatinIME",
+      "system_package_verified": true,
+      "settings_restored": true,
+      "service_exited": true,
+      "synthetic_package_cleanup": true,
+      "ipv4_ipv6_rules_removed": true,
+      "retained_runtime_errors_empty": true,
+      "phone_executed": false,
+      "human_touch_or_phone_latency": false
+    },
+    {
+      "api_level": 35,
+      "method_checks": 14,
+      "method_schema": 2,
+      "system_schema": 2,
+      "validators_passed": true,
+      "run_attempt": "42407415284-1",
+      "independent_same_runtime_max_abs_error": 0,
+      "empty_context_submitted": [
+        0,
+        0
+      ],
+      "submitted_after_context": 3,
+      "scored": [
+        0,
+        2
+      ],
+      "touch_keypresses": 11,
+      "context_seed_commits": 1,
+      "actual_editable": "你好世界",
+      "editor_composing": false,
+      "system_keyboard_restore_component": "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME",
+      "system_package_verified": true,
+      "settings_restored": true,
+      "service_exited": true,
+      "synthetic_package_cleanup": true,
+      "ipv4_ipv6_rules_removed": true,
+      "retained_runtime_errors_empty": true,
+      "phone_executed": false,
+      "human_touch_or_phone_latency": false
+    },
+    {
+      "api_level": 36,
+      "method_checks": 14,
+      "method_schema": 2,
+      "system_schema": 2,
+      "validators_passed": true,
+      "run_attempt": "42407415284-1",
+      "independent_same_runtime_max_abs_error": 0,
+      "empty_context_submitted": [
+        0,
+        0
+      ],
+      "submitted_after_context": 3,
+      "scored": [
+        0,
+        1
+      ],
+      "touch_keypresses": 11,
+      "context_seed_commits": 1,
+      "actual_editable": "你好世界",
+      "editor_composing": false,
+      "system_keyboard_restore_component": "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME",
+      "system_package_verified": true,
+      "settings_restored": true,
+      "service_exited": true,
+      "synthetic_package_cleanup": true,
+      "ipv4_ipv6_rules_removed": true,
+      "retained_runtime_errors_empty": true,
+      "phone_executed": false,
+      "human_touch_or_phone_latency": false
+    }
+  ],
+  "host": {
+    "native_checks": 15,
+    "jni_checks": 36,
+    "independent_oracle_mechanical_passed": true,
+    "quality_completed": true,
+    "quality_runtime_version": "1.24.4",
+    "quality_corpus_version": "v2",
+    "quality_aggregate_metrics_recomputed": true,
+    "quality_summary": {
+      "empty_context": {
+        "cases": 34,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 14,
+            "top3": 27,
+            "top1_rate": 0.4117647058823529,
+            "top3_rate": 0.7941176470588235,
+            "mrr": 0.6062388591800357
+          }
+        },
+        "improved": 2,
+        "regressed": 6,
+        "top1_rescued": 0,
+        "top1_harmed": 3,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 2.1062329999779195,
+          "p95": 3.3595470000022942,
+          "maximum": 3.61384600000747
+        }
+      },
+      "contextual": {
+        "cases": 34,
+        "metrics": {
+          "baseline": {
+            "top1": 17,
+            "top3": 28,
+            "top1_rate": 0.5,
+            "top3_rate": 0.8235294117647058,
+            "mrr": 0.6669414735591206
+          },
+          "ranked": {
+            "top1": 25,
+            "top3": 30,
+            "top1_rate": 0.7352941176470589,
+            "top3_rate": 0.8823529411764706,
+            "mrr": 0.8148172905525847
+          }
+        },
+        "improved": 11,
+        "regressed": 0,
+        "top1_rescued": 8,
+        "top1_harmed": 0,
+        "latency_ms": {
+          "samples": 34,
+          "method": "nearest_rank",
+          "p50": 2.4478949999888755,
+          "p95": 3.3484709999811457,
+          "maximum": 3.493647999988525
+        }
+      }
+    },
+    "phone_performance_evaluated": false,
+    "energy_evaluated": false
+  },
+  "large_product_artifact_downloaded": false,
+  "original_fixed8df_apk_replaced": false
+}

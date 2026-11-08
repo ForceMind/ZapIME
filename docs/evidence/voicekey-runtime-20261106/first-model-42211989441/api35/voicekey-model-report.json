@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "status": "FAIL",
+  "engine_id": "voicekey",
+  "native_engine_id": "voicekey-wechat",
+  "model_id": "wechat-offline-20260710220526250",
+  "model_package_sha256": "b3729fbe928b25740cc9cd781537175b1db4a445bd78bf464267c0c4633e0863",
+  "api_level": 35,
+  "synthetic": true,
+  "model_decode_executed": false,
+  "cases": [
+    {
+      "id": "fresh_voicekey_only_profile",
+      "passed": true
+    },
+    {
+      "id": "actual_saf_fixed_model_import",
+      "passed": true
+    },
+    {
+      "id": "voicekey_selected_without_xasr",
+      "passed": true
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "no_samples",
+      "passed": true,
+      "accepted_samples": 0,
+      "expected_nonzero_pcm": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "all_zero",
+      "passed": true,
+      "accepted_samples": 1600,
+      "expected_nonzero_pcm": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "ignored_tail",
+      "passed": true,
+      "accepted_samples": 2,
+      "expected_nonzero_pcm": false
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "positive_lsb",
+      "passed": true,
+      "accepted_samples": 1,
+      "expected_nonzero_pcm": true
+    },
+    {
+      "recognized_codepoints": 0,
+      "hypothesis_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "id": "negative_lsb",
+      "passed": true,
+      "accepted_samples": 1,
+      "expected_nonzero_pcm": true
+    },
+    {
+      "id": "cancelled_empty",
+      "passed": true,
+      "accepted_samples": 0
+    },
+    {
+      "id": "cancelled_nonzero_cross_thread",
+      "passed": true,
+      "accepted_samples": 1600,
+      "physical_worker_exit_confirmed": true,
+      "scope": "Cross-thread cancellation after accepted PCM and actual worker exit; not proof of interrupting every blocking inference instruction."
+    },
+    {
+      "id": "actual synthetic decode",
+      "passed": false,
+      "failure_type": "AssertionError"
+    }
+  ],
+  "scope": "Real system ACTION_OPEN_DOCUMENT import into clean dedicated CI profile, selected VoiceKey model only, actual JNI synthetic PCM, and separate real Editable\/production VoiceCommitTransaction probe. Not natural speech, phone\/ARM performance or physical confirmation in a system IME. Separate UI instrumentation covers emulator AudioRecord\/IME lifecycle.",
+  "selected_engine": "voicekey",
+  "xasr_model_present": false,
+  "fixture_sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+  "audio_samples": 125490,
+  "cleanup_completed": true,
+  "voicekey_selected_for_following_ime_probe": true
+}

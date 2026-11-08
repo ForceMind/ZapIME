@@ -1,0 +1,150 @@
+{
+  "saved_at_utc": "2026-11-07T07:22:26.142948+00:00",
+  "status": "PASS",
+  "commands": 17,
+  "scope": "Local real PG16.11/schema3 Go service/loopback HTTP/shared sync client/two SQLite stores; inline storage",
+  "source_files": [
+    {
+      "path": "crates/zapime-sync/examples/manual_sync_fixture.rs",
+      "bytes": 11869,
+      "sha256": "5c1901e77c2f54484095496afe20b22d8b837ac208a273c0be6460204490969a"
+    },
+    {
+      "path": "scripts/sync_service_smoke.py",
+      "bytes": 12891,
+      "sha256": "6b0e6ea94a8c58a95436c1a2fd11eef151b239f22201fcc547315add3fba742c"
+    },
+    {
+      "path": ".github/workflows/sync-service.yml",
+      "bytes": 2889,
+      "sha256": "aad9ee0813d5519bb9aae82280146ad4c68340d9f8ba34c62acae9c5160d83ab"
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "bytes": 7976,
+      "sha256": "57bdad342c8854b74b7f499432c61127832830e572f6d2ca0d9648023d39b92e"
+    },
+    {
+      "path": "crates/zapime-sync/src/workspace.rs",
+      "bytes": 9410,
+      "sha256": "615e805ed03d0d74286a6590d041b29475c46db358d530ed976471f6f7090b6a"
+    },
+    {
+      "path": "crates/zapime-sync/src/lib.rs",
+      "bytes": 8696,
+      "sha256": "cd71cdeb6b84b37ede562c41d1c982a7627660ed41ba4ef3dce35122892d7cd0"
+    },
+    {
+      "path": "crates/zapime-data/src/lib.rs",
+      "bytes": 18137,
+      "sha256": "87fe7a3d3ef4b6d13cf5da65a08a173f393c01c1b6a8100c40fc275cf8d46456"
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "bytes": 28824,
+      "sha256": "e3dee336f3ff8e4822a8940192ce65bd83846458685e461f68c766b7742a7499"
+    },
+    {
+      "path": "crates/zapime-data/src/pull.rs",
+      "bytes": 9180,
+      "sha256": "6d66937094cfe1f604e1c9ccb8b074c3ac915f7e65cf75fc4f48fd284c0d4509"
+    },
+    {
+      "path": "crates/zapime-data/src/quarantine.rs",
+      "bytes": 9349,
+      "sha256": "349ed885922d4c6024260f1a01c8cde74c436fffc9c6657d4e96d99e38a86049"
+    },
+    {
+      "path": "Cargo.lock",
+      "bytes": 38603,
+      "sha256": "b7af3dbf39d894ef0eaee5270b22fb178a8fb327a95f9f937b23ba2fb00b35f0"
+    }
+  ],
+  "logs": [
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-fixture-build.log",
+      "bytes": 574,
+      "sha256": "9ca25091d175e55250fde077e78ffeca936fa726f40c7070d6bd57b101e347d3"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-fixture-check.log",
+      "bytes": 666,
+      "sha256": "23112cd1dd722c9534e5aebdd30be0052d0b0e698fdf5fdd22bac57175a8a5cb"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-fixture-clippy.log",
+      "bytes": 574,
+      "sha256": "8a01d910f7a2b1e20ac989c474b3557f447a77103f513674fd8e733174a21e6e"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-fixture-first-clippy-failure.log",
+      "bytes": 1289,
+      "sha256": "b7bd3027991165c30d024b315d2443c6b06a53fa8177782aa102e2b808bf4f97"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-fixture-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server-final.log",
+      "bytes": 337,
+      "sha256": "2230258b8e13eb89d22256a31e7b374538b99bf25247749e73d6a1ba045acfa9"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server-first.log",
+      "bytes": 348,
+      "sha256": "41e1e952ea5dd68e43af19f7e57ceae43979a3419a7e28626695f82053026e25"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server-production-writer.log",
+      "bytes": 337,
+      "sha256": "2230258b8e13eb89d22256a31e7b374538b99bf25247749e73d6a1ba045acfa9"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server-second.log",
+      "bytes": 1005,
+      "sha256": "cde5c0bf554df6c262ff18b9dd8d59b3e3d10e852a82a530eb88c9814f294ca9"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server-third.log",
+      "bytes": 337,
+      "sha256": "2230258b8e13eb89d22256a31e7b374538b99bf25247749e73d6a1ba045acfa9"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/manual-client-real-server.json",
+      "bytes": 660,
+      "sha256": "01c9b97209d6a96558e3c724cc7e607b84dca6796eb5fc3c6080cf22898c9fa8"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/pre-production-writer-real-server.log",
+      "bytes": 337,
+      "sha256": "2230258b8e13eb89d22256a31e7b374538b99bf25247749e73d6a1ba045acfa9"
+    },
+    {
+      "path": "target/service-toolchains/manual-client-evidence/pre-production-writer-verification.json",
+      "bytes": 4988,
+      "sha256": "34a19c1ef32b7d718f9304409d2df37133b911572d2e247532cf224414043be3"
+    }
+  ],
+  "frozen_owned_paths": [
+    "crates/zapime-sync/examples/manual_sync_fixture.rs",
+    "scripts/sync_service_smoke.py",
+    ".github/workflows/sync-service.yml"
+  ],
+  "checks": {
+    "locked_example_check": true,
+    "locked_example_build": true,
+    "strict_example_clippy": true,
+    "rustfmt": true,
+    "python_compile": true,
+    "real_server_roundtrip": true,
+    "old_clippy_err_expect_failure_preserved": true,
+    "old_local_harness_cluster_path_and_port_failures_preserved": true,
+    "docker_s3_new_client_probe": "NOT RUN until parent commits this client slice and CI executes",
+    "credentials_root_plaintext_in_logs": false,
+    "private_temporary_files_removed": true,
+    "main_index_head_modified": false,
+    "production_open_sync_writer": true
+  }
+}

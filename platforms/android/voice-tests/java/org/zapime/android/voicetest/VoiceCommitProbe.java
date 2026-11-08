@@ -1,7 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-only
 package org.zapime.android.voicetest;
 
+import android.Manifest;
 import android.app.Instrumentation;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Looper;
 import android.text.Editable;
@@ -15,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.json.*;
 
@@ -75,6 +80,7 @@ final class VoiceCommitProbe {
 
     private final Instrumentation instrumentation;
     private final Constructor<?> editorConstructor,transactionConstructor;
+    private final Method permissionMethod;
     private final Class<?> editorType;
     private final Object service;
     private final ExecutorService reader=Executors.newSingleThreadExecutor();
@@ -86,6 +92,7 @@ final class VoiceCommitProbe {
         editorConstructor=editorType.getDeclaredConstructor(InputConnection.class,int.class,int.class,int.class,int.class,int.class,boolean.class);editorConstructor.setAccessible(true);
         transactionConstructor=transaction.getDeclaredConstructor(editorType,String.class,String.class,String.class);transactionConstructor.setAccessible(true);
         service=main(i,()->Class.forName("org.zapime.android.ZapInputMethodService",true,loader).getDeclaredConstructor().newInstance());
+        permissionMethod=service.getClass().getDeclaredMethod("voicePermissionGranted",Context.class);permissionMethod.setAccessible(true);
     }
     private Object state(InputConnection connection,int ticket,int epoch,int version,int start,int end,boolean allowed) throws Exception {
         return editorConstructor.newInstance(connection,ticket,epoch,version,start,end,allowed);
@@ -96,17 +103,34 @@ final class VoiceCommitProbe {
     private String finish(Object transaction,Object current,String[] context,Runnable end) throws Exception {
         return invoke(transaction,"finish",new Class<?>[]{editorType,String[].class,Runnable.class},current,context,end).toString();
     }
+    private boolean permission(Context context) throws Exception {
+        return (Boolean)permissionMethod.invoke(null,context);
+    }
     private void runCase(String id,String decoded) throws Exception {
+        boolean permissionCase=id.startsWith("permission_");
+        AtomicInteger permissionState=new AtomicInteger(id.equals("permission_denied")?PackageManager.PERMISSION_DENIED:PackageManager.PERMISSION_GRANTED);
+        AtomicInteger permissionReads=new AtomicInteger();
+        Context permissionContext=new ContextWrapper(instrumentation.getTargetContext()){
+            @Override public int checkSelfPermission(String permission){
+                check(Manifest.permission.RECORD_AUDIO.equals(permission),"unexpected permission query");
+                permissionReads.incrementAndGet();return permissionState.get();
+            }
+        };
+        boolean initialPermission=!permissionCase||main(instrumentation,()->permission(permissionContext));
+        if(permissionCase)check(initialPermission!=id.equals("permission_denied"),"initial production permission gate mismatch");
         Editor editor=main(instrumentation,()->new Editor(instrumentation,id.equals("cursor_changed_identical_context")));
         String[] original=context(editor);check(original!=null,"initial synthetic context missing");
+        // The denied case deliberately retains a synthetic pending transaction
+        // to exercise the final gate too; the real Service rejects its creation.
         Object origin=state(editor.connection,11,22,33,editor.originCursor,editor.originCursor,true);
         Object transaction=main(instrumentation,()->transactionConstructor.newInstance(origin,original[0],original[1],decoded));
         int ticket=11,epoch=22,version=33,start=editor.originCursor,end=start;
         InputConnection connection=editor.connection;boolean allowed=true;
         String expectedOutcome="INVALID";int expectedCommits=0;boolean inserted=false;
         switch(id){
-        case "commit_once":case "reentrant_finish":case "worker_thread_rejected":
+        case "commit_once":case "reentrant_finish":case "worker_thread_rejected":case "permission_granted":
             expectedOutcome="COMMITTED";expectedCommits=1;inserted=true;break;
+        case "permission_denied":case "permission_revoked_before_confirmation":break;
         case "cancelled_completion":main(instrumentation,()->{invoke(transaction,"cancel",new Class<?>[0]);return null;});expectedOutcome="ALREADY_FINISHED";break;
         case "connection_changed":connection=main(instrumentation,()->new Editor(instrumentation,false)).connection;break;
         case "ticket_changed":++ticket;break;
@@ -131,6 +155,13 @@ final class VoiceCommitProbe {
         String expectedText=inserted?unchanged.substring(0,editor.originCursor)+decoded+unchanged.substring(editor.originCursor):unchanged;
         String[] checked=context(editor);
         if(id.equals("cursor_changed_identical_context"))check(Arrays.equals(original,checked),"repeated-text fixture must retain identical bounded context");
+        if(id.equals("permission_revoked_before_confirmation"))permissionState.set(PackageManager.PERMISSION_DENIED);
+        boolean finalPermission=!permissionCase||main(instrumentation,()->permission(permissionContext));
+        if(permissionCase){
+            check(finalPermission==id.equals("permission_granted"),"final production permission gate mismatch");
+            check(permissionReads.get()==2,"production permission helper did not query both boundaries");
+            allowed=finalPermission;
+        }
         Object current=state(connection,ticket,epoch,version,start,end,allowed);
         int[] ended={0};Runnable endSession=()->{
             ++ended[0];
@@ -156,14 +187,17 @@ final class VoiceCommitProbe {
             for(String field:new String[]{"origin","before","after","text"}){Field f=transaction.getClass().getDeclaredField(field);f.setAccessible(true);check(f.get(transaction)==null,"terminal confirmation retained input");}
             return null;
         });
-        cases.put(new JSONObject().put("id",id).put("outcome",outcome).put("commit_attempts",editor.commits).put("actual_editable_verified",true).put("passed",true));
+        JSONObject evidence=new JSONObject().put("id",id).put("outcome",outcome).put("commit_attempts",editor.commits).put("actual_editable_verified",true).put("passed",true);
+        if(permissionCase)evidence.put("initial_permission_granted",initialPermission).put("final_permission_granted",finalPermission)
+                .put("production_permission_queries",permissionReads.get()).put("permission_state_scope","Simulated ContextWrapper permission state queried through the production helper; not Android OS permission revocation.").put("os_permission_revocation_tested",false);
+        cases.put(evidence);
     }
     static void run(Instrumentation instrumentation,String decoded,File output) throws Exception {
         check(decoded!=null&&!decoded.trim().isEmpty(),"real JNI result required");
         VoiceCommitProbe probe=new VoiceCommitProbe(instrumentation);
         String active="initialization";
         try{
-            for(String id:new String[]{"commit_once","reentrant_finish","cancelled_completion","connection_changed","ticket_changed","epoch_changed","selection_version_changed","cursor_changed_identical_context","selected_range","unknown_selection","policy_excluded","before_changed","after_changed","null_before","null_after","oversize_context","context_exception","editor_rejected","editor_exception","worker_thread_rejected"}){
+            for(String id:new String[]{"commit_once","reentrant_finish","cancelled_completion","connection_changed","ticket_changed","epoch_changed","selection_version_changed","cursor_changed_identical_context","selected_range","unknown_selection","policy_excluded","before_changed","after_changed","null_before","null_after","oversize_context","context_exception","editor_rejected","editor_exception","worker_thread_rejected","permission_granted","permission_denied","permission_revoked_before_confirmation"}){
                 active=id;probe.runCase(id,decoded);
             }
         }catch(Throwable error){
@@ -176,6 +210,7 @@ final class VoiceCommitProbe {
             for(String name:new String[]{"worker","reader"}){Field field=probe.service.getClass().getDeclaredField(name);field.setAccessible(true);((ExecutorService)field.get(probe.service)).shutdownNow();}
             JSONObject report=new JSONObject().put("synthetic",true).put("api_level",Build.VERSION.SDK_INT)
                     .put("actual_jni_decoded_text_used",true).put("recognized_codepoints",decoded.codePointCount(0,decoded.length()))
+                    .put("permission_state_scope","Production permission helper with simulated ContextWrapper GRANTED/DENIED states and actual Editable transaction; no OS permission revocation or process-exit acceptance.")
                     .put("cases",probe.cases).put("scope","Production confirmation transaction and bounded-context method with real Android Editable; same-UID synthetic harness, not activated IME, physical Confirm, microphone or natural-speech acceptance");
             Files.write(new File(output,"voice-commit-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
         }

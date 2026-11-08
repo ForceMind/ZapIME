@@ -1,0 +1,99 @@
+{
+  "artifacts": [
+    {
+      "id": 13566440520,
+      "name": "ZapIME-VoiceKey-only-API-28",
+      "size_in_bytes": 187898,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566440520",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566440520/zip",
+      "expired": false,
+      "created_at": "2026-11-07T07:44:21Z",
+      "expires_at": "2027-02-05T07:28:39Z",
+      "updated_at": "2026-11-07T07:44:21Z",
+      "digest": "sha256:576b7f061fd33904eb0318817d6fabb992abbb03bf914814f41af94d6c78b3e8",
+      "workflow_run": {
+        "id": 42351436401,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    },
+    {
+      "id": 13566236535,
+      "name": "ZapIME-VoiceKey-only-API-35",
+      "size_in_bytes": 238347,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566236535",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13566236535/zip",
+      "expired": false,
+      "created_at": "2026-11-07T07:45:13Z",
+      "expires_at": "2027-02-05T07:28:39Z",
+      "updated_at": "2026-11-07T07:45:13Z",
+      "digest": "sha256:c353c79aecc10d1feec3c7c4c278c36deedddd2b669f378aa80baa81c3696c38",
+      "workflow_run": {
+        "id": 42351436401,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    },
+    {
+      "id": 13565943719,
+      "name": "ZapIME-Android-development",
+      "size_in_bytes": 235395045,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565943719",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565943719/zip",
+      "expired": false,
+      "created_at": "2026-11-07T07:41:15Z",
+      "expires_at": "2027-02-05T07:28:39Z",
+      "updated_at": "2026-11-07T07:41:15Z",
+      "digest": "sha256:432c753d0c84efefb01a37461bc27820249814a7de7358648fe5941c81681b09",
+      "workflow_run": {
+        "id": 42351436401,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    },
+    {
+      "id": 13565809835,
+      "name": "ZapIME-VoiceKey-only-API-36",
+      "size_in_bytes": 239744,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565809835",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565809835/zip",
+      "expired": false,
+      "created_at": "2026-11-07T07:45:08Z",
+      "expires_at": "2027-02-05T07:28:39Z",
+      "updated_at": "2026-11-07T07:45:08Z",
+      "digest": "sha256:531b30e8b93fb3a1f6e4e0290f2020141110eefbe2721678c9a8d8ef8defe7f7",
+      "workflow_run": {
+        "id": 42351436401,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    },
+    {
+      "id": 13565649640,
+      "name": "ZapIME-Android-test-harness",
+      "size_in_bytes": 129676859,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565649640",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13565649640/zip",
+      "expired": false,
+      "created_at": "2026-11-07T07:41:20Z",
+      "expires_at": "2027-02-05T07:28:39Z",
+      "updated_at": "2026-11-07T07:41:20Z",
+      "digest": "sha256:a478c58eb054722608f350c8437c5c1df476515969bd503d687320abd7116c22",
+      "workflow_run": {
+        "id": 42351436401,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-manual-sync",
+        "head_sha": "e3c4da10b5f90917c2c8d17aeb8fc382f78ec4f9"
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+2026-11-07T08:04:44.7878476Z   api-level: 28
+2026-11-07T08:04:44.7878693Z   target: default
+2026-11-07T08:04:44.7880986Z   emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -wipe-data -writable-system -noaudio -no-boot-anim
+2026-11-07T08:04:44.8502677Z target: default
+2026-11-07T08:04:44.8509237Z emulator options: -no-window -gpu swiftshader_indirect -no-snapshot -wipe-data -writable-system -noaudio -no-boot-anim
+2026-11-07T08:05:21.0762559Z [command]/usr/bin/sh -c \/usr/local/lib/android/sdk/emulator/emulator -port 5554 -avd zapime-sync-https-42353573084-1 -no-window -gpu swiftshader_indirect -no-snapshot -wipe-data -writable-system -noaudio -no-boot-anim &
+2026-11-07T08:06:08.5645008Z PASS actual API28 temporary-system-CA Android HTTPS to Go/PostgreSQL; scoped synthetic acceptance
+2026-11-07T08:06:09.7758129Z SHA256 digest of uploaded artifact zip is 1ef886f2cee06caaf264a035bedc80f50b418fda9501cf04c4b4f3b9aacbfd62
+2026-11-07T08:06:10.1571801Z Artifact ZapIME-actual-Android-HTTPS-API28.zip successfully finalized. Artifact ID 13567240720

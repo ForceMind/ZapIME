@@ -1,0 +1,311 @@
+{
+  "run_id": 42347009455,
+  "source_commit": "9e095fccd78dbb2240e147d60d9543143f8c7d43",
+  "artifacts": [
+    {
+      "id": 13564315817,
+      "name": "ZapIME-local-sync-preparation-API-35",
+      "size_in_bytes": 1465,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564315817",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564315817/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:37:29Z",
+      "expires_at": "2026-11-21T06:37:29Z",
+      "updated_at": "2026-11-07T06:37:29Z",
+      "digest": "sha256:8ddf22981c85ce43d1297c138e22ad26c11bef2a3dab61589a1ced8281402e6a",
+      "workflow_run": {
+        "id": 42347009455,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "9e095fccd78dbb2240e147d60d9543143f8c7d43"
+      }
+    },
+    {
+      "id": 13564276740,
+      "name": "ZapIME-local-sync-preparation-API-28",
+      "size_in_bytes": 1376,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564276740",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564276740/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:37:26Z",
+      "expires_at": "2026-11-21T06:37:25Z",
+      "updated_at": "2026-11-07T06:37:26Z",
+      "digest": "sha256:5bf8b8d3c829f97620cc8aa42f5da3a38b525eafce7ec620f1b572ac40eac694",
+      "workflow_run": {
+        "id": 42347009455,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "9e095fccd78dbb2240e147d60d9543143f8c7d43"
+      }
+    },
+    {
+      "id": 13564032740,
+      "name": "ZapIME-local-sync-preparation-API-36",
+      "size_in_bytes": 1448,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564032740",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13564032740/zip",
+      "expired": false,
+      "created_at": "2026-11-07T06:37:57Z",
+      "expires_at": "2026-11-21T06:37:56Z",
+      "updated_at": "2026-11-07T06:37:57Z",
+      "digest": "sha256:c8d96f6551106aa58ed82790f7deba6b4346f638e44b23215671aa9ce5aa49e3",
+      "workflow_run": {
+        "id": 42347009455,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/android-sync-preparation",
+        "head_sha": "9e095fccd78dbb2240e147d60d9543143f8c7d43"
+      }
+    }
+  ],
+  "jobs": [
+    {
+      "id": 128328754500,
+      "name": "Local sync preparation API 36",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 42347009455,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 128328754503,
+      "name": "Local sync preparation API 35",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 42347009455,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    },
+    {
+      "id": 128328754545,
+      "name": "Local sync preparation API 28",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 42347009455,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        }
+      ]
+    }
+  ]
+}
