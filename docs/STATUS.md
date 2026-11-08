@@ -6,7 +6,7 @@
 
 最新候选运行的原始ZIP、固定build checkout与严格复验结果另存于[源码Alpha证据](evidence/source-alpha-20261107/README.md)。
 
-本轮本地134项workspace测试、fmt、严格Clippy、4项配对统计、7项质量runner以及15项源码发布真实Git/状态机测试通过；YAML与177处当前文档本地链接检查通过。发布整理没有修改产品输入、模型或同步实现。
+本轮本地134项workspace测试、fmt、严格Clippy、4项配对统计、7项质量runner以及17项源码发布真实Git/状态机测试通过；YAML与当前文档本地链接检查通过。发布整理没有修改产品输入、模型或同步实现。
 
 本轮以release/open-source-alpha承接整个已验开发栈，新增中英文首页、社区规范、问题/PR模板、文档索引、路线图、变更记录、可追溯源码发布流程和新接管入口；更新过时SECURITY联网/同步描述。发布状态以GitHub Release及对应workflow为准。源码Alpha只含根Git树，不附子模块内容、APK或模型权重；不将开发证书包装为稳定升级签名。
 

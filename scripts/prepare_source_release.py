@@ -46,6 +46,7 @@ SUBMODULES = {
 ARCHIVE_NAME = "ZapIME-0.1.0-alpha.1-source.tar.gz"
 PREFIX = "ZapIME-0.1.0-alpha.1-source/"
 ASSET_NAMES = {ARCHIVE_NAME, "metadata.json", "SHA256SUMS"}
+MAX_RELEASE_PAGES = 100
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 FORBIDDEN_SUFFIXES = (
     ".apk", ".aab", ".ipa", ".ort", ".onnx", ".onnx.data", ".xnet",
@@ -249,6 +250,39 @@ def gh_json(arguments, *, optional=False, runner=run):
         raise ReleaseError("GitHub API request failed; existing releases were not overwritten") from error
 
 
+def fetch_release(repository, tag, *, runner=run):
+    """Tag lookup covers published releases; visible drafts need list + ID."""
+    prefix = f"repos/{repository}/releases"
+    published = gh_json([f"{prefix}/tags/{tag}"], optional=True, runner=runner)
+    if published is not None:
+        return published
+    matches = []
+    for page in range(1, MAX_RELEASE_PAGES + 1):
+        entries = gh_json([f"{prefix}?per_page=100&page={page}"], runner=runner)
+        if not isinstance(entries, list) or len(entries) > 100:
+            raise ReleaseError("Invalid release listing; cannot safely locate a draft")
+        for entry in entries:
+            if not isinstance(entry, dict):
+                raise ReleaseError("Invalid release listing entry")
+            if entry.get("tag_name") == tag:
+                identifier = entry.get("id")
+                if type(identifier) is not int or identifier <= 0:
+                    raise ReleaseError("Matching release has no valid release ID")
+                matches.append(identifier)
+        if len(entries) < 100:
+            break
+    else:
+        raise ReleaseError("Release listing pagination limit reached before completion")
+    if len(matches) > 1:
+        raise ReleaseError("Multiple visible releases use the fixed tag; refusing an ambiguous draft")
+    if not matches:
+        return None
+    value = gh_json([f"{prefix}/{matches[0]}"], runner=runner)
+    if not isinstance(value, dict) or value.get("tag_name") != tag:
+        raise ReleaseError("Release ID no longer matches the fixed source tag")
+    return value
+
+
 def remote_tag(repository, tag, *, runner=run):
     ref = gh_json([f"repos/{repository}/git/ref/tags/{tag}"], optional=True, runner=runner)
     if ref is None:
@@ -272,8 +306,7 @@ def publish(repo, commit, output, *, repository, runner=run):
         raise ReleaseError("Publishing is restricted to the fixed release repository")
     output = Path(output).resolve()
     tag = plan["tag"]
-    endpoint = f"repos/{repository}/releases/tags/{tag}"
-    release = gh_json([endpoint], optional=True, runner=runner)
+    release = fetch_release(repository, tag, runner=runner)
     source = remote_tag(repository, tag, runner=runner)
     if source is not None and source != commit:
         raise ReleaseError("Existing tag points to another commit; refusing to move it")
@@ -295,7 +328,7 @@ def publish(repo, commit, output, *, repository, runner=run):
             runner(["gh", "release", "create", tag, "--repo", repository,
                     "--target", commit, "--verify-tag", "--draft", "--prerelease",
                     "--latest=false", "--title", plan["name"], "--notes-file", str(notes_path)])
-        release = gh_json([endpoint], runner=runner)
+        release = fetch_release(repository, tag, runner=runner)
 
     def validate_release(value, *, complete):
         if (value.get("tag_name") != tag or value.get("target_commitish") != commit
@@ -326,12 +359,12 @@ def publish(repo, commit, output, *, repository, runner=run):
     if missing:
         runner(["gh", "release", "upload", tag, "--repo", repository,
                 *[str(output / name) for name in missing]])
-    validate_release(gh_json([endpoint], runner=runner), complete=True)
+    validate_release(fetch_release(repository, tag, runner=runner), complete=True)
     if remote_tag(repository, tag, runner=runner) != commit:
         raise ReleaseError("Tag changed before publication; leaving the release as a draft")
     runner(["gh", "release", "edit", tag, "--repo", repository,
             "--draft=false", "--prerelease", "--latest=false"])
-    published = gh_json([endpoint], runner=runner)
+    published = fetch_release(repository, tag, runner=runner)
     validate_release(published, complete=True)
     if published["draft"] or remote_tag(repository, tag, runner=runner) != commit:
         raise ReleaseError("Published release state could not be verified")

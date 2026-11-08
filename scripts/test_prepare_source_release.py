@@ -10,6 +10,7 @@ import subprocess
 import tarfile
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 
 import prepare_source_release as release
@@ -23,10 +24,18 @@ class FakeGitHub:
         self.release = None
         self.assets = {}
         self.mutations = []
+        self.requests = []
+        self.fail_once_on_upload = False
+
+    def snapshot(self):
+        result = copy.deepcopy(self.release)
+        result["assets"] = [{"name": name} for name in sorted(self.assets)]
+        return result
 
     def __call__(self, command, *, input_data=None):
         assert command[0] == "gh"
         args = command[1:]
+        self.requests.append(args)
         if args[0] == "api":
             if args[1:3] == ["--method", "POST"]:
                 payload = json.loads(input_data)
@@ -43,10 +52,14 @@ class FakeGitHub:
                         "object": {"sha": self.tag_sha, "type": "commit"},
                     })
             elif "/releases/tags/" in endpoint:
-                if self.release is not None:
-                    result = copy.deepcopy(self.release)
-                    result["assets"] = [{"name": name} for name in sorted(self.assets)]
-                    return release.json_bytes(result)
+                # GitHub's tag endpoint cannot retrieve an unpublished draft.
+                if self.release is not None and not self.release["draft"]:
+                    return release.json_bytes(self.snapshot())
+            elif "/releases?per_page=100&page=" in endpoint:
+                page = int(endpoint.rsplit("=", 1)[1])
+                return release.json_bytes([self.snapshot()] if self.release is not None and page == 1 else [])
+            elif endpoint.endswith("/releases/123") and self.release is not None:
+                return release.json_bytes(self.snapshot())
             else:
                 raise AssertionError(command)
             raise subprocess.CalledProcessError(1, command, stderr=b"gh: Not Found (HTTP 404)")
@@ -58,6 +71,7 @@ class FakeGitHub:
             assert "--draft" in args and "--prerelease" in args and "--verify-tag" in args
             assert args[args.index("--target") + 1] == self.tag_sha
             self.release = {
+                "id": 123,
                 "tag_name": release.PLAN["tag"],
                 "target_commitish": self.tag_sha,
                 "name": args[args.index("--title") + 1],
@@ -68,6 +82,9 @@ class FakeGitHub:
             self.mutations.append("create-draft")
         elif action == "upload":
             assert "--clobber" not in args
+            if self.fail_once_on_upload:
+                self.fail_once_on_upload = False
+                raise subprocess.CalledProcessError(1, command, stderr=b"synthetic interrupted upload")
             for filename in args[5:]:
                 path = Path(filename)
                 assert path.name not in self.assets
@@ -225,8 +242,10 @@ class SourceReleaseTest(unittest.TestCase):
         self.assertEqual(fake.mutations, ["create-tag", "create-draft", "upload", "publish"])
         self.assertEqual(set(fake.assets), release.ASSET_NAMES)
         fake.mutations.clear()
+        fake.requests.clear()
         self.assertIn("Already published", self.publish(fake))
         self.assertEqual(fake.mutations, [])
+        self.assertFalse(any("/releases?" in request[1] for request in fake.requests if request[0] == "api"))
 
     def test_tag_mismatch_is_rejected_without_mutation(self):
         self.prepare()
@@ -245,6 +264,46 @@ class SourceReleaseTest(unittest.TestCase):
         fake.mutations.clear()
         self.publish(fake)
         self.assertEqual(fake.mutations, ["upload", "publish"])
+
+    def test_draft_creation_interrupted_before_upload_resumes_via_list_and_id(self):
+        self.prepare()
+        fake = FakeGitHub()
+        fake.fail_once_on_upload = True
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.publish(fake)
+        self.assertTrue(fake.release["draft"])
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+        fake.requests.clear()
+        self.publish(fake)
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft", "upload", "publish"])
+        self.assertTrue(any("/releases?per_page=100&page=1" in request[1]
+                            for request in fake.requests if request[0] == "api"))
+        self.assertTrue(any(request[1].endswith("/releases/123")
+                            for request in fake.requests if request[0] == "api"))
+
+    def test_release_listing_must_complete_and_reject_ambiguous_drafts(self):
+        missing = subprocess.CalledProcessError(1, ["gh"], stderr=b"gh: Not Found (HTTP 404)")
+        requests = []
+
+        def unbounded(command, **_):
+            requests.append(command)
+            if "/tags/" in command[2]:
+                raise missing
+            return release.json_bytes([{"id": i + 1, "tag_name": "unrelated"} for i in range(100)])
+
+        with mock.patch.object(release, "MAX_RELEASE_PAGES", 2):
+            with self.assertRaisesRegex(release.ReleaseError, "pagination limit"):
+                release.fetch_release(release.PLAN["repository"], release.PLAN["tag"], runner=unbounded)
+        self.assertEqual(len(requests), 3)
+
+        def ambiguous(command, **_):
+            if "/tags/" in command[2]:
+                raise missing
+            return release.json_bytes([{"id": i, "tag_name": release.PLAN["tag"], "draft": True}
+                                       for i in (1, 2)])
+
+        with self.assertRaisesRegex(release.ReleaseError, "Multiple visible releases"):
+            release.fetch_release(release.PLAN["repository"], release.PLAN["tag"], runner=ambiguous)
 
     def test_published_missing_asset_is_never_repaired(self):
         self.prepare()
