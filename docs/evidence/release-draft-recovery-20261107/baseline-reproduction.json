@@ -1,0 +1,15 @@
+{
+  "baseline_commit": "58a3a546c758378d1887aeeaa99b4bd4d3a25c77",
+  "offline_synthetic_fixture": true,
+  "remote_requests": 0,
+  "scenario": "matching created draft remains absent from immediate tag/list lookup",
+  "exception_type": "TypeError",
+  "exception_message": "'NoneType' object is not subscriptable",
+  "mutations": [
+    "create-tag",
+    "create-draft"
+  ],
+  "draft_remains": true,
+  "assets": [],
+  "root_cause_scope": "Reproduces the unsafe None dereference only; original GitHub visibility cause remains unproven."
+}

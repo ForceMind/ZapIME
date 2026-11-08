@@ -1,5 +1,9 @@
 # ZapIME 项目执行状态
 
+## 发布草稿回读健壮性修复（2026-11-07，独立切片）
+
+已在87a0a0a中复现旧None TypeError并改为保留REST创建响应ID、按ID有界只读确认；丢响应不重复POST，畸形身份/权限/冲突明确拒绝，部分上传只核验并补缺失。原17项与新增13项真实Git/故障状态机回归全部通过，Python编译与差异检查通过，[证据](evidence/release-draft-recovery-20261107/README.md)保留旧脚本复现与新源码摘要。本切片CI尚待，未触发新发布；原源码Alpha标签/附件不动。
+
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 
 已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。
