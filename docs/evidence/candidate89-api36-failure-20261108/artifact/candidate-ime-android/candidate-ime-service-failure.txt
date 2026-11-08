@@ -1,0 +1,3 @@
+ZapIME candidate ranking: enabled=true eligible=true state=idle scored=0 inputRevision=23 appliedRevision=-1
+ZapIME candidate requests: submitted=0
+ZapIME lifecycle: starts=3 restarts=1 decision=selection_not_owned pendingMarkerLoss=false heldReplies=0

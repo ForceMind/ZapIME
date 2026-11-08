@@ -1,0 +1,68 @@
+{
+  "workflow_run_id": 42459746934,
+  "workflow_job_id": 128668487627,
+  "head_commit": "cbe55e286b017512212efc1d07e7db13c3112403",
+  "actual_build_checkout": "38a58fdab216ed4fa0d1abeb2da3a565a191a904",
+  "artifact_id": 13608609285,
+  "artifact_size": 118226,
+  "artifact_sha256": "69a2445927d01d123a0ad198a1b58749b50c94f25ec4740aed3831e415a1bc57",
+  "build_artifact_id": 13608454778,
+  "build_artifact_size": 722,
+  "build_artifact_sha256": "174fbe0272476f26fd4574439fe79c77c0a3742f220662805a22e245c9c76709",
+  "scope": "Actual API36 system-IME failure with production composition trace captured before Instrumentation.finish; method pass and cleanup do not make system gate pass. No phone or fix claim.",
+  "files": [
+    {
+      "path": "candidate-ime-report.json",
+      "original_member": "candidate-ime-android/candidate-ime-report.json",
+      "bytes": 1171,
+      "sha256": "eacbf7498309c0059b89d47debdf179eddfda193ad8535290fcc551295796d7a"
+    },
+    {
+      "path": "candidate-ime-service-before.txt",
+      "original_member": "candidate-ime-android/candidate-ime-service-before.txt",
+      "bytes": 481,
+      "sha256": "0dbab1cc141328862231482d1fc2299ae0041f2d2a7086583d70f76f79144552"
+    },
+    {
+      "path": "candidate-ime-service-failure.txt",
+      "original_member": "candidate-ime-android/candidate-ime-service-failure.txt",
+      "bytes": 1410,
+      "sha256": "6a3ffde3a25ee729dc09f15333e03a6b3cfa9559dd0e65148d4910cf84b4e048"
+    },
+    {
+      "path": "candidate-ime-host-lifecycle.txt",
+      "original_member": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+      "bytes": 3248,
+      "sha256": "c6570d16519f05cbbbd0609b34b151c330accb0f1d7f9c64a58c4534feecbf9e"
+    },
+    {
+      "path": "run-summary.json",
+      "original_member": "candidate-ime-android/run-summary.json",
+      "bytes": 655,
+      "sha256": "46751759d1231b868c8fac89ac4feb2c8fd1c0aea2bd648296b1baedac317129"
+    },
+    {
+      "path": "offline-uid.json",
+      "original_member": "candidate-ime-android/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "framework-reset-excerpt.txt",
+      "original_member": "candidate-ime-android/system-runtime.txt",
+      "original_bytes": 262144,
+      "original_sha256": "629b70c41983031915fb6a1f55b32090c45612c1438f3ed3633101267abb46c8",
+      "source_lines": [
+        495
+      ],
+      "bytes": 148,
+      "sha256": "374e8074da887c3c010fbaab8d27d4bc330b973d29b521598781242d2981e6ac"
+    },
+    {
+      "path": "candidate-ranking-build.json",
+      "original_member": "candidate-ranking-build.json",
+      "bytes": 1146,
+      "sha256": "5693f4914c4870c974461fc679121d0cf029412e7acff1e48e06d8496387b806"
+    }
+  ]
+}

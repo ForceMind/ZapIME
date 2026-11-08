@@ -39,6 +39,15 @@ class FakeGitHub:
         if args[0] == "api":
             if args[1:3] == ["--method", "POST"]:
                 payload = json.loads(input_data)
+                if args[3].endswith("/releases"):
+                    assert self.release is None
+                    assert payload["draft"] is True and payload["prerelease"] is True
+                    assert payload["make_latest"] == "false"
+                    assert payload["target_commitish"] == self.tag_sha
+                    assert payload["tag_name"] == release.PLAN["tag"]
+                    self.release = {"id": 123, **payload}
+                    self.mutations.append("create-draft")
+                    return release.json_bytes(self.snapshot())
                 assert payload["ref"] == "refs/tags/" + release.PLAN["tag"]
                 assert self.tag_sha is None
                 self.tag_sha = payload["sha"]
@@ -66,21 +75,7 @@ class FakeGitHub:
         assert args[0] == "release"
         action = args[1]
         assert args[2] == release.PLAN["tag"]
-        if action == "create":
-            assert self.release is None
-            assert "--draft" in args and "--prerelease" in args and "--verify-tag" in args
-            assert args[args.index("--target") + 1] == self.tag_sha
-            self.release = {
-                "id": 123,
-                "tag_name": release.PLAN["tag"],
-                "target_commitish": self.tag_sha,
-                "name": args[args.index("--title") + 1],
-                "body": Path(args[args.index("--notes-file") + 1]).read_text(),
-                "draft": True,
-                "prerelease": True,
-            }
-            self.mutations.append("create-draft")
-        elif action == "upload":
+        if action == "upload":
             assert "--clobber" not in args
             if self.fail_once_on_upload:
                 self.fail_once_on_upload = False
@@ -145,7 +140,7 @@ class SourceReleaseTest(unittest.TestCase):
 
     def publish(self, fake):
         return release.publish(self.repo, self.commit, self.output,
-                               repository=release.PLAN["repository"], runner=fake)
+                               repository=release.PLAN["repository"], runner=fake, sleeper=lambda _: None)
 
     def test_archive_exact_commit_not_worktree_and_no_submodule_payload(self):
         self.write("README.md", b"dirty worktree must not ship\n")
@@ -280,6 +275,243 @@ class SourceReleaseTest(unittest.TestCase):
                             for request in fake.requests if request[0] == "api"))
         self.assertTrue(any(request[1].endswith("/releases/123")
                             for request in fake.requests if request[0] == "api"))
+
+    def test_created_response_id_does_not_depend_on_tag_or_list_visibility(self):
+        self.prepare()
+        fake = FakeGitHub()
+
+        def hidden_listing(command, **kwargs):
+            if command[1] == "api" and "/releases?" in command[2]:
+                fake.requests.append(command[1:])
+                return b"[]"
+            return fake(command, **kwargs)
+
+        self.assertIn("Published", self.publish(hidden_listing))
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft", "upload", "publish"])
+        self.assertEqual(sum("/releases?" in item[1] for item in fake.requests if item[0] == "api"), 1)
+        self.assertTrue(any(item[1].endswith("/releases/123")
+                            for item in fake.requests if item[0] == "api"))
+
+    def test_creation_id_get_missing_is_bounded_read_only_then_recovers(self):
+        self.prepare()
+        fake = FakeGitHub()
+        missing = 2
+        delays = []
+
+        def delayed_id(command, **kwargs):
+            nonlocal missing
+            if command[1:3] == ["api", "repos/ForceMind/ZapIME/releases/123"] and missing:
+                missing -= 1
+                raise subprocess.CalledProcessError(1, command, stderr=b"gh: Not Found (HTTP 404)")
+            return fake(command, **kwargs)
+
+        result = release.publish(self.repo, self.commit, self.output,
+                                 repository=release.PLAN["repository"], runner=delayed_id,
+                                 sleeper=delays.append)
+        self.assertIn("Published", result)
+        self.assertEqual(delays, [1, 2])
+        self.assertEqual(fake.mutations.count("create-draft"), 1)
+
+    def test_created_id_stays_missing_clear_failure_and_next_invocation_resumes(self):
+        self.prepare()
+        fake = FakeGitHub()
+        id_gets = 0
+
+        def missing_id(command, **kwargs):
+            nonlocal id_gets
+            if command[1:3] == ["api", "repos/ForceMind/ZapIME/releases/123"]:
+                id_gets += 1
+                raise subprocess.CalledProcessError(1, command, stderr=b"gh: Not Found (HTTP 404)")
+            return fake(command, **kwargs)
+
+        with self.assertRaisesRegex(release.ReleaseError, "Draft creation could not be confirmed.*read-only"):
+            self.publish(missing_id)
+        self.assertEqual(id_gets, len(release.RELEASE_READ_DELAYS))
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+        self.assertTrue(fake.release["draft"])
+        self.assertIn("Published", self.publish(fake))
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft", "upload", "publish"])
+
+    def test_lost_create_response_reconciles_without_second_post(self):
+        self.prepare()
+        for response in (b"null", b"not-json: synthetic secret must not be logged", "lost"):
+            with self.subTest(response=response):
+                fake = FakeGitHub()
+
+                def lost(command, **kwargs):
+                    value = fake(command, **kwargs)
+                    if command[1:4] == ["api", "--method", "POST"] and command[4].endswith("/releases"):
+                        if response == "lost":
+                            raise subprocess.CalledProcessError(1, command, stderr=b"synthetic lost response")
+                        return response
+                    return value
+
+                self.assertIn("Published", self.publish(lost))
+                self.assertEqual(fake.mutations.count("create-draft"), 1)
+
+    def test_ambiguous_creation_with_no_visible_draft_never_reposts_and_redacts(self):
+        self.prepare()
+        fake = FakeGitHub()
+        posts = 0
+
+        def lost_invisible(command, **kwargs):
+            nonlocal posts
+            if command[1:4] == ["api", "--method", "POST"] and command[4].endswith("/releases"):
+                posts += 1
+                raise subprocess.CalledProcessError(1, command, stderr=b"synthetic private response")
+            return fake(command, **kwargs)
+
+        with self.assertRaisesRegex(release.ReleaseError, "Draft creation could not be confirmed") as failure:
+            self.publish(lost_invisible)
+        self.assertNotIn("private response", str(failure.exception))
+        self.assertEqual(posts, 1)
+        self.assertEqual(fake.mutations, ["create-tag"])
+
+    def test_create_response_invalid_or_foreign_id_fails_before_assets(self):
+        self.prepare()
+        for response in ([], {}, {"id": True, "tag_name": release.PLAN["tag"]},
+                         {"id": 123, "tag_name": "foreign"}):
+            with self.subTest(response=response):
+                fake = FakeGitHub()
+
+                def malformed(command, **kwargs):
+                    value = fake(command, **kwargs)
+                    if command[1:4] == ["api", "--method", "POST"] and command[4].endswith("/releases"):
+                        return release.json_bytes(response)
+                    return value
+
+                with self.assertRaisesRegex(release.ReleaseError, "no valid ID"):
+                    self.publish(malformed)
+                self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+
+    def test_confirmation_authorization_failure_is_not_retried(self):
+        self.prepare()
+        fake = FakeGitHub()
+        reads = 0
+
+        def denied_id(command, **kwargs):
+            nonlocal reads
+            if command[1:3] == ["api", "repos/ForceMind/ZapIME/releases/123"]:
+                reads += 1
+                raise subprocess.CalledProcessError(1, command, stderr=b"synthetic token (HTTP 403)")
+            return fake(command, **kwargs)
+
+        with self.assertRaisesRegex(release.ReleaseError, "GitHub API request failed") as failure:
+            self.publish(denied_id)
+        self.assertNotIn("synthetic token", str(failure.exception))
+        self.assertEqual(reads, 1)
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+
+    def test_creation_authorization_failure_is_not_reconciled_or_retried(self):
+        self.prepare()
+        for status in (401, 403):
+            with self.subTest(status=status):
+                fake = FakeGitHub()
+                posts = 0
+
+                def denied(command, **kwargs):
+                    nonlocal posts
+                    if command[1:4] == ["api", "--method", "POST"] and command[4].endswith("/releases"):
+                        posts += 1
+                        raise subprocess.CalledProcessError(1, command,
+                                                            stderr=f"private (HTTP {status})".encode())
+                    return fake(command, **kwargs)
+
+                with self.assertRaisesRegex(release.ReleaseError, "GitHub API request failed"):
+                    self.publish(denied)
+                self.assertEqual(posts, 1)
+                self.assertEqual(fake.mutations, ["create-tag"])
+                self.assertEqual(sum("/releases?" in item[1]
+                                     for item in fake.requests if item[0] == "api"), 1)
+
+    def test_created_id_recheck_rejects_changed_identity_before_assets(self):
+        self.prepare()
+        for change in ({"id": 124}, {"tag_name": "foreign"}, {"target_commitish": "f" * 40},
+                       {"body": "foreign notes"}):
+            with self.subTest(change=change):
+                fake = FakeGitHub()
+
+                def changed(command, **kwargs):
+                    value = fake(command, **kwargs)
+                    if command[1:3] == ["api", "repos/ForceMind/ZapIME/releases/123"]:
+                        return release.json_bytes({**json.loads(value), **change})
+                    return value
+
+                with self.assertRaises(release.ReleaseError):
+                    self.publish(changed)
+                self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+
+    def test_lost_creation_response_cannot_resume_foreign_draft(self):
+        self.prepare()
+        fake = FakeGitHub()
+
+        def foreign(command, **kwargs):
+            value = fake(command, **kwargs)
+            if command[1:4] == ["api", "--method", "POST"] and command[4].endswith("/releases"):
+                fake.release["body"] = "foreign draft must remain untouched"
+                raise subprocess.CalledProcessError(1, command, stderr=b"synthetic response lost")
+            return value
+
+        with self.assertRaisesRegex(release.ReleaseError, "not the same committed source"):
+            self.publish(foreign)
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft"])
+        self.assertEqual(fake.release["body"], "foreign draft must remain untouched")
+
+    def test_partial_upload_failure_next_invocation_verifies_and_fills_only_missing(self):
+        self.prepare()
+        fake = FakeGitHub()
+        failed = False
+
+        def partial(command, **kwargs):
+            nonlocal failed
+            if command[1:3] == ["release", "upload"] and not failed:
+                failed = True
+                path = Path(command[6])
+                fake.assets[path.name] = path.read_bytes()
+                raise subprocess.CalledProcessError(1, command, stderr=b"synthetic partial upload")
+            return fake(command, **kwargs)
+
+        with self.assertRaises(subprocess.CalledProcessError):
+            self.publish(partial)
+        self.assertEqual(len(fake.assets), 1)
+        retained = copy.deepcopy(fake.assets)
+        self.assertIn("Published", self.publish(fake))
+        self.assertTrue(all(fake.assets[name] == data for name, data in retained.items()))
+        self.assertEqual(fake.mutations, ["create-tag", "create-draft", "upload", "publish"])
+
+    def test_missing_or_malformed_release_after_mutation_is_explicit_failure(self):
+        self.prepare()
+        for mutation in ("upload", "publish"):
+            with self.subTest(mutation=mutation):
+                fake = FakeGitHub()
+
+                def missing(command, **kwargs):
+                    if mutation in fake.mutations and command[1:3] == ["api", "repos/ForceMind/ZapIME/releases/123"]:
+                        return b"null"
+                    return fake(command, **kwargs)
+
+                with self.assertRaisesRegex(release.ReleaseError, "could not be confirmed.*read-only"):
+                    self.publish(missing)
+                self.assertEqual(fake.mutations.count(mutation), 1)
+                self.assertEqual(fake.mutations.count("create-draft"), 1)
+
+    def test_malformed_release_fields_cannot_raise_type_or_key_errors(self):
+        self.prepare()
+        for field, value in (("body", None), ("draft", "false"), ("assets", None),
+                             ("assets", [{"name": []}]), ("assets", [None]), ("id", True)):
+            with self.subTest(field=field, value=value):
+                fake = FakeGitHub()
+                self.publish(fake)
+                original_snapshot = fake.snapshot
+
+                def broken_snapshot():
+                    return {**original_snapshot(), field: value}
+
+                fake.snapshot = broken_snapshot
+                fake.mutations.clear()
+                with self.assertRaises(release.ReleaseError):
+                    self.publish(fake)
+                self.assertEqual(fake.mutations, [])
 
     def test_release_listing_must_complete_and_reject_ambiguous_drafts(self):
         missing = subprocess.CalledProcessError(1, ["gh"], stderr=b"gh: Not Found (HTTP 404)")

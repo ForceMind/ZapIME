@@ -1,0 +1,12 @@
+Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+Input method com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME: already enabled for user #0
+Input method com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME selected for user #0
+Performing Streamed Install
+Success
+Verified kernel IPv4/IPv6 REJECT for exact product UID 10216
+Input method org.zapime.android/.ZapInputMethodService: now enabled for user #0
+Input method org.zapime.android/.ZapInputMethodService selected for user #0
+Input method com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME: already enabled for user #0
+Input method com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME selected for user #0
+Input method com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME selected for user #0
+System-IME candidate gate failed; original evidence and cleanup results retained

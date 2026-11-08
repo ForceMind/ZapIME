@@ -2,7 +2,6 @@
 package org.zapime.android.voicetest;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
-import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
@@ -103,7 +102,11 @@ final class SyncPreparationUiProbe {
         }
         return found;
     }
-    private static Rect visibleRoots(UiAutomation automation)throws Exception {
+    private static final class NavigationArea {
+        final AccessibilityNodeInfo node;final Rect bounds;
+        NavigationArea(AccessibilityNodeInfo node,Rect bounds){this.node=node;this.bounds=bounds;}
+    }
+    private static NavigationArea visibleNavigation(UiAutomation automation)throws Exception {
         AccessibilityNodeInfo root=automation.getRootInActiveWindow();
         if(root==null||!String.valueOf(root.getPackageName()).contains("documentsui"))return null;
         Rect screen=new Rect();root.getBoundsInScreen(screen);
@@ -111,10 +114,13 @@ final class SyncPreparationUiProbe {
             String id=node.getViewIdResourceName();
             if(node.isVisibleToUser()&&id!=null&&(id.endsWith(":id/container_roots")||id.endsWith(":id/roots_list"))){
                 Rect bounds=new Rect();node.getBoundsInScreen(bounds);
-                if(bounds.intersect(screen)&&!bounds.isEmpty())return bounds;
+                if(bounds.intersect(screen)&&!bounds.isEmpty())return new NavigationArea(node,bounds);
             }
         }
         return null;
+    }
+    private static Rect visibleRoots(UiAutomation automation)throws Exception {
+        NavigationArea navigation=visibleNavigation(automation);return navigation==null?null:navigation.bounds;
     }
     private static void observeProvider(UiAutomation automation,String name,SyncRecoveryTrace trace)throws Exception {
         AccessibilityNodeInfo root=automation.getRootInActiveWindow();
@@ -132,44 +138,85 @@ final class SyncPreparationUiProbe {
                 .put("observed_polls",trace.polls).put("navigation_close_attempts",trace.closeAttempts)
                 .put("physical_selection_attempts",trace.touchAttempts);
     }
+    private static AccessibilityNodeInfo downloadsControl(NavigationArea area)throws Exception {
+        if(area==null)return null;
+        Rect navigation=area.bounds;
+        AccessibilityNodeInfo found=null;Rect foundBounds=null;
+        // Geometry alone is not ancestry: the covered directory can still
+        // expose visible nodes behind the drawer. Search this exact subtree.
+        for(AccessibilityNodeInfo label:VoiceKeyModelProbe.nodes(area.node)){
+            String text=String.valueOf(label.getText());Rect labelBounds=new Rect();label.getBoundsInScreen(labelBounds);
+            if(!label.isVisibleToUser()||!label.isEnabled()||!(text.equals("Downloads")||text.equals("下载"))
+                    ||labelBounds.isEmpty()||!navigation.contains(labelBounds))continue;
+            AccessibilityNodeInfo control=label;
+            for(int parent=0;parent<6&&control!=null;parent++,control=control.getParent()){
+                if(control.equals(area.node))break;
+                Rect bounds=new Rect();control.getBoundsInScreen(bounds);
+                if(!control.isVisibleToUser()||!control.isEnabled()||bounds.isEmpty()||!navigation.contains(bounds))break;
+                if(control.isClickable()&&bounds.height()<navigation.height()){
+                    SyncAccountProbe.check(foundBounds==null||foundBounds.equals(bounds),"provider Downloads root control is not unique");
+                    found=control;foundBounds=bounds;break;
+                }
+            }
+        }
+        return found;
+    }
     private static void selectRecovery(UiAutomation automation,String name,File output,JSONObject report,SyncRecoveryTrace trace)throws Exception {
-        boolean rootsOpened=false,downloadsOpened=false,closedCover=false;Rect previous=null;long stableSince=-1;
-        report.put("provider_navigation_cover_detected",false).put("provider_navigation_close_count",0)
+        boolean rootsOpened=false,coverObserved=false;Rect previous=null;long stableSince=-1;
+        SyncRecoveryNavigation route=new SyncRecoveryNavigation();
+        report.put("provider_navigation_cover_detected",false)
+                .put("provider_navigation_root_selection_count",0).put("provider_navigation_root_selection_method","none")
                 .put("provider_occlusion_scope","identified_DocumentsUI_roots_navigation_only");
         for(int attempt=0;attempt<150;attempt++){
             trace.step=SyncRecoveryTrace.Step.FILENAME_POLL;observeProvider(automation,name,trace);
-            AccessibilityNodeInfo named=uniqueDocument(automation,name);
-            Rect navigation=visibleRoots(automation);
-            if(closedCover&&navigation!=null){trace.step=SyncRecoveryTrace.Step.NAVIGATION_CLOSE_WAIT;previous=null;stableSince=-1;Thread.sleep(200);continue;}
-            if(named!=null){
-                Rect bounds=new Rect();named.getBoundsInScreen(bounds);
-                // Visibility alone does not prove hit-test reachability: modern
-                // DocumentsUI exposes the filename beneath an open drawer.
-                if(navigation!=null&&navigation.contains(bounds.centerX(),bounds.centerY())){
-                    SyncAccountProbe.check(!closedCover,"provider drawer still covers filename after one close");
-                    trace.step=SyncRecoveryTrace.Step.NAVIGATION_SNAPSHOT;
-                    VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-nav-before.png");
-                    report.put("provider_navigation_cover_detected",true).put("provider_navigation_bounds",new JSONArray().put(navigation.left).put(navigation.top).put(navigation.right).put(navigation.bottom));
-                    trace.closeAttempt();
-                    SyncAccountProbe.check(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK),"observed provider drawer close rejected");
-                    closedCover=true;report.put("provider_navigation_close_count",1).put("provider_navigation_close_method","observed_cover_single_global_back");
-                    trace.step=SyncRecoveryTrace.Step.NAVIGATION_CLOSE_WAIT;
-                    previous=null;stableSince=-1;Thread.sleep(200);continue;
-                }
+            AccessibilityNodeInfo named=uniqueDocument(automation,name);Rect bounds=new Rect();if(named!=null)named.getBoundsInScreen(bounds);
+            NavigationArea area=visibleNavigation(automation);Rect navigation=area==null?null:area.bounds;
+            boolean covered=named!=null&&navigation!=null&&navigation.contains(bounds.centerX(),bounds.centerY());
+            if(covered&&!coverObserved){
+                trace.step=SyncRecoveryTrace.Step.NAVIGATION_SNAPSHOT;
+                VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-nav-before.png");
+                coverObserved=true;report.put("provider_navigation_cover_detected",true)
+                        .put("provider_navigation_bounds",new JSONArray().put(navigation.left).put(navigation.top).put(navigation.right).put(navigation.bottom));
+            }
+            AccessibilityNodeInfo downloads=downloadsControl(area);
+            SyncRecoveryNavigation.Decision decision=route.observe(named!=null,covered,downloads!=null);
+            if(decision==SyncRecoveryNavigation.Decision.SELECT_DOWNLOADS_ROOT){
+                // API28 Back is directory/search/selection navigation, not a
+                // reliable drawer-dismissal contract. Use the observed root row.
+                NavigationArea freshArea=visibleNavigation(automation);Rect freshNavigation=freshArea==null?null:freshArea.bounds;
+                AccessibilityNodeInfo fresh=downloadsControl(freshArea);
+                if(fresh==null||!fresh.refresh()){previous=null;stableSince=-1;Thread.sleep(200);continue;}
+                Rect controlBounds=new Rect();fresh.getBoundsInScreen(controlBounds);
+                if(!fresh.isVisibleToUser()||!fresh.isEnabled()||!fresh.isClickable()||controlBounds.isEmpty()
+                        ||!freshNavigation.contains(controlBounds)){previous=null;stableSince=-1;Thread.sleep(200);continue;}
+                route.selectRoot();trace.closeAttempt();trace.step=SyncRecoveryTrace.Step.ROOT_CONTROL_SELECTION;
+                SyncAccountProbe.check(fresh.performAction(AccessibilityNodeInfo.ACTION_CLICK),"observed provider Downloads root rejected");
+                report.put("provider_navigation_root_selection_count",route.rootSelections())
+                        .put("provider_navigation_root_selection_method","observed_DocumentsUI_Downloads_root_ACTION_CLICK")
+                        .put("provider_navigation_root_control_descendant",true)
+                        .put("provider_navigation_control_bounds",new JSONArray().put(controlBounds.left).put(controlBounds.top).put(controlBounds.right).put(controlBounds.bottom))
+                        .put("provider_navigation_root_bounds",new JSONArray().put(freshNavigation.left).put(freshNavigation.top).put(freshNavigation.right).put(freshNavigation.bottom));
+                previous=null;stableSince=-1;Thread.sleep(200);continue;
+            }
+            if(decision==SyncRecoveryNavigation.Decision.STABILIZE_FILENAME){
                 if(bounds.equals(previous)&&SystemClock.uptimeMillis()-stableSince>=200){
-                    // Capture only the provider's public synthetic filename list;
-                    // never capture the Activity while a recovery code is displayed.
                     trace.step=SyncRecoveryTrace.Step.FILE_SNAPSHOT;
                     VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-before.png");
                     AccessibilityNodeInfo fresh=uniqueDocument(automation,name);Rect now=new Rect();if(fresh!=null)fresh.getBoundsInScreen(now);
                     Rect finalNavigation=visibleRoots(automation);
-                    if(fresh!=null&&now.equals(bounds)&&(!closedCover||finalNavigation==null)
-                            &&(finalNavigation==null||!finalNavigation.contains(now.centerX(),now.centerY()))){
+                    boolean finalCovered=fresh!=null&&finalNavigation!=null&&finalNavigation.contains(now.centerX(),now.centerY());
+                    if(fresh!=null&&now.equals(bounds)&&!finalCovered){
+                        // A persistent, non-overlapping sidebar is not a cover.
+                        // Fresh filename geometry and point-specific cover checks
+                        // remain mandatory immediately before the only file touch.
+                        route.touchDocument(true,finalCovered);
                         report.put("provider_touch_point",new JSONArray().put(now.centerX()).put(now.centerY()))
                                 .put("provider_selected_filename_bounds",new JSONArray().put(now.left).put(now.top).put(now.right).put(now.bottom))
                                 .put("provider_pointer_id",0).put("provider_pointer_count",1).put("provider_tool_type",MotionEvent.TOOL_TYPE_FINGER)
                                 .put("provider_event_source",InputDevice.SOURCE_TOUCHSCREEN)
-                                .put("provider_selection_unoccluded",true).put("provider_cover_closed_before_selection",closedCover);
+                                .put("provider_selection_unoccluded",true).put("provider_navigation_cover_cleared_before_selection",coverObserved)
+                                .put("provider_navigation_present_at_selection",finalNavigation!=null);
+                        if(finalNavigation!=null)report.put("provider_navigation_bounds_at_selection",new JSONArray().put(finalNavigation.left).put(finalNavigation.top).put(finalNavigation.right).put(finalNavigation.bottom));
                         trace.touchAttempt();long began=SystemClock.uptimeMillis();MotionEvent down=VoiceKeyModelProbe.fingerEvent(began,began,MotionEvent.ACTION_DOWN,now.centerX(),now.centerY());boolean sent;
                         try{sent=automation.injectInputEvent(down,true);}finally{down.recycle();}SyncAccountProbe.check(sent,"recovery provider finger down rejected");Thread.sleep(50);
                         trace.step=SyncRecoveryTrace.Step.TOUCH_UP;
@@ -180,11 +227,16 @@ final class SyncPreparationUiProbe {
                 }
                 if(previous==null||!previous.equals(bounds)){previous=bounds;stableSince=SystemClock.uptimeMillis();}
             }else{
-                previous=null;stableSince=-1;AccessibilityNodeInfo root=automation.getRootInActiveWindow();
-                if(root!=null&&String.valueOf(root.getPackageName()).contains("documentsui")){
-                    List<AccessibilityNodeInfo> nodes=VoiceKeyModelProbe.nodes(root);
-                    if(!closedCover&&!downloadsOpened)for(AccessibilityNodeInfo node:nodes){String text=String.valueOf(node.getText());if(node.isVisibleToUser()&&(text.equals("Downloads")||text.equals("下载"))&&VoiceKeyModelProbe.click(node)){downloadsOpened=true;break;}}
-                    if(!closedCover&&!downloadsOpened&&!rootsOpened)for(AccessibilityNodeInfo node:nodes){String desc=String.valueOf(node.getContentDescription());if(node.isVisibleToUser()&&(desc.equals("Show roots")||desc.equals("显示根目录")||desc.equals("显示导航抽屉"))){SyncAccountProbe.check(VoiceKeyModelProbe.click(node),"recovery document roots rejected");rootsOpened=true;break;}}
+                previous=null;stableSince=-1;if(route.rootSelections()==1)trace.step=SyncRecoveryTrace.Step.NAVIGATION_CLOSE_WAIT;
+                if(!rootsOpened&&route.rootSelections()==0&&navigation==null){
+                    AccessibilityNodeInfo root=automation.getRootInActiveWindow();
+                    if(root!=null&&String.valueOf(root.getPackageName()).contains("documentsui"))
+                        for(AccessibilityNodeInfo node:VoiceKeyModelProbe.nodes(root)){
+                            String desc=String.valueOf(node.getContentDescription());
+                            if(node.isVisibleToUser()&&node.isEnabled()&&(desc.equals("Show roots")||desc.equals("显示根目录")||desc.equals("显示导航抽屉"))){
+                                SyncAccountProbe.check(VoiceKeyModelProbe.click(node),"recovery document roots rejected");rootsOpened=true;break;
+                            }
+                        }
                 }
             }
             Thread.sleep(200);
@@ -215,7 +267,7 @@ final class SyncPreparationUiProbe {
         Context context=instrumentation.getTargetContext();ClassLoader loader=context.getClassLoader();
         Class<?> core=Class.forName("org.zapime.android.NativeCore",true,loader),vault=Class.forName("org.zapime.android.SyncSecrets",true,loader),model=Class.forName("org.zapime.android.SyncConnection",true,loader),store=Class.forName("org.zapime.android.SyncConnectionStore",true,loader),installer=Class.forName("org.zapime.android.ResourceInstaller",true,loader);
         File root=new File(context.getFilesDir(),"zapime"),database=new File(root,"data/personal.sqlite3");UUID account=UUID.randomUUID();
-        JSONArray cases=new JSONArray();JSONObject report=new JSONObject().put("schema_version",1).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases)
+        JSONArray cases=new JSONArray();JSONObject report=new JSONObject().put("schema_version",2).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases)
                 .put("scope","Fresh dedicated CI main profile only: normal preparation buttons/dialogs, actual ACTION_CREATE_DOCUMENT and ACTION_OPEN_DOCUMENT with one observed filename/finger selection, actual native key recovery and unchanged protected material. Synthetic owner identity verified locally without HTTP. EditText inputs are programmatic test input, not natural or physical typing. Does not prove account-wide key registration, data synchronization, phone behavior or human backup custody.")
                 .put("actual_provider_create",false).put("actual_provider_open",false).put("actual_native_recovery",false).put("recovery_identity_unchanged",false).put("normal_buttons_and_dialogs_used",false).put("missing_material_restore_ui",false).put("secret_or_code_logged",false)
                 .put("button_activation_method","production_View_performClick_and_visible_AlertDialog_confirmation");

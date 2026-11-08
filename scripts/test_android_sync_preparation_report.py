@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 import copy
+import json
+from pathlib import Path
 import unittest
 from android_sync_preparation_report import (CASES, UI_CASES, FAILURE_SUBSTEPS, FAILURE_WINDOWS,
                                              failure_diagnostic, verify_report, verify_ui_report)
@@ -112,6 +114,59 @@ class SyncRecoveryUiReportTests(unittest.TestCase):
             report = self.diagnostic(); del report["failure_diagnostic"][field]
             with self.subTest(missing=field), self.assertRaises(ValueError): failure_diagnostic(report)
         with self.assertRaises(ValueError): failure_diagnostic(self.diagnostic(active_window="product"))
+
+    def root_report(self, covered=False, navigation=False):
+        report = copy.deepcopy(self.report)
+        report.pop("provider_navigation_close_count")
+        report.update(schema_version=2, provider_navigation_cover_detected=covered,
+            provider_navigation_cover_cleared_before_selection=covered,
+            provider_navigation_root_selection_count=1 if covered or navigation else 0,
+            provider_navigation_root_selection_method="observed_DocumentsUI_Downloads_root_ACTION_CLICK" if covered or navigation else "none",
+            provider_navigation_present_at_selection=navigation)
+        if covered or navigation:
+            report.update(provider_navigation_root_bounds=[0, 80, 220, 640],
+                provider_navigation_control_bounds=[0, 160, 220, 208],
+                provider_navigation_root_control_descendant=True)
+        if navigation:
+            report.update(provider_navigation_bounds_at_selection=[0, 80, 220, 640],
+                provider_touch_point=[300, 300], provider_selected_filename_bounds=[280, 280, 350, 330])
+        return report
+
+    def test_observed_root_navigation_and_noncovering_sidebar(self):
+        verify_ui_report(self.root_report(), 36)
+        verify_ui_report(self.root_report(covered=True), 36)
+        verify_ui_report(self.root_report(navigation=True), 36)
+        verify_ui_report(self.root_report(covered=True, navigation=True), 36)
+
+    def test_root_navigation_cannot_inflate_action_or_ignore_final_cover(self):
+        for field, value in (("provider_navigation_root_selection_count", 2),
+                ("provider_navigation_root_selection_count", True),
+                ("provider_navigation_root_selection_method", "observed_cover_single_global_back"),
+                ("provider_navigation_root_control_descendant", False),
+                ("provider_navigation_cover_cleared_before_selection", False),
+                ("provider_navigation_control_bounds", [0, 0, 500, 640]),
+                ("provider_navigation_control_bounds", [0, 80, 220, 640]),
+                ("provider_navigation_control_bounds", [0, 160, True, 208]),
+                ("provider_navigation_bounds_at_selection", [0, 0, 400, 640]),
+                ("provider_navigation_bounds_at_selection", [0, 0, 220, 32769]),
+                ("provider_navigation_present_at_selection", "false")):
+            report = self.root_report(covered=True, navigation=True);report[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError): verify_ui_report(report)
+        report = self.root_report();report["provider_navigation_bounds_at_selection"] = [0, 0, 20, 20]
+        with self.assertRaises(ValueError): verify_ui_report(report)
+        report = self.root_report(covered=True);report["provider_navigation_root_selection_count"] = 0
+        report["provider_navigation_root_selection_method"] = "none"
+        with self.assertRaises(ValueError): verify_ui_report(report)
+
+    def test_original_reports_remain_truthful_under_new_validator(self):
+        root = Path(__file__).resolve().parents[1] / "docs/evidence/sync-recovery-navigation-20261107/failure-42459710009"
+        for api in (35, 36):
+            report = json.loads((root / f"api{api}/sync-preparation-ui-report.json").read_text())
+            verify_ui_report(report, api)
+        report = json.loads((root / "api28/sync-preparation-ui-report.json").read_text())
+        self.assertEqual(failure_diagnostic(report)["substep"], "navigation_close_wait")
+        self.assertEqual(failure_diagnostic(report)["physical_selection_attempts"], 0)
+        with self.assertRaises(ValueError): verify_ui_report(report, 28)
 
 
 if __name__ == "__main__": unittest.main()

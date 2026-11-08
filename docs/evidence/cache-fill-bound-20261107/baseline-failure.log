@@ -1,0 +1,6 @@
+=== RUN   TestObjectCacheAbandonedFillsRemainGloballyBounded
+    object_cache_capacity_test.go:108: abandoned fills exceeded capacity 32: extra backend read zapime/v1/d8e5a868-fa7b-4022-a5fb-6e88ae63f9ce/a9562db2181d8887d1673c713d0e1363440375c05e8e804a5efb9239ca046993.json
+--- FAIL: TestObjectCacheAbandonedFillsRemainGloballyBounded (0.00s)
+FAIL
+FAIL	github.com/ForceMind/ZapIME/services/sync/internal/syncapi	0.014s
+FAIL

@@ -1,8 +1,49 @@
 # ZapIME 项目执行状态
 
-## 同步恢复 SAF 失败的受限诊断（2026-11-07，独立切片）
+## SAF 文件选择器导航修正：原 API28 失败保留，同源码三 API 待验
 
-119087e在保留原API28失败artifact/SHA的基础上补充test-only导航阶段、固定窗口分类及有界布尔/次数；不记录恢复码、URI、节点文字或任意异常消息。99项Android Python、6项报告回归、JVM trace和API36r02/Temurin17全voice-tests编译通过；独立审查无阻塞。原件仅证明关闭抽屉请求后尚无文件触摸，不能认定唯一根因，产品与触摸/恢复身份/清理门禁均未改。新三API模拟器结果待本PR CI，[证据](evidence/sync-recovery-diagnostics-20261107/README.md)。
+#86 focused42459710009的API35/36实际57项门禁通过；API28 job128667965894实际失败于navigation_close_wait：DocumentsUI roots仍可见、filename不可见、150轮/一次BACK、零文件触摸。导出/native身份/确认与清理通过，不代表恢复页通过。原件与SHA保留于[API28导航原失败](evidence/sync-recovery-navigation-20261107/README.md)。
+
+新测试入口只在已识别roots子树内点击唯一可见Downloads根项，随后等待文件稳定并检查触摸点没有导航遮挡，再进行一次真实文件触摸；不再把系统BACK当成抽屉关闭。产品导入未改，身份/字节/清理门禁不减。102项Android Python、9项报告、2组JVM与全部voice-tests Java编译通过，独立审查待收口；新源码的API28/35/36实际恢复仍待CI。
+
+## 缓存容量修复：真实事务、S3与灾备已验
+
+#90固定headf01a8b5 / checkout0d5edd686e9f23c639099e71004888bf568c88a1，完整tree6350807ec26343dcd395d532364294efc24badc0。实际服务workflow42460687991/job128669118685全部SUCCESS：Go1.27.3 race顶层30组（含fuzz seed组）、0SKIP，新增真实PG/HTTP取消/容量503/同cursor重试通过；S3兼容存储、容器/漏洞、真实共享客户端交换、撤销、空库/对象桶恢复及一键/重复安装也通过。原始ZIP完整下载核GitHub大小/SHA，安全joblog和原testlog见[本轮服务原件](evidence/cache-fill-ci-20261108/README.md)。
+
+此后仅合并已验发布修复与文档/原件，没有改变该Go源码/测试的内容摘要。独立审查和对应服务/源码/共享/Windows/CPU门禁通过；Android全量继续运行，不将其待验结果当服务修复的手机证明，也不因此宣称用户公网R2/生产部署通过。
+
+## 新 API36 真实组字失败：配置重启路径已定位，安全修复进行中
+
+#87候选workflow42459746934和#89候选42460384426均在API36系统IME失败；方法/host与API35成功不代填整轮。#87新事件环准确记录APPLY_PREEDIT→INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY→新APPLY_PREEDIT，原host连接未更换、focused/served为true；原framework history有RESET_NEW_CONFIGURATION。保留条件以selection_not_owned拒绝后，空初始化回复结束原组字，把原拼音留在正文，下一键开启新组字。具体哪个设置/配置触发者及失败时旧EditorInfo坐标仍未证实。
+
+#89出错前模型submitted/scored均0，真实种子已提交；GitHub compare核对其29文件未修改相关产品/模型实现。两份原始ZIP/固定源树/失败时服务与宿主记录/SHA已保留：[新事件环原件](evidence/api36-configuration-failure-42459746934/README.md)及[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)。清理/真实服务退出成功不改输入FAILURE。
+
+新的修复从#87另开分支fix/android-verified-configuration-restart：保留普通restart强保护，只在相同编辑器/连接及原owned折叠组字条件下用独立有界worker做新鲜有限状态验证，pending不写正文；超时/失效拒绝迟到。该产品修复仍在编码/测试，尚未提交或验收，不能把诊断或#91草稿实验称已修复。
+
+## 当前研发检查点：发布修复已合入，原生与服务切片继续验收
+
+实时main为331def64ea0e3d5492712ff2066ec559f036015f。#85已合并发布脚本修复，实际复现旧None TypeError；源码准备CI42459653225通过30项故障回归、134项workspace、fmt/严格Clippy和精确归档，相关共享/Apple、Windows、服务及CPU检查也通过。合并范围只涉及发布脚本/回归/文档；其Android三条workflow当时仍运行，本次main新CI另按实际结果回读，不借旧成功代填。
+
+| 独立切片 | 当前交付与门禁 |
+| --- | --- |
+| #84 / #88 | 已合并原main最终FAILURE原件与一次集中的[S25验收单](S25_ACCEPTANCE_CHECKLIST.md) |
+| [#86](https://github.com/ForceMind/ZapIME/pull/86) | SAF受限诊断已提交；focused42459710009的API35/36恢复11+10+14+12+10项已下载严格复验，API28已在navigation_close_wait失败且零文件触摸；新导航修正在独立分支待三API验收 |
+| [#87](https://github.com/ForceMind/ZapIME/pull/87) | 有界组字事件环、上层epoch拒绝与真实Editable数字诊断已提交；本机编译/回归通过，原生CI继续运行 |
+| [#89](https://github.com/ForceMind/ZapIME/pull/89) | 新64条v3先冻结、两版ORT真实主机结果已保留；35项相关测试过，实际host作业128668210879已成功；三份新CI质量报告、15组native/36项JNI/独立oracle均已下载严格复验 |
+| [#90](https://github.com/ForceMind/ZapIME/pull/90) | 缓存第33个后台读缺陷已复现，32实际fill修复及race×10/vet/build通过；实际强制PG/HTTP/S3/安装/灾备CI全部通过，#90已合并 |
+| [#91](https://github.com/ForceMind/ZapIME/pull/91) | 堆叠#87的独立API35框架重启实验，保持草稿；5项严格报告测试与本机编译通过，未声称实际复现/修复 |
+
+公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#40仍为未合并草稿；#25已由经真实事务验收的#90替代关闭，未合并其旧研究分支。旧原main的42441322518失败和历史组字/SAF失败全部保留。新原始CI证据见[本轮原件](evidence/current-slices-20261107/README.md)。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
+
+## 发布草稿回读健壮性修复（2026-11-07，独立切片）
+
+已在87a0a0a中复现旧None TypeError并改为保留REST创建响应ID、按ID有界只读确认；丢响应不重复POST，畸形身份/权限/冲突明确拒绝，部分上传只核验并补缺失。原17项与新增13项真实Git/故障状态机回归全部通过，Python编译与差异检查通过，[证据](evidence/release-draft-recovery-20261107/README.md)保留旧脚本复现与新源码摘要。本切片CI尚待，未触发新发布；原源码Alpha标签/附件不动。
+
+## 同步缓存后台读取容量修复（2026-11-07，独立切片）
+
+已重新核对#25草稿研究及#22原P1，当前be5源码仍可在取消32个不同key的请求后启动第33个后台读取。d83f817的修复为每缓存实例32个实际fill、零新key等待队列，同key共享一个完成信号；独立Background预算保留其他等待者，超时不提前释放后端仍占用的槽位，迟到字节不缓存。保持DB授权之后使用、内容SHA、独立副本、Put真实持久确认及备份/恢复绕过缓存。
+
+固定Go1.27.3的9组纯缓存race重复10轮、整个服务vet和cmd构建通过；独立审查无阻塞，原33rd-fill失败、可复现夹具及源码摘要已保存。新增真实PostgreSQL/HTTP取消/503/同cursor重试用例仅编译，本机无PG，实际事务验收等待强制数据库CI；SKIP不算通过。[并发契约](OBJECT_CACHE_CONCURRENCY.md)及[原失败/本地证据](evidence/cache-fill-bound-20261107/README.md)。没有直接合并旧#25或访问用户R2/生产服务器。
 
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 

@@ -1,0 +1,35 @@
+{
+  "workflow_run_id": 42459710009,
+  "attempt": 1,
+  "head_sha": "870fd5c7d2056097c731d22e145529b5189589aa",
+  "checkout": "f6e1a016bd415e28809a2b6f8e66a8395c85b447",
+  "tree": "9644f18173fdb5d344c92021cea8755aad1ede65",
+  "checkout_parents": [
+    "be5b45630bfdaaf1a9286446a24dbb40646c5fca",
+    "870fd5c7d2056097c731d22e145529b5189589aa"
+  ],
+  "artifact_archives": [
+    {
+      "api": 36,
+      "job": 128667965826,
+      "artifact": 13609760847,
+      "bytes": 33775,
+      "sha256": "c3bc0e45925d11169f0130d817115324986a635d07767cab0746f707189e7e00"
+    },
+    {
+      "api": 35,
+      "job": 128667965824,
+      "artifact": 13609556485,
+      "bytes": 23057,
+      "sha256": "2d0e7b80e58f0fd534154f923b854326234aff8573183c8a84129844f3dfd300"
+    },
+    {
+      "api": 28,
+      "job": 128667965894,
+      "artifact": 13610635973,
+      "bytes": 12034,
+      "sha256": "4f4f2c304c41db54750f0b3f3283373ed55b830ae6d44040f6dddf7f91f710bf"
+    }
+  ],
+  "scope": "Selected safe JSON/instrumentation only; ZIP and provider images not retained. API28 failed with strict fixed diagnostic; API35/36 passed 57 cases each. Success does not resolve original failure."
+}

@@ -1,0 +1,51 @@
+{
+  "baseline_commit": "f6f69d6b1fcd146d0590e68cd5847ca25782fd91",
+  "frozen_failure_commit": "18b12aee22c57a4979c96f551f9200b45b057185",
+  "checks": {
+    "android_python_tests": 102,
+    "recovery_report_tests": 9,
+    "trace_jvm": "PASS",
+    "navigation_jvm": "PASS",
+    "all_voice_test_java_api36_source8_target8": "PASS Temurin17.0.21",
+    "new_emulator": "NOT RUN",
+    "phone": "NOT RUN"
+  },
+  "files": [
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPreparationUiProbe.java",
+      "bytes": 35899,
+      "sha256": "70dc8d95389a1a5594150a5895d51a3972a68493caad6743d302a2d022f7791d"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncRecoveryNavigation.java",
+      "bytes": 1139,
+      "sha256": "3ea49323bbbbff9362efedee6c6c14341eab3b39fa8299c91c1b3f4f3d9bdb24"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncRecoveryTrace.java",
+      "bytes": 1213,
+      "sha256": "0310e33ee88e8b17cdad3e16d5749ccf1e416e59474d103652fa4858dcde616a"
+    },
+    {
+      "path": "platforms/android/tests/jvm/SyncRecoveryNavigationSmoke.java",
+      "bytes": 2263,
+      "sha256": "1b7b9f66359235f0087420073d36d8b461292671b5b39fe1df8bed7c4ddbd0e2"
+    },
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "bytes": 9834,
+      "sha256": "9d51c00792b17e9bb6f1da378adf982d4410d4ee2eea6ff29672255256bfc82b"
+    },
+    {
+      "path": "scripts/test_android_sync_preparation_report.py",
+      "bytes": 11363,
+      "sha256": "5798d74c66d8d2c874e94fb546f6eda537adc709328d09b7b566811ba3253bb4"
+    },
+    {
+      "path": "scripts/test_android_sync_recovery_trace.sh",
+      "bytes": 654,
+      "sha256": "1561daf7bb07caf0c01ac75e8b83bf2e415454048b93301cc4fb713768f0948c"
+    }
+  ],
+  "independent_review": "PASS after limiting Downloads lookup and clickable ancestors to the identified roots subtree; three-API execution pending"
+}
