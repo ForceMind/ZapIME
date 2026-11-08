@@ -1,0 +1,4 @@
+ZapIME lifecycle: starts=4 restarts=1 decision=new_editor pendingMarkerLoss=false heldReplies=0
+ZapIME panel events (uptime-ms:fixed-code): [52056:input_new, 54230:input_new, 54233:view_letters, 62376:input_restart, 62396:view_letters, 63689:input_new]
+ZapIME candidate ranking: enabled=true eligible=false state=excluded scored=0 inputRevision=27 appliedRevision=-1
+ZapIME candidate requests: submitted=0

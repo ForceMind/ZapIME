@@ -1,0 +1,74 @@
+{
+  "base_commit": "34eab328c1f691b660793e73cd3458760f83148d",
+  "probe_source_local": "801e3934",
+  "upstream_remote_probe": "e1a94e5797412b588d8342207997035e595c9302",
+  "product_unchanged_from_base": true,
+  "actual_new_emulator_execution": "NOT_RUN",
+  "new_report_schema": 2,
+  "checks": [
+    {
+      "command": "bash scripts/test_android_selection.sh with verified Temurin17",
+      "result": "PASS",
+      "groups": 3
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_candidate*.py'",
+      "result": "PASS",
+      "tests": 15
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_configuration_compose_report.py'",
+      "result": "PASS",
+      "tests": 5
+    },
+    {
+      "command": "All four independent test-host sources compiled using verified API36r02 / Temurin17 source8 target8",
+      "result": "PASS",
+      "sources": 4
+    },
+    {
+      "command": "Merged YAML parse preserves configuration job plus verified-restart method artifact path; git diff --check",
+      "result": "PASS"
+    },
+    {
+      "command": "Original6904 ZIP length/SHA and frozen old validator rejection independently checked",
+      "result": "PASS",
+      "old_classification": "not_executed",
+      "old_touch_count": 7
+    }
+  ],
+  "sources": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "sha256": "09a5b782659c9f0f82234519834452940be2119e5104bae994f0c70e6c665bc6"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ConfigurationContinuityObserver.java",
+      "sha256": "13b3e2520574b7950f311ab597b3319e4d0baf01e88816b34f258b51c3e2a773"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "e31bab8300759e831890019d5e966ae5995035cac32bffe9f42e8f161c599633"
+    },
+    {
+      "path": "scripts/android_candidate_ime_smoke.py",
+      "sha256": "f3c0e0347a9d85411b3a94af7c720d4784ed4e13a7cc02e2304568863316fae6"
+    },
+    {
+      "path": "scripts/android_configuration_compose_report.py",
+      "sha256": "ea741249462c2e4195654f99327cc7a6e4db861f1b25eb25ebe4ec02e8872d8d"
+    },
+    {
+      "path": "scripts/android_configuration_compose_smoke.py",
+      "sha256": "30cba0451a005ffc2c83069a1fc61671ef6e1e0df04a62f22d573d05d8903a07"
+    },
+    {
+      "path": "scripts/test_android_configuration_compose_report.py",
+      "sha256": "04afb39e3d0d3e351f14e1f2ba968f5a02884dbac2eabdabe953a53cddd4aa0b"
+    },
+    {
+      "path": ".github/workflows/candidate-ranking.yml",
+      "sha256": "b34207b79c3a7a6df7521a3582f65eb6bb9aa1cc288ebbf285ef33420fd07aef"
+    }
+  ]
+}

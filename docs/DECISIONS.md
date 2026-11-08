@@ -1,5 +1,9 @@
 # 技术决策
 
+## ADR-025 · 2026-11-07 · 配置重启使用独立新鲜证明
+
+保留普通EditorInfo/owned选区强校验；只对同EditorInfo及InputConnection引用的受限配置重启，通过独立进程单槽worker有界读取公开SurroundingText，严格验证绝对位置、完整组字及有限上下文。Pending保留核心并hold回复/动作，经engine屏障先旧回复后新动作；先消费ticket再恢复标记，失败保App正文。800ms是逻辑有效期，不等于阻塞IPC实际退出。[完整状态机、安全边界与验收](ADR_025_VERIFIED_CONFIGURATION_RESTART.md)。本修订真实系统IME/配置实验待CI，不将编译或JVM冒充通过。
+
 ## ADR-024 · 2026-11-07 · 默认开启本机候选神经重排
 
 按用户明确要求，在 Android 接入固定 chinese-ime-lm `rerank-v2` 8M 字符语言模型，复用已有 ORT 1.28.2；MSIME 继续生成拼音候选并执行选择、部分上屏与个人规则。推理只返回当前完整候选 ID 的排列，不能生成新文本或直接写编辑器。共享核心为纯重排保留独立 `composition_revision`，让已显示的点击、空格、九键读音和置顶仍指向原项；实际输入变更照常拒绝过期选择。

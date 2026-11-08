@@ -17,6 +17,16 @@ from android_offline_uid import offline_product
 from android_candidate_ranking_report import verify_report
 
 
+def verify_restart_methods(report, api):
+    expected = {"commit_finish_reentry", "compose_finish_reentry", "begin_batch_finish_guard", "delete_getter_finish_guard"}
+    cases = report.get("cases") if isinstance(report, dict) else None
+    if (not isinstance(report, dict) or report.get("synthetic") is not True
+            or report.get("api_level") != api or api < 31 or not isinstance(cases, list)
+            or len(cases) != len(expected) or {case.get("id") for case in cases if isinstance(case, dict)} != expected
+            or any(not isinstance(case, dict) or case.get("passed") is not True for case in cases)):
+        raise ValueError("Incomplete verified-restart Editable method evidence")
+
+
 def main():
     if len(sys.argv) != 3:
         raise SystemExit("Dedicated CI emulator arguments required")
@@ -49,7 +59,11 @@ def main():
                 raise RuntimeError("Candidate ranking instrumentation failed")
             run("pull", remote, str(output / "candidate-ranking-report.json"))
             verify_report(json.loads((output / "candidate-ranking-report.json").read_text()), api)
+            if api >= 31:
+                run("pull", remote.replace("candidate-ranking-report.json","verified-restart-method-report.json"), str(output / "verified-restart-method-report.json"))
+                verify_restart_methods(json.loads((output / "verified-restart-method-report.json").read_text()), api)
     finally:
+        run("pull", remote.replace("candidate-ranking-report.json","verified-restart-method-report.json"), str(output / "verified-restart-method-report.json"), check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
         run("pull", remote, str(output / "candidate-ranking-report.json"), check=False,
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         crash = run("logcat", "-d", "-b", "crash", text=True, capture_output=True).stdout

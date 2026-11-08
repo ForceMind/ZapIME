@@ -1,0 +1,8 @@
+{
+  "recorded_utc": "2026-11-08T07:39:25.326314+00:00",
+  "local_freeze_commit": "f92989d846ef6aa018829485ebc477f4d2229cd8",
+  "corpus_sha256": "70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1",
+  "runner_commit_before_first_v3_inference": "cd8a0bff5cf65f9e6ccd39645b4254d69f0c2ead",
+  "inference_started": false,
+  "scope": "Local freeze precedes first v3 production-dictionary/native model execution; GitHub API reconstruction may have a different commit SHA and must record its exact tree mapping. Neither this assertion nor a Git timestamp is a cryptographic proof that labels were authored without output."
+}

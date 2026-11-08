@@ -1,0 +1,97 @@
+{
+  "base_commit": "449dd2564b668b98e18e3dc0f0372e0c6fab3f24",
+  "scope": "Product implementation and local checks only. Actual Android system IME, remote SurroundingText, new Editable method probes and independent framework restart experiment have not executed for this revision. No phone/ARM acceptance.",
+  "emulator_execution": "NOT_RUN",
+  "checks": [
+    {
+      "command": "bash scripts/test_android_selection.sh with verified Temurin17",
+      "result": "PASS",
+      "groups": 3,
+      "coverage": "Original selection tracker and diagnostic ring; exact fresh proof, bounded ordered old/new queues, reentrant drain invalidation, read permit/deadline, process physical capacity, window visibility state."
+    },
+    {
+      "command": "Full Android product Java compilation against verified official API36r02, source8/target8",
+      "result": "PASS",
+      "sources": 60
+    },
+    {
+      "command": "Full Android voice-test Java compilation against verified official API36r02, source8/target8",
+      "result": "PASS",
+      "sources": 18
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_candidate*.py'",
+      "result": "PASS",
+      "tests": 15
+    },
+    {
+      "command": "Python py_compile of changed driver; YAML parse; git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "local_failures_retained": [
+    "Broad initial edit accidentally placed an apply-only guard into applySearch, causing undefined-local Java compilation errors. Removed that misplaced guard and reran full compilation; no emulator result existed for the failed local edit."
+  ],
+  "source_files": [
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "bytes": 86295,
+      "sha256": "9b0cce618afa1b21b3dcbc24907f6d6065cc800f502ac8843968a2ef8e93e495"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/VerifiedRestart.java",
+      "bytes": 6131,
+      "sha256": "b7b7cf16357ebd3a0609cee9db27a1595b732b69d74402e6ef0af4e42ddd68c4"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/RestartConnectionSnapshot.java",
+      "bytes": 1048,
+      "sha256": "c02aba4b28d9224ee05fed2e52c35e17d0fbf2002190ff3c967807ea1b011043"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/SelectionEchoTracker.java",
+      "bytes": 12061,
+      "sha256": "09df2c9abd3c77fb5d729bcf5b2e42e757a9c9cecfc5199085d5f9f688c4b365"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/CompositionTrace.java",
+      "bytes": 2388,
+      "sha256": "7755b323ad3ad39abb5f0a933d142da5da1e9fbedc3bf3a42fb83446636178c9"
+    },
+    {
+      "path": "platforms/android/tests/jvm/VerifiedRestartSmoke.java",
+      "bytes": 7162,
+      "sha256": "e540c25b002be8b9662af9460683a7ebfd8b006346d83f2104552d0a41b02f12"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VerifiedRestartProbe.java",
+      "bytes": 6582,
+      "sha256": "78b6237c3d04a3406914d688489d6e9b20026ee650b0cc0555adea42c1dc7359"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java",
+      "bytes": 37207,
+      "sha256": "6d1fd5ac77277075f4ddc5bba8320098f048a315bcb6558e7fe91cbc8f07a5e1"
+    },
+    {
+      "path": "scripts/test_android_selection.sh",
+      "bytes": 810,
+      "sha256": "8dd4012653a96eac730962cdcf0c46894d17c4ab05f2eda5b0e17f9cca774b27"
+    },
+    {
+      "path": "scripts/android_candidate_ranking_smoke.py",
+      "bytes": 4702,
+      "sha256": "4ff69ad1d50e34ead7072e0aa9b61ad949cc42c23757122e960ab3c19d0bbddd"
+    },
+    {
+      "path": "scripts/test_android_candidate_restart_methods.py",
+      "bytes": 1198,
+      "sha256": "a0c75937c3a88bd693caf29a60969cee35883a1c1de1b8822f151e5eedb2e3ab"
+    },
+    {
+      "path": ".github/workflows/candidate-ranking.yml",
+      "bytes": 10679,
+      "sha256": "8a825ed55b458d252425667f94304cca83eea30f1a860a93bf2d44459993334b"
+    }
+  ]
+}

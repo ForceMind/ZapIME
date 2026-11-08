@@ -166,6 +166,7 @@ public final class VoiceInstrumentation extends Instrumentation {
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"candidate-fixtures");
                 if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
                 stage="offline candidate model, native IDs and Android Editable";
+                VerifiedRestartProbe.run(this,fixtures);
                 CandidateRankingProbe.run(this,fixtures);
                 result.putString("stream","PASS Android offline candidate ranking acceptance\n");finish(Activity.RESULT_OK,result);return;
             }

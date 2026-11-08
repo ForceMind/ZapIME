@@ -18,9 +18,6 @@ import subprocess
 import tempfile
 import time
 
-import onnxruntime
-
-
 ROOT = Path(__file__).resolve().parents[3]
 MODEL_ID = "msime-keystroke-8m-rerank-v2"
 HOST_ORT_VERSION = "1.24.4"
@@ -201,6 +198,8 @@ def run_case(core, scorer, resources, local, pinyin, context, completions):
 
 
 def main():
+    import onnxruntime
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=ROOT / "target/debug/libzapime_core.so")
     parser.add_argument("--resources", type=Path, default=ROOT / "target/resources")

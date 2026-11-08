@@ -1,0 +1,70 @@
+{
+  "strict_failure_reviewed": true,
+  "recorded_utc": "2026-11-08T08:28:57.104690+00:00",
+  "overall_passed": false,
+  "original_classification": "not_executed",
+  "stage": "configuration_framework_setting_transition",
+  "failure_reason": "configuration_insets_callbacks_not_observed",
+  "physical_keypresses": 7,
+  "physical_i_touch_executed": false,
+  "strict_same_editor_composition_failure_reproduced": false,
+  "positive_system_interruption_observed": false,
+  "continuity_evidence_insufficient": true,
+  "missing_required_observation": "Insets callback counter is zero; live sampled visibility/connection/focus and zero loss counters do not prove continuous visibility",
+  "framework_trigger": {
+    "before_setting": 1,
+    "inverse_readback": 0,
+    "trigger_restored_readback": 1,
+    "setting_restored": true,
+    "before_restarts": 0,
+    "after_restarts": 1,
+    "framework_restart_observed": true
+  },
+  "raw_continuity": {
+    "before_connection_count": 2,
+    "after_connection_count": 2,
+    "before_command_connection": 1,
+    "after_command_connection": 1,
+    "visibility_hidden_observations": 0,
+    "window_focus_losses": 0,
+    "editor_focus_losses": 0,
+    "insets_observations": 0,
+    "service_trace_complete": true,
+    "input_finished_after_before": false,
+    "original_same_editor_continuity_field": true
+  },
+  "raw_trace": [
+    "47617 APPLY_PREEDIT epoch3",
+    "47631 SELECTION_ECHO epoch3",
+    "47698 INPUT_RESTART epoch3",
+    "47698 INPUT_REBUILT epoch4, retention decision selection_not_owned",
+    "47739 APPLY_FINISH_EMPTY epoch4",
+    "47742 SELECTION_EXTERNAL epoch4"
+  ],
+  "raw_host": [
+    "47630 compose length4 selection4:4 span2:4",
+    "47742 finish length4 selection4:4 no composing span; command connection stays1"
+  ],
+  "cleanup": {
+    "experiment_setting_restored": true,
+    "wrapper_settings_restored": true,
+    "system_keyboard_restored": true,
+    "service_exited": true,
+    "own_synthetic_packages_cleared": true,
+    "own_uid_ipv4_ipv6_rules_removed": true,
+    "runtime_errors_bytes": 0
+  },
+  "interpretation": "The experiment really triggered a framework restart and the raw trace shows loss of the sh composing marker, but it aborted before the required visibility observation and before i/candidate assertions. Preserve not_executed. Do not upgrade to same_editor_composition_failure, and do not call it an observed interruption merely because the framework restarted.",
+  "source_scope": "Only 6904faf0d669b2019c35719784743f483ed3c670/checkout605cf15f228477768eb6edf643b97d411bf3a5d9; not evidence that newer E1 head was executed",
+  "validator": {
+    "source": "old-source/android_configuration_compose_report.py",
+    "result": "rejected",
+    "message": "ValueError: Configuration experiment interrupted or composition failed"
+  },
+  "limits": [
+    "No product fix",
+    "No new-head E1 execution claim",
+    "No stable restart behavior inferred from ordinary API35 job success",
+    "Raw composition loss remains a useful lead, not a completed same-editor repro gate"
+  ]
+}

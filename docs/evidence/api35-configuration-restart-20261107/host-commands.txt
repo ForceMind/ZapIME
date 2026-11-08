@@ -1,0 +1,11 @@
+61059:IME command on connection=1 operation=commit
+61059:IME command on connection=1 operation=finish
+61059:IME command on connection=1 operation=batch-end
+61452:IME command on connection=1 operation=compose
+61452:IME command on connection=1 operation=batch-end
+61926:IME command on connection=1 operation=compose
+61943:IME command on connection=1 operation=batch-end
+62494:IME command on connection=1 operation=finish
+62494:IME command on connection=1 operation=batch-end
+62942:IME command on connection=1 operation=compose
+62942:IME command on connection=1 operation=batch-end
