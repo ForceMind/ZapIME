@@ -1,5 +1,13 @@
 # ZapIME 项目执行状态
 
+## v0.1.0-alpha.1 已公开发布（2026-11-07 客户端日期）
+
+[源码Alpha](https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1)已实际公开，Release438003228，发布时间2026-11-08T03:17:38Z；固定source026bfb8bf467c0d45193a50016e298c3dbb0ac01/tree9aa8d7e0850ba110357dc65886f882f4370529ab。PR #82已合并开发栈，已整合的重复PR均关闭，未完成的#12/#25/#40继续保留。
+
+已从公开URL实际下载源码包/metadata/SHA256SUMS并核验GitHub摘要、文件校验与精确提交的逐字节重建。源码包8,085,024字节，SHA d78a5f0b5845e1aa8b67dd7671cee4c0cde1a0f40b018e70e0044f990c7f5cc9；不含子模块内容、APK或模型权重。完整证据见[发布与下载复验](evidence/source-alpha-publication-20261107/README.md)。
+
+发布首轮创建正确空草稿后即时查找返回None而失败；仅重跑同源发布job，第二轮实际公开及复验成功。原失败日志保留，不能称代码已修复该可见性问题；后续补稳健创建/回读与明确错误处理。主分支source/共享及Apple/Windows/sync/CPU均SUCCESS，全量Android在本快照仍运行，后续以实时GitHub为准。真机、正式签名、许可及原系统输入/SAF失败仍按各自证据待验。
+
 ## 源码 Alpha 整合与最终 CI 回读（2026-11-07）
 
 功能/文档基线5d976f578a2b11d14b9050ff0ec01e5d18d9e538的七条workflow均为SUCCESS：候选42407415284、完整Android42407415282、VoiceKey42407415283、共享/Apple42407415237、Windows42407415301、同步42407415255、CPU42407415336。9aff370候选专项42407002808亦全部成功。早期pending/failed记录保留为当时快照，不再代表最终结果；原API35间歇组字失败未确证根因。

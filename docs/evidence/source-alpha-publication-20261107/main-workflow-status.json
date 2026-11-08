@@ -1,0 +1,60 @@
+{
+  "source_commit": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+  "scope": "Snapshot after source publication; later results must be read live.",
+  "workflow_runs": [
+    {
+      "id": 42441322555,
+      "name": "Windows native TSF development",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322555"
+    },
+    {
+      "id": 42441322572,
+      "name": "Offline speech CPU probe",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322572"
+    },
+    {
+      "id": 42441322518,
+      "name": "Android native input acceptance",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 1,
+      "status": "in_progress",
+      "conclusion": null,
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322518"
+    },
+    {
+      "id": 42441322541,
+      "name": "Source Alpha release",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 2,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322541"
+    },
+    {
+      "id": 42441322542,
+      "name": "ZapIME development checks",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322542"
+    },
+    {
+      "id": 42441322478,
+      "name": "Independent ciphertext sync service",
+      "head_sha": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+      "run_attempt": 1,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/ForceMind/ZapIME/actions/runs/42441322478"
+    }
+  ]
+}

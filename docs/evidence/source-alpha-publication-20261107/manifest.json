@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "files": {
+    "README.md": {
+      "bytes": 3180,
+      "sha256": "03e6b2277c6caa55998f6171a54eca4936ac52abc61ee479cbda7cacbfbfd1ed"
+    },
+    "download-verification.json": {
+      "bytes": 774,
+      "sha256": "0ac2eb31d2b779a6e9d6a58ee8cad31234c1ae301391359713e805ce8a76e268"
+    },
+    "main-workflow-status.json": {
+      "bytes": 2003,
+      "sha256": "f791e4e8578be900bdbbaac8f9baefda157ba96f7d08ee48f93c5d86b3c72e6f"
+    },
+    "publish-first-failed.log.gz": {
+      "bytes": 5614,
+      "sha256": "b1251a6004a3eed22e8ad30e51148b260262769402ada4267c67efbf7701167f"
+    },
+    "publish-retry-success.log.gz": {
+      "bytes": 5333,
+      "sha256": "958f3fe94d9c502257fd44debb2f26ec02fd93abcc642058484538a1a270ab97"
+    },
+    "published-release.json": {
+      "bytes": 1157,
+      "sha256": "787da97d82d1e8b8a28996bd7a95fd5f371ec2689ce3985aa645639419efd9a3"
+    },
+    "published-source-metadata.json": {
+      "bytes": 1263,
+      "sha256": "1a73bfa8d1041dc96270f061bee73c547c40acf946005e516b28a150b167c176"
+    }
+  }
+}

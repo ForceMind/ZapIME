@@ -1,0 +1,24 @@
+{
+  "release_id": 438003228,
+  "tag": "v0.1.0-alpha.1",
+  "source_commit": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+  "source_tree": "9aa8d7e0850ba110357dc65886f882f4370529ab",
+  "public_assets_downloaded": true,
+  "exact_committed_bundle_reconstructed": true,
+  "archive_file_count": 2236,
+  "submodule_payloads_present": false,
+  "assets": {
+    "SHA256SUMS": {
+      "bytes": 181,
+      "sha256": "c5f1fcca26948d5b42bebce00bcd4f1e89a5d7ecc7a9b2648902fd3d32b03da7"
+    },
+    "ZapIME-0.1.0-alpha.1-source.tar.gz": {
+      "bytes": 8085024,
+      "sha256": "d78a5f0b5845e1aa8b67dd7671cee4c0cde1a0f40b018e70e0044f990c7f5cc9"
+    },
+    "metadata.json": {
+      "bytes": 1263,
+      "sha256": "1a73bfa8d1041dc96270f061bee73c547c40acf946005e516b28a150b167c176"
+    }
+  }
+}

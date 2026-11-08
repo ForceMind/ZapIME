@@ -1,0 +1,32 @@
+{
+  "id": 438003228,
+  "url": "https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1",
+  "tag": "v0.1.0-alpha.1",
+  "draft": false,
+  "prerelease": true,
+  "published_at": "2026-11-08T03:17:38Z",
+  "source_commit": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+  "assets": [
+    {
+      "id": 722740776,
+      "name": "metadata.json",
+      "bytes": 1263,
+      "digest": "sha256:1a73bfa8d1041dc96270f061bee73c547c40acf946005e516b28a150b167c176",
+      "url": "https://github.com/ForceMind/ZapIME/releases/download/v0.1.0-alpha.1/metadata.json"
+    },
+    {
+      "id": 722740784,
+      "name": "SHA256SUMS",
+      "bytes": 181,
+      "digest": "sha256:c5f1fcca26948d5b42bebce00bcd4f1e89a5d7ecc7a9b2648902fd3d32b03da7",
+      "url": "https://github.com/ForceMind/ZapIME/releases/download/v0.1.0-alpha.1/SHA256SUMS"
+    },
+    {
+      "id": 722740777,
+      "name": "ZapIME-0.1.0-alpha.1-source.tar.gz",
+      "bytes": 8085024,
+      "digest": "sha256:d78a5f0b5845e1aa8b67dd7671cee4c0cde1a0f40b018e70e0044f990c7f5cc9",
+      "url": "https://github.com/ForceMind/ZapIME/releases/download/v0.1.0-alpha.1/ZapIME-0.1.0-alpha.1-source.tar.gz"
+    }
+  ]
+}
