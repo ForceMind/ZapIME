@@ -42,6 +42,14 @@ PROBE_FILES = (
     "candidate-ime-failure.png",
 )
 
+CONFIGURATION_PROBE_FILES = (
+    "configuration-compose-report.json",
+    "configuration-compose-service-before.txt",
+    "configuration-compose-service-after.txt",
+    "configuration-compose-service-failure.txt",
+    "configuration-compose-host-lifecycle.txt",
+)
+
 
 def restore_setting_args(name, value):
     """Quote the remote shell as well as the local adb argument boundary."""
@@ -127,7 +135,7 @@ def verify_report(report, token, api):
         raise ValueError("Unnecessary second attempt changed the frozen gate")
 
 
-def main():
+def main(configuration_restart=False):
     if len(sys.argv) != 3:
         raise SystemExit("Dedicated CI emulator arguments required")
     adb, serial = sys.argv[1:]
@@ -135,14 +143,15 @@ def main():
     if not dedicated_ci(command):
         raise SystemExit("Numeric-run GitHub emulator required; refuses local data clearing")
     root = Path(__file__).resolve().parents[1]
-    output = root / "target/candidate-ime-android"
+    output = root / ("target/candidate-configuration-android" if configuration_restart else "target/candidate-ime-android")
+    probe_files = CONFIGURATION_PROBE_FILES if configuration_restart else PROBE_FILES
     output.mkdir(parents=True, exist_ok=True)
     if (output / "run-summary.json").exists():
         raise SystemExit("Existing system-IME evidence must be preserved; use a fresh CI workspace")
     token = os.environ["GITHUB_RUN_ID"] + "-" + os.environ["GITHUB_RUN_ATTEMPT"]
     summary = {
         "schema_version": 1,
-        "scope": "production-system-ime-candidate-ranking",
+        "scope": "production-system-ime-configuration-restart" if configuration_restart else "production-system-ime-candidate-ranking",
         "run_attempt": token,
         "passed": False,
         "instrumentation_verified": False,
@@ -175,7 +184,7 @@ def main():
         run(*restore_setting_args(name, value))
 
     def pull_probe_files():
-        for name in PROBE_FILES:
+        for name in probe_files:
             run("pull", REMOTE + name, str(output / name), check=False,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=15)
 
@@ -190,6 +199,8 @@ def main():
         verified, proof = system_keyboard(command)
         api = proof["api_level"]
         summary["api_level"] = api
+        if configuration_restart and api != 35:
+            raise RuntimeError("Configuration composition experiment requires API35")
         original_default = text("shell", "settings", "get", "secure", "default_input_method")
         original_enabled = text("shell", "settings", "get", "secure", "enabled_input_methods")
         original_hardware = text("shell", "settings", "get", "secure", "show_ime_with_hard_keyboard")
@@ -226,17 +237,23 @@ def main():
                 raise RuntimeError("Product IME was not actually selected")
             run("shell", "settings", "put", "secure", "show_ime_with_hard_keyboard", "1")
             stage = "instrumentation"
-            result = run("shell", "am", "instrument", "-w", "-r", "-e", "candidate_only", "true",
-                         "-e", "zapime_ci_candidate_ime", token,
+            arguments = (["-e", "zapime_ci_configuration_restart", token] if configuration_restart else
+                         ["-e", "candidate_only", "true", "-e", "zapime_ci_candidate_ime", token])
+            result = run("shell", "am", "instrument", "-w", "-r", *arguments,
                          "org.zapime.android.test/.SmokeInstrumentation",
                          text=True, capture_output=True, check=False, timeout=150)
             write_diagnostic(output / "instrumentation.txt", result.stdout + result.stderr)
-            if (result.returncode != 0 or "PASS ZapIME system IME candidate enhancement:" not in result.stdout
+            marker = "PASS ZapIME configuration composition:" if configuration_restart else "PASS ZapIME system IME candidate enhancement:"
+            if (result.returncode != 0 or marker not in result.stdout
                     or "FAIL ZapIME" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout):
                 raise RuntimeError("System-IME instrumentation failed")
             stage = "verify_system_ime_report"
             pull_probe_files()
-            verify_report(json.loads((output / "candidate-ime-report.json").read_text()), token, api)
+            if configuration_restart:
+                from android_configuration_compose_report import verify_configuration_report
+                verify_configuration_report(json.loads((output / "configuration-compose-report.json").read_text()), token, api)
+            else:
+                verify_report(json.loads((output / "candidate-ime-report.json").read_text()), token, api)
             summary["instrumentation_verified"] = True
     except BaseException as failure:
         if isinstance(failure, subprocess.TimeoutExpired):
@@ -344,7 +361,10 @@ def main():
         (output / "run-summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     if not summary["passed"]:
         raise SystemExit("System-IME candidate gate failed; original evidence and cleanup results retained")
-    print("PASS production system-IME candidate worker: default on, real model scoring, touchscreen pinyin and exact Editable commit; restored system keyboard and verified actual service exit")
+    if configuration_restart:
+        print("PASS framework configuration composition experiment: continuous editor and exact touchscreen/candidate commit; restored settings, UID rules and actual system-IME exit")
+    else:
+        print("PASS production system-IME candidate worker: default on, real model scoring, touchscreen pinyin and exact Editable commit; restored system keyboard and verified actual service exit")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,75 @@
+{
+  "base_commit": "449dd2564b668b98e18e3dc0f0372e0c6fab3f24",
+  "product_changes": false,
+  "emulator_execution": "NOT_RUN",
+  "scope": "Independent test-only API35 framework settings restart experiment. Compilation and synthetic report tests do not prove actual restart, failure reproduction or repair.",
+  "first_java_compile_failure": "Observer lambda referenced final host field before initialization; corrected by initializing the listener inside the constructor. Original first compile did not pass.",
+  "checks": [
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_configuration_compose_report.py' -v",
+      "result": "PASS",
+      "tests": 4
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v",
+      "result": "PASS",
+      "tests": 14
+    },
+    {
+      "command": "bash scripts/test_android_selection.sh (verified Temurin17 PATH)",
+      "result": "PASS",
+      "groups": 2
+    },
+    {
+      "command": "javac -source 8 -target 8 -classpath verified API36r02 android.jar (all independent host sources)",
+      "result": "PASS",
+      "sources": 4
+    },
+    {
+      "command": "Python py_compile of changed/new runtime scripts",
+      "result": "PASS"
+    },
+    {
+      "command": "PyYAML workflow parse and dedicated job dependency",
+      "result": "PASS"
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "sources": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "sha256": "8966316a55913e2e085f4a1bad4e5346d072c3b16759a72a3ee264dd115395e7"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ConfigurationContinuityObserver.java",
+      "sha256": "c8feff2d74d02c42d0849414110154080a70c8ac82a4e603c5953f36398dc76b"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "e31bab8300759e831890019d5e966ae5995035cac32bffe9f42e8f161c599633"
+    },
+    {
+      "path": "scripts/android_candidate_ime_smoke.py",
+      "sha256": "f3c0e0347a9d85411b3a94af7c720d4784ed4e13a7cc02e2304568863316fae6"
+    },
+    {
+      "path": "scripts/android_configuration_compose_report.py",
+      "sha256": "d63af10158c4a5affcb0fb3c11a3ad44ae1f82243db445136e7304cedeed2972"
+    },
+    {
+      "path": "scripts/android_configuration_compose_smoke.py",
+      "sha256": "30cba0451a005ffc2c83069a1fc61671ef6e1e0df04a62f22d573d05d8903a07"
+    },
+    {
+      "path": "scripts/test_android_configuration_compose_report.py",
+      "sha256": "99e38897ab11f9096465fb94583384a83a88fc68b85be2c9aa2adf515ae9b6e8"
+    },
+    {
+      "path": ".github/workflows/candidate-ranking.yml",
+      "sha256": "e0d7dc5c3eedd770f29d871cf1e879c86f399c6ffb8570521b7e1aa984b552e3"
+    }
+  ]
+}

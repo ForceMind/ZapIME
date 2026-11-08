@@ -41,6 +41,8 @@ final class CandidateImeProbe {
             "(?m)^\\s*ZapIME candidate ranking: enabled=(true|false) eligible=(true|false) state=([a-z_]+) scored=([0-9]+) inputRevision=([0-9]+) appliedRevision=(-1|[0-9]+)\\s*$");
     private static final Pattern SUBMITTED = Pattern.compile("(?m)^\\s*ZapIME candidate requests: submitted=([0-9]+)\\s*$");
     private static final Pattern LIFECYCLE = Pattern.compile("(?m)^\\s*(ZapIME lifecycle: [^\\r\\n]+)$");
+    private static final Pattern START_COUNTS = Pattern.compile("starts=([0-9]+) restarts=([0-9]+)");
+    private static final Pattern TRACE_SEQUENCE = Pattern.compile("([0-9]+)@[0-9]+:[A-Z_]+:-?[0-9]+");
     private static final Pattern COMPOSITION = Pattern.compile("(?m)^\\s*(ZapIME composition trace \\(seq@uptime-ms:fixed-code:epoch\\): [^\\r\\n]+)$");
     private final Instrumentation instrumentation;
     private final UiAutomation automation;
@@ -63,6 +65,9 @@ final class CandidateImeProbe {
         int scored, submitted;
         long inputRevision, appliedRevision;
         String state, line;
+        int starts=-1,restarts=-1;
+        long traceSequence;
+        boolean hasTrace;
     }
 
     private static final class Choice {
@@ -82,6 +87,12 @@ final class CandidateImeProbe {
     static void run(Instrumentation instrumentation, UiAutomation automation, String token) throws Exception {
         require(token != null && token.matches("[0-9]+-[0-9]+"), "candidate_ci_token_required");
         new CandidateImeProbe(instrumentation, automation, token).execute();
+    }
+
+    static void runConfigurationRestart(Instrumentation instrumentation, UiAutomation automation, String token) throws Exception {
+        require(token != null && token.matches("[0-9]+-[0-9]+") && Build.VERSION.SDK_INT == 35,
+                "configuration_probe_requires_api35_ci_token");
+        new CandidateImeProbe(instrumentation, automation, token).executeConfigurationRestart();
     }
 
     private static void require(boolean condition, String reason) throws Exception {
@@ -254,7 +265,15 @@ final class CandidateImeProbe {
         Matcher lifecycle = LIFECYCLE.matcher(text);
         if (lifecycle.find()) result.line += "\n" + lifecycle.group(1);
         Matcher composition = COMPOSITION.matcher(text);
-        if (composition.find()) result.line += "\n" + composition.group(1);
+        if (composition.find()) {
+            result.hasTrace=true;
+            String trace=composition.group(1);
+            result.line += "\n" + trace;
+            Matcher sequence=TRACE_SEQUENCE.matcher(trace);
+            while(sequence.find())result.traceSequence=Long.parseLong(sequence.group(1));
+        }
+        Matcher counts=START_COUNTS.matcher(result.line);
+        if(counts.find()){result.starts=Integer.parseInt(counts.group(1));result.restarts=Integer.parseInt(counts.group(2));}
         return result;
     }
 
@@ -353,6 +372,131 @@ final class CandidateImeProbe {
         ++contextSeedCommits;
         report.put("context_seed_touch", true).put("context_seed_text", committedPrefix)
                 .put("context_seed_commits", contextSeedCommits);
+    }
+
+    private int hardwareSetting() {
+        return android.provider.Settings.Secure.getInt(instrumentation.getContext().getContentResolver(),
+                "show_ime_with_hard_keyboard", -1);
+    }
+
+    private void putHardwareSetting(int value) throws Exception {
+        require(value==0||value==1,"noncanonical_hardware_setting");
+        automation.adoptShellPermissionIdentity("android.permission.WRITE_SECURE_SETTINGS");
+        try {
+            require(android.provider.Settings.Secure.putInt(instrumentation.getContext().getContentResolver(),
+                    "show_ime_with_hard_keyboard",value),"hardware_setting_write_rejected");
+            require(hardwareSetting()==value,"hardware_setting_readback_mismatch");
+        } finally { automation.dropShellPermissionIdentity(); }
+    }
+
+    private boolean traceHasFinishAfter(Stats state,long before) {
+        Matcher entries=Pattern.compile("([0-9]+)@[0-9]+:INPUT_FINISHED:-?[0-9]+").matcher(state.line);
+        while(entries.find())if(Long.parseLong(entries.group(1))>before)return true;
+        return false;
+    }
+
+    private boolean continuity(ConfigurationContinuityObserver observer,Stats baseline,int connections,int command) throws Exception {
+        Editor state=editor();Stats current=stats();
+        boolean finished=traceHasFinishAfter(current,baseline.traceSequence);
+        boolean complete=baseline.hasTrace&&current.hasTrace&&current.traceSequence>=baseline.traceSequence
+                &&current.traceSequence-baseline.traceSequence<64;
+        report.put("visibility_hidden_observations",observer.hiddenObservations)
+                .put("window_focus_losses",observer.windowFocusLosses).put("editor_focus_losses",observer.editorFocusLosses)
+                .put("insets_observations",observer.observations).put("service_trace_complete",complete)
+                .put("input_finished_after_before",finished).put("after_connection_count",ProbeActivity.normalConnections.get())
+                .put("after_command_connection",ProbeActivity.normalCommandConnection.get());
+        final boolean[] visible=new boolean[1];instrumentation.runOnMainSync(()->visible[0]=observer.visible());
+        boolean same=complete&&!finished&&state.focused&&state.served&&visible[0]
+                &&observer.hiddenObservations==0&&observer.windowFocusLosses==0&&observer.editorFocusLosses==0
+                &&connections==ProbeActivity.normalConnections.get()&&command==ProbeActivity.normalCommandConnection.get();
+        report.put("same_editor_continuity",same);
+        return same;
+    }
+
+    private void executeConfigurationRestart() throws Exception {
+        report.put("schema_version",1).put("scope","production-system-ime-configuration-restart")
+                .put("run_attempt",token).put("api_level",Build.VERSION.SDK_INT).put("synthetic",true)
+                .put("passed",false).put("classification","not_executed")
+                .put("product_preferences_written",false).put("human_touch_or_phone_latency",false)
+                .put("model_execution_claimed",false).put("setting_restored",false);
+        int original=-1;Throwable failure=null;ConfigurationContinuityObserver observer=null;
+        Stats baseline=null;int connections=0,command=0;
+        try {
+            stage="configuration_launch";
+            original=hardwareSetting();require(original==0||original==1,"hardware_setting_baseline_not_canonical");
+            report.put("before_setting",original);
+            Intent intent=new Intent().setClassName("org.zapime.android.test","org.zapime.android.test.ProbeActivity")
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            instrumentation.getContext().startActivity(intent);awaitReadyEditor();stableButton("q");
+            require(editor().text.isEmpty(),"fresh_editor_not_empty");
+            Stats initial=stats();require(initial.enabled&&initial.eligible,"default_ranking_not_enabled");
+            stage="configuration_seed_touch";
+            String seed="nihao";for(int i=0;i<seed.length();++i)key(seed.substring(i,i+1),seed.substring(0,i+1));
+            acceptContextSeed();
+            stage="configuration_sh_touch";key("s","s");key("h","sh");
+            Editor before=editor();require(before.composing&&before.text.equals(committedPrefix+"sh"),"sh_fixture_not_composing");
+            baseline=stats();require(baseline.hasTrace&&baseline.restarts>=0,"configuration_diagnostics_missing");
+            connections=ProbeActivity.normalConnections.get();command=ProbeActivity.normalCommandConnection.get();
+            require(connections>0&&command>0,"configuration_connection_identity_missing");
+            report.put("before_connection_count",connections).put("before_command_connection",command)
+                    .put("before_restarts",baseline.restarts).put("before_text",before.text).put("before_composing",before.composing);
+            write("configuration-compose-service-before.txt",baseline.line+"\n");
+            final ConfigurationContinuityObserver[] installed=new ConfigurationContinuityObserver[1];
+            instrumentation.runOnMainSync(()->installed[0]=new ConfigurationContinuityObserver(ProbeActivity.current.get()));
+            observer=installed[0];
+            final boolean[] initiallyVisible=new boolean[1];
+            instrumentation.runOnMainSync(()->initiallyVisible[0]=installed[0].visible());
+            require(initiallyVisible[0],"configuration_initial_ime_not_visible");
+            stage="configuration_framework_setting_transition";
+            // These are two explicit platform settings writes, not a Service,
+            // core, hidden lifecycle or editor mutation. The test-only process
+            // temporarily borrows shell WRITE_SECURE_SETTINGS and drops it.
+            putHardwareSetting(1-original);report.put("inverse_readback",hardwareSetting());
+            putHardwareSetting(original);report.put("trigger_restored_readback",hardwareSetting());
+            Stats after;long deadline=SystemClock.uptimeMillis()+5000;
+            do {after=stats();if(after.restarts>baseline.restarts)break;SystemClock.sleep(25);}while(SystemClock.uptimeMillis()<deadline);
+            report.put("after_restarts",after.restarts).put("framework_restart_observed",after.restarts>baseline.restarts);
+            require(after.restarts>baseline.restarts,"framework_restart_not_observed");
+            write("configuration-compose-service-after.txt",after.line+"\n");
+            if(!continuity(observer,baseline,connections,command)){
+                report.put("classification","interrupted_not_same_editor");
+                throw new Exception("configuration_interrupted_not_same_editor");
+            }
+            require(observer.observations>0,"configuration_insets_callbacks_not_observed");
+            report.put("classification","same_editor_composition_failure");
+            stage="configuration_i_touch";key("i","shi");
+            Editor typed=editor();report.put("after_i_text",typed.text).put("after_i_composing",typed.composing);
+            require(continuity(observer,baseline,connections,command),"configuration_continuity_lost_after_key");
+            stage="configuration_visible_candidate_touch";
+            List<Choice> visible=choices();require(visible.size()>=2,"configuration_candidates_missing");
+            Choice selected=visible.get(0);String expected=committedPrefix+selected.text;
+            tap(stableButton(selected.text));
+            long until=SystemClock.uptimeMillis()+5000;Editor committed;
+            do{committed=editor();if(!committed.composing&&committed.text.equals(expected))break;SystemClock.sleep(25);}while(SystemClock.uptimeMillis()<until);
+            require(!committed.composing&&committed.text.equals(expected),"configuration_candidate_not_exact_visible_text");
+            require(continuity(observer,baseline,connections,command),"configuration_continuity_lost_at_commit");
+            report.put("selected_text",selected.text).put("actual_editable",committed.text).put("editor_composing",committed.composing)
+                    .put("candidate_touch",true).put("classification","same_editor_composition_preserved").put("passed",true);
+            stage="configuration_completed";
+        } catch(Throwable error) {
+            failure=error;report.put("passed",false).put("failure_type",error.getClass().getSimpleName())
+                    .put("failure_reason",error.getMessage()==null?"unknown":error.getMessage());
+            if(observer!=null&&baseline!=null){
+                try{if(!continuity(observer,baseline,connections,command))report.put("classification","interrupted_not_same_editor");}catch(Exception ignored){}
+            }
+            try{write("configuration-compose-service-failure.txt",stats().line+"\n");}catch(Exception ignored){}
+        } finally {
+            try{if(observer!=null){final ConfigurationContinuityObserver installed=observer;instrumentation.runOnMainSync(installed::close);}}
+            catch(Throwable cleanup){report.put("passed",false).put("observer_cleanup_error",cleanup.getClass().getSimpleName());if(failure==null)failure=cleanup;else failure.addSuppressed(cleanup);}
+            try{
+                if(original>=0){putHardwareSetting(original);report.put("setting_restored",hardwareSetting()==original);}
+            }catch(Throwable cleanup){report.put("passed",false).put("setting_restore_error",cleanup.getClass().getSimpleName());if(failure==null)failure=cleanup;else failure.addSuppressed(cleanup);}
+            report.put("stage",stage).put("touch_keypresses",keyTaps);
+            try{write("configuration-compose-host-lifecycle.txt",ProbeActivity.lifecycle());}
+            catch(Throwable cleanup){report.put("passed",false).put("lifecycle_write_error",cleanup.getClass().getSimpleName());if(failure==null)failure=cleanup;else failure.addSuppressed(cleanup);}
+            write("configuration-compose-report.json",report.toString(2)+"\n");
+        }
+        if(failure!=null)throw new Exception("configuration_compose_gate_failed_at_"+stage,failure);
     }
 
     private void execute() throws Exception {

@@ -1,5 +1,13 @@
 # ZapIME 项目执行状态
 
+## API35 框架配置重启复现实验（2026-11-07，堆叠诊断切片）
+
+原失败的finish后服务ring包含input_restart/view_letters；官方API35源码说明框架可复用现有InputConnection及旧EditorInfo重启输入。仅据此形成可证伪假设，不能用外部dump的最终restartDecision冒充失败时现场。[原件/官方源码哈希与安全摘录](evidence/api35-configuration-restart-20261107/README.md)已保留。
+
+e29b5d7在#87诊断之上新增独立API35实际IME实验：真实触摸种子和sh，公开Settings通知触发框架重启，要求原连接、焦点/Insets、无INPUT_FINISHED持续成立，再真实触摸i及所见候选并核完整Editable；任何观察到的真实隐藏/结束/换连接单列interrupted_not_same_editor并失败，设置finally恢复读回。4项strictreport、原14项candidate、JVM与4宿主源完整编译已过，尚未实际模拟器执行，不称复现或修复。产品不改，原候选/隐私/网络/系统IME退出门禁不变。[实验范围](ANDROID_CONFIGURATION_COMPOSE_PROBE.md)。
+
+当前main已合入#85发布脚本修复（331def64）；本实验堆叠未合并#87，不覆盖其代码，未移动公开Alpha标签/附件。
+
 ## API35 组字生命周期受限诊断（2026-11-07，独立切片）
 
 36df368（含aef7a2f）新增生产Service固定枚举/64条事件环及test-only按键尝试/Editable数字状态，区分reply结束、外部范围放弃、系统finish与上层epoch拒绝；无正文/上下文/包名/键名，未改输入顺序或准入判断。原Selection与新trace两组JVM、14项candidate Python、API36r02/Temurin17的产品58源与独立宿主3源完整编译通过，独立审查无阻塞。历史API35日志不足以确定唯一根因，本切片不称修复；真实触摸、候选ID/代次、完整Editable及服务退出断言全部保留。新Android/candidate模拟器CI待运行，[诊断说明](ANDROID_COMPOSITION_DIAGNOSTICS.md)及[本机证据](evidence/composition-diagnostics-20261107/README.md)。
