@@ -1,0 +1,21 @@
+test_default_report_row_omits_transcripts_but_counts_empty_output (test_voice_quality.FixtureTests.test_default_report_row_omits_transcripts_but_counts_empty_output) ... ok
+test_definition_is_fixed_synthetic_and_covers_declared_diagnostics (test_voice_quality.FixtureTests.test_definition_is_fixed_synthetic_and_covers_declared_diagnostics) ... ok
+test_failure_replaces_old_success_and_saves_no_exception_message (test_voice_quality.FixtureTests.test_failure_replaces_old_success_and_saves_no_exception_message) ... ok
+test_invalid_definition_does_not_run_synthesizer (test_voice_quality.FixtureTests.test_invalid_definition_does_not_run_synthesizer) ... ok
+test_stale_definition_and_truncated_pcm_rejected (test_voice_quality.FixtureTests.test_stale_definition_and_truncated_pcm_rejected) ... ok
+test_verified_audio_tamper_and_member_set_rejected (test_voice_quality.FixtureTests.test_verified_audio_tamper_and_member_set_rejected) ... ok
+test_codepoints_not_utf16_or_graphemes_or_words (test_voice_quality.MetricTests.test_codepoints_not_utf16_or_graphemes_or_words) ... ok
+test_deterministic_ambiguous_tie_prefers_substitution (test_voice_quality.MetricTests.test_deterministic_ambiguous_tie_prefers_substitution) ... ok
+test_empty_hypothesis_is_all_deletions (test_voice_quality.MetricTests.test_empty_hypothesis_is_all_deletions) ... ok
+test_empty_reference_is_undefined_not_zero_accuracy (test_voice_quality.MetricTests.test_empty_reference_is_undefined_not_zero_accuracy) ... ok
+test_exhaustive_short_alignment_matches_independent_distance (test_voice_quality.MetricTests.test_exhaustive_short_alignment_matches_independent_distance) ... ok
+test_insertions_can_exceed_one_hundred_percent (test_voice_quality.MetricTests.test_insertions_can_exceed_one_hundred_percent) ... ok
+test_invalid_unicode_and_bounds_fail_before_alignment (test_voice_quality.MetricTests.test_invalid_unicode_and_bounds_fail_before_alignment) ... ok
+test_micro_averaging_uses_total_reference_length (test_voice_quality.MetricTests.test_micro_averaging_uses_total_reference_length) ... ok
+test_normalization_is_explicit_and_does_not_hide_semantic_errors (test_voice_quality.MetricTests.test_normalization_is_explicit_and_does_not_hide_semantic_errors) ... ok
+test_substitution_deletion_and_insertion (test_voice_quality.MetricTests.test_substitution_deletion_and_insertion) ... ok
+
+----------------------------------------------------------------------
+Ran 16 tests in 0.068s
+
+OK

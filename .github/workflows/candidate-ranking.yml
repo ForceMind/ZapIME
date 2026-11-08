@@ -36,6 +36,7 @@ jobs:
           python-version: '3.12'
       - name: Validate paired evaluation metrics
         run: |
+          python3 -m unittest discover -s scripts -p 'test_build_download*.py' -v
           python3 -m unittest discover -s scripts -p 'test_candidate_evaluation.py' -v
           python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v
           python3 -m unittest discover -s scripts -p 'test_android_configuration_compose_report.py' -v

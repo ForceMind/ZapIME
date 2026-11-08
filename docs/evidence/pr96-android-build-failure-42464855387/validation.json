@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "head_commit": "42f4562193f8d13a684aa7b656ca2adaa27de216",
+  "tested_merge_commit": "49186be44237965669f314ebbe768f3684297a45",
+  "tree": "02b21f6d4e1897bbde801b5096c0bd59fa5e258e",
+  "attempt": 1,
+  "android_jobs_failed": 6,
+  "android_artifacts": 0,
+  "android_apk_build": "NOT_RUN",
+  "android_system_ime_and_service_exit": "NOT_RUN",
+  "focused_voicekey_device_sync_and_https": "NOT_RUN",
+  "source_publication": "SKIPPED",
+  "source_failure": "uninspected_tracked_archive",
+  "android_build_failure": "prepare_candidate_model_http_504",
+  "focused_apple_windows_failure": "fetch_resources_http_504",
+  "shared_core_platforms_success": 3,
+  "offline_cpu_workflow": "success_metadata_only",
+  "service_status": "completed",
+  "service_conclusion": "success",
+  "service_transaction_evidence_rechecked": false,
+  "job_logs_hash_verified": 10
+}

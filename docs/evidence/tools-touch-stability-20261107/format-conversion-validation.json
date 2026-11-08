@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "scope": "Evidence container conversion only; no product, source publisher policy, original failure result, or public release changed. This ZIP is the declared safe 24-member subset, not the original GitHub ZIP.",
+  "base_commit": "a4d53bcbdb11b4e58a0babb349c0ada67ab0972c",
+  "old_archive": {
+    "path": "docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "bytes": 218507,
+    "sha256": "10df44343b42ec6544587595d3450cbf1c0a7d79f97b41f69c73bd717b31a7d0",
+    "git_blob": "17b504fe5511b85ab08a1bd1455b0fe725fe510f",
+    "fixed_parent_commit": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+    "fixed_parent_url": "https://github.com/ForceMind/ZapIME/blob/685a3a59b09fb4791a9de89afd00ca8eae97f672/docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "historical_checksum_manifest": "SHA256SUMS.before-zip-conversion.txt",
+    "historical_checksum_manifest_sha256": "6f5a020436831adbc28ac0598eb5cbd3b4b6b01bcec1013249c318bc026881fb",
+    "historical_member_manifest_sha256": "7faf5d0694bfb8febd1525d3fe0a1cc8fa28d60e52a69b44efb21d590536e927"
+  },
+  "new_archive": {
+    "path": "safe-first-failure-originals.zip",
+    "format": "ZIP",
+    "bytes": 222711,
+    "sha256": "d663bdb23f2b9dbd022f53d2d6d06ec48c779518716e8b5b4fbab7f51f6d4c30",
+    "regular_members": 24
+  },
+  "member_count": 24,
+  "uncompressed_bytes": 884505,
+  "manifest_sizes_and_sha256_match": true,
+  "zip_readback_bytes_equal_to_each_tar_member": true,
+  "zip_members_unique_unencrypted_regular": true,
+  "existing_publisher_check_zip": "PASS",
+  "rejection_checks": [
+    {
+      "case": "symlink",
+      "result": "rejected"
+    },
+    {
+      "case": "hardlink",
+      "result": "rejected"
+    },
+    {
+      "case": "traversal",
+      "result": "rejected"
+    },
+    {
+      "case": "absolute",
+      "result": "rejected"
+    },
+    {
+      "case": "backslash",
+      "result": "rejected"
+    },
+    {
+      "case": "duplicate",
+      "result": "rejected"
+    },
+    {
+      "case": "normalized_duplicate",
+      "result": "rejected"
+    },
+    {
+      "case": "directory",
+      "result": "rejected"
+    }
+  ],
+  "source_publisher_path": "scripts/prepare_source_release.py",
+  "source_publisher_blob": "dcdb2b234c66abc42b2aa6ab3608053f4bb4b614",
+  "source_publisher_modified": false,
+  "immutable_old_tar_preserved_in_git_history": true,
+  "source_prepare": "PASS for exact full conversion commit 266e9f26dbc6c6a3086b3e8f63a24ec99c621481; see source-prepare-validation.json. No publish executed.",
+  "fixed_remote_parent_tree_verification": {
+    "commit": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+    "tree": "44a8eac9b45215d26b0966bf1f44c9b34dd41b5c",
+    "recursive_tree_truncated": false,
+    "archive_path": "docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "git_blob": "17b504fe5511b85ab08a1bd1455b0fe725fe510f",
+    "bytes": 218507,
+    "result": "PASS; authenticated GitHub git commit/tree metadata readback"
+  }
+}

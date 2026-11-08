@@ -1,0 +1,90 @@
+{
+  "source_commit": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "source_tree": "35654b149be894432d1faaa6469619df8261e3f4",
+  "run_id": 42462698530,
+  "attempt": 1,
+  "jobs_success": 6,
+  "native": [
+    {
+      "api": 28,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.android.inputmethod.latin/.LatinIME",
+          "actual_service_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.android.inputmethod.latin/.LatinIME",
+          "actual_service_exit": true
+        }
+      ],
+      "actual_voice_ime_exit": true,
+      "jni_local_report_cases": 65,
+      "offline_uid_removed": true
+    },
+    {
+      "api": 35,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_service_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_service_exit": true
+        }
+      ],
+      "actual_voice_ime_exit": true,
+      "jni_local_report_cases": 65,
+      "offline_uid_removed": true
+    },
+    {
+      "api": 36,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_service_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_service_exit": true
+        }
+      ],
+      "actual_voice_ime_exit": true,
+      "jni_local_report_cases": 65,
+      "offline_uid_removed": true
+    }
+  ],
+  "voicekey": [
+    {
+      "api": 28,
+      "fixed_model_and_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog_report": true,
+      "actual_service_exit": true,
+      "shared_fixture_removed": true
+    },
+    {
+      "api": 35,
+      "fixed_model_and_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog_report": true,
+      "actual_service_exit": true,
+      "shared_fixture_removed": true
+    },
+    {
+      "api": 36,
+      "fixed_model_and_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog_report": true,
+      "actual_service_exit": true,
+      "shared_fixture_removed": true
+    }
+  ],
+  "phone_arm_natural_speech": "NOT RUN"
+}

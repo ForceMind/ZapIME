@@ -1,0 +1,7 @@
+commit a63f0de1b42b73f4e59127dac0d9dc38946e1041
+tree 13af87cafaf9360362dc6e7b868a4405cbccb52e
+parent 901330f400821913be0d733cc9b16a1d232f6f22
+author Codex <codex@openai.com> 1794128639 -0800
+committer Codex <codex@openai.com> 1794128639 -0800
+
+    test(build): freeze download 504 failures and synthetic retry regressions

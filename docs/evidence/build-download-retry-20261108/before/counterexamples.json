@@ -1,0 +1,57 @@
+{
+  "base_commit": "901330f400821913be0d733cc9b16a1d232f6f22",
+  "real_cases_source_head": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+  "real_cases_checkout": "9940b9c8e242f5d231166fbe422df66f2bc96280",
+  "fixed_url_not_mirrored": true,
+  "cases": [
+    {
+      "job": 128679477387,
+      "run": 42464091047,
+      "error": "HTTP504",
+      "script": "scripts/prepare_candidate_model.py",
+      "operation": "fixed model GET before APK compilation"
+    },
+    {
+      "job": 128679477444,
+      "run": 42464091021,
+      "error": "HTTP504",
+      "script": "scripts/prepare_candidate_model.py",
+      "operation": "fixed model GET before APK compilation"
+    },
+    {
+      "job": 128679477234,
+      "run": 42464091021,
+      "error": "HTTP504",
+      "script": "scripts/fetch_resources.py",
+      "operation": "fixed dictionary GET before quality inference"
+    }
+  ],
+  "original_logs": [
+    {
+      "file": "development.log.gz",
+      "raw_bytes": 224360,
+      "raw_sha256": "aa7181f0f67122b9b0f44cb35ed8151d9a831ec3fb77fb73803832547f383eb1",
+      "gzip_sha256": "f9ee12a006add00f80c1c0fc8ea37c8e554365da93ad2720e61974c824d12e3e"
+    },
+    {
+      "file": "candidate-build.log.gz",
+      "raw_bytes": 217961,
+      "raw_sha256": "f42d11def52f15fefcf093b5ecf97b0c99de7b1f466fd174f9fbf542a6281d9b",
+      "gzip_sha256": "0ccaf4a7f28099218aa588b7c3d9af692b91971fefdbd2c622df8ef900fb52c2"
+    },
+    {
+      "file": "host.log.gz",
+      "raw_bytes": 61734,
+      "raw_sha256": "f7577c43ad6041247d7b2511d962c9e04e223d276af4581c5c3774563023653a",
+      "gzip_sha256": "f276846a9d8de8f17ed1c2750b0468ceea8a80b6b6e90b092684d657e4b64ba5"
+    }
+  ],
+  "synthetic_before": {
+    "tests": 7,
+    "passed": 2,
+    "failed": 1,
+    "errors": 4,
+    "scope": "504/cut-stream retry contract on old actual callers; two existing integrity/offline cases already pass; no real network or weights"
+  },
+  "additional_existing_counterexample": "Parent independently archived #96 candidate HTTP504 in commit807ef7f, docs/evidence/pr96-candidate-download-42464855505; not redownloaded in this slice"
+}

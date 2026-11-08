@@ -1,0 +1,542 @@
+[
+  {
+    "name": "device-smoke/activity-errors.txt",
+    "bytes": 118,
+    "sha256": "a870612c1d6b281377e86825c1a5c6e84be8274352cc7f0fa02c988280fe6c9b",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/candidates.png",
+    "bytes": 44632,
+    "sha256": "af6ba1f33364fef34fae720bb11729a8495d451ef7b30b3d633b45d927934956",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/feedback-settings.png",
+    "bytes": 51673,
+    "sha256": "6d7f86953efa15dd917e9e327f9c269a3ac94a3c0ca5375963ebf7c8f7492c48",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/home.png",
+    "bytes": 43899,
+    "sha256": "1e966ecb2d17d9dec7dd71f873c780fa77d60fb639e3f4367d27398054302b75",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/host-lifecycle.txt",
+    "bytes": 8668,
+    "sha256": "745b09c9f507c7d6168102c7da16a32ebc7934432d52072158e5cb484ec30bf0",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/ime-teardown.log",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/input-method-state.log",
+    "bytes": 122511,
+    "sha256": "6177bbb18487a6009c9c0b0b5b01ca13484419dd7a8a8e42fa25664d8c61ce04",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/instrumentation.log",
+    "bytes": 644,
+    "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/keyboard.png",
+    "bytes": 46945,
+    "sha256": "202e9c0b22c8c67c28a97ad4334bc0dc812da1831c2a1c6128c11287257baa21",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/local-clipboard.png",
+    "bytes": 39734,
+    "sha256": "5143235aac2c5180007e855f248b5cfc1c20b73ee0d03ae74bff2f8813e7e7e0",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/local-data.png",
+    "bytes": 39435,
+    "sha256": "04e52e91989a2d52f9cb8eac6295ef65abde2972286ff9cc30aa99586fa511ea",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/local-favorites.png",
+    "bytes": 37405,
+    "sha256": "f0ff81fc4a1d424fcaa00664ed8b35c3c4f3fd60fd3aed10519960601bbb5440",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/local-search.png",
+    "bytes": 40864,
+    "sha256": "545d51e7538321bd5f33e154ba75f9e85ed3b0be69fce8e768bc71476c9b8a75",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/nine-key-dark-candidates.png",
+    "bytes": 47558,
+    "sha256": "fa5bc2b879d9d4be984212e8a4883ea4365fc9694cca125e369803c4e8bbe01b",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/nine-key-dark.png",
+    "bytes": 47803,
+    "sha256": "bcd1f7e415e6263ae2ddb8970b655bb60a0e67d80c47a275b15042f52dd9ea41",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/nine-key-light.png",
+    "bytes": 50448,
+    "sha256": "3f429f6789250fae7293f85538c0202bb556000be863965cd8d2bb0485579864",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/nine-key.png",
+    "bytes": 52243,
+    "sha256": "4969ecd23028c94658d50a946f297c75a4729003ec147d169e84a625e7b14019",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/numbers.png",
+    "bytes": 37054,
+    "sha256": "2462f358fa5e117f66ef24d60f4e0d83a058c71b03be7bbab7180acd2faba0ab",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/personal.png",
+    "bytes": 42301,
+    "sha256": "7b7dca736429b5b167d3f7aaacb93c600995a1d4a294003c6197b0d522f7e10c",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/runtime-errors.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/smoke.png",
+    "bytes": 41785,
+    "sha256": "2cee4da9511431dfb381657c27391e1a6b116f1cf9efcc25fe93d85b1aaf6eef",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke/tools.png",
+    "bytes": 40141,
+    "sha256": "33742a908745ec66a058d9bc1657f1c5f458c0969559eec0836b8b9abd7e47fa",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/activity-errors.txt",
+    "bytes": 382,
+    "sha256": "f50cfb13450c722bedcf6e74fd0116d75da4ef1f5ee5130c1c7dee6a2fff8d7d",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/candidates.png",
+    "bytes": 44851,
+    "sha256": "bcbac6557a4a5836d12dd3c1441ab31f1f1152fc908d1cad17bb05f608b6fe4f",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/feedback-settings.png",
+    "bytes": 51028,
+    "sha256": "c4aa59b9d32dd5ea2c6080619db9ede8f02ef9e8035a55a79b87913ec4e2869e",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/home.png",
+    "bytes": 43900,
+    "sha256": "f318093da8eedc3cb2363b2db9d7f07b7cbaaf75825a399522ee0a95bcf24fbf",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/host-lifecycle.txt",
+    "bytes": 8668,
+    "sha256": "9f0f817cf69887ceef082c8e39b62b2ca7dea88956251564b2493c61f78624f5",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/ime-teardown.log",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/instrumentation.log",
+    "bytes": 644,
+    "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/keyboard.png",
+    "bytes": 47106,
+    "sha256": "0f7fc498743d204152b037b5572f6ac88610fec14bd8df95adf0d0f9c0ca1fb7",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/input-method-state.log",
+    "bytes": 122339,
+    "sha256": "5a6aa0f59a46500b352fa0288d1294197af5cb0e4c586f038e16d4448b38353e",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/local-search.png",
+    "bytes": 40609,
+    "sha256": "19c4f59885af0c335765badff4d693b9bb3ad594483aeb9dde6bc0a6198e84ac",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/local-clipboard.png",
+    "bytes": 39557,
+    "sha256": "9eebc5d951278307b1e72085218202ad83b1affbc9145fdaca68d7871c57dc96",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/local-data.png",
+    "bytes": 39212,
+    "sha256": "1f4528bcc461df72b9badf55726c9fc9303f8c14986a3d348edbaef6fee62af1",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/local-favorites.png",
+    "bytes": 37166,
+    "sha256": "d79582af8f3503047b90f001b8fb47408d4053dc1c680b81f7eae60ec781151b",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/nine-key-dark-candidates.png",
+    "bytes": 47321,
+    "sha256": "64352b3f60ea43c03c4c3deba1a6bf7ce32e1a653c6829cdd966a8f947dcce3c",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/nine-key-dark.png",
+    "bytes": 47560,
+    "sha256": "cea087e0b14b2ceab51fd4e0cedb58d6030cb670d76a4ff8350c6c3430f7d09b",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/nine-key-light.png",
+    "bytes": 50334,
+    "sha256": "1a1647d1f46756b79ca427dcd2492b4d9411771cd0a7f1b7083832f50d2c09d4",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/nine-key.png",
+    "bytes": 52195,
+    "sha256": "343f5d95517881bce888ec0073ed8f4545c69be22e5cb7754fdae8afbc0371f5",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/numbers.png",
+    "bytes": 37188,
+    "sha256": "ac6dbc581e6abff48044bd8835ca1c95885a3f55c12cc333e6a6cc35a3c0a5a3",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/personal.png",
+    "bytes": 42242,
+    "sha256": "a1ca61669e8f267af67bd80130f05e935cee9b6dcf9b9c6e07e2628addb7bb78",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/runtime-errors.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/smoke.png",
+    "bytes": 41604,
+    "sha256": "a5a20cf163a90a644535cbccf36635950e3d8cd39b6415c449ad0f2d34715dc3",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-1/tools.png",
+    "bytes": 40375,
+    "sha256": "59745be0b63c58b161baec0371f267159f2445eae31a82e8bb9a68f5bf5d9c1a",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/activity-errors.txt",
+    "bytes": 118,
+    "sha256": "a870612c1d6b281377e86825c1a5c6e84be8274352cc7f0fa02c988280fe6c9b",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/candidates.png",
+    "bytes": 44632,
+    "sha256": "af6ba1f33364fef34fae720bb11729a8495d451ef7b30b3d633b45d927934956",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/feedback-settings.png",
+    "bytes": 51673,
+    "sha256": "6d7f86953efa15dd917e9e327f9c269a3ac94a3c0ca5375963ebf7c8f7492c48",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/home.png",
+    "bytes": 43899,
+    "sha256": "1e966ecb2d17d9dec7dd71f873c780fa77d60fb639e3f4367d27398054302b75",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/host-lifecycle.txt",
+    "bytes": 8668,
+    "sha256": "745b09c9f507c7d6168102c7da16a32ebc7934432d52072158e5cb484ec30bf0",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/ime-teardown.log",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/input-method-state.log",
+    "bytes": 122511,
+    "sha256": "6177bbb18487a6009c9c0b0b5b01ca13484419dd7a8a8e42fa25664d8c61ce04",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/instrumentation.log",
+    "bytes": 644,
+    "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/keyboard.png",
+    "bytes": 46945,
+    "sha256": "202e9c0b22c8c67c28a97ad4334bc0dc812da1831c2a1c6128c11287257baa21",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/local-clipboard.png",
+    "bytes": 39734,
+    "sha256": "5143235aac2c5180007e855f248b5cfc1c20b73ee0d03ae74bff2f8813e7e7e0",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/local-data.png",
+    "bytes": 39435,
+    "sha256": "04e52e91989a2d52f9cb8eac6295ef65abde2972286ff9cc30aa99586fa511ea",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/local-favorites.png",
+    "bytes": 37405,
+    "sha256": "f0ff81fc4a1d424fcaa00664ed8b35c3c4f3fd60fd3aed10519960601bbb5440",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/local-search.png",
+    "bytes": 40864,
+    "sha256": "545d51e7538321bd5f33e154ba75f9e85ed3b0be69fce8e768bc71476c9b8a75",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/nine-key-dark-candidates.png",
+    "bytes": 47558,
+    "sha256": "fa5bc2b879d9d4be984212e8a4883ea4365fc9694cca125e369803c4e8bbe01b",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/nine-key-dark.png",
+    "bytes": 47803,
+    "sha256": "bcd1f7e415e6263ae2ddb8970b655bb60a0e67d80c47a275b15042f52dd9ea41",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/nine-key-light.png",
+    "bytes": 50448,
+    "sha256": "3f429f6789250fae7293f85538c0202bb556000be863965cd8d2bb0485579864",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/nine-key.png",
+    "bytes": 52243,
+    "sha256": "4969ecd23028c94658d50a946f297c75a4729003ec147d169e84a625e7b14019",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/numbers.png",
+    "bytes": 37054,
+    "sha256": "2462f358fa5e117f66ef24d60f4e0d83a058c71b03be7bbab7180acd2faba0ab",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/personal.png",
+    "bytes": 42301,
+    "sha256": "7b7dca736429b5b167d3f7aaacb93c600995a1d4a294003c6197b0d522f7e10c",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/runtime-errors.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/smoke.png",
+    "bytes": 41785,
+    "sha256": "2cee4da9511431dfb381657c27391e1a6b116f1cf9efcc25fe93d85b1aaf6eef",
+    "record_retained": false
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "record_retained": true
+  },
+  {
+    "name": "device-smoke-evidence/42462698530-1/round-2/tools.png",
+    "bytes": 40141,
+    "sha256": "33742a908745ec66a058d9bc1657f1c5f458c0969559eec0836b8b9abd7e47fa",
+    "record_retained": false
+  },
+  {
+    "name": "voice-android/activity-errors.txt",
+    "bytes": 206,
+    "sha256": "4bc1368250d977ddd0b960558e87326e31743fb14a258546c24e5f8a32862187",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/combined-gates.json",
+    "bytes": 66,
+    "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/empty-pcm-report.json",
+    "bytes": 1143,
+    "sha256": "f2ce8f95c4d3a54fdffe6872d4c2a535034321a765dae7a5cb27e4867a6aa634",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/host-lifecycle.txt",
+    "bytes": 5980,
+    "sha256": "39ccc2ca71ab9d2f87f6de8979f162d4e06809a378510c5f070f614bc65894ba",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/ime-teardown.txt",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/instrumentation.txt",
+    "bytes": 2821,
+    "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/local-backup-report.json",
+    "bytes": 990,
+    "sha256": "a800fd7d5c334a04175b99ed585a217588dd6c813b68e6f0755432c9b7c566dc",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/native-report.json",
+    "bytes": 650,
+    "sha256": "f55a4bcb9c5f3743aebb05e38e8dd9f21ec2e856394513222660cc8877540732",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/smoke.png",
+    "bytes": 41785,
+    "sha256": "2cee4da9511431dfb381657c27391e1a6b116f1cf9efcc25fe93d85b1aaf6eef",
+    "record_retained": false
+  },
+  {
+    "name": "voice-android/sync-connection-report.json",
+    "bytes": 726,
+    "sha256": "d2d40387113b472075c85bc1a59faeb8c8e4f9fa5c84abae97d518b64b2ec6c8",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/sync-preparation-report.json",
+    "bytes": 1308,
+    "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/sync-profile-report.json",
+    "bytes": 675,
+    "sha256": "415930e6b8e84ce0d55c129a3503fafc183d91360722e95166e9594ab9706bd8",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/synthetic.pcm",
+    "bytes": 250980,
+    "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+    "record_retained": false
+  },
+  {
+    "name": "voice-android/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/ui-instrumentation.txt",
+    "bytes": 316,
+    "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/voice-commit-report.json",
+    "bytes": 5302,
+    "sha256": "40796d46dd59508da02fbc2b2b011fcc42a426140326dc41fd4b5120894e11bc",
+    "record_retained": true
+  },
+  {
+    "name": "voice-android/voice-recording.png",
+    "bytes": 40097,
+    "sha256": "1017b24c807dbbe85c17a34965ab1d9abd1a7b2a7bebad1bbe72b77247de8068",
+    "record_retained": false
+  },
+  {
+    "name": "voice-android/voice-stopped.png",
+    "bytes": 42101,
+    "sha256": "bea0fbcc4f40644cab8b1fe32a2b5cd434db19de2fdb808071df40f62ac73d6f",
+    "record_retained": false
+  },
+  {
+    "name": "voice-android/voicekey-boundary-report.json",
+    "bytes": 680,
+    "sha256": "e2aaed3c59f9e11b751bdf05bcfd37db67ad701aafdad094a1162df688ece8be",
+    "record_retained": true
+  }
+]

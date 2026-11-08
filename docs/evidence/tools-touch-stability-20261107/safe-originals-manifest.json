@@ -124,5 +124,23 @@
     }
   ],
   "duplicate_round1_retained_in_original_zip": true,
-  "scope": "All device-smoke first-failure safe originals plus minimal public synthetic voice gate status; no PCM/model/backup-secret report included in this tar. Complete ZIP was downloaded and verified and is separately retained in scratch; this committed archive is the declared subset."
+  "scope": "All device-smoke first-failure safe originals plus minimal public synthetic voice gate status; no PCM/model/backup-secret report included in this declared ZIP subset. Complete ZIP was downloaded and verified and is separately retained in scratch; this committed archive is the declared subset.",
+  "archive": {
+    "path": "safe-first-failure-originals.zip",
+    "format": "ZIP",
+    "bytes": 222711,
+    "sha256": "d663bdb23f2b9dbd022f53d2d6d06ec48c779518716e8b5b4fbab7f51f6d4c30",
+    "regular_members": 24
+  },
+  "previous_archive": {
+    "path": "docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "bytes": 218507,
+    "sha256": "10df44343b42ec6544587595d3450cbf1c0a7d79f97b41f69c73bd717b31a7d0",
+    "git_blob": "17b504fe5511b85ab08a1bd1455b0fe725fe510f",
+    "fixed_parent_commit": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+    "fixed_parent_url": "https://github.com/ForceMind/ZapIME/blob/685a3a59b09fb4791a9de89afd00ca8eae97f672/docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "historical_checksum_manifest": "SHA256SUMS.before-zip-conversion.txt",
+    "historical_checksum_manifest_sha256": "6f5a020436831adbc28ac0598eb5cbd3b4b6b01bcec1013249c318bc026881fb",
+    "historical_member_manifest_sha256": "7faf5d0694bfb8febd1525d3fe0a1cc8fa28d60e52a69b44efb21d590536e927"
+  }
 }

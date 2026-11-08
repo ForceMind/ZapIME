@@ -69,3 +69,11 @@ voice-tests Java（官方API36r02、Temurin17.0.21、source8/target8）通过。
 不拿前一源码的两个成功代填。产品实现、密钥、权限、网络和workflow均未修改。
 独立复审发现的“仅按矩形无法证明导航后代归属”已修正并再次复审通过，
 未通过放宽目标文件或恢复断言处理。
+
+## 后续实际验收（固定head7c2ab398）
+
+新focused42463933420已8个job全部SUCCESS，三API各57项原ZIP实际下载/核SHA/
+严格复验通过；三端本轮均实际执行新的root后代控件路径及唯一目标文件手指触摸。
+同head的独立fullAndroid42463933444仍FAILURE：build获取固定X-ASR模型收到HTTP504，
+依赖输入验证失败，不能借focused成功改写。原失败保留，完整范围与证据见
+[导航修正后的三API验收](accepted-42463933420/README.md)。

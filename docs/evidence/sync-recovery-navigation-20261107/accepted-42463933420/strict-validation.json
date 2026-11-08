@@ -1,0 +1,104 @@
+{
+  "source_commit": "7c2ab398eeb5849092d46a3f9d72d85743762c93",
+  "checkout": {
+    "sha": "ff1f81443102a3dfcc6be2defbabe0e3f244b650",
+    "tree": "2fee68ef8694ca2b3fc9838cfe4cd57f5f81d032",
+    "parents": [
+      "5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+      "7c2ab398eeb5849092d46a3f9d72d85743762c93"
+    ]
+  },
+  "reports": [
+    {
+      "api": 28,
+      "report": "sync-key-registration-report.json",
+      "cases": 14,
+      "status": "PASS"
+    },
+    {
+      "api": 28,
+      "report": "sync-pages-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 28,
+      "report": "sync-preparation-report.json",
+      "cases": 11,
+      "status": "PASS"
+    },
+    {
+      "api": 28,
+      "report": "sync-preparation-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 28,
+      "report": "sync-transfer-report.json",
+      "cases": 12,
+      "status": "PASS"
+    },
+    {
+      "api": 35,
+      "report": "sync-key-registration-report.json",
+      "cases": 14,
+      "status": "PASS"
+    },
+    {
+      "api": 35,
+      "report": "sync-pages-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 35,
+      "report": "sync-preparation-report.json",
+      "cases": 11,
+      "status": "PASS"
+    },
+    {
+      "api": 35,
+      "report": "sync-preparation-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 35,
+      "report": "sync-transfer-report.json",
+      "cases": 12,
+      "status": "PASS"
+    },
+    {
+      "api": 36,
+      "report": "sync-key-registration-report.json",
+      "cases": 14,
+      "status": "PASS"
+    },
+    {
+      "api": 36,
+      "report": "sync-pages-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 36,
+      "report": "sync-preparation-report.json",
+      "cases": 11,
+      "status": "PASS"
+    },
+    {
+      "api": 36,
+      "report": "sync-preparation-ui-report.json",
+      "cases": 10,
+      "status": "PASS"
+    },
+    {
+      "api": 36,
+      "report": "sync-transfer-report.json",
+      "cases": 12,
+      "status": "PASS"
+    }
+  ],
+  "scope": "Original complete archive verification, strict JSON acceptance and unchanged cleanup checks. Temporary CI x86_64 only; not a phone, natural-input quality or general SAF stability result."
+}

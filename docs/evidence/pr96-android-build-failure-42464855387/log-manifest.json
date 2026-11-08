@@ -1,0 +1,82 @@
+[
+  {
+    "job_id": 128681882345,
+    "path": "android/build-job.log.gz",
+    "decoded_utf8_bytes": 224471,
+    "decoded_utf8_sha256": "c2a8d17999c5e68e52ae1a72fbe7902aee20b76ab4b80e538d4476632e12b575",
+    "gzip_sha256": "c4ce70b8448abf4d117143e4de790d200aba4074312fa793f5603b12b64c393e",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128681882225,
+    "path": "focused-voicekey/build-job.log.gz",
+    "decoded_utf8_bytes": 229994,
+    "decoded_utf8_sha256": "ec54ee959dc945469dc4f7bf29faae9d72b6c02f12e2088db16f3ba569c6a7a5",
+    "gzip_sha256": "fe0a12effed130187d010681f11f2493e634db7ca9b5fa53679dcf0760d243f9",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128681882293,
+    "path": "source-alpha/prepare-job.log.gz",
+    "decoded_utf8_bytes": 82089,
+    "decoded_utf8_sha256": "cb25a31c779af1e1233fcb07266da6692ca1593f9b1863deffe0316db7604e6c",
+    "gzip_sha256": "4481fefc248499f945797eee5cbe57f5ac98de842ccc13a597377cbd35728de6",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128682174828,
+    "path": "android/downstream-api36-job.log.gz",
+    "decoded_utf8_bytes": 171137,
+    "decoded_utf8_sha256": "2f9dcf19b3d9776b27d096c8661fa35fa42959ac45371393c7956b3cb0f064cc",
+    "gzip_sha256": "43261b778da7edb986cb4b5454d254e8432463939b1261542f94c9ed7edda4de",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128681882621,
+    "path": "shared/apple-job.log.gz",
+    "decoded_utf8_bytes": 43310,
+    "decoded_utf8_sha256": "365f8eed41d051323e6c50bd0e546d17c9e4617fd22414e4ccfba9fedd3f64f8",
+    "gzip_sha256": "085b5b21a17a09fad1eebe778b177b9f48ff6b147b4225d3f28614c738ca33b5",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128681882284,
+    "path": "windows/tsf-job.log.gz",
+    "decoded_utf8_bytes": 41061,
+    "decoded_utf8_sha256": "89ae097f9b2dccfa17a9ab89834a6e70f3b5d2e906a078ac9d6cad7c077f0d3a",
+    "gzip_sha256": "5b8253ae3ad15b0221cdaac6185cbfa3aca6c8fa17f3793fc073db1d57da429b",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128682174838,
+    "path": "android/downstream-voicekey-api35-job.log.gz",
+    "decoded_utf8_bytes": 173712,
+    "decoded_utf8_sha256": "b034e35769a14812484577be42710624dbdbcf9c8da9455620e6472d151707a9",
+    "gzip_sha256": "50820c696965b40ced37db4683183141b4c36401b7bf63709fee0f7e09cf4e36",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128682174850,
+    "path": "android/downstream-voicekey-api36-job.log.gz",
+    "decoded_utf8_bytes": 173713,
+    "decoded_utf8_sha256": "24f327c97a44135ee67bb862a66ecd8db37177a3e9ad3db268f784d84655bd60",
+    "gzip_sha256": "51c86d8ad31744c93f2e02daaa1588e634300bf51bb230a4ffac34c907be47db",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128682174863,
+    "path": "android/downstream-api35-job.log.gz",
+    "decoded_utf8_bytes": 171136,
+    "decoded_utf8_sha256": "f9aad2aed4f843eef69a8e5afaab9b9578ed177e075919eacf45c636e57db1d9",
+    "gzip_sha256": "d3f1dc56627e37c4914694c2939e1d2976bfed5bef64c4fbdc9565aa1b46eb6a",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  },
+  {
+    "job_id": 128682175157,
+    "path": "android/downstream-voicekey-api28-job.log.gz",
+    "decoded_utf8_bytes": 173710,
+    "decoded_utf8_sha256": "e458f40719d11504949ed622b6e885ffc6a9536f1446730e96c4f8470ea4202e",
+    "gzip_sha256": "49d948f4f196df84b30a9c2526f7ec53b74f68e86103656a6b5eff35d04a6da8",
+    "encoding": "GitHub connector decoded original job log, UTF-8; gzip mtime 0"
+  }
+]

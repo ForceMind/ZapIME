@@ -1,0 +1,209 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 4154,
+      "sha256": "690b3fbf0caac419b42429daceb3324481f03a64dddab2fd3bc0ad7dc94d6815"
+    },
+    {
+      "path": "api28/activity-errors.txt",
+      "bytes": 2516,
+      "sha256": "7c7b5801ca7626c5a3b20d41fc75d8892c30516430a57054a84b5d708027bdf2"
+    },
+    {
+      "path": "api28/archive-metadata.json",
+      "bytes": 178,
+      "sha256": "724f515023079accdf6732ae062f9ad8dd33c2fcce8a0c9f972d6659d8c57592"
+    },
+    {
+      "path": "api28/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api28/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api28/offline-uid.json",
+      "bytes": 119,
+      "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+    },
+    {
+      "path": "api28/original.zip",
+      "bytes": 22224,
+      "sha256": "a6dcc2b4dbcb67a6373e34ddb4c256101d0ca76a6f8813627fb61072c80f77c4"
+    },
+    {
+      "path": "api28/sync-key-registration-report.json",
+      "bytes": 1778,
+      "sha256": "d11e5eaee9c651ebf62dbdb04ff8b7906fe559994f90d359e1b7062940ad5a84"
+    },
+    {
+      "path": "api28/sync-pages-ui-report.json",
+      "bytes": 2275,
+      "sha256": "82bf61708fed1f228e3e1d7aa2c1ef2d2c1614cef0abf54431d33cabc3e6bf4b"
+    },
+    {
+      "path": "api28/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+    },
+    {
+      "path": "api28/sync-preparation-ui-report.json",
+      "bytes": 3023,
+      "sha256": "b4c53a5c9f1f46e09ffe545a08ae8f670c7f463e869d39efd2634ce2c165c4b0"
+    },
+    {
+      "path": "api28/sync-transfer-report.json",
+      "bytes": 1944,
+      "sha256": "2d2d834eb1a166b49ae6c7e6fbf42e720e446080e87601d865e752c74da145b6"
+    },
+    {
+      "path": "api35/activity-errors.txt",
+      "bytes": 3653,
+      "sha256": "c967fd83c50cc6ed2aa6c863227563ecbd80ed6b0ced3ffc10110ff0eb293d68"
+    },
+    {
+      "path": "api35/archive-metadata.json",
+      "bytes": 178,
+      "sha256": "968e77c2b7a2e1d2ad912bdfb6e4e0886f1dc7178adecb69918d45ab008c721a"
+    },
+    {
+      "path": "api35/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api35/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api35/offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+    },
+    {
+      "path": "api35/original.zip",
+      "bytes": 33140,
+      "sha256": "f6e264be2451b74245b5c27a45b43fe19071ee634ce4a5f9b58442f8bdfdb23d"
+    },
+    {
+      "path": "api35/sync-key-registration-report.json",
+      "bytes": 1778,
+      "sha256": "4265757950248b269ca3622955b6e72d3180622fcfdad2e8fdbe68110ad0105a"
+    },
+    {
+      "path": "api35/sync-pages-ui-report.json",
+      "bytes": 2275,
+      "sha256": "62eaae601d11befeba93d34f18b3642d725d4b0ea1412e87d3cf0ac14a414550"
+    },
+    {
+      "path": "api35/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+    },
+    {
+      "path": "api35/sync-preparation-ui-report.json",
+      "bytes": 3023,
+      "sha256": "05c20d12de855ffd36b79dc83377a3a5ab6f1ec75cf3e67907d0f14578c356f2"
+    },
+    {
+      "path": "api35/sync-transfer-report.json",
+      "bytes": 1944,
+      "sha256": "52106ddd2565455cef449199e804e8d2b13aeb1ac8acd9bf4862fdfb6875c3a5"
+    },
+    {
+      "path": "api36/activity-errors.txt",
+      "bytes": 294,
+      "sha256": "33df830a92ef92fcaad04502809e89b82f1c070b1289b50c4eeaf9b4c2fdda9a"
+    },
+    {
+      "path": "api36/archive-metadata.json",
+      "bytes": 178,
+      "sha256": "b8338a9f90aa3cf705b289a5d5cafe0b227254e9d0c99fed16ac750c6b49a65c"
+    },
+    {
+      "path": "api36/crash.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "api36/instrumentation.txt",
+      "bytes": 104,
+      "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+    },
+    {
+      "path": "api36/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "api36/original.zip",
+      "bytes": 31977,
+      "sha256": "e2177c935ba478ddc743969c8944add196d70aaa3a33933e1f9a70bda7b914ae"
+    },
+    {
+      "path": "api36/sync-key-registration-report.json",
+      "bytes": 1778,
+      "sha256": "c31f2885c21e51fd52dfa283bdccf8b8183edc04bdaed8191c27fa1099505640"
+    },
+    {
+      "path": "api36/sync-pages-ui-report.json",
+      "bytes": 2275,
+      "sha256": "26f7944d58ff312f4d0500b3bddabfa337a606b745ee30679e3749943c9182e5"
+    },
+    {
+      "path": "api36/sync-preparation-report.json",
+      "bytes": 1308,
+      "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+    },
+    {
+      "path": "api36/sync-preparation-ui-report.json",
+      "bytes": 3023,
+      "sha256": "55e403ee172d478eef64e245cc09f30724972ed6a632326cadcb7e8bb8ffbbb2"
+    },
+    {
+      "path": "api36/sync-transfer-report.json",
+      "bytes": 1944,
+      "sha256": "902ab5d1e2ff0abe1d875c7f58d2b98c60c67aa9c3dc5fc939aacefce0eb1b02"
+    },
+    {
+      "path": "archive-manifest.json",
+      "bytes": 6663,
+      "sha256": "ac478e3dec513939e896f2ab1aaa6c4de32da5dde8c07e23ab94bcb22b72da3c"
+    },
+    {
+      "path": "build-metadata.zip",
+      "bytes": 667,
+      "sha256": "b7852f2dc50815b41ddd53c94451f2e085a8b49c1c2f57b6aca0b185cd769e87"
+    },
+    {
+      "path": "full-android-build-failure.log.gz",
+      "bytes": 49602,
+      "sha256": "bbac1533ed4c94bc25ca51f4173018fb6ef1b8bcff0b3028c34bc7b70c0e059d"
+    },
+    {
+      "path": "full-android-failure-readback.json",
+      "bytes": 20511,
+      "sha256": "aa338a8e5cfaeaa83f3f514c6ac206ceb66d253903f02ae9af5f3bf99aceb86c"
+    },
+    {
+      "path": "strict-validation.json",
+      "bytes": 2346,
+      "sha256": "cc747ad95788486e05a486c07c18d71aaf0f5e9c8af7644038c6326be236c5b6"
+    },
+    {
+      "path": "voicekey-focused-build.json",
+      "bytes": 957,
+      "sha256": "343fc06e65032e27a9866a70a061827570115f65a4a5122ecc9cfef80db7c1c0"
+    },
+    {
+      "path": "workflow-readback.json",
+      "bytes": 22872,
+      "sha256": "6b66472bbf7cf1e637aee4ad41028b661533188884b57b18a368e3fef61ec1a8"
+    }
+  ]
+}

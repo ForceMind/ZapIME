@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 28,
+  "cases": [
+    {
+      "id": "fresh_main_prepared_fixture",
+      "passed": true
+    },
+    {
+      "id": "key_page_secure_local_selection",
+      "passed": true
+    },
+    {
+      "id": "key_confirmation_negative_cancel",
+      "passed": true
+    },
+    {
+      "id": "key_queued_cancel_before_io",
+      "passed": true
+    },
+    {
+      "id": "transfer_page_secure_local_selection",
+      "passed": true
+    },
+    {
+      "id": "transfer_confirmation_negative_cancel",
+      "passed": true
+    },
+    {
+      "id": "transfer_queued_cancel_before_io",
+      "passed": true
+    },
+    {
+      "id": "stopped_selection_and_generation_invalidated",
+      "passed": true
+    },
+    {
+      "id": "prepared_business_and_vault_preserved",
+      "passed": true
+    },
+    {
+      "id": "owned_main_fixture_cleanup",
+      "passed": true
+    }
+  ],
+  "scope": "Actual non-exported Android Activities on a freshly owned prepared main fixture; local selection and resume seam, normal View.performClick and AlertDialog negative\/positive controls, actual SyncWorker queued cancellation before work I\/O, stopped-generation rejection, unchanged business\/frozen\/cursor\/vault state and exact fixture cleanup. No physical input, active HTTPS interruption, successful network registration\/transfer, phone or user data acceptance.",
+  "button_activation_method": "production_View_performClick_and_AlertDialog_buttons",
+  "cancellation_scope": "actual_sync_worker_queued_cancel_before_work_io",
+  "android_https": "NOT RUN",
+  "active_https_interruption_tested": false,
+  "physical_input_tested": false,
+  "network_success_tested": false,
+  "secret_content_or_code_logged": false,
+  "actual_activities": true,
+  "manifest_nonexported": true,
+  "secure_window_flags": true,
+  "displayed_selection_matches_local": true,
+  "resume_local_only_seam_verified": true,
+  "negative_dialog_cancel_no_task": true,
+  "actual_sync_worker_queued_cancel": true,
+  "captured_cancellation_checked": true,
+  "late_result_rejected": true,
+  "business_queue_frozen_cursor_preserved": true,
+  "vault_ciphertext_preserved": true,
+  "queued_cancelled_pages": 2,
+  "fresh_fixture_owned": true,
+  "cleanup_completed": true
+}

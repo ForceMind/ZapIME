@@ -1,0 +1,315 @@
+Current Input Method Manager state:
+  Input Methods: mMethodMapUpdateCount=5 mBindInstantServiceAllowed=false
+  InputMethod #0:
+    mId=com.android.inputmethod.latin/.LatinIME mSettingsActivityName=com.android.inputmethod.latin.settings.SettingsActivity mIsVrOnly=false mSupportsSwitchingToNextInputMethod=true
+    mIsDefaultResId=0x7f040012
+    Service:
+      priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+      ServiceInfo:
+        name=com.android.inputmethod.latin.LatinIME
+        packageName=com.android.inputmethod.latin
+        labelRes=0x7f0e004b nonLocalizedLabel=null icon=0x0 banner=0x0
+        enabled=true exported=true directBootAware=true
+        permission=android.permission.BIND_INPUT_METHOD
+        flags=0x0
+        ApplicationInfo:
+          packageName=com.android.inputmethod.latin
+          labelRes=0x7f0e004b nonLocalizedLabel=null icon=0x7f070098 banner=0x0
+          processName=com.android.inputmethod.latin
+          taskAffinity=com.android.inputmethod.latin
+          uid=10066 flags=0x38c8be45 privateFlags=0x60 theme=0x0
+          requiresSmallestWidthDp=0 compatibleWidthLimitDp=0 largestWidthLimitDp=0
+          sourceDir=/system/app/LatinIME/LatinIME.apk
+          seinfo=default:targetSdkVersion=23
+          seinfoUser=:complete
+          dataDir=/data/user_de/0/com.android.inputmethod.latin
+          deviceProtectedDataDir=/data/user_de/0/com.android.inputmethod.latin
+          credentialProtectedDataDir=/data/user/0/com.android.inputmethod.latin
+          enabled=true minSdkVersion=14 targetSdkVersion=23 versionCode=28 targetSandboxVersion=1
+          supportsRtl=true
+          fullBackupContent=true
+          HiddenApiEnforcementPolicy=3
+  InputMethod #1:
+    mId=org.zapime.android/.ZapInputMethodService mSettingsActivityName=org.zapime.android.MainActivity mIsVrOnly=false mSupportsSwitchingToNextInputMethod=true
+    mIsDefaultResId=0x0
+    Service:
+      priority=0 preferredOrder=0 match=0x108000 specificIndex=-1 isDefault=false
+      ServiceInfo:
+        name=org.zapime.android.ZapInputMethodService
+        packageName=org.zapime.android
+        labelRes=0x0 nonLocalizedLabel=闪电输入法 icon=0x0 banner=0x0
+        enabled=true exported=true directBootAware=false
+        permission=android.permission.BIND_INPUT_METHOD
+        flags=0x0
+        ApplicationInfo:
+          packageName=org.zapime.android
+          labelRes=0x0 nonLocalizedLabel=闪电输入法 icon=0x0 banner=0x0
+          processName=org.zapime.android
+          taskAffinity=org.zapime.android
+          uid=10067 flags=0x30c83e44 privateFlags=0x1000 theme=0x1030241
+          requiresSmallestWidthDp=0 compatibleWidthLimitDp=0 largestWidthLimitDp=0
+          sourceDir=/data/app/org.zapime.android-YMAQOIufmmd_fQDmO04oCA==/base.apk
+          seinfo=default:targetSdkVersion=35
+          seinfoUser=:complete
+          dataDir=/data/user/0/org.zapime.android
+          deviceProtectedDataDir=/data/user_de/0/org.zapime.android
+          credentialProtectedDataDir=/data/user/0/org.zapime.android
+          enabled=true minSdkVersion=28 targetSdkVersion=35 versionCode=1 targetSandboxVersion=1
+          supportsRtl=true
+          fullBackupContent=true
+          HiddenApiEnforcementPolicy=2
+  Clients:
+  Client ClientState{6c12bf7 uid 10031 pid 2617}:
+    client=com.android.internal.view.IInputMethodClient$Stub$Proxy@b96ce2c
+    inputContext=com.android.internal.view.IInputContext$Stub$Proxy@40f60f5
+    sessionRequested=false
+    curSession=SessionState{uid 10031 pid 2617 method c951e8a session 3883cfb channel ClientState{6c12bf7 uid 10031 pid 2617} (server)}
+  Client ClientState{28ce3bb uid 1000 pid 2233}:
+    client=com.android.internal.view.IInputMethodClient$Stub$Proxy@8b8a118
+    inputContext=com.android.internal.view.IInputContext$Stub$Proxy@8421771
+    sessionRequested=false
+    curSession=null
+  Client ClientState{1cefb4f uid 10067 pid 3247}:
+    client=com.android.internal.view.IInputMethodClient$Stub$Proxy@9ae9956
+    inputContext=com.android.internal.view.IInputContext$Stub$Proxy@93add7
+    sessionRequested=false
+    curSession=null
+  Client ClientState{922b6c4 uid 10015 pid 2078}:
+    client=com.android.internal.view.IInputMethodClient$Stub$Proxy@70fb9ad
+    inputContext=com.android.internal.view.IInputContext$Stub$Proxy@512f4e2
+    sessionRequested=false
+    curSession=null
+  Client ClientState{87b5073 uid 1000 pid 1946}:
+    client=android.view.inputmethod.InputMethodManager$1@aa3e148
+    inputContext=ControlledInputConnectionWrapper{connection=android.view.inputmethod.BaseInputConnection@af67b30 finished=false mParentInputMethodManager.mActive=false}
+    sessionRequested=false
+    curSession=null
+  mCurMethodId=com.android.inputmethod.latin/.LatinIME
+  mCurClient=ClientState{6c12bf7 uid 10031 pid 2617} mCurSeq=42
+  mCurFocusedWindow=android.os.BinderProxy@a95f7a0 softInputMode=STATE_UNSPECIFIED|ADJUST_PAN|IS_FORWARD_NAVIGATION client=ClientState{6c12bf7 uid 10031 pid 2617}
+  mCurId=com.android.inputmethod.latin/.LatinIME mHaveConnect=true mBoundToMethod=true
+  mCurToken=android.os.Binder@7e2a146
+  mCurIntent=Intent { act=android.view.InputMethod cmp=com.android.inputmethod.latin/.LatinIME (has extras) }
+  mCurMethod=com.android.internal.view.IInputMethod$Stub$Proxy@c951e8a
+  mEnabledSession=SessionState{uid 10031 pid 2617 method c951e8a session 3883cfb channel ClientState{6c12bf7 uid 10031 pid 2617} (server)}
+  mImeWindowVis=
+  mShowRequested=false mShowExplicitlyRequested=false mShowForced=false mInputShown=false
+  mInFullscreenMode=false
+  mCurUserActionNotificationSequenceNumber=7
+  mSystemReady=true mInteractive=true
+  mSettingsObserver=SettingsObserver{mUserId=0 mRegistered=true mLastEnabled=org.zapime.android/.ZapInputMethodService:com.android.inputmethod.latin/.LatinIME}
+  mSwitchingController:
+    mSwitchingAwareRotationList:
+      rank=0 item=ImeSubtypeListItem{mImeName=Android Keyboard (AOSP) mSubtypeName=English (US) mSubtypeId=0 mIsSystemLocale=true mIsSystemLanguage=true}
+      rank=1 item=ImeSubtypeListItem{mImeName=闪电输入法 mSubtypeName=闪电 · 拼音 / English mSubtypeId=0 mIsSystemLocale=false mIsSystemLanguage=false}
+    mSwitchingUnawareRotationList:
+  mSettings:
+    mCurrentUserId=0
+    mCurrentProfileIds=[0]
+    mCopyOnWrite=false
+    mEnabledInputMethodsStrCache=org.zapime.android/.ZapInputMethodService:com.android.inputmethod.latin/.LatinIME
+  mStartInputHistory:
+   StartInput #24:
+    time=2026-11-08 08:34:57.866 (timestamp=62523) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=26
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #25:
+    time=2026-11-08 08:34:58.380 (timestamp=63037) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=27
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #26:
+    time=2026-11-08 08:34:58.831 (timestamp=63487) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=28
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #27:
+    time=2026-11-08 08:34:59.282 (timestamp=63939) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=29
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #28:
+    time=2026-11-08 08:34:59.736 (timestamp=64393) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=30
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #29:
+    time=2026-11-08 08:35:00.198 (timestamp=64854) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=31
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #30:
+    time=2026-11-08 08:35:00.917 (timestamp=65574) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=32
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #31:
+    time=2026-11-08 08:35:01.138 (timestamp=65794) reason=CHECK_FOCUS restarting=false
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=33
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x81 imeOptions=0x4000006 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #32:
+    time=2026-11-08 08:35:02.756 (timestamp=67412) reason=CHECK_FOCUS restarting=false
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=34
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #33:
+    time=2026-11-08 08:35:03.051 (timestamp=67707) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=35
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #34:
+    time=2026-11-08 08:35:15.784 (timestamp=80440) reason=CHECK_FOCUS restarting=false
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=36
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x81 imeOptions=0x4000006 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #35:
+    time=2026-11-08 08:35:16.830 (timestamp=81486) reason=CHECK_FOCUS restarting=false
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=37
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #36:
+    time=2026-11-08 08:35:17.075 (timestamp=81731) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=38
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x9000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #37:
+    time=2026-11-08 08:35:17.630 (timestamp=82287) reason=APP_CALLED_RESTART_INPUT_API restarting=true
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@805e585 [org.zapime.android.test] clientBindSeq=39
+    softInputMode=STATE_ALWAYS_VISIBLE|ADJUST_RESIZE|IS_FORWARD_NAVIGATION
+    inputType=0x1 imeOptions=0x8000005 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #38:
+    time=2026-11-08 08:35:18.823 (timestamp=83479) reason=WINDOW_FOCUS_GAIN restarting=false
+    imeToken=android.os.Binder@866bc65 [org.zapime.android/.ZapInputMethodService]
+    targetWin=android.os.BinderProxy@a95f7a0 [com.android.launcher3] clientBindSeq=40
+    softInputMode=STATE_UNSPECIFIED|ADJUST_PAN|IS_FORWARD_NAVIGATION
+    inputType=0x0 imeOptions=0x0 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+   StartInput #39:
+    time=2026-11-08 08:35:19.176 (timestamp=83833) reason=SESSION_CREATED_BY_IME restarting=false
+    imeToken=android.os.Binder@7e2a146 [com.android.inputmethod.latin/.LatinIME]
+    targetWin=android.os.BinderProxy@a95f7a0 [com.android.launcher3] clientBindSeq=42
+    softInputMode=STATE_UNSPECIFIED|ADJUST_PAN|IS_FORWARD_NAVIGATION
+    inputType=0x0 imeOptions=0x0 fieldId=0xffffffff fieldName=null actionId=0 actionLabel=null
+ 
+Input method client state for android.view.inputmethod.InputMethodManager@7c4215b:
+  mService=com.android.internal.view.IInputMethodManager$Stub$Proxy@80e1df8
+  mMainLooper=Looper (main, tid 2) {f482d1}
+  mIInputContext=ControlledInputConnectionWrapper{connection=android.view.inputmethod.BaseInputConnection@69d9136 finished=false mParentInputMethodManager.mActive=true}
+  mActive=true mRestartOnNextWindowFocus=true mBindSequence=42 mCurId=com.android.inputmethod.latin/.LatinIME
+  mFullscreenMode=false
+  mCurMethod=com.android.internal.view.IInputMethodSession$Stub$Proxy@9197837
+  mCurRootView=DecorView@b075a5[Launcher]
+  mServedView=DecorView@b075a5[Launcher]
+  mNextServedView=DecorView@b075a5[Launcher]
+  mServedConnecting=false
+  mCurrentTextBoxAttribute:
+    inputType=0x0 imeOptions=0x0 privateImeOptions=null
+    actionLabel=null actionId=0
+    initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0
+    hintText=null label=null
+    packageName=com.android.launcher3 fieldId=-1 fieldName=null
+    extras=null
+    hintLocales=null
+    contentMimeTypes=null
+  mServedInputConnectionWrapper=null
+  mCompletions=null
+  mCursorRect=Rect(0, 0 - 0, 0)
+  mCursorSelStart=0 mCursorSelEnd=0 mCursorCandStart=0 mCursorCandEnd=0
+  mNextUserActionNotificationSequenceNumber=7 mLastSentUserActionNotificationSequenceNumber=-1
+ 
+Input method service state for com.android.inputmethod.latin.LatinIME@706bafa:
+  mWindowCreated=false mWindowAdded=false
+  mWindowVisible=false mWindowWasVisible=false mInShowWindow=false
+  Configuration={1.0 310mcc260mnc [en_US] ldltr sw320dp w320dp h616dp 160dpi nrml long port finger -keyb/v/h tball/v winConfig={ mBounds=Rect(0, 0 - 0, 0) mAppBounds=Rect(0, 0 - 320, 640) mWindowingMode=fullscreen mActivityType=undefined} s.7}
+  mToken=android.os.BinderProxy@2523434
+  mInputBinding=InputBinding{android.os.BinderProxy@d20425d / uid 10031 / pid 2617}
+  mInputConnection=InputConnectionWrapper{idHash=#be2c7d2 mMissingMethods=}
+  mStartedInputConnection=null
+  mInputStarted=true mInputViewStarted=false mCandidatesViewStarted=false
+  mStartInputToken=android.os.BinderProxy@6dd40a3
+  mInputEditorInfo:
+    inputType=0x0 imeOptions=0x0 privateImeOptions=null
+    actionLabel=null actionId=0
+    initialSelStart=-1 initialSelEnd=-1 initialCapsMode=0x0
+    hintText=null label=null
+    packageName=com.android.launcher3 fieldId=-1 fieldName=null
+    extras=null
+    hintLocales=null
+    contentMimeTypes=null
+  mShowInputRequested=false mLastShowInputRequested=false mShowInputFlags=0x0
+  mCandidatesVisibility=4 mFullscreenApplied=false mIsFullscreen=false mExtractViewHidden=false
+  mExtractedText: null
+  mExtractedToken=0
+  mIsInputViewShown=false mStatusIcon=0
+Last computed insets:
+  contentTopInsets=0 visibleTopInsets=0 touchableInsets=0 touchableRegion=SkRegion()
+ mShouldClearInsetOfPreviousIme=false
+ mSettingsObserver=SettingsObserver{mShowImeWithHardKeyboard=0}
+LatinIME state :
+  VersionCode = 28
+  VersionName = 9
+  Keyboard mode = -1
+Current settings :
+   mSpacingAndPunctuations = mSortedSymbolsPrecededBySpace = [38, 40, 91, 123]
+   mSortedSymbolsFollowedBySpace = [33, 38, 41, 44, 46, 58, 59, 63, 93, 125]
+   mSortedWordConnectors = [39, 45]
+   mSortedWordSeparators = [9, 10, 32, 33, 34, 38, 40, 41, 42, 43, 44, 46, 47, 58, 59, 60, 61, 62, 63, 91, 93, 95, 123, 124, 125, 160]
+   mSuggestPuncList = PunctuationSuggestions:  words=[!, ?, \,, :, ;, ", (, ), ', -, /, @, _]
+   mSentenceSeparator = 46
+   mSentenceSeparatorAndSpace = . 
+   mCurrentLanguageHasSpaces = true
+   mUsesAmericanTypography = true
+   mUsesGermanRules = false
+   mDelayInMillisecondsToUpdateOldSuggestions = 300
+   mAutoCap = true
+   mVibrateOn = false
+   mSoundOn = false
+   mKeyPreviewPopupOn = true
+   mShowsVoiceInputKey = false
+   mIncludesOtherImesInLanguageSwitchList = true
+   mShowsLanguageSwitchKey = true
+   mUseContactsDict = true
+   mUsePersonalizedDicts = true
+   mUseDoubleSpacePeriod = false
+   mBlockPotentiallyOffensive = true
+   mBigramPredictionEnabled = true
+   mGestureInputEnabled = false
+   mGestureTrailEnabled = true
+   mGestureFloatingPreviewTextEnabled = true
+   mSlidingKeyInputPreviewEnabled = true
+   mKeyLongpressTimeout = 300
+   mLocale = en_US
+   mInputAttributes = InputAttributes: inputType=0x00000000 targetApp=null
+
+   mKeypressVibrationDuration = -1
+   mKeypressSoundVolume = -1.0
+   mKeyPreviewPopupDismissDelay = 70
+   mAutoCorrectEnabled = true
+   mAutoCorrectionThreshold = 0.185
+   mAutoCorrectionEnabledPerUserSettings = true
+   mSuggestionsEnabledPerUserSettings = true
+   mDisplayOrientation = 1
+   mAppWorkarounds = 
+   mIsInternal = false
+   mKeyPreviewShowUpDuration = 17
+   mKeyPreviewDismissDuration = 53
+   mKeyPreviewShowUpStartScaleX = 0.98
+   mKeyPreviewShowUpStartScaleY = 0.98
+   mKeyPreviewDismissEndScaleX = 0.94000006
+   mKeyPreviewDismissEndScaleY = 0.94000006
+

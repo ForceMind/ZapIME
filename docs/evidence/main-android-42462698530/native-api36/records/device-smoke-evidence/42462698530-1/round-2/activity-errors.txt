@@ -1,0 +1,2 @@
+--------- beginning of system
+11-08 08:43:00.825   642  1781 E ActivityManager: Unable to freeze binder for 5503: -11
