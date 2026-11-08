@@ -4,7 +4,7 @@
 
 #87候选workflow42459746934和#89候选42460384426均在API36系统IME失败；方法/host与API35成功不代填整轮。#87新事件环准确记录APPLY_PREEDIT→INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY→新APPLY_PREEDIT，原host连接未更换、focused/served为true；原framework history有RESET_NEW_CONFIGURATION。保留条件以selection_not_owned拒绝后，空初始化回复结束原组字，把原拼音留在正文，下一键开启新组字。具体哪个设置/配置触发者及失败时旧EditorInfo坐标仍未证实。
 
-#89出错前模型submitted/scored均0，真实种子已提交；GitHub compare核对其29文件未修改相关产品/模型实现。两份原始ZIP/固定源树/失败时服务与宿主记录/SHA已保留：[新事件环原件](evidence/api36-configuration-failure-20261108/README.md)及[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)。清理/真实服务退出成功不改输入FAILURE。
+#89出错前模型submitted/scored均0，真实种子已提交；GitHub compare核对其29文件未修改相关产品/模型实现。两份原始ZIP/固定源树/失败时服务与宿主记录/SHA已保留：[新事件环原件](evidence/api36-configuration-failure-42459746934/README.md)及[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)。清理/真实服务退出成功不改输入FAILURE。
 
 新的修复从#87另开分支fix/android-verified-configuration-restart：保留普通restart强保护，只在相同编辑器/连接及原owned折叠组字条件下用独立有界worker做新鲜有限状态验证，pending不写正文；超时/失效拒绝迟到。该产品修复仍在编码/测试，尚未提交或验收，不能把诊断或#91草稿实验称已修复。
 
