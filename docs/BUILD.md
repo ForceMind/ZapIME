@@ -11,6 +11,10 @@ cargo clippy --workspace --all-targets -- -D warnings
 
 工具链由 rust-toolchain.toml 固定。上游源码使用 Git submodule，首次必须初始化两个子模块（vendor/msime 与 vendor/voicekey），不用 develop 最新值替代锁定提交。GitHub 自动源码包和本项目源码 Alpha 附件都不含子模块内容；完整构建推荐上面的递归 clone。构建时可联网获取 Cargo 依赖和校验过的词库；运行时离线。所有生成内容放 target，不把资源缓存和开发密钥提交仓库。
 
+固定词库 `fetch_resources.py`、候选模型/头文件 `prepare_candidate_model.py` 和离线语音导入包 `build_voice_model.py` → `voice_probe.prepare()` 使用相同的构建下载重试边界：每个固定 HTTPS 资源最多从零尝试 3 次，只重试 HTTP 429/500/502/503/504 和在打开/读取响应时明确可分类的暂时网络错误。保持原 URL、长度、SHA256、默认 TLS 和许可检查；校验错误、其它 HTTP 状态、TLS 错误、本地文件错误及候选离线缓存缺失直接失败。有效缓存不连接网络。临时文件在每次失败后清理，原文件只在完整验证后原子替换。
+
+每个候选/语音资源的单调调度预算为 180 秒，词库每资源 360 秒；原 socket timeout 上限仍分别为 60/120 秒，退避 1/2 秒并尊重 `Retry-After`。连接前、每次公开流读取前后、发布前检查剩余预算。已经进入的 DNS、系统/阻塞 socket 调用及 urllib 内部重定向不能被这个同步封装硬终止，单次已阻塞读取可能超过剩余预算；CI 原作业/step 时限继续保留。它不是产品联网策略，也不证明上游 504 已恢复。原始反例和无联网回归见 [下载证据](evidence/build-download-retry-20261108/README.md)，本机检查命令为 `python3 -m unittest discover -s scripts -p 'test_build_download*.py' -v`。
+
 ## Android 开发包
 
 Linux/JDK 17、Android API 36、build-tools 35.0.0、NDK 28.2.13676358、zip、Rust Android target：

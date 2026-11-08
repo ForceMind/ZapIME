@@ -1,0 +1,95 @@
+test_candidate_504_then_valid_response_retains_exact_fixed_url (test_build_download_integrations.CallerRetryTests.test_candidate_504_then_valid_response_retains_exact_fixed_url) ... ERROR
+test_candidate_checksum_failure_and_offline_miss_never_retry (test_build_download_integrations.CallerRetryTests.test_candidate_checksum_failure_and_offline_miss_never_retry) ... ok
+test_candidate_final_network_failure_keeps_old_file_and_no_partials (test_build_download_integrations.CallerRetryTests.test_candidate_final_network_failure_keeps_old_file_and_no_partials) ... FAIL
+test_candidate_partial_response_is_discarded_before_same_get_restarts (test_build_download_integrations.CallerRetryTests.test_candidate_partial_response_is_discarded_before_same_get_restarts) ... ERROR
+test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy (test_build_download_integrations.CallerRetryTests.test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy) ... ERROR
+test_dictionary_integrity_error_is_single_get_and_preserves_previous_file (test_build_download_integrations.CallerRetryTests.test_dictionary_integrity_error_is_single_get_and_preserves_previous_file) ... ok
+test_offline_import_archive_504_then_success_checks_all_regular_members (test_build_download_integrations.CallerRetryTests.test_offline_import_archive_504_then_success_checks_all_regular_members) ... ERROR
+
+======================================================================
+ERROR: test_candidate_504_then_valid_response_retains_exact_fixed_url (test_build_download_integrations.CallerRetryTests.test_candidate_504_then_valid_response_retains_exact_fixed_url)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 78, in test_candidate_504_then_valid_response_retains_exact_fixed_url
+    candidate.download(row, target)
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/prepare_candidate_model.py", line 150, in download
+    with OPENER.open(spec["url"], timeout=60) as incoming:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1202, in _execute_mock_call
+    raise result
+urllib.error.HTTPError: HTTP Error 504: synthetic gateway
+
+======================================================================
+ERROR: test_candidate_partial_response_is_discarded_before_same_get_restarts (test_build_download_integrations.CallerRetryTests.test_candidate_partial_response_is_discarded_before_same_get_restarts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 90, in test_candidate_partial_response_is_discarded_before_same_get_restarts
+    candidate.download(spec(raw), target)
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/prepare_candidate_model.py", line 151, in download
+    publish(incoming, destination, spec)
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/prepare_candidate_model.py", line 126, in publish
+    while data := incoming.read(min(CHUNK, remaining + 1)):
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 46, in read
+    raise ConnectionResetError("synthetic interrupted response")
+ConnectionResetError: synthetic interrupted response
+
+======================================================================
+ERROR: test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy (test_build_download_integrations.CallerRetryTests.test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 151, in test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy
+    fetch_resources.fetch(root / "output")
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/fetch_resources.py", line 28, in fetch
+    with urllib.request.urlopen(entry["url"], timeout=120) as source, temp.open("wb") as dest:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1204, in _execute_mock_call
+    result = effect(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 147, in open_response
+    raise unavailable()
+urllib.error.HTTPError: HTTP Error 504: synthetic gateway
+
+======================================================================
+ERROR: test_offline_import_archive_504_then_success_checks_all_regular_members (test_build_download_integrations.CallerRetryTests.test_offline_import_archive_504_then_success_checks_all_regular_members)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 193, in test_offline_import_archive_504_then_success_checks_all_regular_members
+    voice_probe.prepare(model)
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/voice_probe.py", line 42, in prepare
+    with urllib.request.urlopen(LOCK["archive"]["url"], timeout=60) as response:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1139, in __call__
+    return self._mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1143, in _mock_call
+    return self._execute_mock_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/unittest/mock.py", line 1202, in _execute_mock_call
+    raise result
+urllib.error.HTTPError: HTTP Error 504: synthetic gateway
+
+======================================================================
+FAIL: test_candidate_final_network_failure_keeps_old_file_and_no_partials (test_build_download_integrations.CallerRetryTests.test_candidate_final_network_failure_keeps_old_file_and_no_partials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-download-retry/scripts/test_build_download_integrations.py", line 107, in test_candidate_final_network_failure_keeps_old_file_and_no_partials
+    self.assertEqual(network.call_count, 3)
+AssertionError: 1 != 3
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.005s
+
+FAILED (failures=1, errors=4)

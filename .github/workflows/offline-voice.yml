@@ -26,6 +26,7 @@ jobs:
           sudo apt-get install -y espeak-ng
       - name: Verify pinned model files and synthesize Mandarin fixture
         run: |
+          .venv-voice/bin/python -m unittest discover -s scripts -p 'test_build_download*.py' -v
           .venv-voice/bin/python -m unittest discover -s scripts -p test_voice_quality.py -v
           .venv-voice/bin/python scripts/voice_probe.py prepare
           .venv-voice/bin/python scripts/voice_probe.py synthesize

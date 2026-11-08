@@ -45,6 +45,7 @@ jobs:
         run: bash scripts/test_android_learning.sh
       - name: Offline candidate context, bounded worker and pinned model resources
         run: |
+          python3 -m unittest discover -s scripts -p 'test_build_download*.py' -v
           python3 -m unittest discover -s scripts -p 'test_prepare_candidate_model.py' -v
           bash scripts/test_android_candidates.sh
       - name: Voice dependency and model packaging boundaries
