@@ -1,0 +1,14 @@
+[
+  {
+    "path": "android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+    "bytes": 58758087,
+    "sha256": "357f0496f0b9a4990733e969c9e700cff90d6c2c65042c1f890a8fae1ad527c2",
+    "matches_same_job_build_log": true
+  },
+  {
+    "path": "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+    "bytes": 60069082,
+    "sha256": "a9bd0d13956bde8ee491813156e1e5ec7417807a1b55b3cfcb2518a9f24a87ad",
+    "matches_same_job_build_log": true
+  }
+]

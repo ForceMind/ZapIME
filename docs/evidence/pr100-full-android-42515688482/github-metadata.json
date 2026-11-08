@@ -1,0 +1,1483 @@
+{
+  "source_head": {
+    "sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "node_id": "C_kwDOVQdT8doAKDRjOTgwNTlkYzk1YzU2YmQ0NmNmNTY4ZWM5MTg5YjFiZGJmYWU1OTE",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "html_url": "https://github.com/ForceMind/ZapIME/commit/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "author": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:29Z"
+    },
+    "committer": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:29Z"
+    },
+    "tree": {
+      "sha": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/71972650824144dcb3c59952e541ff2ea26f6b9c"
+    },
+    "message": "feat(sync): preview bounded local record evidence without publishing restored data",
+    "parents": [
+      {
+        "sha": "3ac88124444dcf23e298c32b08de7f918bb121a1",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/3ac88124444dcf23e298c32b08de7f918bb121a1",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/3ac88124444dcf23e298c32b08de7f918bb121a1"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "actual_checkout": {
+    "sha": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "node_id": "C_kwDOVQdT8doAKGM1MGUzNzU5NjZjMzAyNTk4ZGNjMjNkYzJjYzAzMmUyYWUwN2NiNWM",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "html_url": "https://github.com/ForceMind/ZapIME/commit/c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "author": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:50Z"
+    },
+    "committer": {
+      "name": "GitHub",
+      "email": "noreply@github.com",
+      "date": "2026-11-08T19:33:50Z"
+    },
+    "tree": {
+      "sha": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/71972650824144dcb3c59952e541ff2ea26f6b9c"
+    },
+    "message": "Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+    "parents": [
+      {
+        "sha": "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+      }
+    ],
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq8M6eCRC1aQ7uu5UhlAAAaokQAJ/tHQGJ47SXQmcMek9W0wq5\nkl6ODa3bVvP+J7PRryZ7FSSIHSSa3XA98zwgrd2g881Wii7CD/jbkzyfGptmkh8H\nLqXBO/P1bNPTQuphS4jzVmtQS21LTS2vzfRx8+Zd+a3ygDL3lUpC3kqZEHrbYNZb\nYTMVzHe5pzTrlHM63ySeae1WC+7lStQzQwHmh95kwiHH8Gax5GueGhY4N2r9xd/H\novMMfyMRdesG4lzU/a9WX4iIWz8iPwNKNC8Szj0kYz9+86qDJoxcsQ8dRhCyfF5W\nBsg0Mgb8k+hFQvJcYRo1ysYCF2297AUiLOlUjMS3Num9jRL3MXcmCjLTD+QxFNGL\nWj19fbdmdwfKHHT0jxzua7YZPv/cFXL04QKKKZTCpsF9HbAPHaDlXFZoBpM/2Vmr\nedy7ACSZqBrbFminMVypp6NcgKu9vAUGyRUbHM75ZzZn57We+TjHKBl6LhOEmUFA\nb5ZjJ05wB0u7pIjWPvUzE6BZ0HHtuLOoGc/Rti8X6/fNK19nWVVnISsi5DgIUoLI\nQOvt+tnrWgQTNVzy5wKbGNTUJZgS75XltqVcjOM4lLMwALKbsX3mIXrNMjFTIl/z\nv29q34O6TQdp4FtAwIjQP/O6YTQrUDQ+YEuRwMTZMJqlDBlOPLEGaaVeQGpbBi8/\n6WQWnLQeLriz9OmZGNNx\n=PnTW\n-----END PGP SIGNATURE-----\n",
+      "payload": "tree 71972650824144dcb3c59952e541ff2ea26f6b9c\nparent d38e6ce954c5fae1af120bd3fd2739d7862a288d\nparent 4c98059dc95c56bd46cf568ec9189b1bdbfae591\nauthor ForceMind <88872598+ForceMind@users.noreply.github.com> 1794166430 -0800\ncommitter GitHub <noreply@github.com> 1794166430 -0800\n\nMerge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d\n",
+      "verified_at": "2026-11-08T19:33:51Z"
+    }
+  },
+  "run": {
+    "id": 42515688482,
+    "name": "Android native input acceptance",
+    "node_id": "WFR_kwLOVQdT8c8AAAAJ5iHsIg",
+    "head_branch": "feat/sync-existing-record-preview",
+    "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "path": ".github/workflows/android.yml",
+    "display_title": "feat(sync): preview bounded local evidence for existing records",
+    "run_number": 273,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "success",
+    "workflow_id": 392138455,
+    "check_suite_id": 115165322169,
+    "check_suite_node_id": "CS_kwDOVQdT8c8AAAAa0GNbuQ",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482",
+    "pull_requests": [],
+    "created_at": "2026-11-08T19:34:11Z",
+    "updated_at": "2026-11-08T19:58:05Z",
+    "actor": {
+      "login": "ForceMind",
+      "id": 88872598,
+      "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ForceMind",
+      "html_url": "https://github.com/ForceMind",
+      "followers_url": "https://api.github.com/users/ForceMind/followers",
+      "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+      "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+      "repos_url": "https://api.github.com/users/ForceMind/repos",
+      "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "run_attempt": 1,
+    "referenced_workflows": [],
+    "run_started_at": "2026-11-08T19:34:11Z",
+    "triggering_actor": {
+      "login": "ForceMind",
+      "id": 88872598,
+      "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+      "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/ForceMind",
+      "html_url": "https://github.com/ForceMind",
+      "followers_url": "https://api.github.com/users/ForceMind/followers",
+      "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+      "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+      "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+      "repos_url": "https://api.github.com/users/ForceMind/repos",
+      "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "jobs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482/jobs",
+    "logs_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482/logs",
+    "check_suite_url": "https://api.github.com/repos/ForceMind/ZapIME/check-suites/115165322169",
+    "artifacts_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482/artifacts",
+    "cancel_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482/cancel",
+    "rerun_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482/rerun",
+    "previous_attempt_url": null,
+    "workflow_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/workflows/392138455",
+    "head_commit": {
+      "id": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+      "tree_id": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "message": "feat(sync): preview bounded local record evidence without publishing restored data",
+      "timestamp": "2026-11-08T19:33:29Z",
+      "author": {
+        "name": "ForceMind",
+        "email": "88872598+ForceMind@users.noreply.github.com"
+      },
+      "committer": {
+        "name": "ForceMind",
+        "email": "88872598+ForceMind@users.noreply.github.com"
+      }
+    },
+    "repository": {
+      "id": 1426543601,
+      "node_id": "R_kgDOVQdT8Q",
+      "name": "ZapIME",
+      "full_name": "ForceMind/ZapIME",
+      "private": false,
+      "owner": {
+        "login": "ForceMind",
+        "id": 88872598,
+        "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/ForceMind",
+        "html_url": "https://github.com/ForceMind",
+        "followers_url": "https://api.github.com/users/ForceMind/followers",
+        "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+        "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+        "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+        "repos_url": "https://api.github.com/users/ForceMind/repos",
+        "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/ForceMind/ZapIME",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME",
+      "forks_url": "https://api.github.com/repos/ForceMind/ZapIME/forks",
+      "keys_url": "https://api.github.com/repos/ForceMind/ZapIME/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/ForceMind/ZapIME/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/ForceMind/ZapIME/teams",
+      "hooks_url": "https://api.github.com/repos/ForceMind/ZapIME/hooks",
+      "issue_events_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/ForceMind/ZapIME/events",
+      "assignees_url": "https://api.github.com/repos/ForceMind/ZapIME/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/ForceMind/ZapIME/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/ForceMind/ZapIME/tags",
+      "blobs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/ForceMind/ZapIME/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/ForceMind/ZapIME/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/ForceMind/ZapIME/languages",
+      "stargazers_url": "https://api.github.com/repos/ForceMind/ZapIME/stargazers",
+      "contributors_url": "https://api.github.com/repos/ForceMind/ZapIME/contributors",
+      "subscribers_url": "https://api.github.com/repos/ForceMind/ZapIME/subscribers",
+      "subscription_url": "https://api.github.com/repos/ForceMind/ZapIME/subscription",
+      "commits_url": "https://api.github.com/repos/ForceMind/ZapIME/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/ForceMind/ZapIME/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/ForceMind/ZapIME/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/ForceMind/ZapIME/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/ForceMind/ZapIME/merges",
+      "archive_url": "https://api.github.com/repos/ForceMind/ZapIME/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/ForceMind/ZapIME/downloads",
+      "issues_url": "https://api.github.com/repos/ForceMind/ZapIME/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/ForceMind/ZapIME/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/ForceMind/ZapIME/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/ForceMind/ZapIME/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/ForceMind/ZapIME/labels{/name}",
+      "releases_url": "https://api.github.com/repos/ForceMind/ZapIME/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/ForceMind/ZapIME/deployments"
+    },
+    "head_repository": {
+      "id": 1426543601,
+      "node_id": "R_kgDOVQdT8Q",
+      "name": "ZapIME",
+      "full_name": "ForceMind/ZapIME",
+      "private": false,
+      "owner": {
+        "login": "ForceMind",
+        "id": 88872598,
+        "node_id": "MDQ6VXNlcjg4ODcyNTk4",
+        "avatar_url": "https://avatars.githubusercontent.com/u/88872598?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/ForceMind",
+        "html_url": "https://github.com/ForceMind",
+        "followers_url": "https://api.github.com/users/ForceMind/followers",
+        "following_url": "https://api.github.com/users/ForceMind/following{/other_user}",
+        "gists_url": "https://api.github.com/users/ForceMind/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/ForceMind/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/ForceMind/subscriptions",
+        "organizations_url": "https://api.github.com/users/ForceMind/orgs",
+        "repos_url": "https://api.github.com/users/ForceMind/repos",
+        "events_url": "https://api.github.com/users/ForceMind/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/ForceMind/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "html_url": "https://github.com/ForceMind/ZapIME",
+      "description": null,
+      "fork": false,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME",
+      "forks_url": "https://api.github.com/repos/ForceMind/ZapIME/forks",
+      "keys_url": "https://api.github.com/repos/ForceMind/ZapIME/keys{/key_id}",
+      "collaborators_url": "https://api.github.com/repos/ForceMind/ZapIME/collaborators{/collaborator}",
+      "teams_url": "https://api.github.com/repos/ForceMind/ZapIME/teams",
+      "hooks_url": "https://api.github.com/repos/ForceMind/ZapIME/hooks",
+      "issue_events_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/events{/number}",
+      "events_url": "https://api.github.com/repos/ForceMind/ZapIME/events",
+      "assignees_url": "https://api.github.com/repos/ForceMind/ZapIME/assignees{/user}",
+      "branches_url": "https://api.github.com/repos/ForceMind/ZapIME/branches{/branch}",
+      "tags_url": "https://api.github.com/repos/ForceMind/ZapIME/tags",
+      "blobs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/blobs{/sha}",
+      "git_tags_url": "https://api.github.com/repos/ForceMind/ZapIME/git/tags{/sha}",
+      "git_refs_url": "https://api.github.com/repos/ForceMind/ZapIME/git/refs{/sha}",
+      "trees_url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees{/sha}",
+      "statuses_url": "https://api.github.com/repos/ForceMind/ZapIME/statuses/{sha}",
+      "languages_url": "https://api.github.com/repos/ForceMind/ZapIME/languages",
+      "stargazers_url": "https://api.github.com/repos/ForceMind/ZapIME/stargazers",
+      "contributors_url": "https://api.github.com/repos/ForceMind/ZapIME/contributors",
+      "subscribers_url": "https://api.github.com/repos/ForceMind/ZapIME/subscribers",
+      "subscription_url": "https://api.github.com/repos/ForceMind/ZapIME/subscription",
+      "commits_url": "https://api.github.com/repos/ForceMind/ZapIME/commits{/sha}",
+      "git_commits_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits{/sha}",
+      "comments_url": "https://api.github.com/repos/ForceMind/ZapIME/comments{/number}",
+      "issue_comment_url": "https://api.github.com/repos/ForceMind/ZapIME/issues/comments{/number}",
+      "contents_url": "https://api.github.com/repos/ForceMind/ZapIME/contents/{+path}",
+      "compare_url": "https://api.github.com/repos/ForceMind/ZapIME/compare/{base}...{head}",
+      "merges_url": "https://api.github.com/repos/ForceMind/ZapIME/merges",
+      "archive_url": "https://api.github.com/repos/ForceMind/ZapIME/{archive_format}{/ref}",
+      "downloads_url": "https://api.github.com/repos/ForceMind/ZapIME/downloads",
+      "issues_url": "https://api.github.com/repos/ForceMind/ZapIME/issues{/number}",
+      "pulls_url": "https://api.github.com/repos/ForceMind/ZapIME/pulls{/number}",
+      "milestones_url": "https://api.github.com/repos/ForceMind/ZapIME/milestones{/number}",
+      "notifications_url": "https://api.github.com/repos/ForceMind/ZapIME/notifications{?since,all,participating}",
+      "labels_url": "https://api.github.com/repos/ForceMind/ZapIME/labels{/name}",
+      "releases_url": "https://api.github.com/repos/ForceMind/ZapIME/releases{/id}",
+      "deployments_url": "https://api.github.com/repos/ForceMind/ZapIME/deployments"
+    }
+  },
+  "jobs": {
+    "total_count": 6,
+    "jobs": [
+      {
+        "id": 128838073964,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_1j-bA",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128838073964",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128838073964",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:34:17Z",
+        "started_at": "2026-11-08T19:35:16Z",
+        "completed_at": "2026-11-08T19:45:53Z",
+        "name": "Android development APK",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:35:17Z",
+            "completed_at": "2026-11-08T19:35:19Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:35:19Z",
+            "completed_at": "2026-11-08T19:35:32Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:35:32Z",
+            "completed_at": "2026-11-08T19:35:32Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:35:32Z",
+            "completed_at": "2026-11-08T19:35:39Z"
+          },
+          {
+            "name": "Run dtolnay/rust-toolchain@1.97.1",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:35:39Z",
+            "completed_at": "2026-11-08T19:35:51Z"
+          },
+          {
+            "name": "Run Swatinem/rust-cache@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:35:51Z",
+            "completed_at": "2026-11-08T19:35:56Z"
+          },
+          {
+            "name": "Run sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:35:56Z",
+            "completed_at": "2026-11-08T19:36:12Z"
+          },
+          {
+            "name": "Selection echo and composition ownership JVM regression",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:36:12Z",
+            "completed_at": "2026-11-08T19:36:13Z"
+          },
+          {
+            "name": "VoiceKey trusted catalog and model installer fault boundaries",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:36:13Z",
+            "completed_at": "2026-11-08T19:36:14Z"
+          },
+          {
+            "name": "Selected offline voice engine routing and independent model preparation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:36:14Z",
+            "completed_at": "2026-11-08T19:36:15Z"
+          },
+          {
+            "name": "English learning privacy and asynchronous lifecycle policy",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-11-08T19:36:15Z",
+            "completed_at": "2026-11-08T19:36:16Z"
+          },
+          {
+            "name": "Offline candidate context, bounded worker and pinned model resources",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-11-08T19:36:16Z",
+            "completed_at": "2026-11-08T19:36:19Z"
+          },
+          {
+            "name": "Voice dependency and model packaging boundaries",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-11-08T19:36:19Z",
+            "completed_at": "2026-11-08T19:36:19Z"
+          },
+          {
+            "name": "Exact-zero PCM result policy (host C++ unit, not JNI acceptance)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-11-08T19:36:19Z",
+            "completed_at": "2026-11-08T19:36:21Z"
+          },
+          {
+            "name": "Manual account transport against isolated loopback TLS",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-11-08T19:36:21Z",
+            "completed_at": "2026-11-08T19:36:39Z"
+          },
+          {
+            "name": "Manual sync bounded round ordering and cancellation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16,
+            "started_at": "2026-11-08T19:36:39Z",
+            "completed_at": "2026-11-08T19:36:39Z"
+          },
+          {
+            "name": "Encrypted backup document readback and stream fault boundaries",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17,
+            "started_at": "2026-11-08T19:36:39Z",
+            "completed_at": "2026-11-08T19:36:40Z"
+          },
+          {
+            "name": "Run bash scripts/build_android.sh arm64-v8a",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-11-08T19:36:40Z",
+            "completed_at": "2026-11-08T19:38:13Z"
+          },
+          {
+            "name": "Run bash scripts/build_android.sh x86_64",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-11-08T19:38:13Z",
+            "completed_at": "2026-11-08T19:39:34Z"
+          },
+          {
+            "name": "Run bash scripts/build_android_tests.sh",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-11-08T19:39:34Z",
+            "completed_at": "2026-11-08T19:39:38Z"
+          },
+          {
+            "name": "Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-11-08T19:39:38Z",
+            "completed_at": "2026-11-08T19:39:38Z"
+          },
+          {
+            "name": "Prepare synthetic voice fixture Python runtime",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-11-08T19:39:38Z",
+            "completed_at": "2026-11-08T19:39:44Z"
+          },
+          {
+            "name": "Prepare local synthetic speech tool",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-11-08T19:39:44Z",
+            "completed_at": "2026-11-08T19:39:53Z"
+          },
+          {
+            "name": "Build checksum-verified offline import model",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-11-08T19:39:53Z",
+            "completed_at": "2026-11-08T19:40:39Z"
+          },
+          {
+            "name": "Synthesize fixed Mandarin fixture",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-11-08T19:40:39Z",
+            "completed_at": "2026-11-08T19:40:39Z"
+          },
+          {
+            "name": "Build test-only APK with scoped-storage-safe synthetic assets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26,
+            "started_at": "2026-11-08T19:40:39Z",
+            "completed_at": "2026-11-08T19:40:49Z"
+          },
+          {
+            "name": "Enable KVM for native input acceptance",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-11-08T19:40:49Z",
+            "completed_at": "2026-11-08T19:40:49Z"
+          },
+          {
+            "name": "Android API 28 native keyboard smoke",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-11-08T19:40:49Z",
+            "completed_at": "2026-11-08T19:45:37Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-11-08T19:45:37Z",
+            "completed_at": "2026-11-08T19:45:45Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30,
+            "started_at": "2026-11-08T19:45:45Z",
+            "completed_at": "2026-11-08T19:45:50Z"
+          },
+          {
+            "name": "Post Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 57,
+            "started_at": "2026-11-08T19:45:50Z",
+            "completed_at": "2026-11-08T19:45:50Z"
+          },
+          {
+            "name": "Post Run Swatinem/rust-cache@v2",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 58,
+            "started_at": "2026-11-08T19:45:50Z",
+            "completed_at": "2026-11-08T19:45:50Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 59,
+            "started_at": "2026-11-08T19:45:50Z",
+            "completed_at": "2026-11-08T19:45:50Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 60,
+            "started_at": "2026-11-08T19:45:50Z",
+            "completed_at": "2026-11-08T19:45:51Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 61,
+            "started_at": "2026-11-08T19:45:51Z",
+            "completed_at": "2026-11-08T19:45:51Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128838073964",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052688,
+        "runner_name": "GitHub Actions 1000052688",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 128841047355,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_4ZdOw",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128841047355",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128841047355",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:45:53Z",
+        "started_at": "2026-11-08T19:49:26Z",
+        "completed_at": "2026-11-08T19:52:08Z",
+        "name": "VoiceKey-only real model API 28",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:49:27Z",
+            "completed_at": "2026-11-08T19:49:29Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:49:29Z",
+            "completed_at": "2026-11-08T19:49:31Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:49:31Z",
+            "completed_at": "2026-11-08T19:49:31Z"
+          },
+          {
+            "name": "Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:49:31Z",
+            "completed_at": "2026-11-08T19:49:31Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:49:31Z",
+            "completed_at": "2026-11-08T19:49:36Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:49:36Z",
+            "completed_at": "2026-11-08T19:49:43Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:49:43Z",
+            "completed_at": "2026-11-08T19:49:46Z"
+          },
+          {
+            "name": "Verify exact new product and harness inputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:49:46Z",
+            "completed_at": "2026-11-08T19:49:47Z"
+          },
+          {
+            "name": "Prepare fixed official model on runner without bundling or redistribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:49:47Z",
+            "completed_at": "2026-11-08T19:49:53Z"
+          },
+          {
+            "name": "Enable KVM on the dedicated fresh emulator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:49:53Z",
+            "completed_at": "2026-11-08T19:49:53Z"
+          },
+          {
+            "name": "Actual VoiceKey-only SAF, JNI, Editable and offline system IME lifecycle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-11-08T19:49:53Z",
+            "completed_at": "2026-11-08T19:52:04Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-11-08T19:52:04Z",
+            "completed_at": "2026-11-08T19:52:05Z"
+          },
+          {
+            "name": "Post Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-11-08T19:52:05Z",
+            "completed_at": "2026-11-08T19:52:05Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-11-08T19:52:05Z",
+            "completed_at": "2026-11-08T19:52:05Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-11-08T19:52:05Z",
+            "completed_at": "2026-11-08T19:52:06Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-11-08T19:52:06Z",
+            "completed_at": "2026-11-08T19:52:06Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128841047355",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052761,
+        "runner_name": "GitHub Actions 1000052761",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 128841047378,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_4ZdUg",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128841047378",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128841047378",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:45:53Z",
+        "started_at": "2026-11-08T19:47:50Z",
+        "completed_at": "2026-11-08T19:51:06Z",
+        "name": "VoiceKey-only real model API 36",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:47:51Z",
+            "completed_at": "2026-11-08T19:47:53Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:47:53Z",
+            "completed_at": "2026-11-08T19:47:55Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:47:55Z",
+            "completed_at": "2026-11-08T19:47:55Z"
+          },
+          {
+            "name": "Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:47:55Z",
+            "completed_at": "2026-11-08T19:47:55Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:47:55Z",
+            "completed_at": "2026-11-08T19:47:59Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:47:59Z",
+            "completed_at": "2026-11-08T19:48:05Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:48:05Z",
+            "completed_at": "2026-11-08T19:48:09Z"
+          },
+          {
+            "name": "Verify exact new product and harness inputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:48:09Z",
+            "completed_at": "2026-11-08T19:48:09Z"
+          },
+          {
+            "name": "Prepare fixed official model on runner without bundling or redistribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:48:09Z",
+            "completed_at": "2026-11-08T19:48:15Z"
+          },
+          {
+            "name": "Enable KVM on the dedicated fresh emulator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:48:15Z",
+            "completed_at": "2026-11-08T19:48:15Z"
+          },
+          {
+            "name": "Actual VoiceKey-only SAF, JNI, Editable and offline system IME lifecycle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-11-08T19:48:15Z",
+            "completed_at": "2026-11-08T19:51:02Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-11-08T19:51:02Z",
+            "completed_at": "2026-11-08T19:51:04Z"
+          },
+          {
+            "name": "Post Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-11-08T19:51:04Z",
+            "completed_at": "2026-11-08T19:51:04Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-11-08T19:51:04Z",
+            "completed_at": "2026-11-08T19:51:04Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-11-08T19:51:04Z",
+            "completed_at": "2026-11-08T19:51:04Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-11-08T19:51:04Z",
+            "completed_at": "2026-11-08T19:51:04Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128841047378",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052750,
+        "runner_name": "GitHub Actions 1000052750",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 128841047386,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_4ZdWg",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128841047386",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128841047386",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:45:53Z",
+        "started_at": "2026-11-08T19:50:52Z",
+        "completed_at": "2026-11-08T19:57:24Z",
+        "name": "Android API 35 native acceptance",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:50:53Z",
+            "completed_at": "2026-11-08T19:50:55Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:50:55Z",
+            "completed_at": "2026-11-08T19:50:57Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:50:57Z",
+            "completed_at": "2026-11-08T19:50:57Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:50:57Z",
+            "completed_at": "2026-11-08T19:51:08Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:51:08Z",
+            "completed_at": "2026-11-08T19:51:19Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:51:19Z",
+            "completed_at": "2026-11-08T19:51:26Z"
+          },
+          {
+            "name": "Verify exact development package inputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:51:26Z",
+            "completed_at": "2026-11-08T19:51:27Z"
+          },
+          {
+            "name": "Enable KVM on the dedicated modern emulator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:51:27Z",
+            "completed_at": "2026-11-08T19:51:27Z"
+          },
+          {
+            "name": "Actual modern Android keyboard and offline voice",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:51:27Z",
+            "completed_at": "2026-11-08T19:57:19Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:57:19Z",
+            "completed_at": "2026-11-08T19:57:21Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-11-08T19:57:21Z",
+            "completed_at": "2026-11-08T19:57:21Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-11-08T19:57:21Z",
+            "completed_at": "2026-11-08T19:57:22Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-11-08T19:57:22Z",
+            "completed_at": "2026-11-08T19:57:22Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128841047386",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052765,
+        "runner_name": "GitHub Actions 1000052765",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 128841047400,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_4ZdaA",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128841047400",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128841047400",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:45:53Z",
+        "started_at": "2026-11-08T19:51:08Z",
+        "completed_at": "2026-11-08T19:58:05Z",
+        "name": "Android API 36 native acceptance",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:51:09Z",
+            "completed_at": "2026-11-08T19:51:11Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:51:11Z",
+            "completed_at": "2026-11-08T19:51:13Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:51:13Z",
+            "completed_at": "2026-11-08T19:51:13Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:51:13Z",
+            "completed_at": "2026-11-08T19:51:29Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:51:29Z",
+            "completed_at": "2026-11-08T19:51:35Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:51:35Z",
+            "completed_at": "2026-11-08T19:51:38Z"
+          },
+          {
+            "name": "Verify exact development package inputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:51:38Z",
+            "completed_at": "2026-11-08T19:51:39Z"
+          },
+          {
+            "name": "Enable KVM on the dedicated modern emulator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:51:39Z",
+            "completed_at": "2026-11-08T19:51:39Z"
+          },
+          {
+            "name": "Actual modern Android keyboard and offline voice",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:51:39Z",
+            "completed_at": "2026-11-08T19:58:01Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:58:01Z",
+            "completed_at": "2026-11-08T19:58:02Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-11-08T19:58:02Z",
+            "completed_at": "2026-11-08T19:58:02Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-11-08T19:58:02Z",
+            "completed_at": "2026-11-08T19:58:02Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-11-08T19:58:02Z",
+            "completed_at": "2026-11-08T19:58:02Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128841047400",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052768,
+        "runner_name": "GitHub Actions 1000052768",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 128841047438,
+        "run_id": 42515688482,
+        "workflow_name": "Android native input acceptance",
+        "head_branch": "feat/sync-existing-record-preview",
+        "run_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/runs/42515688482",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOVQdT8c8AAAAd_4Zdjg",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/jobs/128841047438",
+        "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42515688482/job/128841047438",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-11-08T19:45:53Z",
+        "started_at": "2026-11-08T19:52:49Z",
+        "completed_at": "2026-11-08T19:55:59Z",
+        "name": "VoiceKey-only real model API 35",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-11-08T19:52:50Z",
+            "completed_at": "2026-11-08T19:52:52Z"
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-11-08T19:52:52Z",
+            "completed_at": "2026-11-08T19:52:54Z"
+          },
+          {
+            "name": "Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-11-08T19:52:54Z",
+            "completed_at": "2026-11-08T19:52:54Z"
+          },
+          {
+            "name": "Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-11-08T19:52:54Z",
+            "completed_at": "2026-11-08T19:52:54Z"
+          },
+          {
+            "name": "Run android-actions/setup-android@v3",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-11-08T19:52:54Z",
+            "completed_at": "2026-11-08T19:52:58Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-11-08T19:52:58Z",
+            "completed_at": "2026-11-08T19:53:05Z"
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-11-08T19:53:05Z",
+            "completed_at": "2026-11-08T19:53:08Z"
+          },
+          {
+            "name": "Verify exact new product and harness inputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-11-08T19:53:08Z",
+            "completed_at": "2026-11-08T19:53:09Z"
+          },
+          {
+            "name": "Prepare fixed official model on runner without bundling or redistribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-11-08T19:53:09Z",
+            "completed_at": "2026-11-08T19:53:13Z"
+          },
+          {
+            "name": "Enable KVM on the dedicated fresh emulator",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-11-08T19:53:13Z",
+            "completed_at": "2026-11-08T19:53:14Z"
+          },
+          {
+            "name": "Actual VoiceKey-only SAF, JNI, Editable and offline system IME lifecycle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-11-08T19:53:14Z",
+            "completed_at": "2026-11-08T19:55:55Z"
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-11-08T19:55:55Z",
+            "completed_at": "2026-11-08T19:55:56Z"
+          },
+          {
+            "name": "Post Run actions/setup-python@v6",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-11-08T19:55:56Z",
+            "completed_at": "2026-11-08T19:55:56Z"
+          },
+          {
+            "name": "Post Run actions/setup-java@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-11-08T19:55:56Z",
+            "completed_at": "2026-11-08T19:55:57Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-11-08T19:55:57Z",
+            "completed_at": "2026-11-08T19:55:57Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 25,
+            "started_at": "2026-11-08T19:55:57Z",
+            "completed_at": "2026-11-08T19:55:57Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/ForceMind/ZapIME/check-runs/128841047438",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000052773,
+        "runner_name": "GitHub Actions 1000052773",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      }
+    ]
+  },
+  "artifacts": {
+    "artifacts": [
+      {
+        "id": 13631997783,
+        "name": "ZapIME-Android-API-36-acceptance",
+        "size_in_bytes": 2419193,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631997783",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631997783/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:58:02Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:58:02Z",
+        "digest": "sha256:e4285e117369e278661473beb1daf787bc25444099dcfb37136e13bd21a87376",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631941170,
+        "name": "ZapIME-Android-test-harness",
+        "size_in_bytes": 129728848,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631941170",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631941170/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:45:50Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:45:50Z",
+        "digest": "sha256:80c0f10c0585c025774308a201e9d0eea1be8b0205d4539747576de0b2556d77",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631863222,
+        "name": "ZapIME-Android-API-35-acceptance",
+        "size_in_bytes": 2417942,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631863222",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631863222/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:57:21Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:57:21Z",
+        "digest": "sha256:8656d7e552caaf8881cdba4cf4bcb0311202c2df65ab404a84aa23aee4313241",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631852420,
+        "name": "ZapIME-VoiceKey-only-API-28",
+        "size_in_bytes": 185148,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631852420",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631852420/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:52:05Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:52:05Z",
+        "digest": "sha256:93f7f16eff833c4531de6420e648b0172ff9c1db87ac853f2a1cdb5322f9d127",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631747923,
+        "name": "ZapIME-VoiceKey-only-API-36",
+        "size_in_bytes": 238655,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631747923",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631747923/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:51:03Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:51:03Z",
+        "digest": "sha256:e42f181f65b19c2c1bd3f730f7e1e28f5e80a4c42fbf444c3c75ef471ee24d6e",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631732190,
+        "name": "ZapIME-Android-development",
+        "size_in_bytes": 248729970,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631732190",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631732190/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:45:45Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:45:45Z",
+        "digest": "sha256:5f523a8c25a340183f4cea2791ffe38e9b3472458482d64c06934ffc9a42671f",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      },
+      {
+        "id": 13631529441,
+        "name": "ZapIME-VoiceKey-only-API-35",
+        "size_in_bytes": 239993,
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631529441",
+        "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631529441/zip",
+        "expired": false,
+        "created_at": "2026-11-08T19:55:56Z",
+        "expires_at": "2027-02-06T19:34:12Z",
+        "updated_at": "2026-11-08T19:55:56Z",
+        "digest": "sha256:36fab662a1b20016a3e17baf72c54b5161d70b83b3227f41f3315fbcdf5be3ed",
+        "workflow_run": {
+          "id": 42515688482,
+          "repository_id": 1426543601,
+          "head_repository_id": 1426543601,
+          "head_branch": "feat/sync-existing-record-preview",
+          "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+        }
+      }
+    ]
+  }
+}

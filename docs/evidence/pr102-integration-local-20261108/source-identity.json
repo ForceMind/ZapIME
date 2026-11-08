@@ -1,0 +1,14 @@
+{
+  "head": "52f812bc269f35ba636997b9c4664c2b83a22154",
+  "base": "92176cfa5755e91935f3017d82b53a0e4d8f656c",
+  "merged": false,
+  "draft": true,
+  "state": "open",
+  "url": "https://github.com/ForceMind/ZapIME/pull/102",
+  "tree": "2c73b5abe92214ad97eb0104f11911fa6a9d3cb6",
+  "parents": [
+    "92176cfa5755e91935f3017d82b53a0e4d8f656c",
+    "af8aff12b26c2cd86c28a5b41ed837e66143840d"
+  ],
+  "local_equivalent": "fe4b9bef51ade9539d814ca9860211d423e542b0"
+}

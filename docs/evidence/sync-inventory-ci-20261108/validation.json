@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-11-08T19:43:30.788944+00:00",
+  "head": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+  "actual_checkout": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+  "tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "attempt": 1,
+  "manual_retries": 0,
+  "scope": "Shared Rust read-only inventory only, not restored-record upload/JNI/UI/HTTP or devices.",
+  "checks": [
+    {
+      "job_id": 128838076128,
+      "file": "source-prepare.log.gz",
+      "raw_bytes": 87021,
+      "raw_sha256": "c874cb38c8ccc8675713de58ddcd52df5994ae44c4146a5adbe4519f75ffb693",
+      "gzip_bytes": 20443,
+      "gzip_sha256": "9d16ed0fd830b4e7ca8adb87466b173167a0a8421ef5c52385362e6c288cca16",
+      "rust_totals": [
+        143,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rust_result_groups": 27,
+      "checkout_sha_observed": true,
+      "new_inventory_tests_observed": 9,
+      "bom_preserved": true,
+      "crlf_count": 0,
+      "fmt_command": "cargo +1.97.1 fmt --all --check",
+      "strict_clippy_command": "cargo +1.97.1 clippy --workspace --all-targets --locked -- -D warnings"
+    },
+    {
+      "job_id": 128838057774,
+      "file": "shared-windows.log.gz",
+      "raw_bytes": 86316,
+      "raw_sha256": "3034c4d171636c6a49724bf3e30cd24c4756023d9e6d92b9f33c974b5ca28ed4",
+      "gzip_bytes": 20799,
+      "gzip_sha256": "defb1633bfc3a17448fb752320731c1fa386cf73ecb71d9760a220ca042e5a86",
+      "rust_totals": [
+        140,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rust_result_groups": 27,
+      "checkout_sha_observed": true,
+      "new_inventory_tests_observed": 9,
+      "bom_preserved": true,
+      "crlf_count": 1046,
+      "fmt_command": "cargo fmt --all --check",
+      "strict_clippy_command": "cargo clippy --workspace --all-targets --locked -- -D warnings"
+    },
+    {
+      "job_id": 128838058051,
+      "file": "shared-macos.log.gz",
+      "raw_bytes": 93132,
+      "raw_sha256": "a1e9dfb4bfe5d121ae112a83ba32ed32e97b3b1740f4d859edfd7e001c08d7e9",
+      "gzip_bytes": 20736,
+      "gzip_sha256": "6d0e7c92b110e4bea6b1ebffdd3c37c488dfe5f20bb2f43db61fd8e8bab776c4",
+      "rust_totals": [
+        143,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rust_result_groups": 27,
+      "checkout_sha_observed": true,
+      "new_inventory_tests_observed": 9,
+      "bom_preserved": true,
+      "crlf_count": 0,
+      "fmt_command": "cargo fmt --all --check",
+      "strict_clippy_command": "cargo clippy --workspace --all-targets --locked -- -D warnings"
+    },
+    {
+      "job_id": 128838070043,
+      "file": "shared-ubuntu.log.gz",
+      "raw_bytes": 84869,
+      "raw_sha256": "7382ff53b79c783c47ff036d6f6b16371f760ef9e716d336f81730f66845e347",
+      "gzip_bytes": 20274,
+      "gzip_sha256": "2351408f4b0300cd6a5cf7df4b1fd5ec0cee409f716cecad449a5c75e6a687fe",
+      "rust_totals": [
+        143,
+        0,
+        0,
+        0,
+        0
+      ],
+      "rust_result_groups": 27,
+      "checkout_sha_observed": true,
+      "new_inventory_tests_observed": 9,
+      "bom_preserved": true,
+      "crlf_count": 0,
+      "fmt_command": "cargo fmt --all --check",
+      "strict_clippy_command": "cargo clippy --workspace --all-targets --locked -- -D warnings"
+    }
+  ],
+  "source_publish": "SKIPPED by PR condition",
+  "apple_native": "in_progress in captured job metadata; whole shared workflow not claimed success",
+  "service": "initializing in captured metadata, no database transaction pass claim",
+  "tests_count_note": "Windows140 vs Unix143 reflects 3 pre-existing Unix-only tests not compiled on Windows, not ignored. New9 names observed in all four jobs. Counts are per-job execution, not separate unique tests across platforms.",
+  "artifacts_downloaded": false
+}

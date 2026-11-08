@@ -6,23 +6,21 @@
 
 本版更新近期交付优先级，不取消原有四端输入、数据归属、同步和恢复目标。原始完整规划按原文件字节保留在 [2026-10-20 基线计划](DEVELOPMENT_PLAN_BASELINE_20261020.md)。工程实施同时遵循 [AGENTS.md](../AGENTS.md)、[架构](ARCHITECTURE.md)、[技术决策](DECISIONS.md)及新增 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。事实进度以 [STATUS](STATUS.md) 和对应提交证据为准；本文件中的目标不是已实现功能。
 
-## 当前执行接续（2026-11-08 UTC 审计）
+## 当前执行接续（2026-11-08 UTC 固定证据）
 
-Issue #77 先补共享层只读的同步证据分页，保留ID/修订/墓碑、当前完整快照flags与完整根绑定检查；该切片没有首次上传、JNI/UI或HTTP。后续显式确认/先拉取/冲突与墓碑/可恢复stage仍独立完成，不把pending=0或untracked当上传证明。见[同步预览契约](SYNC_INVENTORY.md)。
+本次基线 main `af8aff12b26c2cd86c28a5b41ed837e66143840d` / tree `71972650824144dcb3c59952e541ff2ea26f6b9c` 已合并 #100 同步证据预览。固定head4c98059/checkoutc50e375同tree的Source42515690560已验30项发布回归、143项根Rust、fmt/严格Clippy/精确prepare；Shared Windows140、macOS/Ubuntu各143及新增9项通过；Service42515700598真实强制PG16/S3、Go race29测试+1fuzz-seed/0SKIP、HTTP/撤销/安装/灾备均通过。[CI原件](evidence/sync-inventory-ci-20261108/README.md)。
 
-新增独立构建健壮性切片：固定HTTPS资源最多3次顶层尝试（含首次）、协作预算和每轮暂存清理，完整性/TLS/文件错误不重试；28项新增回归及原检查通过，已接持久CI。先以新固定源码确认构建结果，网络仍失败时不把原生SKIP当成功。产品运行时行为不变。
+Issue77仍open：共享预览只读、有界并核完整材料绑定，保留墓碑/pending/本机操作与已知服务修订，不创建操作、改冻结字节、移动cursor或发HTTP，无JNI/UI接缝；恢复存量记录的完整首次发布、显式授权/先拉取/冲突和可恢复stage仍待实现，untracked或pending0不当上传证明。[契约](SYNC_INVENTORY.md)。
 
-本次固定 main 为 `3241c811d9b97fcd85b63489bc0ca5065379c43b`（#85/#90/#94/#97/#98已合并）；以后接续仍核实时 GitHub。发布脚本 #85 已合并，30 项故障回归和对应源码/根 workspace 门禁通过。缓存 fill 容量 #90 已合并，实际服务 `42460687991` 的 Go race 30 个顶层组（含 fuzz-seed）、0 SKIP、强制 PostgreSQL/HTTP、S3、安装/灾备全部通过；#25 已关闭为被取代，未合并旧研究。
+- PR96固定9b801ff947486f5418e9ddc84a88941d1cf3eda6、checkout436b267cbbc5885ecdf58a7515ef0323fbb6f5e8均tree3995757340519d1b21fc5dfb3b2b89367673d087。完整Android42513949678 attempt1为6/6 SUCCESS，focused42513949694为8/8 SUCCESS，原报告按同源验证器复验；分别见[完整](evidence/resumed-full-android-9b801ff-20261108/README.md)和[focused](evidence/focused-native-9b801ff-20261108/README.md)。
+- 候选42513949719整体FAILURE：host/build及API28/36系统IME成功，API36的4个新方法仅独立unattached Editable证明；API35在SDK image解压前失败，AVD/suite未执行。配置API35实验则已真实触发同编辑器两次restart，第二次fresh_superseded退役pending使组字目标失败；原classification=not_executed字节不改，不能解释成旧callback0未执行。设置已恢复、无新空初始化finish且正文保留。[候选/配置原件](evidence/resumed-native-9b801ff-20261108/README.md)。
+- main/#100旧输入代码tree719另有新API36真实失败：候选42515687138的14方法PASS，系统IME第10键touch_pinyin_1/key_committed_unexpected_text失败，starts3/restart1/selection_not_owned及framework配置重置仅为线索，不足以定唯一根因。8workflow7SUCCESS/1FAIL，full42515688482六作业成功且[原报告已严格复验](evidence/pr100-full-android-42515688482/README.md)；清理PASS不改输入FAIL。[原件](evidence/pr100-candidate-api36-failure-20261108/README.md)。
+- 后续PR102固定远端52f812bc269f35ba636997b9c4664c2b83a22154/本机fe4b9bef51ade9539d814ca9860211d423e542b0同tree2c73b5abe92214ad97eb0104f11911fa6a9d3cb6，root本机130 Android Python、pending10、根Rust143/27组及fmt/严格Clippy通过；首次未初始化固定submodule的Rust NOT_RUN_FAILURE原件保留。[本机整合原件](evidence/pr102-integration-local-20261108/README.md)。没有最终真实系统CI通过结果，保持待验，9b普通6/6和focused8/8不代填。优先完成配置连续性、候选三API、方法/全量与清理门禁，保留所有原失败，不弱化断言。
+- #85发布创建/回读、#90缓存fill容量、#94三API SAF导航、#97容器保真ZIP、#98构建受限重试已合并；#25被90替代关闭，旧研究不合并。源码Alpha标签/026b固定源/公开附件不动。旧None/tar/504/SAF/组字失败保留，不重复已完成切片。
+- C1原34条与新增64条先冻结的合成集、两版ORT及全部错误保留；9b host已再次复验三份质量报告/native/JNI/oracle。新增集基础38/64、上下文50/64、缺失5/上下文名次退步1分别归因，不称用户准确率，不把独立模型/编译成功等同系统IME或ARM。
+- 无手机继续可执行工程，再按[S25总单](S25_ACCEPTANCE_CHECKLIST.md)集中验收自然语音、长输入、冷/热与RSS/能耗/隐私。macOS12/Windows40系统激活/profile失败、正式签名/可恢复升级、VoiceKey分发条款及候选来源差异保持独立未完成。
 
-- 原源码 Alpha `v0.1.0-alpha.1` 仍固定 `026bfb8` 与公开附件；已有实现不重建，标签不移动。旧发布源码 `42441322518` 的最终 FAILURE 与原件保留，不再称其为后续 main 的最新结果。main `5a0dc562` 的 Android `42462698530` attempt1已6/6 SUCCESS并严格复验，原报告/SHA保留，不代填新组字修复。
-- SAF #86 API35/36 各 57 项恢复门禁通过，API28 实际导航失败且零文件触摸。#94 改为严格 roots 子树导航，保留一次真实文件触摸及全部恢复身份/字节/清理断言；本机检查和审查通过；固定head7c2ab398的focused42463933420八作业及三API各57项实际通过，#94已合并，另保留独立全量build504失败。
-- #87/#89 的新 API36 系统组字失败已保留，配置重启→保留拒绝→重建→空初始化 finish 的失效链已定位。独立新鲜状态验证修复已实现并通过本机检查/审查；#91 旧实验为观察者 callback=0 的 NOT_EXECUTED，新初始化及产品修复正在同源码整合。#95 工具入口仅改测试夹具；整合草稿#96首轮build/host下载504导致三API/新方法/配置实验未执行，source打包拒绝未检查tar.gz待保真转换，不视为通过；不以诊断、编译或后续成功宣称全部间歇问题解决。
-- C1 原 34 条与新增 64 条合成 v3 均保留冻结预期/指标；两版 ORT 真实主机评测已完成。新增集基础 38/64、上下文 50/64，候选缺失 5、上下文名次退步 1 及全部伤害不删除。这不是用户准确率，继续分别归因缺失、重排、九键、补全、个人规则和上下文边界；#89 host 成功不能覆盖同 workflow 的 API36 IME 失败。
-- 无需手机的工程继续推进；一次集中 [S25 验收](S25_ACCEPTANCE_CHECKLIST.md)和 ARM 资源、自然语音、正式签名/可恢复升级分别待验。macOS #12、Windows #40 保留未通过的系统验收草稿，配对/冲突/历史密钥及公开分发条款仍按原计划推进。
-
-以下阶段为持续目标，完成情况以 [STATUS](STATUS.md)固定源码证据和最新 CI 为准，不由计划文字推定通过。
-
-#96当前固定94b/tree78的真实SourceAlpha已通过，保真ZIP修正完成；candidate/full新下载经受限尝试仍504，三API/新方法/配置实验无执行证据，保持草稿。下一步依赖获取恢复后从该栈完成同源码验收；不重复已合并发布/缓存/SAF/构建重试，也不把SKIP算通过。
+以下阶段为持续目标，精确完成情况以[STATUS](STATUS.md)固定源码和实际CI为准，不由计划文字推定通过。
 
 ## 1. 产品目标与最新决定
 

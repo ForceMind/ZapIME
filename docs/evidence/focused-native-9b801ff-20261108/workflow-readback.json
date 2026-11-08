@@ -1,0 +1,1080 @@
+{
+  "scope": "Normalized public GitHub API payload fields, not HTTP-byte capture",
+  "run": {
+    "id": 42513949694,
+    "name": "VoiceKey Android model acceptance (focused)",
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+    "run_attempt": 1,
+    "created_at": "2026-11-08T19:13:30Z",
+    "updated_at": "2026-11-08T19:39:26Z",
+    "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/42513949694"
+  },
+  "jobs": [
+    {
+      "id": 128832759253,
+      "name": "Signed x86_64 product and model-free harnesses",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:19:04Z",
+      "completed_at": "2026-11-08T19:23:11Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:05Z",
+          "completed_at": "2026-11-08T19:19:07Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:07Z",
+          "completed_at": "2026-11-08T19:19:21Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:21Z",
+          "completed_at": "2026-11-08T19:19:21Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:21Z",
+          "completed_at": "2026-11-08T19:19:21Z"
+        },
+        {
+          "number": 5,
+          "name": "Content-free recovery provider trace and strict report boundaries",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:21Z",
+          "completed_at": "2026-11-08T19:19:22Z"
+        },
+        {
+          "number": 6,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:22Z",
+          "completed_at": "2026-11-08T19:19:29Z"
+        },
+        {
+          "number": 7,
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:29Z",
+          "completed_at": "2026-11-08T19:19:39Z"
+        },
+        {
+          "number": 8,
+          "name": "Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:39Z",
+          "completed_at": "2026-11-08T19:19:43Z"
+        },
+        {
+          "number": 9,
+          "name": "Install pinned Android build platform and toolchains",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:19:43Z",
+          "completed_at": "2026-11-08T19:20:03Z"
+        },
+        {
+          "number": 10,
+          "name": "Build original product with unchanged JNI, license and APK gates",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:20:03Z",
+          "completed_at": "2026-11-08T19:22:33Z"
+        },
+        {
+          "number": 11,
+          "name": "Build independent editor host harness",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:22:33Z",
+          "completed_at": "2026-11-08T19:22:37Z"
+        },
+        {
+          "number": 12,
+          "name": "Prepare fixed synthetic fixture runtime",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:22:37Z",
+          "completed_at": "2026-11-08T19:22:54Z"
+        },
+        {
+          "number": 13,
+          "name": "Build VoiceKey-only synthetic harness without downloading X-ASR weights",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:22:54Z",
+          "completed_at": "2026-11-08T19:23:03Z"
+        },
+        {
+          "number": 14,
+          "name": "Verify signed, aligned model-free inputs and record hashes",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:03Z",
+          "completed_at": "2026-11-08T19:23:04Z"
+        },
+        {
+          "number": 15,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:04Z",
+          "completed_at": "2026-11-08T19:23:07Z"
+        },
+        {
+          "number": 16,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:07Z",
+          "completed_at": "2026-11-08T19:23:08Z"
+        },
+        {
+          "number": 29,
+          "name": "Post Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:08Z",
+          "completed_at": "2026-11-08T19:23:08Z"
+        },
+        {
+          "number": 30,
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:08Z",
+          "completed_at": "2026-11-08T19:23:08Z"
+        },
+        {
+          "number": 31,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:08Z",
+          "completed_at": "2026-11-08T19:23:09Z"
+        },
+        {
+          "number": 32,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:09Z",
+          "completed_at": "2026-11-08T19:23:09Z"
+        },
+        {
+          "number": 33,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:23:09Z",
+          "completed_at": "2026-11-08T19:23:09Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278706,
+      "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:28:54Z",
+      "completed_at": "2026-11-08T19:31:32Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:54Z",
+          "completed_at": "2026-11-08T19:28:57Z"
+        },
+        {
+          "number": 2,
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:57Z",
+          "completed_at": "2026-11-08T19:29:13Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:13Z",
+          "completed_at": "2026-11-08T19:29:15Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:15Z",
+          "completed_at": "2026-11-08T19:29:16Z"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:16Z",
+          "completed_at": "2026-11-08T19:29:16Z"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/setup-go@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:16Z",
+          "completed_at": "2026-11-08T19:29:26Z"
+        },
+        {
+          "number": 7,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:26Z",
+          "completed_at": "2026-11-08T19:29:34Z"
+        },
+        {
+          "number": 8,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:34Z",
+          "completed_at": "2026-11-08T19:29:36Z"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:36Z",
+          "completed_at": "2026-11-08T19:29:37Z"
+        },
+        {
+          "number": 10,
+          "name": "Install pinned tools for compiled APK trust and signature gates",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:37Z",
+          "completed_at": "2026-11-08T19:29:38Z"
+        },
+        {
+          "number": 11,
+          "name": "Verify original product inputs and host-only isolation guards",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:38Z",
+          "completed_at": "2026-11-08T19:29:41Z"
+        },
+        {
+          "number": 12,
+          "name": "Build original Go service for isolated real-server acceptance",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:29:41Z",
+          "completed_at": "2026-11-08T19:30:05Z"
+        },
+        {
+          "number": 13,
+          "name": "Enable KVM only on this fresh GitHub runner",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:05Z",
+          "completed_at": "2026-11-08T19:30:05Z"
+        },
+        {
+          "number": 14,
+          "name": "Actual default-platform TLS and AEAD on disposable API28 AOSP",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:05Z",
+          "completed_at": "2026-11-08T19:31:26Z"
+        },
+        {
+          "number": 15,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:26Z",
+          "completed_at": "2026-11-08T19:31:28Z"
+        },
+        {
+          "number": 26,
+          "name": "Post Run actions/setup-go@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:28Z",
+          "completed_at": "2026-11-08T19:31:28Z"
+        },
+        {
+          "number": 27,
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:28Z",
+          "completed_at": "2026-11-08T19:31:28Z"
+        },
+        {
+          "number": 28,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:28Z",
+          "completed_at": "2026-11-08T19:31:28Z"
+        },
+        {
+          "number": 29,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:28Z",
+          "completed_at": "2026-11-08T19:31:29Z"
+        },
+        {
+          "number": 30,
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:29Z",
+          "completed_at": "2026-11-08T19:31:29Z"
+        },
+        {
+          "number": 31,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:29Z",
+          "completed_at": "2026-11-08T19:31:29Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278737,
+      "name": "Local sync preparation API 36",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:31:03Z",
+      "completed_at": "2026-11-08T19:33:50Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:04Z",
+          "completed_at": "2026-11-08T19:31:05Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:05Z",
+          "completed_at": "2026-11-08T19:31:07Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:07Z",
+          "completed_at": "2026-11-08T19:31:07Z"
+        },
+        {
+          "number": 4,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:07Z",
+          "completed_at": "2026-11-08T19:31:14Z"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:14Z",
+          "completed_at": "2026-11-08T19:31:15Z"
+        },
+        {
+          "number": 6,
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:15Z",
+          "completed_at": "2026-11-08T19:31:16Z"
+        },
+        {
+          "number": 7,
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:16Z",
+          "completed_at": "2026-11-08T19:31:16Z"
+        },
+        {
+          "number": 8,
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:16Z",
+          "completed_at": "2026-11-08T19:33:47Z"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:47Z",
+          "completed_at": "2026-11-08T19:33:48Z"
+        },
+        {
+          "number": 17,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:48Z",
+          "completed_at": "2026-11-08T19:33:48Z"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:48Z",
+          "completed_at": "2026-11-08T19:33:48Z"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:48Z",
+          "completed_at": "2026-11-08T19:33:48Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278738,
+      "name": "Focused VoiceKey-only API 36",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:30:05Z",
+      "completed_at": "2026-11-08T19:33:15Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:06Z",
+          "completed_at": "2026-11-08T19:30:08Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:08Z",
+          "completed_at": "2026-11-08T19:30:10Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:10Z",
+          "completed_at": "2026-11-08T19:30:10Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:10Z",
+          "completed_at": "2026-11-08T19:30:10Z"
+        },
+        {
+          "number": 5,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:10Z",
+          "completed_at": "2026-11-08T19:30:14Z"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:14Z",
+          "completed_at": "2026-11-08T19:30:16Z"
+        },
+        {
+          "number": 7,
+          "name": "Verify exact product and model-free harness inputs",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:16Z",
+          "completed_at": "2026-11-08T19:30:16Z"
+        },
+        {
+          "number": 8,
+          "name": "Prepare fixed official VoiceKey model only on the isolated runner",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:16Z",
+          "completed_at": "2026-11-08T19:30:21Z"
+        },
+        {
+          "number": 9,
+          "name": "Enable KVM on the fresh dedicated CI emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:21Z",
+          "completed_at": "2026-11-08T19:30:21Z"
+        },
+        {
+          "number": 10,
+          "name": "Actual offline VoiceKey SAF, JNI, Editable and system IME lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:30:21Z",
+          "completed_at": "2026-11-08T19:33:12Z"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:12Z",
+          "completed_at": "2026-11-08T19:33:13Z"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:13Z",
+          "completed_at": "2026-11-08T19:33:13Z"
+        },
+        {
+          "number": 21,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:13Z",
+          "completed_at": "2026-11-08T19:33:13Z"
+        },
+        {
+          "number": 22,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:13Z",
+          "completed_at": "2026-11-08T19:33:14Z"
+        },
+        {
+          "number": 23,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:14Z",
+          "completed_at": "2026-11-08T19:33:14Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278741,
+      "name": "Focused VoiceKey-only API 35",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:28:35Z",
+      "completed_at": "2026-11-08T19:31:49Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:36Z",
+          "completed_at": "2026-11-08T19:28:37Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:37Z",
+          "completed_at": "2026-11-08T19:28:39Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:39Z",
+          "completed_at": "2026-11-08T19:28:39Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:39Z",
+          "completed_at": "2026-11-08T19:28:39Z"
+        },
+        {
+          "number": 5,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:39Z",
+          "completed_at": "2026-11-08T19:28:48Z"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:48Z",
+          "completed_at": "2026-11-08T19:28:49Z"
+        },
+        {
+          "number": 7,
+          "name": "Verify exact product and model-free harness inputs",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:49Z",
+          "completed_at": "2026-11-08T19:28:49Z"
+        },
+        {
+          "number": 8,
+          "name": "Prepare fixed official VoiceKey model only on the isolated runner",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:49Z",
+          "completed_at": "2026-11-08T19:28:53Z"
+        },
+        {
+          "number": 9,
+          "name": "Enable KVM on the fresh dedicated CI emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:53Z",
+          "completed_at": "2026-11-08T19:28:53Z"
+        },
+        {
+          "number": 10,
+          "name": "Actual offline VoiceKey SAF, JNI, Editable and system IME lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:28:53Z",
+          "completed_at": "2026-11-08T19:31:46Z"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:46Z",
+          "completed_at": "2026-11-08T19:31:47Z"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:47Z",
+          "completed_at": "2026-11-08T19:31:47Z"
+        },
+        {
+          "number": 21,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:47Z",
+          "completed_at": "2026-11-08T19:31:47Z"
+        },
+        {
+          "number": 22,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:47Z",
+          "completed_at": "2026-11-08T19:31:47Z"
+        },
+        {
+          "number": 23,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:31:47Z",
+          "completed_at": "2026-11-08T19:31:47Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278781,
+      "name": "Focused VoiceKey-only API 28",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:34:15Z",
+      "completed_at": "2026-11-08T19:37:28Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:16Z",
+          "completed_at": "2026-11-08T19:34:18Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:18Z",
+          "completed_at": "2026-11-08T19:34:20Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:20Z",
+          "completed_at": "2026-11-08T19:34:20Z"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:20Z",
+          "completed_at": "2026-11-08T19:34:20Z"
+        },
+        {
+          "number": 5,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:20Z",
+          "completed_at": "2026-11-08T19:34:28Z"
+        },
+        {
+          "number": 6,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:28Z",
+          "completed_at": "2026-11-08T19:34:45Z"
+        },
+        {
+          "number": 7,
+          "name": "Verify exact product and model-free harness inputs",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:45Z",
+          "completed_at": "2026-11-08T19:34:46Z"
+        },
+        {
+          "number": 8,
+          "name": "Prepare fixed official VoiceKey model only on the isolated runner",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:46Z",
+          "completed_at": "2026-11-08T19:34:51Z"
+        },
+        {
+          "number": 9,
+          "name": "Enable KVM on the fresh dedicated CI emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:51Z",
+          "completed_at": "2026-11-08T19:34:51Z"
+        },
+        {
+          "number": 10,
+          "name": "Actual offline VoiceKey SAF, JNI, Editable and system IME lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:34:51Z",
+          "completed_at": "2026-11-08T19:37:25Z"
+        },
+        {
+          "number": 11,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:25Z",
+          "completed_at": "2026-11-08T19:37:26Z"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:26Z",
+          "completed_at": "2026-11-08T19:37:26Z"
+        },
+        {
+          "number": 21,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:26Z",
+          "completed_at": "2026-11-08T19:37:26Z"
+        },
+        {
+          "number": 22,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:26Z",
+          "completed_at": "2026-11-08T19:37:26Z"
+        },
+        {
+          "number": 23,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:26Z",
+          "completed_at": "2026-11-08T19:37:26Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278791,
+      "name": "Local sync preparation API 35",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:33:17Z",
+      "completed_at": "2026-11-08T19:35:39Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:18Z",
+          "completed_at": "2026-11-08T19:33:20Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:20Z",
+          "completed_at": "2026-11-08T19:33:22Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:22Z",
+          "completed_at": "2026-11-08T19:33:22Z"
+        },
+        {
+          "number": 4,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:22Z",
+          "completed_at": "2026-11-08T19:33:28Z"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:28Z",
+          "completed_at": "2026-11-08T19:33:30Z"
+        },
+        {
+          "number": 6,
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:30Z",
+          "completed_at": "2026-11-08T19:33:30Z"
+        },
+        {
+          "number": 7,
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:30Z",
+          "completed_at": "2026-11-08T19:33:30Z"
+        },
+        {
+          "number": 8,
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:33:30Z",
+          "completed_at": "2026-11-08T19:35:36Z"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:35:36Z",
+          "completed_at": "2026-11-08T19:35:37Z"
+        },
+        {
+          "number": 17,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:35:37Z",
+          "completed_at": "2026-11-08T19:35:37Z"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:35:37Z",
+          "completed_at": "2026-11-08T19:35:37Z"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:35:37Z",
+          "completed_at": "2026-11-08T19:35:37Z"
+        }
+      ]
+    },
+    {
+      "id": 128835278926,
+      "name": "Local sync preparation API 28",
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-08T19:37:38Z",
+      "completed_at": "2026-11-08T19:39:25Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:39Z",
+          "completed_at": "2026-11-08T19:37:41Z"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:41Z",
+          "completed_at": "2026-11-08T19:37:43Z"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:43Z",
+          "completed_at": "2026-11-08T19:37:43Z"
+        },
+        {
+          "number": 4,
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:43Z",
+          "completed_at": "2026-11-08T19:37:50Z"
+        },
+        {
+          "number": 5,
+          "name": "Run actions/download-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:50Z",
+          "completed_at": "2026-11-08T19:37:52Z"
+        },
+        {
+          "number": 6,
+          "name": "Verify unchanged product APK gates and model-free preparation harness",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:52Z",
+          "completed_at": "2026-11-08T19:37:52Z"
+        },
+        {
+          "number": 7,
+          "name": "Enable KVM only on fresh dedicated emulator",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:52Z",
+          "completed_at": "2026-11-08T19:37:52Z"
+        },
+        {
+          "number": 8,
+          "name": "Offline stateless JNI, Keystore and recovery lifecycle",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:37:52Z",
+          "completed_at": "2026-11-08T19:39:22Z"
+        },
+        {
+          "number": 9,
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:39:22Z",
+          "completed_at": "2026-11-08T19:39:23Z"
+        },
+        {
+          "number": 17,
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:39:23Z",
+          "completed_at": "2026-11-08T19:39:23Z"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:39:23Z",
+          "completed_at": "2026-11-08T19:39:23Z"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "started_at": "2026-11-08T19:39:23Z",
+          "completed_at": "2026-11-08T19:39:24Z"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "recorded_at_utc": "2026-11-08T19:48:50.525723+00:00",
+  "original_zip_archives": [
+    {
+      "artifact_id": 13631885152,
+      "name": "ZapIME-VoiceKey-focused-API-28-metadata",
+      "file": "13631885152-original.zip",
+      "bytes": 186145,
+      "sha256": "6c946cc6de6afeb86678e1bf17444cf44c7e72727dd5ce560e2b6e93f214b031",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13631690338,
+      "name": "ZapIME-local-sync-preparation-API-36",
+      "file": "13631690338-original.zip",
+      "bytes": 31431,
+      "sha256": "b4145d72d12785a0868274b8c1f732b4dbd7f077e7f1226bedd0f27983ef1a45",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13631535809,
+      "name": "ZapIME-VoiceKey-focused-API-35-metadata",
+      "file": "13631535809-original.zip",
+      "bytes": 181957,
+      "sha256": "c56fac98677cfdad45045a73ae64e1bb97d152d73279893a4c682435706b286c",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13631520701,
+      "name": "ZapIME-local-sync-preparation-API-35",
+      "file": "13631520701-original.zip",
+      "bytes": 31480,
+      "sha256": "27039cffb3523f2936af9217531e0ecbe4cd94e0f7a11ac69ca7210c6e2cfe2f",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13631355773,
+      "name": "ZapIME-actual-Android-HTTPS-API28",
+      "file": "13631355773-original.zip",
+      "bytes": 10288,
+      "sha256": "8f3e23b14c1d9f496c2a8755b85e129bd8ac603da24c5526ba69c8272b7c8238",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13630959695,
+      "name": "ZapIME-local-sync-preparation-API-28",
+      "file": "13630959695-original.zip",
+      "bytes": 22693,
+      "sha256": "8d8d2a10ea85045a489f1aaff9b6425bd9fba83d57db0467e05c733d2bb63d34",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13630829504,
+      "name": "ZapIME-VoiceKey-focused-API-36-metadata",
+      "file": "13630829504-original.zip",
+      "bytes": 238778,
+      "sha256": "506fbed5a2dfd27e628a85d1ea7f2ff2dd66ff5befffd8a250abbc3b33e83161",
+      "downloaded_and_byte_verified": true
+    },
+    {
+      "artifact_id": 13630758047,
+      "name": "ZapIME-VoiceKey-focused-build-metadata",
+      "file": "13630758047-original.zip",
+      "bytes": 668,
+      "sha256": "ce8a2e705728d46443448d4d70757f06f767a5936633fca52c970f33033e13d4",
+      "downloaded_and_byte_verified": true
+    }
+  ],
+  "excluded_input_payload": {
+    "artifact_id": 13630523776,
+    "bytes": 59906378,
+    "sha256": "621faee42871eeca56f1207c787f627e7122c64a737b3310e56304a3a631309a",
+    "downloaded": false,
+    "reason": "APK/PCM/model-related input payload is not required for report replay and is not uploaded"
+  },
+  "no_retry": true
+}

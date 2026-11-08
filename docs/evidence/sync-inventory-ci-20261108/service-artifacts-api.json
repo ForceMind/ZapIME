@@ -1,0 +1,23 @@
+{
+  "artifacts": [
+    {
+      "id": 13631598038,
+      "name": "ZapIME-sync-service-tests",
+      "size_in_bytes": 1790,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631598038",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631598038/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:48:25Z",
+      "expires_at": "2027-02-06T19:34:28Z",
+      "updated_at": "2026-11-08T19:48:25Z",
+      "digest": "sha256:a9932fafd6a5551a5b84d665f82cd148d2a0065d029965ea81d5de43d9cab9f9",
+      "workflow_run": {
+        "id": 42515700598,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "feat/sync-existing-record-preview",
+        "head_sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+      }
+    }
+  ]
+}

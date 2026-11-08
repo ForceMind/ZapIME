@@ -1,0 +1,158 @@
+{
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "actual_checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "run": 42513949694,
+  "attempt": 1,
+  "voicekey": {
+    "28": {
+      "strict_model_cases": 14,
+      "strict_commit_cases": 23,
+      "strict_boundary_cases": 5,
+      "watchdog_passed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true,
+      "uid_rules_removed": true,
+      "raw_fixture_wave_replayed_locally": false,
+      "limitation": "Prepared waveform payload not downloaded or reconstructed here. CI executed verify_fixture_report; report fingerprints replayed, not independent PCM replay."
+    },
+    "35": {
+      "strict_model_cases": 14,
+      "strict_commit_cases": 23,
+      "strict_boundary_cases": 5,
+      "watchdog_passed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true,
+      "uid_rules_removed": true,
+      "raw_fixture_wave_replayed_locally": false,
+      "limitation": "Prepared waveform payload not downloaded or reconstructed here. CI executed verify_fixture_report; report fingerprints replayed, not independent PCM replay."
+    },
+    "36": {
+      "strict_model_cases": 14,
+      "strict_commit_cases": 23,
+      "strict_boundary_cases": 5,
+      "watchdog_passed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true,
+      "uid_rules_removed": true,
+      "raw_fixture_wave_replayed_locally": false,
+      "limitation": "Prepared waveform payload not downloaded or reconstructed here. CI executed verify_fixture_report; report fingerprints replayed, not independent PCM replay."
+    }
+  },
+  "sync_preparation": {
+    "28": {
+      "strict_reports": [
+        {
+          "file": "sync-preparation-report.json",
+          "cases": 11
+        },
+        {
+          "file": "sync-preparation-ui-report.json",
+          "cases": 10
+        },
+        {
+          "file": "sync-key-registration-report.json",
+          "cases": 14
+        },
+        {
+          "file": "sync-transfer-report.json",
+          "cases": 12
+        },
+        {
+          "file": "sync-pages-ui-report.json",
+          "cases": 10
+        }
+      ],
+      "total_cases": 57,
+      "real_saf_export_open_restore_identity": true,
+      "provider_document_and_secret_ui_cleanup": true,
+      "uid_rules_removed": true,
+      "limitation": "Local preparation/registration/transfer/pages synthetic probes; not account-wide synchronization or phone custody."
+    },
+    "35": {
+      "strict_reports": [
+        {
+          "file": "sync-preparation-report.json",
+          "cases": 11
+        },
+        {
+          "file": "sync-preparation-ui-report.json",
+          "cases": 10
+        },
+        {
+          "file": "sync-key-registration-report.json",
+          "cases": 14
+        },
+        {
+          "file": "sync-transfer-report.json",
+          "cases": 12
+        },
+        {
+          "file": "sync-pages-ui-report.json",
+          "cases": 10
+        }
+      ],
+      "total_cases": 57,
+      "real_saf_export_open_restore_identity": true,
+      "provider_document_and_secret_ui_cleanup": true,
+      "uid_rules_removed": true,
+      "limitation": "Local preparation/registration/transfer/pages synthetic probes; not account-wide synchronization or phone custody."
+    },
+    "36": {
+      "strict_reports": [
+        {
+          "file": "sync-preparation-report.json",
+          "cases": 11
+        },
+        {
+          "file": "sync-preparation-ui-report.json",
+          "cases": 10
+        },
+        {
+          "file": "sync-key-registration-report.json",
+          "cases": 14
+        },
+        {
+          "file": "sync-transfer-report.json",
+          "cases": 12
+        },
+        {
+          "file": "sync-pages-ui-report.json",
+          "cases": 10
+        }
+      ],
+      "total_cases": 57,
+      "real_saf_export_open_restore_identity": true,
+      "provider_document_and_secret_ui_cleanup": true,
+      "uid_rules_removed": true,
+      "limitation": "Local preparation/registration/transfer/pages synthetic probes; not account-wide synchronization or phone custody."
+    }
+  },
+  "https28": {
+    "strict_phases": [
+      {
+        "phase": "before",
+        "cases": 2,
+        "tls": "TLS_REJECTED"
+      },
+      {
+        "phase": "roundtrip",
+        "cases": 10,
+        "tls": "PASS_FIXTURE_CA"
+      },
+      {
+        "phase": "after",
+        "cases": 2,
+        "tls": "TLS_REJECTED"
+      }
+    ],
+    "total_cases": 14,
+    "fixture_real_go_postgresql_exchange": true,
+    "bad_hostname_http_requests": 0,
+    "public_ca_fingerprints_only": true,
+    "ca_and_uid_rules_and_packages_removed": true,
+    "compiled_apk_sha_matches_build_metadata": true,
+    "baseline_entries": 137,
+    "limitation": "One protected temporary API28 AOSP emulator/system CA and isolated Go/PostgreSQL; not two phones/public CA/R2/pairing/production."
+  }
+}

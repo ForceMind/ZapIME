@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3550,
+      "sha256": "74c9e746f7676cf76a2805cd0f316c27ba711c6113162fdb97138e45e96a0e0f"
+    },
+    {
+      "path": "apk-member-verification.json",
+      "bytes": 431,
+      "sha256": "ee44ea2cf16f96eb0ea55d9aa0563aa2e73753096a4b39586b528aa905f27920"
+    },
+    {
+      "path": "archive-manifest.json",
+      "bytes": 4190,
+      "sha256": "2a51f5e6c8a682a400ff294aa4a01c18e3d7789a4c0c97f181e2016304d528f8"
+    },
+    {
+      "path": "archive-members.json",
+      "bytes": 88179,
+      "sha256": "3b418e7108a6183d5c55818f207f7368c0e9837aebf12ce65630bcc1bb65287e"
+    },
+    {
+      "path": "development-safe-reports.zip",
+      "bytes": 2135749,
+      "sha256": "1c7d32f62d75c0839c1f52d4e32892735204c9c83c335d40d32d567132223e65"
+    },
+    {
+      "path": "full-api35-safe-reports.zip",
+      "bytes": 2211684,
+      "sha256": "6857c5a1210e0ae3f76b8ac5367ed3c1dfa8c840696708d8a75e4e522e6098fd"
+    },
+    {
+      "path": "full-api36-safe-reports.zip",
+      "bytes": 2208973,
+      "sha256": "a01fa57e197185c4f841c4aa33a56da4269fb0500d165de2f675f75dd6fdf018"
+    },
+    {
+      "path": "full-voicekey-api28-original.zip",
+      "bytes": 191060,
+      "sha256": "1a0d945693bb430238e74a9cc0fb351778ccd9f0a1e7d5fb7bbddf9ec39b3e8a"
+    },
+    {
+      "path": "full-voicekey-api35-original.zip",
+      "bytes": 186038,
+      "sha256": "fc6b797463c279689e5149ed3b2a97d690cab83397023f903aa88d350cc26ebd"
+    },
+    {
+      "path": "full-voicekey-api36-original.zip",
+      "bytes": 238518,
+      "sha256": "722b617a3ea139133b0a82cf44032d58bc618f44327a92ca5d45a7090b3b64d5"
+    },
+    {
+      "path": "producer-job.log.gz",
+      "bytes": 60684,
+      "sha256": "27ccb445162048875b8a583e231d1632207c5fb8c6a4e19a410f8449e7d0ba0a"
+    },
+    {
+      "path": "source-identity.json",
+      "bytes": 359,
+      "sha256": "3da8e2db0c0375acd4ea76abb7fc9be484ed118389e6ba3d448b5084e072da32"
+    },
+    {
+      "path": "strict-validation.json",
+      "bytes": 2867,
+      "sha256": "ec9cb00a3e201feacee50daa466dd8f4bdcf8f5fdc7c70b07f489f9ead80e6bf"
+    },
+    {
+      "path": "workflow-artifacts.json",
+      "bytes": 5893,
+      "sha256": "0a962e7ae4fb54f79384c85db61246bc88403246f173f5dd18b16c3950127659"
+    },
+    {
+      "path": "workflow-jobs.json",
+      "bytes": 36167,
+      "sha256": "4f8d75e1113dda31bdccd0f73c237eb976e1ed13b7c95dbb8a1e896cf652bf04"
+    },
+    {
+      "path": "workflow-run.json",
+      "bytes": 13944,
+      "sha256": "3f221253ed164ad6bdfa8761500f5b81ef2d25a760805421a10598be671d99a9"
+    }
+  ]
+}

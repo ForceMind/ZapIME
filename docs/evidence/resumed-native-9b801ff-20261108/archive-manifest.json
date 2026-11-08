@@ -1,0 +1,58 @@
+{
+  "recorded_at_utc": "2026-11-08T19:36:18.056609+00:00",
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "candidate_run": 42513949719,
+  "attempt": 1,
+  "archives": [
+    {
+      "file": "build-metadata-original.zip",
+      "artifact_id": 13630637192,
+      "bytes": 720,
+      "sha256": "995efdef10f481a1e582315b05d77240cb6df13730ea05efa8389842f734da2b",
+      "original_zip_byte_verified": true
+    },
+    {
+      "file": "host-original.zip",
+      "artifact_id": 13631012269,
+      "bytes": 42835,
+      "sha256": "046b89fa765266424f535ca56e9e1d37b2e630853c61907e699173a4fbda9cf6",
+      "original_zip_byte_verified": true
+    },
+    {
+      "file": "api28-original.zip",
+      "artifact_id": 13631023166,
+      "bytes": 99036,
+      "sha256": "19af2b57e3bd95f3235cf38c4ce8e639b4f0ae789a82f620476a15b940ad47ff",
+      "original_zip_byte_verified": true
+    },
+    {
+      "file": "api36-original.zip",
+      "artifact_id": 13631345760,
+      "bytes": 108962,
+      "sha256": "a11385a738baed717d5a5cce4a0f70db137b5d90c95744b00cc953b39a36a76e",
+      "original_zip_byte_verified": true
+    },
+    {
+      "file": "configuration-api35-original.zip",
+      "artifact_id": 13630788817,
+      "bytes": 78131,
+      "sha256": "de156273b65c2c89e7f402a56a3c7ead0bd6ddd9edd252bdf629f78f5e1adbdc",
+      "original_zip_byte_verified": true
+    }
+  ],
+  "api35_decoded_log": {
+    "job_id": 128835023489,
+    "bytes": 186100,
+    "sha256": "698d83314af2d5c6c4d605202c87bcfcfdd624f21f8781e77d758d59319466cc",
+    "result": "FAILURE at SDK image preparation; method/system IME NOT_RUN; no report artifact"
+  },
+  "ci_retried": false,
+  "large_input_artifact_excluded": {
+    "id": 13630836573,
+    "bytes": 118198981,
+    "sha256": "d1cbdac0d62c8386a1d216f0251ce78325a84171cd1a2e32894d171866d565ad",
+    "reason": "Contains APK/model payload; API metadata retained only"
+  },
+  "other_workflows": "Snapshot only. Full common APK and selected focused jobs success; other downstream jobs still queued/running at capture. Source and service are metadata-only success observations, not report replay."
+}

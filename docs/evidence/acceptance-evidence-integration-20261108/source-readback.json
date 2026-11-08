@@ -1,0 +1,36 @@
+{
+  "scope": "Authenticated read-only Git API commit/tree identity check; no native rerun",
+  "commits": [
+    {
+      "commit": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+      "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+      "parents": [
+        "94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8",
+        "d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      ]
+    },
+    {
+      "commit": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+      "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+      "parents": [
+        "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      ]
+    },
+    {
+      "commit": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+      "tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "parents": [
+        "3ac88124444dcf23e298c32b08de7f918bb121a1"
+      ]
+    },
+    {
+      "commit": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+      "tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "parents": [
+        "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+      ]
+    }
+  ]
+}

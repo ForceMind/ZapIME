@@ -1,0 +1,27 @@
+{
+  "source_commit": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "status": "BUILT",
+  "inputs": [
+    {
+      "path": "target/android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+      "bytes": 60069082,
+      "sha256": "cd529d4c75aa0532f58dfbb7d9687023aa770a4842a0998288b330bf91698169"
+    },
+    {
+      "path": "target/android-tests/ZapIME-tests.apk",
+      "bytes": 61940,
+      "sha256": "1789bee8d06d883d0c0090120e058451cc0624edfc93d44e9bd5c961a534d3cf"
+    },
+    {
+      "path": "target/android-voice-tests/ZapIME-voice-tests.apk",
+      "bytes": 430724,
+      "sha256": "635df17c62e9c81d83ad3ed9299f4b19e85cfabbd8d0d594630257ec5d6de96c"
+    },
+    {
+      "path": "target/voice-probe/synthetic.wav",
+      "bytes": 251024,
+      "sha256": "b845eb40da997926414653cb955355f1bf77e01f2457c9a0555a0b5248666aaa"
+    }
+  ],
+  "scope": "Signed x86_64 development APK and synthetic harnesses only; no X-ASR/VoiceKey model weights or emulator/phone acceptance."
+}

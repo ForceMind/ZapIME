@@ -1,0 +1,63 @@
+{
+  "source_head": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+  "source_tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "actual_checkout": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+  "candidate_run": 42515687138,
+  "api36_job": 128839612956,
+  "attempt": 1,
+  "artifacts": [
+    {
+      "id": 13630769427,
+      "file": "api36-original.zip",
+      "bytes": 118125,
+      "sha256": "98708089005ccb03c2aa3f199df6cb0b4099e52af9b25542704001e3f0fbef5d",
+      "original": true
+    },
+    {
+      "id": 13630908456,
+      "file": "build-original.zip",
+      "bytes": 722,
+      "sha256": "c6f9acc22a160312bb029bc197d24b7f86e0323571fdd973c69f9366a5d7bcdd",
+      "original": true
+    }
+  ],
+  "decoded_job_log": {
+    "bytes": 207142,
+    "sha256": "51453a684749e80301a5ea251ffc496160a91b1e3c41a7187562b0bf9d6e6432"
+  },
+  "method_strict": {
+    "passed": true,
+    "cases": 14
+  },
+  "system_ime_strict": {
+    "accepted": false,
+    "rejection": "Missing system-IME evidence: passed",
+    "first_acceptance_failure": "key_committed_unexpected_text",
+    "stage": "touch_pinyin_1",
+    "physical_keys": 10,
+    "editor_units": 7,
+    "committed_units": 6,
+    "composing": true,
+    "focused": true,
+    "served": true
+  },
+  "failure_cleanup": {
+    "system_keyboard_restored": true,
+    "service_exited": true,
+    "settings_restored": true,
+    "uid_removed": true,
+    "initial_final_data_clear": true
+  },
+  "observed_service": {
+    "starts": 3,
+    "restarts": 1,
+    "decision": "selection_not_owned",
+    "model_submitted": 1,
+    "model_scored": 0,
+    "fixed_trace_ring_available": false
+  },
+  "framework_configuration_signal_observed": true,
+  "unique_root_cause_proven": false,
+  "ci_retried": false,
+  "scope": "PR100 API36 actual input failure; distinct from PR96 API35 SDK installation failure. Full Android six-job success is metadata here, reports separately replayed. No phone/ARM/formal release acceptance."
+}

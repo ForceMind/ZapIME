@@ -1,0 +1,102 @@
+{
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "run_id": 42513949678,
+  "attempt": 1,
+  "workflow_success_jobs": 6,
+  "archives": [
+    {
+      "artifact_id": 13630044933,
+      "original_file": "development-original.zip",
+      "original_bytes": 248760081,
+      "original_sha256": "fd27951165ec178de6fc509ee97617b7a66ae8776dc3f37742e607d307268faa",
+      "original_download_verified": true,
+      "tracked_file": "development-safe-reports.zip",
+      "tracked_bytes": 2135749,
+      "tracked_sha256": "1c7d32f62d75c0839c1f52d4e32892735204c9c83c335d40d32d567132223e65",
+      "safe_report_files": 91,
+      "original_zip_retained_in_git": false,
+      "excluded_payload_paths": [
+        "android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+        "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+        "voice-android/synthetic.pcm",
+        "ZapIME-XASR-model.zip"
+      ]
+    },
+    {
+      "artifact_id": 13631831060,
+      "original_file": "full-api35-original.zip",
+      "original_bytes": 2422101,
+      "original_sha256": "df7e3a1cefccb6cfec42d306cf0c05e9f06ff2d37690d027bd31298c98cc32b8",
+      "original_download_verified": true,
+      "tracked_file": "full-api35-safe-reports.zip",
+      "tracked_bytes": 2211684,
+      "tracked_sha256": "6857c5a1210e0ae3f76b8ac5367ed3c1dfa8c840696708d8a75e4e522e6098fd",
+      "safe_report_files": 89,
+      "original_zip_retained_in_git": false,
+      "excluded_payload_paths": [
+        "voice-android/synthetic.pcm"
+      ]
+    },
+    {
+      "artifact_id": 13631252339,
+      "original_file": "full-api36-original.zip",
+      "original_bytes": 2419474,
+      "original_sha256": "03831eee08a351fd45380fce7796090d8b8757a81cf87c925f6c11a051152072",
+      "original_download_verified": true,
+      "tracked_file": "full-api36-safe-reports.zip",
+      "tracked_bytes": 2208973,
+      "tracked_sha256": "a01fa57e197185c4f841c4aa33a56da4269fb0500d165de2f675f75dd6fdf018",
+      "safe_report_files": 89,
+      "original_zip_retained_in_git": false,
+      "excluded_payload_paths": [
+        "voice-android/synthetic.pcm"
+      ]
+    },
+    {
+      "artifact_id": 13631397741,
+      "original_file": "full-voicekey-api28-original.zip",
+      "original_bytes": 191060,
+      "original_sha256": "1a0d945693bb430238e74a9cc0fb351778ccd9f0a1e7d5fb7bbddf9ec39b3e8a",
+      "original_download_verified": true,
+      "tracked_file": "full-voicekey-api28-original.zip",
+      "tracked_bytes": 191060,
+      "tracked_sha256": "1a0d945693bb430238e74a9cc0fb351778ccd9f0a1e7d5fb7bbddf9ec39b3e8a",
+      "safe_report_files": 23,
+      "original_zip_retained_in_git": true,
+      "excluded_payload_paths": []
+    },
+    {
+      "artifact_id": 13631239268,
+      "original_file": "full-voicekey-api35-original.zip",
+      "original_bytes": 186038,
+      "original_sha256": "fc6b797463c279689e5149ed3b2a97d690cab83397023f903aa88d350cc26ebd",
+      "original_download_verified": true,
+      "tracked_file": "full-voicekey-api35-original.zip",
+      "tracked_bytes": 186038,
+      "tracked_sha256": "fc6b797463c279689e5149ed3b2a97d690cab83397023f903aa88d350cc26ebd",
+      "safe_report_files": 23,
+      "original_zip_retained_in_git": true,
+      "excluded_payload_paths": []
+    },
+    {
+      "artifact_id": 13631531725,
+      "original_file": "full-voicekey-api36-original.zip",
+      "original_bytes": 238518,
+      "original_sha256": "722b617a3ea139133b0a82cf44032d58bc618f44327a92ca5d45a7090b3b64d5",
+      "original_download_verified": true,
+      "tracked_file": "full-voicekey-api36-original.zip",
+      "tracked_bytes": 238518,
+      "tracked_sha256": "722b617a3ea139133b0a82cf44032d58bc618f44327a92ca5d45a7090b3b64d5",
+      "safe_report_files": 23,
+      "original_zip_retained_in_git": true,
+      "excluded_payload_paths": []
+    }
+  ],
+  "producer_decoded_log": {
+    "job_id": 128832759250,
+    "raw_bytes": 341106,
+    "raw_sha256": "d3b407c0eb4afe0189912525863d0f92cf13c0c824fc811256278433ba10437e"
+  },
+  "limits": "Ordinary full workflow only. Candidate configuration35 failed; candidate35 SDK preparation NOT_RUN. Never a phone/ARM/natural voice/formal release assertion."
+}

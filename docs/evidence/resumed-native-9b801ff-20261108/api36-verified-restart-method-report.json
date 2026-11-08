@@ -1,0 +1,23 @@
+{
+  "synthetic": true,
+  "api_level": 36,
+  "cases": [
+    {
+      "id": "commit_finish_reentry",
+      "passed": true
+    },
+    {
+      "id": "compose_finish_reentry",
+      "passed": true
+    },
+    {
+      "id": "begin_batch_finish_guard",
+      "passed": true
+    },
+    {
+      "id": "delete_getter_finish_guard",
+      "passed": true
+    }
+  ],
+  "scope": "Independent Android Editable with production commit\/compose helpers and application guard under synthetic unattached Service finish reentry. Not active system IME, framework configuration restart, remote Binder proof or phone acceptance."
+}

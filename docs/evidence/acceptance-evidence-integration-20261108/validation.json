@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only evidence integration verification only; no native/ADB/model/database rerun, no public release, no product edits",
+  "base_main": "af8aff12b26c2cd86c28a5b41ed837e66143840d",
+  "imported_commits": [
+    "0438ad0accaccb82fc39af727e8b7b778597eec3",
+    "7337bc48f1c029b630a3272a06c1cfe3bb711219",
+    "4ac4caf87932f5a2b500ad71d77289d763e259f7",
+    "d6b11169512d238ae96a838cf051f3496a8b5e45",
+    "db49b62c198e46e3e35379d0617ca56a301cac2c",
+    "cc26a81f6a64783702657f1e9a83a956585e0425",
+    "83c7a0493b9094e09680f42c7244faae45144211"
+  ],
+  "manifest_files_verified": 90,
+  "zip_archives_checked": 22,
+  "zip_members_verified": 550,
+  "gzip_streams_checked": 8,
+  "retained_members_equal_original_manifest": true,
+  "payload_exclusions_verified": true,
+  "archive_policy": "Original prepare_source_release.check_zip unchanged; report/image suffix allowlist; no encryption/link/traversal/duplicates; APK/model/PCM excluded",
+  "secret_marker_scan": "No private-key PEM or GitHub credential markers in imported safe files/ZIP members/gzip decoded logs; synthetic scope follows original producer report metadata",
+  "configuration_failure_report_unchanged": true,
+  "source_checkout_tree_api_identity_matches": true,
+  "top_document_local_link_targets": 107,
+  "product_changes": false,
+  "archives": [
+    {
+      "directory": "resumed-native-9b801ff-20261108",
+      "file": "host-original.zip",
+      "bytes": 42835,
+      "sha256": "046b89fa765266424f535ca56e9e1d37b2e630853c61907e699173a4fbda9cf6",
+      "members": 6
+    },
+    {
+      "directory": "resumed-native-9b801ff-20261108",
+      "file": "api36-original.zip",
+      "bytes": 108962,
+      "sha256": "a11385a738baed717d5a5cce4a0f70db137b5d90c95744b00cc953b39a36a76e",
+      "members": 24
+    },
+    {
+      "directory": "resumed-native-9b801ff-20261108",
+      "file": "api28-original.zip",
+      "bytes": 99036,
+      "sha256": "19af2b57e3bd95f3235cf38c4ce8e639b4f0ae789a82f620476a15b940ad47ff",
+      "members": 23
+    },
+    {
+      "directory": "resumed-native-9b801ff-20261108",
+      "file": "configuration-api35-original.zip",
+      "bytes": 78131,
+      "sha256": "de156273b65c2c89e7f402a56a3c7ead0bd6ddd9edd252bdf629f78f5e1adbdc",
+      "members": 18
+    },
+    {
+      "directory": "resumed-native-9b801ff-20261108",
+      "file": "build-metadata-original.zip",
+      "bytes": 720,
+      "sha256": "995efdef10f481a1e582315b05d77240cb6df13730ea05efa8389842f734da2b",
+      "members": 1
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "full-api36-safe-reports.zip",
+      "bytes": 2208973,
+      "sha256": "a01fa57e197185c4f841c4aa33a56da4269fb0500d165de2f675f75dd6fdf018",
+      "members": 89
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "development-safe-reports.zip",
+      "bytes": 2135749,
+      "sha256": "1c7d32f62d75c0839c1f52d4e32892735204c9c83c335d40d32d567132223e65",
+      "members": 91
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "full-voicekey-api28-original.zip",
+      "bytes": 191060,
+      "sha256": "1a0d945693bb430238e74a9cc0fb351778ccd9f0a1e7d5fb7bbddf9ec39b3e8a",
+      "members": 23
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "full-voicekey-api36-original.zip",
+      "bytes": 238518,
+      "sha256": "722b617a3ea139133b0a82cf44032d58bc618f44327a92ca5d45a7090b3b64d5",
+      "members": 23
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "full-api35-safe-reports.zip",
+      "bytes": 2211684,
+      "sha256": "6857c5a1210e0ae3f76b8ac5367ed3c1dfa8c840696708d8a75e4e522e6098fd",
+      "members": 89
+    },
+    {
+      "directory": "resumed-full-android-9b801ff-20261108",
+      "file": "full-voicekey-api35-original.zip",
+      "bytes": 186038,
+      "sha256": "fc6b797463c279689e5149ed3b2a97d690cab83397023f903aa88d350cc26ebd",
+      "members": 23
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13630829504-original.zip",
+      "bytes": 238778,
+      "sha256": "506fbed5a2dfd27e628a85d1ea7f2ff2dd66ff5befffd8a250abbc3b33e83161",
+      "members": 23
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13631355773-original.zip",
+      "bytes": 10288,
+      "sha256": "8f3e23b14c1d9f496c2a8755b85e129bd8ac603da24c5526ba69c8272b7c8238",
+      "members": 9
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13631535809-original.zip",
+      "bytes": 181957,
+      "sha256": "c56fac98677cfdad45045a73ae64e1bb97d152d73279893a4c682435706b286c",
+      "members": 23
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13631690338-original.zip",
+      "bytes": 31431,
+      "sha256": "b4145d72d12785a0868274b8c1f732b4dbd7f077e7f1226bedd0f27983ef1a45",
+      "members": 11
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13631885152-original.zip",
+      "bytes": 186145,
+      "sha256": "6c946cc6de6afeb86678e1bf17444cf44c7e72727dd5ce560e2b6e93f214b031",
+      "members": 23
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13630758047-original.zip",
+      "bytes": 668,
+      "sha256": "ce8a2e705728d46443448d4d70757f06f767a5936633fca52c970f33033e13d4",
+      "members": 1
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13631520701-original.zip",
+      "bytes": 31480,
+      "sha256": "27039cffb3523f2936af9217531e0ecbe4cd94e0f7a11ac69ca7210c6e2cfe2f",
+      "members": 11
+    },
+    {
+      "directory": "focused-native-9b801ff-20261108",
+      "file": "13630959695-original.zip",
+      "bytes": 22693,
+      "sha256": "8d8d2a10ea85045a489f1aaff9b6425bd9fba83d57db0467e05c733d2bb63d34",
+      "members": 11
+    },
+    {
+      "directory": "sync-inventory-ci-20261108",
+      "file": "service-tests-original.zip",
+      "bytes": 1790,
+      "sha256": "a9932fafd6a5551a5b84d665f82cd148d2a0065d029965ea81d5de43d9cab9f9",
+      "members": 1
+    },
+    {
+      "directory": "pr100-candidate-api36-failure-20261108",
+      "file": "api36-original.zip",
+      "bytes": 118125,
+      "sha256": "98708089005ccb03c2aa3f199df6cb0b4099e52af9b25542704001e3f0fbef5d",
+      "members": 26
+    },
+    {
+      "directory": "pr100-candidate-api36-failure-20261108",
+      "file": "build-original.zip",
+      "bytes": 722,
+      "sha256": "c6f9acc22a160312bb029bc197d24b7f86e0323571fdd973c69f9366a5d7bcdd",
+      "members": 1
+    }
+  ],
+  "root_local_validation": {
+    "directory": "pr102-integration-local-20261108",
+    "head": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "tree": "2c73b5abe92214ad97eb0104f11911fa6a9d3cb6",
+    "gzip_logs": 5,
+    "android_python": 130,
+    "pending_methods": 10,
+    "rust_passed": 143,
+    "rust_result_groups": 27,
+    "rust_failed": 0,
+    "rust_ignored": 0,
+    "initial_rust_attempt_preserved": "NOT_RUN_FAILURE: fixed submodule initialization absent",
+    "native_ci_claimed": false,
+    "local_sha_manifest_verified": true
+  }
+}

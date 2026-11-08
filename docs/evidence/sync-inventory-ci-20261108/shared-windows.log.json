@@ -1,0 +1,17 @@
+{
+  "job_id": 128838057774,
+  "file": "shared-windows.log.gz",
+  "raw_bytes": 86316,
+  "raw_sha256": "3034c4d171636c6a49724bf3e30cd24c4756023d9e6d92b9f33c974b5ca28ed4",
+  "gzip_bytes": 20799,
+  "gzip_sha256": "defb1633bfc3a17448fb752320731c1fa386cf73ecb71d9760a220ca042e5a86",
+  "rust_totals": [
+    140,
+    0,
+    0,
+    0,
+    0
+  ],
+  "rust_result_groups": 27,
+  "checkout_sha_observed": true
+}

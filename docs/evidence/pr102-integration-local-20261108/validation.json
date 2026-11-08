@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "scope": "Root actual local integration checks only, not native/Binder/ARM/phone or PR102 CI acceptance. No commands re-executed by this evidence integrator.",
+  "head": "52f812bc269f35ba636997b9c4664c2b83a22154",
+  "local_equivalent": "fe4b9bef51ade9539d814ca9860211d423e542b0",
+  "tree": "2c73b5abe92214ad97eb0104f11911fa6a9d3cb6",
+  "worktree_clean_observed": true,
+  "files": [
+    {
+      "file": "integration-android-python.log.gz",
+      "raw_bytes": 24335,
+      "raw_sha256": "e92893f17a20e0207a1014fff42010746b822d8f9191bf5950721cc057efb393",
+      "gzip_bytes": 4508,
+      "gzip_sha256": "30f7d6c77f1360131fe10eb4066b3ad01c09b23770e2cab8e49e7e9c09993a2b",
+      "origin": "root actual local execution output; original UTF8 bytes, deterministic gzip mtime0"
+    },
+    {
+      "file": "integration-pending.log.gz",
+      "raw_bytes": 1705,
+      "raw_sha256": "ee7fabda163f8e9ebe31fe08bf9b1d074c60354d6a411e7e7d8613338756af44",
+      "gzip_bytes": 451,
+      "gzip_sha256": "3a468e3badc111c9fb23d7978541d4a441325284b1396b10363803cf3c877175",
+      "origin": "root actual local execution output; original UTF8 bytes, deterministic gzip mtime0"
+    },
+    {
+      "file": "integration-rust-workspace-initialized.log.gz",
+      "raw_bytes": 21022,
+      "raw_sha256": "726d20e8d3d939c4fff4ff411059978bcc4a071d0dcc1e2f937a1b3198bc6393",
+      "gzip_bytes": 6161,
+      "gzip_sha256": "cbcd080cf1cc8c93cb4aba4e55ec26ce913d5f47de5a319e523966eea581a1cf",
+      "origin": "root actual local execution output; original UTF8 bytes, deterministic gzip mtime0"
+    },
+    {
+      "file": "integration-clippy.log.gz",
+      "raw_bytes": 4183,
+      "raw_sha256": "7168e47225c88cb43902e110102b8b1817fd22679707f0645923dba4b4068f18",
+      "gzip_bytes": 1341,
+      "gzip_sha256": "b469276b543fd198b690becc69f0c20f3632d5eac454b8f481724ba9281320a3",
+      "origin": "root actual local execution output; original UTF8 bytes, deterministic gzip mtime0"
+    },
+    {
+      "file": "integration-rust-workspace.log.gz",
+      "raw_bytes": 1014,
+      "raw_sha256": "3a6aacb07e0807dcb428ed740b1bd8889cf67f76fad68bb344abdf1b35436eb3",
+      "gzip_bytes": 431,
+      "gzip_sha256": "5e0e6d4c0ef7fe40ae3ca1a027a3d7649e33b62d9eb60400eca0844ea91f053f",
+      "origin": "root actual local execution output; original UTF8 bytes, deterministic gzip mtime0"
+    }
+  ],
+  "android_python": {
+    "tests": 130,
+    "result": "PASS",
+    "failed_or_error_prefixes": 0
+  },
+  "pending_actual_method_probe": {
+    "tests": 10,
+    "result": "PASS"
+  },
+  "rust_workspace": {
+    "result": "PASS",
+    "result_groups": 27,
+    "passed": 143,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 0
+  },
+  "initial_rust_attempt": {
+    "result": "NOT_RUN_FAILURE",
+    "reason": "New worktree lacked initialized fixed submodules; no Rust test result groups executed. Original failure retained.",
+    "subsequent_action_root_reported": "git submodule update --init then verify_upstream.py before the successful exact-source run",
+    "not_a_product_fix": true
+  },
+  "submodule_heads_observed": {
+    "vendor/msime": "97d652a49cabb0887355b84186af2aa9032d3814",
+    "vendor/voicekey": "3ba017826eef7fac405198510b03859eb5b6c8c4"
+  },
+  "fmt": {
+    "result": "PASS_ROOT_REPORTED",
+    "evidence": "Root execution handoff reports cargo fmt --all --check completed successfully; no standalone output log captured."
+  },
+  "clippy": {
+    "result": "PASS_ROOT_REPORTED_AND_LOG_FINISHED",
+    "command_root_reported": "cargo clippy --workspace --all-targets --locked -- -D warnings",
+    "log_completed": true
+  },
+  "native_ci_result": "NOT_CLAIMED; read PR102 exact head CI separately",
+  "public_release_modified": false
+}

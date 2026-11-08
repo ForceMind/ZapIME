@@ -1,0 +1,11 @@
+{
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "local_equivalent": "dd3b237e1d53bd208c8e3d4e97b207f2b0449aa8",
+  "actual_checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "parents": [
+    "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+    "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+  ],
+  "git_api_url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/436b267cbbc5885ecdf58a7515ef0323fbb6f5e8"
+}

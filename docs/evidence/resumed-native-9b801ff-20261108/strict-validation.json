@@ -1,0 +1,286 @@
+{
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "source_tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "actual_checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "api36": {
+    "method_cases": 14,
+    "new_unattached_editable_cases": 4,
+    "strict_method": true,
+    "strict_system_ime": true,
+    "service_exit_cleanup_and_network_rules": true,
+    "touch_keypresses": 11,
+    "contextual_scoring": true
+  },
+  "configuration35": {
+    "accepted": false,
+    "error": "Configuration experiment interrupted or composition failed",
+    "classification": "not_executed",
+    "reason": "configuration_fresh_verification_invalidated"
+  },
+  "quality_source_identity_checked": true,
+  "quality_reports": [
+    {
+      "file": "quality-report.json",
+      "sha256": "9e7b77579829c7c7f28215b2ca93643148237eec46244f0ca3ddb97750371f4b",
+      "runtime": "1.24.4",
+      "corpus": "v2",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 34,
+          "target_missing": 0,
+          "metrics": {
+            "baseline": {
+              "top1": 17,
+              "top3": 28,
+              "top1_rate": 0.5,
+              "top3_rate": 0.8235294117647058,
+              "mrr": 0.6669414735591206
+            },
+            "ranked": {
+              "top1": 14,
+              "top3": 27,
+              "top1_rate": 0.4117647058823529,
+              "top3_rate": 0.7941176470588235,
+              "mrr": 0.6062388591800357
+            }
+          },
+          "top1_harmed": 3,
+          "regressed": 6,
+          "outcome_counts": {
+            "candidate_missing": 0,
+            "target_protected_or_unrankable": 5,
+            "not_scored_insufficient_pool": 0,
+            "rerank_improved": 2,
+            "rerank_harmed": 6,
+            "rerank_unchanged": 21
+          },
+          "native_score_calls": 64
+        },
+        "contextual": {
+          "cases": 34,
+          "target_missing": 0,
+          "metrics": {
+            "baseline": {
+              "top1": 17,
+              "top3": 28,
+              "top1_rate": 0.5,
+              "top3_rate": 0.8235294117647058,
+              "mrr": 0.6669414735591206
+            },
+            "ranked": {
+              "top1": 25,
+              "top3": 30,
+              "top1_rate": 0.7352941176470589,
+              "top3_rate": 0.8823529411764706,
+              "mrr": 0.8148172905525847
+            }
+          },
+          "top1_harmed": 0,
+          "regressed": 0,
+          "outcome_counts": {
+            "candidate_missing": 0,
+            "target_protected_or_unrankable": 5,
+            "not_scored_insufficient_pool": 0,
+            "rerank_improved": 11,
+            "rerank_harmed": 0,
+            "rerank_unchanged": 18
+          },
+          "native_score_calls": 64
+        }
+      }
+    },
+    {
+      "file": "quality-v3-report.json",
+      "sha256": "169aa38a81fba87b13687545de19bc1ff9316420bdff29e2be2aceead4cd3e66",
+      "runtime": "1.24.4",
+      "corpus": "v3",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 39,
+              "top3": 53,
+              "top1_rate": 0.609375,
+              "top3_rate": 0.828125,
+              "mrr": 0.734672619047619
+            }
+          },
+          "top1_harmed": 0,
+          "regressed": 4,
+          "outcome_counts": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 2,
+            "rerank_harmed": 4,
+            "rerank_unchanged": 37
+          },
+          "native_score_calls": 110
+        },
+        "contextual": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 50,
+              "top3": 57,
+              "top1_rate": 0.78125,
+              "top3_rate": 0.890625,
+              "mrr": 0.8395833333333333
+            }
+          },
+          "top1_harmed": 0,
+          "regressed": 1,
+          "outcome_counts": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 14,
+            "rerank_harmed": 1,
+            "rerank_unchanged": 28
+          },
+          "native_score_calls": 110
+        }
+      }
+    },
+    {
+      "file": "quality-v3-ort1282-report.json",
+      "sha256": "606ba45e42645856610e33b571833b518fc592dbf1d3907a28a909c77c8d339d",
+      "runtime": "1.28.2",
+      "corpus": "v3",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 39,
+              "top3": 53,
+              "top1_rate": 0.609375,
+              "top3_rate": 0.828125,
+              "mrr": 0.734672619047619
+            }
+          },
+          "top1_harmed": 0,
+          "regressed": 4,
+          "outcome_counts": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 2,
+            "rerank_harmed": 4,
+            "rerank_unchanged": 37
+          },
+          "native_score_calls": 110
+        },
+        "contextual": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 50,
+              "top3": 57,
+              "top1_rate": 0.78125,
+              "top3_rate": 0.890625,
+              "mrr": 0.8395833333333333
+            }
+          },
+          "top1_harmed": 0,
+          "regressed": 1,
+          "outcome_counts": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 14,
+            "rerank_harmed": 1,
+            "rerank_unchanged": 28
+          },
+          "native_score_calls": 110
+        }
+      }
+    }
+  ],
+  "limits": "API28/36 fixed methods/system IME and fixed host quality/native/JVM only. API35 candidate not executed (SDK image ZIP preparation failure); configuration35 triggered but failed fresh_superseded. No phone/ARM acceptance.",
+  "api28": {
+    "strict_method": true,
+    "method_cases": 14,
+    "new_unattached_editable_cases": "not applicable API<31",
+    "strict_system_ime": true,
+    "service_exit_cleanup_and_network_rules": true,
+    "touch_keypresses": 11
+  },
+  "host_native": {
+    "source_checked_native_cases": 15,
+    "jni_checks": 36,
+    "oracle_fixture_and_source_hash_checked": true,
+    "same_runtime_oracle_max_abs_error": 0.0,
+    "normal_feed_max_abs_error": 0.0,
+    "normal_feed_source_bound": 2e-05,
+    "bounded_batch_max_abs_error": 0.017479419708251953,
+    "bounded_batch_source_bound": 0.1,
+    "scope": "Synthetic native/JVM contracts and independent same-runtime oracle, not Android or population accuracy"
+  }
+}

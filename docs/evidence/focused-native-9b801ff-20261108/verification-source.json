@@ -1,0 +1,60 @@
+{
+  "source_tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "report_validators": [
+    {
+      "path": "scripts/android_voicekey_model_smoke.py",
+      "git_blob": "d1e185b1f0307cf48588709ac0b76549f69d5e04",
+      "bytes": 21847,
+      "sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5"
+    },
+    {
+      "path": "scripts/voicekey_cpu_probe.py",
+      "git_blob": "273bb3f70196d080025253c4ff8b576830a03c82",
+      "bytes": 15376,
+      "sha256": "945a6fb74a281e2baada1989cf892b770cddbafee66f1d6bd4eddc7d783b317d"
+    },
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "git_blob": "869844140d72497ec0a99a1e10ca40b4568ce475",
+      "bytes": 9834,
+      "sha256": "9d51c00792b17e9bb6f1da378adf982d4410d4ee2eea6ff29672255256bfc82b"
+    },
+    {
+      "path": "scripts/android_sync_key_report.py",
+      "git_blob": "64809860d245f21183658fdee0b228e04a4753e5",
+      "bytes": 2841,
+      "sha256": "3715981c681207dda95358e8db9315989fb8a48f4e633a940d4ae0a0efa0c599"
+    },
+    {
+      "path": "scripts/android_sync_transfer_report.py",
+      "git_blob": "49c854b259252041a98f177a2df59203987757d7",
+      "bytes": 3066,
+      "sha256": "d913f5ccd7574e9af4edd7d0c556838d6a9f3db83e420e30f27887aa85c86e06"
+    },
+    {
+      "path": "scripts/android_sync_pages_report.py",
+      "git_blob": "31e3ae0a25775bb93b6025d7d28ce0097cc8c15b",
+      "bytes": 4654,
+      "sha256": "3977ee8a5f7cd53fef5428f9455d385ab6f4862f302718cbdc738162b6ef57d9"
+    },
+    {
+      "path": "scripts/android_sync_https_report.py",
+      "git_blob": "5d6ac13d73d13578ab4791b4308cce71e8c50b35",
+      "bytes": 7056,
+      "sha256": "b4b1e53da1e6c0d5404f7d20c8ea95878e206f50434068a90c9b6de619d2372e"
+    },
+    {
+      "path": "scripts/android_sync_https_smoke.py",
+      "git_blob": "00be26ff840e769f8f03425e2f553ed6e03cb043",
+      "bytes": 29422,
+      "sha256": "8c06d01058c7d08e168f2f9d6ed508dba046332a65119070f37b2d01db4abbf6"
+    },
+    {
+      "path": "third_party/voicekey-model-lock.json",
+      "git_blob": "dc9c9736813b020d2dd6550434a0780ced9193a4",
+      "bytes": 3700,
+      "sha256": "f9bec02d69612cb957102489986549d3177297786585274971798896506cc254"
+    }
+  ],
+  "scope": "Only report functions imported; no ADB/network/device operations or inference were run by this audit."
+}

@@ -1,0 +1,13 @@
+{
+  "head": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+  "head_tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "actual_checkout": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+  "actual_tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "actual_parents": [
+    "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+    "4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+  ],
+  "pull": 100,
+  "merged": true,
+  "merge_commit": "af8aff12b26c2cd86c28a5b41ed837e66143840d"
+}

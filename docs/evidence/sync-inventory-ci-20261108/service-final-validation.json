@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "run_id": 42515700598,
+  "job_id": 128838135809,
+  "attempt": 1,
+  "head": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+  "actual_checkout": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+  "tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "result": "SUCCESS",
+  "go_version": "1.27.3",
+  "required_database": true,
+  "required_s3": true,
+  "go_top_level_test_groups": 29,
+  "go_top_level_fuzz_seed_groups": 1,
+  "go_skipped": 0,
+  "artifact_id": 13631598038,
+  "artifact_bytes": 1790,
+  "artifact_sha256": "a9932fafd6a5551a5b84d665f82cd148d2a0065d029965ea81d5de43d9cab9f9",
+  "artifact_download_verified": true,
+  "test_log_bytes": 8982,
+  "test_log_sha256": "9dfe2eab3af001c2181eb6b3a8f54b471313db620c3cdb73484bb566150ad8a6",
+  "service_decoded_log_bytes": 170316,
+  "service_decoded_log_sha256": "090b0ca73fe5c4387c2f038e7b159f68badaa68f280fc4d7b8911b7065f89742",
+  "checks": [
+    "PostgreSQL transaction/HTTP/isolation/revoke/race 30 groups 0SKIP",
+    "S3-compatible real protocol and portable object archive",
+    "container build and known-vulnerability gate",
+    "shared manual client 17 commands/2 stores/2 server revisions/0pending each",
+    "two-device ciphertext exchange/revoke/empty-server database+descriptor/key recovery",
+    "one-command installer/repeat install/fresh DB+alternate bucket and AEAD recovery"
+  ],
+  "scope_exclusions": [
+    "New inventory preview HTTP/JNI/UI integration",
+    "first publication of restored untracked records",
+    "S25/ARM/phone/system IME",
+    "public Cloudflare credentials or production deployment"
+  ],
+  "earlier_snapshot": "Earlier jobs-42515700598.json and validation.json intentionally retain pending metadata; this new final readback supersedes it without altering the original snapshot."
+}

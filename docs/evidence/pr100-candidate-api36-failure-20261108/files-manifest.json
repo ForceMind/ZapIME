@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3370,
+      "sha256": "3d2e958cb87bd48841731581e2603842f59b8f76a967848cffaaf291c6fa2a33"
+    },
+    {
+      "path": "api36-job.log.gz",
+      "bytes": 37386,
+      "sha256": "8294f3d9fd3bf3759b76d290c50f83a4f2199dc43fb6f3e7503b44dcf535c3e2"
+    },
+    {
+      "path": "api36-original.zip",
+      "bytes": 118125,
+      "sha256": "98708089005ccb03c2aa3f199df6cb0b4099e52af9b25542704001e3f0fbef5d"
+    },
+    {
+      "path": "archive-members.json",
+      "bytes": 5465,
+      "sha256": "991c8dfe28749de2df1d0bcde9e65dc1cf3c33efcb1145958b5726a855ad596d"
+    },
+    {
+      "path": "build-original.zip",
+      "bytes": 722,
+      "sha256": "c6f9acc22a160312bb029bc197d24b7f86e0323571fdd973c69f9366a5d7bcdd"
+    },
+    {
+      "path": "candidate-ime-host-lifecycle.txt",
+      "bytes": 1808,
+      "sha256": "aed9d4611b18a4ec32d9aad88b4632f3bc674a105515f2bf7f4099959ce0b504"
+    },
+    {
+      "path": "candidate-ime-report.json",
+      "bytes": 1172,
+      "sha256": "e0af219a42d4a5d41623072bfe5d90557fba06311d3e8441da30e3da26b468f6"
+    },
+    {
+      "path": "candidate-ime-service-failure.txt",
+      "bytes": 253,
+      "sha256": "c60d8efb627feee4a9b998faacde17313be5a7e0384534e566e553c1e73f019e"
+    },
+    {
+      "path": "candidate-jobs.json",
+      "bytes": 25395,
+      "sha256": "148dabfa8a0eb99c86f59c5c4233c51bff4d702a4032a94fc36c61d48f5e594e"
+    },
+    {
+      "path": "candidate-ranking-build.json",
+      "bytes": 1146,
+      "sha256": "6b46ce45b020bf0d826a1b4d6c318e22cdbbc694950fbe216582b51af9454b89"
+    },
+    {
+      "path": "full-android-jobs.json",
+      "bytes": 36113,
+      "sha256": "56ef59f63ea016ccaa93155590a14926dbd4f155f6b634be860b990d26eecc4f"
+    },
+    {
+      "path": "run-summary.json",
+      "bytes": 655,
+      "sha256": "484425c4960289832cb95481b89f5b12913c23fdfdf152fa750b51707679dd1f"
+    },
+    {
+      "path": "source-identity.json",
+      "bytes": 459,
+      "sha256": "9428dc05c9a75e45330be5f4f1b7b4ccc70731829fdfdf28c8548cb4475f6cc1"
+    },
+    {
+      "path": "strict-failure-summary.json",
+      "bytes": 1933,
+      "sha256": "5b650e1a8d1633126478b8f9ee173a0cc104e14ae537944d44c52e9d2a7a5181"
+    },
+    {
+      "path": "workflow-final-states.json",
+      "bytes": 3039,
+      "sha256": "0c9a79ea03eaf2b63c1da89c057119bc974a102e51622b167df6be29ae53dd4a"
+    }
+  ]
+}

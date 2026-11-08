@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5609,
+      "sha256": "36aa8dea5c791b3fabdbed934eccc2b55cf00f41f47817b47e64021d3de32fdd"
+    },
+    {
+      "path": "api28-original.zip",
+      "bytes": 99036,
+      "sha256": "19af2b57e3bd95f3235cf38c4ce8e639b4f0ae789a82f620476a15b940ad47ff"
+    },
+    {
+      "path": "api35-job.log.gz",
+      "bytes": 31327,
+      "sha256": "ba479894ac53991c50c7b3fcb748e0b80a9ed77c48c66b3a2c33f59dddc6e2e5"
+    },
+    {
+      "path": "api36-original.zip",
+      "bytes": 108962,
+      "sha256": "a11385a738baed717d5a5cce4a0f70db137b5d90c95744b00cc953b39a36a76e"
+    },
+    {
+      "path": "api36-verified-restart-method-report.json",
+      "bytes": 605,
+      "sha256": "55f4f0feee5670aaa3564e5db6c093bb23cde1aa5613445f2e537d3914d14db3"
+    },
+    {
+      "path": "archive-manifest.json",
+      "bytes": 2159,
+      "sha256": "5cb557e67f80f2505d4a8252ecc08decbf730881e902dea453eb972a34ebef4f"
+    },
+    {
+      "path": "archive-members.json",
+      "bytes": 14493,
+      "sha256": "9cbb5d7fa3d28aca808fb5a7ef4c86bff70fee1aff7e7b553a183f8e705beba2"
+    },
+    {
+      "path": "build-metadata-original.zip",
+      "bytes": 720,
+      "sha256": "995efdef10f481a1e582315b05d77240cb6df13730ea05efa8389842f734da2b"
+    },
+    {
+      "path": "candidate-artifacts.json",
+      "bytes": 5097,
+      "sha256": "f7cd6027d2d482022d8516d6372e6d56bd585e4cb249a8b7b091ba6fe2cdad91"
+    },
+    {
+      "path": "candidate-jobs.json",
+      "bytes": 30588,
+      "sha256": "26ff267e053ee28bfdf87810867f27c00675dadc5af300e2ff59afec2a24959a"
+    },
+    {
+      "path": "candidate-ranking-build.json",
+      "bytes": 1146,
+      "sha256": "1a958dbc48736ded90b16679d5b1ebba14bcd16b76b8feb142411b87b4af08ff"
+    },
+    {
+      "path": "configuration-api35-original.zip",
+      "bytes": 78131,
+      "sha256": "de156273b65c2c89e7f402a56a3c7ead0bd6ddd9edd252bdf629f78f5e1adbdc"
+    },
+    {
+      "path": "configuration-compose-host-lifecycle.txt",
+      "bytes": 2692,
+      "sha256": "004f290f6c9e41b3e758e34980e2247d8a9b46731843bfab088131d7f211fdf2"
+    },
+    {
+      "path": "configuration-compose-report.json",
+      "bytes": 1412,
+      "sha256": "61e1d533a89cb16e34e26bb0fb78c19aace7cc0d3df8fbf1baf4a8524678c808"
+    },
+    {
+      "path": "configuration-compose-service-after.txt",
+      "bytes": 1321,
+      "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+    },
+    {
+      "path": "configuration-compose-service-before.txt",
+      "bytes": 1133,
+      "sha256": "5bb2b79c2b36209e1b99aa0000e32823e5a6dbe5c8aa26a9a6ccdfb89058f5a0"
+    },
+    {
+      "path": "configuration-compose-service-failure.txt",
+      "bytes": 1321,
+      "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+    },
+    {
+      "path": "host-original.zip",
+      "bytes": 42835,
+      "sha256": "046b89fa765266424f535ca56e9e1d37b2e630853c61907e699173a4fbda9cf6"
+    },
+    {
+      "path": "other-jobs-snapshot.json",
+      "bytes": 61787,
+      "sha256": "1f4ac025fcb53d942c51eafe5337050bbeaf58ae99f44c7a677e6ff2d862c178"
+    },
+    {
+      "path": "source-identity.json",
+      "bytes": 414,
+      "sha256": "05af3c9f42f973cd9ca4db1035b6e6e9fe4497bab4c3611d30d425dcac76b5a6"
+    },
+    {
+      "path": "strict-validation.json",
+      "bytes": 10303,
+      "sha256": "f3bac1d9d46e4420aeab87c63c4ae94fe6eb7221802b66101e7d08a81b2256a9"
+    }
+  ]
+}

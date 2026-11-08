@@ -1,0 +1,434 @@
+[
+  {
+    "archive": "build-metadata-original.zip",
+    "path": "candidate-ranking-build.json",
+    "bytes": 1146,
+    "sha256": "1a958dbc48736ded90b16679d5b1ebba14bcd16b76b8feb142411b87b4af08ff"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "native-report.json",
+    "bytes": 1686,
+    "sha256": "8210c547fa0b98bc008599aabd3c36659bfcae505d057ff7c43f1cc78c364657"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "jni-report.json",
+    "bytes": 264,
+    "sha256": "de4915a7b471b069b02559d4dbf4dc86718195e1f51962318896a3c92f6b56a2"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "oracle-report.json",
+    "bytes": 2384,
+    "sha256": "8dbc36d9d97f49d1d1f3ab79a5a6ed362137f106642a5eb19872484bae11d98f"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "quality-report.json",
+    "bytes": 203898,
+    "sha256": "9e7b77579829c7c7f28215b2ca93643148237eec46244f0ca3ddb97750371f4b"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "quality-v3-report.json",
+    "bytes": 369449,
+    "sha256": "169aa38a81fba87b13687545de19bc1ff9316420bdff29e2be2aceead4cd3e66"
+  },
+  {
+    "archive": "host-original.zip",
+    "path": "quality-v3-ort1282-report.json",
+    "bytes": 369431,
+    "sha256": "606ba45e42645856610e33b571833b518fc592dbf1d3907a28a909c77c8d339d"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-suite-summary.json",
+    "bytes": 621,
+    "sha256": "f4ddea6cecdaf96dfb505dd4149d0d68e69726713d6b069ef2b959aa9bb1f18d"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-suite-system-ime.log",
+    "bytes": 932,
+    "sha256": "c9826be88b6bcbd6b2d6255026a18c54b21ee7e6d8f31d4236c67b51421ae20f"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-suite-method.log",
+    "bytes": 351,
+    "sha256": "21b1fd048a2a16417d66e2a8f24e0587b1de1fa5b609ff5c68b4aa1887311be8"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ranking-android/candidate-ranking-report.json",
+    "bytes": 3685,
+    "sha256": "50ea718a6c3a7c50089a4c2247edfef2fddbcce8f45a80c1a64ced4384d1ff58"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ranking-android/instrumentation.txt",
+    "bytes": 107,
+    "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ranking-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ranking-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ranking-android/activity-errors.txt",
+    "bytes": 58,
+    "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/instrumentation.txt",
+    "bytes": 260,
+    "sha256": "0b1405e85de5ab6d1393a523735f29998991e120d255516e902de7cdfd6670cb"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-report.json",
+    "bytes": 1312,
+    "sha256": "0d37d1e1be7b9960bdd807d855023a0e9e784dbdfb10f34dc7298cbdf34e659b"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-before.txt",
+    "bytes": 501,
+    "sha256": "103efd7139ede72a58ec881a710f62ade7e094107d2d46c8b618dd180e84e92a"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-scored.txt",
+    "bytes": 1463,
+    "sha256": "2a1a3ec81b000e9e4af8dcc8c5a18b7e6b5fa904db48ce4a190c0adb5a7d99c4"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-after.txt",
+    "bytes": 1577,
+    "sha256": "68cfca3274ed93b63f233c139ea5cac5835c9c27beb627a32d452e0193f1bda9"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+    "bytes": 3739,
+    "sha256": "561b02d7fc51ad9000da38b34f2daf269795187d172e4a37d328b24315d05312"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-candidates.png",
+    "bytes": 43556,
+    "sha256": "e826ab39bb71b6abf8cbb395a90e613482531d841fd61e7c680ebf60b6b53e6b"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/candidate-ime-committed.png",
+    "bytes": 43815,
+    "sha256": "908a4055d4b2e14fbf8e9ff64fa7d724afe312391c88e75666a47f620a80fe89"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/system-keyboard.json",
+    "bytes": 431,
+    "sha256": "6d46345bebd0f764adf135521ce344e7017921f0809a5ca7317c3bbdcbf5efaa"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/input-method-state.txt",
+    "bytes": 13418,
+    "sha256": "94548ad40c2e1ca4de02f82ede5abad07bf8f3ee4ea21fcb6acd17618c01d7c7"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/ime-teardown.txt",
+    "bytes": 65,
+    "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/runtime-errors.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/activity-errors.txt",
+    "bytes": 58,
+    "sha256": "6a6feb5580359b5cc047c3f88d833aa5695d2007418fa9655e2778ff5a9d712b"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+  },
+  {
+    "archive": "api28-original.zip",
+    "path": "candidate-ime-android/run-summary.json",
+    "bytes": 522,
+    "sha256": "6d47ec33ef60fb4c354e34b24d72bef291e4fdf03057116809d41dd90387d69c"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-summary.json",
+    "bytes": 623,
+    "sha256": "c91cc5cbbb9194a19244f3bd598cee7b31135b482c0561284b11d3f55d2a0660"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-method.log",
+    "bytes": 510,
+    "sha256": "3bd9f7dae0c453c2b82af21e8812070e04bcc725ef05a41c20766e34b2b09ba1"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-system-ime.log",
+    "bytes": 1267,
+    "sha256": "dc878d6ae3f94bf4d24b607a40bc607ec9ece8d57f51cb874ad6ae88b18ef1c3"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/candidate-ranking-report.json",
+    "bytes": 3685,
+    "sha256": "ef3c5ce589cbbc3c75093d8297e3b21207b6d4cd2c6597e6c803ceffd6fc7adc"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/verified-restart-method-report.json",
+    "bytes": 605,
+    "sha256": "55f4f0feee5670aaa3564e5db6c093bb23cde1aa5613445f2e537d3914d14db3"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/instrumentation.txt",
+    "bytes": 107,
+    "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/activity-errors.txt",
+    "bytes": 294,
+    "sha256": "72affc3c962a80484ae42aa11a00b5b9845476dbd81243d503f78e6c04d17a43"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/instrumentation.txt",
+    "bytes": 260,
+    "sha256": "0b1405e85de5ab6d1393a523735f29998991e120d255516e902de7cdfd6670cb"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-report.json",
+    "bytes": 1312,
+    "sha256": "99fcb233ceac3cbee74c4065496c33a22a6256758d54637b3c400ded8c9d5de1"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-before.txt",
+    "bytes": 451,
+    "sha256": "35fae91db665502653b9c297cda2dddc15459396a09152d64ad872eeaf80673a"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-scored.txt",
+    "bytes": 1411,
+    "sha256": "a6c1fe57bff3a2b366ef2e5719217590acaf87fc67325099a20ac485b0f2574f"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-after.txt",
+    "bytes": 1525,
+    "sha256": "b2be0b4e96b932d8b470b6f5b619c638d97477e4f0519733a4e2319556a4fb23"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+    "bytes": 3887,
+    "sha256": "acb90eefe44c75e76ace537b996532862ea755805932e866b6db0ca1aa0edd44"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-candidates.png",
+    "bytes": 45217,
+    "sha256": "bac821edb6af0a5230551c8d91007e0a042a22fc9b757ae1fa023adc48e8e7ab"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-committed.png",
+    "bytes": 45588,
+    "sha256": "621bfc57531f2950a1e138e58548b2a6c68f855b762121ff952c9d158903a302"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/system-keyboard.json",
+    "bytes": 739,
+    "sha256": "f75e30b999637253065193a58fe80415d0338aab14b6ff3263ace2fc24d5365d"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/input-method-state.txt",
+    "bytes": 79281,
+    "sha256": "5cd46c406489af2a79a14daf9cb63f36e810b95e5dcc3a8749895cf1955c5c2b"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/ime-teardown.txt",
+    "bytes": 65,
+    "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/runtime-errors.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/activity-errors.txt",
+    "bytes": 206,
+    "sha256": "0f5a851869d1b420f283c1fd33f6b3d00399b80fcf0c89333a74b59910e8b74e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/run-summary.json",
+    "bytes": 522,
+    "sha256": "2f6dd280347ec5da8393636079fa3c14b514efc91b6d37ec0ea47befbce4d7ab"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "activity-errors.txt",
+    "bytes": 206,
+    "sha256": "6a9fd9ddfee8a7532142d93b1c5186d5a00ac93868789d8e369c5a78b7b0b54b"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "activity-top.txt",
+    "bytes": 49118,
+    "sha256": "5b3e2ea066a5e3599927c5308b92ef69e991db6763a62dd85ea25daea4591d4e"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "activity-state.txt",
+    "bytes": 25451,
+    "sha256": "1a22af61a3d295dbf68eda2414812844139466bdca39d66985711e1fb7697dbb"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "configuration-compose-host-lifecycle.txt",
+    "bytes": 2692,
+    "sha256": "004f290f6c9e41b3e758e34980e2247d8a9b46731843bfab088131d7f211fdf2"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "configuration-compose-report.json",
+    "bytes": 1412,
+    "sha256": "61e1d533a89cb16e34e26bb0fb78c19aace7cc0d3df8fbf1baf4a8524678c808"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "configuration-compose-service-after.txt",
+    "bytes": 1321,
+    "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "configuration-compose-service-before.txt",
+    "bytes": 1133,
+    "sha256": "5bb2b79c2b36209e1b99aa0000e32823e5a6dbe5c8aa26a9a6ccdfb89058f5a0"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "configuration-compose-service-failure.txt",
+    "bytes": 1321,
+    "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "ime-teardown.txt",
+    "bytes": 65,
+    "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "input-method-state.txt",
+    "bytes": 66528,
+    "sha256": "c9525365d8689b29b0052681e62ff49e84091e63d3646edc0cff1b165f4621ef"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "instrumentation.txt",
+    "bytes": 105,
+    "sha256": "27575cd40b5ef904ab10845b96698bb573f7cc2772f5a96b2739b4e73725d535"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "last-anr.txt",
+    "bytes": 88,
+    "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "offline-uid.json",
+    "bytes": 119,
+    "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "runtime-errors.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "run-summary.json",
+    "bytes": 659,
+    "sha256": "b558e2698117d21544dabadd187f8790a493d6dc8f02bd33c8f01d813791cd7e"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "system-keyboard.json",
+    "bytes": 739,
+    "sha256": "7c75b420c495ca982658716a4cb6932354306fa41ecd009c26f901334179870f"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "system-runtime.txt",
+    "bytes": 262144,
+    "sha256": "5ff98c095aebfa272c55d23321f6323b934c02a19ff6cd2eb84c87a15226d140"
+  },
+  {
+    "archive": "configuration-api35-original.zip",
+    "path": "window-state.txt",
+    "bytes": 39005,
+    "sha256": "8bec6748f01330954c660f1550e6c1fdc88f9863a4b4a60fe8fff98b170fc83c"
+  }
+]

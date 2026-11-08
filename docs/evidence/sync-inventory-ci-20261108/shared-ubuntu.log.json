@@ -1,0 +1,17 @@
+{
+  "job_id": 128838070043,
+  "file": "shared-ubuntu.log.gz",
+  "raw_bytes": 84869,
+  "raw_sha256": "7382ff53b79c783c47ff036d6f6b16371f760ef9e716d336f81730f66845e347",
+  "gzip_bytes": 20274,
+  "gzip_sha256": "2351408f4b0300cd6a5cf7df4b1fd5ec0cee409f716cecad449a5c75e6a687fe",
+  "rust_totals": [
+    143,
+    0,
+    0,
+    0,
+    0
+  ],
+  "rust_result_groups": 27,
+  "checkout_sha_observed": true
+}

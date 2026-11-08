@@ -1,52 +1,44 @@
 # ZapIME 项目执行状态
 
-## 恢复存量记录的本机同步证据预览（独立共享切片）
+## 当前固定源码与验收结果（2026-11-08 UTC）
 
-Issue #77 已补只读、有界的 Rust metadata 分页：同事务核完整材料绑定，最多100条并保留墓碑；分别返回 pending、当前完整快照是否有本机操作及已知服务修订，未跟踪不能当上传授权或“全部已同步”。不创建操作、改冻结请求、移动cursor或触发HTTP，未接JNI/UI；本机根workspace143项、fmt及严格Clippy通过；真实SQLite/AEAD回归只验证共享预览，完整首次发布仍未完成，Issue保持open。[契约与边界](SYNC_INVENTORY.md)。
+本次整合基线 main 为 `af8aff12b26c2cd86c28a5b41ed837e66143840d`，tree `71972650824144dcb3c59952e541ff2ea26f6b9c`（已合并 #100 本机同步证据预览）；这是固定快照，接续仍须实时核对 PR、review、CI 和 Release。公开源码 `v0.1.0-alpha.1` 继续固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件，不移动标签或覆盖资产。
 
-## 构建固定依赖的受限重试（独立切片）
+新原生证据固定于 PR #96 head `9b801ff947486f5418e9ddc84a88941d1cf3eda6`，实际 checkout `436b267cbbc5885ecdf58a7515ef0323fbb6f5e8`，二者完整 tree 都为 `3995757340519d1b21fc5dfb3b2b89367673d087`。以下运行均 attempt1，没有手动重跑；同源码成功、失败、未执行范围分别保留。
 
-实际#94/#95/#96的固定模型/词库GET曾HTTP504，本切片不改原失败。三条构建链新增最多3次顶层下载尝试（含首次与2次重试），仅在open/read明确的暂时HTTP429/500/502/503/504及网络异常触发；TLS、磁盘、完整性、永久错误与离线缺失直接失败。每轮唯一暂存文件、从零读取、固定size/SHA与原子发布保持；Retry-After不提前截短，模型/语音180秒、词库360秒为协作检查预算，不承诺硬杀DNS/阻塞socket。产品运行时联网、同步、默认模型/语音不改。
-
-新增28项真实文件/故障回归、既有候选/Android/语音/源码工具检查逐命令通过，三条持久CI已接入；#98已合并，实际SourceAlpha30项/根134项及fmt/严格Clippy通过；真实下载也按两次退避后保留最终504，网络未恢复，原生未执行。原504、冻结测试及本机证明见[下载重试实现证据](evidence/build-download-retry-20261108/README.md)，[实际CI原件](evidence/build-download-retry-ci-20261108/README.md)严格区分合成测试、顶层尝试与未执行的原生范围。
-
-## 当前接续检查点（2026-11-08 UTC 审计）
-
-本次回读的固定 main 为 `3241c811d9b97fcd85b63489bc0ca5065379c43b`，tree `f99bbff5cc9ca044e5e9fe190f0f58c243434930`（#85/#90/#94/#97/#98 已合并，#86祖先随#94整合）。这是一份固定源码快照，接续仍须查询实时 GitHub。仓库保持 Public，公开源码 `v0.1.0-alpha.1` 仍固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件；不移动标签或覆盖资产。
-
-最近已复验的完整 main 回归固定于前一源码 `5a0dc562`：Android `42462698530` attempt1最终6/6 SUCCESS，全部原报告按其固定源码严格复验，见[完整原件](evidence/main-android-42462698530/README.md)。这不是后续组字修复或所有间歇问题已解决的证据；后续main的新运行另按实际回读。发布固定源码的旧运行 `42441322518` 已最终 FAILURE，VoiceKey API36 在准备阶段 adb root/device offline 与清理失败，未进入模型测试；[旧最终原件](evidence/main-android-final-20261107/README.md)保留，不能用另一源码的成功改写。后续候选、完整 Android、SAF、语音、主机模型和服务分别按精确源码与对应报告验收。
-
-| 切片 | 当前交付及证据边界 |
+| 固定门禁 | 实际结果与证据边界 |
 | --- | --- |
-| [#85](https://github.com/ForceMind/ZapIME/pull/85) 发布创建/回读 | 已合并。旧 None TypeError 已实际复现；保留 REST 创建 ID、有界只读确认及安全重试。30 项故障回归、134 项根 workspace、fmt/严格 Clippy、精确归档及对应 CI 通过；[原失败与验证](evidence/release-draft-recovery-20261107/README.md)保留。没有触发或覆盖新发布。 |
-| [#90](https://github.com/ForceMind/ZapIME/pull/90) 缓存实际 fill 容量 | 已合并。32 个实际 fill/零新 key 队列/同 key 共享，物理后端返回才释放容量；第 33 个后台读取原反例保留。实际 workflow `42460687991` / job `128669118685`：Go1.27.3 race 30 个顶层组（29 测试组及 1 fuzz-seed 组）、0 SKIP，真实 PostgreSQL/HTTP 容量与同 cursor 重试、S3 兼容存储、容器/漏洞、共享客户端、撤销、安装及空库/对象桶灾备全部通过。[服务原件](evidence/cache-fill-ci-20261108/README.md)。 |
-| [#86](https://github.com/ForceMind/ZapIME/pull/86) / [#94](https://github.com/ForceMind/ZapIME/pull/94) SAF 恢复 | #86 的 `42459710009` API35/36 各 57 项门禁通过；API28 实际失败于 navigation_close_wait：roots 可见、文件不可见、150 轮/一次 BACK、零文件触摸。导出/native 身份/确认和清理通过不代表恢复 UI 成功。#94 改用已识别 roots 子树内唯一 Downloads 根项导航，严格保留稳定几何、一次文件触摸及实际字节/身份/清理断言；本机检查及独立审查通过，固定 head7c2ab398/tree2fee68ef 的 focused42463933420 attempt1最终8/8 SUCCESS；API28/35/36各57项严格复验通过，已在#94合并。[三API原件](evidence/sync-recovery-navigation-20261107/accepted-42463933420/README.md)同时保留其独立全量构建HTTP504失败，不称所有Android通过。 |
-| [#87](https://github.com/ForceMind/ZapIME/pull/87) 诊断及新配置重启修复 | 事件环定位 API36 真实失败为 INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY；旧 EditorInfo/选区校验以 selection_not_owned 拒绝后，空初始化回复结束原组字。原连接仍同一、focused/served 为 true，framework 有 RESET_NEW_CONFIGURATION；具体配置触发者和全部历史间歇问题仍不能统一推定。独立新鲜状态验证修复已在 `fix/android-verified-configuration-restart` 实现并通过本机检查/审查，系统 IME、远程读取与新方法探针尚待同源码实际验收。 |
-| [#89](https://github.com/ForceMind/ZapIME/pull/89) 扩充质量语料 | 在原 34 条之外先冻结 64 条新合成 v3 语料，再用真实词库/native 8M 模型及两版 ORT 推理。基础首选 38/64、上下文 50/64；候选缺失 5、上下文名次退步 1 及其他伤害全部保留，不能当真实用户准确率。host 作业 `128668210879` 成功，三份质量报告、15 组 native/36 项 JNI/独立 oracle 已严格复验；同 workflow API36 系统 IME 实际失败，不能用 host 成功代填整轮。 |
-| [#91](https://github.com/ForceMind/ZapIME/pull/91) 配置重启实验 | 保持草稿。旧固定 head `6904faf` 及后续 `e1a94e5` 的 API35 实验均实际为 NOT_EXECUTED：config_setting_transition / configuration_insets_callbacks_not_observed，callback 为 0，设置已恢复。原日志虽有重启/重建，不能称完整连续编辑器实验已复现或通过。公开 requestApplyInsets 初始化观察者与新安全修复已整合到#96；保留真实触摸、连续连接、Editable、事件及设置恢复断言，待实际执行。 |
-| [#95](https://github.com/ForceMind/ZapIME/pull/95) 工具物理入口夹具 | #87 全量 API36 tools_open 原失败与配置重启交叉，服务未记录 tools_open。新切片仅修 test-only 稳定节点身份/几何/served/公开 Insets 和实际 50ms 单次触摸，已经打开不 toggle；原重启、Editable、隐私、退出及 1800ms 取消断言不减。Java 编译、22 项相关 Python 与独立审查通过；其新两条workflow因固定资源HTTP504失败，未进入tools/API门禁。[完整下载失败原件](evidence/tools95-download-failure-20261108/README.md)。 |
+| 完整 Android `42513949678` | **6/6 SUCCESS**。API28/35/36 每端两轮真实系统键盘/Editable/服务退出及 65 项 JNI 等边界按同源报告器复验；VoiceKey28/35/36 的 14 模型、23 确认提交、5 边界、watchdog/录音预览取消停止及清理通过。[完整回归原件](evidence/resumed-full-android-9b801ff-20261108/README.md)。普通回归成功不覆盖下方配置实验失败。 |
+| Focused `42513949694` | **8/8 SUCCESS**。VoiceKey28/35/36 报告、同步准备28/35/36各57项真实 SAF/身份/清理，以及受保护 API28 实际 HTTPS before2/roundtrip10/after2 共14项均严格复验。[focused 原件](evidence/focused-native-9b801ff-20261108/README.md)。临时 API28 系统 CA、单模拟器双 profile 不是手机/公网 PKI/R2/双设备配对；HTTPS35/36 仍 BLOCKED_NOT_RUN。 |
+| Candidate `42513949719` | 整体 **FAILURE**。build/host 成功；API28 实际14项方法与系统 IME 通过，API36 实际14项及4个新增 unattached Service/Editable 方法与系统 IME 通过。API35 在 sdkmanager 解压 system image 前失败（`Error on ZipFile unknown archive`），AVD/原生 suite 未执行；不是输入逻辑失败，也没有可代填的35报告。[候选原件和归因](evidence/resumed-native-9b801ff-20261108/README.md)。 |
+| 同 workflow 配置实验 API35 | **真实目标失败**。已观察初始可见 Insets、7次真实按键、设置逆值/恢复值及两次 framework restart；同编辑器/连接、无隐藏/失焦/INPUT_FINISHED，第二次 start 将 pending ticket 以 `fresh_superseded` 退役，未保留组字。原报告仍写 `classification=not_executed`，原字节不改；本次不能沿用旧 callback=0 的未执行解释。无新空初始化 finish，原正文保留，设置已恢复；停在后续 i/候选提交前。[严格拒绝及原现场](evidence/resumed-native-9b801ff-20261108/README.md)。 |
 
-#87/#89 的原失败及固定源树/SHA 已保存：[新事件环原件](evidence/api36-configuration-failure-42459746934/README.md)、[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)；后续清理/服务退出成功不改变输入 FAILURE。已验证的主机/SAF35/36/发布原件另见[切片证据](evidence/current-slices-20261107/README.md)。
+## main/#100 旧输入代码树的另一份真实 API36 失败
 
-[#25](https://github.com/ForceMind/ZapIME/pull/25) 已关闭为被 #90 取代，未合并其旧研究草稿，也没有把旧未执行检查改成通过。[#12](https://github.com/ForceMind/ZapIME/pull/12) 的 macOS 系统选择失败及 [#40](https://github.com/ForceMind/ZapIME/pull/40) 的 Windows 独立 profile 失败仍分别保留草稿，不能视为平台验收完成。服务 CI 通过不等于用户公网 R2、生产部署或多副本预算通过。
+#100 固定head `4c98059dc95c56bd46cf568ec9189b1bdbfae591` / checkout `c50e375966c302598dcc23dc2cc032e2ae07cb5c` 与本次main同tree `71972650824144dcb3c59952e541ff2ea26f6b9c`。8条workflow最终7 SUCCESS/候选1 FAILURE；完整Android `42515688482` 的6/6报告现已按同源报告器严格复验，[原件与载荷排除](evidence/pr100-full-android-42515688482/README.md)保留全部报告、摘要和真实退出/清理；它不覆盖候选独立失败。
 
-缺少真机时继续所有可执行工程。ARM/S25、自然语音、资源/能耗、正式签名与可恢复升级、公开分发条款分别待验；一次集中的手机操作只使用 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)，不在个人设备运行临时 CI 的清资料/root/CA/网络规则脚本。
+候选 `42515687138` 的API28/35 job元数据SUCCESS；API36则已实际执行14项方法并严格通过，但真实系统IME在 `touch_pinyin_1` 第10次按键以 `key_committed_unexpected_text` 失败。实际Editable7单位/已提交6/仍组字，focused/served为true；starts3/restarts1，decision=selection_not_owned，submitted1/scored0，framework有RESET_NEW_CONFIGURATION。该旧输入源码没有新事件环，不借9b trace填补或宣称唯一根因；清理/服务退出全true不改变输入FAILURE。[原件和严格拒绝](evidence/pr100-candidate-api36-failure-20261108/README.md)。这与9b候选API35的SDK安装失败是不同source、不同门禁。
 
-## 新组字修复：源码准备通过，原生被外部依赖下载阻断
+## 后续重复重启修复：本机整合通过，真实系统 CI 待验
 
-[草稿#96](https://github.com/ForceMind/ZapIME/pull/96) 当前已核对固定head `94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8` / tree `78d00ce936aafd38b7073e1dc688f502128a0e46`，包含#87/#89/#91/#94/#95及已合并#98全部进展。API31+新鲜有界独立证明、进程物理单槽、旧回复屏障及取消/重入/隐私保护已实现并独立审查，普通restart强校验保留。真实触摸、候选身份、独立Editable、连续焦点/连接、原清理与服务退出门禁不减。
+[PR #102](https://github.com/ForceMind/ZapIME/pull/102) 固定head `52f812bc269f35ba636997b9c4664c2b83a22154` 与本机 `fe4b9bef51ade9539d814ca9860211d423e542b0` 同tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`，包含后续本机修复8d3a1d1和主源树整合。root实际130项Android Python、10项pending方法、143项根Rust/27结果组/0失败/0ignored、fmt与严格Clippy通过；原输出、固定submodule身份和首次未初始化导致的Rust NOT_RUN_FAILURE保留于[本机整合原件](evidence/pr102-integration-local-20261108/README.md)。这是环境初始化后重验，不是又修产品；fmt/命令执行来源与独立日志范围明确区分。
 
-| 新固定源码门禁 | 实际结果 |
-| --- | --- |
-| SourceAlpha42466801643 / prepare128688077584 | SUCCESS：30项回归、134根workspace、fmt/严格Clippy及精确源码prepare；publish条件SKIP，不是新公开版本。[源码原件](evidence/pr96-source-validation-42466801643/README.md)；source artifact仅API元数据，没有宣称独立下载复验。 |
-| candidate42466801775 / build128688078512、host128688078317 | FAILURE：28项新回归已过，固定HTTPS GET两次1s/2s退避后第三次顶层尝试仍504；不是wire抓包计数。无APK/构建artifact，三API、四项Editable方法、schema2配置实验全部未执行。[新失败原件](evidence/pr96-candidate-download-42466801775/README.md)。 |
-| 完整Android42466801834 | FAILURE：common build128688078544同样在固定模型下载失败，下游五job仅缺构建附件，实际native/语音步骤未执行。[完整本轮原件](evidence/pr96-android-build-failure-42466801834/README.md)。不得把构建前合成单测PASS当系统输入成功。 |
+**本记录没有该PR的最终真实系统CI通过结果，不能称修复已验收**。9b的普通6/6、focused8/8、4个独立Editable方法，以及main/#100的其它绿色门禁都不代填PR102的配置连续性、远程新鲜证明与系统输入。接续保留 #96/#102 及关联未合并进展，不从旧main重做。
 
-首轮head42f4562/tree02b21f6的下载504和source未检查tar.gz拒绝均保留：[候选首轮](evidence/pr96-candidate-download-42464855505/README.md)、[其他首轮失败](evidence/pr96-android-build-failure-42464855387/README.md)。后续仅把24个安全成员逐字节转换成现有检查器支持的ZIP，旧tar/SHA/固定父提交指针仍保留，publisher政策未放宽；新SourceAlpha成功确认格式问题已收口。公开v0.1.0-alpha.1标签/源码/三个资产未变。
+## 本机同步证据预览：#100 已合并，完整首次发布仍未完成
 
-本机合后108项Android Python（含5项配置报告）及28项下载回归通过；另12质量runner、5统计、4运行库准备、3+2 JVM及60产品/4宿主/20语音测试源编译通过。测试组存在包含关系，不相加当独立样本；本机与旧main/SAF成功均不代填新系统IME/Binder/ARM。固定依赖恢复可获取后从#96最新head继续真实门禁，不从main丢掉未合并栈，也不修改语料或弱化断言制造通过。
+本次 main 的只读、有界 Rust metadata 分页在同事务核完整材料绑定，最多100条并保留墓碑；分别返回 pending、当前完整快照的本机操作证据与已知服务修订。未跟踪不是上传授权，pending=0不是“已全部同步”。不创建操作、改冻结请求、移动 cursor 或触发 HTTP，尚无 JNI/UI 接缝；Issue #77 继续 open。[契约](SYNC_INVENTORY.md)。
 
-v2历史26/34（ORT1.28.2）与#89复跑25/34（ORT1.24.4）是不同运行库；三份1.24.4完整候选页一致，q10跨库首选差1。新v2/1.28.2未执行；[四原报告只读归因](evidence/candidate-v2-runtime-attribution-20261108/README.md)保留全部排序差异，不重推理、不声称真实用户准确率。
+#100 固定 head `4c98059dc95c56bd46cf568ec9189b1bdbfae591` / checkout `c50e375966c302598dcc23dc2cc032e2ae07cb5c` 与本次 main 的完整 tree 均为 `71972650824144dcb3c59952e541ff2ea26f6b9c`。Source `42515690560` 实际30项发布回归、根Rust143项、0 failed/ignored、fmt/严格Clippy和精确源码 prepare 通过，publish条件 SKIP；Shared Windows140项、macOS143项、Ubuntu143项及新增9项均在原日志逐名核对。Windows少3项是Unix条件未编译，不是ignored，不相加当新样本。
+
+Service `42515700598` / job `128838135809` attempt1最终 SUCCESS：Go1.27.3 强制 PG16/S3 race 29测试组+1 fuzz-seed组、0 SKIP，真实事务/HTTP/撤销、S3协议与归档、容器/漏洞、共享client17命令、双端交换/撤销/空服务器恢复及安装/重复安装/空库/对象桶灾备均有原报告与步骤证明。[#100 CI 原件](evidence/sync-inventory-ci-20261108/README.md)保留先前 pending 快照及后续最终回读。上述共享/服务回归不能证明恢复存量记录已有完整首次上传、JNI/UI/HTTP授权接缝、手机、生产或真实Cloudflare凭据验收。
+
+## 已合并修复、评测与未完成边界
+
+- #85 发布创建/回读健壮性与30项故障回归、#90实际缓存fill容量与真实PG/HTTP/S3/灾备、#94 SAF受限导航及三API各57项恢复、#97证据容器保真ZIP修正、#98固定依赖最多3次顶层尝试均已合并；不要重复实现。#25已由#90替代关闭，未合并旧研究。旧None、tar拒绝、HTTP504、API28导航和组字原失败全部保留；9b下载成功不改写先前504。对应[发布回归](evidence/release-draft-recovery-20261107/README.md)、[缓存实际CI](evidence/cache-fill-ci-20261108/README.md)、[SAF三API](evidence/sync-recovery-navigation-20261107/accepted-42463933420/README.md)、[下载原失败](evidence/build-download-retry-ci-20261108/README.md)。
+- C1原34条与新增64条合成v3均先冻结预期和指标；新9b host再次独立重算三份质量报告、15组native/36项JNI和oracle。新增集基础38/64、上下文50/64，候选缺失5、上下文名次退步1及全部伤害保留，不当真实用户准确率。v2的ORT1.24.4与1.28.2分别报告，不能跨库替代；[本次候选原件](evidence/resumed-native-9b801ff-20261108/README.md)保留实际数值阈值与错误。
+- 原始大包实际下载摘要、排除载荷的路径/大小/SHA及派生安全ZIP成员字节均可追溯；派生ZIP不冒称完整原artifact。Git不含APK、模型、PCM、真实录音、恢复材料或私钥。报告复验未重跑推理、ADB、系统CA或用户设备。
+- macOS #12系统选择及Windows #40独立profile仍未通过，分别保留草稿。ARM/S25、自然语音/能耗、正式签名/可恢复升级、VoiceKey公开分发条款及候选训练来源差异仍待收口。一次集中手机操作只用[S25总验收单](S25_ACCEPTANCE_CHECKLIST.md)，不在个人设备运行临时CI的清资料/root/CA/网络脚本；无真机继续其他可执行工程。
 
 ## 历史固定快照
 

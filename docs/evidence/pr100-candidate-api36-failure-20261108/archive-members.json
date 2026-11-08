@@ -1,0 +1,164 @@
+[
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-system-ime.log",
+    "bytes": 1167,
+    "sha256": "b3744796e93c48fb09db4ad54108c232d92ff5f71221d8df8255283d86e4a0e5"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/candidate-ranking-report.json",
+    "bytes": 3686,
+    "sha256": "7f83008079a8f4a0faac457029955accec0cd4a947c3cf4bc73de2274732c2db"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-summary.json",
+    "bytes": 624,
+    "sha256": "40603b863b6b44cd34231eacd0875362f654da76a1b6969a41536458bf28ea0d"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-suite-method.log",
+    "bytes": 351,
+    "sha256": "780c0a788aff40a7b7c9389d7b83c88c0bf6933725d40a9141a6d7bc95d43234"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/instrumentation.txt",
+    "bytes": 107,
+    "sha256": "2cf2bdc648b8caced716e4d66acb9aef91cf4f7049ac6ae02ed3a1315c500e42"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ranking-android/activity-errors.txt",
+    "bytes": 118,
+    "sha256": "9d7a36db0c748d68ab1de817738f25dcca0100b1b320fb4e10381a16e69cc7fb"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/instrumentation.txt",
+    "bytes": 112,
+    "sha256": "54db2c06d9afc1d9f1ae4e28f2082f6b498fc987b4795bf0cc9edfb9afde762e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-report.json",
+    "bytes": 1172,
+    "sha256": "e0af219a42d4a5d41623072bfe5d90557fba06311d3e8441da30e3da26b468f6"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-before.txt",
+    "bytes": 243,
+    "sha256": "cae504d141683da27fd0262d5a3e63551cb2b0471ff0fee1cca9ea85d6bb368a"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-service-failure.txt",
+    "bytes": 253,
+    "sha256": "c60d8efb627feee4a9b998faacde17313be5a7e0384534e566e553c1e73f019e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+    "bytes": 1808,
+    "sha256": "aed9d4611b18a4ec32d9aad88b4632f3bc674a105515f2bf7f4099959ce0b504"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/candidate-ime-failure.png",
+    "bytes": 40724,
+    "sha256": "8c3e42771a1225828cd407372e2ddd7c3fdc64ccd0f078d8f32c897428f00c03"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/system-keyboard.json",
+    "bytes": 739,
+    "sha256": "f75e30b999637253065193a58fe80415d0338aab14b6ff3263ace2fc24d5365d"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/input-method-state.txt",
+    "bytes": 77873,
+    "sha256": "ffee3c3fd8e3e5aba1dd00724da7bf6bacc53318e9bf174dfb2137ff71d236bf"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/ime-teardown.txt",
+    "bytes": 65,
+    "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/runtime-errors.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/activity-errors.txt",
+    "bytes": 294,
+    "sha256": "8f5532e0a90f28d318060edd4ebf8207d21b76a3163b6c123138fe7e8747dede"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/run-summary.json",
+    "bytes": 655,
+    "sha256": "484425c4960289832cb95481b89f5b12913c23fdfdf152fa750b51707679dd1f"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/activity-top.txt",
+    "bytes": 56315,
+    "sha256": "224726a0eda43e5d9a291820372022d883b293f42cc089cb5389d5981fd2d59f"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/activity-state.txt",
+    "bytes": 25477,
+    "sha256": "ca88a4e97d33080bc5ac8b24020cb9ec5e8ae457ed49fd91cfa4446d37b63af1"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/window-state.txt",
+    "bytes": 37792,
+    "sha256": "8dba1277ba05ae70ffdbfa62965e13c574bbabd622d7d6124172b8ed169209fc"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/last-anr.txt",
+    "bytes": 88,
+    "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+  },
+  {
+    "archive": "api36-original.zip",
+    "path": "candidate-ime-android/system-runtime.txt",
+    "bytes": 262144,
+    "sha256": "0a98686f460e1c39fe025c03837749e48e420f9453b00ae708e712fefe9cd9fe"
+  },
+  {
+    "archive": "build-original.zip",
+    "path": "candidate-ranking-build.json",
+    "bytes": 1146,
+    "sha256": "6b46ce45b020bf0d826a1b4d6c318e22cdbbc694950fbe216582b51af9454b89"
+  }
+]

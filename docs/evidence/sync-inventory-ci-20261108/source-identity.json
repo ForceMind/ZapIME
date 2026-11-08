@@ -1,0 +1,77 @@
+{
+  "head": {
+    "sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "node_id": "C_kwDOVQdT8doAKDRjOTgwNTlkYzk1YzU2YmQ0NmNmNTY4ZWM5MTg5YjFiZGJmYWU1OTE",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "html_url": "https://github.com/ForceMind/ZapIME/commit/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+    "author": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:29Z"
+    },
+    "committer": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:29Z"
+    },
+    "tree": {
+      "sha": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/71972650824144dcb3c59952e541ff2ea26f6b9c"
+    },
+    "message": "feat(sync): preview bounded local record evidence without publishing restored data",
+    "parents": [
+      {
+        "sha": "3ac88124444dcf23e298c32b08de7f918bb121a1",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/3ac88124444dcf23e298c32b08de7f918bb121a1",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/3ac88124444dcf23e298c32b08de7f918bb121a1"
+      }
+    ],
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "checkout": {
+    "sha": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "node_id": "C_kwDOVQdT8doAKGM1MGUzNzU5NjZjMzAyNTk4ZGNjMjNkYzJjYzAzMmUyYWUwN2NiNWM",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "html_url": "https://github.com/ForceMind/ZapIME/commit/c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+    "author": {
+      "name": "ForceMind",
+      "email": "88872598+ForceMind@users.noreply.github.com",
+      "date": "2026-11-08T19:33:50Z"
+    },
+    "committer": {
+      "name": "GitHub",
+      "email": "noreply@github.com",
+      "date": "2026-11-08T19:33:50Z"
+    },
+    "tree": {
+      "sha": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/71972650824144dcb3c59952e541ff2ea26f6b9c"
+    },
+    "message": "Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+    "parents": [
+      {
+        "sha": "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "sha": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+        "html_url": "https://github.com/ForceMind/ZapIME/commit/4c98059dc95c56bd46cf568ec9189b1bdbfae591"
+      }
+    ],
+    "verification": {
+      "verified": true,
+      "reason": "valid",
+      "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq8M6eCRC1aQ7uu5UhlAAAaokQAJ/tHQGJ47SXQmcMek9W0wq5\nkl6ODa3bVvP+J7PRryZ7FSSIHSSa3XA98zwgrd2g881Wii7CD/jbkzyfGptmkh8H\nLqXBO/P1bNPTQuphS4jzVmtQS21LTS2vzfRx8+Zd+a3ygDL3lUpC3kqZEHrbYNZb\nYTMVzHe5pzTrlHM63ySeae1WC+7lStQzQwHmh95kwiHH8Gax5GueGhY4N2r9xd/H\novMMfyMRdesG4lzU/a9WX4iIWz8iPwNKNC8Szj0kYz9+86qDJoxcsQ8dRhCyfF5W\nBsg0Mgb8k+hFQvJcYRo1ysYCF2297AUiLOlUjMS3Num9jRL3MXcmCjLTD+QxFNGL\nWj19fbdmdwfKHHT0jxzua7YZPv/cFXL04QKKKZTCpsF9HbAPHaDlXFZoBpM/2Vmr\nedy7ACSZqBrbFminMVypp6NcgKu9vAUGyRUbHM75ZzZn57We+TjHKBl6LhOEmUFA\nb5ZjJ05wB0u7pIjWPvUzE6BZ0HHtuLOoGc/Rti8X6/fNK19nWVVnISsi5DgIUoLI\nQOvt+tnrWgQTNVzy5wKbGNTUJZgS75XltqVcjOM4lLMwALKbsX3mIXrNMjFTIl/z\nv29q34O6TQdp4FtAwIjQP/O6YTQrUDQ+YEuRwMTZMJqlDBlOPLEGaaVeQGpbBi8/\n6WQWnLQeLriz9OmZGNNx\n=PnTW\n-----END PGP SIGNATURE-----\n",
+      "payload": "tree 71972650824144dcb3c59952e541ff2ea26f6b9c\nparent d38e6ce954c5fae1af120bd3fd2739d7862a288d\nparent 4c98059dc95c56bd46cf568ec9189b1bdbfae591\nauthor ForceMind <88872598+ForceMind@users.noreply.github.com> 1794166430 -0800\ncommitter GitHub <noreply@github.com> 1794166430 -0800\n\nMerge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d\n",
+      "verified_at": "2026-11-08T19:33:51Z"
+    }
+  }
+}

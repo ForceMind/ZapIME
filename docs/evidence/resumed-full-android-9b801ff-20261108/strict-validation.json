@@ -1,0 +1,97 @@
+{
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "source_tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "actual_checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "run_id": 42513949678,
+  "attempt": 1,
+  "workflow_jobs_success": 6,
+  "native": [
+    {
+      "api": 28,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.android.inputmethod.latin/.LatinIME",
+          "actual_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.android.inputmethod.latin/.LatinIME",
+          "actual_exit": true
+        }
+      ],
+      "jni_local_voice_cases": 65,
+      "actual_voice_service_exit": true,
+      "offline_uid_removed": true,
+      "strict_passed": true
+    },
+    {
+      "api": 35,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_exit": true
+        }
+      ],
+      "jni_local_voice_cases": 65,
+      "actual_voice_service_exit": true,
+      "offline_uid_removed": true,
+      "strict_passed": true
+    },
+    {
+      "api": 36,
+      "clean_input_rounds": [
+        {
+          "round": 1,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_exit": true
+        },
+        {
+          "round": 2,
+          "system_ime": "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService",
+          "actual_exit": true
+        }
+      ],
+      "jni_local_voice_cases": 65,
+      "actual_voice_service_exit": true,
+      "offline_uid_removed": true,
+      "strict_passed": true
+    }
+  ],
+  "voicekey": [
+    {
+      "api": 28,
+      "model_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog": true,
+      "actual_service_exit": true,
+      "fixture_removed": true,
+      "strict_passed": true
+    },
+    {
+      "api": 35,
+      "model_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog": true,
+      "actual_service_exit": true,
+      "fixture_removed": true,
+      "strict_passed": true
+    },
+    {
+      "api": 36,
+      "model_commit_cases": 37,
+      "boundary_cases": 5,
+      "watchdog": true,
+      "actual_service_exit": true,
+      "fixture_removed": true,
+      "strict_passed": true
+    }
+  ],
+  "limits": "Full ordinary Android workflow only. Independent candidate configuration35 failed and candidate35 SDK was not executed. No phone/ARM/natural speech/formal signing acceptance."
+}

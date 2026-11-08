@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "scope": "production-system-ime-candidate-ranking",
+  "run_attempt": "42515687138-1",
+  "api_level": 36,
+  "model_id": "msime-keystroke-8m-rerank-v2",
+  "synthetic": true,
+  "system_ime_executed": true,
+  "production_lexicon": false,
+  "production_model": false,
+  "product_preferences_written": false,
+  "attempts": [
+    {
+      "code": "shijie",
+      "scored_before": 0,
+      "attempt": 1,
+      "scored_increased": false,
+      "current_ranking_applied": false
+    }
+  ],
+  "passed": false,
+  "human_touch_or_phone_latency": false,
+  "ranking_enabled": true,
+  "ranking_eligible": true,
+  "scored_before": 0,
+  "empty_context_base_order": true,
+  "submitted_before": 0,
+  "submitted_after_empty": 0,
+  "visible_han_candidates": 4,
+  "context_seed_touch": true,
+  "context_seed_text": "你好",
+  "context_seed_commits": 1,
+  "failure_type": "Exception",
+  "failure_reason": "key_committed_unexpected_text",
+  "failure_editor_text_units": 7,
+  "failure_editor_committed_units": 6,
+  "failure_editor_composing": true,
+  "failure_editor_focused": true,
+  "failure_editor_served": true,
+  "stage": "touch_pinyin_1",
+  "touch_keypresses": 10
+}

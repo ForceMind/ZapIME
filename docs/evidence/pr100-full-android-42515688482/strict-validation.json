@@ -1,0 +1,131 @@
+{
+  "source_head": "4c98059dc95c56bd46cf568ec9189b1bdbfae591",
+  "actual_checkout": "c50e375966c302598dcc23dc2cc032e2ae07cb5c",
+  "tree": "71972650824144dcb3c59952e541ff2ea26f6b9c",
+  "run": 42515688482,
+  "attempt": 1,
+  "regular": {
+    "28": {
+      "native_clean_rounds": 2,
+      "xasr_jni": "PASS",
+      "voice_commit_cases": 23,
+      "empty_pcm_cases": 6,
+      "sync_connection_cases": 7,
+      "sync_profile_cases": 5,
+      "sync_preparation_cases": 11,
+      "local_backup_cases": 8,
+      "voicekey_boundary_cases": 5,
+      "system_ime_exit_and_fatal_anr_checks": "PASS",
+      "uid_rules_removed": true,
+      "producer_report_validation_block_replayed": true
+    },
+    "35": {
+      "native_clean_rounds": 2,
+      "xasr_jni": "PASS",
+      "voice_commit_cases": 23,
+      "empty_pcm_cases": 6,
+      "sync_connection_cases": 7,
+      "sync_profile_cases": 5,
+      "sync_preparation_cases": 11,
+      "local_backup_cases": 8,
+      "voicekey_boundary_cases": 5,
+      "system_ime_exit_and_fatal_anr_checks": "PASS",
+      "uid_rules_removed": true,
+      "producer_report_validation_block_replayed": true
+    },
+    "36": {
+      "native_clean_rounds": 2,
+      "xasr_jni": "PASS",
+      "voice_commit_cases": 23,
+      "empty_pcm_cases": 6,
+      "sync_connection_cases": 7,
+      "sync_profile_cases": 5,
+      "sync_preparation_cases": 11,
+      "local_backup_cases": 8,
+      "voicekey_boundary_cases": 5,
+      "system_ime_exit_and_fatal_anr_checks": "PASS",
+      "uid_rules_removed": true,
+      "producer_report_validation_block_replayed": true
+    }
+  },
+  "voicekey": {
+    "28": {
+      "model_cases": 14,
+      "commit_cases": 23,
+      "boundary_cases": 5,
+      "watchdog_included_in_model_cases": true,
+      "saf_jni_editable_and_actual_microphone": "PASS",
+      "uid_rules_removed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true
+    },
+    "35": {
+      "model_cases": 14,
+      "commit_cases": 23,
+      "boundary_cases": 5,
+      "watchdog_included_in_model_cases": true,
+      "saf_jni_editable_and_actual_microphone": "PASS",
+      "uid_rules_removed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true
+    },
+    "36": {
+      "model_cases": 14,
+      "commit_cases": 23,
+      "boundary_cases": 5,
+      "watchdog_included_in_model_cases": true,
+      "saf_jni_editable_and_actual_microphone": "PASS",
+      "uid_rules_removed": true,
+      "actual_ime_service_exit": true,
+      "shared_document_removed": true
+    }
+  },
+  "preview_report": "NOT PRODUCED: this full workflow does not exercise the Rust-only inventory preview",
+  "raw_waveform_replayed_locally": false,
+  "producer_sources": [
+    {
+      "path": ".github/workflows/android.yml",
+      "sha256": "e94ae47f7ec646d2ac4c611c7909290f89713532b2175660eb16a678c400fd58"
+    },
+    {
+      "path": "scripts/android_acceptance.py",
+      "sha256": "3b6abb0173938085bf50dc95d3805c0beef46482469b8d9877dd1a4f0c4e3043"
+    },
+    {
+      "path": "scripts/android_smoke.py",
+      "sha256": "24b92d87624d3352dffbed40cf5232f6ed54ee164b1d25c2f28a1c04a11a00cc"
+    },
+    {
+      "path": "scripts/android_smoke_repeat.py",
+      "sha256": "16fb0c67cdd1a21d4d8be61fba65ee72504e06278315cf3da2a2ecc4f2a5d730"
+    },
+    {
+      "path": "scripts/android_voice_smoke.py",
+      "sha256": "ee0de632a6a90322bdd0438b94dcbe02b8f945a66bac004ad0db7b5a54e06e54"
+    },
+    {
+      "path": "scripts/android_voicekey_model_smoke.py",
+      "sha256": "727c580faa6e3d94e3c6f10aec545ab7b850bab04ddc5fd6420e825d781195b5"
+    },
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "sha256": "9d51c00792b17e9bb6f1da378adf982d4410d4ee2eea6ff29672255256bfc82b"
+    },
+    {
+      "path": "scripts/android_ci_device.py",
+      "sha256": "86f3715c99d4975648619a30864f8972814cd07f76fdb8e4b379ba504a5991a1"
+    },
+    {
+      "path": "scripts/voicekey_cpu_probe.py",
+      "sha256": "945a6fb74a281e2baada1989cf892b770cddbafee66f1d6bd4eddc7d783b317d"
+    },
+    {
+      "path": "third_party/voicekey-model-lock.json",
+      "sha256": "f9bec02d69612cb957102489986549d3177297786585274971798896506cc254"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "sha256": "b565cab015ed5f28927fc3b75b02af5abccbeebcf1dd168a64b00beb8a57d9a9"
+    }
+  ]
+}

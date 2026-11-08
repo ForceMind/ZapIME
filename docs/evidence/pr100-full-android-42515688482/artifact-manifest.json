@@ -1,0 +1,2138 @@
+[
+  {
+    "artifact_id": 13631732190,
+    "api": 28,
+    "kind": "regular",
+    "original_size": 248729970,
+    "original_sha256": "5f523a8c25a340183f4cea2791ffe38e9b3472458482d64c06934ffc9a42671f",
+    "preserved_archive": "artifact-13631732190-reports-only.zip",
+    "preserved_archive_size": 2128399,
+    "preserved_archive_sha256": "8c824f7b814cf8724c4a90305b7c9353be7ef0beea07bbc6c272e218ee82f044",
+    "original_members": [
+      {
+        "path": "android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+        "size": 58745799,
+        "sha256": "6879b612f1a2dd87331e59c904817dc81837861db9c780f53aae28df8488c1ab",
+        "preserved": false
+      },
+      {
+        "path": "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+        "size": 60056794,
+        "sha256": "0598f51396596bc462a33af2996862c5eefa882afcfefc15df7a5580a83d460e",
+        "preserved": false
+      },
+      {
+        "path": "device-smoke/activity-errors.txt",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/candidates.png",
+        "size": 42900,
+        "sha256": "5f91668735eee0d5a122b5c404086ed287ff8974e6d5e86ffb0075a7ba4e40e6",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/feedback-settings.png",
+        "size": 46188,
+        "sha256": "e50a304d50d87158070e4f11f681667803375b5020d7f390236b88cc0afeffc4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/home.png",
+        "size": 40194,
+        "sha256": "22566dbb4ba29cbe6db14c382635a5d47ec3a395fa3060c2c2e6d1c68ad57beb",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/host-lifecycle.txt",
+        "size": 8832,
+        "sha256": "450ce6d79a376a01e1baa272420ad348166a39418987cbab120ae1f28f614fd7",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/input-method-state.log",
+        "size": 18703,
+        "sha256": "346000a0a6feabfb75d26cde9316904bd64ef7dfcd0b2f4878a0c747a7bc2c60",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/keyboard.png",
+        "size": 45421,
+        "sha256": "c6a3a48797bc44b684745fd9933ce426283bd75290b13de8f0ee680adf775533",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-clipboard.png",
+        "size": 43020,
+        "sha256": "dd84336e7d00161ec026d0d9e7e70a7a392a81ded0dc9a5abca8566f6204f354",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-data.png",
+        "size": 37383,
+        "sha256": "aad8e277b4d5cf4750538ceac011f7ac91db00e2da5131a29e9004ad045293b2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-favorites.png",
+        "size": 40811,
+        "sha256": "f0aa6834870982a3745042103c82513f04eafac1dfe979f0397af84dd1bb133f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-search.png",
+        "size": 39510,
+        "sha256": "4e92c6ba0e5669606d6d051334456bce75424c09c8e623816375221457397630",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark-candidates.png",
+        "size": 46003,
+        "sha256": "bb4f5b9749405da2d7eabac79e3adcda37eb282dfa02da076f0fc57d4ce34eab",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark.png",
+        "size": 46691,
+        "sha256": "693332a85bdbe65fcfbc78f121a92e24269b92807bd3b69ec8ef07ef38b769be",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-light.png",
+        "size": 48694,
+        "sha256": "241b4696e550e1f3bf7429c1272fe98a2adbd58c7b0184d1d2ee4e4a5e1206da",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key.png",
+        "size": 50318,
+        "sha256": "8cb0ddcc9e5813028299bde4abf18355ab367d41e433903de830bc1e528ed6b2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/numbers.png",
+        "size": 36131,
+        "sha256": "ff76d2663025b1150d3f52e9182e5c4fb860a36c3fc569840b39f8149283722e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/personal.png",
+        "size": 39351,
+        "sha256": "80c2ded408bfedffc4b2742ae1c801ef12be753529fa2982f95c2797c635df19",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/runtime-errors.log",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/smoke.png",
+        "size": 45158,
+        "sha256": "94dfd75510319d3e5f1c20a2d85fe83c9341700c06d01ac861406613bdb59aa9",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/system-keyboard.json",
+        "size": 169,
+        "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/tools.png",
+        "size": 37660,
+        "sha256": "afb22f81b965b51a62613bd28a06c23bfd434ce9ec194963cadaced41a5c157f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/activity-errors.txt",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/candidates.png",
+        "size": 42761,
+        "sha256": "702f545217b4b3717e265ad96c2590dbc3addf8d5185ca188d62a5a639ec4734",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/feedback-settings.png",
+        "size": 46163,
+        "sha256": "9c147bcd7fc310edf18d34b0010586044155b6cad1360de1fec2f119222f4478",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/home.png",
+        "size": 40165,
+        "sha256": "3a0f0f58d378d63297b1ca22a7eb3ce5df9ab388b8d3193b2e2701dad5e47311",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/host-lifecycle.txt",
+        "size": 8713,
+        "sha256": "d5cefc8bb87dc8e7c4925d2c607806d6c4ddd9ec2de16b74474ae2a4f3d3d4a1",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/input-method-state.log",
+        "size": 18693,
+        "sha256": "7b449ec1ea44b38ab6dfc9409ebe1727fe921a8da0876e41a7b53d813c000a10",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/keyboard.png",
+        "size": 45224,
+        "sha256": "20130c1f5c8e6a132dbaa256bf2459db6cc581f5d5501627f1dc09466839e26f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-clipboard.png",
+        "size": 43255,
+        "sha256": "13190c5244c1c70eceacc9fdc7384f93f77ad1b5b140ea057ae0216ccf0e0e91",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-data.png",
+        "size": 37575,
+        "sha256": "2cb957f192130819b9926aea876dbed5cf16259e704fc96215aa6b682d445d52",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-favorites.png",
+        "size": 41017,
+        "sha256": "d293c4ff0ff18a0dfd1a7b8c47cd0a2b9cea9ef523ee8c721cd63b7bfa240e78",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-search.png",
+        "size": 39758,
+        "sha256": "618d5cde3cbad440abc13e4155e204ba51f559b9b780b011d14547fe8c993556",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark-candidates.png",
+        "size": 46172,
+        "sha256": "e41231c7255bc8ad8e04750225ad9549a8b245fd5c445fed4d59d11087e9fc6c",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark.png",
+        "size": 46657,
+        "sha256": "7692519d7fd192284fea319a83f2609aab7182650aa253a09599c8a8d287aaab",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-light.png",
+        "size": 48667,
+        "sha256": "7e354289af4bc4dd5793ea4a6bdc2ff0369b3be647d35c9c56f04cccef542be7",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key.png",
+        "size": 50287,
+        "sha256": "9215411a1aecdb08ea3802d89e58bfacb210dad11999b3dd1423ae44a8bfabc0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/numbers.png",
+        "size": 35956,
+        "sha256": "c44e68d1d21ae37fbc094ca33e143a2515039abb10381321f7d0fa6fe10f77e1",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/personal.png",
+        "size": 39323,
+        "sha256": "0367029065241b6f8a900d83f49428c35e6451d6d7aa2649408e4abe6c71f642",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/runtime-errors.log",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/smoke.png",
+        "size": 41372,
+        "sha256": "04301bbdb68bb32746ae56f4e6e1f91e04df43a8c6a35c4faf195bb46909a3c4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/system-keyboard.json",
+        "size": 169,
+        "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/tools.png",
+        "size": 37479,
+        "sha256": "d1641843f140241308a1ae20b84fbbecbf1f146737909bc5a4401d8e99500ef8",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/activity-errors.txt",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/candidates.png",
+        "size": 42900,
+        "sha256": "5f91668735eee0d5a122b5c404086ed287ff8974e6d5e86ffb0075a7ba4e40e6",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/feedback-settings.png",
+        "size": 46188,
+        "sha256": "e50a304d50d87158070e4f11f681667803375b5020d7f390236b88cc0afeffc4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/home.png",
+        "size": 40194,
+        "sha256": "22566dbb4ba29cbe6db14c382635a5d47ec3a395fa3060c2c2e6d1c68ad57beb",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/host-lifecycle.txt",
+        "size": 8832,
+        "sha256": "450ce6d79a376a01e1baa272420ad348166a39418987cbab120ae1f28f614fd7",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/input-method-state.log",
+        "size": 18703,
+        "sha256": "346000a0a6feabfb75d26cde9316904bd64ef7dfcd0b2f4878a0c747a7bc2c60",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/keyboard.png",
+        "size": 45421,
+        "sha256": "c6a3a48797bc44b684745fd9933ce426283bd75290b13de8f0ee680adf775533",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-clipboard.png",
+        "size": 43020,
+        "sha256": "dd84336e7d00161ec026d0d9e7e70a7a392a81ded0dc9a5abca8566f6204f354",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-data.png",
+        "size": 37383,
+        "sha256": "aad8e277b4d5cf4750538ceac011f7ac91db00e2da5131a29e9004ad045293b2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-favorites.png",
+        "size": 40811,
+        "sha256": "f0aa6834870982a3745042103c82513f04eafac1dfe979f0397af84dd1bb133f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-search.png",
+        "size": 39510,
+        "sha256": "4e92c6ba0e5669606d6d051334456bce75424c09c8e623816375221457397630",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark-candidates.png",
+        "size": 46003,
+        "sha256": "bb4f5b9749405da2d7eabac79e3adcda37eb282dfa02da076f0fc57d4ce34eab",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark.png",
+        "size": 46691,
+        "sha256": "693332a85bdbe65fcfbc78f121a92e24269b92807bd3b69ec8ef07ef38b769be",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-light.png",
+        "size": 48694,
+        "sha256": "241b4696e550e1f3bf7429c1272fe98a2adbd58c7b0184d1d2ee4e4a5e1206da",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key.png",
+        "size": 50318,
+        "sha256": "8cb0ddcc9e5813028299bde4abf18355ab367d41e433903de830bc1e528ed6b2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/numbers.png",
+        "size": 36131,
+        "sha256": "ff76d2663025b1150d3f52e9182e5c4fb860a36c3fc569840b39f8149283722e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/personal.png",
+        "size": 39351,
+        "sha256": "80c2ded408bfedffc4b2742ae1c801ef12be753529fa2982f95c2797c635df19",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/runtime-errors.log",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/smoke.png",
+        "size": 45158,
+        "sha256": "94dfd75510319d3e5f1c20a2d85fe83c9341700c06d01ac861406613bdb59aa9",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/system-keyboard.json",
+        "size": 169,
+        "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/tools.png",
+        "size": 37660,
+        "sha256": "afb22f81b965b51a62613bd28a06c23bfd434ce9ec194963cadaced41a5c157f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/activity-errors.txt",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/combined-gates.json",
+        "size": 66,
+        "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/empty-pcm-report.json",
+        "size": 1143,
+        "sha256": "b83e7bf8a33bcb27492e10b93ef8408fad9ceeecaa0824518e6dedcdb4fadb7b",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/host-lifecycle.txt",
+        "size": 5609,
+        "sha256": "c2c9c4d9b259f3c551f9f0189443f7b6e6db56b80c0d71240e31ad52e0c52e55",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/instrumentation.txt",
+        "size": 2622,
+        "sha256": "de61ba1e700c3846ca67d360cc867867e7357b175412599492ad514a7097e364",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/local-backup-report.json",
+        "size": 990,
+        "sha256": "8fd90472fecbf5a16a37fdb63d28c3e765bf66c97fc6315c87c039261bf6b3bf",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/native-report.json",
+        "size": 648,
+        "sha256": "69e2e07e2e27723a8d81815a3a65ffc30cc7936689a7ab9611262a751a636861",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/offline-uid.json",
+        "size": 119,
+        "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/smoke.png",
+        "size": 45158,
+        "sha256": "94dfd75510319d3e5f1c20a2d85fe83c9341700c06d01ac861406613bdb59aa9",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-connection-report.json",
+        "size": 726,
+        "sha256": "8f6461eab44a76f29300cfdefd66b5f01abfdc0114e9201ee498fe4221eb5499",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-preparation-report.json",
+        "size": 1308,
+        "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-profile-report.json",
+        "size": 675,
+        "sha256": "e2db691d8e067c3b68e9d857a95b2c9c1365cf2e352fe96f807be1568c238923",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/synthetic.pcm",
+        "size": 250980,
+        "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+        "preserved": false
+      },
+      {
+        "path": "voice-android/system-keyboard.json",
+        "size": 169,
+        "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ui-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "afce4ccb180600d4280eb3fc1e9906d4a2eaa6d9c2c00914e96e576791aa204d",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-recording.png",
+        "size": 37377,
+        "sha256": "f7525b76a7a6bf3b1abec163828e190521defcd6a7f8f6e520602760b8c16747",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-stopped.png",
+        "size": 38905,
+        "sha256": "83734216eb440d53c40027d5b83a5a8308958259693d22ed96ab5a4d53f949a8",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "25657cd8e0184b801e9d2315795422e59bf25f7f6312468ff16ee6505a22fdd4",
+        "preserved": true
+      },
+      {
+        "path": "ZapIME-XASR-model.zip",
+        "size": 129097503,
+        "sha256": "1e1ddde9def3868adac23842cdc5db42ad7d84e39452653a829d977f77a44fd1",
+        "preserved": false
+      },
+      {
+        "path": "android-sync-http-tests/report.json",
+        "size": 227,
+        "sha256": "064a0e318e3dd678d5202a4c4b3333d0275b69ed75e7af0f443e3dbf27327169",
+        "preserved": true
+      },
+      {
+        "path": "android-backup-file-tests/report.json",
+        "size": 117,
+        "sha256": "1025915dba6120e877c7f0b81e9c408ca77230ae460dea6d39c2c478273d7827",
+        "preserved": true
+      }
+    ]
+  },
+  {
+    "artifact_id": 13631863222,
+    "api": 35,
+    "kind": "regular",
+    "original_size": 2417942,
+    "original_sha256": "8656d7e552caaf8881cdba4cf4bcb0311202c2df65ab404a84aa23aee4313241",
+    "preserved_archive": "artifact-13631863222-reports-only.zip",
+    "preserved_archive_size": 2207268,
+    "preserved_archive_sha256": "d9343ec15421015232b7fd4b26055e75888d485daf80df51a72b286a77584fba",
+    "original_members": [
+      {
+        "path": "device-smoke/activity-errors.txt",
+        "size": 118,
+        "sha256": "be4534c60a932675425ef90ac37ac5df15c730c973214801be66eb2c832cfeca",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/candidates.png",
+        "size": 44608,
+        "sha256": "cb60341711498997e7f112701037f9700a88aa07d9508b76a35d93addaf791e9",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/feedback-settings.png",
+        "size": 51110,
+        "sha256": "6d851581160a56a21a260824b43a1d80b5982f6b90a3f58b30843d50afc1bd85",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/home.png",
+        "size": 43733,
+        "sha256": "cd91735c8fcf8cb436274a8d0011fe5dca59e751087c1a7c3c97e704caf1c332",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "b2b147b56d14596eea8dea98822345f82956a39d0486503685b678315d99ed60",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/input-method-state.log",
+        "size": 117915,
+        "sha256": "8d084888d1eb4aada1c01d04d6a6a0069d45fc235fadc93bf5e940dcd0ddb54b",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/keyboard.png",
+        "size": 47037,
+        "sha256": "d0a9114371a5ec97e193f8f7580324a15caa02e3284adac016a5c9be0db73023",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-clipboard.png",
+        "size": 39641,
+        "sha256": "dd61845f3baf00209d2561fab4245248ce9297ed2c1f2ef2f6f1e6bf5b0c64b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-data.png",
+        "size": 39349,
+        "sha256": "596f7824ba43e461596298a015e7fffaaced72ca0f75b5745bfe3e31704363ad",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-favorites.png",
+        "size": 37486,
+        "sha256": "7d5d97500d60002d0d0eaabcf416b3ae0bbf11771f4d34eeaf26237c570bdc3a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-search.png",
+        "size": 40770,
+        "sha256": "8e2e628f13eb79953522f13ddfa812e2f62a88cf0efffba59c82e13b008d38b4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark-candidates.png",
+        "size": 47385,
+        "sha256": "c647b2d3b4362d3bcf965f7aacee4d7a4ee6e4beb2a8bb27b5dddd4918a89539",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark.png",
+        "size": 47615,
+        "sha256": "7758915967bf4be69888461a7ec9407d3ac50f5ef3e986d961437d12ce57d942",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-light.png",
+        "size": 50256,
+        "sha256": "730d6ec93f0b5e31624dcafb0b014ae2ac5ab8bcfde14395b7f54a7092eff09e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key.png",
+        "size": 52053,
+        "sha256": "6cb77f746e993ab41f6f8e177a83aec49a87db2abc3f329f03ede9f31fd0201a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/numbers.png",
+        "size": 37025,
+        "sha256": "d5da3ac39098a53dcf03dde615238683fcc9ea97663c1aa1c88c18daba8a3596",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/personal.png",
+        "size": 42150,
+        "sha256": "5faa8db732ad241f17e3ff8c72ead9836a2c75a07f6a41ba84926481fec7084b",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/smoke.png",
+        "size": 41921,
+        "sha256": "5f925e78faeee4b5c95d74fd120c56b7a081ab7db9d753954d9524d15547b61a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/system-keyboard.json",
+        "size": 244,
+        "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/tools.png",
+        "size": 40212,
+        "sha256": "bb1fd7aed511d456cf1fb760033979b388415bbe4db4c80d9043631ad28b2e1f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/activity-errors.txt",
+        "size": 206,
+        "sha256": "f286c1938b9e64a54292049056e4d0f041fe8b66f6a6c0f84d7a3fbe6ceb4c64",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/candidates.png",
+        "size": 44764,
+        "sha256": "7d7c2b5f192885a033f672f76e98acee38bac6ac96bb2007110403351f25c0b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/feedback-settings.png",
+        "size": 51224,
+        "sha256": "5ace74ba3e0b6c16621da9b2a656b3093846460acf92109563ce9fbc03848df2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/home.png",
+        "size": 44003,
+        "sha256": "74afff4aefc8984addb9f0a03269633ef5eb85595b47315d71b0c40cac83eb56",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "f9205cc0fa7d96c1563105344100ee548b235833e66158cc1ca41b05e4e73602",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/input-method-state.log",
+        "size": 104282,
+        "sha256": "02ac1250bd0f524fced6d478daf285a292ca025ce5d24d8d6af4f46b34232c23",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/keyboard.png",
+        "size": 47155,
+        "sha256": "bcf7cfc783ab134eb9f864cf6c63b9a38aeddd50f9b96eb6241dcf68fea6dad4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-clipboard.png",
+        "size": 39670,
+        "sha256": "46ae9507bb345cdd9a36feb7efe5da5910d564ca0640c54078e563e25ec258f2",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark-candidates.png",
+        "size": 47500,
+        "sha256": "9ea3d07716dbdd7a8a7a6c4ba5b96a7010a9b8b0b6507a5efb40f522e0cce325",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-data.png",
+        "size": 39377,
+        "sha256": "1ed69c9f6de5e59a81e871614b46ff7eb9f1514c81ab2fd5108a89e9d558b26e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-favorites.png",
+        "size": 37340,
+        "sha256": "ab330d1d03c30b1d038c18fc1ec1a7594c0fbeb3a8b21a8a426d177c2c3b16fc",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-search.png",
+        "size": 40803,
+        "sha256": "b12dc388d3f7d5328ff65da362aba9ce8bd37323cb2446c77cba8ea385bf1222",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark.png",
+        "size": 47728,
+        "sha256": "47129813650fe034ef3849defc26ad7d2fe923682aa8b3f6e79c6623a09104f1",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-light.png",
+        "size": 50378,
+        "sha256": "08af5e3ce880f0d3d8b1fade29217dc8bd33efe88efe6297e1a92e96692b806d",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key.png",
+        "size": 52311,
+        "sha256": "94fa22beeb380fada05d84c91fb4773e953aed7d36b5e4f53f346be8266547e0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/numbers.png",
+        "size": 37226,
+        "sha256": "17c5698e4d18dccb51521e0211cd1c007683a3fa1ca27c848f02ab0de5e82ee7",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/personal.png",
+        "size": 42433,
+        "sha256": "f1b952b5950c8ae6c82f5706cb8b22416f1802cbf5205e695c85967d9bb4b6b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/smoke.png",
+        "size": 41786,
+        "sha256": "701d8174e21636f4c9b9d5eefee3e029e8e37c842116294892ee506c5f8645d7",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/system-keyboard.json",
+        "size": 244,
+        "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/tools.png",
+        "size": 40288,
+        "sha256": "d5925b0ce0ad19b39f7a5d5c456d310e67f1e4829092c25810e8226500b0c848",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/activity-errors.txt",
+        "size": 118,
+        "sha256": "be4534c60a932675425ef90ac37ac5df15c730c973214801be66eb2c832cfeca",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/candidates.png",
+        "size": 44608,
+        "sha256": "cb60341711498997e7f112701037f9700a88aa07d9508b76a35d93addaf791e9",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/feedback-settings.png",
+        "size": 51110,
+        "sha256": "6d851581160a56a21a260824b43a1d80b5982f6b90a3f58b30843d50afc1bd85",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/home.png",
+        "size": 43733,
+        "sha256": "cd91735c8fcf8cb436274a8d0011fe5dca59e751087c1a7c3c97e704caf1c332",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "b2b147b56d14596eea8dea98822345f82956a39d0486503685b678315d99ed60",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/input-method-state.log",
+        "size": 117915,
+        "sha256": "8d084888d1eb4aada1c01d04d6a6a0069d45fc235fadc93bf5e940dcd0ddb54b",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/keyboard.png",
+        "size": 47037,
+        "sha256": "d0a9114371a5ec97e193f8f7580324a15caa02e3284adac016a5c9be0db73023",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-clipboard.png",
+        "size": 39641,
+        "sha256": "dd61845f3baf00209d2561fab4245248ce9297ed2c1f2ef2f6f1e6bf5b0c64b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-data.png",
+        "size": 39349,
+        "sha256": "596f7824ba43e461596298a015e7fffaaced72ca0f75b5745bfe3e31704363ad",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-favorites.png",
+        "size": 37486,
+        "sha256": "7d5d97500d60002d0d0eaabcf416b3ae0bbf11771f4d34eeaf26237c570bdc3a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-search.png",
+        "size": 40770,
+        "sha256": "8e2e628f13eb79953522f13ddfa812e2f62a88cf0efffba59c82e13b008d38b4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark-candidates.png",
+        "size": 47385,
+        "sha256": "c647b2d3b4362d3bcf965f7aacee4d7a4ee6e4beb2a8bb27b5dddd4918a89539",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark.png",
+        "size": 47615,
+        "sha256": "7758915967bf4be69888461a7ec9407d3ac50f5ef3e986d961437d12ce57d942",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-light.png",
+        "size": 50256,
+        "sha256": "730d6ec93f0b5e31624dcafb0b014ae2ac5ab8bcfde14395b7f54a7092eff09e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key.png",
+        "size": 52053,
+        "sha256": "6cb77f746e993ab41f6f8e177a83aec49a87db2abc3f329f03ede9f31fd0201a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/numbers.png",
+        "size": 37025,
+        "sha256": "d5da3ac39098a53dcf03dde615238683fcc9ea97663c1aa1c88c18daba8a3596",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/personal.png",
+        "size": 42150,
+        "sha256": "5faa8db732ad241f17e3ff8c72ead9836a2c75a07f6a41ba84926481fec7084b",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/smoke.png",
+        "size": 41921,
+        "sha256": "5f925e78faeee4b5c95d74fd120c56b7a081ab7db9d753954d9524d15547b61a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/system-keyboard.json",
+        "size": 244,
+        "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/tools.png",
+        "size": 40212,
+        "sha256": "bb1fd7aed511d456cf1fb760033979b388415bbe4db4c80d9043631ad28b2e1f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/activity-errors.txt",
+        "size": 206,
+        "sha256": "d225c55f5dda4e8fd954505dac4f7c4dcd9e0926c99d4662f88eead4cdad749f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/combined-gates.json",
+        "size": 66,
+        "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/empty-pcm-report.json",
+        "size": 1143,
+        "sha256": "dcdf30236750a00bc0e43416d05bda563115de2f5710157c4d1e4e52e9e259d2",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/host-lifecycle.txt",
+        "size": 5980,
+        "sha256": "9b6a75551e2a71cf2c8efa9436837fe3cdcfe2cc24251307e2902ad3cc55ed54",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/instrumentation.txt",
+        "size": 2821,
+        "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/local-backup-report.json",
+        "size": 990,
+        "sha256": "b6d02b4831548b820b8645dc2c003afb1ec88bd6fa1fd3fdb5bfbf7471dadcd1",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/native-report.json",
+        "size": 650,
+        "sha256": "8a003d2197656e51ad16c06b62f78e2705b848475d65d911a70821a4f1b9276e",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/offline-uid.json",
+        "size": 119,
+        "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/smoke.png",
+        "size": 41921,
+        "sha256": "5f925e78faeee4b5c95d74fd120c56b7a081ab7db9d753954d9524d15547b61a",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-connection-report.json",
+        "size": 726,
+        "sha256": "9b85c565826cc4810636f6d168cdeef1c3ce7393ce6e0325541c38d4a1f16afd",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-preparation-report.json",
+        "size": 1308,
+        "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-profile-report.json",
+        "size": 675,
+        "sha256": "be204d18f0827c422f6ab62ef0669f070b8c77a6fae6e17b3c8f01ce17010824",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/synthetic.pcm",
+        "size": 250980,
+        "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+        "preserved": false
+      },
+      {
+        "path": "voice-android/system-keyboard.json",
+        "size": 244,
+        "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ui-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "79ebc01535bee9ddd33a29e563e253ff28d71c8aa9d742603b4dfd628e9c2db0",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-recording.png",
+        "size": 40220,
+        "sha256": "a80b3ae285ceb65975ef0b1aa52d21f19844f24e14e0ba5e3de2d078c4c864a6",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-stopped.png",
+        "size": 41980,
+        "sha256": "b1b8c3a519ed22281f455f0f7fa22ce3e421c7e4c490e8e8f67b32cad9f7494d",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "ac2e2ccadea54cdbfced1899ac13e3d462f224a161fdca4ef7774a88d5c58c1f",
+        "preserved": true
+      }
+    ]
+  },
+  {
+    "artifact_id": 13631997783,
+    "api": 36,
+    "kind": "regular",
+    "original_size": 2419193,
+    "original_sha256": "e4285e117369e278661473beb1daf787bc25444099dcfb37136e13bd21a87376",
+    "preserved_archive": "artifact-13631997783-reports-only.zip",
+    "preserved_archive_size": 2208366,
+    "preserved_archive_sha256": "086ba78395c769db314064a01d1051e7c9111ab57024fde93cb7bb1ea92fd9b4",
+    "original_members": [
+      {
+        "path": "device-smoke/activity-errors.txt",
+        "size": 118,
+        "sha256": "efec789776e88a502fe287d7f314b4c6b31533c4ca71cb98e2b138df3528aa50",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/candidates.png",
+        "size": 44556,
+        "sha256": "d4a6fd478024acd1f3ce049b89e7f2ce11a29bf226becff4319aa9cf4572d809",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/feedback-settings.png",
+        "size": 51647,
+        "sha256": "93cd76d9d5e32a152e5e882bc12bd6fe4ca7f683b25ed9ed861f0de48c195294",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/home.png",
+        "size": 43879,
+        "sha256": "3499e68776ccc6f5449a42025109c7dd1850fbc0d572271d93a35dc4d30aa758",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "00ff6258e3944c8c77acd4e47b12e13a2f4e16ab7f7f1020e10e66e9f2d1780f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/input-method-state.log",
+        "size": 122258,
+        "sha256": "6092ad5909a8aa76522c20ba240530770b6026aa7ddcff43d6d341836a8f80ac",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/keyboard.png",
+        "size": 46868,
+        "sha256": "0fba7155f9c866e5b954a5163d85cd634a5292d16e27b8cafb2927406841166e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-clipboard.png",
+        "size": 39692,
+        "sha256": "baf5be254bdb6d77251ebf47b9dfd6e3a489ef36e81bd1cf0523b13d81f5a4c6",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-data.png",
+        "size": 39402,
+        "sha256": "681b6c1d4ada7676efb13ac74b816870ab69cc25434e4c3974bc011d33e59c9d",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-favorites.png",
+        "size": 37364,
+        "sha256": "2f52973e2271d1ee3375e22508d13468508e5fe9fa498553f57a8c9ce2f0b2e8",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/local-search.png",
+        "size": 40823,
+        "sha256": "99a827d703b374b62e1b8d8e9f75343a239e939eabdf2aa676addbcdbc1cdf22",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark-candidates.png",
+        "size": 47522,
+        "sha256": "07cc20c99557c5284afb1f8e528a9159031b8931fc6cfd9c030fa67217a1298f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-dark.png",
+        "size": 47760,
+        "sha256": "f46a16b784c164dfc3d5eedc58803cd4d76749d174182fc072b43cbc521858c4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key-light.png",
+        "size": 50395,
+        "sha256": "8d7d2c9d225071fedb134b5b4e076a5fc602261660b5c84046259ab11b08389e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/nine-key.png",
+        "size": 52199,
+        "sha256": "868a8be19895c7efda64e381cac4ee461056fc824a6fec4beea312bd11151feb",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/numbers.png",
+        "size": 37153,
+        "sha256": "e6bcfc31f6a2fae94dddfb58b15b279445d2976e5ef34cff843b2d81e2a02639",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/personal.png",
+        "size": 42279,
+        "sha256": "3e7d5f21f09ad98320158666e5fec7dbc400f1269fc237771f51603304b8c1af",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/smoke.png",
+        "size": 41515,
+        "sha256": "f8a68586ec542710b0150f67564c78b6bf72784e7a876f62c6cf3d151df81972",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/system-keyboard.json",
+        "size": 244,
+        "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke/tools.png",
+        "size": 40067,
+        "sha256": "5a7d74968e0a3cd643c14d88ff2fe489eeb5c1fba5b2db48a2721ce52b027099",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/activity-errors.txt",
+        "size": 382,
+        "sha256": "a0a41acc5eff1e20231c2484b47ca5f82826590cf5445a5f84501cc7c27be546",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/candidates.png",
+        "size": 44654,
+        "sha256": "325b0c5a458399d1b609917246808367c5e927c092033582789a07e44fd1ef82",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/feedback-settings.png",
+        "size": 50958,
+        "sha256": "8d3ba410b8f12335371a87be262f66f6af96ecaa8f9def44acdcb7f466b43d2c",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/home.png",
+        "size": 43818,
+        "sha256": "fa4f6872f4bd3333a066a31f5d1ad6005552d2fccdf226dafe52081eff8052c4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "9f8c619f9d8c0d0631ec7cfa13b53dc51d4e4177fdb308956425439b26502f76",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/input-method-state.log",
+        "size": 121938,
+        "sha256": "78bf58a040f2ce45caf4b3724dcc0e5cc20025e5fc42c9f45839385dc74725e0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/keyboard.png",
+        "size": 46985,
+        "sha256": "ef5abfc89dce42649f5ce7ed2f9b6d8b4ed48bc53d3d0eebfcaf202ffab306ef",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-clipboard.png",
+        "size": 39428,
+        "sha256": "1b948ab73521f2e01906662def0fd799ae818702c08bf344b853b49638db2178",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-data.png",
+        "size": 39143,
+        "sha256": "284a62269f1c093cd39c196fd1fa2ff671360cfbe7504818aeb9cbf8a6ae9832",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark.png",
+        "size": 47488,
+        "sha256": "8f482b596ecd765b551b3653131fa928495e4d41cb05b08e70046b89ea9f2b19",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-favorites.png",
+        "size": 37093,
+        "sha256": "725ea730b189d59aa57d526e76cfb7c72a7b344ea580d69ab9ade7fa2d800a0c",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/local-search.png",
+        "size": 40541,
+        "sha256": "9779d689eb8632da5aae0c42322a69a06450efc015ac2a6397609cc4383af11f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-dark-candidates.png",
+        "size": 47253,
+        "sha256": "edb34b088fb1a8a9e38e93af4a4405c99835d82fe2bf6d00ea48c4b33d99d0e4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key-light.png",
+        "size": 50249,
+        "sha256": "6ad3ab363186525e82b4c226f02d04129069dbf04831d446757fb7a36400e615",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/nine-key.png",
+        "size": 52034,
+        "sha256": "6d6908871f26d6542f8d87d67a2aff3e0dfe7dcd91b091d311c6ee869fce96a1",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/numbers.png",
+        "size": 37102,
+        "sha256": "ae0b998f0268ad598ce06c0763f69a53e2960fbf8903c5852fba778895a5f19f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/personal.png",
+        "size": 42911,
+        "sha256": "fa337eacc8e1c687ce6a419646c3cd720b24b0598e16ac823c48fe3ede70a64d",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/smoke.png",
+        "size": 41616,
+        "sha256": "afa3b787eebeff82ea9990c6ba3c8f0fb1fba3c7838d25e89cbca10b61d2dd8a",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/system-keyboard.json",
+        "size": 244,
+        "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-1/tools.png",
+        "size": 40163,
+        "sha256": "f283f944194ec21b2505e0e15a2d940014369a045160980df561539fefebb565",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/activity-errors.txt",
+        "size": 118,
+        "sha256": "efec789776e88a502fe287d7f314b4c6b31533c4ca71cb98e2b138df3528aa50",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/feedback-settings.png",
+        "size": 51647,
+        "sha256": "93cd76d9d5e32a152e5e882bc12bd6fe4ca7f683b25ed9ed861f0de48c195294",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/candidates.png",
+        "size": 44556,
+        "sha256": "d4a6fd478024acd1f3ce049b89e7f2ce11a29bf226becff4319aa9cf4572d809",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/home.png",
+        "size": 43879,
+        "sha256": "3499e68776ccc6f5449a42025109c7dd1850fbc0d572271d93a35dc4d30aa758",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/host-lifecycle.txt",
+        "size": 8668,
+        "sha256": "00ff6258e3944c8c77acd4e47b12e13a2f4e16ab7f7f1020e10e66e9f2d1780f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/ime-teardown.log",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/input-method-state.log",
+        "size": 122258,
+        "sha256": "6092ad5909a8aa76522c20ba240530770b6026aa7ddcff43d6d341836a8f80ac",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/instrumentation.log",
+        "size": 644,
+        "sha256": "a5b3566eb71392df7fb4837969ccd505e402e638d7b726d4e9955d14870f9410",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/keyboard.png",
+        "size": 46868,
+        "sha256": "0fba7155f9c866e5b954a5163d85cd634a5292d16e27b8cafb2927406841166e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-clipboard.png",
+        "size": 39692,
+        "sha256": "baf5be254bdb6d77251ebf47b9dfd6e3a489ef36e81bd1cf0523b13d81f5a4c6",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-data.png",
+        "size": 39402,
+        "sha256": "681b6c1d4ada7676efb13ac74b816870ab69cc25434e4c3974bc011d33e59c9d",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-favorites.png",
+        "size": 37364,
+        "sha256": "2f52973e2271d1ee3375e22508d13468508e5fe9fa498553f57a8c9ce2f0b2e8",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/local-search.png",
+        "size": 40823,
+        "sha256": "99a827d703b374b62e1b8d8e9f75343a239e939eabdf2aa676addbcdbc1cdf22",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark-candidates.png",
+        "size": 47522,
+        "sha256": "07cc20c99557c5284afb1f8e528a9159031b8931fc6cfd9c030fa67217a1298f",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-dark.png",
+        "size": 47760,
+        "sha256": "f46a16b784c164dfc3d5eedc58803cd4d76749d174182fc072b43cbc521858c4",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key-light.png",
+        "size": 50395,
+        "sha256": "8d7d2c9d225071fedb134b5b4e076a5fc602261660b5c84046259ab11b08389e",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/nine-key.png",
+        "size": 52199,
+        "sha256": "868a8be19895c7efda64e381cac4ee461056fc824a6fec4beea312bd11151feb",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/numbers.png",
+        "size": 37153,
+        "sha256": "e6bcfc31f6a2fae94dddfb58b15b279445d2976e5ef34cff843b2d81e2a02639",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/personal.png",
+        "size": 42279,
+        "sha256": "3e7d5f21f09ad98320158666e5fec7dbc400f1269fc237771f51603304b8c1af",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/runtime-errors.log",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/smoke.png",
+        "size": 41515,
+        "sha256": "f8a68586ec542710b0150f67564c78b6bf72784e7a876f62c6cf3d151df81972",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/system-keyboard.json",
+        "size": 244,
+        "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+        "preserved": true
+      },
+      {
+        "path": "device-smoke-evidence/42515688482-1/round-2/tools.png",
+        "size": 40067,
+        "sha256": "5a7d74968e0a3cd643c14d88ff2fe489eeb5c1fba5b2db48a2721ce52b027099",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/activity-errors.txt",
+        "size": 206,
+        "sha256": "e28960e78cbaf807d2df80aa7d4de881b8a17336cac43ccb6d17e1b1758f6d1e",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/combined-gates.json",
+        "size": 66,
+        "sha256": "4e7f5ca973df195c824d67ae58221fb69220c16c6e7483ed7ffe57236595a552",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/empty-pcm-report.json",
+        "size": 1143,
+        "sha256": "f2ce8f95c4d3a54fdffe6872d4c2a535034321a765dae7a5cb27e4867a6aa634",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/host-lifecycle.txt",
+        "size": 5980,
+        "sha256": "919b0ba82b170cc8beafdd6940f816b1dd59619a907be4c4996a4786fe84faaf",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/instrumentation.txt",
+        "size": 2821,
+        "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/local-backup-report.json",
+        "size": 990,
+        "sha256": "a800fd7d5c334a04175b99ed585a217588dd6c813b68e6f0755432c9b7c566dc",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/native-report.json",
+        "size": 650,
+        "sha256": "8a747152832122a28f879e6c44da259ec51913a60d5f92bd7d4728932cdc03b2",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/offline-uid.json",
+        "size": 119,
+        "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/smoke.png",
+        "size": 41515,
+        "sha256": "f8a68586ec542710b0150f67564c78b6bf72784e7a876f62c6cf3d151df81972",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-connection-report.json",
+        "size": 726,
+        "sha256": "d2d40387113b472075c85bc1a59faeb8c8e4f9fa5c84abae97d518b64b2ec6c8",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-preparation-report.json",
+        "size": 1308,
+        "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/sync-profile-report.json",
+        "size": 675,
+        "sha256": "415930e6b8e84ce0d55c129a3503fafc183d91360722e95166e9594ab9706bd8",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/synthetic.pcm",
+        "size": 250980,
+        "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+        "preserved": false
+      },
+      {
+        "path": "voice-android/system-keyboard.json",
+        "size": 244,
+        "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/ui-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "40796d46dd59508da02fbc2b2b011fcc42a426140326dc41fd4b5120894e11bc",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-recording.png",
+        "size": 39826,
+        "sha256": "9926993cb9ca17638a205a1529439cd8dacd948ce3a1e55f868190c894fcd1d2",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voice-stopped.png",
+        "size": 41793,
+        "sha256": "eeb616eb955948b89ea440da447155a8511a28c4e0c64f0dc7602d7c36d8a88f",
+        "preserved": true
+      },
+      {
+        "path": "voice-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "e2aaed3c59f9e11b751bdf05bcfd37db67ad701aafdad094a1162df688ece8be",
+        "preserved": true
+      }
+    ]
+  },
+  {
+    "artifact_id": 13631852420,
+    "api": 28,
+    "kind": "voicekey",
+    "original_size": 185148,
+    "original_sha256": "93f7f16eff833c4531de6420e648b0172ff9c1db87ac853f2a1cdb5322f9d127",
+    "preserved_archive": "artifact-13631852420.zip",
+    "preserved_archive_size": 185148,
+    "preserved_archive_sha256": "93f7f16eff833c4531de6420e648b0172ff9c1db87ac853f2a1cdb5322f9d127",
+    "original_members": [
+      {
+        "path": "voicekey-prepare-report.json",
+        "size": 326,
+        "sha256": "fb40ac7de9e6a7fce69e9cff3acdf20ec9f40977e4f796c7cc6cc52d3e16fbaf",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-errors.txt",
+        "size": 58,
+        "sha256": "8cd686f4d0bde6480c53709f3ba3bec5fb2677347c50f9558faa6fce034f82d2",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/acceptance-summary.json",
+        "size": 1088,
+        "sha256": "1bb16679ecf6e20d05bfc13c5573c61fa60b47ae79fe9e5c4ef4584cffcb3086",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-state.txt",
+        "size": 5325,
+        "sha256": "1873ce3bbb72a0ee1ae1bb719154f72afaf064f413e50362ea2cc9ec52e82f01",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-top.txt",
+        "size": 10842,
+        "sha256": "e08ee032ce0296739a911b6656a4f48c569c960837726aa0d9b9c3a8be6f340f",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/host-lifecycle.txt",
+        "size": 5528,
+        "sha256": "f9fe77c11e3f26761db3f099258d590a7dabeba22b201070a9181148bd0f2921",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/last-anr.txt",
+        "size": 88,
+        "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/model-instrumentation.txt",
+        "size": 105,
+        "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/offline-uid.json",
+        "size": 119,
+        "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-keyboard.json",
+        "size": 169,
+        "sha256": "67a712ad3e449ec1c70d885849bf5edadde711cd790ed33357467997178e0c74",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-runtime.txt",
+        "size": 104618,
+        "sha256": "21e43b720651b134149a0764e3e29f5ae4250f991c37bcc5dea9f00567483524",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "7510eb52ed6d7966d1710a8268ddbb0aa5362c99c060e48bc31f94160d66b896",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-recording.png",
+        "size": 37320,
+        "sha256": "0b5b79be0c82667ddde655582a777692515e13b2f534b2de713445a2d19f046e",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "25657cd8e0184b801e9d2315795422e59bf25f7f6312468ff16ee6505a22fdd4",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-stopped.png",
+        "size": 38761,
+        "sha256": "aec490edf7128236a887a188f40d6393398e607cd2d67ff57059b4352aa821b6",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-model-report.json",
+        "size": 6237,
+        "sha256": "cb9e17b1d303230bfdecf07fdd04fa6cc2b0b1a7972430c2b1fb6d3b3b83ef04",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-after.png",
+        "size": 67115,
+        "sha256": "0a8176cdf09f44c11145f20b88a759646c857968e494e8145b21b7dcbc21ca6d",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-before.png",
+        "size": 11494,
+        "sha256": "d6ac4fc92787e7988298e963e61e8ee1bcf7147344bdb277116bcd3b8c50ab1c",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-watchdog-report.json",
+        "size": 1058,
+        "sha256": "777611a7d6cbed9004e60b31d5b18c43212a4f0444b99e05a8bd7cf2561cd423",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/window-state.txt",
+        "size": 15045,
+        "sha256": "e23517a6de971960723f9007859dc73452224f9d5ab23b4b6740b381e717f8e7",
+        "preserved": true
+      }
+    ]
+  },
+  {
+    "artifact_id": 13631529441,
+    "api": 35,
+    "kind": "voicekey",
+    "original_size": 239993,
+    "original_sha256": "36fab662a1b20016a3e17baf72c54b5161d70b83b3227f41f3315fbcdf5be3ed",
+    "preserved_archive": "artifact-13631529441.zip",
+    "preserved_archive_size": 239993,
+    "preserved_archive_sha256": "36fab662a1b20016a3e17baf72c54b5161d70b83b3227f41f3315fbcdf5be3ed",
+    "original_members": [
+      {
+        "path": "voicekey-prepare-report.json",
+        "size": 326,
+        "sha256": "88e9ab6de807856753a1cf8802a534ec8904f43c16d81a43cb10584a97d57947",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-errors.txt",
+        "size": 294,
+        "sha256": "3aa4294ef466b93a7a3402e44e5695748f53f2ba4d030ab3dd9092a28e17b4f0",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/acceptance-summary.json",
+        "size": 1088,
+        "sha256": "1bb16679ecf6e20d05bfc13c5573c61fa60b47ae79fe9e5c4ef4584cffcb3086",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-state.txt",
+        "size": 25829,
+        "sha256": "4246619e4db78fcbf3b856fe07f63a0c97895fb5b9beb3d95e682c79ce2bc918",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-top.txt",
+        "size": 49803,
+        "sha256": "52a2681ebfbdb9a2465beddcd802f5f7f9c32e3902dac6e5465545cc85af7e29",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/host-lifecycle.txt",
+        "size": 5954,
+        "sha256": "5a7bd2699873b4d01a3f835b1d6cffa987dafd1713b1e9b356b7144de1874230",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/last-anr.txt",
+        "size": 88,
+        "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/model-instrumentation.txt",
+        "size": 105,
+        "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/offline-uid.json",
+        "size": 119,
+        "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-keyboard.json",
+        "size": 244,
+        "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-runtime.txt",
+        "size": 262144,
+        "sha256": "3307c9c5718b0c50cb8e873dd07a41244d8c6707b60b010bb8dadd90683872fc",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "50755220f7c8a04611fc33389ef7743a26021f0aa648a084499ded3a766e4b05",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-recording.png",
+        "size": 39641,
+        "sha256": "366dfecdcef3bfbb4fa88d6bffa07b956a91e8ed496af4cb37a14b207bd3eab0",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-stopped.png",
+        "size": 41700,
+        "sha256": "16e5b1ed500ec00b8e5710c492eefbccf59208ddc9431dab9368e3a1bdf51928",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "ac2e2ccadea54cdbfced1899ac13e3d462f224a161fdca4ef7774a88d5c58c1f",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-model-report.json",
+        "size": 6237,
+        "sha256": "cb18a24214cb28044bf639796e52da24adbe60859cf0b4a0e878f187c6dd1176",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-after.png",
+        "size": 73237,
+        "sha256": "a68f2ba5e1d223b416d36d80ee4c8d3b7bfeeb7b6188843091e14aa0cdae1fec",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-before.png",
+        "size": 17526,
+        "sha256": "5066704c5f3aad968fd55ceb4fd411b2cfb34dbd64b1c2984d78167aaebe77cc",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-watchdog-report.json",
+        "size": 1058,
+        "sha256": "22ec73124aeaa87d6e7ff9d732a35a48ad5da657ea810aeffc2c8930f98c06c9",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/window-state.txt",
+        "size": 38949,
+        "sha256": "8c6478e7d712f61966084840037008405062f8ecc7a438ad7e08251de25bbece",
+        "preserved": true
+      }
+    ]
+  },
+  {
+    "artifact_id": 13631747923,
+    "api": 36,
+    "kind": "voicekey",
+    "original_size": 238655,
+    "original_sha256": "e42f181f65b19c2c1bd3f730f7e1e28f5e80a4c42fbf444c3c75ef471ee24d6e",
+    "preserved_archive": "artifact-13631747923.zip",
+    "preserved_archive_size": 238655,
+    "preserved_archive_sha256": "e42f181f65b19c2c1bd3f730f7e1e28f5e80a4c42fbf444c3c75ef471ee24d6e",
+    "original_members": [
+      {
+        "path": "voicekey-android/activity-errors.txt",
+        "size": 294,
+        "sha256": "7278beb091e779ebf8ecc124aae0e1514dc48a8a5f904a6f5d89002e83f7e08a",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/acceptance-summary.json",
+        "size": 1088,
+        "sha256": "b017c512de26c30eee0ae723fe0db09f8936c1d1be0b3b22414295bd2721dd84",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-state.txt",
+        "size": 25629,
+        "sha256": "e0118a8263309183ff211c55b2967c5d1a1a4111e006a9c25df8dd737a531f00",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-prepare-report.json",
+        "size": 326,
+        "sha256": "a551f417e8945a1287dd8aeba91c13cd1b526c66036142ea615b1134fa3b9bc4",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/activity-top.txt",
+        "size": 56106,
+        "sha256": "d980d6503a130f587563b7089d84b16732fb8f077ebca0c238319c72c80f5c42",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/crash.txt",
+        "size": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/host-lifecycle.txt",
+        "size": 5958,
+        "sha256": "c5d3862a1a79a79cca54851960d8ad3549eb0e6365a0b00f4c040c0a08752a9c",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-instrumentation.txt",
+        "size": 316,
+        "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/ime-teardown.txt",
+        "size": 66,
+        "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/last-anr.txt",
+        "size": 88,
+        "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/model-instrumentation.txt",
+        "size": 105,
+        "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/offline-uid.json",
+        "size": 119,
+        "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-keyboard.json",
+        "size": 244,
+        "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/system-runtime.txt",
+        "size": 262144,
+        "sha256": "2af2f57b0997ef16bf4d8117d4bdc7b92ebdbabf29dbcb14ffc660d5163e5477",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-commit-report.json",
+        "size": 5302,
+        "sha256": "230d56b1cc8ff1ab54c5616f36f75ffb46c9f652e6eb618b31d42a10e4fb1808",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-recording.png",
+        "size": 39703,
+        "sha256": "d734153be2ce4cc8f6e8a15887b1ddd2de9701b9be140375bae1f1f140472489",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voice-stopped.png",
+        "size": 41722,
+        "sha256": "2827738b0d9ab35e38faed786b3111e5e7ea2491e68a089130962493f6db0b8d",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-boundary-report.json",
+        "size": 680,
+        "sha256": "e2aaed3c59f9e11b751bdf05bcfd37db67ad701aafdad094a1162df688ece8be",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-model-report.json",
+        "size": 6237,
+        "sha256": "820104895c667dea49e394ebb6267f8654484dfc478823cd351677c42b107b4f",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-after.png",
+        "size": 73160,
+        "sha256": "9e17da2573a4359b6d9347888e26877ccc93a3730956996d52db7713f578a016",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-provider-before.png",
+        "size": 17881,
+        "sha256": "92c6cf1c04e05f770fbc31c664f2a62c605731afd47b997ef81497bd611b8443",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/voicekey-watchdog-report.json",
+        "size": 1058,
+        "sha256": "d0e46ec56e161e7bcf4141194b555fa9c345cb478c7ccd4c26c5f4693daceab1",
+        "preserved": true
+      },
+      {
+        "path": "voicekey-android/window-state.txt",
+        "size": 37822,
+        "sha256": "13c1195d40421572b3271d4f82db28ef3a3a425ea5e811b45d0e04c145aab00a",
+        "preserved": true
+      }
+    ]
+  }
+]

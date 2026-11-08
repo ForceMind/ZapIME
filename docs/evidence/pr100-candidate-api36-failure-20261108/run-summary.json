@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "scope": "production-system-ime-candidate-ranking",
+  "run_attempt": "42515687138-1",
+  "passed": false,
+  "instrumentation_verified": false,
+  "system_keyboard_restored": true,
+  "service_exited": true,
+  "settings_restored": true,
+  "initial_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "final_data_clear": {
+    "org.zapime.android": true,
+    "org.zapime.android.test": true
+  },
+  "errors": [
+    {
+      "stage": "instrumentation",
+      "type": "RuntimeError",
+      "reason": "System-IME instrumentation failed"
+    }
+  ],
+  "api_level": 36,
+  "offline_uid_verified": true
+}

@@ -1,0 +1,170 @@
+[
+  {
+    "job_id": 128838073964,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 338226,
+    "decoded_utf8_sha256": "42b0264eb338a02e0282c30e5d7118f107ecdb2421de3e6d4c11cb22a3873e46",
+    "checkout_excerpts": [
+      {
+        "line": 98,
+        "text": "2026-11-08T19:35:19.5625531Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 100,
+        "text": "2026-11-08T19:35:20.5645580Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 125,
+        "text": "2026-11-08T19:35:20.7822495Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 166,
+        "text": "2026-11-08T19:35:32.2406019Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 167,
+        "text": "2026-11-08T19:35:32.2441226Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  },
+  {
+    "job_id": 128841047355,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 201919,
+    "decoded_utf8_sha256": "8c4a3fdd5fefb698ae65d7f76109da0b85c6e278de2a8b173d3e5a98c4b08d67",
+    "checkout_excerpts": [
+      {
+        "line": 97,
+        "text": "2026-11-08T19:49:30.2591336Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 99,
+        "text": "2026-11-08T19:49:31.5256096Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 124,
+        "text": "2026-11-08T19:49:31.6594858Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 126,
+        "text": "2026-11-08T19:49:31.6640952Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 127,
+        "text": "2026-11-08T19:49:31.6659368Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  },
+  {
+    "job_id": 128841047378,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 209161,
+    "decoded_utf8_sha256": "b2b951cb954da798991a885226c7b30f0165eb0b70ec3abb36579b765c72fa83",
+    "checkout_excerpts": [
+      {
+        "line": 97,
+        "text": "2026-11-08T19:47:53.7969741Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 99,
+        "text": "2026-11-08T19:47:54.9839914Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 124,
+        "text": "2026-11-08T19:47:55.1293698Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 126,
+        "text": "2026-11-08T19:47:55.1345390Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 127,
+        "text": "2026-11-08T19:47:55.1376782Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  },
+  {
+    "job_id": 128841047386,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 219374,
+    "decoded_utf8_sha256": "7a461edd43251bed458944e48459ba5a6f06eaf1002b9ba5b4e36360a93b731c",
+    "checkout_excerpts": [
+      {
+        "line": 96,
+        "text": "2026-11-08T19:50:56.1259578Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 98,
+        "text": "2026-11-08T19:50:57.2462930Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 123,
+        "text": "2026-11-08T19:50:57.4743142Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 125,
+        "text": "2026-11-08T19:50:57.4830945Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 126,
+        "text": "2026-11-08T19:50:57.4868263Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  },
+  {
+    "job_id": 128841047400,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 220987,
+    "decoded_utf8_sha256": "ae0e316f5d3565d364e977c22da573ee6a70272d75d739275b7ec67ab3cd3b48",
+    "checkout_excerpts": [
+      {
+        "line": 96,
+        "text": "2026-11-08T19:51:11.9701737Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 98,
+        "text": "2026-11-08T19:51:13.2383937Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 123,
+        "text": "2026-11-08T19:51:13.4548302Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 125,
+        "text": "2026-11-08T19:51:13.4615513Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 126,
+        "text": "2026-11-08T19:51:13.4653787Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  },
+  {
+    "job_id": 128841047438,
+    "source": "GitHub connector decoded job log; not original HTTP bytes",
+    "decoded_utf8_size": 208078,
+    "decoded_utf8_sha256": "8bd4262124b965dad191f9e03cab092520b95bd35517a431af3392d50cb2674a",
+    "checkout_excerpts": [
+      {
+        "line": 97,
+        "text": "2026-11-08T19:52:52.7495811Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +c50e375966c302598dcc23dc2cc032e2ae07cb5c:refs/remotes/pull/100/merge"
+      },
+      {
+        "line": 99,
+        "text": "2026-11-08T19:52:54.0100413Z  * [new ref]         c50e375966c302598dcc23dc2cc032e2ae07cb5c -> pull/100/merge"
+      },
+      {
+        "line": 124,
+        "text": "2026-11-08T19:52:54.1622096Z HEAD is now at c50e375 Merge 4c98059dc95c56bd46cf568ec9189b1bdbfae591 into d38e6ce954c5fae1af120bd3fd2739d7862a288d"
+      },
+      {
+        "line": 126,
+        "text": "2026-11-08T19:52:54.1688134Z [command]/usr/bin/git log -1 --format=%H"
+      },
+      {
+        "line": 127,
+        "text": "2026-11-08T19:52:54.1719225Z c50e375966c302598dcc23dc2cc032e2ae07cb5c"
+      }
+    ]
+  }
+]

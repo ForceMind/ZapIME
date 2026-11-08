@@ -1,0 +1,17 @@
+{
+  "job_id": 128838058051,
+  "file": "shared-macos.log.gz",
+  "raw_bytes": 93132,
+  "raw_sha256": "a1e9dfb4bfe5d121ae112a83ba32ed32e97b3b1740f4d859edfd7e001c08d7e9",
+  "gzip_bytes": 20736,
+  "gzip_sha256": "6d0e7c92b110e4bea6b1ebffdd3c37c488dfe5f20bb2f43db61fd8e8bab776c4",
+  "rust_totals": [
+    143,
+    0,
+    0,
+    0,
+    0
+  ],
+  "rust_result_groups": 27,
+  "checkout_sha_observed": true
+}

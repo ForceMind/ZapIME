@@ -1,0 +1,17 @@
+{
+  "job_id": 128838076128,
+  "file": "source-prepare.log.gz",
+  "raw_bytes": 87021,
+  "raw_sha256": "c874cb38c8ccc8675713de58ddcd52df5994ae44c4146a5adbe4519f75ffb693",
+  "gzip_bytes": 20443,
+  "gzip_sha256": "9d16ed0fd830b4e7ca8adb87466b173167a0a8421ef5c52385362e6c288cca16",
+  "rust_totals": [
+    143,
+    0,
+    0,
+    0,
+    0
+  ],
+  "rust_result_groups": 27,
+  "checkout_sha_observed": true
+}

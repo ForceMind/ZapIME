@@ -1,0 +1,44 @@
+44434:create
+44462:resume
+45237:window focus=true
+45241:normal connection created; length=0 selection=0:0 composing=-1:-1
+45241:initial snapshot before length=0
+45250:show request; attempt=0 sent=true
+45376:normal connection created; length=0 selection=0:0 composing=-1:-1
+45376:initial snapshot before length=0
+46272:IME command on connection=1 operation=finish length=0 selection=0:0 composing=-1:-1
+46272:IME command on connection=1 operation=batch-end length=0 selection=0:0 composing=-1:-1
+46283:ime_animation_prepare active=1
+46328:ime_animation_end active=0
+46546:real key=1 phase=attempt
+46999:IME command on connection=1 operation=compose length=1 selection=1:1 composing=0:1
+46999:IME command on connection=1 operation=batch-end length=1 selection=1:1 composing=0:1
+47020:real key=1 phase=editable_observed
+47020:real key=2 phase=attempt
+47495:IME command on connection=1 operation=compose length=2 selection=2:2 composing=0:2
+47495:IME command on connection=1 operation=batch-end length=2 selection=2:2 composing=0:2
+47515:real key=2 phase=editable_observed
+47515:real key=3 phase=attempt
+47897:IME command on connection=1 operation=compose length=3 selection=3:3 composing=0:3
+47897:IME command on connection=1 operation=batch-end length=3 selection=3:3 composing=0:3
+47912:real key=3 phase=editable_observed
+47912:real key=4 phase=attempt
+48334:IME command on connection=1 operation=compose length=4 selection=4:4 composing=0:4
+48334:IME command on connection=1 operation=batch-end length=4 selection=4:4 composing=0:4
+48344:real key=4 phase=editable_observed
+48344:real key=5 phase=attempt
+48860:IME command on connection=1 operation=compose length=5 selection=5:5 composing=0:5
+48860:IME command on connection=1 operation=batch-end length=5 selection=5:5 composing=0:5
+48876:real key=5 phase=editable_observed
+49568:IME command on connection=1 operation=commit length=2 selection=2:2 composing=-1:-1
+49568:IME command on connection=1 operation=finish length=2 selection=2:2 composing=-1:-1
+49568:IME command on connection=1 operation=batch-end length=2 selection=2:2 composing=-1:-1
+49604:real key=6 phase=attempt
+49925:IME command on connection=1 operation=compose length=3 selection=3:3 composing=2:3
+49927:IME command on connection=1 operation=batch-end length=3 selection=3:3 composing=2:3
+49951:real key=6 phase=editable_observed
+49951:real key=7 phase=attempt
+50334:IME command on connection=1 operation=compose length=4 selection=4:4 composing=2:4
+50335:IME command on connection=1 operation=batch-end length=4 selection=4:4 composing=2:4
+50351:real key=7 phase=editable_observed
+50525:IME command on connection=1 operation=finish length=4 selection=4:4 composing=-1:-1

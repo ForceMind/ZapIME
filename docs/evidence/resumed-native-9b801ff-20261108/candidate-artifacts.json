@@ -1,0 +1,118 @@
+{
+  "artifacts": [
+    {
+      "id": 13631345760,
+      "name": "ZapIME-candidate-ranking-API-36-metadata",
+      "size_in_bytes": 108962,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631345760",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631345760/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:26:58Z",
+      "expires_at": "2026-11-22T19:26:58Z",
+      "updated_at": "2026-11-08T19:26:58Z",
+      "digest": "sha256:a11385a738baed717d5a5cce4a0f70db137b5d90c95744b00cc953b39a36a76e",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    },
+    {
+      "id": 13631023166,
+      "name": "ZapIME-candidate-ranking-API-28-metadata",
+      "size_in_bytes": 99036,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631023166",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631023166/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:30:59Z",
+      "expires_at": "2026-11-22T19:30:58Z",
+      "updated_at": "2026-11-08T19:30:59Z",
+      "digest": "sha256:19af2b57e3bd95f3235cf38c4ce8e639b4f0ae789a82f620476a15b940ad47ff",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    },
+    {
+      "id": 13631012269,
+      "name": "ZapIME-candidate-ranking-host-metadata",
+      "size_in_bytes": 42835,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631012269",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13631012269/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:25:00Z",
+      "expires_at": "2026-11-22T19:24:59Z",
+      "updated_at": "2026-11-08T19:25:00Z",
+      "digest": "sha256:046b89fa765266424f535ca56e9e1d37b2e630853c61907e699173a4fbda9cf6",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    },
+    {
+      "id": 13630836573,
+      "name": "ZapIME-candidate-ranking-inputs",
+      "size_in_bytes": 118198981,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630836573",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630836573/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:22:05Z",
+      "expires_at": "2026-11-22T19:22:02Z",
+      "updated_at": "2026-11-08T19:22:05Z",
+      "digest": "sha256:d1cbdac0d62c8386a1d216f0251ce78325a84171cd1a2e32894d171866d565ad",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    },
+    {
+      "id": 13630788817,
+      "name": "ZapIME-configuration-compose-API35",
+      "size_in_bytes": 78131,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630788817",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630788817/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:27:17Z",
+      "expires_at": "2026-11-22T19:27:17Z",
+      "updated_at": "2026-11-08T19:27:17Z",
+      "digest": "sha256:de156273b65c2c89e7f402a56a3c7ead0bd6ddd9edd252bdf629f78f5e1adbdc",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    },
+    {
+      "id": 13630637192,
+      "name": "ZapIME-candidate-ranking-build-metadata",
+      "size_in_bytes": 720,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630637192",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13630637192/zip",
+      "expired": false,
+      "created_at": "2026-11-08T19:22:07Z",
+      "expires_at": "2026-11-22T19:22:06Z",
+      "updated_at": "2026-11-08T19:22:07Z",
+      "digest": "sha256:995efdef10f481a1e582315b05d77240cb6df13730ea05efa8389842f734da2b",
+      "workflow_run": {
+        "id": 42513949719,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "fix/android-verified-configuration-restart",
+        "head_sha": "9b801ff947486f5418e9ddc84a88941d1cf3eda6"
+      }
+    }
+  ]
+}
