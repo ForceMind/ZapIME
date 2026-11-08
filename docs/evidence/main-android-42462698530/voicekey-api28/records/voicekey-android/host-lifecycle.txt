@@ -1,0 +1,82 @@
+82763:create
+82770:resume
+83066:window focus=true
+83067:normal connection created; length=0 selection=0:0 composing=-1:-1
+83163:show request; attempt=0 sent=true
+83163:normal connection created; length=0 selection=0:0 composing=-1:-1
+83522:IME command on connection=1 operation=finish
+83522:IME command on connection=1 operation=batch-end
+83672:normal connection created; length=0 selection=0:0 composing=-1:-1
+83695:IME command on connection=3 operation=finish
+83695:IME command on connection=3 operation=batch-end
+91492:IME command on connection=3 operation=finish
+91823:normal connection created; length=16 selection=16:16 composing=-1:-1
+91861:IME command on connection=4 operation=finish
+91861:IME command on connection=4 operation=batch-end
+96120:IME command on connection=4 operation=finish
+96366:show request; attempt=0 sent=true
+Driver fixed events:
+86609:voice_entry_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+86609:voice_entry_physical_down w=14 window=[0,358][320,640] button=[89,440][156,528]
+86661:voice_entry_physical_result down=true up=true
+87676:other_touch_attempt
+87678:other_touch_sent
+87938:voice_nonempty_confirmation_retained
+88238:other_touch_attempt
+88239:other_touch_sent
+88646:other_touch_attempt
+88648:other_touch_sent
+89688:voice_tools_geometry w=14 window=[0,358][320,640] button=[2,380][54,426] animations=0 version=0 focused=true panel=true
+90025:voice_tools_geometry_stable w=14 window=[0,358][320,640] button=[2,380][54,426]
+90060:voice_tools_physical_down w=14 window=[0,358][320,640] button=[2,380][54,426]
+90112:voice_tools_physical_result down=true up=true
+90188:voice_tools_open_postcondition_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+90571:voice_tools_open_postcondition_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+90571:voice_tools_open_postcondition_verified
+90593:voice_entry_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+90981:voice_entry_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+90981:voice_entry_physical_down w=14 window=[0,358][320,640] button=[89,440][156,528]
+91033:voice_entry_physical_result down=true up=true
+91490:other_touch_attempt
+91493:other_touch_sent
+91821:other_touch_attempt
+91825:other_touch_sent
+92235:voice_tools_geometry w=14 window=[0,358][320,640] button=[2,380][54,426] animations=0 version=0 focused=true panel=true
+92575:voice_tools_geometry_stable w=14 window=[0,358][320,640] button=[2,380][54,426]
+92616:voice_tools_physical_down w=14 window=[0,358][320,640] button=[2,380][54,426]
+92669:voice_tools_physical_result down=true up=true
+92749:voice_tools_open_postcondition_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+93084:voice_tools_open_postcondition_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+93084:voice_tools_open_postcondition_verified
+93111:voice_entry_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+93486:voice_entry_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+93486:voice_entry_physical_down w=14 window=[0,358][320,640] button=[89,440][156,528]
+93538:voice_entry_physical_result down=true up=true
+94316:voice_tools_geometry w=14 window=[0,358][320,640] button=[2,380][54,426] animations=0 version=0 focused=true panel=true
+94657:voice_tools_geometry_stable w=14 window=[0,358][320,640] button=[2,380][54,426]
+94695:voice_tools_physical_down w=14 window=[0,358][320,640] button=[2,380][54,426]
+94747:voice_tools_physical_result down=true up=true
+94826:voice_tools_open_postcondition_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+95206:voice_tools_open_postcondition_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+95206:voice_tools_open_postcondition_verified
+95228:voice_entry_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+95611:voice_entry_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+95611:voice_entry_physical_down w=14 window=[0,358][320,640] button=[89,440][156,528]
+95664:voice_entry_physical_result down=true up=true
+96104:other_touch_attempt
+96106:other_touch_sent
+96350:other_touch_attempt
+96351:other_touch_sent
+96788:voice_tools_geometry w=14 window=[0,358][320,640] button=[2,380][54,426] animations=0 version=0 focused=true panel=true
+97129:voice_tools_geometry_stable w=14 window=[0,358][320,640] button=[2,380][54,426]
+97162:voice_tools_physical_down w=14 window=[0,358][320,640] button=[2,380][54,426]
+97215:voice_tools_physical_result down=true up=true
+97290:voice_tools_open_postcondition_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+97678:voice_tools_open_postcondition_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+97678:voice_tools_open_postcondition_verified
+97696:voice_entry_geometry w=14 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=0 focused=true panel=true
+98065:voice_entry_geometry_stable w=14 window=[0,358][320,640] button=[89,440][156,528]
+98065:voice_entry_physical_down w=14 window=[0,358][320,640] button=[89,440][156,528]
+98119:voice_entry_physical_result down=true up=true
+98567:other_touch_attempt
+98568:other_touch_sent

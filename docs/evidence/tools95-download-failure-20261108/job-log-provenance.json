@@ -1,0 +1,37 @@
+[
+  {
+    "file": "api35.log",
+    "bytes": 171136,
+    "sha256": "a11afcadce7ba97e9207c104c96f339fc79ce862e8713038a021e71a5cd80e48",
+    "gzip_file": "api35.log.gz",
+    "gzip_sha256": "5da5ad5cd5ffdc56d9c131a61c7f5707e7586be4280700c80d568f28ab3fd32f"
+  },
+  {
+    "file": "api36.log",
+    "bytes": 171137,
+    "sha256": "670d1aa4fe2caeb70fa2efd6a39bb28287150774d9d066671b2595ac14013081",
+    "gzip_file": "api36.log.gz",
+    "gzip_sha256": "e66c3594a24468385c2e578c33083e729e4e3e2aebf62505f6b4b667e6c6e3fe"
+  },
+  {
+    "file": "candidate-build.log",
+    "bytes": 217961,
+    "sha256": "f42d11def52f15fefcf093b5ecf97b0c99de7b1f466fd174f9fbf542a6281d9b",
+    "gzip_file": "candidate-build.log.gz",
+    "gzip_sha256": "0ccaf4a7f28099218aa588b7c3d9af692b91971fefdbd2c622df8ef900fb52c2"
+  },
+  {
+    "file": "development.log",
+    "bytes": 224360,
+    "sha256": "aa7181f0f67122b9b0f44cb35ed8151d9a831ec3fb77fb73803832547f383eb1",
+    "gzip_file": "development.log.gz",
+    "gzip_sha256": "f9ee12a006add00f80c1c0fc8ea37c8e554365da93ad2720e61974c824d12e3e"
+  },
+  {
+    "file": "host.log",
+    "bytes": 61734,
+    "sha256": "f7577c43ad6041247d7b2511d962c9e04e223d276af4581c5c3774563023653a",
+    "gzip_file": "host.log.gz",
+    "gzip_sha256": "f276846a9d8de8f17ed1c2750b0468ceea8a80b6b6e90b092684d657e4b64ba5"
+  }
+]

@@ -1,0 +1,3 @@
+INSTRUMENTATION_RESULT: stream=PASS ZapIME voice UI: responsive cancel during paused editor IPC; actual emulator microphone preview/stop/retry without automatic insertion, long-space entry, cursor/focus/hide cancellation and unchanged independent Editable; empty_result_insert_checked=true
+
+INSTRUMENTATION_CODE: -1

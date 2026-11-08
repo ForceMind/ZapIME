@@ -1,0 +1,40 @@
+{
+  "sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "node_id": "C_kwDOVQdT8doAKDVhMGRjNTYyOTBiZTljMjQ1OGVlNmU3ZTdkZGFmYzUxOTMwZGQ1OTM",
+  "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "html_url": "https://github.com/ForceMind/ZapIME/commit/5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "author": {
+    "name": "ForceMind",
+    "email": "88872598+ForceMind@users.noreply.github.com",
+    "date": "2026-11-08T08:22:57Z"
+  },
+  "committer": {
+    "name": "GitHub",
+    "email": "noreply@github.com",
+    "date": "2026-11-08T08:22:57Z"
+  },
+  "tree": {
+    "sha": "35654b149be894432d1faaa6469619df8261e3f4",
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/git/trees/35654b149be894432d1faaa6469619df8261e3f4"
+  },
+  "message": "fix(sync): bound cache fills after HTTP callers cancel (#90)\n\nActual fixed-source PostgreSQL/HTTP/S3/installer/recovery workflow42460687991 passed,30 top-level race groups including fuzz seeds,0SKIP; original artifact/log verified. Added deterministic33rd-fill failure and32 physical-fill bound without changing auth/SHA/ACK/cursor semantics. Main integration changes only independently verified publisher/docs; tested Go hashes unchanged. Separate Android regressions remain pending/failed as recorded, with active fixes.",
+  "parents": [
+    {
+      "sha": "e08172dff3ea7cd58f2f0f899c1737b592e5917e",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/e08172dff3ea7cd58f2f0f899c1737b592e5917e",
+      "html_url": "https://github.com/ForceMind/ZapIME/commit/e08172dff3ea7cd58f2f0f899c1737b592e5917e"
+    },
+    {
+      "sha": "e25046ad4b36feb5afd2c137bfab2227f7447acc",
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/git/commits/e25046ad4b36feb5afd2c137bfab2227f7447acc",
+      "html_url": "https://github.com/ForceMind/ZapIME/commit/e25046ad4b36feb5afd2c137bfab2227f7447acc"
+    }
+  ],
+  "verification": {
+    "verified": true,
+    "reason": "valid",
+    "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsFcBAABCAAQBQJq8DFhCRC1aQ7uu5UhlAAAvVwQAJJkzan0pmUoqXvp85JR8/NY\nGmmTAW7aMhCoMWX3f3UGAWNRE4weRCS7LPxp/ytPrxjBB7qk/3PpVo+f0n8wTlCT\n8XpeDQcHUvpr8zjqayPeWO9X0aZRwBIUqOxnORSOZn8dhSBVIGN/He3UCpCikaOa\nMCpoDIaX9JKuK5655uiOt/nV6YZ7J9qm8q/dvKvOkgJPmosma9CFhFXo7V4ev4k9\nNbEVPOO6ogJyCOS4FR27pSIQdMGq9GQBXmjbkK6yljBpCuon0YzTx81v01ZszX8G\niWN3Bkegxj/64JOVq0EQv7VBam0a5RPwxKa3BsgC2iEuc1D1VTo59guwsgIQlECx\nMNGrBflqyua9LbaKHe5QNlfRIr/x/RJ4dLJwKe5h9c4qNA3WmTGwTCkpMiVD//oa\nYM6agpwEeAGdgJ474CJ/OJhJk6H4UfxWpTkK0w74qQUY9qgvm/Vg43y/5HQ5Odbc\nbIaPHbZw2Od+ywrmfTAZ9LXQAyKmqWBhj9Ghjp0UTd4/Nqse5csMwxmVqhw35hZY\n84Ngn5aXmBZN0yLBfektNAMiKTeMKQnC+6lFy7+M34XGBzZXKOJQlLNImJAoe3DP\nR9twxjZ9ifAK8ONHLxGDw3E0m5047m9tLLoTMUvi6ebRJ8+xiqf7N+i2d0rq6yBg\nyjHCOrRwI9ONzDm/aMyD\n=kSIT\n-----END PGP SIGNATURE-----\n",
+    "payload": "tree 35654b149be894432d1faaa6469619df8261e3f4\nparent e08172dff3ea7cd58f2f0f899c1737b592e5917e\nparent e25046ad4b36feb5afd2c137bfab2227f7447acc\nauthor ForceMind <88872598+ForceMind@users.noreply.github.com> 1794126177 -0800\ncommitter GitHub <noreply@github.com> 1794126177 -0800\n\nfix(sync): bound cache fills after HTTP callers cancel (#90)\n\nActual fixed-source PostgreSQL/HTTP/S3/installer/recovery workflow42460687991 passed,30 top-level race groups including fuzz seeds,0SKIP; original artifact/log verified. Added deterministic33rd-fill failure and32 physical-fill bound without changing auth/SHA/ACK/cursor semantics. Main integration changes only independently verified publisher/docs; tested Go hashes unchanged. Separate Android regressions remain pending/failed as recorded, with active fixes.",
+    "verified_at": "2026-11-08T08:22:58Z"
+  }
+}

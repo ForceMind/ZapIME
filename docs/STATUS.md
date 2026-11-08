@@ -1,39 +1,36 @@
 # ZapIME 项目执行状态
 
-## SAF 文件选择器导航修正：原 API28 失败保留，同源码三 API 待验
+## 当前接续检查点（2026-11-08 UTC 审计）
 
-#86 focused42459710009的API35/36实际57项门禁通过；API28 job128667965894实际失败于navigation_close_wait：DocumentsUI roots仍可见、filename不可见、150轮/一次BACK、零文件触摸。导出/native身份/确认与清理通过，不代表恢复页通过。原件与SHA保留于[API28导航原失败](evidence/sync-recovery-navigation-20261107/README.md)。
+本次回读的固定 main 为 `901330f400821913be0d733cc9b16a1d232f6f22`，tree `2fee68ef8694ca2b3fc9838cfe4cd57f5f81d032`（#94 已合并，#86 祖先随之整合）。这是一份固定源码快照，接续仍须查询实时 GitHub。仓库保持 Public，公开源码 `v0.1.0-alpha.1` 仍固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件；不移动标签或覆盖资产。
 
-新测试入口只在已识别roots子树内点击唯一可见Downloads根项，随后等待文件稳定并检查触摸点没有导航遮挡，再进行一次真实文件触摸；不再把系统BACK当成抽屉关闭。产品导入未改，身份/字节/清理门禁不减。102项Android Python、9项报告、2组JVM与全部voice-tests Java编译通过，独立审查待收口；新源码的API28/35/36实际恢复仍待CI。
+最近已复验的完整 main 回归固定于前一源码 `5a0dc562`：Android `42462698530` attempt1最终6/6 SUCCESS，全部原报告按其固定源码严格复验，见[完整原件](evidence/main-android-42462698530/README.md)。这不是后续组字修复或所有间歇问题已解决的证据；901330f 的新运行另按实际回读。发布固定源码的旧运行 `42441322518` 已最终 FAILURE，VoiceKey API36 在准备阶段 adb root/device offline 与清理失败，未进入模型测试；[旧最终原件](evidence/main-android-final-20261107/README.md)保留，不能用另一源码的成功改写。后续候选、完整 Android、SAF、语音、主机模型和服务分别按精确源码与对应报告验收。
 
-## 缓存容量修复：真实事务、S3与灾备已验
-
-#90固定headf01a8b5 / checkout0d5edd686e9f23c639099e71004888bf568c88a1，完整tree6350807ec26343dcd395d532364294efc24badc0。实际服务workflow42460687991/job128669118685全部SUCCESS：Go1.27.3 race顶层30组（含fuzz seed组）、0SKIP，新增真实PG/HTTP取消/容量503/同cursor重试通过；S3兼容存储、容器/漏洞、真实共享客户端交换、撤销、空库/对象桶恢复及一键/重复安装也通过。原始ZIP完整下载核GitHub大小/SHA，安全joblog和原testlog见[本轮服务原件](evidence/cache-fill-ci-20261108/README.md)。
-
-此后仅合并已验发布修复与文档/原件，没有改变该Go源码/测试的内容摘要。独立审查和对应服务/源码/共享/Windows/CPU门禁通过；Android全量继续运行，不将其待验结果当服务修复的手机证明，也不因此宣称用户公网R2/生产部署通过。
-
-## 新 API36 真实组字失败：配置重启路径已定位，安全修复进行中
-
-#87候选workflow42459746934和#89候选42460384426均在API36系统IME失败；方法/host与API35成功不代填整轮。#87新事件环准确记录APPLY_PREEDIT→INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY→新APPLY_PREEDIT，原host连接未更换、focused/served为true；原framework history有RESET_NEW_CONFIGURATION。保留条件以selection_not_owned拒绝后，空初始化回复结束原组字，把原拼音留在正文，下一键开启新组字。具体哪个设置/配置触发者及失败时旧EditorInfo坐标仍未证实。
-
-#89出错前模型submitted/scored均0，真实种子已提交；GitHub compare核对其29文件未修改相关产品/模型实现。两份原始ZIP/固定源树/失败时服务与宿主记录/SHA已保留：[新事件环原件](evidence/api36-configuration-failure-42459746934/README.md)及[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)。清理/真实服务退出成功不改输入FAILURE。
-
-新的修复从#87另开分支fix/android-verified-configuration-restart：保留普通restart强保护，只在相同编辑器/连接及原owned折叠组字条件下用独立有界worker做新鲜有限状态验证，pending不写正文；超时/失效拒绝迟到。该产品修复仍在编码/测试，尚未提交或验收，不能把诊断或#91草稿实验称已修复。
-
-## 当前研发检查点：发布修复已合入，原生与服务切片继续验收
-
-实时main为331def64ea0e3d5492712ff2066ec559f036015f。#85已合并发布脚本修复，实际复现旧None TypeError；源码准备CI42459653225通过30项故障回归、134项workspace、fmt/严格Clippy和精确归档，相关共享/Apple、Windows、服务及CPU检查也通过。合并范围只涉及发布脚本/回归/文档；其Android三条workflow当时仍运行，本次main新CI另按实际结果回读，不借旧成功代填。
-
-| 独立切片 | 当前交付与门禁 |
+| 切片 | 当前交付及证据边界 |
 | --- | --- |
-| #84 / #88 | 已合并原main最终FAILURE原件与一次集中的[S25验收单](S25_ACCEPTANCE_CHECKLIST.md) |
-| [#86](https://github.com/ForceMind/ZapIME/pull/86) | SAF受限诊断已提交；focused42459710009的API35/36恢复11+10+14+12+10项已下载严格复验，API28已在navigation_close_wait失败且零文件触摸；新导航修正在独立分支待三API验收 |
-| [#87](https://github.com/ForceMind/ZapIME/pull/87) | 有界组字事件环、上层epoch拒绝与真实Editable数字诊断已提交；本机编译/回归通过，原生CI继续运行 |
-| [#89](https://github.com/ForceMind/ZapIME/pull/89) | 新64条v3先冻结、两版ORT真实主机结果已保留；35项相关测试过，实际host作业128668210879已成功；三份新CI质量报告、15组native/36项JNI/独立oracle均已下载严格复验 |
-| [#90](https://github.com/ForceMind/ZapIME/pull/90) | 缓存第33个后台读缺陷已复现，32实际fill修复及race×10/vet/build通过；实际强制PG/HTTP/S3/安装/灾备CI全部通过，#90已合并 |
-| [#91](https://github.com/ForceMind/ZapIME/pull/91) | 堆叠#87的独立API35框架重启实验，保持草稿；5项严格报告测试与本机编译通过，未声称实际复现/修复 |
+| [#85](https://github.com/ForceMind/ZapIME/pull/85) 发布创建/回读 | 已合并。旧 None TypeError 已实际复现；保留 REST 创建 ID、有界只读确认及安全重试。30 项故障回归、134 项根 workspace、fmt/严格 Clippy、精确归档及对应 CI 通过；[原失败与验证](evidence/release-draft-recovery-20261107/README.md)保留。没有触发或覆盖新发布。 |
+| [#90](https://github.com/ForceMind/ZapIME/pull/90) 缓存实际 fill 容量 | 已合并。32 个实际 fill/零新 key 队列/同 key 共享，物理后端返回才释放容量；第 33 个后台读取原反例保留。实际 workflow `42460687991` / job `128669118685`：Go1.27.3 race 30 个顶层组（29 测试组及 1 fuzz-seed 组）、0 SKIP，真实 PostgreSQL/HTTP 容量与同 cursor 重试、S3 兼容存储、容器/漏洞、共享客户端、撤销、安装及空库/对象桶灾备全部通过。[服务原件](evidence/cache-fill-ci-20261108/README.md)。 |
+| [#86](https://github.com/ForceMind/ZapIME/pull/86) / [#94](https://github.com/ForceMind/ZapIME/pull/94) SAF 恢复 | #86 的 `42459710009` API35/36 各 57 项门禁通过；API28 实际失败于 navigation_close_wait：roots 可见、文件不可见、150 轮/一次 BACK、零文件触摸。导出/native 身份/确认和清理通过不代表恢复 UI 成功。#94 改用已识别 roots 子树内唯一 Downloads 根项导航，严格保留稳定几何、一次文件触摸及实际字节/身份/清理断言；本机检查及独立审查通过，固定 head7c2ab398/tree2fee68ef 的 focused42463933420 attempt1最终8/8 SUCCESS；API28/35/36各57项严格复验通过，已在#94合并。[三API原件](evidence/sync-recovery-navigation-20261107/accepted-42463933420/README.md)同时保留其独立全量构建HTTP504失败，不称所有Android通过。 |
+| [#87](https://github.com/ForceMind/ZapIME/pull/87) 诊断及新配置重启修复 | 事件环定位 API36 真实失败为 INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY；旧 EditorInfo/选区校验以 selection_not_owned 拒绝后，空初始化回复结束原组字。原连接仍同一、focused/served 为 true，framework 有 RESET_NEW_CONFIGURATION；具体配置触发者和全部历史间歇问题仍不能统一推定。独立新鲜状态验证修复已在 `fix/android-verified-configuration-restart` 实现并通过本机检查/审查，系统 IME、远程读取与新方法探针尚待同源码实际验收。 |
+| [#89](https://github.com/ForceMind/ZapIME/pull/89) 扩充质量语料 | 在原 34 条之外先冻结 64 条新合成 v3 语料，再用真实词库/native 8M 模型及两版 ORT 推理。基础首选 38/64、上下文 50/64；候选缺失 5、上下文名次退步 1 及其他伤害全部保留，不能当真实用户准确率。host 作业 `128668210879` 成功，三份质量报告、15 组 native/36 项 JNI/独立 oracle 已严格复验；同 workflow API36 系统 IME 实际失败，不能用 host 成功代填整轮。 |
+| [#91](https://github.com/ForceMind/ZapIME/pull/91) 配置重启实验 | 保持草稿。旧固定 head `6904faf` 及后续 `e1a94e5` 的 API35 实验均实际为 NOT_EXECUTED：config_setting_transition / configuration_insets_callbacks_not_observed，callback 为 0，设置已恢复。原日志虽有重启/重建，不能称完整连续编辑器实验已复现或通过。公开 requestApplyInsets 初始化观察者与新安全修复已整合到#96；保留真实触摸、连续连接、Editable、事件及设置恢复断言，待实际执行。 |
+| [#95](https://github.com/ForceMind/ZapIME/pull/95) 工具物理入口夹具 | #87 全量 API36 tools_open 原失败与配置重启交叉，服务未记录 tools_open。新切片仅修 test-only 稳定节点身份/几何/served/公开 Insets 和实际 50ms 单次触摸，已经打开不 toggle；原重启、Editable、隐私、退出及 1800ms 取消断言不减。Java 编译、22 项相关 Python 与独立审查通过；其新两条workflow因固定资源HTTP504失败，未进入tools/API门禁。[完整下载失败原件](evidence/tools95-download-failure-20261108/README.md)。 |
 
-公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#40仍为未合并草稿；#25已由经真实事务验收的#90替代关闭，未合并其旧研究分支。旧原main的42441322518失败和历史组字/SAF失败全部保留。新原始CI证据见[本轮原件](evidence/current-slices-20261107/README.md)。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
+#87/#89 的原失败及固定源树/SHA 已保存：[新事件环原件](evidence/api36-configuration-failure-42459746934/README.md)、[候选扩展原失败](evidence/candidate89-api36-failure-20261108/strict-failure-summary.json)；后续清理/服务退出成功不改变输入 FAILURE。已验证的主机/SAF35/36/发布原件另见[切片证据](evidence/current-slices-20261107/README.md)。
+
+[#25](https://github.com/ForceMind/ZapIME/pull/25) 已关闭为被 #90 取代，未合并其旧研究草稿，也没有把旧未执行检查改成通过。[#12](https://github.com/ForceMind/ZapIME/pull/12) 的 macOS 系统选择失败及 [#40](https://github.com/ForceMind/ZapIME/pull/40) 的 Windows 独立 profile 失败仍分别保留草稿，不能视为平台验收完成。服务 CI 通过不等于用户公网 R2、生产部署或多副本预算通过。
+
+缺少真机时继续所有可执行工程。ARM/S25、自然语音、资源/能耗、正式签名与可恢复升级、公开分发条款分别待验；一次集中的手机操作只使用 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)，不在个人设备运行临时 CI 的清资料/root/CA/网络规则脚本。
+
+## 新组字修复的固定候选：尚未通过原生验收
+
+[草稿#96](https://github.com/ForceMind/ZapIME/pull/96) 固定 head `42f4562193f8d13a684aa7b656ca2adaa27de216` / tree `02b21f6d4e1897bbde801b5096c0bd59fa5e258e` 保留#87/#89/#91/#94/#95全部进展。API31+窄路径使用独立物理单槽的新鲜有限状态证明，普通restart强校验不减；800ms逻辑预算、有界旧回复/新动作屏障、焦点/隐私/超时/重入失效与App正文保护均已实现/独立审查。合后本机108项Android Python、12项quality runner、5统计/4固定runtime/5配置报告、3+2 JVM及60产品/4宿主/20语音测试源编译通过。
+
+candidate42464855505的build/host在固定候选资源HTTPS下载HTTP504失败，实际checkout `49186be44237965669f314ebbe768f3684297a45` 的tree与head完全相同；无构建artifact，三API、四项Editable方法及schema2配置实验全部未执行。[首轮原日志/固定源码/未执行范围](evidence/pr96-candidate-download-42464855505/README.md)。完整Android/focused/Apple/Windows亦有独立下载504，不能全部归为同一下载点；SourceAlpha则正确拒绝未检查tar.gz，未执行publish。[全部原始失败及阶段](evidence/pr96-android-build-failure-42464855387/README.md)。该派生原件已在本地逐成员保真转换为现有检查器支持的ZIP，旧tar/SHA/固定父提交指针保留，原打包器不变且完整源码prepare通过；修正尚待与构建健壮性切片更新远端head。新源码仍为草稿，不用旧main成功代填；需要修正后重新按新head验收。
+
+## 历史固定快照
+
+以下记录保留当时提交和运行身份；其中的 pending、失败或“实时 main”只描述当时快照，不覆盖上面的当前检查点，也不将历史失败改写为通过。原始证据文件保持原字节。
 
 ## 发布草稿回读健壮性修复（2026-11-07，独立切片）
 

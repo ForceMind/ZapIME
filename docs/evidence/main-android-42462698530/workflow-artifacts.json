@@ -1,0 +1,137 @@
+{
+  "artifacts": [
+    {
+      "id": 13611116429,
+      "name": "ZapIME-Android-API-36-acceptance",
+      "size_in_bytes": 2423058,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13611116429",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13611116429/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:44:03Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:44:03Z",
+      "digest": "sha256:406757b565de7c04f62f8df48eac6203125542cb505a15e6ad8ad7b4212db719",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13611081198,
+      "name": "ZapIME-VoiceKey-only-API-35",
+      "size_in_bytes": 243406,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13611081198",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13611081198/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:41:07Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:41:07Z",
+      "digest": "sha256:77dc1a71edd3423a126174af79a69696d828913c242d0f1872fd0f9ec8d501d8",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13610916239,
+      "name": "ZapIME-Android-development",
+      "size_in_bytes": 248749502,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610916239",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610916239/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:37:31Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:37:31Z",
+      "digest": "sha256:a485fbecfe0e70fd2f3774158f2f3a258463d7550f271010c7c361ce9cce0c31",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13610876642,
+      "name": "ZapIME-VoiceKey-only-API-28",
+      "size_in_bytes": 184819,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610876642",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610876642/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:40:50Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:40:50Z",
+      "digest": "sha256:d86e9e0462e9b67f43f0cf8655f8680740b69b1c43e2112b1375efe48a985153",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13610767114,
+      "name": "ZapIME-Android-test-harness",
+      "size_in_bytes": 129725261,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610767114",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610767114/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:37:36Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:37:36Z",
+      "digest": "sha256:3a62ad04390e965c46268c00920498df59d080d30170108dd5500ef448a575f7",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13610229046,
+      "name": "ZapIME-Android-API-35-acceptance",
+      "size_in_bytes": 2422733,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610229046",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610229046/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:43:47Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:43:47Z",
+      "digest": "sha256:c03ff659c3f3ae86d439242442a000051703c40a2fc4614e4fbc3e4960d69935",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    },
+    {
+      "id": 13609989329,
+      "name": "ZapIME-VoiceKey-only-API-36",
+      "size_in_bytes": 239840,
+      "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13609989329",
+      "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13609989329/zip",
+      "expired": false,
+      "created_at": "2026-11-08T08:40:50Z",
+      "expires_at": "2027-02-06T08:23:01Z",
+      "updated_at": "2026-11-08T08:40:50Z",
+      "digest": "sha256:aefc173b793fa3610feffd7dbeccab84821af782e6dd225968d85ed80647a492",
+      "workflow_run": {
+        "id": 42462698530,
+        "repository_id": 1426543601,
+        "head_repository_id": 1426543601,
+        "head_branch": "main",
+        "head_sha": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593"
+      }
+    }
+  ]
+}

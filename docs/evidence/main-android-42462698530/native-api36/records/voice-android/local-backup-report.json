@@ -1,0 +1,40 @@
+{
+  "synthetic": true,
+  "api_level": 36,
+  "cases": [
+    {
+      "id": "native_snapshot",
+      "passed": true
+    },
+    {
+      "id": "authentication_and_recovery",
+      "passed": true
+    },
+    {
+      "id": "nonempty_bound_preserved",
+      "passed": true
+    },
+    {
+      "id": "worker_and_limits",
+      "passed": true
+    },
+    {
+      "id": "sensitive_activity",
+      "passed": true
+    },
+    {
+      "id": "explicit_sensitive_copy_and_clear",
+      "passed": true
+    },
+    {
+      "id": "system_saf_export_and_recovery",
+      "passed": true
+    },
+    {
+      "id": "stop_clears_sensitive_state",
+      "passed": true
+    }
+  ],
+  "cleanup_completed": true,
+  "scope": "Actual JNI snapshot\/authentication\/fresh fixture restore, bounded file boundary, secure Activity lifecycle, real system ACTION_CREATE_DOCUMENT export and exact recovery of its bytes into a separate empty fixture. Not positive SAF import UI, phone execution, sync keys or cloud account recovery."
+}
