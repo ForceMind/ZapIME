@@ -1,5 +1,9 @@
 # ZapIME 项目执行状态
 
+## API35 组字生命周期受限诊断（2026-11-07，独立切片）
+
+36df368（含aef7a2f）新增生产Service固定枚举/64条事件环及test-only按键尝试/Editable数字状态，区分reply结束、外部范围放弃、系统finish与上层epoch拒绝；无正文/上下文/包名/键名，未改输入顺序或准入判断。原Selection与新trace两组JVM、14项candidate Python、API36r02/Temurin17的产品58源与独立宿主3源完整编译通过，独立审查无阻塞。历史API35日志不足以确定唯一根因，本切片不称修复；真实触摸、候选ID/代次、完整Editable及服务退出断言全部保留。新Android/candidate模拟器CI待运行，[诊断说明](ANDROID_COMPOSITION_DIAGNOSTICS.md)及[本机证据](evidence/composition-diagnostics-20261107/README.md)。
+
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 
 已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。

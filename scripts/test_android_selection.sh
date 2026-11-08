@@ -5,5 +5,8 @@ build=target/android-selection-tests
 mkdir -p "$build"
 javac -source 8 -target 8 -encoding UTF-8 -d "$build" \
   platforms/android/java/org/zapime/android/SelectionEchoTracker.java \
-  platforms/android/tests/jvm/SelectionEchoTrackerSmoke.java
+  platforms/android/java/org/zapime/android/CompositionTrace.java \
+  platforms/android/tests/jvm/SelectionEchoTrackerSmoke.java \
+  platforms/android/tests/jvm/CompositionTraceSmoke.java
 java -cp "$build" SelectionEchoTrackerSmoke
+java -cp "$build" org.zapime.android.CompositionTraceSmoke

@@ -41,6 +41,7 @@ final class CandidateImeProbe {
             "(?m)^\\s*ZapIME candidate ranking: enabled=(true|false) eligible=(true|false) state=([a-z_]+) scored=([0-9]+) inputRevision=([0-9]+) appliedRevision=(-1|[0-9]+)\\s*$");
     private static final Pattern SUBMITTED = Pattern.compile("(?m)^\\s*ZapIME candidate requests: submitted=([0-9]+)\\s*$");
     private static final Pattern LIFECYCLE = Pattern.compile("(?m)^\\s*(ZapIME lifecycle: [^\\r\\n]+)$");
+    private static final Pattern COMPOSITION = Pattern.compile("(?m)^\\s*(ZapIME composition trace \\(seq@uptime-ms:fixed-code:epoch\\): [^\\r\\n]+)$");
     private final Instrumentation instrumentation;
     private final UiAutomation automation;
     private final String token;
@@ -204,6 +205,7 @@ final class CandidateImeProbe {
     }
 
     private void key(String label, String expectedCode) throws Exception {
+        ProbeActivity.keyStep(keyTaps+1,false);
         tap(stableButton(label));
         ++keyTaps;
         long end = SystemClock.uptimeMillis() + 4000;
@@ -212,7 +214,7 @@ final class CandidateImeProbe {
             require(state.text.startsWith(committedPrefix), "committed_context_changed");
             String raw = state.text.substring(committedPrefix.length()).replace("'", "").replace(" ", "");
             if (raw.equals(expectedCode) && state.committed.equals(committedPrefix)
-                    && (expectedCode.isEmpty() || state.composing)) return;
+                    && (expectedCode.isEmpty() || state.composing)) {ProbeActivity.keyStep(keyTaps,true);return;}
             require(state.committed.equals(committedPrefix), "key_committed_unexpected_text");
             SystemClock.sleep(25);
         }
@@ -251,6 +253,8 @@ final class CandidateImeProbe {
         require(!requests.find(), "ambiguous_request_diagnostic");
         Matcher lifecycle = LIFECYCLE.matcher(text);
         if (lifecycle.find()) result.line += "\n" + lifecycle.group(1);
+        Matcher composition = COMPOSITION.matcher(text);
+        if (composition.find()) result.line += "\n" + composition.group(1);
         return result;
     }
 
