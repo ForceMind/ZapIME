@@ -1,0 +1,4 @@
+# github.com/ForceMind/ZapIME/services/sync/internal/syncapi [github.com/ForceMind/ZapIME/services/sync/internal/syncapi.test]
+internal/syncapi/object_cache_capacity_test.go:76:28: cannot use backend (variable of type *gatedCacheObjects) as ObjectStore value in argument to NewCachedObjects: *gatedCacheObjects does not implement ObjectStore (missing method Probe)
+FAIL	github.com/ForceMind/ZapIME/services/sync/internal/syncapi [build failed]
+FAIL

@@ -1,5 +1,11 @@
 # ZapIME 项目执行状态
 
+## 缓存容量修复：真实事务、S3与灾备已验
+
+#90固定headf01a8b5 / checkout0d5edd686e9f23c639099e71004888bf568c88a1，完整tree6350807ec26343dcd395d532364294efc24badc0。实际服务workflow42460687991/job128669118685全部SUCCESS：Go1.27.3 race顶层30组（含fuzz seed组）、0SKIP，新增真实PG/HTTP取消/容量503/同cursor重试通过；S3兼容存储、容器/漏洞、真实共享客户端交换、撤销、空库/对象桶恢复及一键/重复安装也通过。原始ZIP完整下载核GitHub大小/SHA，安全joblog和原testlog见[本轮服务原件](evidence/cache-fill-ci-20261108/README.md)。
+
+此后仅合并已验发布修复与文档/原件，没有改变该Go源码/测试的内容摘要。独立审查和对应服务/源码/共享/Windows/CPU门禁通过；Android全量继续运行，不将其待验结果当服务修复的手机证明，也不因此宣称用户公网R2/生产部署通过。
+
 ## 新 API36 真实组字失败：配置重启路径已定位，安全修复进行中
 
 #87候选workflow42459746934和#89候选42460384426均在API36系统IME失败；方法/host与API35成功不代填整轮。#87新事件环准确记录APPLY_PREEDIT→INPUT_RESTART→INPUT_REBUILT→APPLY_FINISH_EMPTY→新APPLY_PREEDIT，原host连接未更换、focused/served为true；原framework history有RESET_NEW_CONFIGURATION。保留条件以selection_not_owned拒绝后，空初始化回复结束原组字，把原拼音留在正文，下一键开启新组字。具体哪个设置/配置触发者及失败时旧EditorInfo坐标仍未证实。
@@ -26,6 +32,12 @@
 ## 发布草稿回读健壮性修复（2026-11-07，独立切片）
 
 已在87a0a0a中复现旧None TypeError并改为保留REST创建响应ID、按ID有界只读确认；丢响应不重复POST，畸形身份/权限/冲突明确拒绝，部分上传只核验并补缺失。原17项与新增13项真实Git/故障状态机回归全部通过，Python编译与差异检查通过，[证据](evidence/release-draft-recovery-20261107/README.md)保留旧脚本复现与新源码摘要。本切片CI尚待，未触发新发布；原源码Alpha标签/附件不动。
+
+## 同步缓存后台读取容量修复（2026-11-07，独立切片）
+
+已重新核对#25草稿研究及#22原P1，当前be5源码仍可在取消32个不同key的请求后启动第33个后台读取。d83f817的修复为每缓存实例32个实际fill、零新key等待队列，同key共享一个完成信号；独立Background预算保留其他等待者，超时不提前释放后端仍占用的槽位，迟到字节不缓存。保持DB授权之后使用、内容SHA、独立副本、Put真实持久确认及备份/恢复绕过缓存。
+
+固定Go1.27.3的9组纯缓存race重复10轮、整个服务vet和cmd构建通过；独立审查无阻塞，原33rd-fill失败、可复现夹具及源码摘要已保存。新增真实PostgreSQL/HTTP取消/503/同cursor重试用例仅编译，本机无PG，实际事务验收等待强制数据库CI；SKIP不算通过。[并发契约](OBJECT_CACHE_CONCURRENCY.md)及[原失败/本地证据](evidence/cache-fill-bound-20261107/README.md)。没有直接合并旧#25或访问用户R2/生产服务器。
 
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 
