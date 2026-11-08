@@ -1,0 +1,64 @@
+{
+  "strict_failure_validated": true,
+  "recorded_utc": "2026-11-08T08:10:59.594622+00:00",
+  "overall_passed": false,
+  "method_gate": {
+    "passed": true,
+    "checks": 14,
+    "strict_validator_log": "method-strict-validation.log",
+    "scope": "Actual Android JNI on APK-pinned 8M model, independent upstream tensor execution on the same APK runtime, and real MSIME with a synthetic lexicon; original-ID selection enters production trackCoreCommit and an independent EditText Editable. Not activated system IME, physical taps, phone latency, active-inference kill or heap-leak acceptance."
+  },
+  "system_ime_gate": {
+    "passed": false,
+    "stage": "touch_pinyin_1",
+    "reason": "key_committed_unexpected_text",
+    "touch_keypresses": 8,
+    "seed_candidate_touched": true,
+    "seed_commits": 1,
+    "empty_context_submitted_before_after": [
+      0,
+      0
+    ],
+    "failure_editor_utf16_units": 5,
+    "failure_committed_utf16_units": 4,
+    "failure_editor_composing": true,
+    "failure_editor_focused": true,
+    "failure_editor_served": true,
+    "ranking_submitted": 0,
+    "ranking_scored": 0,
+    "service_starts": 3,
+    "service_restarts": 1,
+    "last_restart_decision": "selection_not_owned"
+  },
+  "cleanup": {
+    "system_keyboard_restored": true,
+    "settings_restored": true,
+    "service_exited": true,
+    "synthetic_packages_cleared": true,
+    "exact_uid_ipv4_ipv6_rules_removed": true,
+    "product_runtime_errors_bytes": 0
+  },
+  "observed_timeline": [
+    "80729 commit (accepted seed)",
+    "80752 finish",
+    "81161 compose (first target key)",
+    "81830 compose (second target key)",
+    "82088 finish (no intervening commit)",
+    "82568 compose (third target key)"
+  ],
+  "system_history": {
+    "timestamp": "2026-11-08 08:03:09.312",
+    "origin": "ORIGIN_IME",
+    "reason": "RESET_NEW_CONFIGURATION",
+    "phase": "PHASE_WM_POST_LAYOUT_NOTIFY_CONTROLS_CHANGED",
+    "source": "artifact/candidate-ime-android/input-method-state.txt"
+  },
+  "interpretation": "Unexpected committed prefix appeared before any LM request/scoring. Configuration reset is observed in system history and last restart declined retention. The old trace does not establish which exact editor/selection/configuration value caused rejection; selection_not_owned is a final recorded decision, not independently proven first cause.",
+  "not_claimed": [
+    "Product fix",
+    "S25/ARM or natural input acceptance",
+    "New candidate corpus caused regression",
+    "Method or cleanup success overrides system-IME failure",
+    "Unique configuration/selection root cause from old limited trace"
+  ]
+}
