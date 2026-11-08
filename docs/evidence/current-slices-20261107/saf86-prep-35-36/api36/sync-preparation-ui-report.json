@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 36,
+  "cases": [
+    {
+      "id": "fresh_main_fixture",
+      "passed": true
+    },
+    {
+      "id": "normal_create_confirmation",
+      "passed": true
+    },
+    {
+      "id": "actual_saf_export",
+      "passed": true
+    },
+    {
+      "id": "actual_native_recovery_identity",
+      "passed": true
+    },
+    {
+      "id": "recovery_code_confirmation",
+      "passed": true
+    },
+    {
+      "id": "actual_saf_open",
+      "passed": true
+    },
+    {
+      "id": "normal_restore_identity_preserved",
+      "passed": true
+    },
+    {
+      "id": "missing_material_requires_restore",
+      "passed": true
+    },
+    {
+      "id": "provider_file_deleted_before_finish",
+      "passed": true
+    },
+    {
+      "id": "stop_clears_recovery_state",
+      "passed": true
+    }
+  ],
+  "scope": "Fresh dedicated CI main profile only: normal preparation buttons\/dialogs, actual ACTION_CREATE_DOCUMENT and ACTION_OPEN_DOCUMENT with one observed filename\/finger selection, actual native key recovery and unchanged protected material. Synthetic owner identity verified locally without HTTP. EditText inputs are programmatic test input, not natural or physical typing. Does not prove account-wide key registration, data synchronization, phone behavior or human backup custody.",
+  "actual_provider_create": true,
+  "actual_provider_open": true,
+  "actual_native_recovery": true,
+  "recovery_identity_unchanged": true,
+  "normal_buttons_and_dialogs_used": true,
+  "missing_material_restore_ui": true,
+  "secret_or_code_logged": false,
+  "button_activation_method": "production_View_performClick_and_visible_AlertDialog_confirmation",
+  "encrypted_package_bytes": 273,
+  "provider_navigation_cover_detected": true,
+  "provider_navigation_close_count": 1,
+  "provider_occlusion_scope": "identified_DocumentsUI_roots_navigation_only",
+  "provider_navigation_bounds": [
+    0,
+    72,
+    272,
+    640
+  ],
+  "provider_navigation_close_method": "observed_cover_single_global_back",
+  "provider_touch_point": [
+    109,
+    381
+  ],
+  "provider_selected_filename_bounds": [
+    74,
+    372,
+    144,
+    391
+  ],
+  "provider_pointer_id": 0,
+  "provider_pointer_count": 1,
+  "provider_tool_type": 1,
+  "provider_event_source": 4098,
+  "provider_selection_unoccluded": true,
+  "provider_cover_closed_before_selection": true,
+  "provider_physical_selection_count": 1,
+  "provider_selection_method": "unique_stable_filename_single_finger",
+  "provider_exit_observed": true,
+  "cleanup_completed": true,
+  "provider_document_deleted": true,
+  "fresh_fixture_owned": true,
+  "code_entry_method": "synthetic_programmatic_EditText_normal_confirmation"
+}

@@ -28,9 +28,15 @@ python3 scripts/verify_upstream.py
 - 首轮 API35 在种子提交后输入 shi 时组字异常结束的失败仍保留。后续成功没有证明唯一根因已解决，不得改写历史失败或放宽真实上屏/服务退出断言。
 - fixed8df ARM64 开发包已独立核验签名、模型/JNI/许可/16KiB 并交付；版本仍为 0.1.0-dev。源码 Alpha 不把旧 APK 改名为新版本，不承诺跨 CI 证书覆盖升级。
 
+## 当前接续检查点
+
+发布修复#85已合并main331def64：REST响应ID、有界只读确认、安全重试与30项故障回归已验；源码准备/134项workspace/fmt/Clippy及相关跨平台/服务检查通过。原公开tag/source/附件保持不动。未合并进展位于#86（SAF诊断）、#87（组字诊断）、#89（64条冻结质量扩展）、#90（缓存fill容量修复），以及堆叠#87的草稿#91（框架重启实验）；接管须保留这些分支/PR，不从main重做。
+
+#86 focused42459710009 API35/36已下载严格复验，API28仍排队；#89两版主机v3基础38/64、上下文50/64，缺失5、上下文名次退步1均保留；#90本机9组race×10/vet/build通过，但真实PG事务仍待CI。#91尚未模拟器执行，不称复现/根因解决。详见STATUS当前检查点，后续先实时回读所有CI/Review再继续修复和按范围合并。一次集中真机操作见[S25总单](S25_ACCEPTANCE_CHECKLIST.md)，不能在个人设备运行CI脚本。
+
 ## 下一轮优先级
 
-1. 核对最新main/CI及已公开源码Alpha的证据。发布首轮创建草稿后即时回读返回None，原作业失败；同源发布job第二轮已成功，但该可见性/错误处理的代码健壮性仍需独立修复。保留已有tag/Release和资产，不重发布覆盖。全量Android最终已FAILURE：常规API28/35/36及VoiceKey API28/35成功，VoiceKey API36在adb root/device offline阶段失败，随后共享包清理失败；未进入模型测试。[最终原件](evidence/main-android-final-20261107/README.md)已核SHA保存。按新切片重新验收，不能代填成功。
+1. 核对最新main/CI及已公开源码Alpha的证据。发布首轮None错误原件保留；健壮性修复已在#85合入并完成对应回归，不重复实现，继续核对新main结果与未合并切片。保留已有tag/Release和资产，不重发布覆盖。全量Android最终已FAILURE：常规API28/35/36及VoiceKey API28/35成功，VoiceKey API36在adb root/device offline阶段失败，随后共享包清理失败；未进入模型测试。[最终原件](evidence/main-android-final-20261107/README.md)已核SHA保存。按新切片重新验收，不能代填成功。
 2. 用新增生命周期诊断继续定位 API35 间歇组字问题；整合首轮另有 API28 同步恢复页 actual SAF open / IOException，见[原安全记录](evidence/source-release-ci-20261107/voicekey-first/README.md)。分别复现，不能把 VoiceKey 专项成功或清理成功当恢复UI成功；保留原报告与断言。
 3. 扩大公开/合成、来源明确的候选语料。先冻结文本/拼音/预期/指标，再推理；区分候选缺失、重排伤害、个人规则、补全/纠错/九键边界。现有评测不能重头标为未实现。
 4. 完成无需手机的性能、失败及隐私边界工程，准备一次集中 ARM/S25 验收。测冷/热加载、长时间输入、P50/P95、RSS、能耗、隐私切换及迟到排序/点击竞态；无手机就明确未验，继续其他工作。

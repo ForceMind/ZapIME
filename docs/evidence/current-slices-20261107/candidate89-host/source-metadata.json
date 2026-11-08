@@ -1,0 +1,146 @@
+{
+  "workflow_run": {
+    "id": 42460384426,
+    "head_sha": "75504523f8dadb5eb0cd8e147c17ef1878ed8219",
+    "head_branch": "test/candidate-quality-corpus-expansion",
+    "event": "pull_request",
+    "run_attempt": 1,
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42460384426"
+  },
+  "host_job": {
+    "id": 128668210879,
+    "name": "Real model numerical and JNI host contracts",
+    "status": "completed",
+    "conclusion": "success",
+    "run_id": 42460384426,
+    "logs_url": null,
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Run dtolnay/rust-toolchain@1.97.1",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Run actions/setup-java@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Run actions/setup-python@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "Validate paired evaluation metrics",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "Prepare fixed model, C headers and JSON dependency",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7
+      },
+      {
+        "name": "Execute actual model scores, bounded cache and JNI lifecycle",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8
+      },
+      {
+        "name": "Prepare fixed official Linux ORT1.28.2 diagnostic library",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9
+      },
+      {
+        "name": "Frozen synthetic paired quality and host resource baseline",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10
+      },
+      {
+        "name": "Run actions/upload-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 11
+      },
+      {
+        "name": "Post Run actions/setup-python@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 20
+      },
+      {
+        "name": "Post Run actions/setup-java@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 22
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 23
+      }
+    ]
+  },
+  "artifact": {
+    "id": 13609626405,
+    "name": "ZapIME-candidate-ranking-host-metadata",
+    "size_in_bytes": 42748,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13609626405",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13609626405/zip",
+    "expired": false,
+    "created_at": "2026-11-08T07:59:37Z",
+    "expires_at": "2026-11-22T07:59:36Z",
+    "updated_at": "2026-11-08T07:59:37Z",
+    "digest": "sha256:15d62f3d853e1a8fbf51e2b3540326fdaab2c475453e7c3b5689e031db9b9487",
+    "workflow_run": {
+      "id": 42460384426,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "test/candidate-quality-corpus-expansion",
+      "head_sha": "75504523f8dadb5eb0cd8e147c17ef1878ed8219"
+    }
+  },
+  "checkout_commit": {
+    "sha": "50b43415958e8f3046f705125dd0a167a2a16719",
+    "tree": "4c2eb28d0201181e4d8338142e16aeb8021c4557",
+    "parents": [
+      "e72e1f05111e2aa86ac952106b75dfbb3c8dbfbf",
+      "75504523f8dadb5eb0cd8e147c17ef1878ed8219"
+    ]
+  },
+  "head_commit": {
+    "sha": "75504523f8dadb5eb0cd8e147c17ef1878ed8219",
+    "tree": "4c2eb28d0201181e4d8338142e16aeb8021c4557",
+    "parents": [
+      "d58d41e1e16c9cf2407718651078a6eb080126de",
+      "e72e1f05111e2aa86ac952106b75dfbb3c8dbfbf"
+    ]
+  },
+  "checkout_and_head_trees_equal": true
+}
