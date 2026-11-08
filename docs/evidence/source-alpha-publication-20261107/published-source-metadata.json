@@ -1,0 +1,28 @@
+{
+  "archive": "ZapIME-0.1.0-alpha.1-source.tar.gz",
+  "archive_format": "git archive tar, gzip mtime=0",
+  "limitations": [
+    "Root repository Git archive only; both pinned submodule contents are omitted.",
+    "Use the public Git repository and git submodule update --init to obtain the pinned upstream sources.",
+    "No APK, acoustic/candidate model weights, build output or signing keys are distributed as release assets.",
+    "This source Alpha is not a stable product, production-signed binary, or completed platform acceptance.",
+    "Source availability and integrity do not resolve the recorded VoiceKey distribution terms or model training-source license questions."
+  ],
+  "repository": "ForceMind/ZapIME",
+  "schema_version": 1,
+  "source_commit": "026bfb8bf467c0d45193a50016e298c3dbb0ac01",
+  "source_tree": "9aa8d7e0850ba110357dc65886f882f4370529ab",
+  "submodules": {
+    "vendor/msime": {
+      "commit": "97d652a49cabb0887355b84186af2aa9032d3814",
+      "included": false,
+      "url": "https://github.com/metasequoiaime/msime.git"
+    },
+    "vendor/voicekey": {
+      "commit": "3ba017826eef7fac405198510b03859eb5b6c8c4",
+      "included": false,
+      "url": "https://github.com/J3n5en/voicekey.git"
+    }
+  },
+  "tag": "v0.1.0-alpha.1"
+}

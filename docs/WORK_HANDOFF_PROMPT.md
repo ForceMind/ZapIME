@@ -1,12 +1,12 @@
 # ZapIME（闪电输入法）｜源码 Alpha 之后的持续研发接管
 
-更新：2026-11-07。此文件取代旧分支交接；上一版原字节保存在[历史快照](history/WORK_HANDOFF_PROMPT_PRE_SOURCE_ALPHA_20261107.md)。
+更新：2026-11-07，源码Alpha已公开并完成三附件下载/精确源码重建复验。发布source026bfb8bf467c0d45193a50016e298c3dbb0ac01，后续main可包含仅文档记录；不要移动已有标签。[发布证据](evidence/source-alpha-publication-20261107/README.md)。此文件取代旧分支交接；上一版原字节保存在[历史快照](history/WORK_HANDOFF_PROMPT_PRE_SOURCE_ALPHA_20261107.md)。
 
 ## 任务与接续入口
 
 继续已有工程，实际修改代码、测试、修复和提交 GitHub，不从零重建，不只给计划，不需要用户反复发送“继续”。仓库 [ForceMind/ZapIME](https://github.com/ForceMind/ZapIME) 保持 Public。默认从实时 `main` 接续，源码版本入口为 `v0.1.0-alpha.1`；先读取最新 PR、CI、Release，不能把本文件当作实时 API。
 
-本轮整合分支为 `release/open-source-alpha`，功能基线是 `5d976f578a2b11d14b9050ff0ec01e5d18d9e538`，此前 PR #71/#73/#74/#75/#78/#79/#80/#81 的实际实现由该基线承接。若当前 main 尚未包含该基线，先查整合 PR 的真实状态，禁止从旧 main 或早期语音分支重新做已经完成的工作。保留未提交内容，不强推或 reset 已有工作。
+整合PR #82已经合并main，已整合堆叠PR关闭；原整合分支为 `release/open-source-alpha`，功能基线是 `5d976f578a2b11d14b9050ff0ec01e5d18d9e538`，此前 PR #71/#73/#74/#75/#78/#79/#80/#81 的实际实现由该基线承接。先核对main确实包含该基线与发布提交，禁止从旧main或早期语音分支重做已经完成的工作。保留未提交内容，不强推或 reset 已有工作。
 
 ```sh
 git clone --recurse-submodules https://github.com/ForceMind/ZapIME.git
@@ -30,7 +30,7 @@ python3 scripts/verify_upstream.py
 
 ## 下一轮优先级
 
-1. 核对源码 Alpha 整合、发布流水线及实时 CI。按固定提交记录新增结果，若发布或检查失败，先复现修复后续阶段；不能把“已准备发布”说成“已发布”。
+1. 核对最新main/CI及已公开源码Alpha的证据。发布首轮创建草稿后即时回读返回None，原作业失败；同源发布job第二轮已成功，但该可见性/错误处理的代码健壮性仍需独立修复。保留已有tag/Release和资产，不重发布覆盖。全量Android在发布快照仍运行；先回读最终结果。
 2. 用新增生命周期诊断继续定位 API35 间歇组字问题；整合首轮另有 API28 同步恢复页 actual SAF open / IOException，见[原安全记录](evidence/source-release-ci-20261107/voicekey-first/README.md)。分别复现，不能把 VoiceKey 专项成功或清理成功当恢复UI成功；保留原报告与断言。
 3. 扩大公开/合成、来源明确的候选语料。先冻结文本/拼音/预期/指标，再推理；区分候选缺失、重排伤害、个人规则、补全/纠错/九键边界。现有评测不能重头标为未实现。
 4. 完成无需手机的性能、失败及隐私边界工程，准备一次集中 ARM/S25 验收。测冷/热加载、长时间输入、P50/P95、RSS、能耗、隐私切换及迟到排序/点击竞态；无手机就明确未验，继续其他工作。
