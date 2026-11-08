@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-only
 import copy
 import unittest
-from android_sync_preparation_report import CASES, UI_CASES, verify_report, verify_ui_report
+from android_sync_preparation_report import (CASES, UI_CASES, FAILURE_SUBSTEPS, FAILURE_WINDOWS,
+                                             failure_diagnostic, verify_report, verify_ui_report)
 
 
 class SyncPreparationReportTests(unittest.TestCase):
@@ -70,6 +71,47 @@ class SyncRecoveryUiReportTests(unittest.TestCase):
             if mutation == "close_count": report["provider_navigation_close_count"] = 2
             if mutation == "close_unobserved": report["provider_navigation_cover_detected"] = True; report["provider_navigation_close_count"] = 1
             with self.subTest(mutation=mutation), self.assertRaises(ValueError): verify_ui_report(report)
+
+    def diagnostic(self, **changes):
+        report = copy.deepcopy(self.report)
+        report.update(status="FAIL", failure_diagnostic={"substep": "navigation_close_wait",
+            "active_window": "documents_ui", "provider_roots_present": True,
+            "matching_filename_present": True, "observed_polls": 150,
+            "navigation_close_attempts": 1, "physical_selection_attempts": 0})
+        report["failure_diagnostic"].update(changes)
+        return report
+
+    def test_provider_timeout_touch_and_return_diagnostics_do_not_pass(self):
+        self.assertIsNone(failure_diagnostic(self.report))
+        for step in FAILURE_SUBSTEPS:
+            report = self.diagnostic(substep=step)
+            self.assertEqual(failure_diagnostic(report)["substep"], step)
+            with self.assertRaises(ValueError): verify_ui_report(report)
+        for window in FAILURE_WINDOWS:
+            report = self.diagnostic(active_window=window,
+                provider_roots_present=window == "documents_ui", matching_filename_present=False)
+            self.assertEqual(failure_diagnostic(report)["active_window"], window)
+        report = self.diagnostic(); report["status"] = "PASS"
+        with self.assertRaises(ValueError): failure_diagnostic(report)
+        with self.assertRaises(ValueError): verify_ui_report(report)
+
+    def test_failure_diagnostics_reject_text_payloads_unknown_fields_and_unbounded_counts(self):
+        invalid = (("substep", "navigation_close_wait\nPRIVATE-CODE"),
+            ("substep", {"private": "code"}), ("active_window", "org.secret.provider"),
+            ("provider_roots_present", 1), ("matching_filename_present", "true"),
+            ("observed_polls", 151), ("observed_polls", -1), ("observed_polls", True),
+            ("navigation_close_attempts", 2), ("physical_selection_attempts", 2),
+            ("uri", "content://private/code"))
+        for field, value in invalid:
+            report = self.diagnostic(**{field: value})
+            with self.subTest(field=field, value=value), self.assertRaises(ValueError) as error:
+                failure_diagnostic(report)
+            self.assertNotIn("PRIVATE-CODE", str(error.exception))
+            with self.assertRaises(ValueError): verify_ui_report(report)
+        for field in self.diagnostic()["failure_diagnostic"]:
+            report = self.diagnostic(); del report["failure_diagnostic"][field]
+            with self.subTest(missing=field), self.assertRaises(ValueError): failure_diagnostic(report)
+        with self.assertRaises(ValueError): failure_diagnostic(self.diagnostic(active_window="product"))
 
 
 if __name__ == "__main__": unittest.main()

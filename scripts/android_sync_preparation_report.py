@@ -35,9 +35,42 @@ UI_CASES = frozenset({
     "provider_file_deleted_before_finish", "stop_clears_recovery_state",
 })
 
+FAILURE_SUBSTEPS = frozenset({"case_body", "filename_poll", "navigation_snapshot", "navigation_close_request",
+                              "navigation_close_wait", "file_snapshot", "touch_down",
+                              "touch_up", "provider_return_wait", "selected_document_read",
+                              "selected_document_identity"})
+FAILURE_WINDOWS = frozenset({"none", "documents_ui", "product", "other"})
+FAILURE_FIELDS = frozenset({"substep", "active_window", "provider_roots_present",
+                            "matching_filename_present", "observed_polls",
+                            "navigation_close_attempts", "physical_selection_attempts"})
+
+
+def failure_diagnostic(report):
+    """Only fixed, content-free observations; diagnostic evidence never passes a gate."""
+    if not isinstance(report, dict):
+        raise ValueError("Invalid sync recovery failure metadata")
+    if "failure_diagnostic" not in report:
+        return None
+    diagnostic = report["failure_diagnostic"]
+    if report.get("status") != "FAIL" or not isinstance(diagnostic, dict) or diagnostic.keys() != FAILURE_FIELDS:
+        raise ValueError("Invalid sync recovery fixed failure metadata")
+    if type(diagnostic["substep"]) is not str or diagnostic["substep"] not in FAILURE_SUBSTEPS:
+        raise ValueError("Invalid sync recovery failure substep")
+    if type(diagnostic["active_window"]) is not str or diagnostic["active_window"] not in FAILURE_WINDOWS:
+        raise ValueError("Invalid sync recovery failure window")
+    if any(type(diagnostic[name]) is not bool for name in ("provider_roots_present", "matching_filename_present")):
+        raise ValueError("Invalid sync recovery provider observation")
+    for name, upper in (("observed_polls", 150), ("navigation_close_attempts", 1), ("physical_selection_attempts", 1)):
+        if type(diagnostic[name]) is not int or not 0 <= diagnostic[name] <= upper:
+            raise ValueError("Invalid sync recovery bounded failure count")
+    if diagnostic["active_window"] != "documents_ui" and (diagnostic["provider_roots_present"] or diagnostic["matching_filename_present"]):
+        raise ValueError("Inconsistent sync recovery provider window observation")
+    return diagnostic
+
 
 def verify_ui_report(report, api=None):
     from android_voicekey_model_smoke import verify_finger_selection
+    failure_diagnostic(report)
     if not isinstance(report, dict) or report.get("schema_version") != 1 or report.get("status") != "PASS" or report.get("synthetic") is not True:
         raise ValueError("Incomplete sync recovery UI report")
     level = report.get("api_level")

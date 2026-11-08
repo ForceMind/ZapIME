@@ -8,6 +8,8 @@
 
 ## 当前执行接续（2026-11-07，源码 Alpha 整合）
 
+SAF恢复新增固定阶段/窗口/布尔的受限test-only诊断已通过本机回归及完整Java编译；保持一次真实触摸和全部身份/清理断言，待三API实际CI确定抽屉导航根因，不把诊断实现当作恢复UI修复。
+
 最新主分支全量Android已结束：42441322518整体FAILURE，VoiceKey API36在adb root/device offline及后续清理失败，未进入模型/JNI门禁；常规API28/35/36和VoiceKey API28/35成功。原失败artifact已核SHA保留于[最终回读](evidence/main-android-final-20261107/README.md)。先做发布脚本创建/回读故障回归，再分别定位SAF导航与组字失败；不同源码/门禁不互相代填。
 
 - 默认从实时 main 与源码版本 v0.1.0-alpha.1 接续；整合分支 release/open-source-alpha 承接5d976f578a2b11d14b9050ff0ec01e5d18d9e538。先核对当前PR/Release，未合并时使用整合分支，不从旧main重做功能。

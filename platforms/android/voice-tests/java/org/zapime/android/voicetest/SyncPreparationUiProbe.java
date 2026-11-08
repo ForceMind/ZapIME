@@ -116,29 +116,50 @@ final class SyncPreparationUiProbe {
         }
         return null;
     }
-    private static void selectRecovery(UiAutomation automation,String name,File output,JSONObject report)throws Exception {
+    private static void observeProvider(UiAutomation automation,String name,SyncRecoveryTrace trace)throws Exception {
+        AccessibilityNodeInfo root=automation.getRootInActiveWindow();
+        String kind=root==null?"":String.valueOf(root.getPackageName());
+        SyncRecoveryTrace.Window window=root==null?SyncRecoveryTrace.Window.NONE:
+                kind.contains("documentsui")?SyncRecoveryTrace.Window.DOCUMENTS_UI:
+                kind.equals("org.zapime.android")?SyncRecoveryTrace.Window.PRODUCT:SyncRecoveryTrace.Window.OTHER;
+        // Read provider nodes only. Never inspect the sensitive product page.
+        trace.observed(window,window==SyncRecoveryTrace.Window.DOCUMENTS_UI&&visibleRoots(automation)!=null,
+                window==SyncRecoveryTrace.Window.DOCUMENTS_UI&&uniqueDocument(automation,name)!=null);
+    }
+    private static JSONObject diagnostic(SyncRecoveryTrace trace)throws Exception {
+        return new JSONObject().put("substep",trace.stepCode()).put("active_window",trace.windowCode())
+                .put("provider_roots_present",trace.rootsPresent).put("matching_filename_present",trace.filenamePresent)
+                .put("observed_polls",trace.polls).put("navigation_close_attempts",trace.closeAttempts)
+                .put("physical_selection_attempts",trace.touchAttempts);
+    }
+    private static void selectRecovery(UiAutomation automation,String name,File output,JSONObject report,SyncRecoveryTrace trace)throws Exception {
         boolean rootsOpened=false,downloadsOpened=false,closedCover=false;Rect previous=null;long stableSince=-1;
         report.put("provider_navigation_cover_detected",false).put("provider_navigation_close_count",0)
                 .put("provider_occlusion_scope","identified_DocumentsUI_roots_navigation_only");
         for(int attempt=0;attempt<150;attempt++){
+            trace.step=SyncRecoveryTrace.Step.FILENAME_POLL;observeProvider(automation,name,trace);
             AccessibilityNodeInfo named=uniqueDocument(automation,name);
             Rect navigation=visibleRoots(automation);
-            if(closedCover&&navigation!=null){previous=null;stableSince=-1;Thread.sleep(200);continue;}
+            if(closedCover&&navigation!=null){trace.step=SyncRecoveryTrace.Step.NAVIGATION_CLOSE_WAIT;previous=null;stableSince=-1;Thread.sleep(200);continue;}
             if(named!=null){
                 Rect bounds=new Rect();named.getBoundsInScreen(bounds);
                 // Visibility alone does not prove hit-test reachability: modern
                 // DocumentsUI exposes the filename beneath an open drawer.
                 if(navigation!=null&&navigation.contains(bounds.centerX(),bounds.centerY())){
                     SyncAccountProbe.check(!closedCover,"provider drawer still covers filename after one close");
+                    trace.step=SyncRecoveryTrace.Step.NAVIGATION_SNAPSHOT;
                     VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-nav-before.png");
                     report.put("provider_navigation_cover_detected",true).put("provider_navigation_bounds",new JSONArray().put(navigation.left).put(navigation.top).put(navigation.right).put(navigation.bottom));
+                    trace.closeAttempt();
                     SyncAccountProbe.check(automation.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK),"observed provider drawer close rejected");
                     closedCover=true;report.put("provider_navigation_close_count",1).put("provider_navigation_close_method","observed_cover_single_global_back");
+                    trace.step=SyncRecoveryTrace.Step.NAVIGATION_CLOSE_WAIT;
                     previous=null;stableSince=-1;Thread.sleep(200);continue;
                 }
                 if(bounds.equals(previous)&&SystemClock.uptimeMillis()-stableSince>=200){
                     // Capture only the provider's public synthetic filename list;
                     // never capture the Activity while a recovery code is displayed.
+                    trace.step=SyncRecoveryTrace.Step.FILE_SNAPSHOT;
                     VoiceKeyModelProbe.providerScreenshot(automation,output,"sync-key-provider-before.png");
                     AccessibilityNodeInfo fresh=uniqueDocument(automation,name);Rect now=new Rect();if(fresh!=null)fresh.getBoundsInScreen(now);
                     Rect finalNavigation=visibleRoots(automation);
@@ -149,8 +170,9 @@ final class SyncPreparationUiProbe {
                                 .put("provider_pointer_id",0).put("provider_pointer_count",1).put("provider_tool_type",MotionEvent.TOOL_TYPE_FINGER)
                                 .put("provider_event_source",InputDevice.SOURCE_TOUCHSCREEN)
                                 .put("provider_selection_unoccluded",true).put("provider_cover_closed_before_selection",closedCover);
-                        long began=SystemClock.uptimeMillis();MotionEvent down=VoiceKeyModelProbe.fingerEvent(began,began,MotionEvent.ACTION_DOWN,now.centerX(),now.centerY());boolean sent;
+                        trace.touchAttempt();long began=SystemClock.uptimeMillis();MotionEvent down=VoiceKeyModelProbe.fingerEvent(began,began,MotionEvent.ACTION_DOWN,now.centerX(),now.centerY());boolean sent;
                         try{sent=automation.injectInputEvent(down,true);}finally{down.recycle();}SyncAccountProbe.check(sent,"recovery provider finger down rejected");Thread.sleep(50);
+                        trace.step=SyncRecoveryTrace.Step.TOUCH_UP;
                         MotionEvent up=VoiceKeyModelProbe.fingerEvent(began,SystemClock.uptimeMillis(),MotionEvent.ACTION_UP,now.centerX(),now.centerY());
                         try{sent=automation.injectInputEvent(up,true);}finally{up.recycle();}SyncAccountProbe.check(sent,"recovery provider finger up rejected");
                         report.put("provider_physical_selection_count",1).put("provider_selection_method","unique_stable_filename_single_finger");return;
@@ -198,6 +220,7 @@ final class SyncPreparationUiProbe {
                 .put("actual_provider_create",false).put("actual_provider_open",false).put("actual_native_recovery",false).put("recovery_identity_unchanged",false).put("normal_buttons_and_dialogs_used",false).put("missing_material_restore_ui",false).put("secret_or_code_logged",false)
                 .put("button_activation_method","production_View_performClick_and_visible_AlertDialog_confirmation");
         String stage="fresh main fixture";Throwable operationFailure=null;boolean owned=false,saveTriggered=false,documentDeleted=false;Activity activity=null;Uri document=null;long handle=0;
+        SyncRecoveryTrace trace=new SyncRecoveryTrace();String recoveryName=null;
         byte[] originalMaterial=null,originalCipher=null,recoveryCode=null,encrypted=null,restored=null,shownBuffer=null;
         try{
             // Do not clear, adopt or bind an existing user's main database.
@@ -226,16 +249,18 @@ final class SyncPreparationUiProbe {
             await(()->ready(instrumentation,page)&&SyncAccountProbe.main(instrumentation,()->SyncAccountProbe.field(page,"expectedCode")!=null),"actual recovery export did not complete");
             shownBuffer=SyncAccountProbe.main(instrumentation,()->(byte[])SyncAccountProbe.field(page,"expectedCode"));recoveryCode=shownBuffer.clone();
             document=SyncAccountProbe.main(instrumentation,()->(Uri)SyncAccountProbe.field(page,"lastExportUri"));SyncAccountProbe.check(document!=null&&recoveryCode.length==43,"actual recovery result URI or code missing");
-            String name=filename(context,document);encrypted=read(context,document);report.put("actual_provider_create",true).put("encrypted_package_bytes",encrypted.length);SyncAccountProbe.passed(cases,"actual_saf_export");
+            String name=filename(context,document);recoveryName=name;encrypted=read(context,document);report.put("actual_provider_create",true).put("encrypted_package_bytes",encrypted.length);SyncAccountProbe.passed(cases,"actual_saf_export");
             stage="native recovery identity";restored=(byte[])call(core,"restoreSyncRecovery",new Class<?>[]{String.class,byte[].class,byte[].class},account.toString(),recoveryCode,encrypted);
             SyncAccountProbe.check(restored!=null&&Arrays.equals(originalMaterial,restored),"actual provider export failed native identity recovery");report.put("actual_native_recovery",true);SyncAccountProbe.passed(cases,"actual_native_recovery_identity");
             stage="recovery code confirmation";enter(instrumentation,page,"confirmCode",recoveryCode);button(instrumentation,page,"confirm");
             SyncAccountProbe.check(SyncAccountProbe.main(instrumentation,()->SyncAccountProbe.field(page,"expectedCode")==null&&((TextView)SyncAccountProbe.field(page,"recovery")).length()==0),"normal recovery code confirmation retained display");
             for(byte value:shownBuffer)SyncAccountProbe.check(value==0,"normal code confirmation retained shown bytes");SyncAccountProbe.passed(cases,"recovery_code_confirmation");
-            stage="actual SAF open";button(instrumentation,page,"choose");selectRecovery(automation,name,output,report);
+            stage="actual SAF open";button(instrumentation,page,"choose");selectRecovery(automation,name,output,report,trace);
+            trace.step=SyncRecoveryTrace.Step.PROVIDER_RETURN_WAIT;
             await(()->ready(instrumentation,page)&&SyncAccountProbe.main(instrumentation,()->SyncAccountProbe.field(page,"restoreUri")!=null),"actual recovery provider selection did not return");
+            trace.step=SyncRecoveryTrace.Step.SELECTED_DOCUMENT_READ;
             Uri selected=SyncAccountProbe.main(instrumentation,()->(Uri)SyncAccountProbe.field(page,"restoreUri"));byte[] selectedBytes=read(context,selected);
-            try{SyncAccountProbe.check(name.equals(filename(context,selected))&&Arrays.equals(encrypted,selectedBytes),"actual selected document differs from exported file");}finally{Arrays.fill(selectedBytes,(byte)0);}
+            try{trace.step=SyncRecoveryTrace.Step.SELECTED_DOCUMENT_IDENTITY;SyncAccountProbe.check(name.equals(filename(context,selected))&&Arrays.equals(encrypted,selectedBytes),"actual selected document differs from exported file");}finally{Arrays.fill(selectedBytes,(byte)0);}
             report.put("actual_provider_open",true).put("provider_exit_observed",true);SyncAccountProbe.passed(cases,"actual_saf_open");
             stage="normal restore identity";enter(instrumentation,page,"restoreCode",recoveryCode);button(instrumentation,page,"restore");confirmDialog(automation,"导入已有同步密钥？","验证并导入");
             await(()->ready(instrumentation,page)&&SyncAccountProbe.main(instrumentation,()->((TextView)SyncAccountProbe.field(page,"status")).getText().toString().startsWith("同步密钥已验证并保存在本机。")),"normal provider restore did not complete");
@@ -253,7 +278,14 @@ final class SyncPreparationUiProbe {
             stage="provider cleanup before finish";SyncAccountProbe.check(DocumentsContract.deleteDocument(context.getContentResolver(),document),"new recovery provider document deletion failed");document=null;documentDeleted=true;SyncAccountProbe.passed(cases,"provider_file_deleted_before_finish");
             stage="stop clears code";enter(instrumentation,page,"restoreCode",recoveryCode);SyncAccountProbe.main(instrumentation,()->{page.finish();return null;});instrumentation.waitForIdleSync();
             await(()->SyncAccountProbe.main(instrumentation,()->((EditText)SyncAccountProbe.field(page,"restoreCode")).length()==0&&((EditText)SyncAccountProbe.field(page,"confirmCode")).length()==0&&((TextView)SyncAccountProbe.field(page,"recovery")).length()==0&&SyncAccountProbe.field(page,"expectedCode")==null),"stopped recovery Activity retained secrets");SyncAccountProbe.passed(cases,"stop_clears_recovery_state");report.put("status","PASS");
-        }catch(Throwable error){operationFailure=error;cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic sync preparation UI case: "+stage,error);}
+        }catch(Throwable error){operationFailure=error;
+            // Keep arbitrary Throwable messages/causes out: they can contain a URI
+            // or provider text. Enums and booleans distinguish where selection failed.
+            if(stage.equals("actual SAF open")){
+                try{observeProvider(instrumentation.getUiAutomation(),recoveryName,trace);}catch(Throwable ignored){}
+                report.put("failure_diagnostic",diagnostic(trace));
+            }
+            cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic sync preparation UI case: "+stage,error);}
         finally{
             Throwable cleanup=null;
             try{

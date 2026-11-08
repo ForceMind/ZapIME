@@ -1,5 +1,9 @@
 # ZapIME 项目执行状态
 
+## 同步恢复 SAF 失败的受限诊断（2026-11-07，独立切片）
+
+119087e在保留原API28失败artifact/SHA的基础上补充test-only导航阶段、固定窗口分类及有界布尔/次数；不记录恢复码、URI、节点文字或任意异常消息。99项Android Python、6项报告回归、JVM trace和API36r02/Temurin17全voice-tests编译通过；独立审查无阻塞。原件仅证明关闭抽屉请求后尚无文件触摸，不能认定唯一根因，产品与触摸/恢复身份/清理门禁均未改。新三API模拟器结果待本PR CI，[证据](evidence/sync-recovery-diagnostics-20261107/README.md)。
+
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 
 已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。
