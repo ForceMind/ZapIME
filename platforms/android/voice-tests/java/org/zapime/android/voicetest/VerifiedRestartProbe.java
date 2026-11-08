@@ -5,6 +5,9 @@ import android.os.Build;
 import android.view.ContextThemeWrapper;
 import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputConnectionWrapper;
+import android.view.inputmethod.EditorInfo;
+import java.util.function.BooleanSupplier;
 import android.widget.EditText;
 import java.io.File;
 import java.lang.reflect.*;
@@ -69,8 +72,32 @@ final class VerifiedRestartProbe {
                 check(edit.getText().toString().equals("前后"));return null;
             });
             cases.put(new JSONObject().put("id","delete_getter_finish_guard").put("passed",true));
+            for(String phase:new String[]{"begin","region","end"}){
+                main(i,()->{
+                    EditText edit=new EditText(new ContextThemeWrapper(i.getTargetContext(),android.R.style.Theme_Material_Light_NoActionBar));edit.setText("前sh后");edit.setSelection(3);
+                    int active=(Integer)field(service,"epoch"),starts=(Integer)field(service,"inputStarts"),lifecycle=(Integer)field(service,"inputLifecycle");
+                    int[] calls=new int[3];
+                    Runnable finish=()->{try{type.getMethod("onFinishInput").invoke(service);}catch(Exception e){throw new IllegalStateException(e);}};
+                    BaseInputConnection editable=new BaseInputConnection(edit,true){
+                        @Override public android.text.Editable getEditable(){return edit.getText();}
+                    };
+                    // Keep BaseInputConnection's internal nested batch calls on
+                    // its own receiver; observe only the helper's public calls.
+                    InputConnection connection=new InputConnectionWrapper(editable,false){
+                        @Override public boolean beginBatchEdit(){++calls[0];boolean ok=super.beginBatchEdit();if(phase.equals("begin"))finish.run();return ok;}
+                        @Override public boolean setComposingRegion(int start,int end){++calls[1];boolean ok=super.setComposingRegion(start,end);if(phase.equals("region"))finish.run();return ok;}
+                        @Override public boolean endBatchEdit(){++calls[2];boolean ok=super.endBatchEdit();if(phase.equals("end"))finish.run();return ok;}
+                    };
+                    BooleanSupplier current=()->{try{return (Boolean)call(service,"inputStartCurrent",new Class<?>[]{int.class,int.class,int.class,InputConnection.class,EditorInfo.class},active,starts,lifecycle,null,null);}catch(Exception e){throw new IllegalStateException(e);}};
+                    check(current.getAsBoolean());
+                    boolean retained=(Boolean)call(service,"restoreRestartRegion",new Class<?>[]{InputConnection.class,int.class,int.class,BooleanSupplier.class},connection,1,3,current);
+                    check(!retained&&!current.getAsBoolean()&&calls[0]==1&&calls[2]==1&&calls[1]==(phase.equals("begin")?0:1));
+                    check(edit.getText().toString().equals("前sh后"));return null;
+                });
+                cases.put(new JSONObject().put("id","ordinary_"+phase+"_finish_reentry").put("passed",true));
+            }
             Files.write(new File(output,"verified-restart-method-report.json").toPath(),new JSONObject().put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases)
-                .put("scope","Independent Android Editable with production commit/compose helpers and application guard under synthetic unattached Service finish reentry. Not active system IME, framework configuration restart, remote Binder proof or phone acceptance.").toString(2).getBytes(StandardCharsets.UTF_8));
+                .put("scope","Independent Android Editable with production commit/compose/application and ordinary region-restore helpers under synthetic unattached Service finish reentry. Ordinary helper cases do not execute the full framework-bound retain/onStartInput path. Not active system IME, framework configuration restart, remote Binder proof or phone acceptance.").toString(2).getBytes(StandardCharsets.UTF_8));
         }finally{((ExecutorService)field(service,"worker")).shutdown();((ExecutorService)field(service,"reader")).shutdown();}
     }
 }

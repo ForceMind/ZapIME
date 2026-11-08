@@ -1,0 +1,27 @@
+{
+  "remote_baseline": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "source_path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+  "source_sha256": "8b7ebf623ec2f82960493beaea1dea100ee2c1ecc21dc309c04fdf66b39eeed7",
+  "extracted_method_sha256": "9aed2f7730f33e4d4ac70b3906d38053a10deb2b373f5eef8bfaea03f5f6e848",
+  "method_and_outer_branch_are_extracted_verbatim": true,
+  "tracker": "actual SelectionEchoTracker.java compiled with synthetic public-interface/lifecycle stand-ins",
+  "scope": "Host JVM method/control-flow evidence only; not activated Android Service, actual lifecycle dispatch, Binder, editor mutation or stale reply application proof.",
+  "files": [
+    {
+      "path": "OrdinaryRestartRepro.java",
+      "bytes": 6267,
+      "sha256": "d18fba1991872903e37322350c40a5f2edc552d94bf78d2ab18c760dc7d25ab6"
+    },
+    {
+      "path": "baseline-run.log",
+      "bytes": 1551,
+      "sha256": "354a819fda8376e68f72fd6dae9b26f1f7855d0b528008fc6e7a8f66623f1bdb"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 553,
+      "sha256": "e818e18a4366ddaad0cde99c7c90a10e29fd802d9026ac9f99a521874c0b1ade"
+    }
+  ]
+}

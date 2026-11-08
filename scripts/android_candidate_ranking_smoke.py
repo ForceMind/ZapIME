@@ -18,7 +18,8 @@ from android_candidate_ranking_report import verify_report
 
 
 def verify_restart_methods(report, api):
-    expected = {"commit_finish_reentry", "compose_finish_reentry", "begin_batch_finish_guard", "delete_getter_finish_guard"}
+    expected = {"commit_finish_reentry", "compose_finish_reentry", "begin_batch_finish_guard", "delete_getter_finish_guard",
+                "ordinary_begin_finish_reentry", "ordinary_region_finish_reentry", "ordinary_end_finish_reentry"}
     cases = report.get("cases") if isinstance(report, dict) else None
     if (not isinstance(report, dict) or report.get("synthetic") is not True
             or report.get("api_level") != api or api < 31 or not isinstance(cases, list)

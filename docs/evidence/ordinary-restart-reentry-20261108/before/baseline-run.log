@@ -1,0 +1,14 @@
+normal: return=true, epoch=1, starts=1, begin/set/end=1/1/1, region=2:5, stale_setters=0, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=true, oldInfoRankingBegins=1
+begin_finish: return=true, epoch=2, starts=1, begin/set/end=1/1/1, region=5:5, stale_setters=1, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1
+begin_new: return=true, epoch=2, starts=2, begin/set/end=1/1/1, region=5:5, stale_setters=1, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1
+set_finish: return=true, epoch=2, starts=1, begin/set/end=1/1/1, region=2:5, stale_setters=0, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1
+set_new: return=true, epoch=2, starts=2, begin/set/end=1/1/1, region=2:5, stale_setters=0, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1
+end_finish: return=true, epoch=2, starts=1, begin/set/end=1/1/1, region=2:5, stale_setters=0, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1
+end_new: return=true, epoch=2, starts=2, begin/set/end=1/1/1, region=2:5, stale_setters=0, selection=5:5, decision=retained, drains=1
+  exact outer: oldIdentity=true, identityMatchesCurrent=false, oldInfoRankingBegins=1

@@ -1,0 +1,5 @@
+warning: [options] bootstrap class path not set in conjunction with -source 8
+1 warning
+SelectionEchoTracker smoke passed
+PASS bounded fixed-code composition trace: ordering, immutable snapshots, distinct finish causes and no text-bearing API
+PASS verified restart: exact absolute proof, prefix/suffix, ordered barrier release, bounded hold, stale rejection and process physical capacity after timeout

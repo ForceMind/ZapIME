@@ -28,7 +28,7 @@
     {
       "path": "local-tests.log",
       "bytes": 2022,
-      "sha256": "64bb87888cb68353571352e4e2bbcdba4885fb9743639372f8e97ac770e3511f"
+      "sha256": "5e21aed74696e97229de1f35dae2f7a7340be2ce4a65e04b5d13b14af8816e27"
     },
     {
       "path": "product-compile.log",

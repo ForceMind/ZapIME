@@ -120,16 +120,12 @@ public final class ConfigurationProbeStateHarness {
         try { direct = Boolean.toString(host.continuity(observer, baseline, 1, 1)); }
         catch (Exception failure) { direct = "threw"; }
 
-        // Keep the actual trigger/fresh requirement and interruption catch
-        // structure. A failed fresh proof must not erase observed interruption.
+        // The current trigger checks continuity before accepting its fresh
+        // proof; the catch must retain explicit interruption classification.
         host.report.put("classification", "not_executed");
         boolean allowed = false;
         try {
             require(host.current.restarts > baseline.restarts, "framework_restart_not_observed");
-            boolean fresh = host.traceEventAfter(host.current, baseline.traceSequence, "RESTART_FRESH_VALIDATED");
-            boolean rejected = host.traceEventAfter(host.current, baseline.traceSequence, "RESTART_FRESH_REJECTED");
-            boolean emptyFinish = host.traceEventAfter(host.current, baseline.traceSequence, "APPLY_FINISH_EMPTY");
-            require(fresh && !rejected && !emptyFinish, "configuration_fresh_verification_not_completed");
             if (!host.continuity(observer, baseline, 1, 1)) {
                 host.report.put("classification", "interrupted_not_same_editor");
                 throw new Exception("configuration_interrupted_not_same_editor");

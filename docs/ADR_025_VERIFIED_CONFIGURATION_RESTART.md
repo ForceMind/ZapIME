@@ -37,3 +37,11 @@ Pending 不重建输入核心、不发送空 layout、不写编辑器。完整�
 旧回复的单次apply内部也在原有beginBatch、commit/compose/finish、删除读取/写入后复核epoch、inputStarts与连接，避免同步重启后继续执行本回复余下写入。新增独立Android Editable方法探针核commit/compose/onFinishInput、beginBatch及delete getter重入，使用未附着的合成Service实例，不调用活动系统IME；其四项独立报告不能冒充框架重启/远程Binder证明。
 
 随后必须实际回读同源码 Android API28/35/36 及独立配置重启实验。系统实验若真实隐藏/结束输入或变连接，应分类为中断，不能当作同编辑器保护失败或通过。真实触摸、候选身份、独立 Editable、原选择/隐私/服务退出断言不放宽。模拟器和源码/编译仍不能替代 ARM/S25 验收。
+
+## 普通强保留路径的重入收口
+
+普通EditorInfo初始快照/完整owned选区准入保持原样；通过准入后也必须在batch begin、setComposingRegion及end返回之间复核调用frame与模式/隐私/原preedit/owned范围。局部固定坐标不能在setter回调结束输入或切换编辑器后继续应用。原连接的endBatchEdit只为平衡已完成begin，不授权在新frame写元数据。
+
+私有三态区分REJECTED（正常拒绝，可继续既有fresh/fallback）、RETAINED和INVALIDATED（原调用失效，外层立即退出，不能用旧info重建）。inputLifecycle只在start/finish入口递增，识别自身abandon提升epoch期间发生的nested生命周期；不记录内容、不改协议。合法旧reply可在drain期间推进preedit，所以排空后只检查frame/模式/隐私，不要求旧preedit不变。
+
+[旧实际方法复现与新回归](evidence/ordinary-restart-reentry-20261108/README.md)包含动态提取实际Java方法的合成生命周期6场景；原drain计数只证明被调用，不声称旧reply实际上屏或RemoteInputConnection接受失效setter。新增Android Editable探针只执行区域恢复helper的begin/region/end重入，未覆盖整个框架绑定的Service路径或Binder。新固定源码的真实IME/框架重启和设备验收仍须单独执行。

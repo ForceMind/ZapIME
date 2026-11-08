@@ -1,5 +1,11 @@
 # ZapIME 项目执行状态
 
+## 普通强保留的setter重入保护（独立后续切片）
+
+已用实际Java方法/outer分支和合成生命周期复现普通路径guard gap：begin/set/end重入finish/newEditor后，旧方法仍可能尝试旧setter、覆盖Service选区/EditorInfo并返回retained。原件不证明RemoteInputConnection实际接受或旧reply上屏。新私有三态与inputLifecycle/epoch/starts/连接/info/原metadata和owned组字守卫阻止失效frame继续或fallback旧info；原强快照/选区准入保留，合法旧reply推进仍允许。
+
+118项Android Python（含5个actual-method JVM驱动、22状态）及3组JVM通过，60/4/20 Java源编译和独立审查通过。新7项Android方法门禁含3个真实Editable restore helper探针，已编译未执行；不把它们称为完整Service/Binder/系统IME或手机通过。本切片不取消正在运行的9b固定源码CI，后续按新固定源码独立验收。[原失败和本机验证](evidence/ordinary-restart-reentry-20261108/README.md)。
+
 ## 本轮接续：固定来源可获取，配置实验分类修正后重新验收
 
 重新读取main d38e6ce和#96固定94b后，原HTTPS模型、词库与X-ASR在云执行器完整GET成功，大小/SHA均匹配原锁；原生产下载函数的空目录调用也成功。未改URL/镜像/TLS/校验，载荷未入Git。[获取元数据](evidence/fixed-dependency-access-20261108/README.md)只证明当前云端可获取，不能代填CI恢复或原生通过。

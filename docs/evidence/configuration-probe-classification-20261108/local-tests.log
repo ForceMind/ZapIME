@@ -10,6 +10,6 @@ test_observed_interruption_does_not_need_a_successful_fresh_proof (test_android_
 test_unknown_trace_is_not_reported_as_observed_interruption (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_unknown_trace_is_not_reported_as_observed_interruption) ... ok
 
 ----------------------------------------------------------------------
-Ran 10 tests in 1.380s
+Ran 10 tests in 1.169s
 
 OK
