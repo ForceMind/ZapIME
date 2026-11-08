@@ -24,8 +24,8 @@ def require(condition):
         raise ValueError("invalid synthetic candidate evaluation")
 
 
-def identifiers(value, maximum):
-    require(isinstance(value, list) and 0 < len(value) <= maximum)
+def identifiers(value, maximum, allow_empty=False):
+    require(isinstance(value, list) and (0 if allow_empty else 1) <= len(value) <= maximum)
     require(all(isinstance(item, str) and 0 < len(item) <= 128 for item in value))
     require(len(set(value)) == len(value))
     return value
@@ -50,8 +50,10 @@ def summarize(data):
         require(identifier not in seen)
         seen.add(identifier)
         expected = set(identifiers(case.get("expected"), 32))
-        baseline = identifiers(case.get("baseline"), 256)
-        ranked = identifiers(case.get("ranked"), 256)
+        # A real decoder can expose no candidates. Keep that input as a miss,
+        # rather than dropping it or inventing a visible candidate identity.
+        baseline = identifiers(case.get("baseline"), 256, allow_empty=True)
+        ranked = identifiers(case.get("ranked"), 256, allow_empty=True)
         require(set(baseline) == set(ranked))
         elapsed = case.get("latency_ms")
         require(type(elapsed) in (int, float) and math.isfinite(elapsed) and elapsed >= 0)

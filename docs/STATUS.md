@@ -1,5 +1,17 @@
 # ZapIME 项目执行状态
 
+## 64条冻结候选扩展与两运行库实测（2026-11-07，独立切片）
+
+新增v3为64条来源明确的专门编写合成用例，先在本地f92989d冻结后推理；远端重建冻结d58d41e的树与其完全相同，原Git时间/语料SHA及身份映射保留。实际生产词库、Rust1.97.1 release核心、native8M在ORT1.24.4和官方1.28.2均完成：基础首选38/64、冻结上下文50/64，候选缺失5；上下文名次退步1、空上下文诊断退步4，全部失败保留，不据此改产品默认或推断真人准确率。6条个人fixture实际准备并保固定槽/排除评分；九键、补全和上下文边界分别归因。旧v2新runner复跑仍17→14/25，保留空模式首选损害3，不与v3合并作独立样本。
+
+12项runner、5项统计、4项官方host runtime准备和14项candidate Python检查通过；固定官方1.28.2按归档/成员长度和SHA准备，CI分别产出v2、v3/1.24.4、v3/1.28.2报告。原JSON保真gzip与原摘要已核，[完整证据](evidence/candidate-quality-expansion-20261107/README.md)。本轮仅主机质量/工具，Android焦点/隐私、ARM资源/能耗及新远端CI仍单独验收。
+
+## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
+
+已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。
+
+该失败独立于原API28恢复SAF打开IOException和历史API35间歇组字；没有确认共同根因。下方“仍运行”是旧快照；后续切片继续按各自精确源码和CI验收。
+
 ## v0.1.0-alpha.1 已公开发布（2026-11-07 客户端日期）
 
 [源码Alpha](https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1)已实际公开，Release438003228，发布时间2026-11-08T03:17:38Z；固定source026bfb8bf467c0d45193a50016e298c3dbb0ac01/tree9aa8d7e0850ba110357dc65886f882f4370529ab。PR #82已合并开发栈，已整合的重复PR均关闭，未完成的#12/#25/#40继续保留。

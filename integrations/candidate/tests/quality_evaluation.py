@@ -18,8 +18,7 @@ import subprocess
 import sys
 import tempfile
 import time
-
-import onnxruntime
+import uuid
 
 from default_pool_probe import Core, MODEL_ID, HOST_ORT_VERSION, ROOT, digest, verified
 
@@ -31,7 +30,11 @@ CORPORA = {
            "75ae851acb570abbd5295aafa52eda41b33f9c2b"),
     "v2": ("3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
            "452a7660c6a6f40663841a7b53692f3b90ba2d51"),
+    "v3": ("70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1",
+           "f92989d846ef6aa018829485ebc477f4d2229cd8"),
 }
+CORPUS_COUNTS = {"synthetic-quality-v1": 34, "synthetic-quality-v2": 34,
+                 "synthetic-quality-v3": 64}
 CORPUS = Path(__file__).with_name("quality-corpus-v2.json")
 
 
@@ -148,14 +151,84 @@ def observation(case, baseline, ranked, elapsed):
 def load_corpus(path):
     require(digest(path) in {spec[0] for spec in CORPORA.values()})
     corpus = json.loads(path.read_text())
-    require(corpus["synthetic"] is True and len(corpus["cases"]) == 34)
-    require(len({(x.get("layout", "qwerty"), x["code"], x["context"]) for x in corpus["cases"]}) == 34)
+    count = CORPUS_COUNTS.get(corpus.get("version"))
+    require(corpus["synthetic"] is True and count is not None
+            and len(corpus["cases"]) == count)
+    require(len({x["id"] for x in corpus["cases"]}) == count)
+    require(len({(x.get("layout", "qwerty"), x["code"], x["context"]) for x in corpus["cases"]}) == count)
+    if corpus["version"] == "synthetic-quality-v3":
+        validate_expansion(corpus)
     return corpus
+
+
+def validate_expansion(corpus):
+    """Check frozen intent/encodings independently of dictionary/model output."""
+    require(corpus.get("schema_version") == 2)
+    keymap = {letter: str(number) for number, letters in enumerate(
+        ("abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"), 2) for letter in letters}
+    for case in corpus["cases"]:
+        code, pinyin, context = case["code"], case["pinyin"], case["context"]
+        require(isinstance(context, str) and len(context) <= 64)
+        require(isinstance(pinyin, str) and 0 < len(pinyin) <= 64
+                and all(letter in keymap for letter in pinyin))
+        require(isinstance(case["expected"], list) and len(case["expected"]) == 1
+                and isinstance(case["expected"][0], str) and bool(case["expected"][0]))
+        require(case.get("layout", "qwerty") in ("qwerty", "nine_key"))
+        require(code == ("".join(keymap[letter] for letter in pinyin)
+                         if case.get("layout") == "nine_key" else pinyin))
+        require(isinstance(case["target_pinyin"], str)
+                and all(letter in keymap for letter in case["target_pinyin"]))
+        if case.get("boundary", "").startswith("64_codepoints"):
+            require(len(context) == 64)
+        if case.get("boundary") == "empty_context":
+            require(context == "")
+        personal = case.get("personal")
+        if personal is not None:
+            require(case["category"] == "personal_rule" and isinstance(personal, dict)
+                    and personal.get("code") == pinyin
+                    and personal.get("text") in case["expected"])
+            kind = personal.get("type")
+            require(kind in ("candidate_rule", "snippet", "dictionary"))
+            fields = {"type", "code", "text"}
+            if kind == "snippet":
+                require(set(personal) == fields | {"tags"} and personal["tags"] == [])
+            else:
+                require(personal.get("scheme") == "pinyin")
+                if kind == "candidate_rule":
+                    require(set(personal) == fields | {"scheme", "position"}
+                            and type(personal["position"]) is int and 1 <= personal["position"] <= 40)
+                else:
+                    require(set(personal) == fields | {"scheme", "weight"}
+                            and type(personal["weight"]) is int and 0 <= personal["weight"] <= 100)
+        else:
+            require(case["category"] != "personal_rule")
+
+
+def attribution(sample, target_rankable, model_called=True):
+    """Partition retained cases without pretending protected slots were scored."""
+    expected = set(sample["expected"])
+    before = next((i for i, value in enumerate(sample["baseline"]) if value in expected), None)
+    after = next((i for i, value in enumerate(sample["ranked"]) if value in expected), None)
+    require((before is None) == (after is None))
+    if before is None:
+        return "candidate_missing"
+    if not target_rankable:
+        require(before == after)
+        return "target_protected_or_unrankable"
+    if not model_called:
+        require(before == after)
+        return "not_scored_insufficient_pool"
+    return "rerank_improved" if after < before else "rerank_harmed" if after > before else "rerank_unchanged"
 
 
 def run_case(core, probe, resources, local, case, context):
     handle = core.open(resources, local)
     try:
+        personal = case.get("personal")
+        if personal is not None:
+            core.request(handle, dict(op="personal_edit", id=str(uuid.uuid4()),
+                                      operation_id=str(uuid.uuid4()), expected_revision=0,
+                                      content=personal))
         if case.get("layout") == "nine_key":
             core.request(handle, dict(op="layout", name="nine_key"))
         for character in case["code"]:
@@ -163,6 +236,12 @@ def run_case(core, probe, resources, local, case, context):
         require(visible["ranking"]["enabled"] and visible["ranking"]["model"] == MODEL_ID)
         rows = visible["ranking"]["candidates"]
         require(len(rows) <= 32)
+        if personal is not None:
+            # A broken/missing fixture is an execution failure, not an LM miss.
+            require(personal["text"] in visible["candidates"]
+                    and all(row["text"] != personal["text"] for row in rows))
+            if personal["type"] == "candidate_rule":
+                require(visible["candidates"][personal["position"] - 1] == personal["text"])
         elapsed, warm_ms = 0, None
         ranked = visible
         if len(rows) >= 2:
@@ -174,10 +253,15 @@ def run_case(core, probe, resources, local, case, context):
             require(result["context_nodes"] <= 65 and result["prefix_nodes"] <= 512)
             ranked = apply_order(core, handle, visible, result)
         sample = observation(case, visible, ranked, elapsed)
+        target_rankable = any(row["text"] in case["expected"] for row in rows)
         return sample, dict(id=case["id"], category=case["category"],
+                            layout=case.get("layout", "qwerty"),
+                            outcome=attribution(sample, target_rankable, len(rows) >= 2),
+                            context_codepoints=len(context),
+                            personal_fixture=personal is not None,
                             model_called=len(rows) >= 2, rankable_count=len(rows),
                             visible_count=len(visible["candidates"]),
-                            target_rankable=any(row["text"] in case["expected"] for row in rows),
+                            target_rankable=target_rankable,
                             warm_roundtrip_ms=warm_ms, worker_memory=memory(probe.process.pid))
     finally:
         core.close(handle)
@@ -221,8 +305,8 @@ def evaluate(core, probe, resources, corpus, reports):
                 details.append(detail)
             report = summarize(dict(schema_version=1, synthetic=True, cases=samples))
             # This runner, unlike the generic aggregator, executes the model.
-            report["completed"] = True
-            report["model_executed"] = True
+            report["completed"] = False
+            report["model_executed"] = any(d["model_called"] for d in details)
             report["latency_scope"] = "all-case cache-cleared host IPC score; no-model cases are zero; no debounce/core/UI time"
             report["score_roundtrip_ms"] = distribution([s["latency_ms"] for s, d in zip(samples, details, strict=True) if d["model_called"]])
             report["warm_roundtrip_ms"] = distribution([d["warm_roundtrip_ms"] for d in details if d["model_called"]])
@@ -230,6 +314,9 @@ def evaluate(core, probe, resources, corpus, reports):
             report["native_score_calls"] = 2 * report["scored_cases"]
             report["cache_clear_calls"] = report["scored_cases"]
             report["selection_cost_proxy"] = selection_cost(samples)
+            report["outcome_counts"] = {name: sum(d["outcome"] == name for d in details) for name in (
+                "candidate_missing", "target_protected_or_unrankable", "not_scored_insufficient_pool", "rerank_improved",
+                "rerank_harmed", "rerank_unchanged")}
             report["by_category"] = {category: summarize(dict(schema_version=1, synthetic=True,
                                        cases=[s for s, d in zip(samples, details, strict=True) if d["category"] == category]))
                                      for category in sorted({x["category"] for x in details})}
@@ -239,9 +326,15 @@ def evaluate(core, probe, resources, corpus, reports):
             report["observations"] = samples
             report["details"] = details
             reports[mode] = report
+            # A successfully aggregated no-op corpus is not model acceptance.
+            # Retain that report as incomplete, with the real zero call count.
+            require(report["model_executed"])
+            report["completed"] = True
 
 
 def main():
+    import onnxruntime
+
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--core", type=Path, default=ROOT / "target/release/libzapime_core.so")
     parser.add_argument("--resources", type=Path, default=ROOT / "target/resources")
@@ -309,7 +402,8 @@ def main():
                     probe.abort()
             finally:
                 output.write(json.dumps(report, indent=2) + "\n")
-    print(json.dumps(dict(completed=True, cases=34, model_executed=True, phone_performance_evaluated=False)))
+    print(json.dumps(dict(completed=True, cases=len(corpus["cases"]), model_executed=True,
+                          phone_performance_evaluated=False)))
 
 
 if __name__ == "__main__":

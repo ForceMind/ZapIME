@@ -1,0 +1,10 @@
+test_cli_aggregate_only_and_create_only (test_candidate_evaluation.EvaluationTests.test_cli_aggregate_only_and_create_only) ... ok
+test_empty_visible_page_is_retained_as_missing_without_fake_candidate (test_candidate_evaluation.EvaluationTests.test_empty_visible_page_is_retained_as_missing_without_fake_candidate) ... ok
+test_multiple_acceptable_targets (test_candidate_evaluation.EvaluationTests.test_multiple_acceptable_targets) ... ok
+test_paired_denominators_missing_and_percentiles (test_candidate_evaluation.EvaluationTests.test_paired_denominators_missing_and_percentiles) ... ok
+test_reject_nonpaired_duplicate_and_invalid_observations (test_candidate_evaluation.EvaluationTests.test_reject_nonpaired_duplicate_and_invalid_observations) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.176s
+
+OK

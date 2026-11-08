@@ -84,6 +84,19 @@ class EvaluationTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     summarize(data)
 
+    def test_empty_visible_page_is_retained_as_missing_without_fake_candidate(self):
+        data = self.data()
+        data["cases"].append(dict(id="empty_page", expected=["missing"],
+                                  baseline=[], ranked=[], latency_ms=0))
+        report = summarize(data)
+        self.assertEqual(report["cases"], 4)
+        self.assertEqual(report["target_missing"], 2)
+        self.assertEqual(report["metrics"]["ranked"]["top1_rate"], 1 / 4)
+        self.assertEqual(report["metrics"]["baseline"]["mrr"], .375)
+        data["cases"][-1]["ranked"] = ["invented"]
+        with self.assertRaises(ValueError):
+            summarize(data)
+
 
 if __name__ == "__main__":
     unittest.main()

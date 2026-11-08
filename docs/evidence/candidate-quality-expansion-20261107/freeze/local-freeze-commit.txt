@@ -1,0 +1,7 @@
+commit f92989d846ef6aa018829485ebc477f4d2229cd8
+tree 811943a35c0aa048e108b900dd6239b62c20e0fc
+parent 58a3a546c758378d1887aeeaa99b4bd4d3a25c77
+author Codex <codex@openai.com> 1794123197 -0800
+committer Codex <codex@openai.com> 1794123197 -0800
+
+    test(candidate): freeze 64 synthetic expansion labels before inference

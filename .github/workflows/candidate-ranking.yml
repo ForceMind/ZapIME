@@ -38,6 +38,7 @@ jobs:
         run: |
           python3 -m unittest discover -s scripts -p 'test_candidate_evaluation.py' -v
           python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v
+          python3 -m unittest discover -s scripts -p 'test_prepare_candidate_host_runtime.py' -v
       - name: Prepare fixed model, C headers and JSON dependency
         run: |
           python3 scripts/prepare_candidate_model.py --headers target/candidate-runtime/include
@@ -46,12 +47,16 @@ jobs:
           .venv-candidate/bin/pip install --only-binary=:all: -r integrations/candidate/tests/requirements.txt
       - name: Execute actual model scores, bounded cache and JNI lifecycle
         run: CANDIDATE_TEST_PYTHON="$PWD/.venv-candidate/bin/python" bash integrations/candidate/tests/test_host.sh
+      - name: Prepare fixed official Linux ORT1.28.2 diagnostic library
+        run: python3 scripts/prepare_candidate_host_runtime.py
       - name: Frozen synthetic paired quality and host resource baseline
         run: |
           .venv-candidate/bin/python -m unittest discover -s integrations/candidate/tests -p 'test_quality_evaluation.py' -v
           python3 scripts/fetch_resources.py
           cargo +1.97.1 build --locked --release -p zapime-core
           .venv-candidate/bin/python integrations/candidate/tests/quality_evaluation.py --report target/candidate-host/quality-report.json
+          .venv-candidate/bin/python integrations/candidate/tests/quality_evaluation.py --corpus-version v3 --report target/candidate-host/quality-v3-report.json
+          .venv-candidate/bin/python integrations/candidate/tests/quality_evaluation.py --corpus-version v3 --runtime "$PWD/target/candidate-host/ort1282/libonnxruntime.so.1.28.2" --report target/candidate-host/quality-v3-ort1282-report.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -61,6 +66,8 @@ jobs:
             target/candidate-host/jni-report.json
             target/candidate-host/oracle-report.json
             target/candidate-host/quality-report.json
+            target/candidate-host/quality-v3-report.json
+            target/candidate-host/quality-v3-ort1282-report.json
           if-no-files-found: error
           retention-days: 14
   build:
