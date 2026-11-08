@@ -9,11 +9,11 @@
 | #84 / #88 | 已合并原main最终FAILURE原件与一次集中的[S25验收单](S25_ACCEPTANCE_CHECKLIST.md) |
 | [#86](https://github.com/ForceMind/ZapIME/pull/86) | SAF受限诊断已提交；focused42459710009的API35/36恢复11+10+14+12+10项已下载严格复验，API28仍排队；旧API28根因未决 |
 | [#87](https://github.com/ForceMind/ZapIME/pull/87) | 有界组字事件环、上层epoch拒绝与真实Editable数字诊断已提交；本机编译/回归通过，原生CI继续运行 |
-| [#89](https://github.com/ForceMind/ZapIME/pull/89) | 新64条v3先冻结、两版ORT真实主机结果已保留；35项相关测试过，三份新CI质量报告待回读 |
+| [#89](https://github.com/ForceMind/ZapIME/pull/89) | 新64条v3先冻结、两版ORT真实主机结果已保留；35项相关测试过，实际host作业128668210879已成功；三份新CI质量报告、15组native/36项JNI/独立oracle均已下载严格复验 |
 | [#90](https://github.com/ForceMind/ZapIME/pull/90) | 缓存第33个后台读缺陷已复现，32实际fill修复及race×10/vet/build通过；真实PG/HTTP/S3/灾备等待CI |
 | [#91](https://github.com/ForceMind/ZapIME/pull/91) | 堆叠#87的独立API35框架重启实验，保持草稿；5项严格报告测试与本机编译通过，未声称实际复现/修复 |
 
-公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#25/#40仍未合并；#25的研究不等于#90的真实事务验收。旧原main的42441322518失败和历史组字/SAF失败全部保留。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
+公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#25/#40仍未合并；#25的研究不等于#90的真实事务验收。旧原main的42441322518失败和历史组字/SAF失败全部保留。新原始CI证据见[本轮原件](evidence/current-slices-20261107/README.md)。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
 
 ## 发布草稿回读健壮性修复（2026-11-07，独立切片）
 
