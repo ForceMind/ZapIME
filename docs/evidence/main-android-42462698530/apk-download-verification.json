@@ -1,0 +1,14 @@
+[
+  {
+    "member": "android-arm64-v8a/ZapIME-0.1.0-dev-arm64-v8a.apk",
+    "bytes": 58745799,
+    "sha256": "8732351497af982c62c06bf014720812bfeecf1ed59dd8e246337f3e6abe880c",
+    "scope": "Downloaded original development artifact member; not retained in Git; CI development signing only"
+  },
+  {
+    "member": "android-x86_64/ZapIME-0.1.0-dev-x86_64.apk",
+    "bytes": 60060890,
+    "sha256": "5d41ab112ca3559ab2b43d6af53a8ebdeb104d7cf00466021f41b9b2c9439567",
+    "scope": "Downloaded original development artifact member; not retained in Git; CI development signing only"
+  }
+]

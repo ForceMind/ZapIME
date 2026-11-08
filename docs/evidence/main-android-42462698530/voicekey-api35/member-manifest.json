@@ -1,0 +1,140 @@
+[
+  {
+    "name": "voicekey-prepare-report.json",
+    "bytes": 327,
+    "sha256": "8f11cfe4ef3ebc32f38dcc2cbd6f86ab926afdc5e45c56f708697cf48f4c7bf2",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/activity-errors.txt",
+    "bytes": 206,
+    "sha256": "25837296dbd97bb8714a62af206a985149a4e4048556b9a3cda1c8752e01ab7a",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/activity-state.txt",
+    "bytes": 25831,
+    "sha256": "1ff738eb7d006955865d20a8621c9fe0e96a2cfda504ce39ddc8a9596bb83f0c",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/acceptance-summary.json",
+    "bytes": 1088,
+    "sha256": "1bb16679ecf6e20d05bfc13c5573c61fa60b47ae79fe9e5c4ef4584cffcb3086",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/activity-top.txt",
+    "bytes": 49804,
+    "sha256": "7b5aea08276657bca9f35cc2fa4dad7526ce1053acc6ff9729f8a20dd3498196",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/host-lifecycle.txt",
+    "bytes": 5972,
+    "sha256": "49e46af8452d60577f42665c6c3cab5b782d50d270d62e96c69adb320c3343fe",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/ime-instrumentation.txt",
+    "bytes": 316,
+    "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/ime-teardown.txt",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/last-anr.txt",
+    "bytes": 88,
+    "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/model-instrumentation.txt",
+    "bytes": 105,
+    "sha256": "3fe3b3b38fa82e1fb7bf97b3bedb781d6f2d989f74efb5e10b8a31bbca149c8a",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "591d76089a967ae68ec289464fc00bdeab670572f94db2df8fec45cb0b59f01f",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/system-runtime.txt",
+    "bytes": 262144,
+    "sha256": "576a9ccc4d1e9ade1c15d0dcd7127c98063bf40e878bc51980a9c9866259381c",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/voice-commit-report.json",
+    "bytes": 5302,
+    "sha256": "50755220f7c8a04611fc33389ef7743a26021f0aa648a084499ded3a766e4b05",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/voice-recording.png",
+    "bytes": 39878,
+    "sha256": "58ffdd3f67c305f0d4ac440bd2023fc1bf6a78094bca00cd80ce86202ddf06ca",
+    "record_retained": false
+  },
+  {
+    "name": "voicekey-android/voice-stopped.png",
+    "bytes": 41967,
+    "sha256": "70a73d41ea846779ae2ed06bb6aa92e4e15eb324e8aae896608e1207f86f36bb",
+    "record_retained": false
+  },
+  {
+    "name": "voicekey-android/voicekey-boundary-report.json",
+    "bytes": 680,
+    "sha256": "ac2e2ccadea54cdbfced1899ac13e3d462f224a161fdca4ef7774a88d5c58c1f",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/voicekey-model-report.json",
+    "bytes": 6237,
+    "sha256": "10a6e508705a91eecb67c7e682d9aa8f36a5cfd51bf914c7fc06ba78df161805",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/voicekey-provider-after.png",
+    "bytes": 73424,
+    "sha256": "db26c1dde17c9a293d2383955d683877598bc35c2ab20879546de402ac77cd98",
+    "record_retained": false
+  },
+  {
+    "name": "voicekey-android/voicekey-provider-before.png",
+    "bytes": 18180,
+    "sha256": "7dfbca7a1020dd0813d00b14a56dedb8f1c7a08a25d6b27df54640a70c64dc99",
+    "record_retained": false
+  },
+  {
+    "name": "voicekey-android/voicekey-watchdog-report.json",
+    "bytes": 1058,
+    "sha256": "d0e46ec56e161e7bcf4141194b555fa9c345cb478c7ccd4c26c5f4693daceab1",
+    "record_retained": true
+  },
+  {
+    "name": "voicekey-android/window-state.txt",
+    "bytes": 38947,
+    "sha256": "27a1468cd509f0b5ab6ba69d681d8260c92b1dfb9c62310f034d6cb3a4c295cd",
+    "record_retained": true
+  }
+]

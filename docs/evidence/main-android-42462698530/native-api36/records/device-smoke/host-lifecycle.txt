@@ -1,0 +1,193 @@
+230331:IME command on connection=17 operation=batch-end
+230700:IME command on connection=17 operation=compose
+230700:IME command on connection=17 operation=batch-end
+231033:IME command on connection=17 operation=compose
+231033:IME command on connection=17 operation=batch-end
+231639:IME command on connection=17 operation=commit
+231639:IME command on connection=17 operation=finish
+231639:IME command on connection=17 operation=batch-end
+231814:IME command on connection=17 operation=finish
+231814:IME command on connection=17 operation=batch-end
+231814:IME command on connection=17 operation=finish
+231814:IME command on connection=17 operation=batch-end
+232101:IME command on connection=17 operation=finish
+232101:IME command on connection=17 operation=batch-end
+232103:IME command on connection=17 operation=finish
+232103:IME command on connection=17 operation=batch-end
+232384:IME command on connection=17 operation=finish
+232384:IME command on connection=17 operation=batch-end
+232437:IME command on connection=17 operation=finish
+232437:IME command on connection=17 operation=batch-end
+232729:IME command on connection=17 operation=finish
+232729:IME command on connection=17 operation=batch-end
+233097:IME command on connection=17 operation=finish
+233097:IME command on connection=17 operation=batch-end
+233161:IME command on connection=17 operation=finish
+233161:IME command on connection=17 operation=batch-end
+233226:IME command on connection=17 operation=finish
+233226:IME command on connection=17 operation=batch-end
+233292:IME command on connection=17 operation=finish
+233292:IME command on connection=17 operation=batch-end
+233356:IME command on connection=17 operation=finish
+233356:IME command on connection=17 operation=batch-end
+234196:IME command on connection=17 operation=finish
+234196:IME command on connection=17 operation=batch-end
+235160:IME command on connection=17 operation=finish
+235160:IME command on connection=17 operation=batch-end
+235202:IME command on connection=17 operation=finish
+235202:IME command on connection=17 operation=batch-end
+235446:IME command on connection=17 operation=finish
+235446:IME command on connection=17 operation=batch-end
+235725:IME command on connection=17 operation=finish
+235725:IME command on connection=17 operation=batch-end
+235763:IME command on connection=17 operation=finish
+235763:IME command on connection=17 operation=batch-end
+235982:IME command on connection=17 operation=finish
+235982:IME command on connection=17 operation=batch-end
+236258:IME command on connection=17 operation=finish
+236258:IME command on connection=17 operation=batch-end
+236304:IME command on connection=17 operation=finish
+236304:IME command on connection=17 operation=batch-end
+236514:IME command on connection=17 operation=finish
+236515:IME command on connection=17 operation=batch-end
+236811:IME command on connection=17 operation=finish
+236811:IME command on connection=17 operation=batch-end
+236846:IME command on connection=17 operation=finish
+236846:IME command on connection=17 operation=batch-end
+237065:IME command on connection=17 operation=finish
+237065:IME command on connection=17 operation=batch-end
+237342:IME command on connection=17 operation=finish
+237342:IME command on connection=17 operation=batch-end
+237380:IME command on connection=17 operation=finish
+237384:IME command on connection=17 operation=batch-end
+237614:IME command on connection=17 operation=finish
+237614:IME command on connection=17 operation=batch-end
+237908:IME command on connection=17 operation=finish
+237908:IME command on connection=17 operation=batch-end
+237948:IME command on connection=17 operation=finish
+237948:IME command on connection=17 operation=batch-end
+238150:IME command on connection=17 operation=finish
+238150:IME command on connection=17 operation=batch-end
+238450:IME command on connection=17 operation=commit
+238450:IME command on connection=17 operation=finish
+238451:IME command on connection=17 operation=batch-end
+238741:IME command on connection=17 operation=finish
+238741:IME command on connection=17 operation=batch-end
+238778:IME command on connection=17 operation=finish
+238778:IME command on connection=17 operation=batch-end
+238946:IME command on connection=17 operation=finish
+240698:normal connection created; length=15 selection=15:15 composing=-1:-1
+240698:initial snapshot before length=15
+240753:IME command on connection=18 operation=finish
+240753:IME command on connection=18 operation=batch-end
+241064:IME command on connection=18 operation=finish
+241064:IME command on connection=18 operation=batch-end
+241105:IME command on connection=18 operation=finish
+241105:IME command on connection=18 operation=batch-end
+241391:IME command on connection=18 operation=finish
+241391:IME command on connection=18 operation=batch-end
+242264:IME command on connection=18 operation=commit
+242279:IME command on connection=18 operation=finish
+242279:IME command on connection=18 operation=batch-end
+242616:IME command on connection=18 operation=finish
+242616:IME command on connection=18 operation=batch-end
+245012:IME command on connection=18 operation=finish
+245012:IME command on connection=18 operation=batch-end
+245313:IME command on connection=18 operation=commit
+245313:IME command on connection=18 operation=finish
+245314:IME command on connection=18 operation=batch-end
+250653:IME command on connection=18 operation=finish
+250653:IME command on connection=18 operation=batch-end
+252880:IME command on connection=18 operation=finish
+252880:IME command on connection=18 operation=batch-end
+253236:IME command on connection=18 operation=commit
+253236:IME command on connection=18 operation=finish
+253237:IME command on connection=18 operation=batch-end
+253564:IME command on connection=18 operation=finish
+253564:IME command on connection=18 operation=batch-end
+254864:IME command on connection=18 operation=finish
+254864:IME command on connection=18 operation=batch-end
+255213:IME command on connection=18 operation=finish
+255213:IME command on connection=18 operation=batch-end
+256029:IME command on connection=18 operation=finish
+257180:normal connection created; length=45 selection=37:37 composing=-1:-1
+257180:initial snapshot before length=37
+257233:IME command on connection=19 operation=finish
+257233:IME command on connection=19 operation=batch-end
+257456:normal connection created; length=45 selection=37:37 composing=-1:-1
+257456:initial snapshot before length=37
+257487:IME command on connection=20 operation=finish
+257487:IME command on connection=20 operation=batch-end
+258101:normal connection created; length=45 selection=37:37 composing=-1:-1
+258101:initial snapshot before length=37
+258180:IME command on connection=21 operation=finish
+258180:IME command on connection=21 operation=batch-end
+258413:IME command on connection=21 operation=finish
+258413:IME command on connection=21 operation=batch-end
+259079:IME command on connection=21 operation=finish
+259079:IME command on connection=21 operation=batch-end
+Driver fixed events:
+244041:other_touch_attempt
+244077:other_touch_sent
+244349:other_touch_attempt
+244379:other_touch_sent
+244924:other_touch_attempt
+244962:other_touch_sent
+245274:other_touch_attempt
+245295:other_touch_sent
+245605:other_touch_attempt
+245632:other_touch_sent
+247570:other_touch_attempt
+247595:other_touch_sent
+248180:other_touch_attempt
+248211:other_touch_sent
+249196:other_touch_attempt
+249233:other_touch_sent
+249857:other_touch_attempt
+249878:other_touch_sent
+250215:other_touch_attempt
+250245:other_touch_sent
+250559:other_touch_attempt
+250596:other_touch_sent
+250934:other_touch_attempt
+250961:other_touch_sent
+251254:other_touch_attempt
+251279:other_touch_sent
+251578:other_touch_attempt
+251611:other_touch_sent
+251920:other_touch_attempt
+251948:other_touch_sent
+252246:other_touch_attempt
+252278:other_touch_sent
+252805:other_touch_attempt
+252830:other_touch_sent
+253174:other_touch_attempt
+253213:other_touch_sent
+253485:other_touch_attempt
+253514:other_touch_sent
+253839:other_touch_attempt
+253862:other_touch_sent
+254136:other_touch_attempt
+254160:other_touch_sent
+254452:other_touch_attempt
+254479:other_touch_sent
+254776:other_touch_attempt
+254810:other_touch_sent
+255123:other_touch_attempt
+255148:other_touch_sent
+255478:other_touch_attempt
+255512:other_touch_sent
+255800:other_touch_attempt
+255828:other_touch_sent
+256619:other_touch_attempt
+256645:other_touch_sent
+257158:other_touch_attempt
+257195:other_touch_sent
+257637:other_touch_attempt
+257661:other_touch_sent
+258349:other_touch_attempt
+258378:other_touch_sent
+258641:other_touch_attempt
+258678:other_touch_sent
+258994:tools_return_touch_attempt
+259031:tools_return_touch_sent

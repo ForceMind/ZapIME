@@ -1,0 +1,167 @@
+{
+  "jobs": [
+    {
+      "id": 128681882225,
+      "name": "Signed x86_64 product and model-free harnesses",
+      "status": "completed",
+      "conclusion": "failure",
+      "run_id": 42464855342,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Content-free recovery provider trace and strict report boundaries",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run android-actions/setup-android@v3",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run dtolnay/rust-toolchain@1.97.1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Install pinned Android build platform and toolchains",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Build original product with unchanged JNI, license and APK gates",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 10
+        },
+        {
+          "name": "Build independent editor host harness",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11
+        },
+        {
+          "name": "Prepare fixed synthetic fixture runtime",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12
+        },
+        {
+          "name": "Build VoiceKey-only synthetic harness without downloading X-ASR weights",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13
+        },
+        {
+          "name": "Verify signed, aligned model-free inputs and record hashes",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 14
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 15
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 16
+        },
+        {
+          "name": "Post Run Swatinem/rust-cache@v2",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 29
+        },
+        {
+          "name": "Post Run actions/setup-python@v6",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 30
+        },
+        {
+          "name": "Post Run actions/setup-java@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 31
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 32
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 33
+        }
+      ]
+    },
+    {
+      "id": 128682238325,
+      "name": "Focused VoiceKey-only API ${{ matrix.api }}",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 42464855342,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 128682238535,
+      "name": "Local sync preparation API ${{ matrix.api }}",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 42464855342,
+      "logs_url": null,
+      "steps": null
+    },
+    {
+      "id": 128682238776,
+      "name": "Actual Android HTTPS to isolated Go and PostgreSQL API 28",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 42464855342,
+      "logs_url": null,
+      "steps": null
+    }
+  ]
+}

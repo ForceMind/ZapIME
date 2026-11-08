@@ -1,0 +1,26 @@
+2026-11-08T08:55:07.1234035Z Traceback (most recent call last):
+2026-11-08T08:55:07.1246580Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 332, in <module>
+2026-11-08T08:55:07.1247465Z     main()
+2026-11-08T08:55:07.1248309Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 325, in main
+2026-11-08T08:55:07.1249712Z     prepare(lock, cache, args.destination, args.headers, args.offline)
+2026-11-08T08:55:07.1250817Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 287, in prepare
+2026-11-08T08:55:07.1251674Z     download(spec, cache / name, offline)
+2026-11-08T08:55:07.1252621Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 150, in download
+2026-11-08T08:55:07.1253577Z     with OPENER.open(spec["url"], timeout=60) as incoming:
+2026-11-08T08:55:07.1254155Z          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-08T08:55:07.1254826Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 521, in open
+2026-11-08T08:55:07.1378678Z     response = meth(req, response)
+2026-11-08T08:55:07.1379799Z                ^^^^^^^^^^^^^^^^^^^
+2026-11-08T08:55:07.1381203Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 630, in http_response
+2026-11-08T08:55:07.1382576Z     response = self.parent.error(
+2026-11-08T08:55:07.1383435Z                ^^^^^^^^^^^^^^^^^^
+2026-11-08T08:55:07.1385089Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 559, in error
+2026-11-08T08:55:07.1386617Z     return self._call_chain(*args)
+2026-11-08T08:55:07.1387446Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-08T08:55:07.1389392Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 492, in _call_chain
+2026-11-08T08:55:07.1391113Z     result = func(*args)
+2026-11-08T08:55:07.1391860Z              ^^^^^^^^^^^
+2026-11-08T08:55:07.1393724Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 639, in http_error_default
+2026-11-08T08:55:07.1395680Z     raise HTTPError(req.full_url, code, msg, hdrs, fp)
+2026-11-08T08:55:07.1396345Z urllib.error.HTTPError: HTTP Error 504: Gateway Time-out
+2026-11-08T08:55:07.1515470Z ##[error]Process completed with exit code 1.
