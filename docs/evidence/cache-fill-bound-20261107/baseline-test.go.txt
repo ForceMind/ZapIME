@@ -1,0 +1,122 @@
+// SPDX-License-Identifier: GPL-3.0-only
+package syncapi
+
+import ("context"; "crypto/sha256"; "encoding/hex"; "errors"; "fmt"; "sync"; "testing"; "time")
+
+// All objects and account IDs are synthetic. Explicit start/release barriers
+// keep cancellation ordering deterministic without cloud traffic or sleeps.
+type gatedCacheObjects struct {
+	mu           sync.Mutex
+	data         map[string][]byte
+	active, peak int
+	calls        int
+	started      chan string
+	finished     chan string
+	release      chan struct{}
+	gates        map[string]chan struct{}
+	once         sync.Once
+}
+
+func newGatedCacheObjects(t *testing.T, count int) (*gatedCacheObjects, []string) {
+	t.Helper()
+	o := &gatedCacheObjects{data: make(map[string][]byte), gates: make(map[string]chan struct{}), started: make(chan string, count),
+		finished: make(chan string, count), release: make(chan struct{})}
+	keys := make([]string, count)
+	account := id(t)
+	for i := range keys {
+		body := []byte(fmt.Sprintf(`{"synthetic_ciphertext":%d}`, i))
+		sum := sha256.Sum256(body)
+		keys[i] = "zapime/v1/" + account + "/" + hex.EncodeToString(sum[:]) + ".json"
+		o.data[keys[i]] = body
+		o.gates[keys[i]] = make(chan struct{})
+	}
+	t.Cleanup(func() { o.once.Do(func() { close(o.release) }) })
+	return o, keys
+}
+
+func (o *gatedCacheObjects) Get(ctx context.Context, key string) ([]byte, error) {
+	o.mu.Lock()
+	o.calls++
+	o.active++
+	if o.active > o.peak {
+		o.peak = o.active
+	}
+	o.mu.Unlock()
+	defer func() {
+		o.mu.Lock()
+		o.active--
+		o.mu.Unlock()
+		o.finished <- key
+	}()
+	o.started <- key
+	select {
+	case <-o.release:
+		return append([]byte(nil), o.data[key]...), nil
+	case <-o.gates[key]:
+		return append([]byte(nil), o.data[key]...), nil
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	}
+}
+
+func awaitCacheRead(t *testing.T, events <-chan string) string {
+	t.Helper()
+	select {
+	case key := <-events:
+		return key
+	case <-time.After(3 * time.Second):
+		t.Fatal("synthetic cache backend barrier timed out")
+		return ""
+	}
+}
+
+func TestObjectCacheAbandonedFillsRemainGloballyBounded(t *testing.T) {
+	const capacity = 32
+	backend, keys := newGatedCacheObjects(t, capacity+3)
+	cache := NewCachedObjects(backend, 64*1024, time.Minute)
+	for _, key := range keys[:capacity] {
+		ctx, cancel := context.WithCancel(context.Background())
+		returned := make(chan error, 1)
+		go func() { _, err := cache.Get(ctx, key); returned <- err }()
+		if started := awaitCacheRead(t, backend.started); started != key {
+			t.Fatal("different synthetic cache key started")
+		}
+		cancel()
+		select {
+		case err := <-returned:
+			if !errors.Is(err, context.Canceled) {
+				t.Fatal("cancelled handler did not return while its fill remained active", err)
+			}
+		case <-time.After(3 * time.Second):
+			t.Fatal("cancelled cache caller remained blocked")
+		}
+	}
+	for _, key := range keys[capacity:] {
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+		returned := make(chan error, 1)
+		go func() { _, err := cache.Get(ctx, key); returned <- err }()
+		select {
+		case started := <-backend.started:
+			t.Fatalf("abandoned fills exceeded capacity %d: extra backend read %s", capacity, started)
+		case err := <-returned:
+			if err == nil || err.Error() != "object_cache_busy" {
+				t.Fatal("new-key overload did not fail explicitly", err)
+			}
+		case <-time.After(3 * time.Second):
+			t.Fatal("new-key overload queued instead of rejecting")
+		}
+	}
+	backend.mu.Lock()
+	if backend.active != capacity || backend.peak != capacity || backend.calls != capacity {
+		t.Error("detached fills escaped process cache capacity", backend.active, backend.peak, backend.calls)
+	}
+	backend.mu.Unlock()
+	backend.once.Do(func() { close(backend.release) })
+	for range capacity {
+		awaitCacheRead(t, backend.finished)
+	}
+}
+
+func (o *gatedCacheObjects) Put(context.Context,string,[]byte) error { return errObject }
+func (o *gatedCacheObjects) Probe(context.Context) error { return nil }

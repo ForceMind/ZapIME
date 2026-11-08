@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "be5b45630bfdaaf1a9286446a24dbb40646c5fca",
+  "go_version": "go version go1.27.3 linux/amd64",
+  "official_toolchain_sha256": "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+  "checks": [
+    {
+      "command": [
+        "go1.27.3",
+        "test",
+        "-race",
+        "-count=10",
+        "-run",
+        "^TestObjectCache",
+        "-v",
+        "./internal/syncapi"
+      ],
+      "exit_code": 0,
+      "log": "cache-race.log"
+    },
+    {
+      "command": [
+        "go1.27.3",
+        "vet",
+        "./..."
+      ],
+      "exit_code": 0,
+      "log": "go-vet.log"
+    },
+    {
+      "command": [
+        "go1.27.3",
+        "build",
+        "./cmd/..."
+      ],
+      "exit_code": 0,
+      "log": "go-build.log"
+    }
+  ],
+  "postgres_http_test": "NOT RUN: no local PostgreSQL; mandatory service CI still required",
+  "real_s3_r2": "NOT RUN",
+  "remote_deployment": "NOT RUN"
+}

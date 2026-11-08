@@ -1,5 +1,11 @@
 # ZapIME 项目执行状态
 
+## 同步缓存后台读取容量修复（2026-11-07，独立切片）
+
+已重新核对#25草稿研究及#22原P1，当前be5源码仍可在取消32个不同key的请求后启动第33个后台读取。d83f817的修复为每缓存实例32个实际fill、零新key等待队列，同key共享一个完成信号；独立Background预算保留其他等待者，超时不提前释放后端仍占用的槽位，迟到字节不缓存。保持DB授权之后使用、内容SHA、独立副本、Put真实持久确认及备份/恢复绕过缓存。
+
+固定Go1.27.3的9组纯缓存race重复10轮、整个服务vet和cmd构建通过；独立审查无阻塞，原33rd-fill失败、可复现夹具及源码摘要已保存。新增真实PostgreSQL/HTTP取消/503/同cursor重试用例仅编译，本机无PG，实际事务验收等待强制数据库CI；SKIP不算通过。[并发契约](OBJECT_CACHE_CONCURRENCY.md)及[原失败/本地证据](evidence/cache-fill-bound-20261107/README.md)。没有直接合并旧#25或访问用户R2/生产服务器。
+
 ## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
 
 已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。

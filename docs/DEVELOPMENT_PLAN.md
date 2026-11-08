@@ -8,6 +8,8 @@
 
 ## 当前执行接续（2026-11-07，源码 Alpha 整合）
 
+缓存后台fill的历史P1已在当前源码复现，32容量/零新key排队修复通过固定Go race/vet/build；待真实PG/HTTP及服务完整CI，不能将旧#25研究或纯缓存单测当数据库事务通过。
+
 最新主分支全量Android已结束：42441322518整体FAILURE，VoiceKey API36在adb root/device offline及后续清理失败，未进入模型/JNI门禁；常规API28/35/36和VoiceKey API28/35成功。原失败artifact已核SHA保留于[最终回读](evidence/main-android-final-20261107/README.md)。先做发布脚本创建/回读故障回归，再分别定位SAF导航与组字失败；不同源码/门禁不互相代填。
 
 - 默认从实时 main 与源码版本 v0.1.0-alpha.1 接续；整合分支 release/open-source-alpha 承接5d976f578a2b11d14b9050ff0ec01e5d18d9e538。先核对当前PR/Release，未合并时使用整合分支，不从旧main重做功能。
