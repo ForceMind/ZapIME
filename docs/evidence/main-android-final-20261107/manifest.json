@@ -1,0 +1,39 @@
+{
+  "original_artifact": {
+    "id": 13602637340,
+    "bytes": 1398,
+    "sha256": "563b05090b8cb7ffeadc0a4188b71f3c849935d93e90d9753582a00a2835be78"
+  },
+  "files": [
+    {
+      "path": "voicekey-android/acceptance-summary.json",
+      "bytes": 778,
+      "sha256": "5891077cd93a59c0ba6604b790fd9b9aa1933953f2e3ade3972ed6d0ea5be95e"
+    },
+    {
+      "path": "voicekey-android/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd"
+    },
+    {
+      "path": "voicekey-api36-job.log.gz",
+      "bytes": 37835,
+      "sha256": "4473929f81654563236ca68e8b876f0503916ea739ca2c1f9b886bdcf5f1fd61"
+    },
+    {
+      "path": "voicekey-prepare-report.json",
+      "bytes": 326,
+      "sha256": "2291b0bbf88daefb7df12191f6066b678b120965adc9476b43c28e97c0f1f549"
+    },
+    {
+      "path": "workflow-snapshot.json",
+      "bytes": 29234,
+      "sha256": "01874e44f7041df89baae854ccaee7ab678807baa6c8a473a315437c03df14cf"
+    }
+  ],
+  "job_log": {
+    "uncompressed_bytes": 211131,
+    "uncompressed_sha256": "8d62f85f87dc9f101457ac846afbb8abf127cfa5357cd9de6c68ba77547cfdcb",
+    "source": "GitHub connector fetch_workflow_job_logs job128615424140 UTF-8 response; no edits"
+  }
+}

@@ -1,5 +1,11 @@
 # ZapIME 项目执行状态
 
+## 主分支 Android 全量最终结果（2026-11-07 客户端日期）
+
+已实时核对 main 仍为58a3a546c758378d1887aeeaa99b4bd4d3a25c77、Public、源码Alpha标签和公开附件保持原身份；#82/#83已合并，#12/#25/#40仍为未合并草稿。发布源码026bfb8的全量Android42441322518最终 **FAILURE**：常规API28/35/36和VoiceKey API28/35成功，VoiceKey API36在准备阶段adb root/device offline失败，未进入模型instrumentation，随后本轮共享包清理也失败。不能用前五项成功代填整体。原artifact已下载核SHA，三份报告/完整job日志和元数据见[最终回读](evidence/main-android-final-20261107/README.md)。
+
+该失败独立于原API28恢复SAF打开IOException和历史API35间歇组字；没有确认共同根因。下方“仍运行”是旧快照；后续切片继续按各自精确源码和CI验收。
+
 ## v0.1.0-alpha.1 已公开发布（2026-11-07 客户端日期）
 
 [源码Alpha](https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1)已实际公开，Release438003228，发布时间2026-11-08T03:17:38Z；固定source026bfb8bf467c0d45193a50016e298c3dbb0ac01/tree9aa8d7e0850ba110357dc65886f882f4370529ab。PR #82已合并开发栈，已整合的重复PR均关闭，未完成的#12/#25/#40继续保留。
