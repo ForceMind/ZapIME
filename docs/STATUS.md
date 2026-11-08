@@ -10,6 +10,8 @@
 
 发布流程实际第二轮发现Rust缓存恢复旧源码包，create-only准备正确拒绝，已将产物移至各job独立run/attempt临时目录；原失败及修复见[发布CI证据](evidence/source-release-ci-20261107/README.md)。草稿查询已改为已发布tag查找加认证分页/ID回读，17项测试覆盖中断重试。
 
+整合首轮67da3cc5的VoiceKey API28/35/36专项成功，但同workflow42440405925的独立API28同步恢复UI在actual SAF open / IOException失败；前序导出/native身份/确认通过，清理通过不代表恢复成功。原安全日志与范围见[同步恢复失败](evidence/source-release-ci-20261107/voicekey-first/README.md)。该结果保留为独立未决问题；修正后的发布workflow已经通过官方actionlint1.7.11，等待实际发布门禁。
+
 本轮以release/open-source-alpha承接整个已验开发栈，新增中英文首页、社区规范、问题/PR模板、文档索引、路线图、变更记录、可追溯源码发布流程和新接管入口；更新过时SECURITY联网/同步描述。发布状态以GitHub Release及对应workflow为准。源码Alpha只含根Git树，不附子模块内容、APK或模型权重；不将开发证书包装为稳定升级签名。
 
 VoiceKey公开分发条款及候选训练来源声明差异仍未决。ARM/S25、自然语音、长期质量/能耗、Apple/Windows系统输入与四端同步/配对/完整灾备尚未完成。当前工作与后续任务见[接管入口](WORK_HANDOFF_PROMPT.md)、[路线图](ROADMAP.md)与[发布说明](releases/v0.1.0-alpha.1.md)。
