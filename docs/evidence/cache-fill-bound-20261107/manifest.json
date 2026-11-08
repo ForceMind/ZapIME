@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "be5b45630bfdaaf1a9286446a24dbb40646c5fca",
+  "files": [
+    {
+      "path": "services/sync/internal/syncapi/object_cache.go",
+      "bytes": 5211,
+      "sha256": "751878bf6b9c35b5630ae6497a71566f01f6d46c7e1519b888db965584a69a4f"
+    },
+    {
+      "path": "services/sync/internal/syncapi/object_cache_capacity_test.go",
+      "bytes": 14114,
+      "sha256": "8b13f19d82a4e9cbe38b4612d10172728757417d6d474f47d043072a016a41f8"
+    },
+    {
+      "path": "docs/OBJECT_CACHE_CONCURRENCY.md",
+      "bytes": 3885,
+      "sha256": "124f8c78c34b9777454dcdbfdf2263c485e622596c22cf8f234a988bf80cdd5c"
+    },
+    {
+      "path": "docs/SYNC_EFFICIENCY.md",
+      "bytes": 8732,
+      "sha256": "377b86675ce6b7a3fc00a3240382248281b6510f65ff8c2963cbc8cc0958af9a"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/README.md",
+      "bytes": 3380,
+      "sha256": "05a05b4e5fbfbef20d6d4a4269373d181d3cacdada0bb78bdbad98a28a5b13dd"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/baseline-failure.log",
+      "bytes": 424,
+      "sha256": "23656a9711de8a1341f4a2e19057fc851c7240263c4e6baeb9c4a296e05d7ffd"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/baseline-recheck.log",
+      "bytes": 424,
+      "sha256": "1a21f8c4a64e162a5d81d10a21be10676d5b5669dbd3d7219aa628ff03127dfb"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/baseline-replay-first-harness-failure.log",
+      "bytes": 449,
+      "sha256": "d67bb01ad11e7478578b9230be339cd1bbe377d4cc862bb11913630a9e40edae"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/baseline-test.go.txt",
+      "bytes": 3916,
+      "sha256": "4e111bfb687c73b76a7b3cca57946a062b9497721612b86d3fc9d9943fcf713e"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/cache-race.log",
+      "bytes": 11896,
+      "sha256": "10b84d00be77c482222c1200bf5330dedb5b6a4ec5803d292d787acebe39988f"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/go-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/go-vet.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/evidence/cache-fill-bound-20261107/local-validation.json",
+      "bytes": 955,
+      "sha256": "ab291beb847a251798b4df3066c73a3d82ab56764c5ec644a1c23729f910b507"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "base_commit": "449dd25",
+  "evidence_frozen_commit": "3153cfe",
+  "source_path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+  "source_sha256": "8390636dc67edf042f5309569fff16b44d2a3d2d9ed4e201590d6caf46fb3f20",
+  "source_files_compiled": 3,
+  "compiler": "javac 17.0.21",
+  "java_source_target": "8",
+  "android_api_jar_sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+  "validation": {
+    "test_only_java_compiled": true,
+    "candidate_python_tests": 14,
+    "device_privacy_guard_tests": 8,
+    "product_files_changed": false,
+    "new_emulator_gate_run": false,
+    "phone_run": false
+  },
+  "scope": "Test-only physical tools entry fixture; production composition and input remain unchanged; compile/unit checks do not assert real physical touch acceptance",
+  "commands": [
+    "javac -source 8 -target 8 -encoding UTF-8 -classpath official-api36r02/android.jar -d target/tools-touch-compile <all test-only Java sources>",
+    "python3 -m unittest discover -s scripts -p test_android_candidate*.py -v",
+    "python3 -m unittest discover -s scripts -p test_android_ci_device.py -v"
+  ]
+}

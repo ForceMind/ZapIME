@@ -1,0 +1,16 @@
+test_diagnostics_never_read_global_logs_from_local_or_physical_devices (test_android_ci_device.DiagnosticPrivacyTests.test_diagnostics_never_read_global_logs_from_local_or_physical_devices) ... ok
+test_failure_diagnostics_remain_bounded_and_do_not_hide_a_timeout (test_android_ci_device.DiagnosticPrivacyTests.test_failure_diagnostics_remain_bounded_and_do_not_hide_a_timeout) ... ok
+test_product_and_test_host_anr_are_fatal_but_launcher_is_distinct (test_android_ci_device.DiagnosticPrivacyTests.test_product_and_test_host_anr_are_fatal_but_launcher_is_distinct) ... ok
+test_unicode_diagnostics_bound_bytes_and_anr_detection_reads_full_result (test_android_ci_device.DiagnosticPrivacyTests.test_unicode_diagnostics_bound_bytes_and_anr_detection_reads_full_result) ... ok
+test_api28_keeps_verified_aosp_requirement (test_android_ci_device.SystemKeyboardTests.test_api28_keeps_verified_aosp_requirement) ... Verified system teardown keyboard: {'api_level': 28, 'selected_ime': 'com.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': True}
+ok
+test_modern_prefers_aosp_and_excludes_unverified_namespace (test_android_ci_device.SystemKeyboardTests.test_modern_prefers_aosp_and_excludes_unverified_namespace) ... Verified system teardown keyboard: {'api_level': 36, 'selected_ime': 'com.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': True}
+ok
+test_modern_uses_verified_preinstalled_google_when_aosp_absent (test_android_ci_device.SystemKeyboardTests.test_modern_uses_verified_preinstalled_google_when_aosp_absent) ... Verified system teardown keyboard: {'api_level': 35, 'selected_ime': 'com.google.android.inputmethod.latin/.LatinIME', 'system_package_verified': True, 'source': 'pm list packages -s', 'aosp': False}
+ok
+test_non_system_or_zapime_cannot_satisfy_teardown (test_android_ci_device.SystemKeyboardTests.test_non_system_or_zapime_cannot_satisfy_teardown) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.014s
+
+OK

@@ -1,0 +1,21 @@
+    private void click(String text) throws Exception { click(text,!text.startsWith("probe-")); }
+    private void click(String text,boolean button) throws Exception {
+        for(int attempt=0;attempt<30;attempt++) {
+            // 键盘/候选必须是真正的 Button，不能误点同文的编辑器内容或提示。
+            AccessibilityNodeInfo node=waitFor(text,button);
+            Rect bounds=new Rect();node.getBoundsInScreen(bounds);
+            if(node.isVisibleToUser() && bounds.width()>0 && bounds.height()>0) {
+                String control=text.equals("工具")?"tools":text.equals("返回键盘")?"tools_return":"other";
+                noteDriver(control+"_touch_attempt");
+                long now=SystemClock.uptimeMillis();
+                MotionEvent down=MotionEvent.obtain(now,now,MotionEvent.ACTION_DOWN,bounds.centerX(),bounds.centerY(),0);
+                MotionEvent up=MotionEvent.obtain(now,now+50,MotionEvent.ACTION_UP,bounds.centerX(),bounds.centerY(),0);
+                down.setSource(InputDevice.SOURCE_TOUCHSCREEN);up.setSource(InputDevice.SOURCE_TOUCHSCREEN);
+                boolean sent=automation.injectInputEvent(down,true) && automation.injectInputEvent(up,true);down.recycle();up.recycle();
+                noteDriver(control+(sent?"_touch_sent":"_touch_rejected"));
+                if(sent) { Thread.sleep(200);return; }
+            } else if(node.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {Thread.sleep(200);return;}
+            // 候选更新会替换节点；重新获取，而不是点击已经脱离窗口的节点。
+            Thread.sleep(100);
+        }
+        throw new Exception("UI click rejected: "+text);

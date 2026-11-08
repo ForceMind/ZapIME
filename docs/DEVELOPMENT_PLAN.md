@@ -8,9 +8,11 @@
 
 ## 当前执行接续（2026-11-07，源码 Alpha 整合）
 
-API35组字异常新增固定枚举/有界事件环及真实按键前后数字状态已通过本机JVM/Java编译；等待新固定源码模拟器复现。原上屏、候选身份、触摸和真实服务退出门槛不变，不以事件环实现或一次后续成功宣称根因解决。
+工具菜单真实触摸夹具已在独立切片修正稳定节点身份/几何/served/Insets和50ms单次触摸，原配置重启交叉失败保留；等待同源码系统门禁，不改产品或放松恢复/隐私/退出断言。
 
-最新主分支全量Android已结束：42441322518整体FAILURE，VoiceKey API36在adb root/device offline及后续清理失败，未进入模型/JNI门禁；常规API28/35/36和VoiceKey API28/35成功。原失败artifact已核SHA保留于[最终回读](evidence/main-android-final-20261107/README.md)。先做发布脚本创建/回读故障回归，再分别定位SAF导航与组字失败；不同源码/门禁不互相代填。
+缓存后台fill历史P1已复现并修复；固定Go race/vet/build及实际服务CI42460687991的强制PG/HTTP、S3、安装/灾备全部通过，原失败保留。原#25研究不直接合并。
+
+最新主分支全量Android已结束：42441322518整体FAILURE，VoiceKey API36在adb root/device offline及后续清理失败，未进入模型/JNI门禁；常规API28/35/36和VoiceKey API28/35成功。原失败artifact已核SHA保留于[最终回读](evidence/main-android-final-20261107/README.md)。发布脚本创建/回读修复与30项故障回归已通过对应CI并在#85合入；随后分别定位SAF导航与组字失败；不同源码/门禁不互相代填。
 
 - 默认从实时 main 与源码版本 v0.1.0-alpha.1 接续；整合分支 release/open-source-alpha 承接5d976f578a2b11d14b9050ff0ec01e5d18d9e538。先核对当前PR/Release，未合并时使用整合分支，不从旧main重做功能。
 - 5d976f5的七条workflow已全部SUCCESS，包含候选API28/35/36真实模型和系统IME；9aff370的候选专项亦全部成功。原API35间歇组字失败仍保留，唯一根因未确认。

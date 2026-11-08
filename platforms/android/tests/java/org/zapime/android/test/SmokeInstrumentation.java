@@ -222,16 +222,23 @@ public final class SmokeInstrumentation extends Instrumentation {
         for(int i=0;i<900;i++){if(find("正在聆听 · 最长 60 秒")!=null)return;if(find("麦克风不可用，请检查权限或重试")!=null||find("系统已暂停麦克风，请检查权限或占用后重试")!=null||find("离线识别未完成，请检查模型或重试")!=null)throw new Exception("IME microphone or model unavailable");Thread.sleep(100);}throw new Exception("IME microphone start timeout");
     }
     private static final class ImeTarget {
-        final int windowId;final Rect windowBounds,buttonBounds;
-        ImeTarget(int id,Rect window,Rect button){windowId=id;windowBounds=new Rect(window);buttonBounds=new Rect(button);}
-        boolean sameGeometry(ImeTarget other){return other!=null&&windowId==other.windowId&&windowBounds.equals(other.windowBounds)&&buttonBounds.equals(other.buttonBounds);}
+        final int windowId;final Rect windowBounds,buttonBounds;final String label;
+        final AccessibilityNodeInfo identity;
+        ImeTarget(int id,Rect window,Rect button,String label,AccessibilityNodeInfo node){windowId=id;windowBounds=new Rect(window);buttonBounds=new Rect(button);this.label=label;identity=AccessibilityNodeInfo.obtain(node);}
+        // A configuration rebuild can replace a Button at exactly the same
+        // coordinates. Public node equality also checks the original target.
+        boolean sameTarget(ImeTarget other){return other!=null&&windowId==other.windowId&&identity.equals(other.identity)&&windowBounds.equals(other.windowBounds)&&buttonBounds.equals(other.buttonBounds);}
         String fixedGeometry(){return "w="+windowId+" window="+windowBounds.toShortString()+" button="+buttonBounds.toShortString();}
+    }
+    // API28 does not resolve the API30-only IME Insets type on its path.
+    private static final class ImeInsets {
+        static boolean visible(android.view.View view){android.view.WindowInsets insets=view.getRootWindowInsets();return insets!=null&&insets.isVisible(android.view.WindowInsets.Type.ime());}
     }
     private ImeTarget imeTarget(String label){
         for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
             AccessibilityNodeInfo node=walk(window.getRoot(),label,true);if(node==null||!node.isVisibleToUser())continue;
             Rect frame=new Rect(),button=new Rect();window.getBoundsInScreen(frame);node.getBoundsInScreen(button);
-            if(!frame.isEmpty()&&!button.isEmpty()&&frame.contains(button.centerX(),button.centerY()))return new ImeTarget(window.getId(),frame,button);
+            if(!frame.isEmpty()&&!button.isEmpty()&&frame.contains(button.centerX(),button.centerY()))return new ImeTarget(window.getId(),frame,button,label,node);
         }
         return null;
     }
@@ -240,7 +247,8 @@ public final class SmokeInstrumentation extends Instrumentation {
         return back!=null&&voiceEntry!=null&&back.windowId==voiceEntry.windowId;
     }
     private ImeTarget stableImeTarget(String label,String fixedCode,boolean requireTools)throws Exception{
-        // Called only before the paused-editor fixture or after its finally release.
+        // The voice path calls this only before the paused-editor fixture or
+        // after its finally release. Tools acceptance uses the same boundary.
         // Accessibility idle alone is insufficient: IME resize can move a button
         // after its bounds were read but before injectInputEvent waits for surfaces.
         automation.waitForIdle(200,3000);
@@ -248,18 +256,18 @@ public final class SmokeInstrumentation extends Instrumentation {
         ImeTarget previous=null;ProbeActivity previousHost=null;int previousVersion=-1;
         String lastObservation=null;
         while(SystemClock.uptimeMillis()<deadline){
-            final ProbeActivity[] host={null};final int[] counts={-1,-1};final boolean[] focused={false};
-            runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();host[0]=a;if(a!=null){counts[0]=a.activeImeAnimations;counts[1]=a.imeAnimationVersion;focused[0]=a.normal.hasFocus()&&a.normal.hasWindowFocus();}});
+            final ProbeActivity[] host={null};final int[] counts={-1,-1};final boolean[] focused={false},served={false},visible={false};
+            runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();host[0]=a;if(a!=null){counts[0]=a.activeImeAnimations;counts[1]=a.imeAnimationVersion;focused[0]=a.normal.hasFocus()&&a.normal.hasWindowFocus();served[0]=((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).isActive(a.normal);visible[0]=android.os.Build.VERSION.SDK_INT<30||ImeInsets.visible(a.normal);}});
             ImeTarget target=imeTarget(label);boolean panelReady=!requireTools||toolsPanelVisible();
-            String observation=(target==null?"absent":target.fixedGeometry())+" animations="+counts[0]+" version="+counts[1]+" focused="+focused[0]+" panel="+panelReady;
+            String observation=(target==null?"absent":target.fixedGeometry())+" animations="+counts[0]+" version="+counts[1]+" focused="+focused[0]+" served="+served[0]+" visible="+visible[0]+" panel="+panelReady;
             if(!observation.equals(lastObservation)){noteDriver(fixedCode+"_geometry "+observation);lastObservation=observation;}
-            boolean ready=host[0]!=null&&focused[0]&&counts[0]==0&&target!=null&&panelReady;
+            boolean ready=host[0]!=null&&focused[0]&&served[0]&&visible[0]&&counts[0]==0&&target!=null&&panelReady;
             long now=SystemClock.uptimeMillis();
-            if(!ready||!target.sameGeometry(previous)||host[0]!=previousHost||counts[1]!=previousVersion){stableSince=ready?now:-1;}
+            if(!ready||!target.sameTarget(previous)||host[0]!=previousHost||counts[1]!=previousVersion){stableSince=ready?now:-1;}
             else if(stableSince>=0&&now-stableSince>=300){
                 // Reacquire after the stable interval; never inject stored old bounds.
                 ImeTarget fresh=imeTarget(label);
-                if(fresh!=null&&fresh.sameGeometry(target)&&(!requireTools||toolsPanelVisible())){
+                if(fresh!=null&&fresh.sameTarget(target)&&(!requireTools||toolsPanelVisible())){
                     noteDriver(fixedCode+"_geometry_stable "+fresh.fixedGeometry());return fresh;
                 }
                 stableSince=-1;
@@ -269,6 +277,9 @@ public final class SmokeInstrumentation extends Instrumentation {
         throw new Exception("IME geometry did not settle for "+fixedCode);
     }
     private void touchImeOnce(ImeTarget target,String fixedCode)throws Exception{
+        ImeTarget fresh=imeTarget(target.label);
+        if(fresh==null||!fresh.sameTarget(target))throw new Exception("IME target changed before single touch for "+fixedCode);
+        target=fresh;
         noteDriver(fixedCode+"_physical_down "+target.fixedGeometry());
         long downTime=SystemClock.uptimeMillis();boolean downSent,upSent;
         MotionEvent down=MotionEvent.obtain(downTime,downTime,MotionEvent.ACTION_DOWN,target.buttonBounds.centerX(),target.buttonBounds.centerY(),0);
@@ -281,18 +292,19 @@ public final class SmokeInstrumentation extends Instrumentation {
         noteDriver(fixedCode+"_physical_result down="+downSent+" up="+upSent);
         if(!downSent||!upSent)throw new Exception("IME physical touch was not accepted for "+fixedCode);
     }
-    private void ensureToolsOpen()throws Exception{
+    private void ensureToolsOpen()throws Exception{ensureToolsOpen("voice_tools");}
+    private void ensureToolsOpen(String fixedCode)throws Exception{
         if(toolsPanelVisible()){
-            stableImeTarget("离线语音","voice_tools_already_open",true);noteDriver("voice_tools_already_open_no_toggle");return;
+            stableImeTarget("离线语音",fixedCode+"_already_open",true);noteDriver(fixedCode+"_already_open_no_toggle");return;
         }
-        ImeTarget tools=stableImeTarget("工具","voice_tools",false);
+        ImeTarget tools=stableImeTarget("工具",fixedCode,false);
         // An already-open panel must not be toggled shut while layouts settle.
         if(toolsPanelVisible()){
-            stableImeTarget("离线语音","voice_tools_already_open",true);noteDriver("voice_tools_already_open_no_toggle");return;
+            stableImeTarget("离线语音",fixedCode+"_already_open",true);noteDriver(fixedCode+"_already_open_no_toggle");return;
         }
-        touchImeOnce(tools,"voice_tools");
-        stableImeTarget("离线语音","voice_tools_open_postcondition",true);
-        noteDriver("voice_tools_open_postcondition_verified");
+        touchImeOnce(tools,fixedCode);
+        stableImeTarget("离线语音",fixedCode+"_open_postcondition",true);
+        noteDriver(fixedCode+"_open_postcondition_verified");
     }
     private void startDictation()throws Exception{
         ensureToolsOpen();touchImeOnce(stableImeTarget("离线语音","voice_entry",true),"voice_entry");waitListening();
@@ -358,7 +370,7 @@ public final class SmokeInstrumentation extends Instrumentation {
         automation.waitForIdle(200,3000);
     }
     private void toolsRestartAcceptance() throws Exception {
-        stage="tools_open";click("工具");waitFor("返回键盘",true);
+        stage="tools_open";ensureToolsOpen("restart_tools_open");waitFor("返回键盘",true);
         // Deterministic real App restart while the non-text panel is open.
         // No IME method or editor text is injected by the test.
         stage="tools_empty_editor_restart";noteDriver("tools_restart_requested");restartNormalEditor();
@@ -372,7 +384,9 @@ public final class SmokeInstrumentation extends Instrumentation {
         previous=ProbeActivity.normalConnections.get();
         runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();a.normal.setImeOptions(options[0]);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
         awaitServedConnectionCommand(previous);waitFor("⚡ 闪电 · 离线");
-        stage="tools_close";click("工具");waitFor("返回键盘",true);click("返回键盘");waitFor("n",true);
+        stage="tools_close";ensureToolsOpen("restart_tools_reopen");waitFor("返回键盘",true);
+        touchImeOnce(stableImeTarget("返回键盘","restart_tools_return",true),"restart_tools_return");waitFor("n",true);
+        stableImeTarget("n","restart_tools_letters_postcondition",false);
     }
     private void requireToolsPanelStable() throws Exception {
         for(int i=0;i<10;i++){
@@ -428,7 +442,7 @@ public final class SmokeInstrumentation extends Instrumentation {
             click("123");click("1");click("2");click("3");requireEditor("你好qw123","number_panel");screenshot("numbers.png");click("⌫");click("⌫");click("⌫");click("返回");requireEditor("你好qw","number_return");
             click("probe-password"); waitFor("隐私输入 · 不学习"); click("a"); click("b");
             click("probe-normal"); waitFor("⚡ 闪电 · 离线");
-            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");click("工具");click("符号");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
+            for(char c:"nihao".toCharArray())click(String.valueOf(c));chooseCandidate("你好","你好qw你好","focus_return");ensureToolsOpen("symbols_tools");touchImeOnce(stableImeTarget("符号","symbols_entry",true),"symbols_entry");click("？");requireEditor("你好qw你好？","symbol_panel");click("⌫");click("返回");requireEditor("你好qw你好","symbol_return");
             stage="saved_shortcut_ui";click("probe-open-settings",true);reveal("个人资料 · 离线管理与备份");screenshot("home.png");click("个人资料 · 离线管理与备份");
             setText("personal-code","wx");setText("personal-text","ZapIME test snippet");click("保存到本机");waitFor("wx\nZapIME test snippet");screenshot("personal.png");
             stage="shortcut_focus_return";intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);getContext().startActivity(intent);click("probe-normal");waitFor("⚡ 闪电 · 离线");click("w");click("x");click("空格");requireEditor("ZapIME test snippet","saved_shortcut");

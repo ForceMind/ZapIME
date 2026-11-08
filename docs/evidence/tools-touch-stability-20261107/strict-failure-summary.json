@@ -1,0 +1,58 @@
+{
+  "strict_failure_reviewed": true,
+  "recorded_utc": "2026-11-08T08:34:20.644206+00:00",
+  "overall_passed": false,
+  "source_head": "cbe55e286b017512212efc1d07e7db13c3112403",
+  "actual_checkout": "38a58fdab216ed4fa0d1abeb2da3a565a191a904",
+  "api": 36,
+  "first_failure": {
+    "component": "native keyboard basic UI",
+    "round": 1,
+    "stage": "tools_open",
+    "reason": "Missing UI node: \u8fd4\u56de\u952e\u76d8",
+    "log_time_utc": "2026-11-08T08:21:38.5462447Z",
+    "second_keyboard_round_executed": false,
+    "editable_composition_executed": false
+  },
+  "separate_voice_gate": {
+    "exit_code": 0,
+    "native_pass_marker": true,
+    "ui_pass_marker": true,
+    "scope": "Actual offline voice synthetic/native/recording UI gate only, does not rescue keyboard failure"
+  },
+  "observed_sequence": [
+    "86657 driver tools_touch_attempt",
+    "87343 INPUT_RESTART epoch3 \u2192 INPUT_REBUILT epoch4",
+    "87372 view_letters; no tools_open panel event observed",
+    "87424 driver tools_touch_sent (input injection acknowledged only)",
+    "87430 host finish/batch-end, editor remains length0/selection0:0/no composing"
+  ],
+  "system_history": {
+    "time": "2026-11-08 08:20:27.998",
+    "origin": "ORIGIN_IME",
+    "reason": "RESET_NEW_CONFIGURATION",
+    "phase": "PHASE_WM_POST_LAYOUT_NOTIFY_CONTROLS_CHANGED"
+  },
+  "interpretation": "Configuration rebuild overlaps the one tool-button touch. The action was not observed and the panel remained letters. This is a separate empty-editor tools UI/touch timing failure, not the sh/shi composition case or voice failure. Injection acknowledgement does not prove an action; exact DOWN/UP dispatch relative to restart is not available in this older generic click trace.",
+  "observed_teardown": {
+    "system_keyboard_verified": true,
+    "service_absent": true,
+    "product_runtime_fatal_log_bytes": 0,
+    "shared_voice_wrapper_uid_ipv4_ipv6_cleanup_report": true
+  },
+  "not_claimed": [
+    "Fresh composition-retention repair fixes this tools-button scenario",
+    "Unique product or host cause from injection ack alone",
+    "Two keyboard rounds passed",
+    "Voice success makes the full run successful",
+    "Complete per-keyboard original system settings restoration from missing structured proof"
+  ],
+  "source_driver": {
+    "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+    "ref": "cbe55e286b017512212efc1d07e7db13c3112403",
+    "blob": "c74b29a1c83cc7cab13deed96031ba0f410bf309",
+    "excerpt": "old-tools-click-source-excerpt.java.txt",
+    "behavior": "Generic click constructs immediate DOWN/UP with a future UP timestamp; no stableImeTarget/touchImeOnce for initial toolsRestartAcceptance path"
+  },
+  "artifact_scope": "Complete original ZIP preserved; safe-extracted excludes synthetic PCM and unneeded backup/key reports. All selected originals retain bytes."
+}

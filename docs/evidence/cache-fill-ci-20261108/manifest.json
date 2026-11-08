@@ -1,0 +1,30 @@
+{
+  "head": "f01a8b5803ebcc5111b1d6ffa7271c9db61a8a63",
+  "checkout": "0d5edd686e9f23c639099e71004888bf568c88a1",
+  "tree": "6350807ec26343dcd395d532364294efc24badc0",
+  "run": 42460687991,
+  "job": 128669118685,
+  "artifact": 13609793792,
+  "artifact_bytes": 1798,
+  "artifact_sha256": "37bfcf92ff0e5745a22a8a17f8d79327ea21ecdfc12226b2431ee7ab65f8b050",
+  "job_log_original_sha256": "b417f7f19bdae1bf43ac3b27dedc0054a32e2fa34d0a250b8fd75194e4c1b127",
+  "top_level_groups_including_fuzz": 30,
+  "skipped": 0,
+  "files": [
+    {
+      "path": "original.zip",
+      "bytes": 1798,
+      "sha256": "37bfcf92ff0e5745a22a8a17f8d79327ea21ecdfc12226b2431ee7ab65f8b050"
+    },
+    {
+      "path": "sync-service-tests.log",
+      "bytes": 8982,
+      "sha256": "60c57a484c15260f54b6cc72670519b9cbcbb960c2687aef12a2d7703646243a"
+    },
+    {
+      "path": "service-job.log.gz",
+      "bytes": 36913,
+      "sha256": "96f9dcd4e761eac67444840a2d9157c90645e3cb847101c93ca670786f0ee0e6"
+    }
+  ]
+}

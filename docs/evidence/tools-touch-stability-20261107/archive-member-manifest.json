@@ -1,0 +1,404 @@
+[
+  {
+    "path": "device-smoke/activity-errors.txt",
+    "bytes": 206,
+    "sha256": "7e789577da6cf8a385d88301efca56ca899c40b75460c9e24e69980002badfae",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/activity-top.txt",
+    "bytes": 57464,
+    "sha256": "32829fa2272f7ad4403c867958bbacdc21c8a91ca899a010b19e90a54cb555cc",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/activity-state.txt",
+    "bytes": 25538,
+    "sha256": "f8638fbe52ca4ca9edfcf804b223ef638e7b68bc365e477aa16d543cb79e2591",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ci-activity-state.txt",
+    "bytes": 30157,
+    "sha256": "d7615d90db8b639f6605de0ca7418d5238eea1efeb6fc34a26c69df091de4e7d",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ci-activity-top.txt",
+    "bytes": 64752,
+    "sha256": "5b7bfd34bf3fc8fcef18ef74bc20a57496f91e010e0f065680e3269877f78271",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ci-system-runtime.txt",
+    "bytes": 174509,
+    "sha256": "4c276d766e7a3cf48dcd2b7dd9f25716d7bfeaaac588aa26bb97ca6323107509",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ci-input-service.txt",
+    "bytes": 3164,
+    "sha256": "911a3b8399c0a2d014594c372eee8c73cd356dc30d4842a491618036036d9136",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ci-window-state.txt",
+    "bytes": 42954,
+    "sha256": "b1557910a2a702b3f76e9339c82cf67d9133b96ce241454c310e3573dbcdd5e1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/hierarchy.txt",
+    "bytes": 7360,
+    "sha256": "bb07d89cddb6b69a6108f9715d8e10a271b035de2fabfdc6f25b7b2049e846c9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/host-lifecycle.txt",
+    "bytes": 867,
+    "sha256": "ae4f67b4ebae53af70ff742b5d5db84f4ab6e268ac96b98a71e6361d045c48e9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/ime-teardown.log",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/input-method-state.log",
+    "bytes": 79778,
+    "sha256": "0e44f25a38ca3ef5ce03be730d352b0edabcfe0b779905e79ddbd5b249755942",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/instrumentation.log",
+    "bytes": 85,
+    "sha256": "690e8638c12f2a400aea6c9ae35d80befb6d056685b3ef7a75ecccbb87bb56b9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/keyboard.png",
+    "bytes": 47029,
+    "sha256": "72d96567d8d65ed4288e3c3e6e88c11217fa11e0b80f0d8bd51634cba8c14bca",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/last-anr.txt",
+    "bytes": 88,
+    "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/runtime-errors.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/smoke.png",
+    "bytes": 46909,
+    "sha256": "ea8de08abb2ac703087078d36cfa0aa87767d22125491b9a2bacb2eb59af6ed1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/system-runtime.txt",
+    "bytes": 262144,
+    "sha256": "f8a2711c1cdf427ffc4e21fe9cb5a6cc1999816f56b51f7ddd42e4fd37f36237",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke/window-state.txt",
+    "bytes": 37869,
+    "sha256": "ba98981ab1676f02a2daba2d472cf0c905bd72a0322cba61f3652c34494e3eba",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/activity-errors.txt",
+    "bytes": 206,
+    "sha256": "7e789577da6cf8a385d88301efca56ca899c40b75460c9e24e69980002badfae",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/activity-state.txt",
+    "bytes": 25538,
+    "sha256": "f8638fbe52ca4ca9edfcf804b223ef638e7b68bc365e477aa16d543cb79e2591",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/activity-top.txt",
+    "bytes": 57464,
+    "sha256": "32829fa2272f7ad4403c867958bbacdc21c8a91ca899a010b19e90a54cb555cc",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ci-activity-state.txt",
+    "bytes": 30157,
+    "sha256": "d7615d90db8b639f6605de0ca7418d5238eea1efeb6fc34a26c69df091de4e7d",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ci-activity-top.txt",
+    "bytes": 64752,
+    "sha256": "5b7bfd34bf3fc8fcef18ef74bc20a57496f91e010e0f065680e3269877f78271",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ci-input-service.txt",
+    "bytes": 3164,
+    "sha256": "911a3b8399c0a2d014594c372eee8c73cd356dc30d4842a491618036036d9136",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ci-system-runtime.txt",
+    "bytes": 174509,
+    "sha256": "4c276d766e7a3cf48dcd2b7dd9f25716d7bfeaaac588aa26bb97ca6323107509",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ci-window-state.txt",
+    "bytes": 42954,
+    "sha256": "b1557910a2a702b3f76e9339c82cf67d9133b96ce241454c310e3573dbcdd5e1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/hierarchy.txt",
+    "bytes": 7360,
+    "sha256": "bb07d89cddb6b69a6108f9715d8e10a271b035de2fabfdc6f25b7b2049e846c9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/host-lifecycle.txt",
+    "bytes": 867,
+    "sha256": "ae4f67b4ebae53af70ff742b5d5db84f4ab6e268ac96b98a71e6361d045c48e9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/ime-teardown.log",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/instrumentation.log",
+    "bytes": 85,
+    "sha256": "690e8638c12f2a400aea6c9ae35d80befb6d056685b3ef7a75ecccbb87bb56b9",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/input-method-state.log",
+    "bytes": 79778,
+    "sha256": "0e44f25a38ca3ef5ce03be730d352b0edabcfe0b779905e79ddbd5b249755942",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/keyboard.png",
+    "bytes": 47029,
+    "sha256": "72d96567d8d65ed4288e3c3e6e88c11217fa11e0b80f0d8bd51634cba8c14bca",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/last-anr.txt",
+    "bytes": 88,
+    "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/runtime-errors.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/smoke.png",
+    "bytes": 46909,
+    "sha256": "ea8de08abb2ac703087078d36cfa0aa87767d22125491b9a2bacb2eb59af6ed1",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/system-runtime.txt",
+    "bytes": 262144,
+    "sha256": "f8a2711c1cdf427ffc4e21fe9cb5a6cc1999816f56b51f7ddd42e4fd37f36237",
+    "safely_extracted": true
+  },
+  {
+    "path": "device-smoke-evidence/42459746972-1/round-1/window-state.txt",
+    "bytes": 37869,
+    "sha256": "ba98981ab1676f02a2daba2d472cf0c905bd72a0322cba61f3652c34494e3eba",
+    "safely_extracted": true
+  },
+  {
+    "path": "voice-android/activity-errors.txt",
+    "bytes": 294,
+    "sha256": "046a84882a8d0e1766234b3175bda8c3b08fe65bbac6632a7d7590658586b88b",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ci-activity-state.txt",
+    "bytes": 30157,
+    "sha256": "d7615d90db8b639f6605de0ca7418d5238eea1efeb6fc34a26c69df091de4e7d",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ci-activity-top.txt",
+    "bytes": 64752,
+    "sha256": "5b7bfd34bf3fc8fcef18ef74bc20a57496f91e010e0f065680e3269877f78271",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ci-input-service.txt",
+    "bytes": 3164,
+    "sha256": "911a3b8399c0a2d014594c372eee8c73cd356dc30d4842a491618036036d9136",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ci-system-runtime.txt",
+    "bytes": 174509,
+    "sha256": "4c276d766e7a3cf48dcd2b7dd9f25716d7bfeaaac588aa26bb97ca6323107509",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ci-window-state.txt",
+    "bytes": 42954,
+    "sha256": "b1557910a2a702b3f76e9339c82cf67d9133b96ce241454c310e3573dbcdd5e1",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/combined-gates.json",
+    "bytes": 66,
+    "sha256": "855f6110f15b429f80da6704e45a1c2700674edb795effc8af3ecae1bf92c178",
+    "safely_extracted": true
+  },
+  {
+    "path": "voice-android/crash.txt",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/empty-pcm-report.json",
+    "bytes": 1143,
+    "sha256": "f2ce8f95c4d3a54fdffe6872d4c2a535034321a765dae7a5cb27e4867a6aa634",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/hierarchy.txt",
+    "bytes": 7360,
+    "sha256": "bb07d89cddb6b69a6108f9715d8e10a271b035de2fabfdc6f25b7b2049e846c9",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/host-lifecycle.txt",
+    "bytes": 6392,
+    "sha256": "1a297a245066c60e2c8a67f255fd6538a64542ee33b5a90515f43018b032ad45",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ime-teardown.txt",
+    "bytes": 66,
+    "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/instrumentation.txt",
+    "bytes": 2821,
+    "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc",
+    "safely_extracted": true
+  },
+  {
+    "path": "voice-android/local-backup-report.json",
+    "bytes": 990,
+    "sha256": "a800fd7d5c334a04175b99ed585a217588dd6c813b68e6f0755432c9b7c566dc",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/native-report.json",
+    "bytes": 650,
+    "sha256": "a44b4cabf7bd60d0bf70ac77e38ce156a4055553988650c71471e5c6f847b98a",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/smoke.png",
+    "bytes": 46909,
+    "sha256": "ea8de08abb2ac703087078d36cfa0aa87767d22125491b9a2bacb2eb59af6ed1",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/offline-uid.json",
+    "bytes": 119,
+    "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e",
+    "safely_extracted": true
+  },
+  {
+    "path": "voice-android/sync-connection-report.json",
+    "bytes": 726,
+    "sha256": "d2d40387113b472075c85bc1a59faeb8c8e4f9fa5c84abae97d518b64b2ec6c8",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/sync-preparation-report.json",
+    "bytes": 1308,
+    "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/sync-profile-report.json",
+    "bytes": 675,
+    "sha256": "415930e6b8e84ce0d55c129a3503fafc183d91360722e95166e9594ab9706bd8",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/synthetic.pcm",
+    "bytes": 250980,
+    "sha256": "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/system-keyboard.json",
+    "bytes": 244,
+    "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/ui-instrumentation.txt",
+    "bytes": 316,
+    "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185",
+    "safely_extracted": true
+  },
+  {
+    "path": "voice-android/voice-commit-report.json",
+    "bytes": 5302,
+    "sha256": "40796d46dd59508da02fbc2b2b011fcc42a426140326dc41fd4b5120894e11bc",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/voice-recording.png",
+    "bytes": 39973,
+    "sha256": "17a53dc5a61b08ebb7f920c72489001cbdef779763b3ad92a39c2c1fdec47e66",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/voice-stopped.png",
+    "bytes": 41704,
+    "sha256": "925a186000c1e044c3af449b433976ced5ed5202ad38920c1c9e43a620b20ce0",
+    "safely_extracted": false
+  },
+  {
+    "path": "voice-android/voicekey-boundary-report.json",
+    "bytes": 680,
+    "sha256": "e2aaed3c59f9e11b751bdf05bcfd37db67ad701aafdad094a1162df688ece8be",
+    "safely_extracted": false
+  }
+]

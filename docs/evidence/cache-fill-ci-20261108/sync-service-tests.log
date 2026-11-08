@@ -1,0 +1,152 @@
+?   	github.com/ForceMind/ZapIME/services/sync/cmd/collect-notices	[no test files]
+?   	github.com/ForceMind/ZapIME/services/sync/cmd/zapime-sync	[no test files]
+=== RUN   TestPostgresTransactions
+=== RUN   TestPostgresTransactions/idempotency_replay_and_conflicting_reuse
+=== RUN   TestPostgresTransactions/concurrent_stale_writes_keep_one_winner
+=== RUN   TestPostgresTransactions/tombstones_reject_stale_resurrection
+=== RUN   TestPostgresTransactions/pagination_preserves_every_operation
+=== RUN   TestPostgresTransactions/account_isolation
+=== RUN   TestPostgresTransactions/revocation_rejects_already_authenticated_actor
+=== RUN   TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity
+=== RUN   TestPostgresTransactions/database_never_stores_bearer_token
+=== RUN   TestPostgresTransactions/quota_rejection_leaves_no_partial_revision
+--- PASS: TestPostgresTransactions (0.14s)
+    --- PASS: TestPostgresTransactions/idempotency_replay_and_conflicting_reuse (0.01s)
+    --- PASS: TestPostgresTransactions/concurrent_stale_writes_keep_one_winner (0.02s)
+    --- PASS: TestPostgresTransactions/tombstones_reject_stale_resurrection (0.01s)
+    --- PASS: TestPostgresTransactions/pagination_preserves_every_operation (0.03s)
+    --- PASS: TestPostgresTransactions/account_isolation (0.01s)
+    --- PASS: TestPostgresTransactions/revocation_rejects_already_authenticated_actor (0.01s)
+    --- PASS: TestPostgresTransactions/credential_recovery_invalidates_old_in-flight_identity (0.00s)
+    --- PASS: TestPostgresTransactions/database_never_stores_bearer_token (0.00s)
+    --- PASS: TestPostgresTransactions/quota_rejection_leaves_no_partial_revision (0.01s)
+=== RUN   TestHTTPAndPersistentCiphertext
+--- PASS: TestHTTPAndPersistentCiphertext (0.06s)
+=== RUN   TestKeyDescriptorBoundary
+=== RUN   TestKeyDescriptorBoundary/duplicate
+=== RUN   TestKeyDescriptorBoundary/trailing_object
+=== RUN   TestKeyDescriptorBoundary/oversized
+=== RUN   TestKeyDescriptorBoundary/null
+=== RUN   TestKeyDescriptorBoundary/missing
+=== RUN   TestKeyDescriptorBoundary/version_string
+=== RUN   TestKeyDescriptorBoundary/version_float
+=== RUN   TestKeyDescriptorBoundary/short_digest
+=== RUN   TestKeyDescriptorBoundary/unknown
+=== RUN   TestKeyDescriptorBoundary/nil_key
+=== RUN   TestKeyDescriptorBoundary/uppercase_key
+=== RUN   TestKeyDescriptorBoundary/digest_type
+=== RUN   TestKeyDescriptorBoundary/escaped_duplicate
+=== RUN   TestKeyDescriptorBoundary/trailing_scalar
+=== RUN   TestKeyDescriptorBoundary/version_future
+=== RUN   TestKeyDescriptorBoundary/uppercase_digest
+=== RUN   TestKeyDescriptorBoundary/empty
+=== RUN   TestKeyDescriptorBoundary/array
+--- PASS: TestKeyDescriptorBoundary (0.01s)
+    --- PASS: TestKeyDescriptorBoundary/duplicate (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/trailing_object (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/oversized (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/null (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/missing (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/version_string (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/version_float (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/short_digest (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/unknown (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/nil_key (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/uppercase_key (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/digest_type (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/escaped_duplicate (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/trailing_scalar (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/version_future (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/uppercase_digest (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/empty (0.00s)
+    --- PASS: TestKeyDescriptorBoundary/array (0.00s)
+=== RUN   TestPostgresKeyDescriptorCreateOnceAndPushGate
+--- PASS: TestPostgresKeyDescriptorCreateOnceAndPushGate (0.05s)
+=== RUN   TestPostgresKeyDescriptorConcurrentOwners
+=== RUN   TestPostgresKeyDescriptorConcurrentOwners/same_false
+=== RUN   TestPostgresKeyDescriptorConcurrentOwners/same_true
+--- PASS: TestPostgresKeyDescriptorConcurrentOwners (0.06s)
+    --- PASS: TestPostgresKeyDescriptorConcurrentOwners/same_false (0.03s)
+    --- PASS: TestPostgresKeyDescriptorConcurrentOwners/same_true (0.01s)
+=== RUN   TestPostgresKeyDescriptorLegacyAndWriteRace
+=== RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/existing_history_stays_legacy_and_old_API_works
+=== RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/quota_only
+=== RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/rows_despite_zero_head
+=== RUN   TestPostgresKeyDescriptorLegacyAndWriteRace/register_serialized_with_original_push_route
+--- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace (0.07s)
+    --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/existing_history_stays_legacy_and_old_API_works (0.02s)
+    --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/quota_only (0.00s)
+    --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/rows_despite_zero_head (0.01s)
+    --- PASS: TestPostgresKeyDescriptorLegacyAndWriteRace/register_serialized_with_original_push_route (0.02s)
+=== RUN   TestPostgresKeyDescriptorAuthorizationAndHTTP
+--- PASS: TestPostgresKeyDescriptorAuthorizationAndHTTP (0.06s)
+=== RUN   TestPostgresKeyDescriptorSchemaMigration
+=== RUN   TestPostgresKeyDescriptorSchemaMigration/from_1
+=== RUN   TestPostgresKeyDescriptorSchemaMigration/from_2
+--- PASS: TestPostgresKeyDescriptorSchemaMigration (0.16s)
+    --- PASS: TestPostgresKeyDescriptorSchemaMigration/from_1 (0.08s)
+    --- PASS: TestPostgresKeyDescriptorSchemaMigration/from_2 (0.08s)
+=== RUN   TestObjectCacheFullCapacityStillSharesAndReleasesOneSlot
+--- PASS: TestObjectCacheFullCapacityStillSharesAndReleasesOneSlot (0.00s)
+=== RUN   TestPostgresObjectCacheHTTPAdmissionOutlivesCancelledHandlers
+--- PASS: TestPostgresObjectCacheHTTPAdmissionOutlivesCancelledHandlers (0.08s)
+=== RUN   TestObjectCacheDeadlineDoesNotReleaseRunningBackendOrWarmLateBytes
+--- PASS: TestObjectCacheDeadlineDoesNotReleaseRunningBackendOrWarmLateBytes (0.02s)
+=== RUN   TestObjectCacheFailureAndCorruptReadReleaseAdmissionForRetry
+--- PASS: TestObjectCacheFailureAndCorruptReadReleaseAdmissionForRetry (0.00s)
+=== RUN   TestObjectCachePrecancelledCallerDoesNotStartFill
+--- PASS: TestObjectCachePrecancelledCallerDoesNotStartFill (0.00s)
+=== RUN   TestObjectCacheAbandonedFillsRemainGloballyBounded
+--- PASS: TestObjectCacheAbandonedFillsRemainGloballyBounded (0.00s)
+=== RUN   TestObjectCacheReadWriteIsolationAndDurability
+--- PASS: TestObjectCacheReadWriteIsolationAndDurability (0.00s)
+=== RUN   TestObjectCacheExpiryEvictionAndFailedReads
+--- PASS: TestObjectCacheExpiryEvictionAndFailedReads (0.00s)
+=== RUN   TestObjectCacheConcurrentReadersAndCancellation
+--- PASS: TestObjectCacheConcurrentReadersAndCancellation (0.00s)
+=== RUN   TestObjectCacheWarmAfterSuccessfulWrite
+--- PASS: TestObjectCacheWarmAfterSuccessfulWrite (0.00s)
+=== RUN   TestPostgresObjectCacheAuthorizationAndEmptyCursor
+--- PASS: TestPostgresObjectCacheAuthorizationAndEmptyCursor (0.04s)
+=== RUN   TestS3Configuration
+--- PASS: TestS3Configuration (0.00s)
+=== RUN   TestS3TransportIntegrityAndConditionalWrite
+--- PASS: TestS3TransportIntegrityAndConditionalWrite (0.02s)
+=== RUN   TestPostgresObjectFailureRollback
+--- PASS: TestPostgresObjectFailureRollback (0.03s)
+=== RUN   TestRealS3Protocol
+--- PASS: TestRealS3Protocol (0.03s)
+=== RUN   TestPostgresRealObjectStorageAndPortableArchive
+--- PASS: TestPostgresRealObjectStorageAndPortableArchive (0.09s)
+=== RUN   TestObjectArchiveRejectsTraversalAndTampering
+--- PASS: TestObjectArchiveRejectsTraversalAndTampering (0.00s)
+=== RUN   TestEnvelopeBounds
+=== RUN   TestEnvelopeBounds/padding
+=== RUN   TestEnvelopeBounds/nil_record
+=== RUN   TestEnvelopeBounds/negative_revision
+=== RUN   TestEnvelopeBounds/unknown_kind
+=== RUN   TestEnvelopeBounds/future_cipher
+=== RUN   TestEnvelopeBounds/short_nonce
+=== RUN   TestEnvelopeBounds/short_tag
+=== RUN   TestEnvelopeBounds/too_large
+--- PASS: TestEnvelopeBounds (0.00s)
+    --- PASS: TestEnvelopeBounds/padding (0.00s)
+    --- PASS: TestEnvelopeBounds/nil_record (0.00s)
+    --- PASS: TestEnvelopeBounds/negative_revision (0.00s)
+    --- PASS: TestEnvelopeBounds/unknown_kind (0.00s)
+    --- PASS: TestEnvelopeBounds/future_cipher (0.00s)
+    --- PASS: TestEnvelopeBounds/short_nonce (0.00s)
+    --- PASS: TestEnvelopeBounds/short_tag (0.00s)
+    --- PASS: TestEnvelopeBounds/too_large (0.00s)
+=== RUN   TestTokenFormatAndHash
+--- PASS: TestTokenFormatAndHash (0.00s)
+=== RUN   TestDeviceNameBounds
+--- PASS: TestDeviceNameBounds (0.00s)
+=== RUN   TestSessionIdentityAndRevocation
+--- PASS: TestSessionIdentityAndRevocation (0.04s)
+=== RUN   FuzzOperationBoundary
+=== RUN   FuzzOperationBoundary/seed#0
+--- PASS: FuzzOperationBoundary (0.00s)
+    --- PASS: FuzzOperationBoundary/seed#0 (0.00s)
+PASS
+ok  	github.com/ForceMind/ZapIME/services/sync/internal/syncapi	1.972s

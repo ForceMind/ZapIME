@@ -1,0 +1,19 @@
+test_context_and_no_context_proofs_required (test_android_candidate_context_guard.ContextGuardReportTests.test_context_and_no_context_proofs_required) ... ok
+test_second_attempt_keeps_all_first_attempt_evidence (test_android_candidate_context_guard.ContextGuardReportTests.test_second_attempt_keeps_all_first_attempt_evidence) ... ok
+test_absent_setting_keeps_delete_semantics (test_android_candidate_ime_shell.CandidateImeShellTest.test_absent_setting_keeps_delete_semantics) ... ok
+test_api35_enabled_imes_with_subtype_delimiter (test_android_candidate_ime_shell.CandidateImeShellTest.test_api35_enabled_imes_with_subtype_delimiter) ... ok
+test_existing_simple_setting_keeps_exact_value (test_android_candidate_ime_shell.CandidateImeShellTest.test_existing_simple_setting_keeps_exact_value) ... ok
+test_metacharacters_remain_one_literal_setting_value (test_android_candidate_ime_shell.CandidateImeShellTest.test_metacharacters_remain_one_literal_setting_value) ... ok
+test_complete_metadata_shape_and_exact_api_abi (test_android_candidate_ranking_report.CandidateReportTest.test_complete_metadata_shape_and_exact_api_abi) ... ok
+test_every_actual_proof_and_cleanup_required (test_android_candidate_ranking_report.CandidateReportTest.test_every_actual_proof_and_cleanup_required) ... ok
+test_handle_leak_mock_lifecycle_and_unchanged_click_position_rejected (test_android_candidate_ranking_report.CandidateReportTest.test_handle_leak_mock_lifecycle_and_unchanged_click_position_rejected) ... ok
+test_independent_oracle_identity_shape_execution_and_release_are_required (test_android_candidate_ranking_report.CandidateReportTest.test_independent_oracle_identity_shape_execution_and_release_are_required) ... ok
+test_missing_duplicate_unknown_and_failed_case_rejected (test_android_candidate_ranking_report.CandidateReportTest.test_missing_duplicate_unknown_and_failed_case_rejected) ... ok
+test_same_runtime_tolerance_and_error_accounting_cannot_be_weakened (test_android_candidate_ranking_report.CandidateReportTest.test_same_runtime_tolerance_and_error_accounting_cannot_be_weakened) ... ok
+test_scope_cannot_inflate_to_system_ime_or_physical_memory_acceptance (test_android_candidate_ranking_report.CandidateReportTest.test_scope_cannot_inflate_to_system_ime_or_physical_memory_acceptance) ... ok
+test_wrong_hash_fixture_model_runtime_or_mutated_tolerance_rejected (test_android_candidate_ranking_report.CandidateReportTest.test_wrong_hash_fixture_model_runtime_or_mutated_tolerance_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.028s
+
+OK

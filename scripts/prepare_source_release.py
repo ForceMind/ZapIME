@@ -17,6 +17,7 @@ from pathlib import Path, PurePosixPath
 import re
 import subprocess
 import tempfile
+import time
 import zipfile
 
 
@@ -47,6 +48,7 @@ ARCHIVE_NAME = "ZapIME-0.1.0-alpha.1-source.tar.gz"
 PREFIX = "ZapIME-0.1.0-alpha.1-source/"
 ASSET_NAMES = {ARCHIVE_NAME, "metadata.json", "SHA256SUMS"}
 MAX_RELEASE_PAGES = 100
+RELEASE_READ_DELAYS = (0, 1, 2, 4)
 SHA = re.compile(r"[0-9a-f]{40}\Z")
 FORBIDDEN_SUFFIXES = (
     ".apk", ".aab", ".ipa", ".ort", ".onnx", ".onnx.data", ".xnet",
@@ -248,6 +250,15 @@ def gh_json(arguments, *, optional=False, runner=run):
         if optional and b"(HTTP 404)" in (error.stderr or b""):
             return None
         raise ReleaseError("GitHub API request failed; existing releases were not overwritten") from error
+    except (ValueError, UnicodeError) as error:
+        raise ReleaseError("GitHub API response was not valid JSON; no response body is logged") from error
+
+
+def release_id(value, tag):
+    if (not isinstance(value, dict) or value.get("tag_name") != tag
+            or type(value.get("id")) is not int or value["id"] <= 0):
+        raise ReleaseError("Release response has no valid ID for the fixed source tag")
+    return value["id"]
 
 
 def fetch_release(repository, tag, *, runner=run):
@@ -255,6 +266,7 @@ def fetch_release(repository, tag, *, runner=run):
     prefix = f"repos/{repository}/releases"
     published = gh_json([f"{prefix}/tags/{tag}"], optional=True, runner=runner)
     if published is not None:
+        release_id(published, tag)
         return published
     matches = []
     for page in range(1, MAX_RELEASE_PAGES + 1):
@@ -278,29 +290,75 @@ def fetch_release(repository, tag, *, runner=run):
     if not matches:
         return None
     value = gh_json([f"{prefix}/{matches[0]}"], runner=runner)
-    if not isinstance(value, dict) or value.get("tag_name") != tag:
+    if release_id(value, tag) != matches[0]:
         raise ReleaseError("Release ID no longer matches the fixed source tag")
     return value
+
+
+def confirm_release(repository, tag, *, identifier=None, stage, runner=run, sleeper=time.sleep):
+    """Bounded read-only reconciliation; never repeat a creation/upload/edit."""
+    for delay in RELEASE_READ_DELAYS:
+        if delay:
+            sleeper(delay)
+        if identifier is None:
+            value = fetch_release(repository, tag, runner=runner)
+        else:
+            value = gh_json([f"repos/{repository}/releases/{identifier}"],
+                            optional=True, runner=runner)
+        if value is not None:
+            found = release_id(value, tag)
+            if identifier is not None and found != identifier:
+                raise ReleaseError("Release response ID changed during confirmation")
+            return value
+    raise ReleaseError(
+        f"{stage} could not be confirmed after {len(RELEASE_READ_DELAYS)} read-only checks; "
+        "no further mutation was attempted. Preserve the tag/draft and rerun the same source bundle")
+
+
+def create_draft(repository, tag, payload, *, runner=run, sleeper=time.sleep):
+    """Keep the REST creation ID instead of depending on immediate list visibility.
+
+    A lost creation response can mean the server committed the request. Reconcile
+    by tag/list only; never issue a second POST in this invocation. Authentication
+    failures and malformed non-null objects fail immediately without guessing.
+    """
+    try:
+        created = gh_json(["--method", "POST", f"repos/{repository}/releases", "--input", "-"],
+                          runner=lambda command: runner(command, input_data=json_bytes(payload)))
+    except ReleaseError as error:
+        cause = error.__cause__
+        if isinstance(cause, subprocess.CalledProcessError):
+            if any(status in (cause.stderr or b"") for status in (b"(HTTP 401)", b"(HTTP 403)")):
+                raise
+        elif not isinstance(cause, (ValueError, UnicodeError)):
+            raise
+        created = None
+    identifier = release_id(created, tag) if created is not None else None
+    return confirm_release(repository, tag, identifier=identifier, stage="Draft creation",
+                           runner=runner, sleeper=sleeper)
 
 
 def remote_tag(repository, tag, *, runner=run):
     ref = gh_json([f"repos/{repository}/git/ref/tags/{tag}"], optional=True, runner=runner)
     if ref is None:
         return None
-    if ref.get("ref") != f"refs/tags/{tag}":
+    if not isinstance(ref, dict) or ref.get("ref") != f"refs/tags/{tag}":
         raise ReleaseError("Remote tag reference does not match the fixed release tag")
-    obj = ref["object"]
+    obj = ref.get("object")
     for _ in range(8):
+        if not isinstance(obj, dict):
+            raise ReleaseError("Remote tag response has no valid Git object")
         require_sha(obj.get("sha"))
         if obj.get("type") == "commit":
             return obj["sha"]
         if obj.get("type") != "tag":
             break
-        obj = gh_json([f"repos/{repository}/git/tags/{obj['sha']}"], runner=runner)["object"]
+        annotated = gh_json([f"repos/{repository}/git/tags/{obj['sha']}"], runner=runner)
+        obj = annotated.get("object") if isinstance(annotated, dict) else None
     raise ReleaseError("Remote tag does not resolve to a commit")
 
 
-def publish(repo, commit, output, *, repository, runner=run):
+def publish(repo, commit, output, *, repository, runner=run, sleeper=time.sleep):
     plan, metadata = validate_bundle(repo, commit, output)
     if repository != plan["repository"]:
         raise ReleaseError("Publishing is restricted to the fixed release repository")
@@ -322,22 +380,25 @@ def publish(repo, commit, output, *, repository, runner=run):
     marker = f"<!-- zapime-source-alpha commit={commit} tree={metadata['source_tree']} -->"
     body = notes.rstrip() + "\n\n" + marker + "\n"
     if release is None:
-        with tempfile.TemporaryDirectory(prefix="source-alpha-notes-") as temporary:
-            notes_path = Path(temporary) / "notes.md"
-            notes_path.write_text(body, encoding="utf-8")
-            runner(["gh", "release", "create", tag, "--repo", repository,
-                    "--target", commit, "--verify-tag", "--draft", "--prerelease",
-                    "--latest=false", "--title", plan["name"], "--notes-file", str(notes_path)])
-        release = fetch_release(repository, tag, runner=runner)
+        release = create_draft(repository, tag, {
+            "tag_name": tag, "target_commitish": commit, "name": plan["name"],
+            "body": body, "draft": True, "prerelease": True, "make_latest": "false",
+        }, runner=runner, sleeper=sleeper)
 
-    def validate_release(value, *, complete):
-        if (value.get("tag_name") != tag or value.get("target_commitish") != commit
+    def validate_release(value, *, complete=None):
+        release_id(value, tag)
+        if (value.get("target_commitish") != commit
                 or value.get("name") != plan["name"] or value.get("prerelease") is not True
-                or value.get("body", "").rstrip() != body.rstrip()
+                or not isinstance(value.get("body"), str) or value["body"].rstrip() != body.rstrip()
                 or type(value.get("draft")) is not bool):
             raise ReleaseError("Existing release is not the same committed source Alpha")
-        assets = value.get("assets", [])
-        names = [asset.get("name") for asset in assets]
+        if complete is None:
+            complete = not value["draft"]
+        assets = value.get("assets")
+        if (not isinstance(assets, list) or any(not isinstance(asset, dict)
+                or not isinstance(asset.get("name"), str) for asset in assets)):
+            raise ReleaseError("Release response has no valid source asset list")
+        names = [asset["name"] for asset in assets]
         if (len(set(names)) != len(names) or not set(names).issubset(ASSET_NAMES)
                 or (complete and set(names) != ASSET_NAMES)):
             raise ReleaseError("Existing release assets do not match the source-only bundle")
@@ -350,7 +411,7 @@ def publish(repo, commit, output, *, repository, runner=run):
                     raise ReleaseError("Existing release asset differs; refusing to overwrite it")
         return set(names)
 
-    existing = validate_release(release, complete=not release["draft"])
+    existing = validate_release(release)
     if not release["draft"]:
         if remote_tag(repository, tag, runner=runner) != commit:
             raise ReleaseError("Published release tag changed during verification")
@@ -359,12 +420,18 @@ def publish(repo, commit, output, *, repository, runner=run):
     if missing:
         runner(["gh", "release", "upload", tag, "--repo", repository,
                 *[str(output / name) for name in missing]])
-    validate_release(fetch_release(repository, tag, runner=runner), complete=True)
+    identifier = release_id(release, tag)
+    current = confirm_release(repository, tag, identifier=identifier, stage="Asset upload",
+                              runner=runner, sleeper=sleeper)
+    validate_release(current, complete=True)
+    if current["draft"] is not True:
+        raise ReleaseError("Release was published concurrently; refusing further mutations")
     if remote_tag(repository, tag, runner=runner) != commit:
         raise ReleaseError("Tag changed before publication; leaving the release as a draft")
     runner(["gh", "release", "edit", tag, "--repo", repository,
             "--draft=false", "--prerelease", "--latest=false"])
-    published = fetch_release(repository, tag, runner=runner)
+    published = confirm_release(repository, tag, identifier=identifier, stage="Publication",
+                                runner=runner, sleeper=sleeper)
     validate_release(published, complete=True)
     if published["draft"] or remote_tag(repository, tag, runner=runner) != commit:
         raise ReleaseError("Published release state could not be verified")

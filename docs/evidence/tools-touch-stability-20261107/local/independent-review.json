@@ -1,0 +1,12 @@
+{
+  "result": "no_blocking_issue_found",
+  "scope": "Read-only review of test-only physical tools entry diff",
+  "checks": [
+    "API28 keeps API30 Insets in conditionally loaded nested class",
+    "Public node identity/window/bounds distinguish same-coordinate rebuilds",
+    "Fresh target is required immediately before a single DOWN/UP",
+    "No toggle retries, accessibility-click fallback, arbitrary extra sleeps or weakened panel/Editable/restart/exit assertions",
+    "Voice paused-IPC cancellation retains its original explicit action and 1800ms deadline"
+  ],
+  "limit": "already_open_no_toggle has no physical tool touch; new actual emulator results are still required"
+}

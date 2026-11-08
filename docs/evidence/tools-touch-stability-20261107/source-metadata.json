@@ -1,0 +1,161 @@
+{
+  "workflow": {
+    "id": 42459746972,
+    "head_sha": "cbe55e286b017512212efc1d07e7db13c3112403",
+    "branch": "test/android-composition-lifecycle",
+    "attempt": 1,
+    "event": "pull_request",
+    "status": "completed",
+    "conclusion": "failure"
+  },
+  "failed_job": {
+    "id": 128670143758,
+    "name": "Android API 36 native acceptance",
+    "status": "completed",
+    "conclusion": "failure",
+    "run_id": 42459746972,
+    "logs_url": null,
+    "steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Run actions/setup-java@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Run android-actions/setup-android@v3",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Run actions/download-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "Run actions/download-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "Verify exact development package inputs",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7
+      },
+      {
+        "name": "Enable KVM on the dedicated modern emulator",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8
+      },
+      {
+        "name": "Actual modern Android keyboard and offline voice",
+        "status": "completed",
+        "conclusion": "failure",
+        "number": 9
+      },
+      {
+        "name": "Run actions/upload-artifact@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10
+      },
+      {
+        "name": "Post Run actions/setup-java@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 19
+      },
+      {
+        "name": "Post Run actions/checkout@v4",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 20
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 21
+      }
+    ]
+  },
+  "other_job_conclusions": [
+    {
+      "id": 128666274286,
+      "name": "Android development APK",
+      "conclusion": "success"
+    },
+    {
+      "id": 128670143695,
+      "name": "Android API 35 native acceptance",
+      "conclusion": "success"
+    },
+    {
+      "id": 128670143699,
+      "name": "VoiceKey-only real model API 28",
+      "conclusion": "success"
+    },
+    {
+      "id": 128670143730,
+      "name": "VoiceKey-only real model API 35",
+      "conclusion": "success"
+    },
+    {
+      "id": 128670143742,
+      "name": "VoiceKey-only real model API 36",
+      "conclusion": "success"
+    }
+  ],
+  "artifact": {
+    "id": 13610258131,
+    "name": "ZapIME-Android-API-36-acceptance",
+    "size_in_bytes": 825406,
+    "url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610258131",
+    "archive_download_url": "https://api.github.com/repos/ForceMind/ZapIME/actions/artifacts/13610258131/zip",
+    "expired": false,
+    "created_at": "2026-11-08T08:22:50Z",
+    "expires_at": "2027-02-06T07:40:26Z",
+    "updated_at": "2026-11-08T08:22:50Z",
+    "digest": "sha256:ac42c6299ae6240826a4e90666b9bc44e9ed8f9c77a99cbc4eed13d783601974",
+    "workflow_run": {
+      "id": 42459746972,
+      "repository_id": 1426543601,
+      "head_repository_id": 1426543601,
+      "head_branch": "test/android-composition-lifecycle",
+      "head_sha": "cbe55e286b017512212efc1d07e7db13c3112403"
+    }
+  },
+  "head": {
+    "sha": "cbe55e286b017512212efc1d07e7db13c3112403",
+    "tree": "3571ab7ebb16f12bff6067c3e121f6414169e032",
+    "parents": [
+      "be5b45630bfdaaf1a9286446a24dbb40646c5fca"
+    ]
+  },
+  "actual_checkout": {
+    "sha": "38a58fdab216ed4fa0d1abeb2da3a565a191a904",
+    "tree": "3571ab7ebb16f12bff6067c3e121f6414169e032",
+    "parents": [
+      "be5b45630bfdaaf1a9286446a24dbb40646c5fca",
+      "cbe55e286b017512212efc1d07e7db13c3112403"
+    ]
+  },
+  "head_and_checkout_trees_equal": true
+}
