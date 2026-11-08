@@ -1,0 +1,132 @@
+{
+  "synthetic_only": true,
+  "network_requested": false,
+  "real_sleep": false,
+  "checks": [
+    {
+      "name": "download-regressions",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_build_download*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "download-regressions.log",
+      "log_sha256": "dbbccf3d480d24e696aafa43839145f7c19c3a2f94a592b346dec55b817e872b"
+    },
+    {
+      "name": "candidate-resources",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_prepare_candidate_model.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "candidate-resources.log",
+      "log_sha256": "23d89502bba3ecc9afd367a40e77e348e476824d2bc6b157be276d299ecd563e"
+    },
+    {
+      "name": "android-tools",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_android_*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "android-tools.log",
+      "log_sha256": "9f44bf1ba4a8274c2cb3d64897b17703a4c574c5d4f6f1e847b85255d0c95ece"
+    },
+    {
+      "name": "voice-quality",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_voice_quality.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "voice-quality.log",
+      "log_sha256": "76af520b8b0ad31257fbcaf135e0a60e60eb4fb1e6999173355074410f9247ad"
+    },
+    {
+      "name": "python-compile",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "py_compile",
+        "scripts/build_download_retry.py",
+        "scripts/fetch_resources.py",
+        "scripts/prepare_candidate_model.py",
+        "scripts/voice_probe.py",
+        "scripts/test_build_download_retry.py",
+        "scripts/test_build_download_integrations.py"
+      ],
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "name": "source-release-unit",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_prepare_source_release.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "log": "source-release.log",
+      "log_sha256": "d0662f93761fa06423415e2beb67112e159a7599b8f7cc0e483d66acc59b9184"
+    },
+    {
+      "name": "diff-whitespace",
+      "command": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "exit_code": 0,
+      "output": ""
+    }
+  ],
+  "python_version": "3.12.14 (main, Aug 25 2026, 14:00:49) [Clang 22.1.3 ]",
+  "base_commit": "901330f400821913be0d733cc9b16a1d232f6f22",
+  "local_preimplementation_freeze_commit": "a63f0de1b42b73f4e59127dac0d9dc38946e1041",
+  "source_sha256": {
+    "scripts/build_download_retry.py": "775893b681aa75f2725bba55371a54d44a2c79331ca10e6590e317b215967f31",
+    "scripts/fetch_resources.py": "c7887fdba5abf1265e8bea7cc7986a8f6527060a51ecc77e92cb4c1aea7ff560",
+    "scripts/prepare_candidate_model.py": "4b8c142bea8c305d55dab35a5f0b97106e2ca420953c76710b177f54d1620a44",
+    "scripts/voice_probe.py": "a72916f5f814841ddc67196cd454cc90be4b1fcea65cd5a6aaec9b9edf8f0a5f",
+    "scripts/test_build_download_retry.py": "9dec652b6cbfcc241e192d1860ac6b77e4237206678bc4e14af3d0450ff187a1",
+    "scripts/test_build_download_integrations.py": "100e9ee99535890c8c509f39fc7827d946d1a9abf86dad00d916f6cc646f42f5",
+    ".github/workflows/android.yml": "e94ae47f7ec646d2ac4c611c7909290f89713532b2175660eb16a678c400fd58",
+    ".github/workflows/candidate-ranking.yml": "0b8ef4a3e4751093be0a57a94913e1e672bf11391db23a81c3cc0736fb070cda",
+    ".github/workflows/offline-voice.yml": "eec60bad41a2d6053aef6f766bf15f08451526a588f972ecf11d140ad1dbaa28"
+  }
+}

@@ -1,0 +1,19 @@
+test_any_resource_or_notice_change_changes_install_revision (test_prepare_candidate_model.CandidateResourceTest.test_any_resource_or_notice_change_changes_install_revision) ... ok
+test_checked_in_catalog_and_license_files_match_reviewed_lock (test_prepare_candidate_model.CandidateResourceTest.test_checked_in_catalog_and_license_files_match_reviewed_lock) ... ok
+test_corrupt_truncated_or_oversized_download_never_replaces_previous_file (test_prepare_candidate_model.CandidateResourceTest.test_corrupt_truncated_or_oversized_download_never_replaces_previous_file) ... ok
+test_failed_directory_publish_restores_previous_files (test_prepare_candidate_model.CandidateResourceTest.test_failed_directory_publish_restores_previous_files) ... ok
+test_failed_later_member_keeps_whole_previous_asset_directory (test_prepare_candidate_model.CandidateResourceTest.test_failed_later_member_keeps_whole_previous_asset_directory) ... ok
+test_https_downgrade_redirect_rejected (test_prepare_candidate_model.CandidateResourceTest.test_https_downgrade_redirect_rejected) ... ok
+test_invalid_sizes_names_and_hashes_rejected (test_prepare_candidate_model.CandidateResourceTest.test_invalid_sizes_names_and_hashes_rejected) ... ok
+test_model_interface_and_attribution_are_validated (test_prepare_candidate_model.CandidateResourceTest.test_model_interface_and_attribution_are_validated) ... ok
+test_offline_cache_hit_and_miss_never_connect (test_prepare_candidate_model.CandidateResourceTest.test_offline_cache_hit_and_miss_never_connect) ... ok
+test_publish_and_rollback_failure_keep_previous_resource_backup (test_prepare_candidate_model.CandidateResourceTest.test_publish_and_rollback_failure_keep_previous_resource_backup) ... ok
+test_stream_failure_removes_stage_and_preserves_previous_file (test_prepare_candidate_model.CandidateResourceTest.test_stream_failure_removes_stage_and_preserves_previous_file) ... ok
+test_successful_complete_publish_is_idempotent_and_rejects_unrelated_entries (test_prepare_candidate_model.CandidateResourceTest.test_successful_complete_publish_is_idempotent_and_rejects_unrelated_entries) ... ok
+test_symlink_file_and_parent_cannot_be_overwritten (test_prepare_candidate_model.CandidateResourceTest.test_symlink_file_and_parent_cannot_be_overwritten) ... ok
+test_unreviewed_urls_file_sets_and_path_escape_rejected (test_prepare_candidate_model.CandidateResourceTest.test_unreviewed_urls_file_sets_and_path_escape_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.009s
+
+OK

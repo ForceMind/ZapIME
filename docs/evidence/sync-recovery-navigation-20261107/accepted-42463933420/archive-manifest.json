@@ -1,0 +1,196 @@
+{
+  "archives": [
+    {
+      "api": 28,
+      "id": 13610029928,
+      "name": "ZapIME-local-sync-preparation-API-28",
+      "size": 22224,
+      "digest": "sha256:a6dcc2b4dbcb67a6373e34ddb4c256101d0ca76a6f8813627fb61072c80f77c4",
+      "members": [
+        {
+          "path": "activity-errors.txt",
+          "bytes": 2516,
+          "sha256": "7c7b5801ca7626c5a3b20d41fc75d8892c30516430a57054a84b5d708027bdf2"
+        },
+        {
+          "path": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "path": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "a321a950c7ab99f9bfd01e1945f0210b60c59ed7938b087745cb1707ac3db84d"
+        },
+        {
+          "path": "sync-key-provider-before.png",
+          "bytes": 10856,
+          "sha256": "dc8d76222f37eabab937c25716982197544a8608d01eb29186db3eabde2135de"
+        },
+        {
+          "path": "sync-key-provider-nav-before.png",
+          "bytes": 9002,
+          "sha256": "0936c221cc3097abdafcecd35f640f9bea2d96f791274e44e62e1d015a12c824"
+        },
+        {
+          "path": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "d11e5eaee9c651ebf62dbdb04ff8b7906fe559994f90d359e1b7062940ad5a84"
+        },
+        {
+          "path": "sync-pages-ui-report.json",
+          "bytes": 2275,
+          "sha256": "82bf61708fed1f228e3e1d7aa2c1ef2d2c1614cef0abf54431d33cabc3e6bf4b"
+        },
+        {
+          "path": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "fd52787989a9c7e749e30ae00e0bd7deb1daaa3c4000df2d74a35737cd4efd28"
+        },
+        {
+          "path": "sync-preparation-ui-report.json",
+          "bytes": 3023,
+          "sha256": "b4c53a5c9f1f46e09ffe545a08ae8f670c7f463e869d39efd2634ce2c165c4b0"
+        },
+        {
+          "path": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "2d2d834eb1a166b49ae6c7e6fbf42e720e446080e87601d865e752c74da145b6"
+        }
+      ]
+    },
+    {
+      "api": 35,
+      "id": 13611291017,
+      "name": "ZapIME-local-sync-preparation-API-35",
+      "size": 33140,
+      "digest": "sha256:f6e264be2451b74245b5c27a45b43fe19071ee634ce4a5f9b58442f8bdfdb23d",
+      "members": [
+        {
+          "path": "activity-errors.txt",
+          "bytes": 3653,
+          "sha256": "c967fd83c50cc6ed2aa6c863227563ecbd80ed6b0ced3ffc10110ff0eb293d68"
+        },
+        {
+          "path": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "path": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+        },
+        {
+          "path": "sync-key-provider-before.png",
+          "bytes": 18030,
+          "sha256": "da7134dce9e7d3bccb9f274e4838e97544c6cb9cfa1ffee871b01f1c543a6ad6"
+        },
+        {
+          "path": "sync-key-provider-nav-before.png",
+          "bytes": 12325,
+          "sha256": "cdfed9d74deb5368ba8928a10d9ad8c22491f301362408d149c5b88b5095619e"
+        },
+        {
+          "path": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "4265757950248b269ca3622955b6e72d3180622fcfdad2e8fdbe68110ad0105a"
+        },
+        {
+          "path": "sync-pages-ui-report.json",
+          "bytes": 2275,
+          "sha256": "62eaae601d11befeba93d34f18b3642d725d4b0ea1412e87d3cf0ac14a414550"
+        },
+        {
+          "path": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "9ae268803dbe2571888edbe3479a509ac6fa3d58ad037c185bad8d2edda111b6"
+        },
+        {
+          "path": "sync-preparation-ui-report.json",
+          "bytes": 3023,
+          "sha256": "05c20d12de855ffd36b79dc83377a3a5ab6f1ec75cf3e67907d0f14578c356f2"
+        },
+        {
+          "path": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "52106ddd2565455cef449199e804e8d2b13aeb1ac8acd9bf4862fdfb6875c3a5"
+        }
+      ]
+    },
+    {
+      "api": 36,
+      "id": 13611411740,
+      "name": "ZapIME-local-sync-preparation-API-36",
+      "size": 31977,
+      "digest": "sha256:e2177c935ba478ddc743969c8944add196d70aaa3a33933e1f9a70bda7b914ae",
+      "members": [
+        {
+          "path": "activity-errors.txt",
+          "bytes": 294,
+          "sha256": "33df830a92ef92fcaad04502809e89b82f1c070b1289b50c4eeaf9b4c2fdda9a"
+        },
+        {
+          "path": "instrumentation.txt",
+          "bytes": 104,
+          "sha256": "466106be3b695576f7376efaaddf0f641cf602ab7ed1bcee3e19446c45b50e19"
+        },
+        {
+          "path": "crash.txt",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "offline-uid.json",
+          "bytes": 119,
+          "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+        },
+        {
+          "path": "sync-key-provider-before.png",
+          "bytes": 17757,
+          "sha256": "10fde9fdd88f0b2fc262924236a41f442e37ceb0b79bf6820c821c9aef036de9"
+        },
+        {
+          "path": "sync-key-provider-nav-before.png",
+          "bytes": 12170,
+          "sha256": "48bc6a5579f2d2e0663183b6722430ecf4480b09b429019afde542be42428a8b"
+        },
+        {
+          "path": "sync-key-registration-report.json",
+          "bytes": 1778,
+          "sha256": "c31f2885c21e51fd52dfa283bdccf8b8183edc04bdaed8191c27fa1099505640"
+        },
+        {
+          "path": "sync-pages-ui-report.json",
+          "bytes": 2275,
+          "sha256": "26f7944d58ff312f4d0500b3bddabfa337a606b745ee30679e3749943c9182e5"
+        },
+        {
+          "path": "sync-preparation-report.json",
+          "bytes": 1308,
+          "sha256": "7227c37e35f4f49b6f2c645d048ab24c11faafb89f2435a8938b809c731637b8"
+        },
+        {
+          "path": "sync-preparation-ui-report.json",
+          "bytes": 3023,
+          "sha256": "55e403ee172d478eef64e245cc09f30724972ed6a632326cadcb7e8bb8ffbbb2"
+        },
+        {
+          "path": "sync-transfer-report.json",
+          "bytes": 1944,
+          "sha256": "902ab5d1e2ff0abe1d875c7f58d2b98c60c67aa9c3dc5fc939aacefce0eb1b02"
+        }
+      ]
+    }
+  ]
+}

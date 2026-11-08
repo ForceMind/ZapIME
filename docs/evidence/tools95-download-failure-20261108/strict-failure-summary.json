@@ -1,0 +1,60 @@
+{
+  "strict_failure_reviewed": true,
+  "recorded_utc": "2026-11-08T08:52:32.795825+00:00",
+  "source_head": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+  "actual_checkout": "9940b9c8e242f5d231166fbe422df66f2bc96280",
+  "source_tree": "44a8eac9b45215d26b0966bf1f44c9b34dd41b5c",
+  "overall_full_conclusion": "failure",
+  "overall_candidate_conclusion": "failure",
+  "first_failures": [
+    {
+      "job": 128679477387,
+      "component": "full APK preparation",
+      "stage": "Offline candidate context, bounded worker and pinned model resources",
+      "error": "HTTP 504 during prepare_candidate_model.py download",
+      "unit_and_catalog_passed": true,
+      "product_apk_built": false
+    },
+    {
+      "job": 128679477444,
+      "component": "candidate APK preparation",
+      "stage": "Check model provenance, resources and worker lifecycle",
+      "error": "HTTP 504 during prepare_candidate_model.py download",
+      "unit_and_catalog_passed": true,
+      "product_apk_built": false
+    },
+    {
+      "job": 128679477234,
+      "component": "candidate host quality preparation",
+      "stage": "Frozen synthetic paired quality and host resource baseline",
+      "error": "HTTP 504 during fetch_resources.py production dictionary download",
+      "prior_native_jni_oracle_passed": true,
+      "quality_corpus_executed": false
+    }
+  ],
+  "downstream": {
+    "full_api35_api36_failed_artifact_download_before_emulator_gate": true,
+    "full_api28_inside_build_not_reached": true,
+    "voicekey_api28_api35_api36_failed_missing_build_artifact": true,
+    "candidate_api28_api35_api36_skipped": true
+  },
+  "tools_physical_assertions_executed": false,
+  "new_tools_runtime_result": "NOT RUN: common APK/model-resource build blocked",
+  "partial_host": {
+    "artifact": 13611450772,
+    "bytes": 2639,
+    "sha256": "41c20cee555fcd76ed9275317b87ba8fe790d1af0d77d675b642032d443f85f1",
+    "strict_reverified": true,
+    "native_groups": 15,
+    "jni_checks": 36,
+    "independent_oracle": true,
+    "quality_report_present": false
+  },
+  "no_automatic_rerun": true,
+  "limits": [
+    "HTTP504 server/proxy origin not established by these logs",
+    "No new system IME/tools/ARM/S25/quality claim",
+    "Old successes and local compile are not substituted for this failed source",
+    "No full Android artifact was produced; dependent artifact-download failures are preserved as downstream failures"
+  ]
+}

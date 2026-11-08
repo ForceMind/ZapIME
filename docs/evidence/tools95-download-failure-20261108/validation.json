@@ -1,0 +1,17 @@
+{
+  "base_commit": "b1f71dabda87947708e5293ba299809a42745a5f",
+  "scope": "documentation/evidence only; no code, workflow, APK, weights or device action",
+  "checks": {
+    "final_source_and_tree_identity": true,
+    "all_run_conclusions_remain_failure": true,
+    "three_json_metadata_zip_verified": true,
+    "raw_gzip_byte_hashes_verified": true,
+    "no_quality_or_tools_acceptance_invented": true,
+    "no_reusable_credentials_found_in_archive_scan": true,
+    "no_automatic_rerun": true
+  },
+  "not_run": [
+    "Product/runtime tests for this documentation-only commit",
+    "Any new Android, physical tools, ARM or phone gate"
+  ]
+}

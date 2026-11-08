@@ -1,0 +1,27 @@
+{
+  "synthetic": true,
+  "api_level": 35,
+  "cases": [
+    {
+      "id": "absent_no_create",
+      "passed": true
+    },
+    {
+      "id": "canonical_binding",
+      "passed": true
+    },
+    {
+      "id": "cross_account_preserves_vault",
+      "passed": true
+    },
+    {
+      "id": "invalid_future_fail_closed",
+      "passed": true
+    },
+    {
+      "id": "worker_guard",
+      "passed": true
+    }
+  ],
+  "scope": "Real stateless JNI on isolated SQLite v2 metadata fixture, no-create\/read-only profile inspection and actual credential-store guard; full Store\/history preservation tested separately in Rust. No automatic binding, data sync or Android HTTPS success."
+}

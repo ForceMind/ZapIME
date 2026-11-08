@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "source_commit": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "source_tree": "35654b149be894432d1faaa6469619df8261e3f4",
+  "build_checkout_from_log": "5a0dc56290be9c2458ee6e7e7ddafc51930dd593",
+  "build_job_id": 128676103117,
+  "build_log_utf8_sha256": "3e50e3e6712ed1cc538760bb0c62a9209403b7fb5497f68d02286f3061fe8394",
+  "artifacts": [
+    {
+      "artifact_id": 13610916239,
+      "name": "ZapIME-Android-development",
+      "archive_bytes": 248749502,
+      "archive_sha256": "a485fbecfe0e70fd2f3774158f2f3a258463d7550f271010c7c361ce9cce0c31",
+      "original_archive_retained": false,
+      "scope": "Original downloaded and digest verified outside Git; APKs/model archive/PCM not copied as root files; safe records retained"
+    },
+    {
+      "artifact_id": 13610229046,
+      "name": "ZapIME-Android-API-35-acceptance",
+      "archive_bytes": 2422733,
+      "archive_sha256": "c03ff659c3f3ae86d439242442a000051703c40a2fc4614e4fbc3e4960d69935",
+      "original_archive_retained": false,
+      "scope": "Original downloaded and digest verified outside Git; synthetic PCM omitted; safe records retained"
+    },
+    {
+      "artifact_id": 13611116429,
+      "name": "ZapIME-Android-API-36-acceptance",
+      "archive_bytes": 2423058,
+      "archive_sha256": "406757b565de7c04f62f8df48eac6203125542cb505a15e6ad8ad7b4212db719",
+      "original_archive_retained": false,
+      "scope": "Original downloaded and digest verified outside Git; synthetic PCM omitted; safe records retained"
+    },
+    {
+      "artifact_id": 13610876642,
+      "name": "ZapIME-VoiceKey-only-API-28",
+      "archive_bytes": 184819,
+      "archive_sha256": "d86e9e0462e9b67f43f0cf8655f8680740b69b1c43e2112b1375efe48a985153",
+      "original_archive_retained": true,
+      "scope": "Reports and synthetic test fixtures only"
+    },
+    {
+      "artifact_id": 13611081198,
+      "name": "ZapIME-VoiceKey-only-API-35",
+      "archive_bytes": 243406,
+      "archive_sha256": "77dc1a71edd3423a126174af79a69696d828913c242d0f1872fd0f9ec8d501d8",
+      "original_archive_retained": true,
+      "scope": "Reports and synthetic test fixtures only"
+    },
+    {
+      "artifact_id": 13609989329,
+      "name": "ZapIME-VoiceKey-only-API-36",
+      "archive_bytes": 239840,
+      "archive_sha256": "aefc173b793fa3610feffd7dbeccab84821af782e6dd225968d85ed80647a492",
+      "original_archive_retained": true,
+      "scope": "Reports and synthetic test fixtures only"
+    }
+  ]
+}

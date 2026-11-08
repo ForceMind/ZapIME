@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "source_tree_exact": true,
+  "actual_checkout": "49186be44237965669f314ebbe768f3684297a45",
+  "run_id": 42464855505,
+  "attempt": 1,
+  "conclusion": "failure",
+  "artifacts_count": 0,
+  "two_complete_decoded_job_logs_verified": true,
+  "failed_stage": "pinned_candidate_dependency_https_open_HTTP504",
+  "exact_failing_asset_known": false,
+  "simulator_candidate_api28_35_36": "not_executed_build_dependency",
+  "new_editable_methods": "not_executed_build_dependency",
+  "configuration_schema2_experiment": "not_executed_build_dependency",
+  "host_numerical_jni_quality": "not_executed_prepare_dependency",
+  "strict_report_replay": "not_applicable_no_reports_produced",
+  "rerun_performed": false
+}

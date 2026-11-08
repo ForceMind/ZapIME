@@ -16,12 +16,16 @@ import subprocess
 import tarfile
 import tempfile
 import time
+import urllib.parse
 import urllib.request
 import wave
+
+from build_download_retry import BudgetedReader, HttpsRedirect, network_call, run_with_retry, safe_directory
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = json.loads((ROOT / "third_party/voice-probe-lock.json").read_text())
 SYNTHETIC_TEXT = "你好，这是一段离线语音输入测试。今天下午三点开会。"
+OPENER = urllib.request.build_opener(HttpsRedirect())
 
 
 def verified(path, spec):
@@ -32,26 +36,34 @@ def verified(path, spec):
 
 
 def prepare(directory):
-    directory.mkdir(parents=True, exist_ok=True)
+    directory = safe_directory(directory)
     archive = directory / "model.tar.bz2"
+    if archive.is_symlink() or (archive.exists() and not archive.is_file()):
+        raise ValueError("model archive destination is not a regular file")
     if not verified(archive, LOCK["archive"]):
+        if urllib.parse.urlparse(LOCK["archive"]["url"]).scheme != "https":
+            raise ValueError("HTTPS model archive required")
         # Only the pinned upstream model URL; never execute files from the tar.
-        with tempfile.NamedTemporaryFile(dir=directory, delete=False) as out:
-            temporary = Path(out.name)
-            try:
-                with urllib.request.urlopen(LOCK["archive"]["url"], timeout=60) as response:
-                    remaining = LOCK["archive"]["size"]
-                    while chunk := response.read(min(1024*1024, remaining+1)):
-                        if len(chunk) > remaining:
-                            raise ValueError("oversized model archive")
-                        out.write(chunk)
-                        remaining -= len(chunk)
-                out.close()
-                if not verified(temporary, LOCK["archive"]):
-                    raise ValueError("model archive checksum/size mismatch")
-                temporary.replace(archive)
-            finally:
-                temporary.unlink(missing_ok=True)
+        def attempt(timeout, remaining):
+            with tempfile.NamedTemporaryFile(dir=directory, delete=False) as out:
+                temporary = Path(out.name)
+                try:
+                    with network_call(OPENER.open, LOCK["archive"]["url"], timeout=timeout) as response:
+                        incoming = BudgetedReader(response, remaining)
+                        left = LOCK["archive"]["size"]
+                        while chunk := incoming.read(min(1024*1024, left+1)):
+                            if len(chunk) > left:
+                                raise ValueError("oversized model archive")
+                            out.write(chunk)
+                            left -= len(chunk)
+                    out.close()
+                    if not verified(temporary, LOCK["archive"]):
+                        raise ValueError("model archive checksum/size mismatch")
+                    remaining()
+                    temporary.replace(archive)
+                finally:
+                    temporary.unlink(missing_ok=True)
+        run_with_retry(attempt, socket_timeout=60, total_timeout=180)
     with tarfile.open(archive) as source:
         # Extract exactly four regular files, no links, paths, code or recordings.
         for name, spec in LOCK["files"].items():

@@ -17,6 +17,8 @@ import tempfile
 import urllib.parse
 import urllib.request
 
+from build_download_retry import BudgetedReader, network_call, run_with_retry
+
 
 ROOT = Path(__file__).resolve().parents[1]
 LOCK = ROOT / "third_party/candidate-model-lock.json"
@@ -112,7 +114,7 @@ def load_lock(path=LOCK):
     return lock
 
 
-def publish(incoming, destination, spec):
+def publish(incoming, destination, spec, budget=None):
     """Bound, hash and close a staged file before replacing any previous file."""
     real_directory(destination.parent)
     if destination.is_symlink() or (destination.exists() and not destination.is_file()):
@@ -131,6 +133,8 @@ def publish(incoming, destination, spec):
                 remaining -= len(data)
         if remaining or digest.hexdigest() != spec["sha256"]:
             raise ValueError("candidate dependency checksum/size mismatch")
+        if budget is not None:
+            budget()
         temporary.replace(destination)
     finally:
         if temporary is not None:
@@ -147,8 +151,10 @@ def download(spec, destination, offline=False):
         raise ValueError("candidate dependency missing or invalid in offline cache: " + destination.name)
     if urllib.parse.urlparse(spec["url"]).scheme != "https":
         raise ValueError("candidate dependency requires HTTPS")
-    with OPENER.open(spec["url"], timeout=60) as incoming:
-        publish(incoming, destination, spec)
+    def attempt(timeout, remaining):
+        with network_call(OPENER.open, spec["url"], timeout=timeout) as incoming:
+            publish(BudgetedReader(incoming, remaining), destination, spec, remaining)
+    run_with_retry(attempt, socket_timeout=60, total_timeout=180)
 
 
 def copy_verified(source, destination, spec):
