@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "scope": "read_only_fixed_synthetic_report_comparison_no_new_inference",
+  "source_base": "a4d53bcbdb11b4e58a0babb349c0ada67ab0972c",
+  "source_tree": "02b21f6d4e1897bbde801b5096c0bd59fa5e258e",
+  "conclusion": "The 26 versus 25 compares historical v2 ORT1.28.2 against v2 ORT1.24.4, not a same-runtime regression.",
+  "reports": [
+    {
+      "id": "historical_ort1244",
+      "path": "docs/evidence/candidate-quality-20261107/host-v2-ort124.json.gz",
+      "gzip_bytes": 8591,
+      "gzip_sha256": "7d136a9597252a7b2f01ca747e959cda48af02cd0f9aaa292bd6a7d99904b040",
+      "decoded_json_bytes": 193555,
+      "decoded_json_sha256": "6b1166d2e947a52fda4b664fb43d21ce18ba637f9dc5da34854dbaf61d20df89",
+      "utc": "2026-11-07T15:48:34.949820+00:00",
+      "runtime_version": "1.24.4",
+      "runtime_origin": "pinned-host-python-package",
+      "identity": {
+        "core_binary": "f9ec93a87ede615e032297d36242cbccb2372d8a5bd5b269a8c695c4fe4f076e",
+        "native_probe": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "contextual_top1": 25,
+      "empty_context_top1": 14,
+      "baseline_top1": 17,
+      "cases_per_mode": 34
+    },
+    {
+      "id": "historical_ort1282",
+      "path": "docs/evidence/candidate-quality-20261107/host-v2-ort128.json.gz",
+      "gzip_bytes": 8565,
+      "gzip_sha256": "f7015b7d9604ec25195f15d020fbe332ec3b0763bf674b02a7ff75fe953fac2a",
+      "decoded_json_bytes": 193521,
+      "decoded_json_sha256": "52e949001afdd054ea6ee4688a1c629a1d3711c056b9df7c4a9aa854b40e3dc3",
+      "utc": "2026-11-07T15:48:23.447903+00:00",
+      "runtime_version": "1.28.2",
+      "runtime_origin": "caller-selected",
+      "identity": {
+        "core_binary": "f9ec93a87ede615e032297d36242cbccb2372d8a5bd5b269a8c695c4fe4f076e",
+        "native_probe": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+        "runtime": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "contextual_top1": 26,
+      "empty_context_top1": 14,
+      "baseline_top1": 17,
+      "cases_per_mode": 34
+    },
+    {
+      "id": "expansion_local_ort1244",
+      "path": "docs/evidence/candidate-quality-expansion-20261107/host/quality-v2-ort1244-regression.json.gz",
+      "gzip_bytes": 9056,
+      "gzip_sha256": "93e35ec3a62419454dc85ee16dbecdd4b958fe9521293d6191f3bcc52c56eb00",
+      "decoded_json_bytes": 203905,
+      "decoded_json_sha256": "67029ae4fc4007d4ca445c43ebd8613747d70dd429ed3d3a0f9a61e490760cca",
+      "utc": "2026-11-08T07:40:04.472963+00:00",
+      "runtime_version": "1.24.4",
+      "runtime_origin": "pinned-host-python-package",
+      "identity": {
+        "core_binary": "2569edfe66ebcdcb58ff677ab939f54b50de6b0f4d5955ed39876c4380954b60",
+        "native_probe": "8f7384142c2731070630521c179deec26c2a3b7a01972804fd4985958bca9893",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "contextual_top1": 25,
+      "empty_context_top1": 14,
+      "baseline_top1": 17,
+      "cases_per_mode": 34
+    },
+    {
+      "id": "expansion_ci_ort1244",
+      "path": "docs/evidence/current-slices-20261107/candidate89-host/quality-report.json.gz",
+      "gzip_bytes": 8895,
+      "gzip_sha256": "6d5012dc7e718a5389b4334d85f63750adff39de430870c713c0e33c8b2d691e",
+      "decoded_json_bytes": 203962,
+      "decoded_json_sha256": "a7f848c293ae0d162c3f1805105af8e28ceee386f717312ed6d8be0a30b04f84",
+      "utc": "2026-11-08T07:56:39.657907+00:00",
+      "runtime_version": "1.24.4",
+      "runtime_origin": "pinned-host-python-package",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "contextual_top1": 25,
+      "empty_context_top1": 14,
+      "baseline_top1": 17,
+      "cases_per_mode": 34
+    }
+  ],
+  "shared_corpus_identity": {
+    "model_id": "msime-keystroke-8m-rerank-v2",
+    "corpus_sha256": "3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
+    "corpus_frozen_commit": "452a7660c6a6f40663841a7b53692f3b90ba2d51",
+    "corpus_version": "v2",
+    "configured_threads": {
+      "intra_op": 2,
+      "inter_op": 1,
+      "spinning": false
+    }
+  },
+  "shared_model_dictionary_ranking_identity": {
+    "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+    "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+    "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+    "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+    "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+  },
+  "comparisons": {
+    "empty_context": {
+      "ort1244_all_34_observations_identical_across_three_reports_excluding_latency": true,
+      "normalized_observations_sha256": "47d69af59da924bdf490d374d448b3a09a05cae57462535bc38d9d862be407e7",
+      "historical_cross_runtime_full_ranked_order_differences": [
+        {
+          "case_id": "n03",
+          "baseline_target_rank_1_based": 2,
+          "ort1244_target_rank_1_based": 2,
+          "ort1282_target_rank_1_based": 2,
+          "target_rank_changed": false
+        },
+        {
+          "case_id": "n06",
+          "baseline_target_rank_1_based": 1,
+          "ort1244_target_rank_1_based": 1,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": false
+        }
+      ]
+    },
+    "contextual": {
+      "ort1244_all_34_observations_identical_across_three_reports_excluding_latency": true,
+      "normalized_observations_sha256": "927207699a47956099c01397df16cb877a06d041903afbfb61d78f0b2340a003",
+      "historical_cross_runtime_full_ranked_order_differences": [
+        {
+          "case_id": "q07",
+          "baseline_target_rank_1_based": 1,
+          "ort1244_target_rank_1_based": 1,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": false
+        },
+        {
+          "case_id": "q10",
+          "baseline_target_rank_1_based": 3,
+          "ort1244_target_rank_1_based": 2,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": true
+        },
+        {
+          "case_id": "q11",
+          "baseline_target_rank_1_based": 1,
+          "ort1244_target_rank_1_based": 1,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": false
+        },
+        {
+          "case_id": "q12",
+          "baseline_target_rank_1_based": 8,
+          "ort1244_target_rank_1_based": 3,
+          "ort1282_target_rank_1_based": 3,
+          "target_rank_changed": false
+        },
+        {
+          "case_id": "q15",
+          "baseline_target_rank_1_based": 1,
+          "ort1244_target_rank_1_based": 1,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": false
+        },
+        {
+          "case_id": "n06",
+          "baseline_target_rank_1_based": 1,
+          "ort1244_target_rank_1_based": 1,
+          "ort1282_target_rank_1_based": 1,
+          "target_rank_changed": false
+        }
+      ]
+    }
+  },
+  "q10_contextual": {
+    "case_id": "q10",
+    "expected_candidate_ids": [
+      "engine:2"
+    ],
+    "baseline_rank_1_based": 3,
+    "ort1244_rank_1_based": 2,
+    "ort1282_rank_1_based": 1,
+    "ort1244_first_candidates": [
+      "engine:0",
+      "engine:2",
+      "engine:1",
+      "engine:13",
+      "engine:4"
+    ],
+    "ort1282_first_candidates": [
+      "engine:2",
+      "engine:0",
+      "engine:1",
+      "engine:13",
+      "engine:4"
+    ]
+  },
+  "runner_versions": [
+    {
+      "commit": "7ff77a9ab25d91fc3ec9c61d5d6f96d996c699ae",
+      "path": "integrations/candidate/tests/quality_evaluation.py",
+      "sha256": "1192ae72bc4a164f11c2a3a8be848eade4ed45b989437fe78b9b47b42f9952f7"
+    },
+    {
+      "commit": "cd8a0bff5cf65f9e6ccd39645b4254d69f0c2ead",
+      "path": "integrations/candidate/tests/quality_evaluation.py",
+      "sha256": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0"
+    }
+  ],
+  "runner_change_scope": [
+    "v3 frozen corpus validation",
+    "personal_edit only when a frozen case has a personal field; v2 has none",
+    "outcome attribution added without changing observations or aggregate denominator",
+    "reject all-zero model execution; v2 retains 32 scored cases and 64 score calls per mode"
+  ],
+  "new_v2_ort1282_report_present_in_expansion_evidence": false,
+  "limits": [
+    "Cross-runtime reports identify a rank difference, not a unique ORT kernel or numerical root cause.",
+    "The new runner was not freshly evaluated on v2 with ORT1.28.2.",
+    "No corpus, expectation, original report, product code or runtime pin changed.",
+    "Small authored synthetic set; not population accuracy, Android system IME or phone acceptance.",
+    "Original v1 typos, core-open first failure and all rank harms remain unchanged."
+  ]
+}

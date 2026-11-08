@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 3027,
+      "sha256": "c51827191c220600732feff53d33b79932ad23c607391b80e7d413ef27496def"
+    },
+    {
+      "path": "artifacts.json",
+      "bytes": 22,
+      "sha256": "fb09a9699b26ad536855bb4263ff01baa31a107d9af48b348e96cb4a9eb2b8d9"
+    },
+    {
+      "path": "checkout-commit.json",
+      "bytes": 2640,
+      "sha256": "0df54e5df90d2a9a5c2eb31be11e92636427d3298d08eb31cf0a1231f571c83e"
+    },
+    {
+      "path": "decoded-log-provenance.json",
+      "bytes": 856,
+      "sha256": "7d4f4dd1c353243a14db2c16cc0ee179a6040ceaf3d64f8f8f2bf372640394f2"
+    },
+    {
+      "path": "head-commit.json",
+      "bytes": 1464,
+      "sha256": "6db04b659afc18b132d4454aa92e2e7ae251e97ea716cd224be8ab54c33a929c"
+    },
+    {
+      "path": "job-128688078317.decoded-failure-excerpt.txt",
+      "bytes": 3019,
+      "sha256": "0040ffcba4187d1c75073c74c340237a6aa9dec2afb560a7f5c17a125569b3ba"
+    },
+    {
+      "path": "job-128688078317.decoded.log.gz",
+      "bytes": 13239,
+      "sha256": "5836cd8123191a4b1405eae3974b91398be7a058a3bb5ab6cb7220cf706b2c8b"
+    },
+    {
+      "path": "job-128688078512.decoded-failure-excerpt.txt",
+      "bytes": 3006,
+      "sha256": "0395b990404577c72ec4e3b4156f06f8e299cc6e39f7b05da4fdc2446a3158b5"
+    },
+    {
+      "path": "job-128688078512.decoded.log.gz",
+      "bytes": 36338,
+      "sha256": "e92aac4a3cb7d4113dcb186e50571bcbbe660ddf1343085a05fce0fcd7e7b189"
+    },
+    {
+      "path": "jobs.json",
+      "bytes": 6450,
+      "sha256": "487b2cb2d89a9af5c89898aea5d7e3ad1411cb7fcee3078f87d5bdf0f8770b3f"
+    },
+    {
+      "path": "readback.json",
+      "bytes": 1407,
+      "sha256": "fe4e6fe0a185a73074dd82b08ea9f8a855b7d77e8cfa4ddbfa2fa8cd3d9baf35"
+    },
+    {
+      "path": "workflow-run.json",
+      "bytes": 12429,
+      "sha256": "ea2ff7edb6ee30185637403aa50e106d4379158bbb3054daf300af7dbda564c6"
+    }
+  ]
+}

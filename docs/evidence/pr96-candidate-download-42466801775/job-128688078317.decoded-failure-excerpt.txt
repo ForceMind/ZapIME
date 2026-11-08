@@ -1,0 +1,33 @@
+2026-11-08T09:21:44.6824231Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1
+2026-11-08T09:22:07.7736403Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1
+2026-11-08T09:22:08.7972322Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2
+2026-11-08T09:22:10.8242561Z Traceback (most recent call last):
+2026-11-08T09:22:10.8251860Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 338, in <module>
+2026-11-08T09:22:10.8252325Z     main()
+2026-11-08T09:22:10.8252690Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 331, in main
+2026-11-08T09:22:10.8253319Z     prepare(lock, cache, args.destination, args.headers, args.offline)
+2026-11-08T09:22:10.8253861Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 293, in prepare
+2026-11-08T09:22:10.8254254Z     download(spec, cache / name, offline)
+2026-11-08T09:22:10.8254645Z   File "/home/runner/work/ZapIME/ZapIME/scripts/prepare_candidate_model.py", line 157, in download
+2026-11-08T09:22:10.8255074Z     run_with_retry(attempt, socket_timeout=60, total_timeout=180)
+2026-11-08T09:22:10.8255516Z   File "/home/runner/work/ZapIME/ZapIME/scripts/build_download_retry.py", line 129, in run_with_retry
+2026-11-08T09:22:10.8255896Z     raise error from None
+2026-11-08T09:22:10.8256242Z   File "/home/runner/work/ZapIME/ZapIME/scripts/build_download_retry.py", line 93, in network_call
+2026-11-08T09:22:10.8256607Z     return operation(*args, **kwargs)
+2026-11-08T09:22:10.8256817Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-08T09:22:10.8257178Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 521, in open
+2026-11-08T09:22:10.8742888Z     response = meth(req, response)
+2026-11-08T09:22:10.8743441Z                ^^^^^^^^^^^^^^^^^^^
+2026-11-08T09:22:10.8744130Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 630, in http_response
+2026-11-08T09:22:10.8744732Z     response = self.parent.error(
+2026-11-08T09:22:10.8745015Z                ^^^^^^^^^^^^^^^^^^
+2026-11-08T09:22:10.8745452Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 559, in error
+2026-11-08T09:22:10.8745930Z     return self._call_chain(*args)
+2026-11-08T09:22:10.8746155Z            ^^^^^^^^^^^^^^^^^^^^^^^
+2026-11-08T09:22:10.8746922Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 492, in _call_chain
+2026-11-08T09:22:10.8747535Z     result = func(*args)
+2026-11-08T09:22:10.8747774Z              ^^^^^^^^^^^
+2026-11-08T09:22:10.8748202Z   File "/opt/hostedtoolcache/Python/3.12.16/x64/lib/python3.12/urllib/request.py", line 639, in http_error_default
+2026-11-08T09:22:10.8748698Z     raise HTTPError(req.full_url, code, msg, hdrs, fp)
+2026-11-08T09:22:10.8749048Z urllib.error.HTTPError: HTTP Error 504: Gateway Time-out
+2026-11-08T09:22:10.8850047Z ##[error]Process completed with exit code 1.

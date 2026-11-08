@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "source_head": "fb62ad923f376edb7f1c3ab274fc8095718b7ea7",
+  "actual_checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+  "verified_tree": "f99bbff5cc9ca044e5e9fe190f0f58c243434930",
+  "head_and_checkout_trees_equal": true,
+  "jobs": [
+    {
+      "id": 128687392092,
+      "name": "Validate and prepare root source archive",
+      "run_id": 42466578724,
+      "status": "completed",
+      "conclusion": "success",
+      "log": {
+        "path": "job-128687392092.log",
+        "bytes": 84970,
+        "sha256": "59efbc7b2bce94b157b7c107665cbec2bf1611dbe508b2c305856ac721f786a4",
+        "bom_preserved": true,
+        "crlf_count": 0
+      },
+      "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "rust_workspace": {
+        "passed": 134,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered": 0,
+        "result_groups": 25
+      },
+      "source_release_tests": {
+        "passed": 30,
+        "failed": 0,
+        "skipped": 0
+      },
+      "prepared_source_commit": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "publication": "not_run_PR_event_publish_job_skipped"
+    },
+    {
+      "id": 128687751174,
+      "name": "Publish source-only Alpha prerelease",
+      "run_id": 42466578724,
+      "status": "completed",
+      "conclusion": "skipped"
+    },
+    {
+      "id": 128687393145,
+      "name": "Shared core (windows-latest)",
+      "run_id": 42466578822,
+      "status": "completed",
+      "conclusion": "success",
+      "log": {
+        "path": "job-128687393145.log",
+        "bytes": 84471,
+        "sha256": "c33639635f1d5157bd13d5fdbb1c90942a46099225ac707ad21dde76fec46059",
+        "bom_preserved": true,
+        "crlf_count": 1025
+      },
+      "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "rust_workspace": {
+        "passed": 131,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered": 0,
+        "result_groups": 25
+      }
+    },
+    {
+      "id": 128687393170,
+      "name": "Apple native development hosts",
+      "run_id": 42466578822,
+      "status": "completed",
+      "conclusion": "failure",
+      "log": {
+        "path": "job-128687393170.log",
+        "bytes": 43454,
+        "sha256": "b9a12c87ffb50ed62682787cda516808a947078f8af970d1a06dde6c0bcdb180",
+        "bom_preserved": true,
+        "crlf_count": 0
+      },
+      "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "first_failure": {
+        "stage": "Compile real InputMethodKit bundle",
+        "observed": "fixed-resource GET returned HTTP 504 for all three bounded attempts; original HTTPError propagated",
+        "code": "HTTP_504",
+        "attempts": 3,
+        "retried_successfully": false,
+        "product_compilation_reached": false,
+        "specific_resource_not_identified_by_log": true,
+        "downstream_ios_build_and_XCTest": "not_run"
+      }
+    },
+    {
+      "id": 128687393218,
+      "name": "Shared core (macos-latest)",
+      "run_id": 42466578822,
+      "status": "completed",
+      "conclusion": "success",
+      "log": {
+        "path": "job-128687393218.log",
+        "bytes": 91323,
+        "sha256": "f73852b646026ee04e21733f24a968899ab2b70ca9c6471fbeb91f3f39ca915c",
+        "bom_preserved": true,
+        "crlf_count": 0
+      },
+      "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "rust_workspace": {
+        "passed": 134,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered": 0,
+        "result_groups": 25
+      }
+    },
+    {
+      "id": 128687393261,
+      "name": "Shared core (ubuntu-latest)",
+      "run_id": 42466578822,
+      "status": "completed",
+      "conclusion": "success",
+      "log": {
+        "path": "job-128687393261.log",
+        "bytes": 83056,
+        "sha256": "bf637a987c98acbd0467b77b7c1ab497e754e2baa1d89c38f9f688e6def248c7",
+        "bom_preserved": true,
+        "crlf_count": 0
+      },
+      "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+      "rust_workspace": {
+        "passed": 134,
+        "failed": 0,
+        "ignored": 0,
+        "measured": 0,
+        "filtered": 0,
+        "result_groups": 25
+      }
+    }
+  ],
+  "scope_limits": [
+    "Original attempt1 retained; no workflow/job rerun requested.",
+    "Source prepare success is not a publication or new tag.",
+    "Windows 131 versus Linux/macOS 134 reflects cfg-gated platform-specific test compilation; zero ignored/filtered, not database transaction evidence.",
+    "Apple dependency download failure prevents IMK/iOS build and XCTest claims.",
+    "No user device, recording, real text, sync secret or production server accessed."
+  ],
+  "windows_noncompiled_unix_tests": [
+    "symlink_database_is_rejected_without_touching_target",
+    "sync::writer_tests::sync_writer_rejects_a_symlink_without_touching_its_target",
+    "sync::writer_tests::sync_writer_rejects_parent_alias_but_accepts_canonical_existing_database"
+  ],
+  "apple_failure_source_check": {
+    "file": "scripts/build_macos.sh",
+    "commit": "fb62ad923f376edb7f1c3ab274fc8095718b7ea7",
+    "order": "fetch_resources is before cargo release build, host clang link and codesign; failure occurred during fetch_resources"
+  }
+}
