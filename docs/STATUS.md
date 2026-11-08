@@ -8,6 +8,8 @@
 
 本轮本地134项workspace测试、fmt、严格Clippy、4项配对统计、7项质量runner以及17项源码发布真实Git/状态机测试通过；YAML与当前文档本地链接检查通过。发布整理没有修改产品输入、模型或同步实现。
 
+发布流程实际第二轮发现Rust缓存恢复旧源码包，create-only准备正确拒绝，已将产物移至各job独立run/attempt临时目录；原失败及修复见[发布CI证据](evidence/source-release-ci-20261107/README.md)。草稿查询已改为已发布tag查找加认证分页/ID回读，17项测试覆盖中断重试。
+
 本轮以release/open-source-alpha承接整个已验开发栈，新增中英文首页、社区规范、问题/PR模板、文档索引、路线图、变更记录、可追溯源码发布流程和新接管入口；更新过时SECURITY联网/同步描述。发布状态以GitHub Release及对应workflow为准。源码Alpha只含根Git树，不附子模块内容、APK或模型权重；不将开发证书包装为稳定升级签名。
 
 VoiceKey公开分发条款及候选训练来源声明差异仍未决。ARM/S25、自然语音、长期质量/能耗、Apple/Windows系统输入与四端同步/配对/完整灾备尚未完成。当前工作与后续任务见[接管入口](WORK_HANDOFF_PROMPT.md)、[路线图](ROADMAP.md)与[发布说明](releases/v0.1.0-alpha.1.md)。
