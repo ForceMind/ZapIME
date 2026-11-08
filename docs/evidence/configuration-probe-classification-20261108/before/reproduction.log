@@ -1,0 +1,3 @@
+warning: [options] bootstrap class path not set in conjunction with -source 8
+1 warning
+REPRODUCED exact continuity method: INPUT_FINISHED + observed hidden + no fresh -> same_editor_continuity=false but classification=not_executed

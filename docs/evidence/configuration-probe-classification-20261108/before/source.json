@@ -1,0 +1,10 @@
+{
+  "local_parent": "0a0b85463ce1115a60224f8d9c87a811a2a1d7b5",
+  "remote_parent": "94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8",
+  "tree": "78d00ce936aafd38b7073e1dc688f502128a0e46",
+  "probe_source_bytes": 42135,
+  "probe_source_sha256": "fd92cfeedb845dd61c4e5b5d5b700dd5703d493ad106309a31e6ccc76e2fc426",
+  "repro_bytes": 5370,
+  "repro_sha256": "030f6b1d76f68120a700785810b59d32c48abfb24e2f6fb902174d1c4363ea68",
+  "scope": "Exact old continuity/trace method body in a minimal JVM host. Synthetic lifecycle observation, no Android system/real Binder/emulator evidence."
+}

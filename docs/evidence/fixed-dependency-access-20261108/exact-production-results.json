@@ -1,0 +1,22 @@
+[
+  {
+    "name": "model.json",
+    "exact_function": "prepare_candidate_model.download",
+    "headers": "unchanged production OPENER defaults",
+    "cache_before": false,
+    "verified": true,
+    "bytes": 951,
+    "sha256": "33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+    "seconds": 7.969
+  },
+  {
+    "name": "lm_step.ort",
+    "exact_function": "prepare_candidate_model.download",
+    "headers": "unchanged production OPENER defaults",
+    "cache_before": false,
+    "verified": true,
+    "bytes": 8220336,
+    "sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+    "seconds": 9.083
+  }
+]

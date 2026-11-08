@@ -1,0 +1,8 @@
+{
+  "path": "job-128688077584.decoded.log.gz",
+  "decoded_utf8_bytes": 84890,
+  "decoded_utf8_sha256": "190baaf39dfa8822a657b79e63352db4c9566fa0d3cf8c3bc921642a1f43463f",
+  "gzip_bytes": 19954,
+  "gzip_sha256": "dc1915bb25412d187493394e15a5226e11a8b66f429de62a677db11fd35980ba",
+  "scope": "Connector-decoded complete job log; not an original Actions ZIP."
+}

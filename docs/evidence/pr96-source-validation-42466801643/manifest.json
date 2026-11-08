@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1990,
+      "sha256": "7ebe6cad1c5b8baf7f6608ed62129b19b014cc54a04c079c4fb1e888cd398561"
+    },
+    {
+      "path": "artifacts.json",
+      "bytes": 895,
+      "sha256": "d310109742413431d4b85807a3f0d3b3b1d53123a89fbadcf6b6715672579108"
+    },
+    {
+      "path": "decoded-log-provenance.json",
+      "bytes": 359,
+      "sha256": "b00338769e1f1137154c0adc0a0dd7a41bdf6f2c7267656a2068cadb9b877427"
+    },
+    {
+      "path": "job-128688077584.decoded.log.gz",
+      "bytes": 19954,
+      "sha256": "dc1915bb25412d187493394e15a5226e11a8b66f429de62a677db11fd35980ba"
+    },
+    {
+      "path": "jobs.json",
+      "bytes": 2458,
+      "sha256": "69985f469a798e2d381160f330c571df4beff3eaa14b44d61eca4e8c10b82880"
+    },
+    {
+      "path": "readback.json",
+      "bytes": 1609,
+      "sha256": "88d326ec2f59a4be398fdef8ecefd1ed80d0eb0add17e77e79c374157e123ef4"
+    },
+    {
+      "path": "workflow-run.json",
+      "bytes": 12410,
+      "sha256": "19e5886322fa102c2f01c3fc6c924f8013f143ba968391c4340bdba1b1598ef8"
+    }
+  ]
+}

@@ -38,3 +38,9 @@
 新严格报告器四项测试覆盖完整正向、隐藏/失焦/结束输入分类、缺失/伪造证据与专用设备保护。既有候选 14 项 Python、SelectionEchoTracker/事件环 JVM 回归及全部独立测试宿主 Java 编译保留。没有模拟器结果时，仅可报告测试代码已提交/本机编译通过；不得按方案推导失败、修复或手机行为。
 
 原始线索与官方源码身份见[安全调查记录](evidence/api35-configuration-restart-20261107/README.md)。框架路径仅构成实验依据，未运行前不得视为唯一根因。
+
+## 中断与证据不足的报告分类
+
+真实 INPUT_FINISHED、已观察隐藏/失焦或连接改变优先记为 interrupted_not_same_editor；即使该中断阻止 fresh 证明，也不能先因 fresh 缺失抛错而留下 not_executed。当前根 Insets 为 null 或事件环不足且没有明确中断时，仍为 not_executed，不将缺证据说成真实隐藏。观察器初始化尚未完成、系统设置尚未尝试触发时不补写实验中断分类。所有这些结果继续使严格门禁失败；只有完整连续编辑器及 fresh/无reject/无空finish证明才能成功。
+
+只读JVM回归动态提取实际测试宿主决策方法，覆盖这些分类及成功/拒绝边界；这不是系统IME、远程Binder或新配置实验通过。[原错误复现与本机验证](evidence/configuration-probe-classification-20261108/README.md)。

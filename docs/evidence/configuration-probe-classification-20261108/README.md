@@ -1,0 +1,7 @@
+# 配置实验分类：先保留实际中断
+
+固定父源码 local0a0b854 / remote94b66f3的树均为78d00ce9。原continuity方法已计算same=false，仍先要求fresh成功，真实finish/隐藏且没有fresh时抛错；补分类catch重复调用又抛并被忽略，报告错误留下not_executed。before保留动态提取实际旧Java方法的最小JVM复现、源摘要和原输出。
+
+修正仅test-only宿主/观察器：明确finish、非null根Insets报告隐藏、失焦/served丢失、连接改变先返回中断；未知Insets或不完整事件环维持证据不足/not_executed。设置触发前的setup失败不补成实验中断。fresh/rejected/空初始化finish的原成功门槛保留，所有中断/不足仍失败。
+
+新增5个JVM驱动测试方法覆盖18种状态，动态提取当前真实Java方法，不复制另写的分类器；原5项schema2严格报告测试也通过。官方API36r02/Temurin17的60产品与4宿主源完整编译通过；产品源码未改。候选CI在资源下载前运行新回归。无系统IME/Binder/设备执行，也不以此修正推定产品组字验收通过。

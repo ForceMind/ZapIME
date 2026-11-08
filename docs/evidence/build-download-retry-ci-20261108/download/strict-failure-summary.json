@@ -1,0 +1,219 @@
+{
+  "head": "fb62ad923f376edb7f1c3ab274fc8095718b7ea7",
+  "tree": "f99bbff5cc9ca044e5e9fe190f0f58c243434930",
+  "checkout": "0647d0bc6734e915821ccc5ddc9bf8f87bf3c299",
+  "checkout_tree_equals_head": true,
+  "run_attempt": 1,
+  "rerun_requested": false,
+  "new_28_tests_executed_in_three_workflows": true,
+  "synthetic_success_never_substitutes_for_real_download": true,
+  "source_code_matches_reviewed_local_commit": "82cc600b07821340e882341e4a6037b1e8f4fffa",
+  "failed_download_cases": [
+    {
+      "job_id": 128687392403,
+      "run_id": 42466578708,
+      "label": "candidate-host",
+      "script": "scripts/prepare_candidate_model.py",
+      "new_28_synthetic_tests_passed": true,
+      "unit_test_run_counts": [
+        28,
+        4,
+        14
+      ],
+      "real_retry_lines": [
+        "2026-11-08T09:18:43.7658760Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1",
+        "2026-11-08T09:18:44.8431023Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2"
+      ],
+      "final_status": "HTTP504",
+      "final_failure_preserved": true,
+      "top_level_attempts_inferred_from_fixed_code_and_retry_markers": 3,
+      "wire_get_count_observed": false,
+      "specific_model_or_header_member_proven": false,
+      "real_partial_cleanup_directory_observed": false,
+      "downstream_not_run": [
+        "native model scores",
+        "JNI host",
+        "paired quality inference",
+        "dictionary fetch"
+      ]
+    },
+    {
+      "job_id": 128687392256,
+      "run_id": 42466578708,
+      "label": "candidate-build",
+      "script": "scripts/prepare_candidate_model.py",
+      "new_28_synthetic_tests_passed": false,
+      "unit_test_run_counts": [
+        14
+      ],
+      "real_retry_lines": [
+        "2026-11-08T09:19:10.5527797Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1",
+        "2026-11-08T09:19:11.5662458Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2"
+      ],
+      "final_status": "HTTP504",
+      "final_failure_preserved": true,
+      "top_level_attempts_inferred_from_fixed_code_and_retry_markers": 3,
+      "wire_get_count_observed": false,
+      "specific_model_or_header_member_proven": false,
+      "real_partial_cleanup_directory_observed": false,
+      "downstream_not_run": [
+        "APK build",
+        "candidate matrix API28/35/36"
+      ]
+    },
+    {
+      "job_id": 128687392745,
+      "run_id": 42466578712,
+      "label": "android-build",
+      "script": "scripts/prepare_candidate_model.py",
+      "new_28_synthetic_tests_passed": true,
+      "unit_test_run_counts": [
+        28,
+        14
+      ],
+      "real_retry_lines": [
+        "2026-11-08T09:19:41.2245932Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1",
+        "2026-11-08T09:19:42.3906589Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2"
+      ],
+      "final_status": "HTTP504",
+      "final_failure_preserved": true,
+      "top_level_attempts_inferred_from_fixed_code_and_retry_markers": 3,
+      "wire_get_count_observed": false,
+      "specific_model_or_header_member_proven": false,
+      "real_partial_cleanup_directory_observed": false,
+      "downstream_not_run": [
+        "APK build",
+        "offline import ZIP",
+        "API28 system IME",
+        "modern/VoiceKey system acceptance"
+      ]
+    },
+    {
+      "job_id": 128687392394,
+      "run_id": 42466578721,
+      "label": "voice-cpu",
+      "script": "scripts/voice_probe.py",
+      "new_28_synthetic_tests_passed": true,
+      "unit_test_run_counts": [
+        28,
+        16
+      ],
+      "real_retry_lines": [
+        "2026-11-08T09:18:28.1940812Z build_download_retry reason=504 attempt=1 next=2 wait_seconds=1",
+        "2026-11-08T09:18:29.3508788Z build_download_retry reason=504 attempt=2 next=3 wait_seconds=2"
+      ],
+      "final_status": "HTTP504",
+      "final_failure_preserved": true,
+      "top_level_attempts_inferred_from_fixed_code_and_retry_markers": 3,
+      "wire_get_count_observed": false,
+      "specific_model_or_header_member_proven": false,
+      "real_partial_cleanup_directory_observed": false,
+      "downstream_not_run": [
+        "synthetic WAV generation",
+        "CPU offline recognition",
+        "voice quality inference"
+      ]
+    }
+  ],
+  "downstream_missing_artifacts": [
+    {
+      "job_id": 128687821018,
+      "first_failure": "missing_input_artifact",
+      "missing_artifact": "ZapIME-Android-development",
+      "system_ime_voice_execution": "NOT_RUN"
+    },
+    {
+      "job_id": 128687821072,
+      "first_failure": "missing_input_artifact",
+      "missing_artifact": "ZapIME-Android-development",
+      "system_ime_voice_execution": "NOT_RUN"
+    },
+    {
+      "job_id": 128687821086,
+      "first_failure": "missing_input_artifact",
+      "missing_artifact": "ZapIME-Android-development",
+      "system_ime_voice_execution": "NOT_RUN"
+    },
+    {
+      "job_id": 128687821099,
+      "first_failure": "missing_input_artifact",
+      "missing_artifact": "ZapIME-Android-development",
+      "system_ime_voice_execution": "NOT_RUN"
+    },
+    {
+      "job_id": 128687821106,
+      "first_failure": "missing_input_artifact",
+      "missing_artifact": "ZapIME-Android-development",
+      "system_ime_voice_execution": "NOT_RUN"
+    }
+  ],
+  "artifacts_in_three_failed_workflows": [],
+  "logs": {
+    "job-128687392256.log": {
+      "raw_bytes": 218528,
+      "raw_sha256": "ade03a20cd50ea3c44125d0433973a373bb4221e33537249a2feea7b11d207b6",
+      "gzip_sha256": "5408257c2e078209905c4540507953816ac667c0d84c21852e06d0dd24820be3",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687392394.log": {
+      "raw_bytes": 42485,
+      "raw_sha256": "a608fbc7352b8c5f306dfd4bf3b7a22d213e958b87f261a97a7ec2ffcc2dd14a",
+      "gzip_sha256": "2623781b915b780352b4a38f1f04743d204b6adebae6dbf7643605632df75e68",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687392403.log": {
+      "raw_bytes": 56545,
+      "raw_sha256": "8f89e977536e953711cdc6969ed962e374860484dbe93f9c1003dffdcba41993",
+      "gzip_sha256": "faae3199ebea91446be36ec2d241509dbf4f42f6578c16415eb42c3338908f82",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687392745.log": {
+      "raw_bytes": 233824,
+      "raw_sha256": "825f6c71b2acb82584384b8114f36a94c0d9a822a7db0e34d8c36cad60f8ba9d",
+      "gzip_sha256": "51ce3ac2ec76fc6d66436b117e694b4b2894c61a624cdc2852581678d3c7ac4e",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687821018.log": {
+      "raw_bytes": 171139,
+      "raw_sha256": "8aa805c2be1ccae573ef76f3c1979efde5563271431715d1cc1aaf32eb48b66b",
+      "gzip_sha256": "9732d1ded56a122160375d6f2ea05a29e10746d7b4e59b6aa513a21bdafc2531",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687821072.log": {
+      "raw_bytes": 173709,
+      "raw_sha256": "f0379fde394ff614a805225515edc1452c55549bda28a1c084ce5b49da00a5f7",
+      "gzip_sha256": "0ab9f0bd78521e8564eee4c2c01b9c56467f352c6c6e8f46df1bb86e13a1a8d8",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687821086.log": {
+      "raw_bytes": 173710,
+      "raw_sha256": "5ec76d665c46c22783dacda4ac8e67408f817b5b565f097a140b0eb1c67ad203",
+      "gzip_sha256": "518c632bb63b9d2898af13886bd5836e628f13cafb391fb33f8bcc58bb4fb009",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687821099.log": {
+      "raw_bytes": 173709,
+      "raw_sha256": "16010e9ce45d9129b2f5e044f7cbbb35b929a1375a4fbe532b4d81df9193fcdb",
+      "gzip_sha256": "102807e15cdca790fb8e460f9b90040f209b270d7826d77aae89bbc70818a676",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    },
+    "job-128687821106.log": {
+      "raw_bytes": 171139,
+      "raw_sha256": "ea54e12183ee0b822854c5ea9f845893d0125faf78fca2d8441a190b706f791f",
+      "gzip_sha256": "0d0fd4d01143829cb8670ebe3bec8f6f7ba5f85fa0661f4f8018abc1c931e50a",
+      "complete_job_log": true,
+      "retrieval": "github.fetch_workflow_job_logs"
+    }
+  },
+  "network_root_cause": "not proven: fixed HTTPS GETs returned 504 after bounded retries",
+  "integrity_fallback_or_mirror_used": false,
+  "source_shared_checks": "separate verifier owns full source/shared/Apple evidence"
+}

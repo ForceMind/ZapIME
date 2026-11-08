@@ -1,0 +1,15 @@
+test_exact_fresh_same_connection_sequence (test_android_configuration_compose_report.ConfigurationReportTests.test_exact_fresh_same_connection_sequence) ... ok
+test_interruption_never_counts_as_same_editor_reproduction (test_android_configuration_compose_report.ConfigurationReportTests.test_interruption_never_counts_as_same_editor_reproduction) ... ok
+test_missing_or_false_actual_proofs_fail_closed (test_android_configuration_compose_report.ConfigurationReportTests.test_missing_or_false_actual_proofs_fail_closed) ... ok
+test_original_disposable_device_guard_precedes_any_mutation (test_android_configuration_compose_report.ConfigurationReportTests.test_original_disposable_device_guard_precedes_any_mutation) ... ok
+test_schema_version_rejects_boolean_float_and_string (test_android_configuration_compose_report.ConfigurationReportTests.test_schema_version_rejects_boolean_float_and_string) ... ok
+test_complete_fresh_proof_and_normal_candidate_finish_are_allowed (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_complete_fresh_proof_and_normal_candidate_finish_are_allowed) ... ok
+test_missing_rejected_or_empty_fresh_proof_remains_a_failure (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) ... ok
+test_null_insets_is_unknown_instead_of_a_measured_hidden_window (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_null_insets_is_unknown_instead_of_a_measured_hidden_window) ... ok
+test_observed_interruption_does_not_need_a_successful_fresh_proof (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_observed_interruption_does_not_need_a_successful_fresh_proof) ... ok
+test_unknown_trace_is_not_reported_as_observed_interruption (test_android_configuration_probe_state.ConfigurationProbeStateTests.test_unknown_trace_is_not_reported_as_observed_interruption) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.380s
+
+OK

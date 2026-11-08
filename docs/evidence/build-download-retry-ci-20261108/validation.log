@@ -1,0 +1,15 @@
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 docs/evidence/build-download-retry-ci-20261108/verify.py
+PASS fixed source; 14 original logs; three 28-test runs; five bounded HTTP504 failures; source/shared success; native NOT_RUN preserved
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest discover -s docs/evidence/build-download-retry-ci-20261108 -p test_verify.py -v
+test_changed_original_log_rejected_after_manifest_refresh (test_verify.EvidenceTests.test_changed_original_log_rejected_after_manifest_refresh) ... ok
+test_duplicate_json_fields_rejected (test_verify.EvidenceTests.test_duplicate_json_fields_rejected) ... ok
+test_originals_verify_read_only (test_verify.EvidenceTests.test_originals_verify_read_only) ... ok
+test_semantic_mutations_rejected_even_after_manifest_refresh (test_verify.EvidenceTests.test_semantic_mutations_rejected_even_after_manifest_refresh) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.118s
+
+OK
+
+$ git diff --check

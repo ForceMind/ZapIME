@@ -8,8 +8,10 @@
 |---|---|---|
 | [旧 v2/1.24.4](../candidate-quality-20261107/host-v2-ort124.json.gz) | 1.24.4 / 25/34 | `6b1166d2e947a52fda4b664fb43d21ce18ba637f9dc5da34854dbaf61d20df89` |
 | [旧 v2/1.28.2](../candidate-quality-20261107/host-v2-ort128.json.gz) | 1.28.2 / 26/34 | `52e949001afdd054ea6ee4688a1c629a1d3711c056b9df7c4a9aa854b40e3dc3` |
-| [扩充后本地 v2/1.24.4](../candidate-quality-expansion-20261107/host/quality-v2-ort1244-regression.json.gz) | 1.24.4 / 25/34 | `67029ae4fc4007d4ca445c43ebd8613747d70dd429ed3d3a0f9a61e490760cca` |
+| [扩充后本地 v2/1.24.4](https://github.com/ForceMind/ZapIME/blob/94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8/docs/evidence/candidate-quality-expansion-20261107/host/quality-v2-ort1244-regression.json.gz) | 1.24.4 / 25/34 | `67029ae4fc4007d4ca445c43ebd8613747d70dd429ed3d3a0f9a61e490760cca` |
 | [#89 CI v2/1.24.4](../current-slices-20261107/candidate89-host/quality-report.json.gz) | 1.24.4 / 25/34 | `a7f848c293ae0d162c3f1805105af8e28ceee386f717312ed6d8be0a30b04f84` |
+
+扩充本地报告属于尚未合并的固定#96源码，表中使用不可变提交链接；本页没有把该runner当作main已验产品。
 
 三份 1.24.4 报告的两个模式各 34 条 observation，在仅排除 `latency_ms` 后，`id`、`expected`、完整 `baseline` 和完整 `ranked` 逐项相同。它们不只是首选聚合值恰好一致。冻结 v2 的 SHA `3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93`、34 条分母与模型/词库/ranking source 均不变。
 

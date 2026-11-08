@@ -1,0 +1,20 @@
+{
+  "logs": [
+    {
+      "path": "job-128688078317.decoded.log.gz",
+      "decoded_utf8_bytes": 59951,
+      "decoded_utf8_sha256": "e21e14943fb19055d016ed1283c6a7cb29f886e2910458651bcebad405cef05d",
+      "gzip_bytes": 13239,
+      "gzip_sha256": "5836cd8123191a4b1405eae3974b91398be7a058a3bb5ab6cb7220cf706b2c8b",
+      "scope": "Connector-decoded complete job log, UTF-8 encoding preserved; not an original Actions ZIP."
+    },
+    {
+      "path": "job-128688078512.decoded.log.gz",
+      "decoded_utf8_bytes": 215846,
+      "decoded_utf8_sha256": "6cb24b467d6c2702eeb892505624ab606c152249716ce8dd44d86266aaa6185e",
+      "gzip_bytes": 36338,
+      "gzip_sha256": "e92aac4a3cb7d4113dcb186e50571bcbbe660ddf1343085a05fce0fcd7e7b189",
+      "scope": "Connector-decoded complete job log, UTF-8 encoding preserved; not an original Actions ZIP."
+    }
+  ]
+}

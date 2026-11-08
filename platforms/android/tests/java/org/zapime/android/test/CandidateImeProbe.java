@@ -418,11 +418,19 @@ final class CandidateImeProbe {
                 .put("after_command_connection",ProbeActivity.normalCommandConnection.get())
                 .put("after_restarts",current.restarts).put("framework_restart_observed",current.restarts>baseline.restarts)
                 .put("fresh_verification_completed",fresh&&!rejected).put("empty_initialization_finish",emptyFinish);
-        final boolean[] visible=new boolean[1];instrumentation.runOnMainSync(()->visible[0]=observer.visible());
-        boolean same=complete&&!finished&&state.focused&&state.served&&visible[0]
-                &&observer.hiddenObservations==0&&observer.windowFocusLosses==0&&observer.editorFocusLosses==0
-                &&connections==ProbeActivity.normalConnections.get()&&command==ProbeActivity.normalCommandConnection.get();
+        final int[] visibility=new int[1];instrumentation.runOnMainSync(()->visibility[0]=observer.visibilityState());
+        boolean interrupted=finished||!state.focused||!state.served||visibility[0]==0
+                ||observer.hiddenObservations>0||observer.windowFocusLosses>0||observer.editorFocusLosses>0
+                ||connections!=ProbeActivity.normalConnections.get()||command!=ProbeActivity.normalCommandConnection.get();
+        boolean same=complete&&!interrupted&&visibility[0]==1;
         report.put("same_editor_continuity",same);
+        // A genuine interruption must reach the caller's interruption branch
+        // even when that interruption prevented fresh verification altogether.
+        if(interrupted)return false;
+        if(!complete||visibility[0]<0){
+            report.put("classification","not_executed");
+            throw new Exception("configuration_continuity_evidence_incomplete");
+        }
         // APPLY_FINISH_AFTER_COMMIT is the expected final candidate action;
         // APPLY_FINISH_EMPTY is never an accepted initialization side effect.
         require(fresh&&!rejected&&!emptyFinish,"configuration_fresh_verification_invalidated");
@@ -436,6 +444,7 @@ final class CandidateImeProbe {
                 .put("product_preferences_written",false).put("human_touch_or_phone_latency",false)
                 .put("model_execution_claimed",false).put("setting_restored",false);
         int original=-1;Throwable failure=null;ConfigurationContinuityObserver observer=null;
+        boolean transitionAttempted=false;
         Stats baseline=null;int connections=0,command=0;
         try {
             stage="configuration_launch";
@@ -484,6 +493,7 @@ final class CandidateImeProbe {
             // These are two explicit platform settings writes, not a Service,
             // core, hidden lifecycle or editor mutation. The test-only process
             // temporarily borrows shell WRITE_SECURE_SETTINGS and drops it.
+            transitionAttempted=true;
             putHardwareSetting(1-original);report.put("inverse_readback",hardwareSetting());
             putHardwareSetting(original);report.put("trigger_restored_readback",hardwareSetting());
             Stats after;long deadline=SystemClock.uptimeMillis()+5000;
@@ -500,7 +510,6 @@ final class CandidateImeProbe {
                     .put("fresh_verification_completed",fresh&&!rejected).put("empty_initialization_finish",emptyFinish);
             require(after.restarts>baseline.restarts,"framework_restart_not_observed");
             write("configuration-compose-service-after.txt",after.line+"\n");
-            require(fresh&&!rejected&&!emptyFinish,"configuration_fresh_verification_not_completed");
             if(!continuity(observer,baseline,connections,command)){
                 report.put("classification","interrupted_not_same_editor");
                 throw new Exception("configuration_interrupted_not_same_editor");
@@ -524,7 +533,7 @@ final class CandidateImeProbe {
         } catch(Throwable error) {
             failure=error;report.put("passed",false).put("failure_type",error.getClass().getSimpleName())
                     .put("failure_reason",error.getMessage()==null?"unknown":error.getMessage());
-            if(observer!=null&&baseline!=null){
+            if(transitionAttempted&&observer!=null&&baseline!=null){
                 try{if(!continuity(observer,baseline,connections,command))report.put("classification","interrupted_not_same_editor");}catch(Exception ignored){}
             }
             try{write("configuration-compose-service-failure.txt",stats().line+"\n");}catch(Exception ignored){}

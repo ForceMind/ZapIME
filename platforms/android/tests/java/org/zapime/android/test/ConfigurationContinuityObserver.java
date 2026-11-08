@@ -32,10 +32,11 @@ final class ConfigurationContinuityObserver implements AutoCloseable {
         decor.getViewTreeObserver().addOnGlobalFocusChangeListener(editor);
     }
     void requestInitialInsets(){decor.requestApplyInsets();}
-    boolean visible() {
+    int visibilityState() {
         WindowInsets insets = host.normal.getRootWindowInsets();
-        return insets != null && insets.isVisible(WindowInsets.Type.ime());
+        return insets == null ? -1 : insets.isVisible(WindowInsets.Type.ime()) ? 1 : 0;
     }
+    boolean visible() { return visibilityState() == 1; }
     @Override public void close() {
         decor.setOnApplyWindowInsetsListener(null);
         if (decor.getViewTreeObserver().isAlive()) {

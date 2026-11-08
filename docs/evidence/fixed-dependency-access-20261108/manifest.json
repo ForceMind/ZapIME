@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 2899,
+      "sha256": "1aa6b98ee8b92e5b22281492dabbe0c4a48c3f6ab5b8b184668ab9f9756d52b8"
+    },
+    {
+      "path": "access-results.json",
+      "bytes": 2263,
+      "sha256": "ee782d26a7d5c761602e73f3b93cdc8626224cc7ee007d23bb4291a7af9d8484"
+    },
+    {
+      "path": "context.json",
+      "bytes": 2415,
+      "sha256": "9002cc306bf11161efd6b5e7df1453191fe37db0440ff4ec71a07df06f2c3036"
+    },
+    {
+      "path": "exact-production-results.json",
+      "bytes": 644,
+      "sha256": "9161b8bedae277348d2fb599c107dd37e09173009a6462afa8e31dcac3b71b6b"
+    },
+    {
+      "path": "large-pinned-results.json",
+      "bytes": 1776,
+      "sha256": "5d49562f12cf16a52292378aafec9da4cfe63dbc9dd492e020a226aaaf85926b"
+    },
+    {
+      "path": "official-model-release.json",
+      "bytes": 1436,
+      "sha256": "25e424acfd1aab9584f858d4a856e63f6f16b16e9700c2ab4c0a947e3d4776d7"
+    }
+  ]
+}

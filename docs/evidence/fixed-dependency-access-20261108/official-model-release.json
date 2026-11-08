@@ -1,0 +1,31 @@
+{
+  "api_url": "https://api.github.com/repos/metasequoiaime/chinese-ime-lm/releases/tags/rerank-v2",
+  "release_id": 433387133,
+  "tag": "rerank-v2",
+  "assets": [
+    {
+      "id": 707693173,
+      "name": "rerank-6x256.model.json",
+      "size": 951,
+      "digest": "sha256:33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+      "api_url": "https://api.github.com/repos/metasequoiaime/chinese-ime-lm/releases/assets/707693173",
+      "browser_download_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.model.json"
+    },
+    {
+      "id": 707693174,
+      "name": "rerank-6x256.ort",
+      "size": 8220336,
+      "digest": "sha256:e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "api_url": "https://api.github.com/repos/metasequoiaime/chinese-ime-lm/releases/assets/707693174",
+      "browser_download_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.ort"
+    },
+    {
+      "id": 707693177,
+      "name": "rerank-6x256.vocab.json",
+      "size": 85613,
+      "digest": "sha256:d7fb2e70de9f0c2c65b822a8fbf604655bfef6d0dcd8f1975d73f1cd5ea7f038",
+      "api_url": "https://api.github.com/repos/metasequoiaime/chinese-ime-lm/releases/assets/707693177",
+      "browser_download_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.vocab.json"
+    }
+  ]
+}
