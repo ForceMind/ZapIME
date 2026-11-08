@@ -14,8 +14,6 @@ jobs:
     name: Validate and prepare root source archive
     runs-on: ubuntu-latest
     timeout-minutes: 25
-    env:
-      SOURCE_RELEASE_DIR: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}
     outputs:
       plan_changed: ${{ steps.plan-change.outputs.changed }}
     steps:
@@ -41,6 +39,7 @@ jobs:
       - name: Prepare exact committed source Alpha
         env:
           SOURCE_COMMIT: ${{ github.sha }}
+          SOURCE_RELEASE_DIR: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}
         run: python3 scripts/prepare_source_release.py prepare --commit "$SOURCE_COMMIT" --output "$SOURCE_RELEASE_DIR"
       - name: Detect a committed release plan change
         id: plan-change
@@ -52,7 +51,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: ZapIME-source-alpha-${{ github.sha }}
-          path: ${{ env.SOURCE_RELEASE_DIR }}/
+          path: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}/
           if-no-files-found: error
           retention-days: 30
 
@@ -62,8 +61,6 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository == 'ForceMind/ZapIME' && needs.prepare.outputs.plan_changed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      SOURCE_RELEASE_DIR: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}
     concurrency:
       group: zapime-source-alpha-v0.1.0-alpha.1
       cancel-in-progress: false
@@ -77,10 +74,11 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: ZapIME-source-alpha-${{ github.sha }}
-          path: ${{ env.SOURCE_RELEASE_DIR }}/
+          path: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}/
       - name: Verify tag, complete matching draft, and publish prerelease
         env:
           GH_TOKEN: ${{ github.token }}
           SOURCE_COMMIT: ${{ github.sha }}
           SOURCE_REPOSITORY: ${{ github.repository }}
+          SOURCE_RELEASE_DIR: ${{ runner.temp }}/zapime-source-release-${{ github.run_id }}-${{ github.run_attempt }}
         run: python3 scripts/prepare_source_release.py publish --commit "$SOURCE_COMMIT" --output "$SOURCE_RELEASE_DIR" --repository "$SOURCE_REPOSITORY"
