@@ -1,0 +1,5 @@
+Performing Streamed Install
+Success
+Verified kernel IPv4/IPv6 REJECT for exact product UID 10216
+/sdcard/Android/data/org.zapime.android/files/candidate-fixtures/candidate-ranking-report.json: 1 file pulled, 0 skipped. 2.0 MB/s (3686 bytes in 0.002s)
+PASS real offline 8M candidate model, native IDs and Android Editable; no system IME or phone claim

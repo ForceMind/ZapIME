@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "status": "PASS",
+  "synthetic": true,
+  "api_level": 35,
+  "cases": [
+    {
+      "id": "descriptor_roundtrip",
+      "passed": true
+    },
+    {
+      "id": "descriptor_schema",
+      "passed": true
+    },
+    {
+      "id": "descriptor_uuid_hash",
+      "passed": true
+    },
+    {
+      "id": "response_states",
+      "passed": true
+    },
+    {
+      "id": "response_schema",
+      "passed": true
+    },
+    {
+      "id": "response_account_and_nulls",
+      "passed": true
+    },
+    {
+      "id": "response_timestamp_utf8_bounds",
+      "passed": true
+    },
+    {
+      "id": "unprepared_before_network",
+      "passed": true
+    },
+    {
+      "id": "native_descriptor_digest",
+      "passed": true
+    },
+    {
+      "id": "native_descriptor_negative_inputs",
+      "passed": true
+    },
+    {
+      "id": "prepared_local_identity",
+      "passed": true
+    },
+    {
+      "id": "worker_before_io",
+      "passed": true
+    },
+    {
+      "id": "missing_connection_before_network",
+      "passed": true
+    },
+    {
+      "id": "precancel_before_io",
+      "passed": true
+    }
+  ],
+  "cleanup_completed": true,
+  "actual_native_descriptor": true,
+  "actual_keystore_prepared": true,
+  "material_bytes": 72,
+  "descriptor_public_fields": 3,
+  "android_https": "NOT RUN",
+  "server_cas": "NOT RUN",
+  "remote_success_tested": false,
+  "secret_or_code_logged": false,
+  "scope": "Offline strict Android JsonReader parser, real stateless descriptor JNI and independently prepared Android Keystore\/SQLite fixture. Public helper calls only exercise pre-I\/O\/pre-network rejection; prepared helper is checked through its local-only current seam. No Android HTTPS, server registration\/CAS, data synchronization, provider UI or phone acceptance."
+}

@@ -1,0 +1,1 @@
+11-08 07:56:12.374  3308  3308 I ImeTracker: org.zapime.android:38e98050: onRequestShow at ORIGIN_IME reason RESET_NEW_CONFIGURATION fromUser false
