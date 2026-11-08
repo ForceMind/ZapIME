@@ -8,6 +8,8 @@
 
 ## 当前执行接续（2026-11-07，源码 Alpha 整合）
 
+SAF受限诊断已取得API35/36实际成功及API28导航阶段失败，零文件触摸。新分支改用已识别roots子树的唯一Downloads根项导航，保留一次物理文件触摸及全部恢复身份/清理断言；本机102项Python、9项报告、2组JVM及Java编译通过，新三API实际门禁待验。原失败完整保留，不把测试导航补丁当作已验证的产品恢复。
+
 缓存后台fill历史P1已复现并修复；固定Go race/vet/build及实际服务CI42460687991的强制PG/HTTP、S3、安装/灾备全部通过，原失败保留。原#25研究不直接合并。
 
 最新主分支全量Android已结束：42441322518整体FAILURE，VoiceKey API36在adb root/device offline及后续清理失败，未进入模型/JNI门禁；常规API28/35/36和VoiceKey API28/35成功。原失败artifact已核SHA保留于[最终回读](evidence/main-android-final-20261107/README.md)。发布脚本创建/回读修复与30项故障回归已通过对应CI并在#85合入；随后分别定位SAF导航与组字失败；不同源码/门禁不互相代填。

@@ -1,5 +1,11 @@
 # ZapIME 项目执行状态
 
+## SAF 文件选择器导航修正：原 API28 失败保留，同源码三 API 待验
+
+#86 focused42459710009的API35/36实际57项门禁通过；API28 job128667965894实际失败于navigation_close_wait：DocumentsUI roots仍可见、filename不可见、150轮/一次BACK、零文件触摸。导出/native身份/确认与清理通过，不代表恢复页通过。原件与SHA保留于[API28导航原失败](evidence/sync-recovery-navigation-20261107/README.md)。
+
+新测试入口只在已识别roots子树内点击唯一可见Downloads根项，随后等待文件稳定并检查触摸点没有导航遮挡，再进行一次真实文件触摸；不再把系统BACK当成抽屉关闭。产品导入未改，身份/字节/清理门禁不减。102项Android Python、9项报告、2组JVM与全部voice-tests Java编译通过，独立审查待收口；新源码的API28/35/36实际恢复仍待CI。
+
 ## 缓存容量修复：真实事务、S3与灾备已验
 
 #90固定headf01a8b5 / checkout0d5edd686e9f23c639099e71004888bf568c88a1，完整tree6350807ec26343dcd395d532364294efc24badc0。实际服务workflow42460687991/job128669118685全部SUCCESS：Go1.27.3 race顶层30组（含fuzz seed组）、0SKIP，新增真实PG/HTTP取消/容量503/同cursor重试通过；S3兼容存储、容器/漏洞、真实共享客户端交换、撤销、空库/对象桶恢复及一键/重复安装也通过。原始ZIP完整下载核GitHub大小/SHA，安全joblog和原testlog见[本轮服务原件](evidence/cache-fill-ci-20261108/README.md)。
@@ -21,13 +27,13 @@
 | 独立切片 | 当前交付与门禁 |
 | --- | --- |
 | #84 / #88 | 已合并原main最终FAILURE原件与一次集中的[S25验收单](S25_ACCEPTANCE_CHECKLIST.md) |
-| [#86](https://github.com/ForceMind/ZapIME/pull/86) | SAF受限诊断已提交；focused42459710009的API35/36恢复11+10+14+12+10项已下载严格复验，API28仍排队；旧API28根因未决 |
+| [#86](https://github.com/ForceMind/ZapIME/pull/86) | SAF受限诊断已提交；focused42459710009的API35/36恢复11+10+14+12+10项已下载严格复验，API28已在navigation_close_wait失败且零文件触摸；新导航修正在独立分支待三API验收 |
 | [#87](https://github.com/ForceMind/ZapIME/pull/87) | 有界组字事件环、上层epoch拒绝与真实Editable数字诊断已提交；本机编译/回归通过，原生CI继续运行 |
 | [#89](https://github.com/ForceMind/ZapIME/pull/89) | 新64条v3先冻结、两版ORT真实主机结果已保留；35项相关测试过，实际host作业128668210879已成功；三份新CI质量报告、15组native/36项JNI/独立oracle均已下载严格复验 |
-| [#90](https://github.com/ForceMind/ZapIME/pull/90) | 缓存第33个后台读缺陷已复现，32实际fill修复及race×10/vet/build通过；真实PG/HTTP/S3/灾备等待CI |
+| [#90](https://github.com/ForceMind/ZapIME/pull/90) | 缓存第33个后台读缺陷已复现，32实际fill修复及race×10/vet/build通过；实际强制PG/HTTP/S3/安装/灾备CI全部通过，#90已合并 |
 | [#91](https://github.com/ForceMind/ZapIME/pull/91) | 堆叠#87的独立API35框架重启实验，保持草稿；5项严格报告测试与本机编译通过，未声称实际复现/修复 |
 
-公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#25/#40仍未合并；#25的研究不等于#90的真实事务验收。旧原main的42441322518失败和历史组字/SAF失败全部保留。新原始CI证据见[本轮原件](evidence/current-slices-20261107/README.md)。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
+公开v0.1.0-alpha.1仍固定026bfb8源码与原三个附件，不移动标签、覆盖资产或新增二进制发行。#12/#40仍为未合并草稿；#25已由经真实事务验收的#90替代关闭，未合并其旧研究分支。旧原main的42441322518失败和历史组字/SAF失败全部保留。新原始CI证据见[本轮原件](evidence/current-slices-20261107/README.md)。以下均为固定时间/源码的历史记录，较早pending不覆盖本节新事实。
 
 ## 发布草稿回读健壮性修复（2026-11-07，独立切片）
 

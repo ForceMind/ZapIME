@@ -1,0 +1,49 @@
+{
+  "baseline_commit": "58a3a546c758378d1887aeeaa99b4bd4d3a25c77",
+  "scope": "Test-only safe failure diagnostics; no product change or new emulator success.",
+  "checks": {
+    "android_python_tests": 99,
+    "focused_report_tests": 6,
+    "content_free_trace_jvm": "PASS",
+    "all_voice_test_java_api36_source8_target8": "PASS Java21.0.13 and Temurin17.0.21",
+    "emulator_sync_recovery": "NOT RUN",
+    "phone": "NOT RUN"
+  },
+  "files": [
+    {
+      "path": ".github/workflows/voicekey-android-model.yml",
+      "bytes": 19002,
+      "sha256": "977870d016bef1101481f4bab71e3ad017d658fa695824d9f1ffc1c7a1094c86"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPreparationUiProbe.java",
+      "bytes": 32095,
+      "sha256": "3753e3444746506b51e95220f20f90b0cf02d96e5a4c5f32cd926dc2e8ab11d0"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncRecoveryTrace.java",
+      "bytes": 1189,
+      "sha256": "bd7a3b4eccca97f6b79de81ac86874eb9554ac2a54b1a1061318c4436d28ac04"
+    },
+    {
+      "path": "platforms/android/tests/jvm/SyncRecoveryTraceSmoke.java",
+      "bytes": 2171,
+      "sha256": "2b39ea8273c5cdb1372e031205cf6a938aab91f36fcabecb2f675b51b438f6b9"
+    },
+    {
+      "path": "scripts/android_sync_preparation_report.py",
+      "bytes": 7022,
+      "sha256": "5d74ca5ec1142913a8f652107a59cb608b59788e604027bab5cf52114fad47f5"
+    },
+    {
+      "path": "scripts/test_android_sync_preparation_report.py",
+      "bytes": 7665,
+      "sha256": "c64838ceef0ea077e3bea396ae2c162cb05cb234ba03d43e3e54b64dcf9c1752"
+    },
+    {
+      "path": "scripts/test_android_sync_recovery_trace.sh",
+      "bytes": 418,
+      "sha256": "d06e6dc63bd651db753a6476675968be6ea3e82b24a3bb59b0b277896a5d0285"
+    }
+  ]
+}
