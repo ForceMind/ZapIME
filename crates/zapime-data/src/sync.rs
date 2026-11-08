@@ -54,7 +54,7 @@ fn canonical_id(value: &str) -> Result<Uuid, Error> {
 /// Must be called inside the same transaction as preparation. Ordinary local
 /// operations/queue entries are allowed; evidence of an old sync relationship
 /// without the complete workspace identity is not silently adopted.
-fn workspace_binding(tx: &Transaction<'_>) -> Result<Option<WorkspaceBinding>, Error> {
+pub(crate) fn workspace_binding(tx: &Transaction<'_>) -> Result<Option<WorkspaceBinding>, Error> {
     if tx.query_row::<u32, _, _>("PRAGMA user_version", [], |row| row.get(0))? != 2 {
         return Err(Error::Version);
     }

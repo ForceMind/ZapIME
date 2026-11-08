@@ -431,6 +431,19 @@ final class CandidateImeProbe {
             report.put("classification","not_executed");
             throw new Exception("configuration_continuity_evidence_incomplete");
         }
+        int beforeSetting=report.optInt("before_setting",-1);
+        boolean triggerComplete=(beforeSetting==0||beforeSetting==1)
+                &&report.optInt("inverse_readback",-1)==1-beforeSetting
+                &&report.optInt("trigger_restored_readback",-1)==beforeSetting;
+        if(!triggerComplete||current.restarts<=baseline.restarts){
+            report.put("classification","not_executed");
+            throw new Exception("configuration_trigger_or_restart_not_observed");
+        }
+        // Complete evidence of an actual same-editor restart is a product
+        // reproduction even when its fresh proof fails. Set this before the
+        // requirement can throw; neither this classification nor a later catch
+        // may turn a rejected/missing proof into a success.
+        report.put("classification","same_editor_composition_failure");
         // APPLY_FINISH_AFTER_COMMIT is the expected final candidate action;
         // APPLY_FINISH_EMPTY is never an accepted initialization side effect.
         require(fresh&&!rejected&&!emptyFinish,"configuration_fresh_verification_invalidated");

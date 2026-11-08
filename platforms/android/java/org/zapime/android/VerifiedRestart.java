@@ -12,6 +12,8 @@ import java.util.function.BooleanSupplier;
 final class VerifiedRestart {
     static final int MAX_BEFORE = 256, MAX_AFTER = 32, MAX_HELD = 64, MAX_UNITS = 65536;
     static final long BUDGET_MS = 800;
+    // Includes skipped stale submissions: never replenish a ticket's budget.
+    static final int MAX_READS = 2;
     // Process-wide physical capacity survives Service destruction and logical
     // timeouts. No task is queued until the previous IPC actually returns.
     private static final AtomicBoolean PHYSICAL = new AtomicBoolean();
@@ -56,7 +58,11 @@ final class VerifiedRestart {
     final long deadline;
     private final ArrayDeque<Runnable> replies=new ArrayDeque<>(),operations=new ArrayDeque<>();
     private int units;
-    private boolean pending=true,proof,barrier;
+    // Ticket/queue state stays on the serialized main callback path. Only the
+    // read permit and generation cross to the physical worker before its IPC.
+    private boolean pending=true,proof,barrier,readPending;
+    private volatile int generation;
+    private int proofGeneration=-1,readRequests;
     private final AtomicBoolean readPermit=new AtomicBoolean(true);
     int selectionVersion;
 
@@ -66,13 +72,27 @@ final class VerifiedRestart {
     }
     boolean expired(){return System.nanoTime()>=deadline;}
     boolean pending(){return pending;}
+    int generation(){return generation;}
+    boolean readPending(){return readPending;}
+    boolean currentGeneration(int value){return value==generation;}
+    boolean restartNotification(){
+        if(!pending||expired()||readRequests>=MAX_READS)return false;
+        ++generation;proof=false;proofGeneration=-1;return true;
+    }
+    private int beginRead(){
+        if(!pending||expired()||readPending||readRequests>=MAX_READS||!readPermit.get())return -1;
+        readPending=true;++readRequests;return generation;
+    }
+    private void finishRead(){readPending=false;}
+    private boolean mayRead(int value){return readPermit.get()&&value==generation&&!expired();}
     boolean hold(boolean reply,Runnable task,int size){
         if(!pending||size<0||size>MAX_UNITS-units||replies.size()+operations.size()>=MAX_HELD)return false;
         (reply?replies:operations).addLast(task);units+=size;return true;
     }
-    void proof(){if(pending)proof=true;}
+    void proof(){proof(generation);}
+    void proof(int value){if(pending&&!readPending&&!expired()&&value==generation){proof=true;proofGeneration=value;}}
     void barrier(){if(pending)barrier=true;}
-    boolean ready(){return pending&&!expired()&&proof&&barrier;}
+    boolean ready(){return pending&&!expired()&&!readPending&&proof&&proofGeneration==generation&&barrier;}
     void reject(){readPermit.set(false);pending=false;replies.clear();operations.clear();units=0;}
     Release consume(){
         if(!ready())return null;
@@ -104,11 +124,13 @@ final class VerifiedRestart {
     }
     static boolean submit(VerifiedRestart owner,Read read,Executor callbacks,Result result,Executor executor){
         if(!PHYSICAL.compareAndSet(false,true))return false;
+        final int submitted=owner.beginRead();
+        if(submitted<0){PHYSICAL.set(false);return false;}
         try{executor.execute(()->{
             boolean valid=false;
-            try{if(owner.readPermit.get()&&!owner.expired())valid=owner.expected.matches(read.read());}catch(Exception|LinkageError ignored){}
+            try{if(owner.mayRead(submitted))valid=owner.expected.matches(read.read());}catch(Exception|LinkageError ignored){}
             finally{PHYSICAL.set(false);}
-            final boolean proof=valid;callbacks.execute(()->result.completed(proof));
-        });return true;}catch(RuntimeException rejected){PHYSICAL.set(false);return false;}
+            final boolean proof=valid;callbacks.execute(()->{owner.finishRead();result.completed(proof&&owner.mayRead(submitted));});
+        });return true;}catch(RuntimeException rejected){owner.finishRead();PHYSICAL.set(false);return false;}
     }
 }

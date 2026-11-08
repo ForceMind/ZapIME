@@ -41,6 +41,7 @@ jobs:
           python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v
           python3 -m unittest discover -s scripts -p 'test_android_configuration*.py' -v
           python3 -m unittest discover -s scripts -p 'test_android_ordinary_restart.py' -v
+          python3 -m unittest discover -s scripts -p 'test_android_pending_restart.py' -v
           python3 -m unittest discover -s scripts -p 'test_prepare_candidate_host_runtime.py' -v
       - name: Prepare fixed model, C headers and JSON dependency
         run: |

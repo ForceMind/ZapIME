@@ -77,6 +77,23 @@ public final class VerifiedRestartSmoke {
         VerifiedRestart preExpired=new VerifiedRestart(expected,1);
         check(VerifiedRestart.submit(preExpired,()->{cancelledReads.incrementAndGet();return valid();},Runnable::run,ok->check(!ok),scheduled::set));
         Thread.sleep(VerifiedRestart.BUDGET_MS+30);scheduled.get().run();check(cancelledReads.get()==0);
+        // An observed duplicate invalidates even a read which has not started.
+        // The old submission keeps the physical slot until its runnable exits;
+        // only the one serial follow-up can prove the newest generation.
+        VerifiedRestart generations=new VerifiedRestart(expected,1);long originalDeadline=generations.deadline;
+        AtomicInteger generationReads=new AtomicInteger();AtomicReference<Runnable> oldResult=new AtomicReference<>();
+        check(VerifiedRestart.submit(generations,()->{generationReads.incrementAndGet();return valid();},oldResult::set,ok->check(!ok),scheduled::set));
+        int firstGeneration=generations.generation();check(generations.restartNotification());
+        check(!generations.currentGeneration(firstGeneration)&&generations.readPending());
+        check(!VerifiedRestart.submit(generations,()->valid(),Runnable::run,ok->{}));
+        scheduled.get().run();check(generationReads.get()==0&&generations.readPending());oldResult.get().run();
+        check(!generations.readPending()&&!generations.ready());
+        int latestGeneration=generations.generation();generations.proof(firstGeneration);generations.barrier();check(!generations.ready());
+        check(VerifiedRestart.submit(generations,()->{generationReads.incrementAndGet();return valid();},Runnable::run,
+                ok->{check(ok);generations.proof(latestGeneration);},scheduled::set));
+        scheduled.get().run();check(generations.ready()&&generationReads.get()==1&&generations.deadline==originalDeadline);
+        check(!VerifiedRestart.submit(generations,()->valid(),Runnable::run,ok->{})); // No third submission.
+        check(generations.consume()!=null&&generations.consume()==null);
         CountDownLatch next=new CountDownLatch(1);check(VerifiedRestart.submit(new VerifiedRestart(expected,1),()->valid(),Runnable::run,ok->{check(ok);next.countDown();}));
         check(next.await(2,TimeUnit.SECONDS));
         System.out.println("PASS verified restart: exact absolute proof, prefix/suffix, ordered barrier release, bounded hold, stale rejection and process physical capacity after timeout");

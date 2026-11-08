@@ -1,0 +1,28 @@
+{
+  "source_commit": "f8d445fe11f3b60692289bc19c8353d9f85803c1",
+  "source_tree": "617044f97834f03cee91754dfe07a0f29830d325",
+  "scope": "Actual extracted admission/start branch and real VerifiedRestart.submit/proof/consume with synthetic identities/editor/read callback; not Android Service/Binder or phone text modification.",
+  "observation": "Old read completed before duplicate start; external same-length synthetic text changes without local selection update; old callback can still proof and consume after reuse; exactly one recorded read.",
+  "files": [
+    {
+      "path": "ZapInputMethodService.java",
+      "sha256": "5135472df388c08e434df92659c4255799f18f669a84859f55313e3c849482ce"
+    },
+    {
+      "path": "VerifiedRestart.java",
+      "sha256": "b7b7cf16357ebd3a0609cee9db27a1595b732b69d74402e6ef0af4e42ddd68c4"
+    },
+    {
+      "path": "SelectionEchoTracker.java",
+      "sha256": "09df2c9abd3c77fb5d729bcf5b2e42e757a9c9cecfc5199085d5f9f688c4b365"
+    },
+    {
+      "path": "CandidateRankingContext.java",
+      "sha256": "c899ee5c97f47c682e95f357682ea2e91c0e726591ea812334aac8c75aa61586"
+    },
+    {
+      "path": "CompositionTrace.java",
+      "sha256": "4daf4cd9ada8edc3afcc96a21e3528765c7bd43cba88ff1f1585d585ac45063d"
+    }
+  ]
+}

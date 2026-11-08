@@ -270,6 +270,37 @@ public final class ZapInputMethodService extends InputMethodService {
                 &&selectionEcho.ownedCompositionEnd(preedit.length())==ticket.gate.expected.end
                 &&selectionVersion==ticket.gate.selectionVersion;
     }
+    private boolean reusePendingRestart(EditorInfo info){
+        final RestartTicket ticket=verifiedRestart;
+        // Keep the ticket/budget, but the observed notification invalidates an
+        // older proof even if its physical read returned before its callback.
+        // A consumed/restoring ticket may already be inside a setter or drain
+        // and must continue to use the existing invalidation path instead.
+        if(ticket==null||restoringRestart!=null||info!=ticket.info
+                ||!ticket.gate.pending()||ticket.gate.expired()||privateSession
+                ||!layer.equals("letters")||pendingMarkerLoss!=null||!inputReplies.isEmpty()
+                ||!restartScope(ticket)||!ticket.gate.restartNotification())return false;
+        restartDecision="fresh_pending_reused";
+        traceComposition(CompositionTrace.Event.RESTART_FRESH_REUSED);
+        if(!ticket.gate.readPending())requestVerifiedRestartRead(ticket);
+        return true;
+    }
+    private void requestVerifiedRestartRead(RestartTicket ticket){
+        if(verifiedRestart!=ticket)return;
+        if(ticket.gate.expired()||!restartScope(ticket)){cancelVerifiedRestart("fresh_invalidated",true);return;}
+        final int generation=ticket.gate.generation();
+        if(!VerifiedRestart.submit(ticket.gate,()->RestartConnectionSnapshot.read(ticket.connection,ticket.gate.expected),task->main.post(task),valid->{
+            if(verifiedRestart!=ticket)return;
+            if(ticket.gate.expired()||!restartScope(ticket)){cancelVerifiedRestart("fresh_invalidated",true);return;}
+            if(!ticket.gate.currentGeneration(generation)){
+                // The old physical call has really returned. One bounded
+                // follow-up may now prove the newest observed notification.
+                requestVerifiedRestartRead(ticket);return;
+            }
+            if(!valid){cancelVerifiedRestart("fresh_mismatch",true);return;}
+            ticket.gate.proof(generation);completeVerifiedRestart(ticket);
+        }))cancelVerifiedRestart("fresh_read_unavailable",true);
+    }
     private boolean beginVerifiedRestart(EditorInfo info,String before){
         InputConnection connection=getCurrentInputConnection();
         if(android.os.Build.VERSION.SDK_INT<31||!restartVisibility.visible()||!ready||!chinese||privateSession||searchActive||searchClosing
@@ -287,11 +318,7 @@ public final class ZapInputMethodService extends InputMethodService {
         // All work already submitted to the engine must post its old replies
         // before this barrier. Those replies drain before any new held action.
         worker.execute(()->main.post(()->{if(verifiedRestart==ticket){ticket.gate.barrier();completeVerifiedRestart(ticket);}}));
-        if(!VerifiedRestart.submit(ticket.gate,()->RestartConnectionSnapshot.read(connection,expected),task->main.post(task),valid->{
-            if(verifiedRestart!=ticket)return;
-            if(!valid||ticket.gate.expired()){cancelVerifiedRestart(valid?"fresh_timeout":"fresh_mismatch",true);return;}
-            ticket.gate.proof();completeVerifiedRestart(ticket);
-        }))cancelVerifiedRestart("fresh_busy",true);
+        requestVerifiedRestartRead(ticket);
         return true;
     }
     private void updateVerifiedSelection(int oldStart,int oldEnd,int start,int end,int composingStart,int composingEnd){
@@ -411,6 +438,14 @@ public final class ZapInputMethodService extends InputMethodService {
         notePanel(restarting?"input_restart":"input_new");if(keepTools)notePanel("restart_keep_tools");
         learning.beginEditor(false);cancelVoice(false);touches.cancel();
         ++inputStarts;if(restarting)++inputRestarts;else restartDecision="new_editor";
+        if(inputLifecycle!=startingLifecycle||getCurrentInputConnection()!=startingConnection
+                ||getCurrentInputEditorInfo()!=info)return;
+        if(restarting&&reusePendingRestart(info)){
+            // Keep the barrier, held replies/actions and original deadline.
+            // Only a newest-generation proof may release them; physical reads
+            // are serial and bounded, never restarted on the input thread.
+            super.onStartInput(info,restarting);return;
+        }
         RestartTicket priorRestart=verifiedRestart!=null?verifiedRestart:restoringRestart;
         if(priorRestart!=null&&epoch==priorRestart.epoch&&info==priorRestart.info
                 &&getCurrentInputConnection()==priorRestart.connection&&sameEditor(info)&&EnglishLearningEligibility.allows(info,privateSession)){

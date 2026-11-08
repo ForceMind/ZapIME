@@ -1,0 +1,17 @@
+{
+  "original_classification": "not_executed",
+  "derived_classification": "same_editor_composition_failure",
+  "basis": [
+    "same_editor_continuity=true",
+    "complete trace; two INPUT_RESTART events 13ms apart",
+    "same IC/command connections, no hide/focus/INPUT_FINISHED",
+    "RESTART_FRESH_BEGIN followed by superseded rejection and in-place abandon",
+    "7 physical key touches, failure before i"
+  ],
+  "not_claimed": [
+    "all historical failures have same cause",
+    "wire or phone evidence",
+    "completed experiment or accepted candidate",
+    "successful fresh verification"
+  ]
+}

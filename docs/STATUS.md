@@ -6,11 +6,20 @@
 
 118项Android Python（含5个actual-method JVM驱动、22状态）及3组JVM通过，60/4/20 Java源编译和独立审查通过。新7项Android方法门禁含3个真实Editable restore helper探针，已编译未执行；不把它们称为完整Service/Binder/系统IME或手机通过。本切片不取消正在运行的9b固定源码CI，后续按新固定源码独立验收。[原失败和本机验证](evidence/ordinary-restart-reentry-20261108/README.md)。
 
+## 实际重复 restart 的 pending 复用修复（本切片待新 CI）
+
+新9b实际配置35在same-editor/完整trace/初始可见Insets成立时，两次start相隔13ms；第二次以fresh_superseded取消pending ticket导致未到i键。原report/ZIP保真保存，未当下载/中断或成功。本切片仅让完全同scope且原800ms内尚pending未consume的ticket复用barrier/held队列；每次观察到兼容重复start都失效旧proof generation，旧物理read真正返回后最多串行补读一次（总submission/read≤2）。最新generation证明才可ready/consume，补读期间再通知明确取消，不刷新800ms；restoring/consume/expiry/identity/privacy/owned/version变化仍拒绝。固定trace无正文，onConfigurationChanged策略不变。[原失败与本机回归](evidence/pending-restart-reuse-20261108/README.md)。
+
+同源报告将明确实际触发、完整same-editor的fresh失败正确分类为same_editor_composition_failure；缺证据/未触发仍not_executed，明确中断仍interrupted，全部成功门槛保留。新leaf真实系统IME/配置实验/7项Editable方法仍待实际CI，不借旧9b API28/36成功代填。
+
 ## 本轮接续：固定来源可获取，配置实验分类修正后重新验收
 
 重新读取main d38e6ce和#96固定94b后，原HTTPS模型、词库与X-ASR在云执行器完整GET成功，大小/SHA均匹配原锁；原生产下载函数的空目录调用也成功。未改URL/镜像/TLS/校验，载荷未入Git。[获取元数据](evidence/fixed-dependency-access-20261108/README.md)只证明当前云端可获取，不能代填CI恢复或原生通过。
 
 本分支修正test-only配置实验的结果分类：先记录明确的隐藏、finish、焦点/连接中断；缺Insets/完整trace仍是not_executed；连续编辑器的fresh失败保持失败，不以成功证明作为中断分类前置条件。旧actual-method JVM错误分类已保留，新5方法18场景与原5严格报告通过，产品输入代码未改。[分类修复与原失败](evidence/configuration-probe-classification-20261108/README.md)。已合入最新main文档，下一固定head实际CI待执行，旧失败不覆盖。
+## 恢复存量记录的本机同步证据预览（独立共享切片）
+
+Issue #77 已补只读、有界的 Rust metadata 分页：同事务核完整材料绑定，最多100条并保留墓碑；分别返回 pending、当前完整快照是否有本机操作及已知服务修订，未跟踪不能当上传授权或“全部已同步”。不创建操作、改冻结请求、移动cursor或触发HTTP，未接JNI/UI；本机根workspace143项、fmt及严格Clippy通过；真实SQLite/AEAD回归只验证共享预览，完整首次发布仍未完成，Issue保持open。[契约与边界](SYNC_INVENTORY.md)。
 
 ## 构建固定依赖的受限重试（独立切片）
 

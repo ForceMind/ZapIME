@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "base": "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+  "baseline_fixture_commit": "d86f2be",
+  "tested_local_commit": "b3f00baf64b48905804b5f2857deb9a11b82f4b5",
+  "tested_tree": "2878f6358f12afa6b6e07151ccf18d2261ed4d5c",
+  "scope": "Shared Rust read-only local inventory only. No new uploads, records/queue/stage/cursor mutations, schema/index migration, JNI/UI/HTTP, device or model execution. Issue77 remains open.",
+  "workspace": {
+    "passed": 143,
+    "failed": 0,
+    "ignored": 0,
+    "groups_including_doc_tests": 27,
+    "baseline_passed": 134,
+    "new_tests": 9
+  },
+  "checks": [
+    {
+      "file": "baseline.log.gz",
+      "result": "PASS records-only restore preserves 1 record with pending=0",
+      "raw_bytes": 2266,
+      "raw_sha256": "8f4b498d92ed64daec2664fced6f8c90e93d5adb0210a8e48b166ba64881b9bb",
+      "gzip_sha256": "fa9f316b7e8510dd94f3ce7da70c45681e82d0069b7be3af2c66c327e21c1f65"
+    },
+    {
+      "file": "first-fixture-failure.log.gz",
+      "result": "FAILURE: test fixture ALTER TABLE changed schema SQL identifier quoting; product VM interruption occurred as expected",
+      "raw_bytes": 9834,
+      "raw_sha256": "b8425a00dfdde45bd3a39574d17de0096416de2549d2c454be6d2a03e358df46",
+      "gzip_sha256": "b9d5245e40541a9634db6da24204358d7993a6907562a0b2683c7e69d7cde4d1"
+    },
+    {
+      "file": "data-sync-tests.log.gz",
+      "result": "PASS data/sync package tests before final operation-size guard",
+      "raw_bytes": 12003,
+      "raw_sha256": "b8da48d8d33fa9b65852f94f6487319022f5601f9383b908f36332cbe9260f75",
+      "gzip_sha256": "363c0aa8880a0343892edbcf22badebd0a17144977c6b30153db3f65fcadadcc"
+    },
+    {
+      "file": "workspace-tests.log.gz",
+      "result": "PASS final 143 workspace tests, 0 failed/ignored",
+      "raw_bytes": 19546,
+      "raw_sha256": "52fe9e19dd355b2ed291f22cc38553139c13458b88ffdf6b3ae5006c103ff7f6",
+      "gzip_sha256": "10e4f8afe798e467cbfe82b29c67c5adc9926b4de314d04c2d06418ac0d7ab78"
+    },
+    {
+      "file": "fmt.log.gz",
+      "result": "PASS",
+      "raw_bytes": 0,
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "gzip_sha256": "f61f27bd17de546264aa58f40f3aafaac7021e0ef69c17f6b1b4cd7664a037ec"
+    },
+    {
+      "file": "clippy.log.gz",
+      "result": "PASS strict workspace/all-target Clippy",
+      "raw_bytes": 4093,
+      "raw_sha256": "13b01abd8089cad40765df83e820223e8bfb213a59d6565c8203db23bacf0396",
+      "gzip_sha256": "f7729fd5ada86cfc2d0bf5789da78ee045474f7060ef2f1388bbf408d5571bfa"
+    }
+  ],
+  "query_plan": {
+    "test": "inventory::tests::keyset_and_existing_history_indexes_are_visible_in_actual_query_plan",
+    "result": "PASS",
+    "properties": [
+      "record ID range uses primary key index",
+      "pending lookup uses existing two-column index",
+      "history lookup uses existing covering index scan"
+    ],
+    "raw_plan_printed": false,
+    "not_a_latency_benchmark": true
+  },
+  "regressions": [
+    "307 restored records, 61 tombstones, keyset pages of7, no plaintext output or logical/schema mutation",
+    "full workspace mismatch, malformed pending/record metadata and missing index fail without mutation",
+    "current snapshot flags compare full stored JSON bytes and do not trust old revisions",
+    "oversized operation remains historical evidence without full snapshot comparison",
+    "actual cooperative SQLite VM interruption, unchanged schema around preview, clean retry",
+    "real local AEAD download/adopt stays zero echo; ACK ahead of pull allowed; remote update does not make old local history current"
+  ],
+  "local_first_failure": "The slow-view test itself renamed records twice; SQLite normalized quoted identifiers. Corrected fixture asserts exact schema around the preview and compares data across fixture-owned DDL. Product behavior and interruption assertion unchanged. Original failure retained.",
+  "not_run": [
+    "Android/JNI UI",
+    "actual HTTPS/service transaction integration for this preview",
+    "first upload of recovered records",
+    "phone/ARM/S25"
+  ],
+  "source_files": [
+    {
+      "path": "crates/zapime-data/src/inventory.rs",
+      "bytes": 10246,
+      "sha256": "cb13cb842c5dcc26451ea1570e96a13ad3c31ed469f5811fbc451f4ce0ed2078"
+    },
+    {
+      "path": "crates/zapime-data/src/sync.rs",
+      "bytes": 30427,
+      "sha256": "c30dd3ce421434f22ebb4703efc5b4d30dc59498034ed798270a3bb41ef53a20"
+    },
+    {
+      "path": "crates/zapime-sync/src/client.rs",
+      "bytes": 8510,
+      "sha256": "3bd314559887b7f662dd6e4b28a32a72e114b04f7f004c9a968ae29758043923"
+    },
+    {
+      "path": "crates/zapime-data/tests/sync_inventory.rs",
+      "bytes": 12429,
+      "sha256": "a97c2629c62139a769375f0c7aaabcc076eadd1d61d46796b0994fa2ee4a46e6"
+    },
+    {
+      "path": "crates/zapime-data/tests/restored_sync_inventory.rs",
+      "bytes": 1031,
+      "sha256": "d387bb20da54f3d7bca7e6768c91ae69609fb5c8f741705c9958c514b76dc8a9"
+    },
+    {
+      "path": "crates/zapime-sync/tests/client.rs",
+      "bytes": 32681,
+      "sha256": "363637f122849d4c7746e7d735e93cd62ae5735a36d2c75efd5b57ce77bbb95f"
+    }
+  ]
+}

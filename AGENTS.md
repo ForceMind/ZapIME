@@ -51,7 +51,7 @@
 
 - 同输入框重启保留组字必须验证 restarting、原编辑器身份/选项、可预测且完整折叠在组字尾的选区以及 API30+ EditorInfo 自带初始快照；缺快照/改变文本/隐私或身份变化一律重建。不要在输入线程新增 getTextBeforeCursor 等远端读取，也不要把该修复称为所有间歇失败根因。迁移的 SelectionEchoTracker 保留固定上游 GPL 来源，成功写入记预期，不能预测的写入失效化；API28 不假称已支持此快照路径。
 
-- ADR-025 限定的配置重启例外：普通强校验优先；仅API31+同EditorInfo/连接引用、相同元数据/隐私和原精确owned组字时，可由独立进程单槽IPC worker取得有界SurroundingText的绝对offset/折叠选区/完整preedit及有限前后文新证明。Pending不重建核心、不写正文；旧engine回复/直接插入经屏障先排空，再释放有界新动作。主线程复核epoch/身份/版本，先消费ticket再恢复标记，setter重入失效后禁止drain。失败保App正文、丢迟到、不空setComposingText/空layout；800ms失效不等于物理IPC退出，不在main/input/engine线程加远端读取。takeSnapshot的公开IME契约返回null，不能假称可用；普通restart保护和真机范围保留。
+- ADR-025 限定的配置重启例外：普通强校验优先；仅API31+同EditorInfo/连接引用、相同元数据/隐私和原精确owned组字时，可由独立进程单槽IPC worker取得有界SurroundingText的绝对offset/折叠选区/完整preedit及有限前后文新证明。Pending不重建核心、不写正文；旧engine回复/直接插入经屏障先排空，再释放有界新动作。主线程复核epoch/身份/版本，先消费ticket再恢复标记，setter重入失效后禁止drain。失败保App正文、丢迟到、不空setComposingText/空layout；重复同编辑器start仅在原scope/owned/version/隐私及原deadline不变、ticket尚pending未consume且非restoring时复用ticket/barrier/队列，并失效旧proof generation；待旧物理read返回后最多串行补读一次，总submission/read不超过2，不延预算；最新generation之外的proof不得ready/consume，补读期间再次通知则明确取消；其余继续明确拒绝。800ms失效不等于物理IPC退出，不在main/input/engine线程加远端读取。takeSnapshot的公开IME契约返回null，不能假称可用；普通restart保护和真机范围保留。
 
 - 同位置组字标记丢失可能先于restartInput；只按固定上游有界100ms交接，重启取消待回报、新操作前结算。真正失去范围时提升epoch、异步reset解码器并原地finish标记，禁止在应用新正文/选区写空setComposingText；迟到结果不得上屏。Service诊断仅计数/固定原因码，不含正文、上下文或身份。
 - 异步结果在标记交接期间须按序有界暂存，不能让后来结果越过或写到未验证范围；新连接验证后按序释放，真正失去范围/新epoch丢弃，超限明确重输并保留应用正文。不要把短时内存缓冲称为持久队列。

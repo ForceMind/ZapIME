@@ -8,9 +8,12 @@
 
 ## 当前执行接续（2026-11-08 UTC 审计）
 
+本切片依据9b真实配置35失败修正重复start取消尚pending证明：只在原完整scope与deadline不变时复用同ticket/barrier/队列，并失效旧proof generation，旧物理read返回后最多串行补读一次（总submission/read≤2），最新generation才可释放，其他情况继续拒绝；同步修正完整same-editor fresh失败的分类，所有门槛保留。原报告/ZIP不改，新leaf系统IME/配置实验仍待验。
+
 普通强保留setter重入切片已在合成公共接口上复现并实现严格frame保护；INVALIDATED必须退出outer，不能当一般REJECTED后走旧info fallback。原initial snapshot/owned准入不减，118项Android/3组JVM/全Java编译通过，新7项Editable方法与系统IME待同源CI。继续保留之前9b运行及所有原失败，不借旧4方法报告补新7项。
 
 本轮云端已对原固定大资源完整GET并核size/SHA，CI尚待新head实测。配置实验已复现并修正实际中断被fresh失败阻挡的错误分类，保持所有通过门槛；先以包含此修正与当前main文档的#96新head执行，不用原云获取成功代填系统IME。
+Issue #77 先补共享层只读的同步证据分页，保留ID/修订/墓碑、当前完整快照flags与完整根绑定检查；该切片没有首次上传、JNI/UI或HTTP。后续显式确认/先拉取/冲突与墓碑/可恢复stage仍独立完成，不把pending=0或untracked当上传证明。见[同步预览契约](SYNC_INVENTORY.md)。
 
 新增独立构建健壮性切片：固定HTTPS资源最多3次顶层尝试（含首次）、协作预算和每轮暂存清理，完整性/TLS/文件错误不重试；28项新增回归及原检查通过，已接持久CI。先以新固定源码确认构建结果，网络仍失败时不把原生SKIP当成功。产品运行时行为不变。
 

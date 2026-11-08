@@ -62,6 +62,7 @@ public final class ConfigurationProbeStateHarness {
             return this;
         }
         boolean optBoolean(String key) { return Boolean.TRUE.equals(get(key)); }
+        int optInt(String key, int fallback) { return get(key) instanceof Integer ? (Integer)get(key) : fallback; }
     }
     static final class Instrumentation {
         void runOnMainSync(Runnable action) { action.run(); }
@@ -100,6 +101,7 @@ public final class ConfigurationProbeStateHarness {
         if (scenario.equals("connection")) ProbeActivity.normalConnections.set(2);
         if (scenario.equals("command_connection")) ProbeActivity.normalCommandConnection.set(2);
         if (scenario.equals("missing_trace")) host.current.hasTrace = false;
+        if (scenario.equals("no_restart") || scenario.equals("setup_no_trigger")) host.current.restarts = 0;
         if (scenario.equals("overflow")) host.current.traceSequence = 74;
         if (scenario.equals("reversed_trace")) host.current.traceSequence = 9;
         if (scenario.equals("null_insets")) observer.visibility = -1;
@@ -116,6 +118,9 @@ public final class ConfigurationProbeStateHarness {
             host.current.traceSequence = 13;
         }
         host.current.line = events;
+        host.report.put("before_setting", 1).put("inverse_readback", 0).put("trigger_restored_readback", 1);
+        if (scenario.equals("partial_trigger")) host.report.remove("trigger_restored_readback");
+        if (scenario.equals("wrong_trigger")) host.report.put("trigger_restored_readback", 0);
         String direct;
         try { direct = Boolean.toString(host.continuity(observer, baseline, 1, 1)); }
         catch (Exception failure) { direct = "threw"; }
@@ -124,7 +129,9 @@ public final class ConfigurationProbeStateHarness {
         // proof; the catch must retain explicit interruption classification.
         host.report.put("classification", "not_executed");
         boolean allowed = false;
+        boolean transitionAttempted = !scenario.equals("setup_no_trigger");
         try {
+            require(transitionAttempted, "synthetic_setup_failed_before_trigger");
             require(host.current.restarts > baseline.restarts, "framework_restart_not_observed");
             if (!host.continuity(observer, baseline, 1, 1)) {
                 host.report.put("classification", "interrupted_not_same_editor");
@@ -133,10 +140,12 @@ public final class ConfigurationProbeStateHarness {
             host.report.put("classification", "same_editor_composition_failure");
             allowed = true;
         } catch (Exception failure) {
-            try {
-                if (!host.continuity(observer, baseline, 1, 1))
-                    host.report.put("classification", "interrupted_not_same_editor");
-            } catch (Exception ignored) { }
+            if (transitionAttempted) {
+                try {
+                    if (!host.continuity(observer, baseline, 1, 1))
+                        host.report.put("classification", "interrupted_not_same_editor");
+                } catch (Exception ignored) { }
+            }
         }
         System.out.println("direct=" + direct + ";allowed=" + allowed
                 + ";classification=" + host.report.get("classification"));
@@ -189,7 +198,21 @@ public final class ConfigurationProbeStateHarness {
                 result = self.decision(scenario)
                 self.assertEqual(result["direct"], "threw")
                 self.assertEqual(result["allowed"], "false")
-                self.assertNotEqual(result["classification"], "interrupted_not_same_editor")
+                self.assertEqual(result["classification"], "same_editor_composition_failure")
+
+    def test_partial_or_inconsistent_trigger_is_not_attributed_to_product(self):
+        for scenario in ("partial_trigger", "wrong_trigger"):
+            with self.subTest(scenario=scenario):
+                self.assertEqual(self.decision(scenario),
+                                 {"direct": "threw", "allowed": "false",
+                                  "classification": "not_executed"})
+
+    def test_no_actual_restart_or_pre_trigger_failure_stays_not_executed(self):
+        for scenario in ("no_restart", "setup_no_trigger"):
+            with self.subTest(scenario=scenario):
+                self.assertEqual(self.decision(scenario),
+                                 {"direct": "threw", "allowed": "false",
+                                  "classification": "not_executed"})
 
 
 if __name__ == "__main__":

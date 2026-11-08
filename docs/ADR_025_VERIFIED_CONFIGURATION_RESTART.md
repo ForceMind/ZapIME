@@ -26,7 +26,7 @@ Pending 不重建输入核心、不发送空 layout、不写编辑器。完整�
 
 只允许已经预测的迟到 selection echo 或仍精确覆盖原 owned 区间的回报更新本握手的版本；外部移动、范围/标记不一致立刻失效。语音的独立 selectionVersion 检查不变。恢复前再次核 epoch、连接/EditorInfo 引用、全部元数据、隐私、preedit、owned范围和版本。
 
-先消费一次性 ticket，再进入 restore-in-progress 闸门调用 setComposingRegion；只恢复标记，不写正文。setter/batch 可能同步重入 selection/restart/finish，返回后再次核身份/版本；失效时不能刷新 tracker、释放旧回复或新动作。每一步 drain 也核原 epoch/连接。拒绝、超时或隐藏时丢弃迟到请求和临时动作，使用原地 finish/decoder reset 保留 App 正文，不写空 setComposingText，也不应用空初始化回复；明确提示重新输入。同编辑器再次重启会明确退役并提示重输，不能静默丢掉队列后称强校验恢复成功；新编辑器/finish/销毁只取消旧 ticket，不把旧状态写进新编辑器。恢复中重入的新用户动作仍有界保留；屏障后又出现未知旧reply则明确退役。每次onStartInput依旧重开学习session、取消语音/触摸并记录固定事件。
+先消费一次性 ticket，再进入 restore-in-progress 闸门调用 setComposingRegion；只恢复标记，不写正文。setter/batch 可能同步重入 selection/restart/finish，返回后再次核身份/版本；失效时不能刷新 tracker、释放旧回复或新动作。每一步 drain 也核原 epoch/连接。拒绝、超时或隐藏时丢弃迟到请求和临时动作，使用原地 finish/decoder reset 保留 App 正文，不写空 setComposingText，也不应用空初始化回复；明确提示重新输入。尚pending、未consume且非restoring的同一ticket在原scope/owned范围/selectionVersion/隐私/可见状态和原deadline全部不变时，重复同编辑器start复用原ticket/barrier/队列，但必须提升generation并失效旧proof。即使旧read已返回而callback未消费，或旧proof已收到而barrier未到，也不能以旧generation ready/consume。旧物理read实际返回后最多串行补读一次；每ticket至多2次submission/物理read，worker开始前用volatile generation与原子permit跳过已过时读取，不延预算。补读已提交后再次通知则明确取消；不满足条件或已经restore/consume的再次重启仍明确退役并提示重输，不能静默丢队列后称恢复成功；新编辑器/finish/销毁只取消旧 ticket，不把旧状态写进新编辑器。恢复中重入的新用户动作仍有界保留；屏障后又出现未知旧reply则明确退役。每次onStartInput依旧重开学习session、取消语音/触摸并记录固定事件。
 
 候选上下文仍沿用现有可信来源；配置回调期间只临时持有之前允许的有界链，finally清除临时引用。proof 确认同一前缀后可恢复该链；密码、禁止学习和搜索不捕获此材料。没有从普通 App 正文补建长期历史。
 

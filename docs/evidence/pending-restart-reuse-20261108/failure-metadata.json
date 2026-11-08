@@ -1,0 +1,103 @@
+{
+  "run_id": 42513949719,
+  "attempt": 1,
+  "artifact_id": 13630788817,
+  "artifact_bytes": 78131,
+  "artifact_sha256": "de156273b65c2c89e7f402a56a3c7ead0bd6ddd9edd252bdf629f78f5e1adbdc",
+  "head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "scope": "Original API35 actual system IME configuration experiment failure, not rewritten. Report retained not_executed despite complete same-editor failure; derived diagnosis is separate.",
+  "members": [
+    {
+      "path": "activity-errors.txt",
+      "bytes": 206,
+      "sha256": "6a9fd9ddfee8a7532142d93b1c5186d5a00ac93868789d8e369c5a78b7b0b54b"
+    },
+    {
+      "path": "activity-top.txt",
+      "bytes": 49118,
+      "sha256": "5b3e2ea066a5e3599927c5308b92ef69e991db6763a62dd85ea25daea4591d4e"
+    },
+    {
+      "path": "activity-state.txt",
+      "bytes": 25451,
+      "sha256": "1a22af61a3d295dbf68eda2414812844139466bdca39d66985711e1fb7697dbb"
+    },
+    {
+      "path": "configuration-compose-host-lifecycle.txt",
+      "bytes": 2692,
+      "sha256": "004f290f6c9e41b3e758e34980e2247d8a9b46731843bfab088131d7f211fdf2"
+    },
+    {
+      "path": "configuration-compose-report.json",
+      "bytes": 1412,
+      "sha256": "61e1d533a89cb16e34e26bb0fb78c19aace7cc0d3df8fbf1baf4a8524678c808"
+    },
+    {
+      "path": "configuration-compose-service-after.txt",
+      "bytes": 1321,
+      "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+    },
+    {
+      "path": "configuration-compose-service-before.txt",
+      "bytes": 1133,
+      "sha256": "5bb2b79c2b36209e1b99aa0000e32823e5a6dbe5c8aa26a9a6ccdfb89058f5a0"
+    },
+    {
+      "path": "configuration-compose-service-failure.txt",
+      "bytes": 1321,
+      "sha256": "792b4642a67088dac8d4318b4e29a04917a6d693874d9363cd63f9c70c3c79ef"
+    },
+    {
+      "path": "ime-teardown.txt",
+      "bytes": 65,
+      "sha256": "a003bc8579d41ad65b7df116e5a1781ee8ee76f71c89ccadbc2d1513481a376c"
+    },
+    {
+      "path": "input-method-state.txt",
+      "bytes": 66528,
+      "sha256": "c9525365d8689b29b0052681e62ff49e84091e63d3646edc0cff1b165f4621ef"
+    },
+    {
+      "path": "instrumentation.txt",
+      "bytes": 105,
+      "sha256": "27575cd40b5ef904ab10845b96698bb573f7cc2772f5a96b2739b4e73725d535"
+    },
+    {
+      "path": "last-anr.txt",
+      "bytes": 88,
+      "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+    },
+    {
+      "path": "offline-uid.json",
+      "bytes": 119,
+      "sha256": "5b27c8f09a0c8264defde4c019bbbccb3595915c8a93583146a335aa963e456f"
+    },
+    {
+      "path": "runtime-errors.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "run-summary.json",
+      "bytes": 659,
+      "sha256": "b558e2698117d21544dabadd187f8790a493d6dc8f02bd33c8f01d813791cd7e"
+    },
+    {
+      "path": "system-keyboard.json",
+      "bytes": 739,
+      "sha256": "7c75b420c495ca982658716a4cb6932354306fa41ecd009c26f901334179870f"
+    },
+    {
+      "path": "system-runtime.txt",
+      "bytes": 262144,
+      "sha256": "5ff98c095aebfa272c55d23321f6323b934c02a19ff6cd2eb84c87a15226d140"
+    },
+    {
+      "path": "window-state.txt",
+      "bytes": 39005,
+      "sha256": "8bec6748f01330954c660f1550e6c1fdc88f9863a4b4a60fe8fff98b170fc83c"
+    }
+  ]
+}
