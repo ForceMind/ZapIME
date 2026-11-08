@@ -1,0 +1,35 @@
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 docs/evidence/candidate-quality-attribution-20261108/analyze.py --verify
+PASS three fixed reports recomputed; all frozen misses/regressions retained; no inference
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest discover -s scripts -p test_candidate_evaluation.py -v
+test_cli_aggregate_only_and_create_only (test_candidate_evaluation.EvaluationTests.test_cli_aggregate_only_and_create_only) ... ok
+test_empty_visible_page_is_retained_as_missing_without_fake_candidate (test_candidate_evaluation.EvaluationTests.test_empty_visible_page_is_retained_as_missing_without_fake_candidate) ... ok
+test_multiple_acceptable_targets (test_candidate_evaluation.EvaluationTests.test_multiple_acceptable_targets) ... ok
+test_paired_denominators_missing_and_percentiles (test_candidate_evaluation.EvaluationTests.test_paired_denominators_missing_and_percentiles) ... ok
+test_reject_nonpaired_duplicate_and_invalid_observations (test_candidate_evaluation.EvaluationTests.test_reject_nonpaired_duplicate_and_invalid_observations) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.130s
+
+OK
+
+$ /opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3 -m unittest discover -s integrations/candidate/tests -p test_quality_evaluation.py -v
+test_attribution_keeps_missing_protected_and_model_harm_distinct (test_quality_evaluation.QualityTests.test_attribution_keeps_missing_protected_and_model_harm_distinct) ... ok
+test_equal_scores_keep_original_ids_and_missing_labels_stay_missing (test_quality_evaluation.QualityTests.test_equal_scores_keep_original_ids_and_missing_labels_stay_missing) ... ok
+test_expansion_is_separate_frozen_set_with_checked_encodings (test_quality_evaluation.QualityTests.test_expansion_is_separate_frozen_set_with_checked_encodings) ... ok
+test_expansion_rejects_bad_phonetics_and_resource_boundaries_before_inference (test_quality_evaluation.QualityTests.test_expansion_rejects_bad_phonetics_and_resource_boundaries_before_inference) ... ok
+test_failed_case_keeps_completed_observations_without_success (test_quality_evaluation.QualityTests.test_failed_case_keeps_completed_observations_without_success) ... ok
+test_frozen_corpus_identity_and_unique_inputs (test_quality_evaluation.QualityTests.test_frozen_corpus_identity_and_unique_inputs) ... ok
+test_inference_distribution_does_not_count_noop_cases (test_quality_evaluation.QualityTests.test_inference_distribution_does_not_count_noop_cases) ... ok
+test_nonfinite_and_changed_identity_are_rejected (test_quality_evaluation.QualityTests.test_nonfinite_and_changed_identity_are_rejected) ... ok
+test_noop_only_corpus_cannot_claim_model_acceptance (test_quality_evaluation.QualityTests.test_noop_only_corpus_cannot_claim_model_acceptance) ... ok
+test_permutation_applies_via_real_core_boundary_preserving_fixed_slot (test_quality_evaluation.QualityTests.test_permutation_applies_via_real_core_boundary_preserving_fixed_slot) ... ok
+test_personal_fixture_must_actually_exist_and_stay_outside_scoring_pool (test_quality_evaluation.QualityTests.test_personal_fixture_must_actually_exist_and_stay_outside_scoring_pool) ... ok
+test_selection_cost_does_not_hide_missing_targets (test_quality_evaluation.QualityTests.test_selection_cost_does_not_hide_missing_targets) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.007s
+
+OK
+
+$ git diff --check

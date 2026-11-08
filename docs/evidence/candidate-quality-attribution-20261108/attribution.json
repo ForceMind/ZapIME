@@ -1,0 +1,1516 @@
+{
+  "schema_version": 1,
+  "source_head": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "source_checkout": "436b267cbbc5885ecdf58a7515ef0323fbb6f5e8",
+  "source_tree": "3995757340519d1b21fc5dfb3b2b89367673d087",
+  "host_job": 128832759528,
+  "host_run": 42513949719,
+  "reaggregation_invokes_inference": false,
+  "product_code_changed": false,
+  "labels_changed": false,
+  "phone_accuracy_evaluated": false,
+  "reports": {
+    "quality-report.json": {
+      "report_sha256": "9e7b77579829c7c7f28215b2ca93643148237eec46244f0ca3ddb97750371f4b",
+      "runtime": "1.24.4",
+      "corpus": "v2",
+      "corpus_sha256": "3f250fe41d33149e734ff75be25c56eae86e763bb855be8a9e90389b9f1e9e93",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 34,
+          "target_missing": 0,
+          "metrics": {
+            "baseline": {
+              "top1": 17,
+              "top3": 28,
+              "top1_rate": 0.5,
+              "top3_rate": 0.8235294117647058,
+              "mrr": 0.6669414735591206
+            },
+            "ranked": {
+              "top1": 14,
+              "top3": 27,
+              "top1_rate": 0.4117647058823529,
+              "top3_rate": 0.7941176470588235,
+              "mrr": 0.6062388591800357
+            }
+          },
+          "improved": 2,
+          "regressed": 6,
+          "top1_rescued": 0,
+          "top1_harmed": 3,
+          "outcomes": {
+            "candidate_missing": 0,
+            "target_protected_or_unrankable": 5,
+            "not_scored_insufficient_pool": 0,
+            "rerank_improved": 2,
+            "rerank_harmed": 6,
+            "rerank_unchanged": 21
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 2,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 0,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.0,
+                  "mrr": 0.08522727272727273
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 0,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.0,
+                  "mrr": 0.08522727272727273
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 7,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 7,
+                  "top3": 7,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 7,
+                  "top3": 7,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 13,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 11,
+                  "top1_rate": 0.46153846153846156,
+                  "top3_rate": 0.8461538461538461,
+                  "mrr": 0.6602564102564101
+                },
+                "ranked": {
+                  "top1": 4,
+                  "top3": 10,
+                  "top1_rate": 0.3076923076923077,
+                  "top3_rate": 0.7692307692307693,
+                  "mrr": 0.5378205128205128
+                }
+              },
+              "regressed": 5,
+              "top1_harmed": 2
+            },
+            "nine_key": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 5,
+                  "top1_rate": 0.5,
+                  "top3_rate": 0.8333333333333334,
+                  "mrr": 0.7000000000000001
+                },
+                "ranked": {
+                  "top1": 2,
+                  "top3": 5,
+                  "top1_rate": 0.3333333333333333,
+                  "top3_rate": 0.8333333333333334,
+                  "mrr": 0.5888888888888889
+                }
+              },
+              "regressed": 1,
+              "top1_harmed": 1
+            },
+            "partial_boundary": {
+              "cases": 2,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 1.0,
+                  "mrr": 0.41666666666666663
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 1.0,
+                  "mrr": 0.41666666666666663
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "single_character": {
+              "cases": 4,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 1,
+                  "top3": 3,
+                  "top1_rate": 0.25,
+                  "top3_rate": 0.75,
+                  "mrr": 0.4722222222222222
+                },
+                "ranked": {
+                  "top1": 1,
+                  "top3": 3,
+                  "top1_rate": 0.25,
+                  "top3_rate": 0.75,
+                  "mrr": 0.5208333333333333
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [
+            {
+              "id": "q01",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 14
+            },
+            {
+              "id": "q03",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 1,
+              "ranked_rank": 2,
+              "target_rankable": true,
+              "rankable_count": 6
+            },
+            {
+              "id": "q04",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 6
+            },
+            {
+              "id": "q10",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 3,
+              "ranked_rank": 6,
+              "target_rankable": true,
+              "rankable_count": 15
+            },
+            {
+              "id": "q11",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 1,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 28
+            },
+            {
+              "id": "n02",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 1,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 32
+            }
+          ],
+          "scored_cases": 32,
+          "native_score_calls": 64
+        },
+        "contextual": {
+          "cases": 34,
+          "target_missing": 0,
+          "metrics": {
+            "baseline": {
+              "top1": 17,
+              "top3": 28,
+              "top1_rate": 0.5,
+              "top3_rate": 0.8235294117647058,
+              "mrr": 0.6669414735591206
+            },
+            "ranked": {
+              "top1": 25,
+              "top3": 30,
+              "top1_rate": 0.7352941176470589,
+              "top3_rate": 0.8823529411764706,
+              "mrr": 0.8148172905525847
+            }
+          },
+          "improved": 11,
+          "regressed": 0,
+          "top1_rescued": 8,
+          "top1_harmed": 0,
+          "outcomes": {
+            "candidate_missing": 0,
+            "target_protected_or_unrankable": 5,
+            "not_scored_insufficient_pool": 0,
+            "rerank_improved": 11,
+            "rerank_harmed": 0,
+            "rerank_unchanged": 18
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 2,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 0,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.0,
+                  "mrr": 0.08522727272727273
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 0,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.0,
+                  "mrr": 0.08522727272727273
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 7,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 7,
+                  "top3": 7,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 7,
+                  "top3": 7,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 13,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 11,
+                  "top1_rate": 0.46153846153846156,
+                  "top3_rate": 0.8461538461538461,
+                  "mrr": 0.6602564102564101
+                },
+                "ranked": {
+                  "top1": 10,
+                  "top3": 12,
+                  "top1_rate": 0.7692307692307693,
+                  "top3_rate": 0.9230769230769231,
+                  "mrr": 0.8461538461538463
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "nine_key": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 5,
+                  "top1_rate": 0.5,
+                  "top3_rate": 0.8333333333333334,
+                  "mrr": 0.7000000000000001
+                },
+                "ranked": {
+                  "top1": 4,
+                  "top3": 5,
+                  "top1_rate": 0.6666666666666666,
+                  "top3_rate": 0.8333333333333334,
+                  "mrr": 0.7833333333333333
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "partial_boundary": {
+              "cases": 2,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 1.0,
+                  "mrr": 0.41666666666666663
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 1.0,
+                  "mrr": 0.41666666666666663
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "single_character": {
+              "cases": 4,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 1,
+                  "top3": 3,
+                  "top1_rate": 0.25,
+                  "top3_rate": 0.75,
+                  "mrr": 0.4722222222222222
+                },
+                "ranked": {
+                  "top1": 4,
+                  "top3": 4,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [],
+          "scored_cases": 32,
+          "native_score_calls": 64
+        }
+      }
+    },
+    "quality-v3-report.json": {
+      "report_sha256": "169aa38a81fba87b13687545de19bc1ff9316420bdff29e2be2aceead4cd3e66",
+      "runtime": "1.24.4",
+      "corpus": "v3",
+      "corpus_sha256": "70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "2d518e11c7767f9fdc4413bdbeb45acf30db504ff76a82fc19d9238a3f9f6c24",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 39,
+              "top3": 53,
+              "top1_rate": 0.609375,
+              "top3_rate": 0.828125,
+              "mrr": 0.734672619047619
+            }
+          },
+          "improved": 2,
+          "regressed": 4,
+          "top1_rescued": 1,
+          "top1_harmed": 0,
+          "outcomes": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 2,
+            "rerank_harmed": 4,
+            "rerank_unchanged": 37
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 6,
+              "target_missing": 4,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "context_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 24,
+              "target_missing": 1,
+              "metrics": {
+                "baseline": {
+                  "top1": 11,
+                  "top3": 19,
+                  "top1_rate": 0.4583333333333333,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6490079365079365
+                },
+                "ranked": {
+                  "top1": 12,
+                  "top3": 19,
+                  "top1_rate": 0.5,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6674603174603174
+                }
+              },
+              "regressed": 2,
+              "top1_harmed": 0
+            },
+            "nine_key": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 8,
+                  "top1_rate": 0.375,
+                  "top3_rate": 1.0,
+                  "mrr": 0.6875
+                },
+                "ranked": {
+                  "top1": 3,
+                  "top3": 6,
+                  "top1_rate": 0.375,
+                  "top3_rate": 0.75,
+                  "mrr": 0.625
+                }
+              },
+              "regressed": 2,
+              "top1_harmed": 0
+            },
+            "partial_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "personal_rule": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [
+            {
+              "id": "h08",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 5,
+              "ranked_rank": 7,
+              "target_rankable": true,
+              "rankable_count": 4
+            },
+            {
+              "id": "h18",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 6
+            },
+            {
+              "id": "h20",
+              "category": "homophone",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 4
+            },
+            {
+              "id": "n04",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 4,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "n07",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 4,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "c01",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c03",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c05",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c06",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            }
+          ],
+          "scored_cases": 55,
+          "native_score_calls": 110
+        },
+        "contextual": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 50,
+              "top3": 57,
+              "top1_rate": 0.78125,
+              "top3_rate": 0.890625,
+              "mrr": 0.8395833333333333
+            }
+          },
+          "improved": 14,
+          "regressed": 1,
+          "top1_rescued": 12,
+          "top1_harmed": 0,
+          "outcomes": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 14,
+            "rerank_harmed": 1,
+            "rerank_unchanged": 28
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 6,
+              "target_missing": 4,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "context_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 24,
+              "target_missing": 1,
+              "metrics": {
+                "baseline": {
+                  "top1": 11,
+                  "top3": 19,
+                  "top1_rate": 0.4583333333333333,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6490079365079365
+                },
+                "ranked": {
+                  "top1": 20,
+                  "top3": 22,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 0.9166666666666666,
+                  "mrr": 0.8763888888888888
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "nine_key": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 8,
+                  "top1_rate": 0.375,
+                  "top3_rate": 1.0,
+                  "mrr": 0.6875
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 7,
+                  "top1_rate": 0.75,
+                  "top3_rate": 0.875,
+                  "mrr": 0.8375
+                }
+              },
+              "regressed": 1,
+              "top1_harmed": 0
+            },
+            "partial_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "personal_rule": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [
+            {
+              "id": "h20",
+              "category": "homophone",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 4
+            },
+            {
+              "id": "n04",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 5,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "c01",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c03",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c05",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c06",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            }
+          ],
+          "scored_cases": 55,
+          "native_score_calls": 110
+        }
+      }
+    },
+    "quality-v3-ort1282-report.json": {
+      "report_sha256": "606ba45e42645856610e33b571833b518fc592dbf1d3907a28a909c77c8d339d",
+      "runtime": "1.28.2",
+      "corpus": "v3",
+      "corpus_sha256": "70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1",
+      "identity": {
+        "core_binary": "c3c8a20e2e830d251e13f191fd0d78ea35e4565866ced021e8cc6ecd6fb1c8fe",
+        "native_probe": "913985e4cc873544cd983fbbcf6659a721154ae146fc7bf7b3a80503a11c13f9",
+        "runtime": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+        "model": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+        "dictionary": "7c672458e6068c22c07b33b146c5a07f4e734959abc3bddd2784fe18a7582a76",
+        "model_lock": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+        "dictionary_lock": "d265c50c2ab19ddaa3eca0060fa8f013988d22df2cff703b1bdbe5455eb7cd8d",
+        "runner": "19930216eb40e12a713cda5c8b212a831f02a57bdba4cc6a1a4564898eb6ebd0",
+        "ranking_source": "2fc002c128f1de7363d89947ac7dcae0db4462c4699c45da0de76220cf2dfb49"
+      },
+      "modes": {
+        "empty_context": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 39,
+              "top3": 53,
+              "top1_rate": 0.609375,
+              "top3_rate": 0.828125,
+              "mrr": 0.734672619047619
+            }
+          },
+          "improved": 2,
+          "regressed": 4,
+          "top1_rescued": 1,
+          "top1_harmed": 0,
+          "outcomes": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 2,
+            "rerank_harmed": 4,
+            "rerank_unchanged": 37
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 6,
+              "target_missing": 4,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "context_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 24,
+              "target_missing": 1,
+              "metrics": {
+                "baseline": {
+                  "top1": 11,
+                  "top3": 19,
+                  "top1_rate": 0.4583333333333333,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6490079365079365
+                },
+                "ranked": {
+                  "top1": 12,
+                  "top3": 19,
+                  "top1_rate": 0.5,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6674603174603174
+                }
+              },
+              "regressed": 2,
+              "top1_harmed": 0
+            },
+            "nine_key": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 8,
+                  "top1_rate": 0.375,
+                  "top3_rate": 1.0,
+                  "mrr": 0.6875
+                },
+                "ranked": {
+                  "top1": 3,
+                  "top3": 6,
+                  "top1_rate": 0.375,
+                  "top3_rate": 0.75,
+                  "mrr": 0.625
+                }
+              },
+              "regressed": 2,
+              "top1_harmed": 0
+            },
+            "partial_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "personal_rule": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [
+            {
+              "id": "h08",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 5,
+              "ranked_rank": 7,
+              "target_rankable": true,
+              "rankable_count": 4
+            },
+            {
+              "id": "h18",
+              "category": "homophone",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 3,
+              "target_rankable": true,
+              "rankable_count": 6
+            },
+            {
+              "id": "h20",
+              "category": "homophone",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 4
+            },
+            {
+              "id": "n04",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 4,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "n07",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 4,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "c01",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c03",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c05",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c06",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            }
+          ],
+          "scored_cases": 55,
+          "native_score_calls": 110
+        },
+        "contextual": {
+          "cases": 64,
+          "target_missing": 5,
+          "metrics": {
+            "baseline": {
+              "top1": 38,
+              "top3": 55,
+              "top1_rate": 0.59375,
+              "top3_rate": 0.859375,
+              "mrr": 0.7355654761904762
+            },
+            "ranked": {
+              "top1": 50,
+              "top3": 57,
+              "top1_rate": 0.78125,
+              "top3_rate": 0.890625,
+              "mrr": 0.8395833333333333
+            }
+          },
+          "improved": 14,
+          "regressed": 1,
+          "top1_rescued": 12,
+          "top1_harmed": 0,
+          "outcomes": {
+            "candidate_missing": 5,
+            "target_protected_or_unrankable": 14,
+            "not_scored_insufficient_pool": 2,
+            "rerank_improved": 14,
+            "rerank_harmed": 1,
+            "rerank_unchanged": 28
+          },
+          "categories": {
+            "completion_boundary": {
+              "cases": 6,
+              "target_missing": 4,
+              "metrics": {
+                "baseline": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                },
+                "ranked": {
+                  "top1": 0,
+                  "top3": 2,
+                  "top1_rate": 0.0,
+                  "top3_rate": 0.3333333333333333,
+                  "mrr": 0.16666666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "context_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 6,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "everyday": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                },
+                "ranked": {
+                  "top1": 8,
+                  "top3": 8,
+                  "top1_rate": 1.0,
+                  "top3_rate": 1.0,
+                  "mrr": 1.0
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "homophone": {
+              "cases": 24,
+              "target_missing": 1,
+              "metrics": {
+                "baseline": {
+                  "top1": 11,
+                  "top3": 19,
+                  "top1_rate": 0.4583333333333333,
+                  "top3_rate": 0.7916666666666666,
+                  "mrr": 0.6490079365079365
+                },
+                "ranked": {
+                  "top1": 20,
+                  "top3": 22,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 0.9166666666666666,
+                  "mrr": 0.8763888888888888
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "nine_key": {
+              "cases": 8,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 3,
+                  "top3": 8,
+                  "top1_rate": 0.375,
+                  "top3_rate": 1.0,
+                  "mrr": 0.6875
+                },
+                "ranked": {
+                  "top1": 6,
+                  "top3": 7,
+                  "top1_rate": 0.75,
+                  "top3_rate": 0.875,
+                  "mrr": 0.8375
+                }
+              },
+              "regressed": 1,
+              "top1_harmed": 0
+            },
+            "partial_boundary": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            },
+            "personal_rule": {
+              "cases": 6,
+              "target_missing": 0,
+              "metrics": {
+                "baseline": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                },
+                "ranked": {
+                  "top1": 5,
+                  "top3": 6,
+                  "top1_rate": 0.8333333333333334,
+                  "top3_rate": 1.0,
+                  "mrr": 0.9166666666666666
+                }
+              },
+              "regressed": 0,
+              "top1_harmed": 0
+            }
+          },
+          "retained_misses_and_regressions": [
+            {
+              "id": "h20",
+              "category": "homophone",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 4
+            },
+            {
+              "id": "n04",
+              "category": "nine_key",
+              "outcome": "rerank_harmed",
+              "baseline_rank": 2,
+              "ranked_rank": 5,
+              "target_rankable": true,
+              "rankable_count": 32
+            },
+            {
+              "id": "c01",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c03",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c05",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            },
+            {
+              "id": "c06",
+              "category": "completion_boundary",
+              "outcome": "candidate_missing",
+              "baseline_rank": null,
+              "ranked_rank": null,
+              "target_rankable": false,
+              "rankable_count": 32
+            }
+          ],
+          "scored_cases": 55,
+          "native_score_calls": 110
+        }
+      }
+    }
+  },
+  "v3_full_order_runtime_differences": {
+    "empty_context": [
+      "n05",
+      "n06"
+    ],
+    "contextual": [
+      "h01",
+      "h02",
+      "n07",
+      "c05",
+      "r01",
+      "r06"
+    ]
+  }
+}
