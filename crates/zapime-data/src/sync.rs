@@ -269,6 +269,14 @@ impl Store {
     /// The Android JNI canonicalizes its root and rejects root/data leaf
     /// symlinks before deriving this path; this method does not resolve aliases.
     pub fn open_sync_writer(path: &std::path::Path) -> Result<Self, Error> {
+        Self::open_sync_existing(path, false)
+    }
+    /// Metadata preview uses an OS/SQLite read-only connection, with the same
+    /// existing-v2, physical-path and bounded-lock contract as sync writes.
+    pub fn open_sync_reader(path: &std::path::Path) -> Result<Self, Error> {
+        Self::open_sync_existing(path, true)
+    }
+    fn open_sync_existing(path: &std::path::Path, read_only: bool) -> Result<Self, Error> {
         if !path.is_absolute()
             || !std::fs::symlink_metadata(path).is_ok_and(|metadata| metadata.file_type().is_file())
         {
@@ -276,8 +284,11 @@ impl Store {
         }
         let db = rusqlite::Connection::open_with_flags(
             path,
-            rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE
-                | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX
+            (if read_only {
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY
+            } else {
+                rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE
+            }) | rusqlite::OpenFlags::SQLITE_OPEN_NO_MUTEX
                 | rusqlite::OpenFlags::SQLITE_OPEN_NOFOLLOW,
         )?;
         db.busy_timeout(Duration::from_millis(200))?;
@@ -643,6 +654,47 @@ mod writer_tests {
     use super::*;
 
     #[test]
+    fn sync_reader_refuses_writes_missing_files_and_unknown_schema() {
+        let dir = tempfile::tempdir().unwrap();
+        let missing = dir.path().join("absent/data.sqlite3");
+        assert!(Store::open_sync_reader(&missing).is_err());
+        assert!(!missing.parent().unwrap().exists());
+        let path = dir.path().join("data.sqlite3");
+        drop(Store::open(&path).unwrap());
+        let path = std::fs::canonicalize(path).unwrap();
+        let mut reader = Store::open_sync_reader(&path).unwrap();
+        assert!(reader.sync_workspace_binding().unwrap().is_none());
+        assert!(reader
+            .db
+            .execute(
+                "INSERT INTO metadata VALUES('preview_write','forbidden')",
+                []
+            )
+            .is_err());
+        drop(reader);
+        let raw = rusqlite::Connection::open(&path).unwrap();
+        assert_eq!(
+            raw.query_row::<i64, _, _>(
+                "SELECT count(*) FROM metadata WHERE key='preview_write'",
+                [],
+                |row| row.get(0)
+            )
+            .unwrap(),
+            0
+        );
+        for version in [1, 3] {
+            raw.execute_batch(&format!("PRAGMA user_version={version}"))
+                .unwrap();
+            assert!(Store::open_sync_reader(&path).is_err());
+            assert_eq!(
+                raw.query_row::<u32, _, _>("PRAGMA user_version", [], |row| row.get(0))
+                    .unwrap(),
+                version
+            );
+        }
+    }
+
+    #[test]
     fn sync_writer_never_creates_or_migrates_and_enforces_foreign_keys_and_busy_budget() {
         let dir = tempfile::tempdir().unwrap();
         let absent = dir.path().join("absent/data.sqlite3");
@@ -713,6 +765,7 @@ mod writer_tests {
         let alias = dir.path().join("alias.sqlite3");
         symlink(&path, &alias).unwrap();
         assert!(Store::open_sync_writer(&alias).is_err());
+        assert!(Store::open_sync_reader(&alias).is_err());
         assert_eq!(std::fs::read(&path).unwrap(), before);
     }
 
@@ -738,6 +791,7 @@ mod writer_tests {
         ));
         assert_eq!(std::fs::read(&path).unwrap(), before);
         let canonical = std::fs::canonicalize(&aliased).unwrap();
+        assert!(Store::open_sync_reader(&aliased).is_err());
         assert_eq!(canonical, path);
         drop(Store::open_sync_writer(&canonical).unwrap());
         assert_eq!(std::fs::read(&path).unwrap(), before);

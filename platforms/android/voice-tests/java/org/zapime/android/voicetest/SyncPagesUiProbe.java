@@ -46,7 +46,7 @@ final class SyncPagesUiProbe {
     private static final String ORIGIN="https://sync-pages.synthetic.invalid";
     private static final String ACTIVATION="production_View_performClick_and_AlertDialog_buttons";
     private static final String CANCEL_SCOPE="actual_sync_worker_queued_cancel_before_work_io";
-    private static final String SCOPE="Actual non-exported Android Activities on a freshly owned prepared main fixture; local selection and resume seam, normal View.performClick and AlertDialog negative/positive controls, actual SyncWorker queued cancellation before work I/O, stopped-generation rejection, unchanged business/frozen/cursor/vault state and exact fixture cleanup. No physical input, active HTTPS interruption, successful network registration/transfer, phone or user data acceptance.";
+    private static final String SCOPE="Actual non-exported Android Activities on a freshly owned prepared main fixture; local selection and resume seam, normal View.performClick and AlertDialog negative/positive controls, read-only inventory pagination, actual SyncWorker queued cancellation before work I/O, stopped-generation rejection, unchanged business/frozen/cursor/vault state and exact fixture cleanup. No physical input, active HTTPS interruption, successful network registration/transfer, phone or user data acceptance.";
     private static final class Trace {
         volatile String step="case_body",failed;
     }
@@ -166,6 +166,47 @@ final class SyncPagesUiProbe {
         check(stopped!=null&&stopped.equals(result(instrumentation,page)),"stopped sync page accepted its late real worker callback");page.lateRejected=true;
     }
     private static Throwable add(Throwable previous,Throwable next){if(previous==null)return next;previous.addSuppressed(next);return previous;}
+    private static Activity inventoryPreview(Instrumentation instrumentation,Context context,Page transfer,UUID account,List<Activity> activities)throws Exception {
+        final String className="org.zapime.android.SyncInventoryActivity";
+        check(!context.getPackageManager().getActivityInfo(new ComponentName(context,className),0).exported,"inventory preview exported");
+        Instrumentation.ActivityMonitor monitor=instrumentation.addMonitor(className,null,false);Activity inventory;
+        try{
+            SyncAccountProbe.main(instrumentation,()->{Button entry=(Button)SyncAccountProbe.field(transfer.activity,"inventory");check(entry.isEnabled()&&"查看本地同步状态".contentEquals(entry.getText())&&entry.performClick(),"actual inventory entry did not open");return null;});
+            inventory=instrumentation.waitForMonitorWithTimeout(monitor,10000);check(inventory!=null,"inventory entry did not start its Activity");activities.add(inventory);
+        }finally{instrumentation.removeMonitor(monitor);}
+        await(()->SyncAccountProbe.main(instrumentation,()->(Boolean)SyncAccountProbe.field(inventory,"active")&&!(Boolean)SyncAccountProbe.field(inventory,"busy")&&(Integer)SyncAccountProbe.field(inventory,"pageNumber")==1),"inventory first page did not load");
+        SyncAccountProbe.main(instrumentation,()->{
+            check((inventory.getWindow().getAttributes().flags&WindowManager.LayoutParams.FLAG_SECURE)!=0,"inventory page permits screenshots");
+            TextView status=(TextView)SyncAccountProbe.field(inventory,"status");ViewGroup rows=(ViewGroup)SyncAccountProbe.field(inventory,"rows");
+            check(!status.isSaveEnabled()&&!rows.isSaveEnabled()&&rows.getChildCount()==40,"inventory bounded page/view state differs");
+            check(status.getText().toString().contains(account.toString())&&status.getText().toString().contains("本页 40 条")&&status.getText().toString().contains("未找到同步记录 40"),"inventory page metadata totals differ");
+            check(!containsText(rows,"页面生命周期合成资料"),"inventory displayed synthetic body");
+            Button next=(Button)SyncAccountProbe.field(inventory,"next");check(next.isEnabled()&&next.performClick(),"inventory next page click refused");return null;
+        });
+        await(()->SyncAccountProbe.main(instrumentation,()->!(Boolean)SyncAccountProbe.field(inventory,"busy")&&(Integer)SyncAccountProbe.field(inventory,"pageNumber")==2),"inventory next page did not complete");
+        SyncAccountProbe.main(instrumentation,()->{
+            ViewGroup rows=(ViewGroup)SyncAccountProbe.field(inventory,"rows");String status=((TextView)SyncAccountProbe.field(inventory,"status")).getText().toString();
+            check(rows.getChildCount()==4&&!((Button)SyncAccountProbe.field(inventory,"next")).isEnabled()&&SyncAccountProbe.field(inventory,"nextAfter")==null,"inventory final page retained old rows/cursor");
+            check(status.contains("本页 4 条")&&status.contains("存在待发操作 1")&&status.contains("未找到同步记录 3")&&status.contains("非全库数量或云备份完成证明"),"inventory status claims more than local evidence");return null;
+        });
+        return inventory;
+    }
+    private static void inventoryCancel(Instrumentation instrumentation,Activity inventory,ThreadPoolExecutor executor)throws Exception {
+        Blocker blocker=new Blocker(executor);Object token=null;String stopped=null;Throwable original=null;
+        try{
+            token=SyncAccountProbe.main(instrumentation,()->{
+                Button refresh=(Button)SyncAccountProbe.field(inventory,"refresh");check(refresh.isEnabled()&&refresh.performClick(),"inventory refresh refused");
+                check((Boolean)SyncAccountProbe.field(inventory,"busy")&&executor.getQueue().size()==1,"inventory refresh did not queue on actual sync worker");
+                Object request=SyncAccountProbe.field(inventory,"cancellation");check(request!=null,"inventory queued request missing");inventory.finish();return request;
+            });
+            await(()->SyncAccountProbe.main(instrumentation,()->!(Boolean)SyncAccountProbe.field(inventory,"active")&&SyncAccountProbe.field(inventory,"selection")==null&&SyncAccountProbe.field(inventory,"cancellation")==null&&SyncAccountProbe.field(inventory,"nextAfter")==null&&((ViewGroup)SyncAccountProbe.field(inventory,"rows")).getChildCount()==0),"inventory stopped page retained metadata");
+            stopped=SyncAccountProbe.main(instrumentation,()->((TextView)SyncAccountProbe.field(inventory,"status")).getText().toString());
+            boolean cancelled=false;try{SyncAccountProbe.call(token.getClass(),token,"check",new Class<?>[0]);}catch(IOException expected){cancelled="sync_cancelled".equals(expected.getMessage());}check(cancelled,"inventory cancellation token not consumed before IO");
+        }catch(Exception|Error error){original=error;throw error;}
+        finally{try{blocker.drain(instrumentation);}catch(Exception|Error error){if(original!=null)original.addSuppressed(error);else throw error;}}
+        final String expected=stopped;
+        SyncAccountProbe.main(instrumentation,()->{check(expected!=null&&expected.contentEquals(((TextView)SyncAccountProbe.field(inventory,"status")).getText())&&((ViewGroup)SyncAccountProbe.field(inventory,"rows")).getChildCount()==0,"inventory accepted late worker page");return null;});
+    }
     static void run(Instrumentation instrumentation,File output,String dedicatedCI)throws Exception {
         check(dedicatedCI!=null&&dedicatedCI.matches("[0-9]+-[0-9]+"),"numeric dedicated sync pages CI required");
         Context context=instrumentation.getTargetContext();ClassLoader loader=context.getClassLoader();
@@ -174,7 +215,7 @@ final class SyncPagesUiProbe {
         File root=new File(context.getFilesDir(),"zapime"),database=new File(root,"data/personal.sqlite3");UUID account=UUID.randomUUID(),device=UUID.randomUUID();
         List<Activity> activities=new ArrayList<>();List<Page> pages=new ArrayList<>();JSONArray cases=new JSONArray();Trace trace=new Trace();String stage="fresh_main_prepared_fixture";Throwable operationFailure=null;boolean owned=false;long handle=0;
         byte[] material=null,before=null,materialCipher=null,connectionCipher=null;
-        JSONObject report=new JSONObject().put("schema_version",1).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("scope",SCOPE)
+        JSONObject report=new JSONObject().put("schema_version",2).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("scope",SCOPE)
                 .put("button_activation_method",ACTIVATION).put("cancellation_scope",CANCEL_SCOPE).put("android_https","NOT RUN").put("active_https_interruption_tested",false).put("physical_input_tested",false).put("network_success_tested",false).put("secret_content_or_code_logged",false);
         try{
             check(!Files.exists(root.toPath(),LinkOption.NOFOLLOW_LINKS)&&context.getSharedPreferences("sync_connection",Context.MODE_PRIVATE).getAll().isEmpty(),"sync pages require absent main root and empty connection index");
@@ -185,7 +226,13 @@ final class SyncPagesUiProbe {
                 for(String suffix:new String[]{"",".bak",".new"})check(!Files.exists(new File(context.getNoBackupFilesDir(),"sync-"+purpose+"-"+account+".bin"+suffix).toPath(),LinkOption.NOFOLLOW_LINKS),"random sync pages vault file exists");
             }
             owned=true;call(installer,"prepare",new Class<?>[]{Context.class},context);handle=(Long)call(core,"open",new Class<?>[]{String.class,boolean.class},root.toString(),false);check(handle!=0,"sync pages production database initialization failed");
-            request(core,handle,new JSONObject().put("op","personal_edit").put("id",UUID.randomUUID().toString()).put("operation_id",UUID.randomUUID().toString()).put("expected_revision",0).put("content",new JSONObject().put("type","favorite").put("title","synthetic pages").put("text","页面生命周期合成资料")));
+            request(core,handle,new JSONObject().put("op","personal_edit").put("id",new UUID(0,44).toString()).put("operation_id",UUID.randomUUID().toString()).put("expected_revision",0).put("content",new JSONObject().put("type","favorite").put("title","synthetic pages").put("text","页面生命周期合成资料")));
+            // UI-only rows are synthetic, not evidence of a real restoration;
+            // SyncTransferProbe separately exercises the actual import path.
+            try(SQLiteDatabase db=SQLiteDatabase.openDatabase(database.toString(),null,SQLiteDatabase.OPEN_READWRITE);Cursor first=db.rawQuery("SELECT body FROM records",null)){
+                check(first.moveToFirst(),"inventory UI seed missing");String body=first.getString(0);
+                for(int n=1;n<=43;n++){String id=new UUID(0,n).toString();JSONObject synthetic=new JSONObject(body).put("id",id).put("deleted",n%7==0);db.execSQL("INSERT INTO records VALUES(?,?,?)",new Object[]{id,1,synthetic.toString()});}
+            }
             call(core,"close",new Class<?>[]{long.class},handle);handle=0;saveConnection(context,model,store,account,device);call(preparation,"create",new Class<?>[]{Context.class,UUID.class},context,account);
             material=(byte[])call(vault,"load",new Class<?>[]{Context.class,UUID.class},context,account);check(material!=null,"sync pages prepared material missing");
             JSONObject descriptor=new JSONObject((String)call(core,"syncKeyDescriptor",new Class<?>[]{String.class,byte[].class},account.toString(),material));UUID key=UUID.fromString(descriptor.getString("key_id"));String digest=descriptor.getString("material_sha256");
@@ -195,12 +242,16 @@ final class SyncPagesUiProbe {
                 String className="org.zapime.android."+(keyPage?"SyncKeyRegistrationActivity":"SyncTransferActivity");ActivityInfo info=context.getPackageManager().getActivityInfo(new ComponentName(context,className),0);check(!info.exported,"sync page is externally exported");
                 Activity activity=instrumentation.startActivitySync(new Intent().setClassName(context,className).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));activities.add(activity);Page page=new Page(activity,keyPage);pages.add(page);
                 stage=keyPage?"key_page_secure_local_selection":"transfer_page_secure_local_selection";localSelection(instrumentation,page,account,device,key,digest);resumeLocal(instrumentation,context,page,account,device,key,digest,activities);SyncAccountProbe.passed(cases,stage);
+                if(!keyPage){
+                    stage="inventory_page_readonly_pagination";Activity inventory=inventoryPreview(instrumentation,context,page,account,activities);SyncAccountProbe.passed(cases,stage);
+                    stage="inventory_queued_cancel_and_clear";inventoryCancel(instrumentation,inventory,executor);localSelection(instrumentation,page,account,device,key,digest);SyncAccountProbe.passed(cases,stage);
+                }
                 stage=keyPage?"key_confirmation_negative_cancel":"transfer_confirmation_negative_cancel";negative(instrumentation,page,account,key,digest,executor);SyncAccountProbe.passed(cases,stage);
                 stage=keyPage?"key_queued_cancel_before_io":"transfer_queued_cancel_before_io";queuedCancel(instrumentation,page,account,key,digest,executor,trace);SyncAccountProbe.passed(cases,stage);
             }
             stage="stopped_selection_and_generation_invalidated";check(pages.size()==2,"both sync pages not exercised");for(Page page:pages)check(page.stoppedCleared&&page.queuedCancelled&&page.lateRejected,"sync page lifecycle proof incomplete");SyncAccountProbe.passed(cases,stage);
             stage="prepared_business_and_vault_preserved";check(Arrays.equals(before,snapshot(database))&&Arrays.equals(materialCipher,Files.readAllBytes(new File(context.getNoBackupFilesDir(),"sync-material-"+account+".bin").toPath()))&&Arrays.equals(connectionCipher,Files.readAllBytes(new File(context.getNoBackupFilesDir(),"sync-connection-"+account+".bin").toPath())),"cancelled sync pages changed business, frozen rows, cursor or protected vault");SyncAccountProbe.passed(cases,stage);
-            report.put("actual_activities",true).put("manifest_nonexported",true).put("secure_window_flags",true).put("displayed_selection_matches_local",true).put("resume_local_only_seam_verified",true).put("negative_dialog_cancel_no_task",true).put("actual_sync_worker_queued_cancel",true).put("captured_cancellation_checked",true).put("late_result_rejected",true).put("business_queue_frozen_cursor_preserved",true).put("vault_ciphertext_preserved",true).put("queued_cancelled_pages",pages.size());
+            report.put("actual_activities",true).put("manifest_nonexported",true).put("secure_window_flags",true).put("displayed_selection_matches_local",true).put("resume_local_only_seam_verified",true).put("negative_dialog_cancel_no_task",true).put("actual_sync_worker_queued_cancel",true).put("captured_cancellation_checked",true).put("late_result_rejected",true).put("business_queue_frozen_cursor_preserved",true).put("vault_ciphertext_preserved",true).put("queued_cancelled_pages",pages.size()).put("actual_inventory_preview",true).put("inventory_page_cleared_on_stop",true);
         }catch(Throwable error){operationFailure=error;report.put("failure_substep",stage.endsWith("queued_cancel_before_io")?(trace.failed==null?trace.step:trace.failed):"case_body");cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw new Exception("synthetic sync pages UI case: "+stage,error);}
         finally{
             Throwable cleanup=null;

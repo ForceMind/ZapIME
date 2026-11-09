@@ -2,7 +2,7 @@
 //! Stateless, bounded sync-worker bridge. No input engine, HTTP or logging.
 use jni::{
     objects::{JByteArray, JClass, JString},
-    sys::{jbyteArray, jlong, jstring},
+    sys::{jbyteArray, jint, jlong, jstring},
     JNIEnv,
 };
 use serde_json::{json, Value};
@@ -147,6 +147,39 @@ fn client_error(error: client::Error) -> Value {
         }
         _ => json!({"error":code}),
     }
+}
+
+/// Explicit local metadata preview, never a staging/upload authorization.
+/// The dedicated read-only connection cannot create/migrate or write a queue.
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_syncInventoryPage(
+    mut env: JNIEnv,
+    _: JClass,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    after: JString,
+    limit: jint,
+) -> jstring {
+    let result = catch_unwind(AssertUnwindSafe(|| {
+        if !(1..=zapime_data::inventory::MAX_INVENTORY_ITEMS as jint).contains(&limit) {
+            return Err("sync_workspace_invalid".into());
+        }
+        let profile = account(&mut env, &profile)?;
+        let material = material(&mut env, profile, &wire)?;
+        let after = if after.is_null() {
+            None
+        } else {
+            Some(account(&mut env, &after)?)
+        };
+        let mut store = Store::open_sync_reader(&database(&mut env, &root)?)
+            .map_err(|_| "sync_client_storage")?;
+        let page = client::inventory_page(&mut store, profile, &material, after, limit as usize)
+            .map_err(|error| error.to_string())?;
+        serde_json::to_value(page).map_err(|_| "sync_workspace_failed".into())
+    }))
+    .unwrap_or_else(|_| Err("sync_workspace_failed".into()));
+    reply(&mut env, result)
 }
 
 /// Each invocation opens/drops its own existing-v2 connection. Returned wire

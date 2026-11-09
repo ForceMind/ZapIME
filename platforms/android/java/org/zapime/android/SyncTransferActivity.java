@@ -16,7 +16,7 @@ import java.io.IOException;
 public final class SyncTransferActivity extends Activity {
     private final Handler main=new Handler(Looper.getMainLooper());
     private TextView localStatus,result;
-    private Button synchronize,cancel;
+    private Button synchronize,cancel,inventory;
     private SyncKeyRegistration.Selection selection;
     private SyncHttp.Cancellation cancellation;
     private AlertDialog confirmation;
@@ -36,6 +36,8 @@ public final class SyncTransferActivity extends Activity {
         LinearLayout actions=Ui.card(page);result=Ui.text(this,"尚未开始。请先在独立页面核对或首次登记服务器密钥身份。",14,Ui.MUTED);result.setSaveEnabled(false);actions.addView(result);
         synchronize=Ui.button(this,"确认一次手动同步",Ui.BLUE,true);Ui.addButton(actions,synchronize);synchronize.setOnClickListener(v->confirm());
         cancel=Ui.button(this,"请求停止本轮",Ui.BG,false);Ui.addButton(actions,cancel);cancel.setOnClickListener(v->{if(cancellation!=null){cancellation.cancel();cancel.setEnabled(false);result.setText("已请求停止，正在等待当前操作返回。已经提交的密文或本机事务可能完成；下次会核对原请求，不会自动重试。");}});
+        inventory=Ui.button(this,"查看本地同步状态",Ui.BG,false);Ui.addButton(actions,inventory);inventory.setOnClickListener(v->{if(active&&!busy)startActivity(new android.content.Intent(this,SyncInventoryActivity.class));});
+        actions.addView(Ui.text(this,"本轮上传0项不代表全部资料已备份。备份恢复的存量记录可能没有待发操作；可在本地状态页逐页查看。",12,Ui.MUTED));
         page.addView(Ui.text(this,"同步范围：词库、候选规则、快捷短语、永久收藏和你保存的剪贴板，包括待同步的修改及删除。正文在本机加密；服务器仍可见类型、修订与设备等元数据。语音模型、录音、恢复码和根密钥不上传。\n\n本轮最多先读取2页、上传16个已冻结操作，再读取2页（每页最多100条）。没有后台轮询；达到上限可稍后再次手动继续。网络取消是协作式，阻塞IO可能稍后返回。\n\n发现不同密钥、资料冲突、无法解密或不一致确认时立即停止，保留未同步资料与冻结请求。冲突解决、旧历史迁移和完整新设备配对仍在开发。试用前请分别保留个人资料备份、密钥恢复文件与独立恢复码。",12,Ui.MUTED));
         Ui.showPage(this,page);availability();
     }
@@ -44,7 +46,7 @@ public final class SyncTransferActivity extends Activity {
     @Override public void onPause(){invalidate();refreshOnResume=true;super.onPause();}
     @Override public void onStop(){invalidate();super.onStop();}
     private void invalidate(){active=false;++generation;if(cancellation!=null)cancellation.cancel();cancellation=null;if(confirmation!=null){confirmation.dismiss();confirmation=null;}selection=null;busy=false;availability();}
-    private void availability(){if(synchronize!=null){synchronize.setEnabled(active&&!busy&&selection!=null);cancel.setEnabled(active&&busy&&cancellation!=null);}}
+    private void availability(){if(synchronize!=null){synchronize.setEnabled(active&&!busy&&selection!=null);cancel.setEnabled(active&&busy&&cancellation!=null);if(inventory!=null)inventory.setEnabled(active&&!busy);}}
     private void load(){
         selection=null;busy=false;availability();localStatus.setText("正在读取本机状态…");
         run("只读取本机状态；此次不联网…",request->{
@@ -85,7 +87,7 @@ public final class SyncTransferActivity extends Activity {
         String text="本轮已确认上传 "+done.uploaded+" 项，应用远端 "+done.applied+" 项，核对回声 "+done.echoed+" 项。\n已认证游标："+done.cursor+"；本轮所见服务器修订："+done.head+"。";
         if(done.downloadBudgetReached||done.uploadBudgetReached)text+="\n已达到本轮处理上限，可能仍有待处理资料。请稍后手动继续；不会自动联网。";
         else text+="\n本轮结束；这只反映本次所见状态，不代表其他离线设备已经同步。";
-        return text+"\n同步后的词库与候选规则请重新进入输入框后使用；当前组字会话不会被强制刷新。";
+        return text+"\n上传0项不代表全部资料已备份；恢复的存量记录可能没有待发操作，请查看本地同步状态。\n同步后的词库与候选规则请重新进入输入框后使用；当前组字会话不会被强制刷新。";
     }
     private static String message(Exception failure){
         Throwable error=failure;String progress="";

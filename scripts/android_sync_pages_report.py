@@ -7,10 +7,11 @@ CASES = frozenset({
     "transfer_page_secure_local_selection", "transfer_confirmation_negative_cancel",
     "transfer_queued_cancel_before_io", "stopped_selection_and_generation_invalidated",
     "prepared_business_and_vault_preserved", "owned_main_fixture_cleanup",
+    "inventory_page_readonly_pagination", "inventory_queued_cancel_and_clear",
 })
 SCOPE = ("Actual non-exported Android Activities on a freshly owned prepared main fixture; "
          "local selection and resume seam, normal View.performClick and AlertDialog negative/positive "
-         "controls, actual SyncWorker queued cancellation before work I/O, stopped-generation rejection, "
+         "controls, read-only inventory pagination, actual SyncWorker queued cancellation before work I/O, stopped-generation rejection, "
          "unchanged business/frozen/cursor/vault state and exact fixture cleanup. No physical input, "
          "active HTTPS interruption, successful network registration/transfer, phone or user data acceptance.")
 ACTIVATION = "production_View_performClick_and_AlertDialog_buttons"
@@ -28,6 +29,7 @@ PROOFS = frozenset({
     "captured_cancellation_checked", "late_result_rejected",
     "business_queue_frozen_cursor_preserved", "vault_ciphertext_preserved",
     "fresh_fixture_owned", "cleanup_completed",
+    "actual_inventory_preview", "inventory_page_cleared_on_stop",
 })
 FIELDS = PROOFS | {"schema_version", "status", "synthetic", "api_level", "cases", "scope",
                   "button_activation_method", "cancellation_scope", "android_https",
@@ -51,7 +53,7 @@ def verify_report(report, api=None):
     failure_substep(report)
     if not isinstance(report, dict) or report.keys() != FIELDS:
         raise ValueError("Unknown or missing sync pages UI report fields")
-    if type(report["schema_version"]) is not int or report["schema_version"] != 1 or report["status"] != "PASS" or report["synthetic"] is not True:
+    if type(report["schema_version"]) is not int or report["schema_version"] != 2 or report["status"] != "PASS" or report["synthetic"] is not True:
         raise ValueError("Incomplete sync pages UI report")
     level = report["api_level"]
     if type(level) is not int or level not in (28, 35, 36) or api is not None and level != api:

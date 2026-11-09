@@ -26,7 +26,7 @@ import org.json.JSONObject;
  */
 final class SyncTransferProbe {
     private static final int MAX_ACK=100_000,MAX_PAGE=10*1024*1024;
-    private static final String SCOPE="Actual Android stateless JNI and isolated existing-v2 SQLite; native synthetic edits, persistent frozen ciphertext, strict ACK, authenticated application and retained-page rollback. Server outer ACK/page metadata only is synthetic; no Android HTTPS, real server exchange, pairing, phone or Cloudflare acceptance.";
+    private static final String SCOPE="Actual Android stateless JNI and isolated existing-v2 SQLite; native synthetic edits, persistent frozen ciphertext, strict ACK, authenticated application, retained-page rollback and read-only inventory with strict host parsing. Server outer ACK/page metadata only is synthetic; no Android HTTPS, real server exchange, pairing, phone or Cloudflare acceptance.";
     private static final class Fixture {
         final Class<?> core;
         final File directory,root,database;
@@ -66,6 +66,9 @@ final class SyncTransferProbe {
         long cursor(Fixture fixture,byte[] material)throws Exception {JSONObject value=cursor(fixture,fixture.account,material);check(!value.has("error")&&value.length()==1,"cursor response shape");return value.getLong("cursor");}
         JSONObject apply(Fixture fixture,UUID account,byte[] material,long after,byte[] response)throws Exception {
             return result("applySyncPage",new Class<?>[]{String.class,String.class,byte[].class,long.class,byte[].class},fixture.root(),account.toString(),material,after,response);
+        }
+        JSONObject inventory(Fixture fixture,UUID account,byte[] material,String after,int limit)throws Exception {
+            return result("syncInventoryPage",new Class<?>[]{String.class,String.class,byte[].class,String.class,int.class},fixture.root(),account.toString(),material,after,limit);
         }
         void clear(){for(byte[] value:buffers)Arrays.fill(value,(byte)0);buffers.clear();}
     }
@@ -135,6 +138,19 @@ final class SyncTransferProbe {
     }
     private static void allReject(Native nativeCore,Fixture fixture,UUID account,UUID device,byte[] material,byte[] frozen,byte[] ack,byte[] page)throws Exception {
         rejected(nativeCore.stage(fixture,account,material));rejected(nativeCore.cursor(fixture,account,material));rejected(nativeCore.ack(fixture,account,device,material,frozen,ack));rejected(nativeCore.apply(fixture,account,material,0,page));
+        rejected(nativeCore.inventory(fixture,account,material,null,40));
+    }
+    private static Object parseInventory(Class<?> inventory,String raw,UUID after,int limit)throws Exception {
+        return invoke(inventory,"parse",new Class<?>[]{String.class,UUID.class,int.class},raw,after,limit);
+    }
+    private static void rejectsInventory(Class<?> inventory,String raw,UUID after,int limit)throws Exception {
+        boolean rejected=false;try{parseInventory(inventory,raw,after,limit);}catch(IOException fixed){rejected=true;}
+        check(rejected,"inventory parser accepted malformed/coerced metadata");
+    }
+    private static String archive(Native nativeCore,Fixture fixture)throws Exception {
+        long handle=(Long)invoke(fixture.core,"open",new Class<?>[]{String.class,boolean.class},fixture.root(),false);check(handle!=0,"inventory synthetic archive session");
+        try{return new JSONObject((String)invoke(fixture.core,"request",new Class<?>[]{long.class,String.class},handle,"{\"op\":\"personal_export\"}")).getString("archive");}
+        finally{invoke(fixture.core,"close",new Class<?>[]{long.class},handle);}
     }
     static void run(Instrumentation instrumentation,File output)throws Exception {
         Context base=instrumentation.getTargetContext();Class<?> core=Class.forName("org.zapime.android.NativeCore",true,base.getClassLoader());Native nativeCore=new Native(core);
@@ -247,17 +263,81 @@ final class SyncTransferProbe {
             try(SQLiteDatabase db=SQLiteDatabase.openDatabase(future.database.toString(),null,SQLiteDatabase.OPEN_READWRITE)){db.execSQL("PRAGMA user_version=3");}
             byte[] futureBefore=snapshot(nativeCore,future,true);allReject(nativeCore,future,account,serverDevice,material,frozen1,ack1Bytes,firstPage);same(nativeCore,future,futureBefore,true);
             check(count(future,"PRAGMA user_version")==3&&count(future,"SELECT count(*) FROM metadata WHERE key LIKE 'sync_%'")==0,"future database must not migrate or bind");SyncAccountProbe.passed(cases,stage);
+            stage="readonly_inventory_pending_known_no_mutation";
+            Class<?> inventory=Class.forName("org.zapime.android.SyncInventory",true,base.getClassLoader());
+            byte[] sourceInventoryBefore=snapshot(nativeCore,source,true),targetInventoryBefore=snapshot(nativeCore,target,true);
+            JSONObject sourcePage=nativeCore.inventory(source,account,material,null,40),targetPage=nativeCore.inventory(target,account,material,null,40);
+            parseInventory(inventory,sourcePage.toString(),null,40);parseInventory(inventory,targetPage.toString(),null,40);
+            boolean pendingSeen=false;
+            for(int n=0;n<sourcePage.getJSONArray("items").length();n++){
+                JSONObject item=sourcePage.getJSONArray("items").getJSONObject(n);
+                if("pending_local_operation".equals(item.opt("state")))pendingSeen=true;
+            }
+            check(pendingSeen,"inventory must preserve local pending evidence");
+            for(int n=0;n<targetPage.getJSONArray("items").length();n++){
+                JSONObject item=targetPage.getJSONArray("items").getJSONObject(n);
+                check("server_version_known".equals(item.opt("state"))&&!item.getBoolean("has_local_operation_history")&&!item.getBoolean("has_pending_local_operation"),"downloaded record became local upload/history");
+            }
+            check(!sourcePage.toString().contains(initial)&&!sourcePage.toString().contains(later)&&!targetPage.toString().contains(third),"inventory leaked synthetic content");
+            same(nativeCore,source,sourceInventoryBefore,true);same(nativeCore,target,targetInventoryBefore,true);SyncAccountProbe.passed(cases,stage);
+            stage="readonly_inventory_restored_pagination";
+            Fixture collection=new Fixture(base,core,new File(directory,"collection"),template,account),restored=new Fixture(base,core,new File(directory,"restored"),template,account);
+            long catalog=(Long)invoke(core,"open",new Class<?>[]{String.class,boolean.class},collection.root(),false);check(catalog!=0,"synthetic inventory collection initialization");
+            try{for(int n=1;n<=43;n++){
+                JSONObject edit=new JSONObject().put("op","personal_edit").put("id",new UUID(0,n).toString()).put("operation_id",UUID.randomUUID().toString()).put("expected_revision",0).put("deleted",n%7==0)
+                        .put("content",new JSONObject().put("type","favorite").put("title","synthetic inventory").put("text","仅在夹具内的正文"));
+                JSONObject response=new JSONObject((String)invoke(core,"request",new Class<?>[]{long.class,String.class},catalog,edit.toString()));check(!response.has("error"),"native synthetic inventory edit rejected");
+            }}finally{invoke(core,"close",new Class<?>[]{long.class},catalog);}
+            String archive=archive(nativeCore,collection);
+            long imported=(Long)invoke(core,"open",new Class<?>[]{String.class,boolean.class},restored.root(),false);check(imported!=0,"native restored inventory initialization");
+            try{JSONObject response=new JSONObject((String)invoke(core,"request",new Class<?>[]{long.class,String.class},imported,new JSONObject().put("op","personal_import").put("archive",archive).toString()));check(!response.has("error"),"actual records-only import failed");}
+            finally{invoke(core,"close",new Class<?>[]{long.class},imported);}
+            prepare(nativeCore,restored,material);byte[] restoredBefore=snapshot(nativeCore,restored,true);
+            String after=null;int seen=0,deleted=0,pages=0;
+            do{
+                JSONObject value=nativeCore.inventory(restored,account,material,after,40);parseInventory(inventory,value.toString(),after==null?null:UUID.fromString(after),40);
+                JSONArray items=value.getJSONArray("items");check(items.length()==(pages==0?40:3),"actual metadata page bound differs");
+                for(int n=0;n<items.length();n++){
+                    JSONObject item=items.getJSONObject(n);seen++;
+                    check(new UUID(0,seen).toString().equals(item.getString("id"))&&"untracked".equals(item.opt("state"))&&!item.getBoolean("has_pending_local_operation")&&!item.getBoolean("has_local_operation_history")&&item.isNull("known_server_revision"),"restored evidence/ID/order was rewritten");
+                    if(item.getBoolean("deleted"))deleted++;
+                }
+                after=value.isNull("next_after")?null:value.getString("next_after");pages++;
+                check(!value.toString().contains("仅在夹具内的正文")&&pages<=2,"inventory leaks content or loops");
+            }while(after!=null);
+            check(seen==43&&deleted==6&&pages==2&&count(restored,"SELECT count(*) FROM operations")==0,"restored page count/tombstones/zero operations differ");same(nativeCore,restored,restoredBefore,true);SyncAccountProbe.passed(cases,stage);
+            stage="readonly_inventory_input_and_parser_rejection";
+            Class<?>[] inventorySignature={String.class,String.class,byte[].class,String.class,int.class};
+            for(int limit:new int[]{-1,0,101,Integer.MAX_VALUE})rejected(nativeCore.inventory(restored,account,material,null,limit));
+            for(String bad:new String[]{"",new UUID(0,0).toString(),"not-a-uuid","00000000-0000-0000-0000-00000000000A"})rejected(nativeCore.inventory(restored,account,material,bad,40));
+            rejected(nativeCore.result("syncInventoryPage",inventorySignature,restored.root(),account.toString(),null,null,40));
+            rejected(nativeCore.result("syncInventoryPage",inventorySignature,null,account.toString(),material,null,40));
+            rejected(nativeCore.result("syncInventoryPage",inventorySignature,restored.root(),null,material,null,40));
+            rejected(nativeCore.inventory(restored,account,wrongMaterial,null,40));rejected(nativeCore.inventory(restored,UUID.randomUUID(),material,null,40));
+            JSONObject valid=nativeCore.inventory(restored,account,material,null,1);parseInventory(inventory,valid.toString(),null,1);
+            String validText=valid.toString();
+            rejectsInventory(inventory,"{\"items\":[],\"items\":[],\"next_after\":null}",null,1);
+            rejectsInventory(inventory,validText+" {}",null,1);rejectsInventory(inventory,copy(valid).put("text","forbidden").toString(),null,1);
+            rejectsInventory(inventory,validText.replace("\"local_revision\":1","\"local_revision\":1.0"),null,1);
+            for(String field:new String[]{"kind","deleted","state","has_pending_local_operation","current_snapshot_pending","known_server_revision"}){
+                JSONObject altered=copy(valid),item=altered.getJSONArray("items").getJSONObject(0);
+                item.put(field,field.equals("state")?"server_version_known":field.equals("deleted")?"false":field.equals("known_server_revision")?0:field.equals("kind")?6:true);
+                rejectsInventory(inventory,altered.toString(),null,1);
+            }
+            rejectsInventory(inventory,copy(valid).put("next_after",UUID.randomUUID().toString()).toString(),null,1);
+            rejectsInventory(inventory,validText,UUID.fromString(valid.getJSONArray("items").getJSONObject(0).getString("id")),1);
+            rejectsInventory(inventory,validText,null,0);same(nativeCore,restored,restoredBefore,true);SyncAccountProbe.passed(cases,stage);
         }catch(Throwable error){
             Exception safe=new Exception("synthetic sync transfer case: "+stage+" ("+error.getClass().getSimpleName()+")");safe.setStackTrace(error.getStackTrace());operationFailure=safe;
             cases.put(new JSONObject().put("id",stage).put("passed",false).put("failure_type",error.getClass().getSimpleName()));throw safe;
         }finally{
             nativeCore.clear();Throwable cleanup=null;try{delete(directory.toPath());}catch(Throwable error){cleanup=error;}
-            boolean success=operationFailure==null&&cleanup==null&&cases.length()==12;
-            JSONObject report=new JSONObject().put("schema_version",1).put("status",success?"PASS":"FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases)
+            boolean success=operationFailure==null&&cleanup==null&&cases.length()==15;
+            JSONObject report=new JSONObject().put("schema_version",2).put("status",success?"PASS":"FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases)
                     .put("cleanup_completed",cleanup==null).put("android_https","NOT RUN").put("server_exchange","synthetic_outer_only").put("scope",SCOPE)
                     .put("actual_native_edit",success).put("actual_jni_staging",success).put("actual_jni_acknowledgement",success).put("actual_jni_authenticated_apply",success)
                     .put("frozen_retry_identical",success).put("plaintext_verified_locally",success).put("no_upload_echo_on_receiver",success).put("bad_page_rolled_back",success)
-                    .put("failed_page_retention",success?"saved":"NOT PROVEN").put("secret_content_or_ciphertext_logged",false);
+                    .put("failed_page_retention",success?"saved":"NOT PROVEN").put("secret_content_or_ciphertext_logged",false).put("actual_jni_readonly_inventory",success);
             if(cleanup!=null)report.put("cleanup_failure_type",cleanup.getClass().getSimpleName());
             Files.write(new File(output,"sync-transfer-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
             if(cleanup!=null){Exception safe=new Exception("synthetic sync transfer cleanup failed ("+cleanup.getClass().getSimpleName()+")");if(operationFailure!=null)operationFailure.addSuppressed(safe);else throw safe;}
