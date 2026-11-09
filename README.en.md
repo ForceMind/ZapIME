@@ -23,7 +23,7 @@ A local-first native Chinese input method with portable dictionaries, phrases, s
 | iOS | App/keyboard-extension builds and bridge tests | Keyboard enablement, physical device and signed distribution |
 | Windows | TSF DLL/COM development baseline | Independent-process profile gate, activation and actual app insertion |
 
-[STATUS](docs/STATUS.md) records exact commits, retained failures and raw evidence. The 34 authored candidate cases are not a population accuracy estimate. An earlier intermittent API35 composition failure remains under investigation.
+[STATUS](docs/STATUS.md) records exact commits, retained failures and raw evidence. The original 34 and additional 64 frozen candidate cases are not population accuracy estimates. The configuration-restart composition fix passed same-source input gates on three APIs and a dedicated API35 experiment; historical failures remain preserved and phone acceptance is separate.
 
 ## Get the source
 

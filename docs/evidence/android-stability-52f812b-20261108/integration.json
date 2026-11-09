@@ -1,0 +1,24 @@
+{
+  "repository": "ForceMind/ZapIME",
+  "pr": 102,
+  "head": "52f812bc269f35ba636997b9c4664c2b83a22154",
+  "tested_checkout": "8cf2cae1fcc62827a5c508d38609c131ee6f009e",
+  "retargeted_merge_preview": "1d4a735547c4968f567bc2f42bc65a6132ce12bd",
+  "main_merge": "88112f48464ecec9c361ba03443cc7081feb6511",
+  "tree": "2c73b5abe92214ad97eb0104f11911fa6a9d3cb6",
+  "tree_equality_verified": true,
+  "integrated_ancestor_prs": [
+    87,
+    89,
+    91,
+    95,
+    96,
+    101
+  ],
+  "rust_test_count": 143,
+  "rust_fmt": "PASS",
+  "rust_clippy_strict": "PASS",
+  "independent_composition_review": "No demonstrated merge blocker; scopes preserved",
+  "original_failure_preserved": true,
+  "release_unchanged": "v0.1.0-alpha.1"
+}

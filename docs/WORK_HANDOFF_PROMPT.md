@@ -1,74 +1,45 @@
-# ZapIME（闪电输入法）｜源码 Alpha 之后的持续研发接管
+# ZapIME（闪电输入法）｜持续研发接管
 
-更新：2026-11-07，源码Alpha已公开并完成三附件下载/精确源码重建复验。发布source026bfb8bf467c0d45193a50016e298c3dbb0ac01，后续main已有独立修复；不要把旧发布标签移动到新main。[发布证据](evidence/source-alpha-publication-20261107/README.md)。此文件取代旧分支交接；上一版原字节保存在[历史快照](history/WORK_HANDOFF_PROMPT_PRE_SOURCE_ALPHA_20261107.md)。
+更新：2026-11-08（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
-## 任务与接续入口
+## 先核对实时仓库
 
-继续已有工程，实际修改代码、测试、修复和提交 GitHub，不从零重建，不只给计划，不需要用户反复发送“继续”。仓库 [ForceMind/ZapIME](https://github.com/ForceMind/ZapIME) 保持 Public。默认从实时 `main` 接续，源码版本入口为 `v0.1.0-alpha.1`；先读取最新 PR、CI、Release，不能把本文件当作实时 API。
+- 仓库：[ForceMind/ZapIME](https://github.com/ForceMind/ZapIME)，Public，默认 `main`。
+- 本轮已合并 [#102](https://github.com/ForceMind/ZapIME/pull/102)，merge `88112f48464ecec9c361ba03443cc7081feb6511`，tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`；这只是检查点，接续先 fetch 并核对最新 main、open PR、Issue、review、CI 与 Release。
+- #87/#89/#91/#95/#96/#101 全部保留并由 #102 整合，不再从这些旧分支重复实现。#12/macOS、#40/Windows 仍为未通过系统验收的草稿，不能直接合并为完成。
+- 保留任何新未提交工作或开放开发分支；不强推、不 reset 别人的工作，不操作用户电脑、手机、生产服务器或 DNS。
 
-整合PR #82已经合并main，已整合堆叠PR关闭；原整合分支为 `release/open-source-alpha`，功能基线是 `5d976f578a2b11d14b9050ff0ec01e5d18d9e538`，此前 PR #71/#73/#74/#75/#78/#79/#80/#81 的实际实现由该基线承接。先核对main确实包含该基线与发布提交，禁止从旧main或早期语音分支重做已经完成的工作。保留未提交内容，不强推或 reset 已有工作。
+先读 [AGENTS](../AGENTS.md)、[STATUS](STATUS.md)、[开发计划](DEVELOPMENT_PLAN.md)、[路线图](ROADMAP.md)、[技术决策](DECISIONS.md)。涉及功能时再读[组字恢复契约](ADR_025_VERIFIED_CONFIGURATION_RESTART.md)、[候选评测](CANDIDATE_EVALUATION.md)、[双语音](VOICEKEY_INTEGRATION.md)、[语音验收](VOICEKEY_ACCEPTANCE.md)、[手动同步](ANDROID_MANUAL_SYNC.md)、[同步证据分页](SYNC_INVENTORY.md)。
 
 ```sh
-git clone --recurse-submodules https://github.com/ForceMind/ZapIME.git
-cd ZapIME
 git status --short
 git fetch origin
 git log -5 --oneline
 python3 scripts/verify_upstream.py
 ```
 
-先读 [AGENTS](../AGENTS.md)、[STATUS](STATUS.md)、[开发计划](DEVELOPMENT_PLAN.md)、[路线图](ROADMAP.md)、[技术决策](DECISIONS.md)、[源码 Alpha 说明](releases/v0.1.0-alpha.1.md)。涉及模块再读 [候选契约](CANDIDATE_RANKING.md)、[评测](CANDIDATE_EVALUATION.md)、[双语音整合](VOICEKEY_INTEGRATION.md)、[语音验收](VOICEKEY_ACCEPTANCE.md)、[手动同步](ANDROID_MANUAL_SYNC.md)。
+## 已经完成的本轮交付
 
-## 已完成工作与证据
+同编辑器配置重启使用独立物理单槽 worker 的有界新鲜证明；重复 restart 使旧 generation 失效、保留原 ticket/队列/800ms 预算，最多两次串行读取。普通强保留路径新增三态与生命周期守卫，setter 重入后不能写回旧状态。测试工具入口、生命周期诊断和冻结的 64 条新候选质量语料也已合入。
 
-- Android 原生全键/九键、个人规则、主题、触感、资料面板、备份、双离线语音及显式手动密文同步已有实现，不能删掉后重新做。
-- 默认离线候选为固定 MSIME + chinese-ime-lm rerank-v2 8M + ORT1.28.2。基础候选先显示；模型只重排合规既有候选 ID，没有可信非空上下文时保留基础排序。输入线程不等模型、不联网，不生成任意文字。
-- C1 首批 34 条冻结合成语料与真实词库/native 模型对照已经完成。ORT1.28.2 带上下文首选 26/34，基础 17/34；空上下文 14/34 的退化促成保护修复。两版 ORT、v1 原错字、v2 修正、首轮失败均保留，不能将这个小集合当真实用户准确率。
-- v2原两库25/34（1.24.4）与26/34（1.28.2）须分口径；#89只复跑v2/1.24.4且逐页复现25。见[运行库归因](evidence/candidate-v2-runtime-attribution-20261108/README.md)，不代填新v2/1.28.2。
-- 8df2793 是空上下文保护的产品/测试修订；9aff370 只修 CI 工具链调用及失败诊断。5d976f5 是后续文档基线，其七条 workflow 全部 SUCCESS，详见 STATUS。候选 API28/35/36 的真实模型、系统 IME/Editable 与清理门禁均有成功证据。
-- 首轮 API35 在种子提交后输入 shi 时组字异常结束的失败仍保留。后续成功没有证明唯一根因已解决，不得改写历史失败或放宽真实上屏/服务退出断言。
-- fixed8df ARM64 开发包已独立核验签名、模型/JNI/许可/16KiB 并交付；版本仍为 0.1.0-dev。源码 Alpha 不把旧 APK 改名为新版本，不承诺跨 CI 证书覆盖升级。
+固定 head `52f812bc269f35ba636997b9c4664c2b83a22154`、实际 PR checkout `8cf2cae1fcc62827a5c508d38609c131ee6f009e` 与合并源树一致。八条 workflow SUCCESS；全量 Android `42517974761` attempt2 最终 6/6，候选 `42517974445` 6/6。API35 配置实验实际观察两次 restart，`你好sh → 你好shi → 你好是` 连续性、触摸、Editable 和清理通过。
 
-## 当前接续检查点
+首轮 VoiceKey API35 因系统 Launcher ANR 对话框遮挡 SAF 而失败，模型未解码；只定点重跑该作业，保留原失败 ZIP/SHA。独立审查及本机 Rust143/fmt/严格Clippy、ordinary/pending JVM 回归通过。完整范围与原件见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。这不证明所有历史间歇问题、ARM/S25 或真实人声已验收。
 
-2026-11-08 UTC 本次回读的固定 main 为 `3241c811d9b97fcd85b63489bc0ca5065379c43b`（#85/#90/#94/#97/#98已合并）；接续必须再次查询实时 API。#85 发布创建/回读修复已合并，30 项故障回归、134 项 workspace、fmt/严格 Clippy 及对应 CI 通过。#90 缓存物理 fill 容量修复已合并；实际服务运行 `42460687991` 完成 Go1.27.3 race 30 个顶层组（含 fuzz-seed 组）、0 SKIP、真实 PostgreSQL/HTTP、S3、安装和灾备。[服务原件](evidence/cache-fill-ci-20261108/README.md)与旧反例保留。#25 已关闭为被 #90 取代，未合并旧研究。
+## 下一轮优先顺序
 
-保留未合并开发链：#87 组字诊断、#89 64 条冻结质量扩展、草稿 #91 配置重启实验、#95 工具真实触摸夹具及整合草稿 [#96](https://github.com/ForceMind/ZapIME/pull/96)。#86/#94 已由#94整合合并。新的产品修复在 `fix/android-verified-configuration-restart`，已实现/本机检查和独立审查，已与配置实验/扩充集/SAF和工具入口整合；不能从 main 重做或丢弃这些进展。最终 PR/集成 head 和同源码 CI 应按实时仓库补齐，未执行门禁不代填。
+1. 核验当前开发分支，完成 Issue [#77](https://github.com/ForceMind/ZapIME/issues/77) 的 Android 只读同步状态分页切片：现有 Rust `inventory_page` 是只读本机证据，不是首次上传。接到 JNI/独立 worker/显式页面后，用实际 JNI 和 UI 验收身份、分页、取消、无正文与零 HTTP。`untracked`、pending=0、已知服务端修订均不能误报为完整云备份。
+2. 之后继续恢复/导入记录的显式首次发布：先拉取、重叠 ID/唯一性/旧墓碑保护、用户确认、有界幂等操作与中断恢复；每次 HTTP 仍需持久 stage 和完整材料绑定，旧冻结请求不改写。不得用重存、改 ID 或重新上传普通下载绕过。
+3. 候选 C1 保留原 34 条与新增 64 条冻结集、两版 ORT、所有缺失与伤害。v3 基础 38/64、上下文 50/64、缺失 5 条；v2 跨库 25/34 与 26/34 分别记录，不当用户准确率。按证据继续九键、补全和重排优化。
+4. 无需手机的工作继续推进；手机只集中使用 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)。自然语音、ARM 延迟/RSS/能耗、长输入、隐私/取消、正式签名与可恢复升级分别待验。
+5. 按路线推进配对、冲突、历史密钥与完整灾备、其他原生宿主、英语伴学。已有 Android 原生输入/主题/资料/双离线语音/显式手动同步不删除或重做。
 
-#86 focused `42459710009` 的 API35/36 各 57 项门禁已严格复验；API28 实际在 navigation_close_wait 失败，roots 仍可见、文件不可见、150 轮/一次 BACK、零文件触摸。#94 只在已识别 roots 子树内导航唯一 Downloads 项，再保留真实文件触摸、字节/native 身份和清理；#94固定head7c2ab398/tree2fee68ef的focused42463933420已8/8 SUCCESS，三API各57项严格复验通过并合并；[原件](evidence/sync-recovery-navigation-20261107/accepted-42463933420/README.md)保留独立full build504失败，不称整轮全量通过。#95 仅修工具测试入口的稳定目标与实际 50ms 单次触摸，不等于产品组字修复已验。
+## 交付与边界
 
-#89 的 64 条新合成 v3 在推理前冻结，两版 ORT 主机结果为基础 38/64、上下文 50/64，候选缺失 5、上下文名次退步 1 与全部伤害保留。host/三份质量报告/native/JNI/oracle 已严格复验，同一 workflow 的 API36 系统 IME 仍实际失败；这些合成结果不是用户准确率。
+用户已授权常规开发、测试、GitHub 提交/符合条件的合并及按实际范围更新文档和发布。独立切片用分支/PR；保留源码、编译、模拟器、手机和签名层级的区别。严格校验真实报告，不能放宽断言、删失败或用旧源码结果代填新源码。
 
-## 最新原生失败与修复验证
+Rust 固定 1.97.1，执行 `cargo test --workspace --locked`、`cargo fmt --all --check`、`cargo clippy --workspace --all-targets --locked -- -D warnings`；Android 用 JDK17、API36、build-tools35.0.0、NDK28.2.13676358。VoiceKey 独立锁文件，服务事务要真实 PostgreSQL/S3；SKIP 不等于通过。所有临时 CI 清资料/root/CA/防火墙操作只用于受保护隔离模拟器。
 
-#87/#89 API36 系统 IME 的原失败已归档：原连接未更换，事件环记录配置重启后旧 EditorInfo/选区校验拒绝→重建→空初始化 finish 原组字，模型未先请求。具体配置触发者和全部历史间歇问题仍不能统一推断。新修复保留普通 restart 强校验，仅在同编辑器/连接和精确 owned 范围下由独立有界 worker 验证新鲜状态；pending 不写正文，超时/隐藏/变更拒绝迟到，实际物理任务返回前不释放容量。还须以新精确源码验证系统 IME、远程读取及新增 Editable 探针，不能把本机编译或旧成功当验收。
+输入线程不等网络；候选增强默认开启且无可信上下文保留基础排序；X-ASR 默认、VoiceKey 显式可选；语音和上下文不默认落盘/上传。同步仅显式逐轮确认，不新增默认上传或后台轮询。
 
-#91 旧 head `6904faf` 的 API35 实验为 NOT_EXECUTED：观察者 callback 为 0，未完成配置连续性实验；设置已恢复。保留原失败，修复公开 requestApplyInsets 初始化观察者后，与安全产品实现同源码重验；真实触摸、连续连接/焦点、候选身份、完整 Editable、事件和服务退出断言不得降低。
-
-main `5a0dc562` 的全量 Android `42462698530` attempt1已6/6 SUCCESS并按固定源码严格复验，[原件](evidence/main-android-42462698530/README.md)完整保留；旧发布源码 `026bfb8` 的 `42441322518` 最终 FAILURE 原件保留，不能称它仍是新 main 的结果，也不能用别的源码成功覆盖其 adb root/device offline/清理失败。
-
-当前#96已核对head94b66f3/tree78d00c，含全部未合并栈及#98。SourceAlpha42466801643已通过30+134/fmt/严格Clippy/源码prepare，publish条件SKIP；candidate42466801775与full42466801834经真实有界尝试仍504，无新APK/实际IME。归档容器已保真修正并由真实Source检查验收，不能再把首轮tar拒绝当作新head的未修问题。
-
-当前客观阻塞是CI对固定模型/词库依赖的HTTPS获取持续504：#98真实调用在两次退避后仍失败，不能用旧APK或降低完整性来跳过。依赖按原锁可获取后，先从#96最新head合入最新main文档，再完成三API/四方法/schema2及全量实际门禁。代码、首轮与新轮原件均已持久提交，旧main/host/清理成功不代填。
-
-## 下一轮优先级
-
-1. 实时核对 main、所有未合并 PR 的 head/review/CI 与公开源码 Alpha 身份；保留已有 tag/Release/三个附件。#85/#90 已完成，不重复实现；回读新精确源码的最终门禁并保存原始失败。
-2. #94三API恢复已验，不重复。优先完成#96新鲜配置重启修复、#91实验、#95工具入口与#89扩充集的同源码系统验收。固定42f4562首轮candidate构建HTTP504，三API/新方法/实验全部未执行；SourceAlpha首轮tar拒绝现已保真修正，新head94b的实际prepare成功；新下载仍504且原生未执行。先修构建/来源检查再以新head执行，不能靠旧成功或SKIP代填。区分产品、测试和系统提供程序问题；失败先归档，不用盲重试或修改语料制造通过。
-3. 继续来源明确的候选质量归因，保留原 34 条与新增 64 条冻结集，分别报告候选缺失、重排伤害、九键、补全、个人规则和上下文边界。后续新增样本仍先冻结预期与指标再推理。
-4. 完成无需手机的性能、失败及隐私边界工程，再按 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)一次集中验收冷/热加载、长输入、延迟/RSS/能耗、隐私/迟到结果和双离线语音。没有手机就明确未验，继续其他工作；不在个人设备运行临时 CI 脚本。
-5. 按[开发路线](ROADMAP.md)推进设备配对/冲突/历史密钥与完整灾备、其他原生宿主及英语伴学。macOS #12、Windows #40 的系统激活/独立 profile 失败仍分别保留草稿，不直接合并为完成。服务 CI 不等于手机、公网 R2、生产部署或配对验收。
-
-## 发布与许可边界
-
-用户已授权把当前工作更新仓库、文档和发布。维护成熟开源项目的贡献/安全/版本文档与可追溯源码发行流程，按实际证据标 Alpha；稳定二进制仍需完成真机、签名升级及分发条件。
-
-VoiceKey 作者同意整合的事实已记录，不反复询问同一授权。保留归属与固定来源；标准公开分发条款、第三方模型及候选训练来源声明差异分别待补充，不能由工程通过推导商业分发全清。参考[许可审计](LICENSE_AUDIT.md)和 [VoiceKey 许可边界](../integrations/voicekey/LICENSE)。本次 Release 仅根仓库源码，子模块通过固定 Gitlink 获取，不附 APK/模型权重。
-
-## 必须保持的工程契约
-
-候选 ID/输入代次、受限上下文、隐私字段、一个实际任务加一个最新 pending、80ms 防抖/400ms 结果预算、失败基础回退、worker 所有权与协作取消不能退化。预算不是手机性能保证。候选模型随包与语音模型单独导入是两种契约。
-
-X-ASR 保持默认，VoiceKey 为显式可选；不静默回退云端，不存真实音频。同步仅主 App 显式 HTTPS/逐轮确认，无默认上传或后台轮询；冻结请求/ACK/cursor/整页 AEAD 事务及密钥身份保护保留。
-
-独立切片分支和 PR，更新 STATUS/计划/证据，保留历史失败。运行对应测试：根 workspace/fmt/严格 Clippy，独立 VoiceKey 锁文件，必要时真实 PostgreSQL 事务测试；SKIP 不等于通过。编译、模型合成探针、系统 IME、ARM 真机和正式签名分别记录。临时 CI 的 root、清资料、CA 与网络规则只用于受保护的隔离模拟器，未经授权不操作用户电脑、手机、服务器或 DNS。
+公开源码 [v0.1.0-alpha.1](https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1) 固定 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与三个原附件，不移动标签或覆盖文件。VoiceKey 作者允许整合的事实已记录，不反复询问；标准公开分发条款、第三方模型和候选训练来源声明仍按[许可审计](LICENSE_AUDIT.md)分别收口。源码/开发构建成功不等于通用稳定二进制发布条件完成。

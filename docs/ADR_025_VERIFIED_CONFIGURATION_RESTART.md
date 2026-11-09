@@ -1,6 +1,6 @@
 # ADR-025 · 通过独立新鲜证明保留配置重启组字
 
-状态：实现与本机回归；Android 系统 IME / 独立配置实验尚待本修订实际 CI，不提前称通过。
+状态：已由 PR #102 合入 main；固定 tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6` 的三 API 系统 IME 与 API35 独立配置实验实际通过，见[本轮证据](evidence/android-stability-52f812b-20261108/README.md)。下文早期“随后必须”描述验收要求；真机及任意编辑器 Binder 行为仍不由这些结果推定。
 
 ## 已确认问题
 
