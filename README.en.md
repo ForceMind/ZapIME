@@ -14,6 +14,10 @@ A local-first native Chinese input method with portable dictionaries, phrases, s
 - Local text search, phrases, explicitly saved clipboard entries, permanent favorites and encrypted backups. Temporary clipboard entries remain distinct from favorites.
 - Explicit manual encrypted sync on Android, a self-hosted Go/PostgreSQL service and optional R2/S3 ciphertext storage. Pairing, four-platform interoperability and complete disaster recovery remain unfinished.
 
+**In development:** [Draft PR #104](https://github.com/ForceMind/ZapIME/pull/104) implements an Android local sync status page with at most 40 read-only metadata entries per page. Leaving clears it; no bodies, titles, HTTP requests or upload operations are produced. The first API35/36 page runs passed. The API28 fixture was corrected, but fixed dependency downloads return HTTP504 and block Android acceptance of the new source. This feature is not yet on main; see [STATUS](docs/STATUS.md).
+
+An upload count of zero, or a record with no sync history, does not establish complete cloud backup. Locally recorded server revisions are not a live server check. Explicit initial upload of restored or imported records remains unimplemented under [Issue #77](https://github.com/ForceMind/ZapIME/issues/77); see the [read-only preview contract](docs/SYNC_INVENTORY.md).
+
 ## Platform status
 
 | Platform | Evidence available | Outstanding acceptance |

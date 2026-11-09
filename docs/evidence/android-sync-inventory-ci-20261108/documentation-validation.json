@@ -1,0 +1,36 @@
+{
+  "scope": "documentation-only archive integrity and local reference checks; no new product/runtime test",
+  "archives": [
+    {
+      "file": "first-attempt-d6f98a8.zip",
+      "bytes": 367330,
+      "sha256": "6648cf93abc34375f4a6568d5d5517b4b4dbc291057adcd6c45738e29ebaf203",
+      "crc": "PASS",
+      "inner_sha_entries_checked": 57
+    },
+    {
+      "file": "first-build-package-checks.zip",
+      "bytes": 4582,
+      "sha256": "9fcac28ce5f08cdbd0284bef89807e57969809bc3fe5fb6fc3de9d83513a144b",
+      "crc": "PASS",
+      "inner_sha_entries_checked": 0
+    },
+    {
+      "file": "fixed-head-download-blocker.zip",
+      "bytes": 387981,
+      "sha256": "3980ccd98a721aba132713fc4f5c150d5b52d505871d1a8ee34b04fcb27e7779",
+      "crc": "PASS",
+      "inner_sha_entries_checked": 22
+    },
+    {
+      "file": "fixture-local-validation.zip",
+      "bytes": 7850,
+      "sha256": "105f24ac1fcfc8f07c2ab172b3f7e764a69bb4ae614802f536fcd6c4066ac654",
+      "crc": "PASS",
+      "inner_sha_entries_checked": 0
+    }
+  ],
+  "local_links_checked": 165,
+  "s25_rows_all_not_run": 13,
+  "git_base": "a199d5658f1e071059b4c4b9bd2db02c381c188f"
+}

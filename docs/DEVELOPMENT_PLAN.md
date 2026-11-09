@@ -8,9 +8,9 @@
 
 ## 当前执行接续（2026-11-08 客户端日期）
 
-[PR #102](https://github.com/ForceMind/ZapIME/pull/102) 已将全部组字/配置实验/触摸夹具/候选扩展栈合入 main，merge `88112f48464ecec9c361ba03443cc7081feb6511`。固定 tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6` 的八条 workflow 全部成功，API35 配置实验和三API候选系统输入已实际执行；全量Android首轮系统Launcher ANR失败保留，定点重跑后attempt2为6/6。旧“固定资源504阻断新验收”已经被后续实际执行更新，不能再作为当前阻塞。完整原件与范围见 [STATUS](STATUS.md) 和[本轮证据](evidence/android-stability-52f812b-20261108/README.md)。
+[PR #102](https://github.com/ForceMind/ZapIME/pull/102) 已将全部组字/配置实验/触摸夹具/候选扩展栈合入 main，merge `88112f48464ecec9c361ba03443cc7081feb6511`。固定 tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6` 的八条 workflow 全部成功，API35 配置实验和三API候选系统输入已实际执行；全量Android首轮系统Launcher ANR失败保留，定点重跑后attempt2为6/6。这说明#102历史那轮固定资源504阻断曾经解除；#104当前再次遇到的下载504按下面的新固定源码另行记录。完整原件与范围见 [STATUS](STATUS.md) 和[本轮证据](evidence/android-stability-52f812b-20261108/README.md)。
 
-当前可执行下一切片为 Issue #77 的 Android 只读同步证据分页：共享Rust基础已合并，继续JNI、独立worker、显式状态页及真实Android验收，让0上传与未跟踪记录得到正确展示。这仍不生成首次上传；用户确认、先拉取、重叠ID/唯一性/旧墓碑、冲突与可恢复stage保持独立验收。不得把正常下载重新排队上传。
+Issue #77 的 Android JNI、独立worker与40条只读状态页已在草稿 [#104](https://github.com/ForceMind/ZapIME/pull/104) 实现。首轮 API35/36 各62项通过；API28页面夹具异常已改成生产JNI编辑→导出→导入并通过本机回归，远程head `16c7d89` 的实际Android执行被固定资源 HTTP504 阻断。当前任务是从该分支恢复同源码验收，保留首轮Candidate36输入失败及full35 ADB准备失败，完成后再合并和更新试用包，不从main重做。原件见[本轮记录](evidence/android-sync-inventory-ci-20261108/README.md)。该页不生成首次上传；用户确认、先拉取、重叠ID/唯一性/旧墓碑、冲突与可恢复stage保持独立验收，不把正常下载重新排队上传。
 
 候选 C1 保留 34 条历史与 64 条 v3 冻结合成集，按缺失、九键、补全、个人规则和重排伤害继续归因；v3 38/64→50/64不是用户准确率。无需手机的工程继续推进，ARM/S25、自然语音、长期资源/能耗、正式签名和可恢复升级集中待验。macOS #12/Windows #40 保留系统验收草稿，配对/冲突/历史密钥及英语伴学仍按后续计划执行。
 
