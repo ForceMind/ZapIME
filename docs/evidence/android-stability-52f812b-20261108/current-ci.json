@@ -1,0 +1,74 @@
+[
+  {
+    "id": 42517974761,
+    "name": "Android native input acceptance",
+    "attempt": 2,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974761"
+  },
+  {
+    "id": 42517974542,
+    "name": "VoiceKey Android model acceptance (focused)",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974542"
+  },
+  {
+    "id": 42517974513,
+    "name": "ZapIME development checks",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974513"
+  },
+  {
+    "id": 42517974490,
+    "name": "Source Alpha release",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974490"
+  },
+  {
+    "id": 42517974456,
+    "name": "Windows native TSF development",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974456"
+  },
+  {
+    "id": 42517974445,
+    "name": "Offline candidate ranking acceptance",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974445"
+  },
+  {
+    "id": 42517974402,
+    "name": "Offline speech CPU probe",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974402"
+  },
+  {
+    "id": 42517974397,
+    "name": "Independent ciphertext sync service",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "head_sha": "52f812bc269f35ba636997b9c4664c2b83a22154",
+    "url": "https://github.com/ForceMind/ZapIME/actions/runs/42517974397"
+  }
+]

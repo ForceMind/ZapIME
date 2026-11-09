@@ -1,5 +1,46 @@
 # ZapIME 项目执行状态
 
+## 当前检查点 · 2026-11-08（America/Los_Angeles）
+
+**配置重启组字修复已合并主线。** [PR #102](https://github.com/ForceMind/ZapIME/pull/102) 的合并提交为 `88112f48464ecec9c361ba03443cc7081feb6511`，产品 tree 为 `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`。已验 head `52f812bc269f35ba636997b9c4664c2b83a22154`、实际 CI checkout `8cf2cae1fcc62827a5c508d38609c131ee6f009e` 与合并树完全一致。仓库保持 Public；后续接续仍查询实时 GitHub，不把此快照当永远最新。
+
+#87/#89/#91/#95/#96/#101 的完整提交均是该合并的祖先；重复 PR 已由 #102 收口。原 #12/macOS 和 #40/Windows 系统输入草稿仍未通过，继续保留。
+
+### 本次实际完成
+
+- 同编辑器配置重启通过独立、有界的新鲜状态证明保留拼音。重复 start 会失效旧证明，最多两次串行读且不延长原 800ms 预算；普通 restart 仍保留强选区/快照校验，setter 重入不能写回过期状态。
+- API35 独立配置实验真实观察到两次 restart，`你好sh → 你好shi → 你好是` 的触摸、候选身份与独立 Editable 全部通过；连续输入连接、焦点、新鲜证明、设置恢复、系统键盘切换、服务退出及网络规则清理通过。
+- 同树八条 workflow 全部 SUCCESS。全量 Android 首轮 VoiceKey API35 被系统 Launcher ANR 对话框遮挡，模型未开始解码；保留原 ZIP、SHA 与错误报告，仅定点重跑该作业，attempt2 最终六作业成功。后续成功不修改首轮失败。
+- 重新执行根 Rust workspace 143 项、格式检查与严格 Clippy；独立审查及 ordinary 5 项/22 状态、pending 10 项/32 场景、3 组 JVM 回归通过。JVM、未附着 Editable helper、系统 IME 与手机范围分别记录。
+- 扩充的 64 条冻结候选 v3 语料随开发栈合入。基础首选 38/64、上下文首选 50/64；候选缺失 5 条及全部排序退步保留。这是合成质量基线，不是用户准确率。
+
+### 固定源码的验收入口
+
+| 门禁 | 运行与结果 |
+| --- | --- |
+| Android 全量 | [42517974761](https://github.com/ForceMind/ZapIME/actions/runs/42517974761)，attempt2 最终 6/6 SUCCESS；首轮失败另存 |
+| 候选模型与配置重启 | [42517974445](https://github.com/ForceMind/ZapIME/actions/runs/42517974445)，6/6 SUCCESS，三 API 模型/系统输入及 API35 配置实验 |
+| VoiceKey / 恢复 / 同步专项 | [42517974542](https://github.com/ForceMind/ZapIME/actions/runs/42517974542)，SUCCESS；各专项依原报告区分 |
+| 共享核心与 Apple 开发宿主 | [42517974513](https://github.com/ForceMind/ZapIME/actions/runs/42517974513)，SUCCESS |
+| Windows 开发宿主 | [42517974456](https://github.com/ForceMind/ZapIME/actions/runs/42517974456)，SUCCESS；不是 #40 系统 profile 验收 |
+| 语音 CPU | [42517974402](https://github.com/ForceMind/ZapIME/actions/runs/42517974402)，SUCCESS；不代替自然语音/手机 |
+| 密文同步服务 | [42517974397](https://github.com/ForceMind/ZapIME/actions/runs/42517974397)，SUCCESS |
+| 源码准备 | [42517974490](https://github.com/ForceMind/ZapIME/actions/runs/42517974490)，SUCCESS；publish 条件跳过，没有新发行 |
+
+本轮原件、严格复验、源码身份及独立审查见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。此快照之后的 main push CI 应以自己的 SHA 回读，不用上表代填。
+
+### 接下来的产品工作
+
+Issue [#77](https://github.com/ForceMind/ZapIME/issues/77) 的共享 Rust 只读同步证据分页已合并；恢复/导入记录不会自动生成待发操作，`pending=0` 或本轮上传 0 条不等于全部资料已备份。下一独立切片是 Android JNI 与显式分页状态页，随后仍要实现用户确认、先拉取远端、墓碑/冲突处理和可恢复首次发布。不得从 `untracked` 自动上传。
+
+继续候选缺失/九键/重排伤害归因、无需手机的隐私与失败工程。ARM/S25、自然人声、长期资源/能耗、正式签名与可恢复升级、四端系统输入、配对与历史密钥灾备仍各自待验；手机操作集中在 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)。
+
+公开 [v0.1.0-alpha.1](https://github.com/ForceMind/ZapIME/releases/tag/v0.1.0-alpha.1) 仍固定源码 `026bfb8bf467c0d45193a50016e298c3dbb0ac01` 与原三个附件，没有移动标签、覆盖资产或把开发 APK 宣称为稳定版本。VoiceKey 分发条款与候选训练来源声明仍按[许可审计](LICENSE_AUDIT.md)分别处理。
+
+## 以下为合并前历史记录
+
+下面的“待 CI”“下载阻断”“当前 main”等均描述当时固定源码和运行，不覆盖上面的最新检查点；原始失败和证据字节继续保留。
+
 ## 普通强保留的setter重入保护（独立后续切片）
 
 已用实际Java方法/outer分支和合成生命周期复现普通路径guard gap：begin/set/end重入finish/newEditor后，旧方法仍可能尝试旧setter、覆盖Service选区/EditorInfo并返回retained。原件不证明RemoteInputConnection实际接受或旧reply上屏。新私有三态与inputLifecycle/epoch/starts/连接/info/原metadata和owned组字守卫阻止失效frame继续或fallback旧info；原强快照/选区准入保留，合法旧reply推进仍允许。

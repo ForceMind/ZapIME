@@ -1,0 +1,320 @@
+{
+  "source_commit": "52f812bc269f35ba636997b9c4664c2b83a22154",
+  "checks": [
+    {
+      "name": "candidate-api28-14-methods",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13631968958
+      }
+    },
+    {
+      "name": "candidate-api28-system-ime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "candidate-api28-suite-exit-and-uid-cleanup",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "candidate-api35-14-methods",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13633110659
+      }
+    },
+    {
+      "name": "candidate-api35-7-restart-editable-helpers",
+      "status": "PASS",
+      "detail": {
+        "cases": 7,
+        "scope": "Unattached Service helper/Android Editable; full system configuration separate"
+      }
+    },
+    {
+      "name": "candidate-api35-system-ime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "candidate-api35-suite-exit-and-uid-cleanup",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "candidate-api36-14-methods",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13632472954
+      }
+    },
+    {
+      "name": "candidate-api36-7-restart-editable-helpers",
+      "status": "PASS",
+      "detail": {
+        "cases": 7,
+        "scope": "Unattached Service helper/Android Editable; full system configuration separate"
+      }
+    },
+    {
+      "name": "candidate-api36-system-ime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "candidate-api36-suite-exit-and-uid-cleanup",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "configuration-api35-same-editor-composition-and-cleanup",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "voicekey-focused-api28-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13632132951
+      }
+    },
+    {
+      "name": "voicekey-focused-api35-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13632886018
+      }
+    },
+    {
+      "name": "voicekey-focused-api36-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13632920300
+      }
+    },
+    {
+      "name": "voicekey-full-api28-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13632656445
+      }
+    },
+    {
+      "name": "voicekey-full-api36-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13632314559
+      }
+    },
+    {
+      "name": "voicekey-full-attempt2-api35-37-model-and-editable-plus-5-boundaries",
+      "status": "PASS",
+      "detail": {
+        "model_cases": 14,
+        "confirmation_cases": 23,
+        "jni_boundary_cases": 5,
+        "artifact_id": 13655606127
+      }
+    },
+    {
+      "name": "sync-api28-sync-preparation-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 11,
+        "artifact_id": 13632611264
+      }
+    },
+    {
+      "name": "sync-api28-sync-preparation-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632611264
+      }
+    },
+    {
+      "name": "sync-api28-sync-key-registration-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13632611264
+      }
+    },
+    {
+      "name": "sync-api28-sync-transfer-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 12,
+        "artifact_id": 13632611264
+      }
+    },
+    {
+      "name": "sync-api28-sync-pages-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632611264
+      }
+    },
+    {
+      "name": "sync-api28-uid-and-runtime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sync-api35-sync-preparation-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 11,
+        "artifact_id": 13632586869
+      }
+    },
+    {
+      "name": "sync-api35-sync-preparation-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632586869
+      }
+    },
+    {
+      "name": "sync-api35-sync-key-registration-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13632586869
+      }
+    },
+    {
+      "name": "sync-api35-sync-transfer-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 12,
+        "artifact_id": 13632586869
+      }
+    },
+    {
+      "name": "sync-api35-sync-pages-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632586869
+      }
+    },
+    {
+      "name": "sync-api35-uid-and-runtime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "sync-api36-sync-preparation-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 11,
+        "artifact_id": 13632736777
+      }
+    },
+    {
+      "name": "sync-api36-sync-preparation-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632736777
+      }
+    },
+    {
+      "name": "sync-api36-sync-key-registration-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 14,
+        "artifact_id": 13632736777
+      }
+    },
+    {
+      "name": "sync-api36-sync-transfer-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 12,
+        "artifact_id": 13632736777
+      }
+    },
+    {
+      "name": "sync-api36-sync-pages-ui-report.json",
+      "status": "PASS",
+      "detail": {
+        "cases": 10,
+        "artifact_id": 13632736777
+      }
+    },
+    {
+      "name": "sync-api36-uid-and-runtime",
+      "status": "PASS",
+      "detail": null
+    },
+    {
+      "name": "actual-android-https-api28-3-phases-go-postgresql-and-cleanup",
+      "status": "PASS",
+      "detail": {
+        "phase_cases": 14,
+        "artifact_id": 13632262421
+      }
+    },
+    {
+      "name": "full-android-api28-two-keyboard-rounds-native-voice-backup-sync-and-cleanup",
+      "status": "PASS",
+      "detail": {
+        "artifact_id": 13632357194,
+        "report_validation": "Exact pure report block from pinned source plus original instrument/teardown/UID evidence"
+      }
+    },
+    {
+      "name": "full-android-api35-two-keyboard-rounds-native-voice-backup-sync-and-cleanup",
+      "status": "PASS",
+      "detail": {
+        "artifact_id": 13632114246,
+        "report_validation": "Exact pure report block from pinned source plus original instrument/teardown/UID evidence"
+      }
+    },
+    {
+      "name": "full-android-api36-two-keyboard-rounds-native-voice-backup-sync-and-cleanup",
+      "status": "PASS",
+      "detail": {
+        "artifact_id": 13632133976,
+        "report_validation": "Exact pure report block from pinned source plus original instrument/teardown/UID evidence"
+      }
+    },
+    {
+      "name": "exact-pr-head-and-checkout-tree-build-identity",
+      "status": "PASS",
+      "detail": null
+    }
+  ],
+  "passed": true,
+  "limitations": [
+    "Report replay is independent revalidation of retained CI evidence, not new device execution.",
+    "Seven restart Editable helpers apply only to API31+, run on API35/36; API28 is not claimed.",
+    "Complete Android API28 reports were independently extracted from its SHA256-verified mixed 248741116-byte artifact; APKs and PCM are omitted from the evidence bundle.",
+    "Candidate/focused APK hashes are build metadata; their separate binaries were not independently downloaded.",
+    "Phone/ARM/natural voice/signing/other-platform system input remain unaccepted."
+  ]
+}

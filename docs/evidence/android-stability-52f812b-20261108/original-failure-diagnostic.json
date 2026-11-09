@@ -1,0 +1,41 @@
+{
+  "artifact_id": 13632636522,
+  "run_id": 42517974761,
+  "attempt": 1,
+  "job_id": 128848444057,
+  "original_file": "voicekey-android/last-anr.txt",
+  "original_file_sha256": "e80492c881dfcfe7620657af9f9af517f2a1c6ae539ace0c154bac589030614a",
+  "selected_original_lines": [
+    {
+      "line": 1,
+      "text": "ACTIVITY MANAGER LAST ANR (dumpsys activity lastanr)"
+    },
+    {
+      "line": 2,
+      "text": "  ANR time: Nov 8, 2026 8:17:21 PM"
+    },
+    {
+      "line": 3,
+      "text": "  Reason: Input dispatching timed out (Application does not have a focused window)."
+    },
+    {
+      "line": 4,
+      "text": ""
+    },
+    {
+      "line": 5,
+      "text": "  * TaskFragment{fb94b96 mode=multi-window organizerUid=10179 organizerProc=com.google.android.apps.nexuslauncher}"
+    },
+    {
+      "line": 22,
+      "text": "    packageName=com.google.android.apps.nexuslauncher processName=com.google.android.apps.nexuslauncher"
+    },
+    {
+      "line": 72,
+      "text": "      packageName=com.google.android.apps.nexuslauncher processName=com.google.android.apps.nexuslauncher"
+    }
+  ],
+  "classification": "Launcher input-dispatch ANR overlay prevented SAF filename geometry from stabilizing; model decoding did not run.",
+  "original_archive_retained_separately": true,
+  "later_success_does_not_rewrite_original_failure": true
+}
