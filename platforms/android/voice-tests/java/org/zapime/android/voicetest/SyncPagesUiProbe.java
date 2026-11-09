@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Instrumentation;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.database.Cursor;
@@ -212,8 +213,8 @@ final class SyncPagesUiProbe {
         Context context=instrumentation.getTargetContext();ClassLoader loader=context.getClassLoader();
         Class<?> core=Class.forName("org.zapime.android.NativeCore",true,loader),vault=Class.forName("org.zapime.android.SyncSecrets",true,loader),model=Class.forName("org.zapime.android.SyncConnection",true,loader),store=Class.forName("org.zapime.android.SyncConnectionStore",true,loader),preparation=Class.forName("org.zapime.android.SyncPreparation",true,loader),installer=Class.forName("org.zapime.android.ResourceInstaller",true,loader),worker=Class.forName("org.zapime.android.SyncWorker",true,loader);
         java.lang.reflect.Field field=worker.getDeclaredField("EXECUTOR");field.setAccessible(true);Object rawWorker=field.get(null);check(rawWorker instanceof ThreadPoolExecutor,"actual bounded SyncWorker required");ThreadPoolExecutor executor=(ThreadPoolExecutor)rawWorker;
-        File root=new File(context.getFilesDir(),"zapime"),database=new File(root,"data/personal.sqlite3");UUID account=UUID.randomUUID(),device=UUID.randomUUID();
-        List<Activity> activities=new ArrayList<>();List<Page> pages=new ArrayList<>();JSONArray cases=new JSONArray();Trace trace=new Trace();String stage="fresh_main_prepared_fixture";Throwable operationFailure=null;boolean owned=false;long handle=0;
+        File root=new File(context.getFilesDir(),"zapime"),database=new File(root,"data/personal.sqlite3"),archiveDirectory=new File(context.getCacheDir(),"sync-pages-archive-"+UUID.randomUUID());UUID account=UUID.randomUUID(),device=UUID.randomUUID();
+        List<Activity> activities=new ArrayList<>();List<Page> pages=new ArrayList<>();JSONArray cases=new JSONArray();Trace trace=new Trace();String stage="fresh_main_prepared_fixture";Throwable operationFailure=null;boolean owned=false,archiveOwned=false;long handle=0,archiveHandle=0;
         byte[] material=null,before=null,materialCipher=null,connectionCipher=null;
         JSONObject report=new JSONObject().put("schema_version",2).put("status","FAIL").put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("scope",SCOPE)
                 .put("button_activation_method",ACTIVATION).put("cancellation_scope",CANCEL_SCOPE).put("android_https","NOT RUN").put("active_https_interruption_tested",false).put("physical_input_tested",false).put("network_success_tested",false).put("secret_content_or_code_logged",false);
@@ -226,13 +227,17 @@ final class SyncPagesUiProbe {
                 for(String suffix:new String[]{"",".bak",".new"})check(!Files.exists(new File(context.getNoBackupFilesDir(),"sync-"+purpose+"-"+account+".bin"+suffix).toPath(),LinkOption.NOFOLLOW_LINKS),"random sync pages vault file exists");
             }
             owned=true;call(installer,"prepare",new Class<?>[]{Context.class},context);handle=(Long)call(core,"open",new Class<?>[]{String.class,boolean.class},root.toString(),false);check(handle!=0,"sync pages production database initialization failed");
+            // The bundled native SQLite owns the JSON expression indexes. Older
+            // framework SQLite must not write this database to build a fixture.
+            check(archiveDirectory.mkdir(),"fresh sync pages archive fixture required");archiveOwned=true;
+            Context archiveContext=new ContextWrapper(context){@Override public File getFilesDir(){return archiveDirectory;}};
+            call(installer,"prepare",new Class<?>[]{Context.class},archiveContext);
+            archiveHandle=(Long)call(core,"open",new Class<?>[]{String.class,boolean.class},new File(archiveDirectory,"zapime").toString(),false);check(archiveHandle!=0,"sync pages archive initialization failed");
+            for(int n=1;n<=43;n++)request(core,archiveHandle,new JSONObject().put("op","personal_edit").put("id",new UUID(0,n).toString()).put("operation_id",UUID.randomUUID().toString()).put("expected_revision",0).put("deleted",n%7==0).put("content",new JSONObject().put("type","favorite").put("title","synthetic pages").put("text","页面生命周期合成资料")));
+            String archive=request(core,archiveHandle,new JSONObject().put("op","personal_export")).getString("archive");
+            call(core,"close",new Class<?>[]{long.class},archiveHandle);archiveHandle=0;
+            request(core,handle,new JSONObject().put("op","personal_import").put("archive",archive));
             request(core,handle,new JSONObject().put("op","personal_edit").put("id",new UUID(0,44).toString()).put("operation_id",UUID.randomUUID().toString()).put("expected_revision",0).put("content",new JSONObject().put("type","favorite").put("title","synthetic pages").put("text","页面生命周期合成资料")));
-            // UI-only rows are synthetic, not evidence of a real restoration;
-            // SyncTransferProbe separately exercises the actual import path.
-            try(SQLiteDatabase db=SQLiteDatabase.openDatabase(database.toString(),null,SQLiteDatabase.OPEN_READWRITE);Cursor first=db.rawQuery("SELECT body FROM records",null)){
-                check(first.moveToFirst(),"inventory UI seed missing");String body=first.getString(0);
-                for(int n=1;n<=43;n++){String id=new UUID(0,n).toString();JSONObject synthetic=new JSONObject(body).put("id",id).put("deleted",n%7==0);db.execSQL("INSERT INTO records VALUES(?,?,?)",new Object[]{id,1,synthetic.toString()});}
-            }
             call(core,"close",new Class<?>[]{long.class},handle);handle=0;saveConnection(context,model,store,account,device);call(preparation,"create",new Class<?>[]{Context.class,UUID.class},context,account);
             material=(byte[])call(vault,"load",new Class<?>[]{Context.class,UUID.class},context,account);check(material!=null,"sync pages prepared material missing");
             JSONObject descriptor=new JSONObject((String)call(core,"syncKeyDescriptor",new Class<?>[]{String.class,byte[].class},account.toString(),material));UUID key=UUID.fromString(descriptor.getString("key_id"));String digest=descriptor.getString("material_sha256");
@@ -258,6 +263,11 @@ final class SyncPagesUiProbe {
             for(Activity activity:activities)try{SyncAccountProbe.main(instrumentation,()->{activity.finish();return null;});}catch(Throwable error){cleanup=add(cleanup,error);}
             try{executor.submit(()->{}).get(15,TimeUnit.SECONDS);instrumentation.waitForIdleSync();}catch(Throwable error){cleanup=add(cleanup,error);}
             try{if(handle!=0)call(core,"close",new Class<?>[]{long.class},handle);}catch(Throwable error){cleanup=add(cleanup,error);}
+            try{if(archiveHandle!=0)call(core,"close",new Class<?>[]{long.class},archiveHandle);}catch(Throwable error){cleanup=add(cleanup,error);}
+            if(archiveOwned)try{
+                try(java.util.stream.Stream<Path> paths=Files.walk(archiveDirectory.toPath())){for(Path path:(Iterable<Path>)paths.sorted(Comparator.reverseOrder())::iterator)Files.delete(path);}
+                check(!Files.exists(archiveDirectory.toPath(),LinkOption.NOFOLLOW_LINKS),"sync pages archive cleanup left its fixture");
+            }catch(Throwable error){cleanup=add(cleanup,error);}
             if(owned){
                 boolean rootStillOwned=true;
                 try{

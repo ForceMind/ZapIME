@@ -6,7 +6,7 @@ use serde_json::{json, Value};
 use std::path::{Path, PathBuf};
 use uuid::Uuid;
 use zapime_core::InputSession;
-use zapime_data::{sync::UploadOperation, Content, Record, Store};
+use zapime_data::{inventory::InventoryState, sync::UploadOperation, Content, Record, Store};
 use zapime_sync::{
     client,
     workspace::{self, Material},
@@ -346,4 +346,100 @@ fn synced_candidate_rule_tombstone_stays_deleted_in_new_sessions_and_records_bac
     assert_eq!(committed["commit_source"], "engine");
     assert!(pair.b_store.records(false).unwrap().is_empty());
     pair.records_only_backup_roundtrip(id);
+}
+
+#[test]
+fn native_records_import_then_one_edit_keeps_inventory_fixture_history_and_indexes() {
+    // Mirror the Android UI fixture through production requests, including the
+    // records-only boundary. This is a host semantic check, not an Activity run.
+    let mut pair = Pair::new();
+    let content = Content::Favorite {
+        title: "synthetic pages".into(),
+        text: "页面生命周期合成资料".into(),
+    };
+    for index in 1..=43 {
+        pair.edit(Uuid::from_u128(index), 0, &content, index % 7 == 0);
+    }
+    let archive = pair.a.request(&json!({"op":"personal_export"}));
+    let root = pair.directory.path().join("inventory-restored");
+    let mut restored = open(&pair.resources, &root, false);
+    let imported = restored.request(&json!({
+        "op":"personal_import", "archive":archive["archive"].as_str().unwrap(),
+    }));
+    assert!(imported.get("error").is_none());
+    let path = std::fs::canonicalize(root.join("data/personal.sqlite3")).unwrap();
+    let mut store = Store::open_sync_writer(&path).unwrap();
+    assert_eq!(store.records(true).unwrap().len(), 43);
+    assert_eq!(store.pending_count().unwrap(), 0);
+    let edited = restored.request(&json!({
+        "op":"personal_edit", "id":Uuid::from_u128(44),
+        "operation_id":Uuid::new_v4(), "expected_revision":0, "content":content,
+    }));
+    assert!(edited.get("error").is_none());
+    drop(restored);
+    assert!(
+        workspace::prepare(&path, pair.profile, &pair.a_material)
+            .unwrap()
+            .prepared
+    );
+    let frozen = client::stage_next(&mut store, pair.profile, &pair.a_material)
+        .unwrap()
+        .unwrap();
+    assert_eq!(frozen.record_id, Uuid::from_u128(44));
+    let wire = client::frozen_wire(&mut store, pair.profile, &pair.a_material, &frozen).unwrap();
+    let before = store.export_plaintext().unwrap();
+    let mut reader = Store::open_sync_reader(&path).unwrap();
+    let first =
+        client::inventory_page(&mut reader, pair.profile, &pair.a_material, None, 40).unwrap();
+    let last = client::inventory_page(
+        &mut reader,
+        pair.profile,
+        &pair.a_material,
+        first.next_after,
+        40,
+    )
+    .unwrap();
+    assert_eq!(first.items.len(), 40);
+    assert_eq!(first.next_after, Some(Uuid::from_u128(40)));
+    assert_eq!(last.items.len(), 4);
+    assert!(last.next_after.is_none());
+    let items = first.items.iter().chain(&last.items).collect::<Vec<_>>();
+    assert_eq!(items.iter().filter(|item| item.deleted).count(), 6);
+    for (index, item) in items.iter().enumerate() {
+        let pending = index == 43;
+        assert_eq!(item.id, Uuid::from_u128(index as u128 + 1));
+        assert_eq!(
+            item.state,
+            if pending {
+                InventoryState::PendingLocalOperation
+            } else {
+                InventoryState::Untracked
+            }
+        );
+        assert_eq!(item.has_local_operation_history, pending);
+        assert_eq!(item.has_pending_local_operation, pending);
+        assert!(item.known_server_revision.is_none());
+    }
+    let db =
+        rusqlite::Connection::open_with_flags(&path, rusqlite::OpenFlags::SQLITE_OPEN_READ_ONLY)
+            .unwrap();
+    assert_eq!(
+        db.query_row::<u32, _, _>("SELECT count(*) FROM operations", [], |row| row.get(0))
+            .unwrap(),
+        1
+    );
+    assert_eq!(
+        db.query_row::<u32, _, _>(
+            "SELECT count(*) FROM sqlite_master WHERE type='index' AND name IN ('panel_order','sync_pending_record')",
+            [],
+            |row| row.get(0),
+        ).unwrap(),
+        2
+    );
+    assert_eq!(store.pending_count().unwrap(), 1);
+    assert_eq!(store.export_plaintext().unwrap(), before);
+    assert_eq!(
+        client::frozen_wire(&mut store, pair.profile, &pair.a_material, &frozen).unwrap(),
+        wire
+    );
 }

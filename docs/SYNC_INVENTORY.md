@@ -65,6 +65,8 @@ JNI 返回仅 `items` 与 `next_after`（失败仅固定 `error`）。Android �
 
 真实 SQLite 回归覆盖 records-only 恢复且 pending=0、307 条含墓碑资料按 7 条分页、无正文输出、全表逻辑与 schema 不变、错误完整绑定/非法限制/坏元数据/缺索引拒绝，以及实际 SQLite VM 中断后的清理与重试。共享客户端测试使用真实 AEAD 两库交换，验证正常下载及同内容 adopt 保持零回声、ACK 可以领先 pull cursor、旧本机操作不能冒充远端更新后的当前快照，冻结请求字节保持不变。
 
-本轮 Android 三 API 验收入口继续复用独立离线同步作业：`SyncTransferProbe` 增加实际 records-only 导入→prepare→43条/两页/6墓碑的 JNI 预览、已冻结请求与真实认证下载零回声不变、坏身份/参数和严格解析拒绝；`SyncPagesUiProbe` 经真实入口按钮验证40+4条页面、只留当前页、末页/刷新、实际 worker 排队取消、退出清页和迟到拒绝。两份报告分别提升 schema 为2，旧 schema1 证据不能代填新增门禁；全表逻辑快照、vault 字节和清理必须保持一致。UI夹具的43条记录为独立合成行，真正恢复链由 JNI 探针另行执行，不能混称。
+本轮 Android 三 API 验收入口继续复用独立离线同步作业：`SyncTransferProbe` 增加实际 records-only 导入→prepare→43条/两页/6墓碑的 JNI 预览、已冻结请求与真实认证下载零回声不变、坏身份/参数和严格解析拒绝；`SyncPagesUiProbe` 经真实入口按钮验证40+4条页面、只留当前页、末页/刷新、实际 worker 排队取消、退出清页和迟到拒绝。两份报告分别提升 schema 为2，旧 schema1 证据不能代填新增门禁；全表逻辑快照、vault 字节和清理必须保持一致。UI夹具通过生产 JNI 在独立随机目录编辑43条合成记录、导出 records-only 归档、导入空主夹具，再编辑第44条，形成43条无同步记录与1条冻结待发操作。目录与句柄纳入原有清理门禁；不让可能缺少 JSON 函数的 Android framework SQLite 写入带有 Rust JSON 表达式索引的库，framework 连接仅用于原有只读快照。
+
+核心主机回归 `native_records_import_then_one_edit_keeps_inventory_fixture_history_and_indexes` 通过实际 `InputSession` 请求验证同一编辑→导出→导入链，检查40+4分页、6条墓碑、43条无同步记录、唯一新操作、冻结字节与 `panel_order`/`sync_pending_record` 索引保留。它不执行 Android framework SQLite 或 Activity，不能代替修复后源码的实际 Android 运行。
 
 这些新增 Android 探针须以新固定源码在 CI 实际运行；本机 Java 编译不能代替 JNI、Activity 或手机通过。首次发布仍需要用户确认、先拉取远端、已存在版本/唯一性/墓碑冲突处理、有界幂等新操作及可恢复进度，按 Issue #77 继续独立实现；不要从 `untracked` 自动生成操作，也不要修改旧冻结请求或把下载内容重新上传。该只读页面不构成 Android HTTPS、真实服务 HTTP、手机或跨设备同步验收。
