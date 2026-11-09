@@ -1,6 +1,36 @@
 # ZapIME 项目执行状态
 
-## 当前检查点 · 2026-11-08（America/Los_Angeles）
+## 当前开发检查点 · 2026-11-08（America/Los_Angeles）
+
+**组字修复已在主线；Android 本地同步状态页已实现，保留草稿等待新源码验收。** 主线检查点为 `a199d5658f1e071059b4c4b9bd2db02c381c188f`（#102 产品整合与 #103 验收文档），后续仍须查询实时 GitHub。新代码位于 [PR #104](https://github.com/ForceMind/ZapIME/pull/104) / `feat/android-sync-inventory-preview`，远程 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`。不要从 main 重做已经在分支完成的 JNI、页面和夹具修复。
+
+### 新实现与实际范围
+
+- 主 App 手动同步页增加“查看本地同步状态”。独立页面每页最多40条，只保留当前页，显示 ID、类型、修订、删除标记及本机同步线索，不读取到 UI 的正文或标题，不产生 HTTP 或上传操作。
+- 独立同步 worker 使用真实 SQLite 只读连接、完整材料绑定和有界查询；严格解析、连接/密钥复核、退出清空及迟到结果拒绝均已实现。`pending=0`、`untracked` 或本机已知服务修订不表示完整云备份。
+- 本机初始实现 144 项 Rust workspace、fmt/严格 Clippy、51 项同步 Python、10 项打包检查与产品/测试 Java 编译通过；修复夹具后目标 Rust 4/4、报告 10/10、20 个 voice Java 源和 targeted strict Clippy 通过。新16c实际 CI 的源码准备及 Linux/macOS 各145项、Windows142项通过，三平台均执行 fmt/test/严格 Clippy；Windows少3项为明确 Unix 限定的 symlink 测试。测试范围有重叠，不相加当独立场景。
+- 首轮 head `d6f98a8`（实际 checkout `e6bf431`，tree `88646a7`）的 API35/36 各62项同步门禁通过，包含真实 JNI 与 Activity 分页/取消；API28 前50项通过，页面在 fixture 准备发生 `SQLiteException`，未完成12项 UI 验收。两架构开发包已独立核签名、16KiB 对齐、固定资源/JNI/manifest；不作为新源码全面通过或手机证据。
+
+### 已修复的测试夹具与当前阻塞
+
+原夹具用 Android framework SQLite 写入带 JSON 表达式索引的 Rust 资料库；新固定修订通过生产 JNI 的编辑→导出→导入构造43条恢复记录，再编辑第44条，保留40+4分页、6条墓碑、唯一待发/冻结操作和所有原断言。只改测试、语义回归与文档，未修改生产输入路径、索引或报告校验器。独立本机 SQLite 有/无 JSON 对照复现了只读可行、INSERT 因缺函数失败的机制；原 API28 报告没有详细错误消息，不能把对照称为平台根因已直接捕获。
+
+修复后本地 `72ddf646b8cc3dd9db1b819891aa5cda8cb0d536` 与远程 `16c7d89ff7faa6c3b4979074ed9301cf25be9544` 同 tree `a6f1e6160edb3763859d62583d63e9f5f22dbd88`。实际 PR checkout `4c182b24347d08c2008863a29f369a7089eaeca2` 合入 main 的19份文档，tree `a73b74ca12b199c282fc8afc55256e6d0578753b`；产品/测试源码一致。
+
+新 [focused 42579960224](https://github.com/ForceMind/ZapIME/actions/runs/42579960224)、[完整 Android 42579960293](https://github.com/ForceMind/ZapIME/actions/runs/42579960293)、[候选 42579960257](https://github.com/ForceMind/ZapIME/actions/runs/42579960257) 等在固定模型/词库获取阶段连续三次 HTTP504。云端对空目录调用原生产获取函数也失败；没有改 URL、镜像、SHA、TLS 或重试门槛，没有循环重跑。修复后的三 API JNI/Activity 尚未执行，缺 APK 的下游失败或跳过不能当产品运行结果。PR #104 保持 draft，不合并为已验收。
+
+### 其他首轮失败继续保留
+
+1. Candidate API36 的实际系统输入在 `touch_pinyin_1` 未收到第6键，独立 Editable 仅保留合成“你好”；附近观察到配置 restart/视图重建。没有 DOWN/UP/click/dispatch 时间，具体因果未确认，不能归成 ADB/下载故障或因后续成功关闭 [Issue #38](https://github.com/ForceMind/ZapIME/issues/38)。method 与全部清理通过不覆盖输入失败。
+2. 全量 API35 在 `adb root` 准备阶段返回1，尚未执行键盘/语音；捕获日志没有具体拒绝原因。与上述输入失败、API28 SQL fixture 失败分别保存。
+
+[本轮原件、诊断、修复审查与下载阻塞](evidence/android-sync-inventory-ci-20261108/README.md)保留各自固定源码。原公开源码 Alpha、正式签名、用户手机/电脑/服务器与 DNS 均未改动。
+
+### 下一次从这里继续
+
+先核对当前 PR head 和原固定来源可获取性；恢复后针对当前源码执行构建与 API28/35/36 新 schema2 的62项门禁，并严格重验原报告。候选或全量输入再次失败时保留现场，补有界无正文触摸/派发/ready/epoch 事件后定位，不延长睡眠或重试按键制造通过。只有满足对应验收后再合并 #104、更新试用包；随后继续 Issue #77 的显式首次上传，当前未实现该能力。
+
+## 已合并组字检查点 · 2026-11-08（America/Los_Angeles）
 
 **配置重启组字修复已合并主线。** [PR #102](https://github.com/ForceMind/ZapIME/pull/102) 的合并提交为 `88112f48464ecec9c361ba03443cc7081feb6511`，产品 tree 为 `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`。已验 head `52f812bc269f35ba636997b9c4664c2b83a22154`、实际 CI checkout `8cf2cae1fcc62827a5c508d38609c131ee6f009e` 与合并树完全一致。仓库保持 Public；后续接续仍查询实时 GitHub，不把此快照当永远最新。
 
