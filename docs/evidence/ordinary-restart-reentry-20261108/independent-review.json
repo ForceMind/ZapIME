@@ -1,0 +1,13 @@
+{
+  "reviewer": "independent probe_review agent (test author, not product implementation author)",
+  "scope": "Read-only product guard and Android helper probe review; no real device/Binder/system execution",
+  "result": "no blocking issue found",
+  "verified": [
+    "INVALIDATED exits outer before old-info fallback",
+    "Original connection cleanup batch remains balanced",
+    "Legitimate drain advancement permitted but lifecycle/metadata changes rejected",
+    "Private lifecycle token separates expected cancellation epoch advance from nested finish",
+    "Android helper probes use public InputConnectionWrapper and no hidden framework connection fields",
+    "Report requires seven exact cases; previous four cannot substitute"
+  ]
+}

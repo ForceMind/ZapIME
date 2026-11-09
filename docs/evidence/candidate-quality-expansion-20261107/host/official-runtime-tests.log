@@ -1,0 +1,9 @@
+test_bad_archive_digest_preserves_existing_host_library (test_prepare_candidate_host_runtime.HostRuntimeTests.test_bad_archive_digest_preserves_existing_host_library) ... ok
+test_linked_destination_and_linked_member_output_never_touch_target (test_prepare_candidate_host_runtime.HostRuntimeTests.test_linked_destination_and_linked_member_output_never_touch_target) ... ok
+test_links_duplicates_sizes_and_member_hash_mismatches_fail_closed (test_prepare_candidate_host_runtime.HostRuntimeTests.test_links_duplicates_sizes_and_member_hash_mismatches_fail_closed) ... ok
+test_valid_cached_archive_extracts_only_named_verified_regular_members (test_prepare_candidate_host_runtime.HostRuntimeTests.test_valid_cached_archive_extracts_only_named_verified_regular_members) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.006s
+
+OK

@@ -1,0 +1,44 @@
+{
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1126,
+      "sha256": "8fe68e2cd43e9d178e093884f1261071ee06e1ce61c67ff8ac35325d549e4fbf"
+    },
+    {
+      "path": "before/actual-method-repro.java.txt",
+      "bytes": 5370,
+      "sha256": "030f6b1d76f68120a700785810b59d32c48abfb24e2f6fb902174d1c4363ea68"
+    },
+    {
+      "path": "before/reproduction.log",
+      "bytes": 232,
+      "sha256": "dff9d75943f2563c61444d44fd62edec1adbc53674327c5a1909175a0c461187"
+    },
+    {
+      "path": "before/source.json",
+      "bytes": 573,
+      "sha256": "97303b944d75992b2b56f39b9e95ce33b33e7be5ed85b2f115ef2217f9e54006"
+    },
+    {
+      "path": "host-compile.log",
+      "bytes": 198,
+      "sha256": "c6bd7ae4d6d8e532ff9c44d82c140960370fe36126644dc68289b002f97a07f4"
+    },
+    {
+      "path": "local-tests.log",
+      "bytes": 2022,
+      "sha256": "5e21aed74696e97229de1f35dae2f7a7340be2ce4a65e04b5d13b14af8816e27"
+    },
+    {
+      "path": "product-compile.log",
+      "bytes": 198,
+      "sha256": "c6bd7ae4d6d8e532ff9c44d82c140960370fe36126644dc68289b002f97a07f4"
+    },
+    {
+      "path": "validation.json",
+      "bytes": 888,
+      "sha256": "2518cc284eda22a72e4964dd967095fea649e73503dbb81dae88c1fdbbe5f69f"
+    }
+  ]
+}

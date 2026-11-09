@@ -1,0 +1,39 @@
+{
+  "parent_commit": "aef7a2f173d829cdefcf55887b27fd19cb15ff0f",
+  "scope": "Observe successful input/search and personal-data callback epoch rejection before original upper admission guards; no payload reads or admission change. Other callback/filter paths explicitly excluded in documentation.",
+  "validation": [
+    {
+      "command": "bash scripts/test_android_selection.sh (verified Temurin17 PATH)",
+      "result": "PASS",
+      "coverage": "Existing SelectionEchoTracker; trace capacity/privacy/order; equal epoch records no event, stale input/personal paths record distinct fixed events exactly once."
+    },
+    {
+      "command": "javac -source 8 -target 8 against verified official API36r02 android.jar",
+      "result": "PASS",
+      "product_sources": 58,
+      "independent_host_sources": 3
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "sources": [
+    {
+      "path": "platforms/android/java/org/zapime/android/CompositionTrace.java",
+      "sha256": "e8ea92f90011efa9279788577b2f34274e1e8e39b17e80bc7cb6c1617f909b7b"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "sha256": "b6588d691b4e6cd78d107b887befa682fef4d068af22d9d8917f828447da9622"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "a6fe1f7ca370dafece257b41e42cc417636ba2c7a8894b21f81a0408e6bf2bb7"
+    },
+    {
+      "path": "platforms/android/tests/jvm/CompositionTraceSmoke.java",
+      "sha256": "c55b65f49746f85395b4102668a833163d52f3c438122b7c42154063aa1ac393"
+    }
+  ]
+}

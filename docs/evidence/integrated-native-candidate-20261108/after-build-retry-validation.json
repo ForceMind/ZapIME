@@ -1,0 +1,29 @@
+{
+  "tested_local_commit": "408082797f684d7085636f01877ad8eeb54b37ff",
+  "tested_tree": "df246d30b6359e9b42c653ae0e2e05ec973623dc",
+  "scope": "Merged build-retry and evidence-format repair only; new native/system/Binder/configuration experiment NOT_RUN. Code/test Java bytes identical to a4d53bc compiled 60/4/20-source baseline.",
+  "checks": [
+    {
+      "file": "after-download-android-python.log.gz",
+      "tests": 108,
+      "result": "PASS",
+      "raw_bytes": 1299,
+      "raw_sha256": "cef65fbc1815ac8cbdde976f5ec80d50deb8fa08b45f8eddaccf23f1fde90ae1",
+      "gzip_sha256": "2d584b3d4224a90895547c6eea6e3ae574d183c33f19ecde957a096825cf57b7"
+    },
+    {
+      "file": "after-download-build-tests.log.gz",
+      "tests": 28,
+      "result": "PASS",
+      "raw_bytes": 2034,
+      "raw_sha256": "5741ca8b600d36da4270ebca70376147beb6c799c60190d99067b0741ff33cd4",
+      "gzip_sha256": "28574af83c7e8cc88fa19bf90de213b9bef4752bc94a6066e54944a0b6912ef1"
+    }
+  ],
+  "all_workflow_yaml": "PASS",
+  "current_local_link_targets": 143,
+  "exact_local_source_only_prepare": "PASS; no publish",
+  "old_tar_original_preserved_in_history": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+  "download_parent_remote": "fb62ad923f376edb7f1c3ab274fc8095718b7ea7",
+  "new_remote_head": "pending upload; evidence records the preceding tested source, not a self-referential commit"
+}

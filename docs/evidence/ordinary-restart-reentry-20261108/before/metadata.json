@@ -1,0 +1,7 @@
+{
+  "source_local_commit": "28b20ea9455c1bb1fcefa6fde6fa4a7993ed4db2",
+  "source_path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+  "source_sha256": "8b7ebf623ec2f82960493beaea1dea100ee2c1ecc21dc309c04fdf66b39eeed7",
+  "extracted_method_sha256": "9aed2f7730f33e4d4ac70b3906d38053a10deb2b373f5eef8bfaea03f5f6e848",
+  "scope": "Exact live retainRestartedComposition body and exact outer if branch with synthetic public-interface/lifecycle stand-ins, real SelectionEchoTracker. Not Android Service/Binder/system IME proof."
+}

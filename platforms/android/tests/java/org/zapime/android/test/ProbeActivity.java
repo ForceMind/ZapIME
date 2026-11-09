@@ -14,6 +14,7 @@ public final class ProbeActivity extends Activity {
     private static final java.util.ArrayDeque<String> lifecycle=new java.util.ArrayDeque<>();
     private static synchronized void note(String event){if(lifecycle.size()==128)lifecycle.removeFirst();lifecycle.addLast(android.os.SystemClock.uptimeMillis()+":"+event);}
     static synchronized String lifecycle(){return String.join("\n",lifecycle)+"\n";}
+    static void keyStep(int count,boolean observed){note("real key="+count+" phase="+(observed?"editable_observed":"attempt"));}
     static WeakReference<ProbeActivity> current = new WeakReference<>(null);
     EditText normal, password;
     volatile int activeImeAnimations, imeAnimationVersion;
@@ -37,7 +38,7 @@ public final class ProbeActivity extends Activity {
                 final int serial=normalConnections.incrementAndGet();
                 if(android.os.Build.VERSION.SDK_INT>=30)note("initial snapshot before length="+InitialInfo.beforeLength(info));
                 return new InputConnectionWrapper(connection,false){
-                    private void observed(String operation){normalCommandConnection.accumulateAndGet(serial,Math::max);note("IME command on connection="+serial+" operation="+operation);}
+                    private void observed(String operation){normalCommandConnection.accumulateAndGet(serial,Math::max);note("IME command on connection="+serial+" operation="+operation+" length="+length()+" selection="+getSelectionStart()+":"+getSelectionEnd()+" composing="+BaseInputConnection.getComposingSpanStart(getText())+":"+BaseInputConnection.getComposingSpanEnd(getText()));}
                     @Override public boolean endBatchEdit(){boolean result=super.endBatchEdit();observed("batch-end");return result;}
                     @Override public boolean setComposingText(CharSequence text,int cursor){boolean result=super.setComposingText(text,cursor);observed("compose");return result;}
                     @Override public boolean setComposingRegion(int start,int end){boolean result=super.setComposingRegion(start,end);observed("region");return result;}

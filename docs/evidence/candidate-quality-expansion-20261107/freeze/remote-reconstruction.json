@@ -1,0 +1,9 @@
+{
+  "local_original_commit": "f92989d846ef6aa018829485ebc477f4d2229cd8",
+  "remote_api_reconstruction_commit": "d58d41e1e16c9cf2407718651078a6eb080126de",
+  "same_tree": "811943a35c0aa048e108b900dd6239b62c20e0fc",
+  "verification": "GitHub git/commits metadata read back independently and compared to local git rev-parse; full tree hashes equal",
+  "local_freeze_precedes_first_v3_inference": true,
+  "remote_commit_time_is_not_original_freeze_time": true,
+  "corpus_sha256": "70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1"
+}

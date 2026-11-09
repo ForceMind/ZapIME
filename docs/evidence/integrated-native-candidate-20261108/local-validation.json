@@ -1,0 +1,97 @@
+{
+  "base_local": "92e6648",
+  "scope": "Merged fresh product, diagnostic events, observer experiment, tools fixture, SAF fixture and frozen quality corpus. New system IME/Binder/Editable methods/emulator acceptance NOT_RUN; existing fixed-source successes cannot substitute.",
+  "checks": [
+    {
+      "check": "full official API36r02 / Temurin17 source8 target8 compilation",
+      "product_sources": 60,
+      "host_sources": 4,
+      "voice_test_sources": 20,
+      "result": "PASS"
+    },
+    {
+      "check": "SelectionEchoTracker/CompositionTrace/VerifiedRestart JVM",
+      "groups": 3,
+      "result": "PASS"
+    },
+    {
+      "check": "SAF trace/navigation JVM",
+      "groups": 2,
+      "result": "PASS"
+    },
+    {
+      "check": "Android Python scripts",
+      "tests": 108,
+      "result": "PASS"
+    },
+    {
+      "check": "configuration schema2 strict report Python",
+      "tests": 5,
+      "result": "PASS"
+    },
+    {
+      "check": "official host runtime preparer",
+      "tests": 4,
+      "result": "PASS"
+    },
+    {
+      "check": "paired quality metrics",
+      "tests": 5,
+      "result": "PASS"
+    },
+    {
+      "check": "real-boundary quality runner regression",
+      "tests": 12,
+      "result": "PASS"
+    },
+    {
+      "check": "all workflow YAML and selected current docs local targets",
+      "local_links": 130,
+      "result": "PASS"
+    }
+  ],
+  "local_harness_errors_retained": [
+    {
+      "attempt": "unittest discover scripts/test_candidate_quality*.py",
+      "result": "NO TESTS RAN / exit5",
+      "correction": "Actual tests are integrations/candidate/tests/test_quality_evaluation.py; corrected discovery executes all12 and passes."
+    }
+  ],
+  "files": [
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "bytes": 86397,
+      "sha256": "8b7ebf623ec2f82960493beaea1dea100ee2c1ecc21dc309c04fdf66b39eeed7"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/VerifiedRestart.java",
+      "bytes": 6131,
+      "sha256": "b7b7cf16357ebd3a0609cee9db27a1595b732b69d74402e6ef0af4e42ddd68c4"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "bytes": 42135,
+      "sha256": "fd92cfeedb845dd61c4e5b5d5b700dd5703d493ad106309a31e6ccc76e2fc426"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "bytes": 49779,
+      "sha256": "4fa7d409a25f7e07cac789a073a61864cf182c89be1a3423570b4e7f51e5a735"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPreparationUiProbe.java",
+      "bytes": 35899,
+      "sha256": "70dc8d95389a1a5594150a5895d51a3972a68493caad6743d302a2d022f7791d"
+    },
+    {
+      "path": ".github/workflows/candidate-ranking.yml",
+      "bytes": 13526,
+      "sha256": "4b25f064ec8a0f0a11894d2ad96422aac6fb73624a353c0249bc279964f4f4ff"
+    },
+    {
+      "path": "integrations/candidate/tests/quality-corpus-v3.json",
+      "bytes": 18607,
+      "sha256": "70b1aa8209e376b7ca8d9c5aab39b3a4be3bcb129a09ff556d8dd086947593f1"
+    }
+  ]
+}

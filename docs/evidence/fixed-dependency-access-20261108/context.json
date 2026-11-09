@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-11-08T19:07:12.186032+00:00",
+  "scope": "Current cloud executor only: direct fixed official HTTPS retrieval and byte integrity, not CI/emulator/model inference/phone acceptance. Earlier fixed-source HTTP504 evidence remains unchanged.",
+  "repository_base": "d38e6ce954c5fae1af120bd3fd2739d7862a288d",
+  "script_bytes_match_that_base": true,
+  "source_files": [
+    {
+      "path": "scripts/prepare_candidate_model.py",
+      "bytes": 16849,
+      "sha256": "4b8c142bea8c305d55dab35a5f0b97106e2ca420953c76710b177f54d1620a44",
+      "git_blob": "0377daa71b0d2baf6d13de89493ffb4c53d9eab9"
+    },
+    {
+      "path": "scripts/build_download_retry.py",
+      "bytes": 6235,
+      "sha256": "775893b681aa75f2725bba55371a54d44a2c79331ca10e6590e317b215967f31",
+      "git_blob": "53881224395b51a3c301a2d1ca4db868cf714223"
+    },
+    {
+      "path": "scripts/fetch_resources.py",
+      "bytes": 2998,
+      "sha256": "c7887fdba5abf1265e8bea7cc7986a8f6527060a51ecc77e92cb4c1aea7ff560",
+      "git_blob": "b15dd88896518625bee6cfc140b716b7856aa9a2"
+    },
+    {
+      "path": "scripts/voice_probe.py",
+      "bytes": 11123,
+      "sha256": "a72916f5f814841ddc67196cd454cc90be4b1fcea65cd5a6aaec9b9edf8f0a5f",
+      "git_blob": "0ea907a5a71bb28fd0ea5a6b3696dcd72a0dde6e"
+    },
+    {
+      "path": "third_party/candidate-model-lock.json",
+      "bytes": 3540,
+      "sha256": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+      "git_blob": "2bd3d10c08b9cd4b5105bb47806a6c92b736bd93"
+    },
+    {
+      "path": "third_party/voice-probe-lock.json",
+      "bytes": 1299,
+      "sha256": "4fcd57a70d8db1310e9fbd69e42cd2a7d92140847162108ee60366e263b4c996",
+      "git_blob": "91b8f774e132c9d6007cd915b66b1fa0319dd7d2"
+    }
+  ],
+  "retrieval_policy": {
+    "original_fixed_urls_only": true,
+    "tls_verification": true,
+    "mirror_used": false,
+    "large_files_streamed_for_hash_only": true,
+    "payloads_tracked_or_uploaded": false,
+    "wire_request_count_claimed": false,
+    "local_cached_file_bytes_used": false
+  },
+  "results_recorded_at_utc": {
+    "access-results.json": "2026-11-08T19:04:44.605803+00:00",
+    "exact-production-results.json": "2026-11-08T19:05:43.057719+00:00",
+    "large-pinned-results.json": "2026-11-08T19:05:42.554377+00:00"
+  },
+  "ci_status": "NOT_RUN by this audit; root will validate a new fixed CI head separately"
+}

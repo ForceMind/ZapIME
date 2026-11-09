@@ -1,0 +1,65 @@
+{
+  "base_commit": "58a3a546c758378d1887aeeaa99b4bd4d3a25c77",
+  "scope": "Local JVM regression and API36 Java compilation only; no emulator/device run or historical root-cause resolution.",
+  "initial_attempt": {
+    "command": "bash scripts/test_android_selection.sh",
+    "result": "NOT_RUN",
+    "reason": "javac: command not found; later retried using verified Temurin JDK."
+  },
+  "validation": [
+    {
+      "command": "PATH=<verified Temurin17>/bin:$PATH bash scripts/test_android_selection.sh",
+      "result": "PASS",
+      "groups": [
+        "Existing SelectionEchoTracker smoke",
+        "New bounded fixed-code composition trace smoke"
+      ]
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_candidate*.py' -v",
+      "result": "PASS",
+      "tests": 14
+    },
+    {
+      "command": "javac -source 8 -target 8 -encoding UTF-8 -classpath <verified API36r02 android.jar> -d target/composition-java/product @target/composition-java/product-sources.txt",
+      "result": "PASS",
+      "source_files": 58
+    },
+    {
+      "command": "javac -source 8 -target 8 -encoding UTF-8 -classpath <verified API36r02 android.jar> -d target/composition-java/tests @target/composition-java/test-sources.txt",
+      "result": "PASS",
+      "source_files": 3
+    },
+    {
+      "command": "git diff --check",
+      "result": "PASS"
+    }
+  ],
+  "android_jar_sha256": "d9eb9da824d9e247a352f570f01e1169e725b2954bca9e283a71786c59b59f9a",
+  "sources": [
+    {
+      "path": "platforms/android/java/org/zapime/android/CompositionTrace.java",
+      "sha256": "94f8f11f9ca730eb920e5025edf041c80705e74a56827a60bbc223edabfe1cf9"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "sha256": "735563578df3eb8187874ce0346a2cc91d737647c60e62ef033d138ab6875ead"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ProbeActivity.java",
+      "sha256": "0ec6eca3e92a2e5cebc31c0f5917f12bc1ea1b4f0d7a1ac85599bf8bead79746"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "sha256": "ee6d881eb628f8c3fdc0ecef15011d5cac2dff5f0b0678daa3e9093431caf627"
+    },
+    {
+      "path": "platforms/android/tests/jvm/CompositionTraceSmoke.java",
+      "sha256": "61995e4ed4cb979707601512f311d60b6ad257304dfb10a82fdfb71f44329f6d"
+    },
+    {
+      "path": "scripts/test_android_selection.sh",
+      "sha256": "17377f587f51991975d650ea0737726804a80db892783c2fba2e87184c24934a"
+    }
+  ]
+}

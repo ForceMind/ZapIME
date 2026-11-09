@@ -1,0 +1,76 @@
+{
+  "original_archive": "docs/evidence/context-guard-20261107/api35/original.zip",
+  "original_archive_bytes": 116977,
+  "original_archive_sha256": "a23693a03ff22c1d6365f4da306912718199c87693234a09c48df21722184116",
+  "scope": "Read-only investigation. All excerpts retain original bytes. External dumps occurred after Instrumentation.finish; retained ring/history is evidence, final restartDecision is not the failure-time decision.",
+  "excerpts": [
+    {
+      "source_member": "candidate-ime-android/candidate-ime-host-lifecycle.txt",
+      "source_bytes": 1596,
+      "source_sha256": "3dda5346d421e40bac66f9eb0beb496598d288d6da906bd52cc173ea003e9088",
+      "excerpt": "host-commands.txt",
+      "excerpt_sha256": "2540e45230661b2cf2cf431a3df2ba3617ee2f3a19c1ef97f8336861eea6c8b2",
+      "source_lines": [
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33
+      ]
+    },
+    {
+      "source_member": "candidate-ime-android/input-method-state.txt",
+      "source_bytes": 66091,
+      "source_sha256": "445923c96f5c934a2d5ffe71c2e762a904152f6a1ec7e6db0cc380c102d7897c",
+      "excerpt": "service-after-finish.txt",
+      "excerpt_sha256": "41e075675e062b54f3a7a5b80f911f00acf280be136a74b9dcf4aa6ba3297bda",
+      "source_lines": [
+        673,
+        674,
+        675,
+        676
+      ]
+    },
+    {
+      "source_member": "candidate-ime-android/system-runtime.txt",
+      "source_bytes": 262144,
+      "source_sha256": "752ffe92a15466c42f9bdfc1b444733d7ebd014a8a272342dacdcf215fd6bdc3",
+      "excerpt": "framework-reset.txt",
+      "excerpt_sha256": "d3e30e2a443c6dc86f06ab9146763fff5f7bb38c7582fbbf235c2649c18eabf8",
+      "source_lines": [
+        731
+      ]
+    }
+  ],
+  "framework_source": {
+    "url": "https://dl.google.com/android/repository/source-35_r01.zip",
+    "repository_metadata_url": "https://dl.google.com/android/repository/repository2-3.xml",
+    "archive_bytes": 48616636,
+    "expected_sdk_sha1": "c2770115a5f5ad787c8b298b93687a27eebb85b9",
+    "actual_archive_sha1": "c2770115a5f5ad787c8b298b93687a27eebb85b9",
+    "archive_sha256": "1a4e6251096a0f03085716f10e7bd859a97837f6314e955729d4f167bb8830d6",
+    "member": "src/android/inputmethodservice/InputMethodService.java",
+    "member_sha256": "84c23fe224f39ba51281c2cf3fb707204b1db8a6eb5455dc781e2378349d8205",
+    "function_lines": {
+      "SettingsObserver.onChange": [
+        1669,
+        1681
+      ],
+      "resetStateForNewConfiguration": [
+        1938,
+        1983
+      ],
+      "doStartInput": [
+        3379,
+        3409
+      ]
+    },
+    "scope": "Official API35 SDK source, not a proof of the exact emulator framework binary. Third-party source not copied into repository."
+  }
+}

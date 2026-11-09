@@ -1,0 +1,53 @@
+{
+  "scope": "Cloud executor one direct official GET each, no cached bytes, not CI/model-inference acceptance",
+  "results": [
+    {
+      "name": "lm_step.ort",
+      "source_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.ort",
+      "expected_bytes": 8220336,
+      "expected_sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "status": 200,
+      "redirect_host": "release-assets.githubusercontent.com",
+      "bytes": 8220336,
+      "sha256": "e036febfb8f7bdf941f1637be127ff539ea95b937a4c2a27f4c6ab897138fc6c",
+      "verified": true,
+      "seconds": 13.268
+    },
+    {
+      "name": "model.json",
+      "source_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.model.json",
+      "expected_bytes": 951,
+      "expected_sha256": "33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+      "status": 200,
+      "redirect_host": "release-assets.githubusercontent.com",
+      "bytes": 951,
+      "sha256": "33e2b903a0d576730488864a007e67d518d8c7123572e6f4f77a80487fb5eda5",
+      "verified": true,
+      "seconds": 13.033
+    },
+    {
+      "name": "vocab.json",
+      "source_url": "https://github.com/metasequoiaime/chinese-ime-lm/releases/download/rerank-v2/rerank-6x256.vocab.json",
+      "expected_bytes": 85613,
+      "expected_sha256": "d7fb2e70de9f0c2c65b822a8fbf604655bfef6d0dcd8f1975d73f1cd5ea7f038",
+      "status": 200,
+      "redirect_host": "release-assets.githubusercontent.com",
+      "bytes": 85613,
+      "sha256": "d7fb2e70de9f0c2c65b822a8fbf604655bfef6d0dcd8f1975d73f1cd5ea7f038",
+      "verified": true,
+      "seconds": 13.168
+    },
+    {
+      "name": "msime-dictionary-manifest.json",
+      "source_url": "https://github.com/metasequoiaime/msime-dictionary/releases/download/dict-v2.0.24/msime-dictionary-manifest.json",
+      "expected_bytes": 4627,
+      "expected_sha256": "5b656a5db35b4dcf804ce4348d8584c899d0012fe62bbbe3689204ddaba8722f",
+      "status": 200,
+      "redirect_host": "release-assets.githubusercontent.com",
+      "bytes": 4627,
+      "sha256": "5b656a5db35b4dcf804ce4348d8584c899d0012fe62bbbe3689204ddaba8722f",
+      "verified": true,
+      "seconds": 7.381
+    }
+  ]
+}

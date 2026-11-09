@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "command": [
+    "python3",
+    "scripts/prepare_source_release.py",
+    "prepare",
+    "--commit",
+    "266e9f26dbc6c6a3086b3e8f63a24ec99c621481",
+    "--output",
+    "/workspace/scratch/128287f34f42/tools-evidence-source-validation"
+  ],
+  "source_commit": "266e9f26dbc6c6a3086b3e8f63a24ec99c621481",
+  "source_tree": "e8e1c8d919c57e9d6fdf52df708687247e331fb8",
+  "result": "PASS",
+  "exit_code": 0,
+  "stdout": "Prepared v0.1.0-alpha.1 from 266e9f26dbc6c6a3086b3e8f63a24ec99c621481\n",
+  "stderr": "",
+  "metadata_source_matches": true,
+  "prepared_checksums": "5e5f935981f0154d14a7ed6a65d6219d9746b5da2fea3065dd0466365e068497  ZapIME-0.1.0-alpha.1-source.tar.gz\nad9560af4f30c5437fee1aed4f74025fce4609d414f42a07785812bb520a39e7  metadata.json\n",
+  "publish_executed": false,
+  "source_publisher_modified": false,
+  "scope": "Full-SHA source-only prepare of exact conversion commit. This is local preparation, not a public Release or native acceptance."
+}

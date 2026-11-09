@@ -1,0 +1,61 @@
+{
+  "source_head": "6904faf0d669b2019c35719784743f483ed3c670",
+  "actual_checkout": "605cf15f228477768eb6edf643b97d411bf3a5d9",
+  "tree": "15073a17731cebc6a33af61d2e24419f40010f50",
+  "original_classification": "not_executed",
+  "original_gate_passed": false,
+  "newer_E1_not_executed_by_this_run": true,
+  "independent_old_validator_rejection": "Configuration experiment interrupted or composition failed",
+  "files": [
+    {
+      "path": "old-6904-not-executed/configuration-compose-report.json",
+      "bytes": 1246,
+      "sha256": "d5c6faecfdaa3b29bf0aaa2b21d3fe5042316a7b771da19aafa1f09a7ff07f02"
+    },
+    {
+      "path": "old-6904-not-executed/old-source/ANDROID_CONFIGURATION_COMPOSE_PROBE.md",
+      "bytes": 4312,
+      "sha256": "120ece4df726ac000f29bd6f8c0756f9eba37b8da83d9312cabc78530ed7342d"
+    },
+    {
+      "path": "old-6904-not-executed/old-source/CandidateImeProbe.java",
+      "bytes": 38526,
+      "sha256": "8966316a55913e2e085f4a1bad4e5346d072c3b16759a72a3ee264dd115395e7"
+    },
+    {
+      "path": "old-6904-not-executed/old-source/ConfigurationContinuityObserver.java",
+      "bytes": 2009,
+      "sha256": "c8feff2d74d02c42d0849414110154080a70c8ac82a4e603c5953f36398dc76b"
+    },
+    {
+      "path": "old-6904-not-executed/old-source/android_configuration_compose_report.py",
+      "bytes": 3521,
+      "sha256": "d63af10158c4a5affcb0fb3c11a3ad44ae1f82243db445136e7304cedeed2972"
+    },
+    {
+      "path": "old-6904-not-executed/old-source-manifest.json",
+      "bytes": 793,
+      "sha256": "301cd165f8434e6f83d358da0a2ebb8f69f595fe53988bfaef8c0bb635c58fe3"
+    },
+    {
+      "path": "old-6904-not-executed/old-strict-validator-rejection.txt",
+      "bytes": 71,
+      "sha256": "660dba0a67daff0a66357f7e84bd35cbb2aa431df77c8f4b1a7c9ddfa8b8775d"
+    },
+    {
+      "path": "old-6904-not-executed/pr91-configuration-compose-API35.zip",
+      "bytes": 75625,
+      "sha256": "dec24569d549cd0ca61e305dcffb3170214e2d7e37679801b7e5b1d1853fabe3"
+    },
+    {
+      "path": "old-6904-not-executed/source-metadata.json",
+      "bytes": 6333,
+      "sha256": "686f04af55eecafdbb5c0bc89d397f070a20dd0d3e61bcf671b279ebc3401acc"
+    },
+    {
+      "path": "old-6904-not-executed/strict-failure-summary.json",
+      "bytes": 3050,
+      "sha256": "ba7038a5c4346854e57c9b30de241bafff98ee9a8107f155414c840257290300"
+    }
+  ]
+}

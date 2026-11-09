@@ -1,0 +1,25 @@
+{
+  "ref": "6904faf0d669b2019c35719784743f483ed3c670",
+  "files": [
+    {
+      "path": "old-source/ANDROID_CONFIGURATION_COMPOSE_PROBE.md",
+      "sha256": "120ece4df726ac000f29bd6f8c0756f9eba37b8da83d9312cabc78530ed7342d",
+      "bytes": 4312
+    },
+    {
+      "path": "old-source/CandidateImeProbe.java",
+      "sha256": "8966316a55913e2e085f4a1bad4e5346d072c3b16759a72a3ee264dd115395e7",
+      "bytes": 38526
+    },
+    {
+      "path": "old-source/ConfigurationContinuityObserver.java",
+      "sha256": "c8feff2d74d02c42d0849414110154080a70c8ac82a4e603c5953f36398dc76b",
+      "bytes": 2009
+    },
+    {
+      "path": "old-source/android_configuration_compose_report.py",
+      "sha256": "d63af10158c4a5affcb0fb3c11a3ad44ae1f82243db445136e7304cedeed2972",
+      "bytes": 3521
+    }
+  ]
+}

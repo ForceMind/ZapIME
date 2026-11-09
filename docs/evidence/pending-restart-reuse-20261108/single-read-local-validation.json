@@ -1,0 +1,103 @@
+{
+  "base_local": "beda857308001f0114a1c1e6338b09fcb1efb02c",
+  "base_remote_equivalent": "92176cfa5755e91935f3017d82b53a0e4d8f656c",
+  "base_tree": "053af6d57d55bf409c020d12117ce4027bda4d77",
+  "checks": [
+    {
+      "name": "all Android Python",
+      "tests": 125,
+      "result": "PASS"
+    },
+    {
+      "name": "actual pending admission / real gate queue and slot JVM",
+      "test_methods": 5,
+      "scenarios": 26,
+      "result": "PASS"
+    },
+    {
+      "name": "classification actual-method and strict report Python",
+      "test_methods": 12,
+      "result": "PASS"
+    },
+    {
+      "name": "SelectionEcho/Trace/VerifiedRestart JVM",
+      "groups": 3,
+      "result": "PASS"
+    },
+    {
+      "name": "official API36r02 Temurin17 source8 target8 Java compile",
+      "product_sources": 60,
+      "host_sources": 4,
+      "voice_sources": 20,
+      "result": "PASS"
+    },
+    {
+      "name": "all workflow YAML and diff --check",
+      "result": "PASS"
+    }
+  ],
+  "log_digests": [
+    {
+      "file": "android-python.log.gz",
+      "raw_bytes": 1316,
+      "raw_sha256": "f1cd6ee760d0173820b5e39710734dfc738daa9c89d1882dc13d191184ce78bf",
+      "gzip_sha256": "dc21f8346648744da61742e81ee7be96c30c7306e118f0ab2e6d3d29adcabe25"
+    },
+    {
+      "file": "selection-jvm.log.gz",
+      "raw_bytes": 402,
+      "raw_sha256": "a2a4dc80439013ec2b37813608177154b071efc648376d3f68330bd7c827e03e",
+      "gzip_sha256": "efa111bcbebe0657d5dee5bd800c3277f42c4df31379595d242856299cf99655"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "bytes": 90911,
+      "sha256": "5135472df388c08e434df92659c4255799f18f669a84859f55313e3c849482ce"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/CompositionTrace.java",
+      "bytes": 2410,
+      "sha256": "4daf4cd9ada8edc3afcc96a21e3528765c7bd43cba88ff1f1585d585ac45063d"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "bytes": 43452,
+      "sha256": "490194bd9727482bcfad3b907a69aae0b41397d2960eb0518f25dca2ddf8b408"
+    },
+    {
+      "path": "scripts/test_android_pending_restart.py",
+      "bytes": 10459,
+      "sha256": "1c9378c128a9b76b0a4172ab554558d5b6a79c4b2eb03655833558db5f5646a0"
+    },
+    {
+      "path": "scripts/test_android_configuration_probe_state.py",
+      "bytes": 11225,
+      "sha256": "97c013584d2e913d8424ddfad9bf65e9b75b881d039744db8b9700a5dc30f475"
+    },
+    {
+      "path": ".github/workflows/candidate-ranking.yml",
+      "bytes": 13775,
+      "sha256": "24ccc8cc8b5a40ad569c9df13e11da5c139f3c950dbd7b797f905db00c6ad9f3"
+    }
+  ],
+  "not_run": [
+    "new fixed-source Android/Binder/system IME/configuration experiment",
+    "phone/ARM acceptance"
+  ],
+  "boundaries": [
+    "No new physical read/barrier/deadline/queue or core reconstruction on reuse",
+    "Consume/restoring/expiry/mismatch remain rejected",
+    "onConfigurationChanged cancellation policy unchanged",
+    "Original actual CI failure and wrong not_executed classification preserved separately"
+  ],
+  "independent_review": {
+    "result": "PASS no blocker",
+    "read_only": true,
+    "pending_test_methods": 5,
+    "pending_scenarios": 26,
+    "classification_and_strict_tests": 12,
+    "not_run": "Android Service/Binder/system IME/new leaf CI"
+  }
+}

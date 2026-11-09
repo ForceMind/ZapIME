@@ -53,6 +53,16 @@ public final class SelectionEchoTracker {
             && composingStart >= 0 && composingEnd - composingStart == length;
     }
 
+    /** Exact current prediction only; fresh proof must still verify the App. */
+    public int ownedCompositionEnd(int length) {
+        return matchesRestartComposition(selectionStart,selectionEnd,length)?selectionEnd:-1;
+    }
+    /** A duplicate exact state is not a cursor move; never accept slack here. */
+    public boolean matchesCurrentSelection(int start,int end,int composingStart,int composingEnd) {
+        return known&&slack==0&&start==selectionStart&&end==selectionEnd
+            &&composingStart==this.composingStart&&composingEnd==this.composingEnd;
+    }
+
     /** 这次写入的结果算不出来（发按键事件、编辑器拒绝了写入、删除时有选区或组字区等）。 */
     public void invalidate() {
         pendingCount = 0;

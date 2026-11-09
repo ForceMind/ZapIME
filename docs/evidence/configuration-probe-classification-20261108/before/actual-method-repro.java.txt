@@ -1,0 +1,65 @@
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.*;
+public class ConfigurationClassificationRepro {
+ static class Editor { boolean focused,served; }
+ static class Stats { boolean hasTrace;long traceSequence;int restarts;String line; }
+ static class ConfigurationContinuityObserver { int hiddenObservations,windowFocusLosses,editorFocusLosses,observations;boolean visible;boolean visible(){return visible;} }
+ static class ProbeActivity { static AtomicInteger normalConnections=new AtomicInteger(1),normalCommandConnection=new AtomicInteger(1); }
+ static class Report extends HashMap<String,Object> { Report put(String k,boolean v){super.put(k,v);return this;} Report put(String k,int v){super.put(k,v);return this;} }
+ static class Instrumentation {void runOnMainSync(Runnable r){r.run();}}
+ final Report report=new Report();final Instrumentation instrumentation=new Instrumentation();Editor editorState=new Editor();Stats current;
+ Editor editor(){return editorState;}Stats stats(){return current;}
+ static void require(boolean good,String reason)throws Exception{if(!good)throw new Exception(reason);}
+    private boolean traceEventAfter(Stats state,long before,String code){
+        Matcher entries=Pattern.compile("([0-9]+)@[0-9]+:"+Pattern.quote(code)+":-?[0-9]+").matcher(state.line);
+        while(entries.find())if(Long.parseLong(entries.group(1))>before)return true;
+        return false;
+    }
+
+    private boolean traceHasFinishAfter(Stats state,long before) {
+        Matcher entries=Pattern.compile("([0-9]+)@[0-9]+:INPUT_FINISHED:-?[0-9]+").matcher(state.line);
+        while(entries.find())if(Long.parseLong(entries.group(1))>before)return true;
+        return false;
+    }
+
+    private boolean continuity(ConfigurationContinuityObserver observer,Stats baseline,int connections,int command) throws Exception {
+        Editor state=editor();Stats current=stats();
+        boolean finished=traceHasFinishAfter(current,baseline.traceSequence);
+        // The proof extends through the final candidate commit. A successful
+        // first verification cannot cover a later rejection or empty finish.
+        boolean fresh=traceEventAfter(current,baseline.traceSequence,"RESTART_FRESH_VALIDATED");
+        boolean rejected=traceEventAfter(current,baseline.traceSequence,"RESTART_FRESH_REJECTED");
+        boolean emptyFinish=traceEventAfter(current,baseline.traceSequence,"APPLY_FINISH_EMPTY");
+        boolean complete=baseline.hasTrace&&current.hasTrace&&current.traceSequence>=baseline.traceSequence
+                &&current.traceSequence-baseline.traceSequence<64;
+        report.put("visibility_hidden_observations",observer.hiddenObservations)
+                .put("window_focus_losses",observer.windowFocusLosses).put("editor_focus_losses",observer.editorFocusLosses)
+                .put("insets_observations",observer.observations).put("service_trace_complete",complete)
+                .put("input_finished_after_before",finished).put("after_connection_count",ProbeActivity.normalConnections.get())
+                .put("after_command_connection",ProbeActivity.normalCommandConnection.get())
+                .put("after_restarts",current.restarts).put("framework_restart_observed",current.restarts>baseline.restarts)
+                .put("fresh_verification_completed",fresh&&!rejected).put("empty_initialization_finish",emptyFinish);
+        final boolean[] visible=new boolean[1];instrumentation.runOnMainSync(()->visible[0]=observer.visible());
+        boolean same=complete&&!finished&&state.focused&&state.served&&visible[0]
+                &&observer.hiddenObservations==0&&observer.windowFocusLosses==0&&observer.editorFocusLosses==0
+                &&connections==ProbeActivity.normalConnections.get()&&command==ProbeActivity.normalCommandConnection.get();
+        report.put("same_editor_continuity",same);
+        // APPLY_FINISH_AFTER_COMMIT is the expected final candidate action;
+        // APPLY_FINISH_EMPTY is never an accepted initialization side effect.
+        require(fresh&&!rejected&&!emptyFinish,"configuration_fresh_verification_invalidated");
+        return same;
+    }
+
+
+ public static void main(String[]args)throws Exception{
+  ConfigurationClassificationRepro p=new ConfigurationClassificationRepro();Stats before=new Stats();before.hasTrace=true;before.traceSequence=10;
+  p.current=new Stats();p.current.hasTrace=true;p.current.traceSequence=12;p.current.restarts=1;p.current.line="11@100:INPUT_RESTART:1 12@101:INPUT_FINISHED:1";
+  ConfigurationContinuityObserver o=new ConfigurationContinuityObserver();o.hiddenObservations=1;o.visible=false;
+  p.report.put("classification","not_executed");
+  try{if(!p.continuity(o,before,1,1)){p.report.put("classification","interrupted_not_same_editor");throw new Exception("configuration_interrupted_not_same_editor");}}
+  catch(Exception error){try{if(!p.continuity(o,before,1,1))p.report.put("classification","interrupted_not_same_editor");}catch(Exception ignored){}}
+  if(!Boolean.FALSE.equals(p.report.get("same_editor_continuity"))||!"not_executed".equals(p.report.get("classification")))throw new AssertionError(p.report.toString());
+  System.out.println("REPRODUCED exact continuity method: INPUT_FINISHED + observed hidden + no fresh -> same_editor_continuity=false but classification="+p.report.get("classification"));
+ }
+}

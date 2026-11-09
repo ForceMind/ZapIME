@@ -1,0 +1,19 @@
+{
+  "run_id": 42461113295,
+  "attempt": 1,
+  "job_id": 128676915520,
+  "head": "e1a94e5797412b588d8342207997035e595c9302",
+  "checkout": "c9de3a24bfafb4591c2adf091485d34bc5e5946e",
+  "tree": "b72f40475059337bcf00a38c975d656212571005",
+  "artifact_id": 13610841038,
+  "artifact_bytes": 72257,
+  "artifact_sha256": "741b47e7f55179ceb8a3c22e6e25d541c28d4b3e2ce61a19af7aa7e4204f970a",
+  "result": "FAILURE",
+  "classification": "NOT_EXECUTED",
+  "reason": "configuration_insets_callbacks_not_observed",
+  "insets_callbacks": 0,
+  "touch_keypresses": 7,
+  "setting_restored": true,
+  "fresh_fix_executed": false,
+  "other_jobs": "host and API28/35/36 candidate jobs success in this workflow; not substitutes for the experiment"
+}

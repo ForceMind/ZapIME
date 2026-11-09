@@ -1,0 +1,777 @@
+{
+  "schema_version": 2,
+  "synthetic": true,
+  "source": "ZapIME evaluation-authored synthetic fixtures, created without consulting candidate lists or inference outputs; no user text, recordings, external corpus or claimed natural usage distribution",
+  "version": "synthetic-quality-v3",
+  "design": {
+    "cases": 64,
+    "label_basis": "Authored intended continuation, phonetic spelling and explicit personal preference; labels freeze before inference",
+    "not_independent_population_samples": true,
+    "legacy_corpora": "v1/v2 preserved separately; no v1/v2 result is relabelled as v3",
+    "context_scope": "Caller-supplied <=64 codepoints for native host scoring only; no Android focus/privacy/session claim",
+    "boundary_padding": "Repeated CJK or supplementary characters are deliberately artificial resource boundaries, not conversational accuracy examples"
+  },
+  "cases": [
+    {
+      "id": "h01",
+      "category": "homophone",
+      "code": "shishi",
+      "pinyin": "shishi",
+      "context": "推断必须以已经核实的",
+      "expected": [
+        "事实"
+      ],
+      "target_pinyin": "shishi"
+    },
+    {
+      "id": "h02",
+      "category": "homophone",
+      "code": "shishi",
+      "pinyin": "shishi",
+      "context": "新方案将于下月开始",
+      "expected": [
+        "实施"
+      ],
+      "target_pinyin": "shishi"
+    },
+    {
+      "id": "h03",
+      "category": "homophone",
+      "code": "yishi",
+      "pinyin": "yishi",
+      "context": "我们需要增强节约用水的",
+      "expected": [
+        "意识"
+      ],
+      "target_pinyin": "yishi"
+    },
+    {
+      "id": "h04",
+      "category": "homophone",
+      "code": "yishi",
+      "pinyin": "yishi",
+      "context": "毕业典礼最后举行授旗",
+      "expected": [
+        "仪式"
+      ],
+      "target_pinyin": "yishi"
+    },
+    {
+      "id": "h05",
+      "category": "homophone",
+      "code": "shili",
+      "pinyin": "shili",
+      "context": "这支球队展现了强大的",
+      "expected": [
+        "实力"
+      ],
+      "target_pinyin": "shili"
+    },
+    {
+      "id": "h06",
+      "category": "homophone",
+      "code": "shili",
+      "pinyin": "shili",
+      "context": "请列举一个能够支持论点的",
+      "expected": [
+        "事例"
+      ],
+      "target_pinyin": "shili"
+    },
+    {
+      "id": "h07",
+      "category": "homophone",
+      "code": "lixi",
+      "pinyin": "lixi",
+      "context": "这笔存款每年产生多少",
+      "expected": [
+        "利息"
+      ],
+      "target_pinyin": "lixi"
+    },
+    {
+      "id": "h08",
+      "category": "homophone",
+      "code": "lixi",
+      "pinyin": "lixi",
+      "context": "请等主持人宣布结束以后再",
+      "expected": [
+        "离席"
+      ],
+      "target_pinyin": "lixi"
+    },
+    {
+      "id": "h09",
+      "category": "homophone",
+      "code": "xianjin",
+      "pinyin": "xianjin",
+      "context": "这家商店只接受银行卡不收",
+      "expected": [
+        "现金"
+      ],
+      "target_pinyin": "xianjin"
+    },
+    {
+      "id": "h10",
+      "category": "homophone",
+      "code": "xianjin",
+      "pinyin": "xianjin",
+      "context": "这家工厂采用了比较",
+      "expected": [
+        "先进"
+      ],
+      "target_pinyin": "xianjin"
+    },
+    {
+      "id": "h11",
+      "category": "homophone",
+      "code": "gushi",
+      "pinyin": "gushi",
+      "context": "睡觉前给孩子讲一个",
+      "expected": [
+        "故事"
+      ],
+      "target_pinyin": "gushi"
+    },
+    {
+      "id": "h12",
+      "category": "homophone",
+      "code": "gushi",
+      "pinyin": "gushi",
+      "context": "今天主要指数上涨带动",
+      "expected": [
+        "股市"
+      ],
+      "target_pinyin": "gushi"
+    },
+    {
+      "id": "h13",
+      "category": "homophone",
+      "code": "baozhi",
+      "pinyin": "baozhi",
+      "context": "爷爷每天早晨都会读",
+      "expected": [
+        "报纸"
+      ],
+      "target_pinyin": "baozhi"
+    },
+    {
+      "id": "h14",
+      "category": "homophone",
+      "code": "baozhi",
+      "pinyin": "baozhi",
+      "context": "食品包装上应该注明",
+      "expected": [
+        "保质"
+      ],
+      "target_pinyin": "baozhi"
+    },
+    {
+      "id": "h15",
+      "category": "homophone",
+      "code": "jingli",
+      "pinyin": "jingli",
+      "context": "这家餐厅正在招聘一位",
+      "expected": [
+        "经理"
+      ],
+      "target_pinyin": "jingli"
+    },
+    {
+      "id": "h16",
+      "category": "homophone",
+      "code": "jingli",
+      "pinyin": "jingli",
+      "context": "她把旅行中难忘的",
+      "expected": [
+        "经历"
+      ],
+      "target_pinyin": "jingli"
+    },
+    {
+      "id": "h17",
+      "category": "homophone",
+      "code": "chengshi",
+      "pinyin": "chengshi",
+      "context": "地图上标出了沿海的几座",
+      "expected": [
+        "城市"
+      ],
+      "target_pinyin": "chengshi"
+    },
+    {
+      "id": "h18",
+      "category": "homophone",
+      "code": "chengshi",
+      "pinyin": "chengshi",
+      "context": "做错事情也应该保持",
+      "expected": [
+        "诚实"
+      ],
+      "target_pinyin": "chengshi"
+    },
+    {
+      "id": "h19",
+      "category": "homophone",
+      "code": "jiaoyu",
+      "pinyin": "jiaoyu",
+      "context": "学校重视儿童的劳动",
+      "expected": [
+        "教育"
+      ],
+      "target_pinyin": "jiaoyu"
+    },
+    {
+      "id": "h20",
+      "category": "homophone",
+      "code": "jiaoyu",
+      "pinyin": "jiaoyu",
+      "context": "完成以后请把文件",
+      "expected": [
+        "交予"
+      ],
+      "target_pinyin": "jiaoyu"
+    },
+    {
+      "id": "h21",
+      "category": "homophone",
+      "code": "baoxian",
+      "pinyin": "baoxian",
+      "context": "为这辆新车购买一份",
+      "expected": [
+        "保险"
+      ],
+      "target_pinyin": "baoxian"
+    },
+    {
+      "id": "h22",
+      "category": "homophone",
+      "code": "baoxian",
+      "pinyin": "baoxian",
+      "context": "剩下的蔬菜需要冷藏",
+      "expected": [
+        "保鲜"
+      ],
+      "target_pinyin": "baoxian"
+    },
+    {
+      "id": "h23",
+      "category": "homophone",
+      "code": "zhengyi",
+      "pinyin": "zhengyi",
+      "context": "他始终坚持维护公平与",
+      "expected": [
+        "正义"
+      ],
+      "target_pinyin": "zhengyi"
+    },
+    {
+      "id": "h24",
+      "category": "homophone",
+      "code": "zhengyi",
+      "pinyin": "zhengyi",
+      "context": "这项决定在会议上引发了",
+      "expected": [
+        "争议"
+      ],
+      "target_pinyin": "zhengyi"
+    },
+    {
+      "id": "e01",
+      "category": "everyday",
+      "code": "zaoshang",
+      "pinyin": "zaoshang",
+      "context": "我习惯每天",
+      "expected": [
+        "早上"
+      ],
+      "target_pinyin": "zaoshang"
+    },
+    {
+      "id": "e02",
+      "category": "everyday",
+      "code": "wanshang",
+      "pinyin": "wanshang",
+      "context": "星星通常出现在",
+      "expected": [
+        "晚上"
+      ],
+      "target_pinyin": "wanshang"
+    },
+    {
+      "id": "e03",
+      "category": "everyday",
+      "code": "dianhua",
+      "pinyin": "dianhua",
+      "context": "有急事请给我打",
+      "expected": [
+        "电话"
+      ],
+      "target_pinyin": "dianhua"
+    },
+    {
+      "id": "e04",
+      "category": "everyday",
+      "code": "yiyuan",
+      "pinyin": "yiyuan",
+      "context": "病人已经被送到",
+      "expected": [
+        "医院"
+      ],
+      "target_pinyin": "yiyuan"
+    },
+    {
+      "id": "e05",
+      "category": "everyday",
+      "code": "shouji",
+      "pinyin": "shouji",
+      "context": "请在登机前关闭",
+      "expected": [
+        "手机"
+      ],
+      "target_pinyin": "shouji"
+    },
+    {
+      "id": "e06",
+      "category": "everyday",
+      "code": "youjian",
+      "pinyin": "youjian",
+      "context": "我刚刚给你发送了一封",
+      "expected": [
+        "邮件"
+      ],
+      "target_pinyin": "youjian"
+    },
+    {
+      "id": "e07",
+      "category": "everyday",
+      "code": "huiyi",
+      "pinyin": "huiyi",
+      "context": "明天下午三点召开部门",
+      "expected": [
+        "会议"
+      ],
+      "target_pinyin": "huiyi"
+    },
+    {
+      "id": "e08",
+      "category": "everyday",
+      "code": "dizhi",
+      "pinyin": "dizhi",
+      "context": "快递寄出前请核对收货",
+      "expected": [
+        "地址"
+      ],
+      "target_pinyin": "dizhi"
+    },
+    {
+      "id": "n01",
+      "category": "nine_key",
+      "code": "94438",
+      "pinyin": "zhifu",
+      "context": "这笔订单支持扫码",
+      "expected": [
+        "支付"
+      ],
+      "target_pinyin": "zhifu",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n02",
+      "category": "nine_key",
+      "code": "58264542",
+      "pinyin": "kuangjia",
+      "context": "先确定整个软件的基本",
+      "expected": [
+        "框架"
+      ],
+      "target_pinyin": "kuangjia",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n03",
+      "category": "nine_key",
+      "code": "3464326",
+      "pinyin": "dingdan",
+      "context": "商家已经收到这笔",
+      "expected": [
+        "订单"
+      ],
+      "target_pinyin": "dingdan",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n04",
+      "category": "nine_key",
+      "code": "2863264",
+      "pinyin": "cundang",
+      "context": "退出游戏前记得先",
+      "expected": [
+        "存档"
+      ],
+      "target_pinyin": "cundang",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n05",
+      "category": "nine_key",
+      "code": "9426448",
+      "pinyin": "zhanghu",
+      "context": "请先登录你自己的",
+      "expected": [
+        "账户"
+      ],
+      "target_pinyin": "zhanghu",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n06",
+      "category": "nine_key",
+      "code": "267826",
+      "pinyin": "anquan",
+      "context": "进入实验室一定注意",
+      "expected": [
+        "安全"
+      ],
+      "target_pinyin": "anquan",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n07",
+      "category": "nine_key",
+      "code": "92694364",
+      "pinyin": "yanzheng",
+      "context": "提交表单前先完成身份",
+      "expected": [
+        "验证"
+      ],
+      "target_pinyin": "yanzheng",
+      "layout": "nine_key"
+    },
+    {
+      "id": "n08",
+      "category": "nine_key",
+      "code": "942694",
+      "pinyin": "xiaoxi",
+      "context": "朋友刚刚发来一条",
+      "expected": [
+        "消息"
+      ],
+      "target_pinyin": "xiaoxi",
+      "layout": "nine_key"
+    },
+    {
+      "id": "c01",
+      "category": "completion_boundary",
+      "code": "dian",
+      "pinyin": "dian",
+      "context": "我准备买一台新",
+      "expected": [
+        "电脑"
+      ],
+      "target_pinyin": "diannao"
+    },
+    {
+      "id": "c02",
+      "category": "completion_boundary",
+      "code": "shuru",
+      "pinyin": "shuru",
+      "context": "手机上安装了中文",
+      "expected": [
+        "输入法"
+      ],
+      "target_pinyin": "shurufa"
+    },
+    {
+      "id": "c03",
+      "category": "completion_boundary",
+      "code": "shou",
+      "pinyin": "shou",
+      "context": "请取出你的",
+      "expected": [
+        "手机"
+      ],
+      "target_pinyin": "shouji"
+    },
+    {
+      "id": "c04",
+      "category": "completion_boundary",
+      "code": "huoche",
+      "pinyin": "huoche",
+      "context": "我们约在城市北面的",
+      "expected": [
+        "火车站"
+      ],
+      "target_pinyin": "huochezhan"
+    },
+    {
+      "id": "c05",
+      "category": "completion_boundary",
+      "code": "you",
+      "pinyin": "you",
+      "context": "请把附件发送到我的",
+      "expected": [
+        "邮箱"
+      ],
+      "target_pinyin": "youxiang"
+    },
+    {
+      "id": "c06",
+      "category": "completion_boundary",
+      "code": "kai",
+      "pinyin": "kai",
+      "context": "这家公司主要从事软件",
+      "expected": [
+        "开发"
+      ],
+      "target_pinyin": "kaifa"
+    },
+    {
+      "id": "p01",
+      "category": "partial_boundary",
+      "code": "zhongg",
+      "pinyin": "zhongg",
+      "context": "这艘船来自",
+      "expected": [
+        "中国"
+      ],
+      "target_pinyin": "zhongguo"
+    },
+    {
+      "id": "p02",
+      "category": "partial_boundary",
+      "code": "beij",
+      "pinyin": "beij",
+      "context": "下次出差我们去",
+      "expected": [
+        "北京"
+      ],
+      "target_pinyin": "beijing"
+    },
+    {
+      "id": "p03",
+      "category": "partial_boundary",
+      "code": "shangh",
+      "pinyin": "shangh",
+      "context": "她乘高铁前往",
+      "expected": [
+        "上海"
+      ],
+      "target_pinyin": "shanghai"
+    },
+    {
+      "id": "p04",
+      "category": "partial_boundary",
+      "code": "xiex",
+      "pinyin": "xiex",
+      "context": "收到帮助以后应该说",
+      "expected": [
+        "谢谢"
+      ],
+      "target_pinyin": "xiexie"
+    },
+    {
+      "id": "p05",
+      "category": "partial_boundary",
+      "code": "pengy",
+      "pinyin": "pengy",
+      "context": "周末我要去看望一位老",
+      "expected": [
+        "朋友"
+      ],
+      "target_pinyin": "pengyou"
+    },
+    {
+      "id": "p06",
+      "category": "partial_boundary",
+      "code": "shij",
+      "pinyin": "shij",
+      "context": "孩子对外面的",
+      "expected": [
+        "世界"
+      ],
+      "target_pinyin": "shijie"
+    },
+    {
+      "id": "r01",
+      "category": "personal_rule",
+      "code": "shishi",
+      "pinyin": "shishi",
+      "context": "请遵从我显式保存的候选顺序",
+      "expected": [
+        "实施"
+      ],
+      "target_pinyin": "shishi",
+      "personal": {
+        "type": "candidate_rule",
+        "scheme": "pinyin",
+        "code": "shishi",
+        "text": "实施",
+        "position": 1
+      }
+    },
+    {
+      "id": "r02",
+      "category": "personal_rule",
+      "code": "jiaoshi",
+      "pinyin": "jiaoshi",
+      "context": "这条用例检查个人固定槽位",
+      "expected": [
+        "教室"
+      ],
+      "target_pinyin": "jiaoshi",
+      "personal": {
+        "type": "candidate_rule",
+        "scheme": "pinyin",
+        "code": "jiaoshi",
+        "text": "教室",
+        "position": 2
+      }
+    },
+    {
+      "id": "r03",
+      "category": "personal_rule",
+      "code": "zhifu",
+      "pinyin": "zhifu",
+      "context": "这条用例检查置顶后上下文不能改位",
+      "expected": [
+        "支付"
+      ],
+      "target_pinyin": "zhifu",
+      "personal": {
+        "type": "candidate_rule",
+        "scheme": "pinyin",
+        "code": "zhifu",
+        "text": "支付",
+        "position": 1
+      }
+    },
+    {
+      "id": "r04",
+      "category": "personal_rule",
+      "code": "dizhi",
+      "pinyin": "dizhi",
+      "context": "请插入我显式保存的合成短语",
+      "expected": [
+        "合成地址甲"
+      ],
+      "target_pinyin": "dizhi",
+      "personal": {
+        "type": "snippet",
+        "code": "dizhi",
+        "text": "合成地址甲",
+        "tags": []
+      },
+      "target_kind": "custom_alias"
+    },
+    {
+      "id": "r05",
+      "category": "personal_rule",
+      "code": "huiyi",
+      "pinyin": "huiyi",
+      "context": "这条用例仅使用合成本机资料",
+      "expected": [
+        "合成会议乙"
+      ],
+      "target_pinyin": "huiyi",
+      "personal": {
+        "type": "snippet",
+        "code": "huiyi",
+        "text": "合成会议乙",
+        "tags": []
+      },
+      "target_kind": "custom_alias"
+    },
+    {
+      "id": "r06",
+      "category": "personal_rule",
+      "code": "gongju",
+      "pinyin": "gongju",
+      "context": "这条用例检查个人词典不被模型挤走",
+      "expected": [
+        "合成工具丙"
+      ],
+      "target_pinyin": "gongju",
+      "personal": {
+        "type": "dictionary",
+        "scheme": "pinyin",
+        "code": "gongju",
+        "text": "合成工具丙",
+        "weight": 100
+      },
+      "target_kind": "custom_alias"
+    },
+    {
+      "id": "x01",
+      "category": "context_boundary",
+      "code": "xianzai",
+      "pinyin": "xianzai",
+      "context": "",
+      "expected": [
+        "现在"
+      ],
+      "target_pinyin": "xianzai",
+      "boundary": "empty_context"
+    },
+    {
+      "id": "x02",
+      "category": "context_boundary",
+      "code": "mingtian",
+      "pinyin": "mingtian",
+      "context": "",
+      "expected": [
+        "明天"
+      ],
+      "target_pinyin": "mingtian",
+      "boundary": "empty_context"
+    },
+    {
+      "id": "x03",
+      "category": "context_boundary",
+      "code": "tianqi",
+      "pinyin": "tianqi",
+      "context": "甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲甲今天出门前看",
+      "expected": [
+        "天气"
+      ],
+      "target_pinyin": "tianqi",
+      "boundary": "64_codepoints"
+    },
+    {
+      "id": "x04",
+      "category": "context_boundary",
+      "code": "youjian",
+      "pinyin": "youjian",
+      "context": "乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙乙刚刚收到一封新",
+      "expected": [
+        "邮件"
+      ],
+      "target_pinyin": "youjian",
+      "boundary": "64_codepoints"
+    },
+    {
+      "id": "x05",
+      "category": "context_boundary",
+      "code": "xiaoxi",
+      "pinyin": "xiaoxi",
+      "context": "😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀朋友刚刚发来条",
+      "expected": [
+        "消息"
+      ],
+      "target_pinyin": "xiaoxi",
+      "boundary": "64_codepoints_supplementary"
+    },
+    {
+      "id": "x06",
+      "category": "context_boundary",
+      "code": "anquan",
+      "pinyin": "anquan",
+      "context": "丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙丙进入场地请注意",
+      "expected": [
+        "安全"
+      ],
+      "target_pinyin": "anquan",
+      "boundary": "64_codepoints"
+    }
+  ]
+}

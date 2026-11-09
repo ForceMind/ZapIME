@@ -1,0 +1,9 @@
+# 配置实验观察器初始化修正
+
+旧实验原件保存在[old-6904-not-executed](old-6904-not-executed/)；完整ZIP75,625字节/SHA dec24569d549cd0ca61e305dcffb3170214e2d7e37679801b7e5b1d1853fabe3已再次核验，原源码、报告及独立复验清单见[old-manifest](old-manifest.json)。
+
+旧head6904、checkout605cf15、tree15073a的实验结果仍是NOT_EXECUTED：实际7次按键，未触摸i，Insets callback0。真实设置重启及raw span丢失提供线索，但缺必要可见回调，不能升格为完整同编辑器失败，也没有观察到实际hide。旧严格validator已用原源码再运行并仍拒绝。E1只改报告类型校验，不借本次旧结果冒称执行。
+
+新源码将fresh产品修复与实验放在同一候选：观察器注册后只调用公开requestApplyInsets，等待系统实际派发一次IME可见callback；没有手动调用listener、伪造计数或移除原观察/连续性断言。实验report为schema2，要求初始回调证据及实际RESTART_FRESH_VALIDATED、无reject/空初始化finish，再继续原真实触摸i、候选、精确Editable与退出清理。新源码的实际系统结果仍待CI，不从旧失败或本机编译推导通过。
+
+[新源码本机验证](new-local-validation.json)记录三组JVM、15项原候选/新增方法报告测试、5项schema2报告器和四个独立宿主源文件编译。产品代码相对34eab328逐字节未改；合并的workflow保留四项新Editable方法证据上传。尚无新模拟器执行结论。Observer初始化完成后重新冻结触发baseline，防止将setup期间的回调误计为设置触发。

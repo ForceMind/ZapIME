@@ -1,0 +1,42 @@
+test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) ... 
+  test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='no_fresh') ... FAIL
+  test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='rejected') ... FAIL
+  test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='empty_finish') ... FAIL
+
+======================================================================
+FAIL: test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='no_fresh')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-pending-restart-fix/scripts/test_android_configuration_probe_state.py", line 197, in test_missing_rejected_or_empty_fresh_proof_remains_a_failure
+    self.assertEqual(result["classification"], "same_editor_composition_failure")
+AssertionError: 'not_executed' != 'same_editor_composition_failure'
+- not_executed
++ same_editor_composition_failure
+
+
+======================================================================
+FAIL: test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='rejected')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-pending-restart-fix/scripts/test_android_configuration_probe_state.py", line 197, in test_missing_rejected_or_empty_fresh_proof_remains_a_failure
+    self.assertEqual(result["classification"], "same_editor_composition_failure")
+AssertionError: 'not_executed' != 'same_editor_composition_failure'
+- not_executed
++ same_editor_composition_failure
+
+
+======================================================================
+FAIL: test_missing_rejected_or_empty_fresh_proof_remains_a_failure (configuration_state_regression.ConfigurationProbeStateTests.test_missing_rejected_or_empty_fresh_proof_remains_a_failure) (scenario='empty_finish')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/scratch/128287f34f42/zapime-pending-restart-fix/scripts/test_android_configuration_probe_state.py", line 197, in test_missing_rejected_or_empty_fresh_proof_remains_a_failure
+    self.assertEqual(result["classification"], "same_editor_composition_failure")
+AssertionError: 'not_executed' != 'same_editor_composition_failure'
+- not_executed
++ same_editor_composition_failure
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.652s
+
+FAILED (failures=3)

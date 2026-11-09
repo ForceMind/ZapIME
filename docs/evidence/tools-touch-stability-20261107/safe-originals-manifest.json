@@ -1,0 +1,146 @@
+{
+  "source_zip_bytes": 825406,
+  "source_zip_sha256": "ac42c6299ae6240826a4e90666b9bc44e9ed8f9c77a99cbc4eed13d783601974",
+  "archived_members": [
+    {
+      "path": "device-smoke/activity-errors.txt",
+      "bytes": 206,
+      "sha256": "7e789577da6cf8a385d88301efca56ca899c40b75460c9e24e69980002badfae"
+    },
+    {
+      "path": "device-smoke/activity-state.txt",
+      "bytes": 25538,
+      "sha256": "f8638fbe52ca4ca9edfcf804b223ef638e7b68bc365e477aa16d543cb79e2591"
+    },
+    {
+      "path": "device-smoke/activity-top.txt",
+      "bytes": 57464,
+      "sha256": "32829fa2272f7ad4403c867958bbacdc21c8a91ca899a010b19e90a54cb555cc"
+    },
+    {
+      "path": "device-smoke/ci-activity-state.txt",
+      "bytes": 30157,
+      "sha256": "d7615d90db8b639f6605de0ca7418d5238eea1efeb6fc34a26c69df091de4e7d"
+    },
+    {
+      "path": "device-smoke/ci-activity-top.txt",
+      "bytes": 64752,
+      "sha256": "5b7bfd34bf3fc8fcef18ef74bc20a57496f91e010e0f065680e3269877f78271"
+    },
+    {
+      "path": "device-smoke/ci-input-service.txt",
+      "bytes": 3164,
+      "sha256": "911a3b8399c0a2d014594c372eee8c73cd356dc30d4842a491618036036d9136"
+    },
+    {
+      "path": "device-smoke/ci-system-runtime.txt",
+      "bytes": 174509,
+      "sha256": "4c276d766e7a3cf48dcd2b7dd9f25716d7bfeaaac588aa26bb97ca6323107509"
+    },
+    {
+      "path": "device-smoke/ci-window-state.txt",
+      "bytes": 42954,
+      "sha256": "b1557910a2a702b3f76e9339c82cf67d9133b96ce241454c310e3573dbcdd5e1"
+    },
+    {
+      "path": "device-smoke/hierarchy.txt",
+      "bytes": 7360,
+      "sha256": "bb07d89cddb6b69a6108f9715d8e10a271b035de2fabfdc6f25b7b2049e846c9"
+    },
+    {
+      "path": "device-smoke/host-lifecycle.txt",
+      "bytes": 867,
+      "sha256": "ae4f67b4ebae53af70ff742b5d5db84f4ab6e268ac96b98a71e6361d045c48e9"
+    },
+    {
+      "path": "device-smoke/ime-teardown.log",
+      "bytes": 66,
+      "sha256": "e9990d2b9ce9e862271712ca1ecd0c280ac8cd7a2fd48fc18fb69623521c33b0"
+    },
+    {
+      "path": "device-smoke/input-method-state.log",
+      "bytes": 79778,
+      "sha256": "0e44f25a38ca3ef5ce03be730d352b0edabcfe0b779905e79ddbd5b249755942"
+    },
+    {
+      "path": "device-smoke/instrumentation.log",
+      "bytes": 85,
+      "sha256": "690e8638c12f2a400aea6c9ae35d80befb6d056685b3ef7a75ecccbb87bb56b9"
+    },
+    {
+      "path": "device-smoke/keyboard.png",
+      "bytes": 47029,
+      "sha256": "72d96567d8d65ed4288e3c3e6e88c11217fa11e0b80f0d8bd51634cba8c14bca"
+    },
+    {
+      "path": "device-smoke/last-anr.txt",
+      "bytes": 88,
+      "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+    },
+    {
+      "path": "device-smoke/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "device-smoke/smoke.png",
+      "bytes": 46909,
+      "sha256": "ea8de08abb2ac703087078d36cfa0aa87767d22125491b9a2bacb2eb59af6ed1"
+    },
+    {
+      "path": "device-smoke/system-keyboard.json",
+      "bytes": 244,
+      "sha256": "f2278726fb854825e865403253f406db492bea4fcf4251d9fc65fe46fda805cd"
+    },
+    {
+      "path": "device-smoke/system-runtime.txt",
+      "bytes": 262144,
+      "sha256": "f8a2711c1cdf427ffc4e21fe9cb5a6cc1999816f56b51f7ddd42e4fd37f36237"
+    },
+    {
+      "path": "device-smoke/window-state.txt",
+      "bytes": 37869,
+      "sha256": "ba98981ab1676f02a2daba2d472cf0c905bd72a0322cba61f3652c34494e3eba"
+    },
+    {
+      "path": "voice-android/combined-gates.json",
+      "bytes": 66,
+      "sha256": "855f6110f15b429f80da6704e45a1c2700674edb795effc8af3ecae1bf92c178"
+    },
+    {
+      "path": "voice-android/instrumentation.txt",
+      "bytes": 2821,
+      "sha256": "d1a10f8c1583b8b285b049c4fe9085106c6f54833a0a90bbc2e1f0b1ab15bbdc"
+    },
+    {
+      "path": "voice-android/offline-uid.json",
+      "bytes": 119,
+      "sha256": "71a8819b5e44a10bed4229162cf23a812edadb7754402e99396fd7ea1ca5aa8e"
+    },
+    {
+      "path": "voice-android/ui-instrumentation.txt",
+      "bytes": 316,
+      "sha256": "9930d0694301b1f2a246de943324af9356a5374a5c0e9fc792b30c806cb1f185"
+    }
+  ],
+  "duplicate_round1_retained_in_original_zip": true,
+  "scope": "All device-smoke first-failure safe originals plus minimal public synthetic voice gate status; no PCM/model/backup-secret report included in this declared ZIP subset. Complete ZIP was downloaded and verified and is separately retained in scratch; this committed archive is the declared subset.",
+  "archive": {
+    "path": "safe-first-failure-originals.zip",
+    "format": "ZIP",
+    "bytes": 222711,
+    "sha256": "d663bdb23f2b9dbd022f53d2d6d06ec48c779518716e8b5b4fbab7f51f6d4c30",
+    "regular_members": 24
+  },
+  "previous_archive": {
+    "path": "docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "bytes": 218507,
+    "sha256": "10df44343b42ec6544587595d3450cbf1c0a7d79f97b41f69c73bd717b31a7d0",
+    "git_blob": "17b504fe5511b85ab08a1bd1455b0fe725fe510f",
+    "fixed_parent_commit": "685a3a59b09fb4791a9de89afd00ca8eae97f672",
+    "fixed_parent_url": "https://github.com/ForceMind/ZapIME/blob/685a3a59b09fb4791a9de89afd00ca8eae97f672/docs/evidence/tools-touch-stability-20261107/safe-first-failure-originals.tar.gz",
+    "historical_checksum_manifest": "SHA256SUMS.before-zip-conversion.txt",
+    "historical_checksum_manifest_sha256": "6f5a020436831adbc28ac0598eb5cbd3b4b6b01bcec1013249c318bc026881fb",
+    "historical_member_manifest_sha256": "7faf5d0694bfb8febd1525d3fe0a1cc8fa28d60e52a69b44efb21d590536e927"
+  }
+}

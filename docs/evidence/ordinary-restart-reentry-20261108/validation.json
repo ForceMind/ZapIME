@@ -1,0 +1,58 @@
+{
+  "base_remote": "9b801ff947486f5418e9ddc84a88941d1cf3eda6",
+  "scope": "Product ordinary restart frame guard + host-only dynamic method regression. Android restore-helper probes compiled, NOT_RUN; no Binder/system IME/phone acceptance claim.",
+  "checks": [
+    {
+      "name": "ordinary actual-method JVM regression",
+      "methods": 5,
+      "scenarios": 22,
+      "result": "PASS"
+    },
+    {
+      "name": "all Android Python",
+      "result": "PASS",
+      "summary": "Ran 118 tests"
+    },
+    {
+      "name": "official API36r02/Temurin17 source8 target8 Java compile",
+      "product": 60,
+      "host": 4,
+      "voice_tests": 20,
+      "result": "PASS"
+    },
+    {
+      "name": "Selection/Trace/VerifiedRestart JVM",
+      "groups": 3,
+      "result": "PASS"
+    }
+  ],
+  "new_android_cases": [
+    "ordinary_begin_finish_reentry",
+    "ordinary_region_finish_reentry",
+    "ordinary_end_finish_reentry"
+  ],
+  "android_cases_execution": "NOT_RUN",
+  "independent_review": "PASS; product implementation reviewed separately; see independent-review.json",
+  "source_files": [
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "bytes": 89624,
+      "sha256": "657756c37488be6020141da6ac612f9bf8573d6cb878c1874dfbeb6b292b2290"
+    },
+    {
+      "path": "platforms/android/voice-tests/java/org/zapime/android/voicetest/VerifiedRestartProbe.java",
+      "bytes": 9347,
+      "sha256": "d07236cd733e98c8afa2100c57d357b49b05620cfbd9e3339cb992df2d9a7e77"
+    },
+    {
+      "path": "scripts/test_android_ordinary_restart.py",
+      "bytes": 12376,
+      "sha256": "205de6d91c3af102cee7a4c38bfc3d065ede1a7215820f2f98da831f61c89f9a"
+    },
+    {
+      "path": "scripts/android_candidate_ranking_smoke.py",
+      "bytes": 4816,
+      "sha256": "2344912576abd919ac43e1bc740bbb6d4fb5756bcfa1d57354223e162b59d986"
+    }
+  ]
+}

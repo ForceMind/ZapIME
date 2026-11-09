@@ -1,0 +1,131 @@
+{
+  "base_local": "beda857308001f0114a1c1e6338b09fcb1efb02c",
+  "base_remote_equivalent": "92176cfa5755e91935f3017d82b53a0e4d8f656c",
+  "base_tree": "053af6d57d55bf409c020d12117ce4027bda4d77",
+  "supersedes_safety_implementation": "f8d445fe11f3b60692289bc19c8353d9f85803c1",
+  "checks": [
+    {
+      "name": "all Android Python",
+      "tests": 130,
+      "result": "PASS"
+    },
+    {
+      "name": "actual pending admission/request callback + real gate/worker JVM",
+      "test_methods": 10,
+      "scenarios": 32,
+      "result": "PASS"
+    },
+    {
+      "name": "classification actual-method and strict report Python",
+      "test_methods": 12,
+      "result": "PASS"
+    },
+    {
+      "name": "SelectionEcho/Trace/VerifiedRestart JVM",
+      "groups": 3,
+      "result": "PASS"
+    },
+    {
+      "name": "official API36r02 Temurin17 source8 target8 Java compile",
+      "product_sources": 60,
+      "host_sources": 4,
+      "voice_sources": 20,
+      "result": "PASS"
+    },
+    {
+      "name": "all workflow YAML and diff --check",
+      "result": "PASS"
+    }
+  ],
+  "log_digests": [
+    {
+      "file": "generation-android-python.log.gz",
+      "raw_bytes": 24335,
+      "raw_sha256": "00c839ea0a8868cec60139a8fd003cc56e2e5c8665b1c25bcb4cf60912e587ad",
+      "gzip_sha256": "ef5f0ee8c20c09eb6b1c37d84446aa75cae7facde2ea00568393082d9ba94eaf"
+    },
+    {
+      "file": "generation-selection-jvm.log.gz",
+      "raw_bytes": 402,
+      "raw_sha256": "a2a4dc80439013ec2b37813608177154b071efc648376d3f68330bd7c827e03e",
+      "gzip_sha256": "efa111bcbebe0657d5dee5bd800c3277f42c4df31379595d242856299cf99655"
+    },
+    {
+      "file": "generation-java-compile.log.gz",
+      "raw_bytes": 558,
+      "raw_sha256": "558fb53e2ffcb90f19ca0b0315fffbefb49c3f49a11e68ef69cacc5a65fbe858",
+      "gzip_sha256": "804068f9c43c11d590d0ca5934eaf5914f58738bbc74c8f3d7c31cfa32417467"
+    }
+  ],
+  "source_files": [
+    {
+      "path": "platforms/android/java/org/zapime/android/ZapInputMethodService.java",
+      "bytes": 91828,
+      "sha256": "ddaa757908bd6de8f1e6eb25d0aa53d0c5101e532d89ed2df077db637c6be6aa"
+    },
+    {
+      "path": "platforms/android/java/org/zapime/android/VerifiedRestart.java",
+      "bytes": 7487,
+      "sha256": "601fc4a31fef86ea088ffb87c35bde667b16c4c931a92ddd50e5175ae19c78d8"
+    },
+    {
+      "path": "platforms/android/tests/jvm/VerifiedRestartSmoke.java",
+      "bytes": 8883,
+      "sha256": "d94d233149c323cf76c67beab0a01dc55f7615e4ce52c38cf6ad2870e63bad26"
+    },
+    {
+      "path": "scripts/test_android_pending_restart.py",
+      "bytes": 14860,
+      "sha256": "90c95711134315625f7f6f6d1642312ea2de93d3dbc50fa43ddf9ce3b408447a"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+      "bytes": 43452,
+      "sha256": "490194bd9727482bcfad3b907a69aae0b41397d2960eb0518f25dca2ddf8b408"
+    },
+    {
+      "path": "scripts/test_android_configuration_probe_state.py",
+      "bytes": 11225,
+      "sha256": "97c013584d2e913d8424ddfad9bf65e9b75b881d039744db8b9700a5dc30f475"
+    }
+  ],
+  "single_read_counterexample_original_files": [
+    {
+      "path": "actual-admission-harness.java",
+      "bytes": 10184,
+      "sha256": "d9873339e7d4bc0df3f91157258be47c910f93159b59ced4338ad250bf4580c0"
+    },
+    {
+      "path": "baseline-run.log",
+      "bytes": 121,
+      "sha256": "0f582e98036db75d58ddc853a9e9de48697a07df2af2a4902c94522c8750ce0d"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 1257,
+      "sha256": "10d36fda119d38051b64c143308ff778e8963a76c87f9a38459ecb0de7268ec1"
+    }
+  ],
+  "boundaries": [
+    "Same pending ticket/held queues/engine barrier/original 800ms deadline; ordinary restart protection unchanged",
+    "Every admitted duplicate invalidates old generation; only latest generation proof ready/consume",
+    "At most 2 submissions and physical reads; serial followup after old physical IPC returns; skipped stale submission still counts",
+    "Worker checks volatile generation, atomic read permit and original deadline before IPC",
+    "Second submission invalidated, scope/version mismatch, expiry, consumed/restoring all rejected; logical cancellation never frees blocked physical slot",
+    "Original CI failure ZIP/report and f8 synthetic old_snapshot_consumed=true counterexample preserved",
+    "onConfigurationChanged cancellation and real touch/candidate/Editable/IME-exit assertions unchanged"
+  ],
+  "independent_review": {
+    "result": "PASS no product blocker",
+    "read_only": true,
+    "pending_test_methods": 9,
+    "pending_scenarios": 31,
+    "classification_and_strict_tests": 12,
+    "note": "Final additional coalesced scenario ran locally; reviewer identified a Smoke wording issue, corrected before final checks."
+  },
+  "not_run": [
+    "new fixed-source Android/Binder/system IME/configuration experiment",
+    "7 new unattached Editable Android helper methods",
+    "phone/ARM acceptance"
+  ]
+}

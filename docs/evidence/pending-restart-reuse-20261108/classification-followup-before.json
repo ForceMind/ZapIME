@@ -1,0 +1,15 @@
+{
+  "source_commit": "beda857308001f0114a1c1e6338b09fcb1efb02c",
+  "source_path": "platforms/android/tests/java/org/zapime/android/test/CandidateImeProbe.java",
+  "source_sha256": "d7fae6f2b833c16168a0e853f9d85028ce7b0317874a8e1ecd8f890e521c2938",
+  "result": "EXPECTED_FAIL",
+  "failure_subcases": 3,
+  "cases": [
+    "no_fresh",
+    "rejected",
+    "empty_finish"
+  ],
+  "observed_old_classification": "not_executed",
+  "expected_classification": "same_editor_composition_failure",
+  "scope": "Actual extracted continuity method with synthetic Java stand-ins, not Android/Binder/device."
+}

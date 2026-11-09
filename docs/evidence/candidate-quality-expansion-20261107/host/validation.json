@@ -1,0 +1,77 @@
+{
+  "validated_utc": "2026-11-08T07:41:36.395207+00:00",
+  "source_commit": "cd8a0bff5cf65f9e6ccd39645b4254d69f0c2ead",
+  "source_tree": "6a740a7f4482d84a1a6e89e2b14a5100de082fd7",
+  "fixed_upstream": "97d652a49cabb0887355b84186af2aa9032d3814",
+  "frozen_corpus_commit": "f92989d846ef6aa018829485ebc477f4d2229cd8",
+  "requirements_sha256": "3958d96764c4b8f32a96510298bf43927b5b804aaf931b349174178474a141e8",
+  "python": "3.12.14",
+  "runtime_versions": {
+    "quality-v3-ort1244-first.json": "1.24.4",
+    "quality-v3-ort1282-first.json": "1.28.2",
+    "quality-v2-ort1244-regression.json": "1.24.4"
+  },
+  "official_ort1282_archive": {
+    "url": "https://github.com/microsoft/onnxruntime/releases/download/v1.28.2/onnxruntime-linux-x64-1.28.2.tgz",
+    "bytes": 9128991,
+    "sha256": "d7209b8751b27b862b0c76332c2e20e203396edb5dab700ecf4bb485cf147415"
+  },
+  "checks": {
+    "fixed_manifest_validation": true,
+    "all_cases_retained": true,
+    "outcome_partition_matches_denominator": true,
+    "personal_fixtures_real_edit_and_protected": true,
+    "corpus_bytes_unchanged_after_inference": true,
+    "legacy_v2_ort1244_baseline17_empty14_context25": true,
+    "runner_unit_tests": 12,
+    "aggregation_unit_tests": 5,
+    "official_host_runtime_preparation_tests": 4,
+    "actual_prepared_official_library_matches_executed_hash": true,
+    "workflow_yaml_parsed_three_separate_reports": true,
+    "existing_model_preparation_regression_tests": 14
+  },
+  "commands": [
+    "python3 scripts/prepare_candidate_model.py --headers target/candidate-runtime/include",
+    "python3 scripts/fetch_resources.py",
+    "CARGO_TARGET_DIR=target/candidate-core cargo +1.97.1 build --release --locked -p zapime-core",
+    "g++ -std=c++17 -O2 -Wall -Wextra -Werror -pedantic -Itarget/candidate-runtime/include -Itarget/voice-json/single_include -Iintegrations/candidate integrations/candidate/CandidateRanker.cpp integrations/candidate/tests/ranker_probe.cpp -ldl -pthread -o target/candidate-host/ranker_probe",
+    "target/candidate-python/bin/python integrations/candidate/tests/quality_evaluation.py --core target/candidate-core/release/libzapime_core.so --corpus-version v3 --report target/candidate-host/quality-v3-ort1244-first.json",
+    "target/candidate-python/bin/python integrations/candidate/tests/quality_evaluation.py --core target/candidate-core/release/libzapime_core.so --corpus-version v2 --report target/candidate-host/quality-v2-ort1244-regression.json",
+    "target/candidate-python/bin/python integrations/candidate/tests/quality_evaluation.py --core target/candidate-core/release/libzapime_core.so --corpus-version v3 --runtime target/official-ort1282/onnxruntime-linux-x64-1.28.2/lib/libonnxruntime.so.1.28.2 --report target/candidate-host/quality-v3-ort1282-first.json"
+  ],
+  "limits": [
+    "Authored synthetic set and correlated category/layout cases, not population accuracy",
+    "Native Linux IPC/scorer memory only, not Android scheduler, system IME, phone latency/RSS/energy",
+    "Two explicit empty-context fixtures also remain native diagnostics in contextual mode",
+    "No weights, binary, environment credentials, input record or private user content committed"
+  ],
+  "review": [
+    "Independent phonetic/T9 review before inference passed",
+    "Independent runner review found old zero-score model_executed claim; fixed before first v3 inference",
+    "Initial unit-test assumption that short IDs must be unique across corpus versions failed; corrected to compare actual layout/code/context identities without editing frozen corpus; original terminal output was not saved as an artifact"
+  ],
+  "archived_reports": {
+    "quality-v2-ort1244-regression.json": {
+      "path": "host/quality-v2-ort1244-regression.json.gz",
+      "json_bytes": 203905,
+      "json_sha256": "67029ae4fc4007d4ca445c43ebd8613747d70dd429ed3d3a0f9a61e490760cca",
+      "gzip_bytes": 9056,
+      "gzip_sha256": "93e35ec3a62419454dc85ee16dbecdd4b958fe9521293d6191f3bcc52c56eb00"
+    },
+    "quality-v3-ort1244-first.json": {
+      "path": "host/quality-v3-ort1244-first.json.gz",
+      "json_bytes": 369387,
+      "json_sha256": "97058691b38d2fcfb0fa7975ba9e1fa17760787110199366b086d582a5011a2a",
+      "gzip_bytes": 13041,
+      "gzip_sha256": "f78298d718f9db21d60d58011ab0d72f98cea59e7c6a6bb4004ba84b8ca5da59"
+    },
+    "quality-v3-ort1282-first.json": {
+      "path": "host/quality-v3-ort1282-first.json.gz",
+      "json_bytes": 369422,
+      "json_sha256": "353a33f55fb07f750c736072623d2cb7b57bcfae454e2a0e196380de095c2c32",
+      "gzip_bytes": 13047,
+      "gzip_sha256": "8020f1f0f5030efcc16665d40e9fef0d00849e8bc16faec77b69aceab2014789"
+    }
+  },
+  "official_runtime_preparation_script_sha256": "f886864ed2ebc307935eb40ddee707e30080ff63236763a10976466fa1789147"
+}

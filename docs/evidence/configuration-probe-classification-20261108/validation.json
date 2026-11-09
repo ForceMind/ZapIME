@@ -1,0 +1,30 @@
+{
+  "parent_local": "0a0b85463ce1115a60224f8d9c87a811a2a1d7b5",
+  "parent_remote": "94b66f3e3ac9c0af92952427d0f3f1bfc27bb6a8",
+  "parent_tree": "78d00ce936aafd38b7073e1dc688f502128a0e46",
+  "scope": "test-only report classification; no product/real Android/Binder/device acceptance",
+  "baseline": "REPRODUCED wrong not_executed with INPUT_FINISHED and observed hidden/no fresh",
+  "checks": [
+    {
+      "check": "live Java method JVM state regressions",
+      "tests": 5,
+      "scenarios": 18,
+      "result": "PASS"
+    },
+    {
+      "check": "existing schema2 report rejection",
+      "tests": 5,
+      "result": "PASS"
+    },
+    {
+      "check": "official API36r02/Temurin17 Java8 compilation",
+      "product_sources": 60,
+      "test_host_sources": 4,
+      "result": "PASS"
+    },
+    {
+      "check": "workflow YAML parse / authored diff",
+      "result": "PASS"
+    }
+  ]
+}
