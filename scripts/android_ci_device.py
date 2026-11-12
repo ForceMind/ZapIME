@@ -11,13 +11,22 @@ def system_keyboard(command):
     packages = subprocess.check_output(command + ["shell", "pm", "list", "packages", "-s"], text=True).splitlines()
     system = {line.strip().removeprefix("package:") for line in packages if line.startswith("package:")}
     candidates = [line.strip() for line in methods if "/" in line and line.strip().split("/", 1)[0] in system and not line.strip().startswith("org.zapime.")]
-    aosp = [method for method in candidates if method.startswith("com.android.")]
+    # A system VoiceInputMethodService is not a text keyboard. On API35+
+    # the ordered IME list can put Google TTS ahead of LatinIME.
+    latin = [method for method in candidates
+             if method.split("/", 1)[0] in ("com.android.inputmethod.latin", "com.google.android.inputmethod.latin")
+             and method.split("/", 1)[1].endswith("LatinIME")]
+    aosp = [method for method in latin if method.startswith("com.android.inputmethod.latin/")]
+    text_keyboards = [method for method in candidates
+                      if not any(part in method.lower() for part in ("voiceinputmethod", "voiceime", "texttospeech", "android.tts"))]
     if aosp:
         chosen = aosp[0]
-    elif api >= 35 and candidates:
-        chosen = candidates[0]
+    elif api >= 35 and latin:
+        chosen = latin[0]
+    elif api >= 35 and text_keyboards:
+        chosen = text_keyboards[0]
     else:
-        raise SystemExit("No permitted system teardown keyboard: API=" + str(api) + " registered=" + repr(methods) + "; API28 requires AOSP")
+        raise SystemExit("No permitted system text keyboard: API=" + str(api) + " registered=" + repr(methods) + "; API28 requires AOSP")
     proof = {"api_level": api, "selected_ime": chosen, "system_package_verified": True, "source": "pm list packages -s", "aosp": chosen.startswith("com.android.")}
     print("Verified system teardown keyboard:", proof, flush=True)
     return chosen, proof
