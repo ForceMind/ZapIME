@@ -1,16 +1,16 @@
 # ZapIME（闪电输入法）产品目标与持续交付计划
 
-更新日期：2026-11-07。当前从实时 `main` 接续，源码 Alpha `v0.1.0-alpha.1` 已公开。原 PR #71/#73/#74/#75/#78/#79/#80/#81 已经 #82 整合，#83 补齐发布证据；后续切片使用独立分支/PR。接续入口见[当前交接提示](WORK_HANDOFF_PROMPT.md)。
+更新日期：2026-11-12。当前从实时 `main` 接续，源码 Alpha `v0.1.0-alpha.1` 已公开。原 PR #71/#73/#74/#75/#78/#79/#80/#81 已经 #82 整合，#83 补齐发布证据；后续切片使用独立分支/PR。接续入口见[当前交接提示](WORK_HANDOFF_PROMPT.md)。
 
 2026-11-07 补充当前切片：按用户要求，`feat/offline-candidate-ranking` / PR #78 已从手动同步开发基线接入默认开启的 Android 本机候选增强。固定 MSIME、chinese-ime-lm rerank-v2 8M 和已有 ORT 已完成实际推理、稳定候选身份、隐私/生命周期回退及包内资源核验；固定测试修订 `5e1a87c` 的 API28/35/36 真实模型方法与系统 IME 两类门禁全部通过，已提供[双 ABI 开发包](CANDIDATE_RANKING_TRYOUT.md)。下一阶段分别验证 ARM/S25 长期输入、真实语料质量和性能，以及其他三端模型宿主；不将模拟器成功当手机验收。此切片保留下述语音、四端和同步目标；实现与边界见[候选增强](CANDIDATE_RANKING.md)，精确结果见[STATUS](STATUS.md)。
 
 本版更新近期交付优先级，不取消原有四端输入、数据归属、同步和恢复目标。原始完整规划按原文件字节保留在 [2026-10-20 基线计划](DEVELOPMENT_PLAN_BASELINE_20261020.md)。工程实施同时遵循 [AGENTS.md](../AGENTS.md)、[架构](ARCHITECTURE.md)、[技术决策](DECISIONS.md)及新增 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。事实进度以 [STATUS](STATUS.md) 和对应提交证据为准；本文件中的目标不是已实现功能。
 
-## 当前执行接续（2026-11-08 客户端日期）
+## 当前执行接续（2026-11-12 客户端日期）
 
 [PR #102](https://github.com/ForceMind/ZapIME/pull/102) 已将全部组字/配置实验/触摸夹具/候选扩展栈合入 main，merge `88112f48464ecec9c361ba03443cc7081feb6511`。固定 tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6` 的八条 workflow 全部成功，API35 配置实验和三API候选系统输入已实际执行；全量Android首轮系统Launcher ANR失败保留，定点重跑后attempt2为6/6。这说明#102历史那轮固定资源504阻断曾经解除；#104当前再次遇到的下载504按下面的新固定源码另行记录。完整原件与范围见 [STATUS](STATUS.md) 和[本轮证据](evidence/android-stability-52f812b-20261108/README.md)。
 
-Issue #77 的 Android JNI、独立worker与40条只读状态页已在草稿 [#104](https://github.com/ForceMind/ZapIME/pull/104) 实现。首轮 API35/36 各62项通过；API28页面夹具异常已改成生产JNI编辑→导出→导入并通过本机回归，远程head `16c7d89` 的实际Android执行被固定资源 HTTP504 阻断。当前任务是从该分支恢复同源码验收，保留首轮Candidate36输入失败及full35 ADB准备失败，完成后再合并和更新试用包，不从main重做。原件见[本轮记录](evidence/android-sync-inventory-ci-20261108/README.md)。该页不生成首次上传；用户确认、先拉取、重叠ID/唯一性/旧墓碑、冲突与可恢复stage保持独立验收，不把正常下载重新排队上传。
+Issue #77 的 Android JNI、独立 worker 和40条只读状态页已通过 [#104](https://github.com/ForceMind/ZapIME/pull/104) 合并进 main（`8d484bb79f481fb047e4fc18fd6b8cb7432ecd4c`）。修复API28测试夹具的固定源 `16c7d89` 先受固定依赖HTTP504阻塞，下载恢复后八条工作流全部SUCCESS：同步准备、真实候选/语音与Android API28/35/36、Apple/iOS和Windows均有对应门禁；首轮Candidate36输入失败和full35 ADB准备失败证据继续保留，不能因后续成功假称当时没有发生。[验收详情](STATUS.md)及[旧失败原件](evidence/android-sync-inventory-ci-20261108/README.md)。#107已将独立密文服务Go最低工具链和Docker构建更新到1.27.4，修复新公布的net/http安全问题。现在的下一项是Issue #77的显式首次上传：用户确认、先拉取、重叠ID/唯一性/旧墓碑、冲突与可恢复stage独立验收，不能把正常下载重新排队上传。
 
 候选 C1 保留 34 条历史与 64 条 v3 冻结合成集，按缺失、九键、补全、个人规则和重排伤害继续归因；v3 38/64→50/64不是用户准确率。无需手机的工程继续推进，ARM/S25、自然语音、长期资源/能耗、正式签名和可恢复升级集中待验。macOS #12/Windows #40 保留系统验收草稿，配对/冲突/历史密钥及英语伴学仍按后续计划执行。
 

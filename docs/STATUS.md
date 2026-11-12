@@ -1,6 +1,18 @@
 # ZapIME 项目执行状态
 
-## 当前开发检查点 · 2026-11-08（America/Los_Angeles）
+## 当前开发检查点 · 2026-11-12（America/Los_Angeles）
+
+**Android 只读同步证据预览已合入主线。** [PR #104](https://github.com/ForceMind/ZapIME/pull/104) 合并提交 `8d484bb79f481fb047e4fc18fd6b8cb7432ecd4c`，来源 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`。每页至多40条，只展示记录ID/类型/修订/墓碑和本机同步证据，不读取正文/标题到页面、不联网、不上传；退出取消排队、清理页面并拒绝迟到结果。
+
+**同一固定来源的八条工作流最终全部 SUCCESS：** [候选 42579960257](https://github.com/ForceMind/ZapIME/actions/runs/42579960257) attempt2（API28/35/36真实系统键盘、API35配置）、[聚焦 VoiceKey/同步 42579960224](https://github.com/ForceMind/ZapIME/actions/runs/42579960224) attempt2（API28/35/36本地同步准备、VoiceKey和真实API28 HTTPS）、[全量 Android 42579960293](https://github.com/ForceMind/ZapIME/actions/runs/42579960293) attempt2（开发APK、API35/36原生输入、API28/35/36真实模型）、[共享/Apple 42579960239](https://github.com/ForceMind/ZapIME/actions/runs/42579960239) attempt2（Linux/macOS/Windows共享测试、真实iOS扩展编译和模拟器worker）、[Windows TSF 42579960295](https://github.com/ForceMind/ZapIME/actions/runs/42579960295) attempt2；另有密文服务42579960236、语音CPU42579960285、源码预发布准备42579960234通过。原始 HTTP504/SQLite夹具/API36首次触摸/ADB根准备失败日志保留在下方历史检查点和[证据索引](evidence/android-sync-inventory-ci-20261108/README.md)；同源码重跑通过不代表旧失败当时不存在或全部根因已修复。
+
+**安全与剩余边界：** [PR #107](https://github.com/ForceMind/ZapIME/pull/107) 已合并为 `6009e4b24a42208564e6d66b77edb059fca02fa5`，Go模块最低版本与容器构建同时升级至1.27.4，密文同步服务原生 race/Go漏洞扫描/Docker/R2/恢复CI [43182857385](https://github.com/ForceMind/ZapIME/actions/runs/43182857385) 通过。[PR #106](https://github.com/ForceMind/ZapIME/pull/106) 的ADB root失败日志和有界启动重试仍独立验收，不能写成已合并。三星 S25 真机13项仍 **NOT RUN**；正式签名与可恢复升级、长时资源、自然语音、完整四端输入及 [Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 的备份恢复存量记录显式首次上传仍未完成。上传0项不等于完整云备份。已有开发 APK 仅供审慎试用，不是稳定发行；原 `v0.1.0-alpha.1` 标签及资产未更改。
+
+### 下一步
+
+从最新 main 继续安全的独立切片：先维护现有模拟器门禁并完成S25物理验收，按Issue #77加入用户确认、先拉取远端、唯一性/旧墓碑保护、有界可恢复幂等首次发布与真实多端服务验收。原候选 API36 偶发触摸现象保留Issue #38继续取证；不能为了绿灯延长睡眠或伪造按键。每次接续先查询实时仓库，不把此检查点当永久最新。
+
+## 历史检查点 · 2026-11-08（America/Los_Angeles）
 
 **组字修复已在主线；Android 本地同步状态页已实现，保留草稿等待新源码验收。** 主线检查点为 `a199d5658f1e071059b4c4b9bd2db02c381c188f`（#102 产品整合与 #103 验收文档），后续仍须查询实时 GitHub。新代码位于 [PR #104](https://github.com/ForceMind/ZapIME/pull/104) / `feat/android-sync-inventory-preview`，远程 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`。不要从 main 重做已经在分支完成的 JNI、页面和夹具修复。
 
