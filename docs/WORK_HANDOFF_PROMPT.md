@@ -1,13 +1,14 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-更新：2026-11-08（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
+更新：2026-11-12（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
 ## 先核对实时仓库
 
 - 仓库：[ForceMind/ZapIME](https://github.com/ForceMind/ZapIME)，Public，默认 `main`。
 - 本轮已合并 [#102](https://github.com/ForceMind/ZapIME/pull/102)，merge `88112f48464ecec9c361ba03443cc7081feb6511`，tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`；这只是检查点，接续先 fetch 并核对最新 main、open PR、Issue、review、CI 与 Release。
 - #103 已保存同源码完整验收与首轮 Launcher ANR 原件，主线检查点为 `a199d5658f1e071059b4c4b9bd2db02c381c188f`。
-- 保留草稿 [#104](https://github.com/ForceMind/ZapIME/pull/104) / `feat/android-sync-inventory-preview`，远程 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`。Android 只读同步页及 API28 测试夹具修复已完成，新的三 API 执行被固定依赖 HTTP504 阻断；不得从 main 重做或误合并为验收通过。
+- [#104](https://github.com/ForceMind/ZapIME/pull/104) 已合并到 main：`8d484bb79f481fb047e4fc18fd6b8cb7432ecd4c`，来源 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`，八条固定源工作流最终全成功；原下载/夹具/触摸/ADB失败分别保留。只读 JNI/worker/40条分页已完成，**不要再从旧草稿重复实现**。
+- [#107](https://github.com/ForceMind/ZapIME/pull/107) 已合并Go1.27.4安全修复（`6009e4b24a42208564e6d66b77edb059fca02fa5`）；[#106](https://github.com/ForceMind/ZapIME/pull/106) 为独立Android CI诊断候选，检查其最新CI/合并状态，不假定已验收。
 - #87/#89/#91/#95/#96/#101 全部保留并由 #102 整合，不再从这些旧分支重复实现。#12/macOS、#40/Windows 仍为未通过系统验收的草稿，不能直接合并为完成。
 - 保留任何新未提交工作或开放开发分支；不强推、不 reset 别人的工作，不操作用户电脑、手机、生产服务器或 DNS。
 
@@ -30,9 +31,9 @@ python3 scripts/verify_upstream.py
 
 ## 下一轮优先顺序
 
-1. 从 #104 最新 head 接续验收，JNI/独立 worker/40条分页页面已实现。首轮 d6f 的 API35/36 各62项通过，API28 前50项通过但页面 fixture SQLiteException；新16c已改为生产编辑→导出→导入构造资料并通过本机审查，未放宽原断言。当前固定资源 HTTP504 在多个 CI 与云端复现，先确认原来源恢复，再执行新源码三 API schema2门禁，不能循环刷重跑或借旧报告代填。详情与原件见[本轮记录](evidence/android-sync-inventory-ci-20261108/README.md)。`untracked`、pending=0、已知服务端修订均不是云备份完成证明。
-2. 之后继续恢复/导入记录的显式首次发布：先拉取、重叠 ID/唯一性/旧墓碑保护、用户确认、有界幂等操作与中断恢复；每次 HTTP 仍需持久 stage 和完整材料绑定，旧冻结请求不改写。不得用重存、改 ID 或重新上传普通下载绕过。
-3. #104首轮 Candidate API36还有真实第6键未进入Editable的失败，附近有配置重启/视图重建，具体触摸/派发环节未证实；原method/清理PASS不能覆盖它。再次出现时先增加有界无正文DOWN/UP、取消、click/dispatch、ready与epoch事件定位，不用加睡眠或重试按键假绿。Issue #38保持open。候选 C1 保留原 34 条与新增 64 条冻结集、两版 ORT、所有缺失与伤害。v3 基础 38/64、上下文 50/64、缺失 5 条；v2 跨库 25/34 与 26/34 分别记录，不当用户准确率。按证据继续九键、补全和重排优化。
+1. 从当前 main 继续开发；#104已完成同源码8条workflow验收并合入，不重新实现已存在的JNI/worker/本地同步页。记录原HTTP504、初轮Candidate API36和API35 ADB准备失败；后续重跑成功不是已有根因都已修复的证据。详情见[状态](STATUS.md)与[旧失败原件](evidence/android-sync-inventory-ci-20261108/README.md)。
+2. 优先推进 [Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 的恢复/导入记录显式首次发布：先拉取远端、重叠ID/唯一性/旧墓碑保护、用户确认、有界幂等操作及中断恢复；每次HTTP仍需持久stage和完整材料绑定，旧冻结请求不改写。不得用重存、改ID或重新上传普通下载绕过。不能把pending=0/远端修订视为备份确认。
+3. 原候选API36第一次重启附近丢触摸，后续同源真实系统IME验收通过，但根因仍未从DOWN/UP/dispatch事件定位；Issue #38保留。候选 C1 继续按原34条与64条冻结集、缺失/重排伤害、九键/补全、资源与隐私回退推进，不把合成分数称用户准确率。
 4. 无需手机的工作继续推进；手机只集中使用 [S25 总验收单](S25_ACCEPTANCE_CHECKLIST.md)。自然语音、ARM 延迟/RSS/能耗、长输入、隐私/取消、正式签名与可恢复升级分别待验。
 5. 按路线推进配对、冲突、历史密钥与完整灾备、其他原生宿主、英语伴学。已有 Android 原生输入/主题/资料/双离线语音/显式手动同步不删除或重做。
 

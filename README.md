@@ -14,7 +14,7 @@
 - 本机资料搜索、短语、显式保存的剪贴板、永久收藏及加密备份。临时剪贴板与永久收藏分开管理。
 - Android 显式手动密文同步、可自建的 Go/PostgreSQL 服务和可选 R2/S3 密文存储。设备配对、四端互通和完整灾备仍在开发。
 
-**开发中的下一项：** [草稿 PR #104](https://github.com/ForceMind/ZapIME/pull/104) 已实现 Android 本地同步状态页，每页最多40条只读 metadata，离开清空，不展示正文或标题、不产生 HTTP 或上传操作。首轮 API35/36 页面验收通过；API28 测试夹具已修正，新固定源码的 Android 验收被依赖下载 HTTP504 阻断，尚未合入主线。详情见 [STATUS](docs/STATUS.md)。
+**已合并：** [PR #104](https://github.com/ForceMind/ZapIME/pull/104) 的 Android 本地同步状态页已进入主线。只读元数据每页最多40条，离开清空，不显示正文或标题、不产生 HTTP/上传。修复后的固定源码在 Android API28/35/36、真实候选输入、VoiceKey、Apple 与 Windows 的8条工作流全部验收通过；原始 HTTP504、API28 测试夹具和 API36 首轮丢键证据仍保留。同步服务同时经 [PR #107](https://github.com/ForceMind/ZapIME/pull/107) 升级到含安全修复的 Go 1.27.4。详见 [STATUS](docs/STATUS.md)。
 
 上传0项或未找到同步记录，都不表示资料已完成云备份；本机记有服务端修订也不是云端实时确认。恢复/导入存量记录的显式首次上传尚未实现，按 [Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 继续推进，详见[只读预览契约](docs/SYNC_INVENTORY.md)。
 
