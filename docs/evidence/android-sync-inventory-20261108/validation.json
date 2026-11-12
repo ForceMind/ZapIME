@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "observed_utc": "2026-11-09T07:01:27.798760+00:00",
+  "base_commit": "88112f48464ecec9c361ba03443cc7081feb6511",
+  "product_commit": "18a2066ee67929efa226a8e5700bec9b7e07f292",
+  "integrated_commit": "9522a65f364efc80fc4959b6a8ff17ca2974868c",
+  "integrated_tree": "3bdf3904f32d9ff23d8f301de94536b08bc8e394",
+  "tested_source_sha256": {
+    "crates/zapime-core/src/android_sync.rs": "bc07193a4f0fc4970283efc4ef6996df960f946fa8dbfcdeda32502177300d50",
+    "crates/zapime-data/src/sync.rs": "4d4166941f40d1604a59c3c9f9ade5bef203bf1236e3a05e73cd7f23007eac21",
+    "crates/zapime-data/tests/sync_inventory.rs": "5dfce4ece857c4011f8ca82edeb2683ad5a100142203f92eb4802f53fdc60fc7",
+    "platforms/android/AndroidManifest.xml": "860e89567870759a202d05da4ba59a555e887c4915a3c42fc910f2fca9760cd1",
+    "platforms/android/java/org/zapime/android/NativeCore.java": "f6a63a53f3c8bb3332cf995126881da54ec110b2b633c3aaab9ecdfe65b725f9",
+    "platforms/android/java/org/zapime/android/SyncInventory.java": "b70928f2ca139115955cc904031f6f3db5b3aeb7251d06ffe657685ccb608b55",
+    "platforms/android/java/org/zapime/android/SyncInventoryActivity.java": "ea65486ab0346955d78759047adb05a34f4582f53b8acd4a4850608e0c310a2b",
+    "platforms/android/java/org/zapime/android/SyncTransferActivity.java": "6b1a0cc2c39b8656c12c9eadc795f0f58b979c54bcdb6b4a7b3a22901b0cbc81",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncPagesUiProbe.java": "2bca21d330e4c86459641b2cbad349faecaeb8ff4b2bcb718407503b275dc6d9",
+    "platforms/android/voice-tests/java/org/zapime/android/voicetest/SyncTransferProbe.java": "875675478be40d6293ba1a7f9d090bd4437f9b14e0c926b1e37cd08a76ad32f4",
+    "scripts/android_sync_pages_report.py": "15a8657ff3501c7b82dc6cf44b1e1522673afb17d57199ad8024599c047bb006",
+    "scripts/android_sync_transfer_report.py": "a6eb255e70e18e4854c6adf25921528c5959ce47b9afa64d722311d4d2e465bd",
+    "scripts/check_apk.py": "18a56ad8a5fb2bb4d563c3ff270c89950dd3622931dcf8108a98c6b684423f16",
+    "scripts/test_android_sync_pages_report.py": "ade70de499bd03e21042dfa6514f40bfeb16aec3bc59fcc90fb4e514b842af7b",
+    "scripts/test_android_sync_transfer_report.py": "b3eb5ac1eb2b239130dea84fa46b133df028107fc3fddfdfa7e938f21bdc9f5a"
+  },
+  "local_checks": {
+    "rust_workspace": {
+      "passed": 144,
+      "command": "cargo test --workspace --locked"
+    },
+    "rust_fmt": {
+      "status": "PASS",
+      "command": "cargo fmt --all --check"
+    },
+    "rust_clippy": {
+      "status": "PASS",
+      "command": "cargo clippy --workspace --all-targets --locked -- -D warnings"
+    },
+    "jni_host_compile": {
+      "passed": 3,
+      "scope": "Actual android_sync.rs included unchanged in a temporary host JNI crate; existing helper tests only. Not Android target linking or JNI invocation."
+    },
+    "java_compile": {
+      "product_sources": 62,
+      "independent_host_sources": 4,
+      "voice_probe_sources": 20,
+      "jdk": "Temurin 17.0.21+9",
+      "android_api": "36 r02",
+      "source_target": "8",
+      "status": "PASS"
+    },
+    "sync_python": {
+      "passed": 51,
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_sync*py' -v"
+    },
+    "apk_packaging_python": {
+      "passed": 10,
+      "command": "python3 -m unittest discover -s scripts -p 'test_android_packaging.py' -v"
+    },
+    "git_diff_check": "PASS"
+  },
+  "android_runtime": "NOT RUN: execute new schema2 JNI/Activity probes on API28/35/36 from this new source tree",
+  "phone": "NOT RUN",
+  "first_upload_issue77": "NOT IMPLEMENTED",
+  "logs": {
+    "inventory-rust-tests.log": {
+      "bytes": 19924,
+      "sha256": "fb5182917f367080923b299a981d6ac6ec570d19695ba215c2daf3040d623f36",
+      "stored": "inventory-rust-tests.log.gz",
+      "stored_sha256": "eda5720b85338fa350297635e63806335eea07d3b5b0e23d60dfd0d05280ab96"
+    },
+    "inventory-clippy.log": {
+      "bytes": 4071,
+      "sha256": "c9ec516086d5266a9ac99c8b9b111359e88df086f6b2bb80306ff803da714347",
+      "stored": "inventory-clippy.log.gz",
+      "stored_sha256": "bc097a48003be59fa18c6474cd6eb49f39cfcb1eaeb1082d5c1ba4287a3eb284"
+    },
+    "inventory-python-tests.log": {
+      "bytes": 8693,
+      "sha256": "bb3c243bf537c60f60689e7d8d06060dc574952bb6ded27f22f9ca13f1e0fd84",
+      "stored": "inventory-python-tests.log.gz",
+      "stored_sha256": "cf040d1f95196e6aedfcc07aa7c22957d276b0803621764f4e856e314bac70f6"
+    },
+    "inventory-jni-host.log": {
+      "bytes": 4814,
+      "sha256": "12486166a4a3d91cf8ac24259c754bef5b9da5ad99e6f0a11aa46f7c3817ed5e",
+      "stored": "inventory-jni-host.log.gz",
+      "stored_sha256": "b713440c736e13ffbf54613facec1b61679118b19c1b0c4752cbcb589a0d423d"
+    }
+  }
+}

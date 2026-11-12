@@ -8,15 +8,19 @@ CASES = frozenset({
     "authenticated_remote_apply_plaintext_no_echo", "authenticated_self_echo_no_duplicate",
     "bad_second_change_atomic_rollback_retained", "wrong_material_account_no_mutation",
     "negative_cursor_and_wire_budgets", "missing_future_database_not_created_or_migrated",
+    "readonly_inventory_pending_known_no_mutation", "readonly_inventory_restored_pagination",
+    "readonly_inventory_input_and_parser_rejection",
 })
 SCOPE = ("Actual Android stateless JNI and isolated existing-v2 SQLite; native synthetic edits, "
-         "persistent frozen ciphertext, strict ACK, authenticated application and retained-page rollback. "
+         "persistent frozen ciphertext, strict ACK, authenticated application, retained-page rollback "
+         "and read-only inventory with strict host parsing. "
          "Server outer ACK/page metadata only is synthetic; no Android HTTPS, real server exchange, "
          "pairing, phone or Cloudflare acceptance.")
 PROOFS = frozenset({
     "actual_native_edit", "actual_jni_staging", "actual_jni_acknowledgement",
     "actual_jni_authenticated_apply", "frozen_retry_identical", "plaintext_verified_locally",
     "no_upload_echo_on_receiver", "bad_page_rolled_back", "cleanup_completed",
+    "actual_jni_readonly_inventory",
 })
 FIELDS = PROOFS | {"schema_version", "status", "synthetic", "api_level", "cases", "android_https",
                   "server_exchange", "scope", "failed_page_retention", "secret_content_or_ciphertext_logged"}
@@ -25,7 +29,7 @@ FIELDS = PROOFS | {"schema_version", "status", "synthetic", "api_level", "cases"
 def verify_report(report, api=None):
     if not isinstance(report, dict) or report.keys() != FIELDS:
         raise ValueError("Unknown or missing JNI transfer report fields")
-    if type(report["schema_version"]) is not int or report["schema_version"] != 1 or report["status"] != "PASS" or report["synthetic"] is not True:
+    if type(report["schema_version"]) is not int or report["schema_version"] != 2 or report["status"] != "PASS" or report["synthetic"] is not True:
         raise ValueError("Incomplete Android JNI transfer report")
     level = report["api_level"]
     if type(level) is not int or level not in (28, 35, 36) or api is not None and level != api:

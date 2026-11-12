@@ -87,7 +87,7 @@ fn restored_inventory_is_paged_metadata_only_and_never_enqueues_tombstones() {
     let expected = binding();
     restored.prepare_sync_workspace(&expected).unwrap();
     let before = snapshot(&path);
-    let mut reader = Store::open_panel_reader(&path).unwrap();
+    let mut reader = Store::open_sync_reader(&std::fs::canonicalize(&path).unwrap()).unwrap();
     let mut after = None;
     let mut ids = Vec::new();
     let mut tombstones = 0;

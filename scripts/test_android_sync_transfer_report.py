@@ -6,7 +6,7 @@ from android_sync_transfer_report import CASES, PROOFS, SCOPE, verify_report
 
 class SyncTransferReportTests(unittest.TestCase):
     def setUp(self):
-        self.report = {"schema_version": 1, "status": "PASS", "synthetic": True, "api_level": 36,
+        self.report = {"schema_version": 2, "status": "PASS", "synthetic": True, "api_level": 36,
                        "cases": [{"id": case, "passed": True} for case in sorted(CASES)],
                        "android_https": "NOT RUN", "server_exchange": "synthetic_outer_only", "scope": SCOPE,
                        "failed_page_retention": "saved", "secret_content_or_ciphertext_logged": False}
@@ -20,7 +20,7 @@ class SyncTransferReportTests(unittest.TestCase):
             with self.assertRaises(ValueError): verify_report(self.report, 36)
 
     def test_case_set_failure_and_nonboolean_rejected(self):
-        for mutation in ("missing", "duplicate", "unknown", "failed", "truthy", "row_extra", "status", "schema_bool", "api_bool"):
+        for mutation in ("missing", "duplicate", "unknown", "failed", "truthy", "row_extra", "status", "schema_bool", "schema_old", "api_bool"):
             report = copy.deepcopy(self.report)
             if mutation == "missing": report["cases"].pop()
             if mutation == "duplicate": report["cases"][0] = report["cases"][1]
@@ -30,6 +30,7 @@ class SyncTransferReportTests(unittest.TestCase):
             if mutation == "row_extra": report["cases"][0]["ciphertext"] = "forbidden"
             if mutation == "status": report["status"] = "FAIL"
             if mutation == "schema_bool": report["schema_version"] = True
+            if mutation == "schema_old": report["schema_version"] = 1
             if mutation == "api_bool": report["api_level"] = True
             with self.subTest(mutation=mutation), self.assertRaises(ValueError): verify_report(report)
 

@@ -7,7 +7,7 @@ from android_sync_pages_report import (ACTIVATION, CANCEL_SCOPE, CASES, FAILURE_
 
 class SyncPagesUiReportTests(unittest.TestCase):
     def setUp(self):
-        self.report = {"schema_version": 1, "status": "PASS", "synthetic": True, "api_level": 36,
+        self.report = {"schema_version": 2, "status": "PASS", "synthetic": True, "api_level": 36,
             "cases": [{"id": name, "passed": True} for name in sorted(CASES)], "scope": SCOPE,
             "button_activation_method": ACTIVATION, "cancellation_scope": CANCEL_SCOPE,
             "android_https": "NOT RUN", "active_https_interruption_tested": False,
@@ -31,7 +31,7 @@ class SyncPagesUiReportTests(unittest.TestCase):
         for name in FIELDS:
             report = copy.deepcopy(self.report); del report[name]
             self.reject(report)
-        for name, value in (("extra", True), ("schema_version", True), ("api_level", "36"),
+        for name, value in (("extra", True), ("schema_version", True), ("schema_version", 1), ("api_level", "36"),
                             ("queued_cancelled_pages", True), ("queued_cancelled_pages", 1),
                             ("status", "FAIL"), ("synthetic", 1)):
             report = copy.deepcopy(self.report); report[name] = value

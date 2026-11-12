@@ -14,6 +14,7 @@
     <activity android:name=".SyncPreparationActivity" android:exported="false"/>
     <activity android:name=".SyncKeyRegistrationActivity" android:exported="false"/>
     <activity android:name=".SyncTransferActivity" android:exported="false"/>
+    <activity android:name=".SyncInventoryActivity" android:exported="false"/>
     <service android:name=".ZapInputMethodService" android:label="闪电输入法" android:permission="android.permission.BIND_INPUT_METHOD" android:exported="true">
       <intent-filter><action android:name="android.view.InputMethod"/></intent-filter>
       <meta-data android:name="android.view.im" android:resource="@xml/input_method"/>
