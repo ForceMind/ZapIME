@@ -16,7 +16,7 @@
 
 ## 本地开发
 
-需要 Go 1.27.3+、PostgreSQL 16。使用专门的开发数据库，设置连接信息后运行：
+需要 Go 1.27.4+、PostgreSQL 16（2026-11-10 安全修复版本，包含 net/http 的 GO-2026-6859 / CVE-2026-97054 修复）。Docker 镜像构建与 GitHub CI 使用同一最低 Go 版本。使用专门的开发数据库，设置连接信息后运行：
 
 ```sh
 cd services/sync
