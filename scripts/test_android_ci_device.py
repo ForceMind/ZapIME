@@ -26,6 +26,27 @@ class SystemKeyboardTests(unittest.TestCase):
         self.assertFalse(proof["aosp"])
         self.assertEqual(proof["api_level"], 35)
 
+    def test_api35_ignores_google_tts_voice_first_and_selects_system_latin(self):
+        voice = "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService"
+        latin = "com.google.android.inputmethod.latin/com.android.inputmethod.latin.LatinIME"
+        chosen, proof = self.select(
+            35, voice + "\\n" + latin + "\\n",
+            "package:com.google.android.tts\\npackage:com.google.android.inputmethod.latin\\n",
+        )
+        self.assertEqual(chosen, latin)
+        self.assertTrue(proof["system_package_verified"])
+        self.assertFalse(proof["aosp"])
+
+    def test_voice_only_is_not_permitted_as_teardown_text_keyboard(self):
+        voice = "com.google.android.tts/com.google.android.apps.speech.tts.googletts.settings.asr.voiceime.VoiceInputMethodService"
+        with self.assertRaisesRegex(SystemExit, "No permitted system text keyboard"):
+            self.select(35, voice + "\\n", "package:com.google.android.tts\\n")
+
+    def test_modern_known_system_oem_text_keyboard_is_allowed(self):
+        oem = "com.samsung.android.honeyboard/.service.HoneyBoardService"
+        chosen, _ = self.select(36, oem + "\\n", "package:com.samsung.android.honeyboard\\n")
+        self.assertEqual(chosen, oem)
+
     def test_modern_prefers_aosp_and_excludes_unverified_namespace(self):
         chosen, _ = self.select(36, "com.android.fake/.IME\ncom.google.android.inputmethod.latin/.LatinIME\ncom.android.inputmethod.latin/.LatinIME\n", "package:com.google.android.inputmethod.latin\npackage:com.android.inputmethod.latin\n")
         self.assertEqual(chosen, "com.android.inputmethod.latin/.LatinIME")
