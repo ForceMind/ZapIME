@@ -51,6 +51,8 @@ public final class ZapInputMethodService extends InputMethodService {
     private long shownCompositionRevision=-1;
     private JSONObject latestCandidateView;
     private int rankedSnapshots,rankingSubmitted;
+    // Diagnostic counters only: never include candidate text or editor context.
+    private int railBuilds,railRebinds,railRebindSkips;
     // No provider or enable control yet: the default session retains no text.
     private final EnglishLearningSession learning=new EnglishLearningSession();
     private String editorPackage;
@@ -93,6 +95,7 @@ public final class ZapInputMethodService extends InputMethodService {
         learning.suspend();cancelVoice(false);touches.cancel();theme=KeyboardTheme.load(this);
         getWindow().getWindow().setNavigationBarColor(theme.deck);
         View decor=getWindow().getWindow().getDecorView();int flags=decor.getSystemUiVisibility();decor.setSystemUiVisibility(theme.dark?flags&~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR:flags|View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+        ++railBuilds;
         LinearLayout panel=Ui.column(this);panel.setPadding(dp(2),0,dp(2),dp(6));panel.setBackgroundColor(theme.deck);
         status=Ui.text(this,"",12,theme.muted);status.setGravity(Gravity.CENTER_VERTICAL);status.setPadding(dp(12),0,0,0);panel.addView(status,new LinearLayout.LayoutParams(-1,dp(22)));
         HorizontalScrollView scroll=new HorizontalScrollView(this);scroll.setFillViewport(true);scroll.setHorizontalScrollBarEnabled(false);scroll.setBackgroundColor(theme.toolbar);candidates=new LinearLayout(this);candidates.setGravity(Gravity.CENTER_VERTICAL);scroll.addView(candidates,new android.widget.FrameLayout.LayoutParams(-1,-1));panel.addView(scroll,new LinearLayout.LayoutParams(-1,dp(46)));
@@ -102,7 +105,20 @@ public final class ZapInputMethodService extends InputMethodService {
     private void refreshTheme() {
         if(body!=null&&theme.dark!=KeyboardTheme.load(this).dark){setInputView(onCreateInputView());try{send(new JSONObject().put("op","view"),null);}catch(JSONException ignored){}}
     }
-    @Override public void onStartInputView(EditorInfo info,boolean restarting){super.onStartInputView(info,restarting);refreshTheme();learning.beginEditor(EnglishLearningEligibility.allows(info,privateSession));resumeRanking(info);}
+    @Override public void onStartInputView(EditorInfo info,boolean restarting){super.onStartInputView(info,restarting);refreshTheme();learning.beginEditor(EnglishLearningEligibility.allows(info,privateSession));resumeRanking(info);rebindCandidateRail(info);}
+    /** Draw only a proven cached view after Android replaces our InputView. Never edit the app or core. */
+    private void rebindCandidateRail(EditorInfo info) {
+        JSONObject saved=latestCandidateView;
+        if(info==null||info!=editorInfoIdentity||getCurrentInputConnection()!=editorConnection
+                ||verifiedRestart!=null||restoringRestart!=null||pendingMarkerLoss!=null||!ready
+                ||!sameEditor(info)||privateSession||!chinese||searchActive||searchClosing
+                ||candidates==null||preedit.isEmpty()||saved==null
+                ||!preedit.equals(saved.optString("preedit",""))||saved.optLong("generation",-1)!=generation
+                ||saved.optJSONArray("candidates")==null) { ++railRebindSkips;return; }
+        // renderResult changes only the IME view. Generation and exact preedit
+        // match the current core reply; never replay a selection or text commit.
+        renderResult(saved);++railRebinds;
+    }
     @Override public void onConfigurationChanged(android.content.res.Configuration config){
         final String before=rankingContext.text();
         cancelVerifiedRestart("fresh_configuration_changed",true);invalidateRanking(true,false);learning.suspend();cancelVoice(true);touches.cancel();
@@ -169,6 +185,9 @@ public final class ZapInputMethodService extends InputMethodService {
         writer.println("ZapIME composition trace (seq@uptime-ms:fixed-code:epoch): "+compositionTrace.snapshot());
         writer.println("ZapIME candidate ranking: enabled="+rankingEnabled+" eligible="+rankingEligible+" state="+rankingState+" scored="+rankedSnapshots+" inputRevision="+rankingInputRevision+" appliedRevision="+rankedInputRevision);
         writer.println("ZapIME candidate requests: submitted="+rankingSubmitted);
+        writer.println("ZapIME candidate rail: builds="+railBuilds+" rebinds="+railRebinds+" skipped="+railRebindSkips
+                +" available="+(latestCandidateView!=null)+" rows="+(candidates==null?-1:candidates.getChildCount())
+                +" pendingProof="+(verifiedRestart!=null)+" restoring="+(restoringRestart!=null)+" inputVisible="+rankingVisible);
         // Counts/reason codes only. No input, context, package, key or token.
     }
     private void bind(Button button,Runnable action,boolean repeat){touches.bind(button,()->{if(!holdRestartAction(action,1,false))action.run();},repeat,()->getCurrentInputConnection()!=null);}
@@ -369,6 +388,11 @@ public final class ZapInputMethodService extends InputMethodService {
             if(!sameRestartEditor(ticket))return;
             if(!holdRestartAction(operation,1,false))operation.run();
         }
+        // A configuration-driven InputView recreation can leave the status/preedit
+        // intact while showing only raw pinyin, even after the owned region is
+        // freshly proved. Restore candidates by view binding, not by resending
+        // keys, mutating the editor or replaying a stale model result.
+        if(sameRestartEditor(ticket))rebindCandidateRail(ticket.info);
         if(sameRestartEditor(ticket)&&latestCandidateView!=null)scheduleRanking(latestCandidateView);
         refreshStatus();
     }
