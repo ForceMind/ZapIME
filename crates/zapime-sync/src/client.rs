@@ -105,7 +105,6 @@ fn checked_frozen(
     Ok(frozen)
 }
 
-
 /// Ephemeral evidence of a successfully applied terminal pull page. Only
 /// the HTTPS-authenticated host can attest the server that supplied the page.
 /// This token is neither serializable nor durable; never treat a local cursor
