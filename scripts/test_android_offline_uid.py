@@ -49,6 +49,57 @@ class OfflineUIDGuards(unittest.TestCase):
             return subprocess.CompletedProcess(command, status, stdout, "")
         return run, rules, calls
 
+    def test_adb_root_permanent_refusal_is_preserved_and_fails_closed(self):
+        commands = []
+        def refuse(command, **options):
+            commands.append(command)
+            if command[-1] == "root":
+                return subprocess.CompletedProcess(
+                    command, 1, "", "adbd cannot run as root in production builds"
+                )
+            self.fail("No commands after non-transient root refusal are allowed")
+
+        with patch.dict("os.environ", self.env, clear=True), \
+                patch("subprocess.run", side_effect=refuse), \
+                patch("android_offline_uid.time.sleep") as sleep, \
+                tempfile.TemporaryDirectory() as folder:
+            with self.assertRaisesRegex(SystemExit, "offline-uid-root.txt"):
+                with offline_product(self.command, Path(folder)):
+                    self.fail("root refusal admitted")
+            trace = (Path(folder) / "offline-uid-root.txt").read_text()
+            self.assertIn("attempt=1 exit_code=1", trace)
+            self.assertIn("adbd cannot run as root", trace)
+            self.assertNotIn("attempt=2", trace)
+            self.assertFalse((Path(folder) / "offline-uid.json").exists())
+        self.assertEqual(len(commands), 1)
+        sleep.assert_not_called()
+
+    def test_adb_root_transient_offline_is_retried_once_and_verified(self):
+        normal, rules, calls = self.simulate()
+        root_calls = []
+        def restart(command, **options):
+            if command[-1] == "root":
+                root_calls.append(command)
+                if len(root_calls) == 1:
+                    return subprocess.CompletedProcess(command, 1, "", "adb: device offline")
+            return normal(command, **options)
+
+        with patch.dict("os.environ", self.env, clear=True), \
+                patch("subprocess.run", side_effect=restart), \
+                patch("android_offline_uid.time.sleep") as sleep, \
+                tempfile.TemporaryDirectory() as folder:
+            with offline_product(self.command, Path(folder)):
+                self.assertEqual(rules, {"iptables", "ip6tables"})
+            trace = (Path(folder) / "offline-uid-root.txt").read_text()
+            self.assertIn("attempt=1 exit_code=1", trace)
+            self.assertIn("attempt=2 exit_code=0", trace)
+            self.assertNotIn("attempt=3", trace)
+            self.assertTrue(json.loads((Path(folder) / "offline-uid.json").read_text())["removed"])
+        self.assertEqual(len(root_calls), 2)
+        self.assertFalse(rules)
+        self.assertTrue(any("id" in command for command in calls))
+        sleep.assert_called_once_with(1)
+
     def test_root_or_exact_package_failure_precedes_firewall_mutation(self):
         for root, package in [("2000", ""), ("0", "package:org.zapime.android.test uid:10123\n")]:
             run, _, calls = self.simulate(root=root, package=package)

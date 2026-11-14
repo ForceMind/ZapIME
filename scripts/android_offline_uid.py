@@ -4,7 +4,8 @@ from contextlib import contextmanager
 import json
 import re
 import subprocess
-from android_ci_device import dedicated_ci
+import time
+from android_ci_device import dedicated_ci, write_diagnostic
 
 
 @contextmanager
@@ -13,7 +14,35 @@ def offline_product(command, output):
         raise SystemExit("Dedicated ephemeral GitHub emulator required for UID isolation")
     def run(*args, check=True):
         return subprocess.run(command + list(args), text=True, capture_output=True, check=check, timeout=30)
-    run("root")
+    # The emulator can briefly go offline while adbd restarts. Preserve its
+    # exact root command outcome, even when the root gate fails before any
+    # network isolation or Android instrumentation starts.
+    output.mkdir(parents=True, exist_ok=True)
+    root_trace = []
+    for attempt in range(1, 4):
+        try:
+            result = run("root", check=False)
+        except (OSError, subprocess.TimeoutExpired) as failure:
+            root_trace.append(f"attempt={attempt} exception={type(failure).__name__}: {failure}")
+            write_diagnostic(output / "offline-uid-root.txt", "\n".join(root_trace) + "\n")
+            raise
+        root_trace.append(
+            f"attempt={attempt} exit_code={result.returncode}\n"
+            f"stdout={result.stdout[-2048:]}\nstderr={result.stderr[-2048:]}"
+        )
+        write_diagnostic(output / "offline-uid-root.txt", "\n".join(root_trace) + "\n")
+        if result.returncode == 0:
+            break
+        combined = result.stdout + result.stderr
+        # Only a transport startup race is retryable; unsupported root,
+        # permission and security failures must fail closed immediately.
+        transient = re.search(
+            r"device offline|device '.+' not found|no devices/emulators found",
+            combined, re.IGNORECASE,
+        )
+        if not transient or attempt == 3:
+            raise SystemExit("CI emulator adb root failed; inspect offline-uid-root.txt")
+        time.sleep(attempt)
     run("wait-for-device")
     if run("shell", "id", "-u").stdout.strip() != "0":
         raise SystemExit("CI emulator root required; offline UID gate cannot be skipped")
