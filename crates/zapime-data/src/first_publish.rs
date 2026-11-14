@@ -56,13 +56,14 @@ fn snapshot(tx: &Transaction<'_>, id: Uuid) -> Result<(String, FirstPublishSelec
         return Err(Error::SyncLocalConflict);
     }
     record.content.validate()?;
+    let body_sha256 = Sha256::digest(body.as_bytes()).into();
     Ok((
         body,
         FirstPublishSelection {
             record_id: id,
             operation_id: Uuid::nil(), // assigned once when the host starts approval
             local_revision: record.revision,
-            body_sha256: Sha256::digest(body.as_bytes()).into(),
+            body_sha256,
         },
     ))
 }
