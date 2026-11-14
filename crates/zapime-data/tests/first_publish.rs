@@ -73,7 +73,8 @@ fn explicit_first_upload_preserves_records_and_is_atomic_and_idempotent() {
     assert_eq!(store.pending_count().unwrap(), 0);
     assert_eq!(store.export_plaintext().unwrap(), old_export);
     assert_eq!(
-        store.enqueue_first_publish(&binding, 0, &[first.clone(), second.clone()], true)
+        store
+            .enqueue_first_publish(&binding, 0, &[first.clone(), second.clone()], true)
             .unwrap(),
         2
     );
@@ -88,7 +89,8 @@ fn explicit_first_upload_preserves_records_and_is_atomic_and_idempotent() {
     assert!(page.items[2].deleted);
     // A lost UI ACK cannot duplicate an operation or change queue order.
     assert_eq!(
-        store.enqueue_first_publish(&binding, 0, &[first.clone(), second.clone()], true)
+        store
+            .enqueue_first_publish(&binding, 0, &[first.clone(), second.clone()], true)
             .unwrap(),
         0
     );
@@ -115,9 +117,13 @@ fn duplicate_reused_stale_and_mismatched_inputs_never_partially_seed() {
     assert_eq!(before, store.export_plaintext().unwrap());
     for bad in [
         vec![first.clone(), first.clone()],
-        vec![first.clone(), FirstPublishSelection {
-            operation_id: first.operation_id, ..second.clone()
-        }],
+        vec![
+            first.clone(),
+            FirstPublishSelection {
+                operation_id: first.operation_id,
+                ..second.clone()
+            },
+        ],
         vec![],
         vec![first.clone(); MAX_FIRST_PUBLISH_SELECTION + 1],
     ] {
@@ -186,7 +192,8 @@ fn edit_history_and_same_operation_id_are_not_first_publication_authority() {
         .enqueue_first_publish(&binding, 0, &[same], true)
         .is_err());
     assert_eq!(
-        store.enqueue_first_publish(&binding, 0, &[approved], true)
+        store
+            .enqueue_first_publish(&binding, 0, &[approved], true)
             .unwrap(),
         1
     );
