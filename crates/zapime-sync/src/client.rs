@@ -7,6 +7,7 @@ use crate::{workspace, Change, PreservedError};
 use uuid::Uuid;
 use zapime_crypto::Binding;
 use zapime_data::{
+    first_publish::FirstPublishSelection,
     pull::ApplyReport,
     sync::{StagedUpload, UploadOperation},
     Record, Store,
@@ -35,6 +36,10 @@ pub enum Error {
     StagedMismatch,
     #[error("sync_client_page_rejected")]
     Page(#[source] PreservedError),
+    #[error("sync_first_publish_head_not_current")]
+    FirstPublishHead,
+    #[error("sync_first_publish_consent_required")]
+    FirstPublishConsent,
 }
 
 fn guard(store: &mut Store, profile: Uuid, material: &workspace::Material) -> Result<(), Error> {
@@ -98,6 +103,94 @@ fn checked_frozen(
         return Err(Error::Ciphertext);
     }
     Ok(frozen)
+}
+
+
+/// Ephemeral evidence of a successfully applied terminal pull page. Only
+/// the HTTPS-authenticated host can attest the server that supplied the page.
+/// This token is neither serializable nor durable; never treat a local cursor
+/// alone as proof the remote has no conflicting records.
+pub struct TerminalPullProof {
+    profile: Uuid,
+    binding: zapime_data::sync::WorkspaceBinding,
+    cursor: u64,
+}
+
+/// Opt-in variant for the final pull response. It must be called on the actual
+/// authenticated server response, after all previous pages have been applied.
+/// A conflict or missing key fails before any proof is minted.
+pub fn apply_page_for_first_publish(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    after: u64,
+    bytes: &[u8],
+) -> Result<(ApplyReport, Option<TerminalPullProof>), Error> {
+    let report = apply_page(store, profile, material, after, bytes)?;
+    let parsed = crate::parse_page(profile, after, bytes).map_err(|_| Error::FirstPublishHead)?;
+    let proof = (report.cursor == parsed.head && parsed.next_cursor == parsed.head).then(|| {
+        TerminalPullProof {
+            profile,
+            binding: material.binding(),
+            cursor: parsed.head,
+        }
+    });
+    Ok((report, proof))
+}
+
+fn verify_first_publish_proof(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    proof: &TerminalPullProof,
+) -> Result<(), Error> {
+    guard(store, profile, material)?;
+    if proof.profile != profile
+        || proof.binding != material.binding()
+        || store.sync_cursor(profile).map_err(Error::Storage)? != proof.cursor
+    {
+        return Err(Error::FirstPublishHead);
+    }
+    Ok(())
+}
+
+/// Inspect an explicit record only; generates a fresh idempotency UUID and
+/// pins its complete current bytes. Does not stage, enqueue, or send anything.
+/// The UI may display record ID/type, but never the digest/body or secret key.
+pub fn inspect_first_publish(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    proof: &TerminalPullProof,
+    record_id: Uuid,
+) -> Result<FirstPublishSelection, Error> {
+    verify_first_publish_proof(store, profile, material, proof)?;
+    store
+        .inspect_first_publish(&proof.binding, proof.cursor, record_id, Uuid::new_v4())
+        .map_err(Error::Storage)
+}
+
+/// The host must collect deliberate user confirmation after showing the
+/// selected IDs and their risks, not infer it from zero pending uploads.
+/// The storage transaction atomically rejects stale bytes, old tombstones,
+/// any known remote version, local operation history, and duplicate choices.
+/// This ONLY queues immutable local operations; normal stage_next still
+/// encrypts and persists a frozen request before any network send.
+pub fn confirm_first_publish(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    proof: &TerminalPullProof,
+    selections: &[FirstPublishSelection],
+    confirmed: bool,
+) -> Result<usize, Error> {
+    if !confirmed {
+        return Err(Error::FirstPublishConsent);
+    }
+    verify_first_publish_proof(store, profile, material, proof)?;
+    store
+        .enqueue_first_publish(&proof.binding, proof.cursor, selections, true)
+        .map_err(Error::Storage)
 }
 
 /// Coalesce only the bounded unstaged window, then encrypt the oldest original
