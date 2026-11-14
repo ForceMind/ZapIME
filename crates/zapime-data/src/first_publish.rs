@@ -69,9 +69,7 @@ fn snapshot(tx: &Transaction<'_>, id: Uuid) -> Result<(String, FirstPublishSelec
 
 fn matches_current(tx: &Transaction<'_>, chosen: &FirstPublishSelection) -> Result<String, Error> {
     let (body, actual) = snapshot(tx, chosen.record_id)?;
-    if actual.local_revision != chosen.local_revision
-        || actual.body_sha256 != chosen.body_sha256
-    {
+    if actual.local_revision != chosen.local_revision || actual.body_sha256 != chosen.body_sha256 {
         return Err(Error::Conflict);
     }
     Ok(body)
@@ -88,7 +86,11 @@ fn has_other_history(tx: &Transaction<'_>, id: Uuid, own_op: Uuid) -> Result<boo
     )?)
 }
 
-fn check_workspace(tx: &Transaction<'_>, binding: &WorkspaceBinding, cursor: u64) -> Result<(), Error> {
+fn check_workspace(
+    tx: &Transaction<'_>,
+    binding: &WorkspaceBinding,
+    cursor: u64,
+) -> Result<(), Error> {
     if binding.profile_id.is_nil() || binding.key_id.is_nil() || cursor > i64::MAX as u64 {
         return Err(Error::Invalid);
     }
