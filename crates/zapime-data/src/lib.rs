@@ -8,6 +8,7 @@ use std::{collections::HashSet, path::Path};
 use uuid::Uuid;
 
 pub mod backup;
+pub mod first_publish;
 pub mod inventory;
 pub mod panel;
 pub mod pull;
