@@ -18,7 +18,7 @@ const MAX_ENCRYPTABLE_RECORD_BYTES: usize = 65_536;
 /// Pin the exact existing record bytes, not only its mutable local revision.
 /// Non-secret metadata intended for a trusted host, never a transferable
 /// approval token or evidence of an already completed cloud backup.
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq)]
 pub struct FirstPublishSelection {
     pub record_id: Uuid,
     pub operation_id: Uuid,
@@ -57,7 +57,7 @@ fn snapshot(tx: &Transaction<'_>, id: Uuid) -> Result<(String, FirstPublishSelec
     }
     record.content.validate()?;
     Ok((
-        body.clone(),
+        body,
         FirstPublishSelection {
             record_id: id,
             operation_id: Uuid::nil(), // assigned once when the host starts approval
@@ -82,7 +82,7 @@ fn has_other_history(tx: &Transaction<'_>, id: Uuid, own_op: Uuid) -> Result<boo
     // A regular downloaded record must not become a new local outgoing edit.
     Ok(tx.query_row(
         "SELECT EXISTS(SELECT 1 FROM operations INDEXED BY sync_pending_record
-           WHERE pending IN(0,1) AND json_extract(result,'$.id')=?1 AND id<>?2)",
+           WHERE json_extract(result,'$.id')=?1 AND id<>?2)",
         params![id.to_string(), own_op.to_string()],
         |row| row.get(0),
     )?)
