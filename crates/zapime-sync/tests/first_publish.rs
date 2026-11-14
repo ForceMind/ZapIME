@@ -53,35 +53,50 @@ fn terminal_pull_user_consent_enqueues_exact_restored_snapshot_and_retries_froze
     let mut store = recovered(&path, profile, &material, id);
     let before = store.export_plaintext().unwrap();
 
-    let (status, proof) = client::apply_page_for_first_publish(
-        &mut store, profile, &material, 0, &empty_response(0)
-    )
-    .unwrap();
+    let (status, proof) =
+        client::apply_page_for_first_publish(&mut store, profile, &material, 0, &empty_response(0))
+            .unwrap();
     assert_eq!(status.cursor, 0);
     let proof = proof.expect("terminal pull should supply ephemeral head evidence");
-    let selected = client::inspect_first_publish(&mut store, profile, &material, &proof, id).unwrap();
+    let selected =
+        client::inspect_first_publish(&mut store, profile, &material, &proof, id).unwrap();
     assert_eq!(selected.local_revision, 1);
     assert!(matches!(
         client::confirm_first_publish(
-            &mut store, profile, &material, &proof, &[selected.clone()], false
+            &mut store,
+            profile,
+            &material,
+            &proof,
+            &[selected.clone()],
+            false
         ),
         Err(client::Error::FirstPublishConsent)
     ));
     assert_eq!(store.pending_count().unwrap(), 0);
     assert_eq!(
         client::confirm_first_publish(
-            &mut store, profile, &material, &proof, &[selected.clone()], true
+            &mut store,
+            profile,
+            &material,
+            &proof,
+            &[selected.clone()],
+            true
         )
         .unwrap(),
         1
     );
     assert_eq!(before, store.export_plaintext().unwrap());
-    let staged = client::stage_next(&mut store, profile, &material).unwrap().unwrap();
+    let staged = client::stage_next(&mut store, profile, &material)
+        .unwrap()
+        .unwrap();
     assert_eq!(staged.operation_id, selected.operation_id);
     assert_eq!(staged.record_id, id);
     assert_eq!(staged.base_revision, 0);
     let bytes = client::frozen_wire(&mut store, profile, &material, &staged).unwrap();
-    assert_eq!(bytes, client::frozen_wire(&mut store, profile, &material, &staged).unwrap());
+    assert_eq!(
+        bytes,
+        client::frozen_wire(&mut store, profile, &material, &staged).unwrap()
+    );
 
     let device = Uuid::new_v4();
     let ack = serde_json::to_vec(&Change {
@@ -89,7 +104,8 @@ fn terminal_pull_user_consent_enqueues_exact_restored_snapshot_and_retries_froze
         device_id: device,
         revision: 1,
         operation: staged.clone(),
-    }).unwrap();
+    })
+    .unwrap();
     client::acknowledge(&mut store, profile, device, &material, &staged, &ack).unwrap();
     assert_eq!(store.pending_count().unwrap(), 0);
     assert_eq!(
@@ -113,8 +129,11 @@ fn nonterminal_or_conflicting_pull_does_not_create_upload_authority() {
         changes: vec![],
         next_cursor: 0,
         head: 1,
-    }).unwrap();
-    assert!(client::apply_page_for_first_publish(&mut local, profile, &material, 0, &ahead).is_err());
+    })
+    .unwrap();
+    assert!(
+        client::apply_page_for_first_publish(&mut local, profile, &material, 0, &ahead).is_err()
+    );
     assert_eq!(local.pending_count().unwrap(), 0);
 
     // A real, bound remote history with overlapping ID but different content
@@ -122,7 +141,9 @@ fn nonterminal_or_conflicting_pull_does_not_create_upload_authority() {
     let mut publisher = Store::open(&dir.path().join("publisher.db")).unwrap();
     workspace::prepare(&dir.path().join("publisher.db"), profile, &material).unwrap();
     record(&mut publisher, id, "Different remote body", false);
-    let upload = client::stage_next(&mut publisher, profile, &material).unwrap().unwrap();
+    let upload = client::stage_next(&mut publisher, profile, &material)
+        .unwrap()
+        .unwrap();
     let page = serde_json::to_vec(&Page {
         changes: vec![Change {
             account_id: profile,
@@ -132,8 +153,14 @@ fn nonterminal_or_conflicting_pull_does_not_create_upload_authority() {
         }],
         next_cursor: 1,
         head: 1,
-    }).unwrap();
-    assert!(client::apply_page_for_first_publish(&mut local, profile, &material, 0, &page).is_err());
-    assert_eq!(client::pull_cursor(&mut local, profile, &material).unwrap(), 0);
+    })
+    .unwrap();
+    assert!(
+        client::apply_page_for_first_publish(&mut local, profile, &material, 0, &page).is_err()
+    );
+    assert_eq!(
+        client::pull_cursor(&mut local, profile, &material).unwrap(),
+        0
+    );
     assert_eq!(local.pending_count().unwrap(), 0);
 }
