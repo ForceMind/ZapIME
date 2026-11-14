@@ -194,6 +194,7 @@ jobs:
             target/voicekey-android/voicekey-provider-before.png
             target/voicekey-android/voicekey-provider-after.png
             target/voicekey-android/offline-uid.json
+            target/voicekey-android/offline-uid-root.txt
             target/voicekey-android/system-keyboard.json
             target/voicekey-android/ime-teardown.txt
             target/voicekey-android/crash.txt
