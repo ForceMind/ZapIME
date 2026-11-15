@@ -171,7 +171,12 @@ fn terminal_proof_expires_after_new_pull_and_cannot_cross_key_material() {
     let profile = Uuid::new_v4();
     let material = Material::generate(profile).unwrap();
     let restored_id = Uuid::new_v4();
-    let mut local = recovered(&dir.path().join("proof-local.db"), profile, &material, restored_id);
+    let mut local = recovered(
+        &dir.path().join("proof-local.db"),
+        profile,
+        &material,
+        restored_id,
+    );
     let (_, proof) =
         client::apply_page_for_first_publish(&mut local, profile, &material, 0, &empty_response(0))
             .unwrap();
