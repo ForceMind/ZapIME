@@ -67,7 +67,7 @@ fn terminal_pull_user_consent_enqueues_exact_restored_snapshot_and_retries_froze
             profile,
             &material,
             &proof,
-            &[selected.clone()],
+            std::slice::from_ref(&selected),
             false
         ),
         Err(client::Error::FirstPublishConsent)
@@ -79,7 +79,7 @@ fn terminal_pull_user_consent_enqueues_exact_restored_snapshot_and_retries_froze
             profile,
             &material,
             &proof,
-            &[selected.clone()],
+            std::slice::from_ref(&selected),
             true
         )
         .unwrap(),
