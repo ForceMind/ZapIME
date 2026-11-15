@@ -67,7 +67,7 @@ fn explicit_first_upload_preserves_records_and_is_atomic_and_idempotent() {
         Err(Error::SyncLocalConflict)
     ));
     assert!(matches!(
-        store.enqueue_first_publish(&binding, 0, &[first.clone()], false),
+        store.enqueue_first_publish(&binding, 0, std::slice::from_ref(&first), false),
         Err(Error::Invalid)
     ));
     assert_eq!(store.pending_count().unwrap(), 0);
@@ -133,13 +133,13 @@ fn duplicate_reused_stale_and_mismatched_inputs_never_partially_seed() {
         ));
     }
     assert!(matches!(
-        store.enqueue_first_publish(&binding, 1, &[first.clone()], true),
+        store.enqueue_first_publish(&binding, 1, std::slice::from_ref(&first), true),
         Err(Error::SyncCursor)
     ));
     let mut foreign = binding.clone();
     foreign.material_sha256[0] ^= 1;
     assert!(matches!(
-        store.enqueue_first_publish(&foreign, 0, &[first.clone()], true),
+        store.enqueue_first_publish(&foreign, 0, std::slice::from_ref(&first), true),
         Err(Error::SyncWorkspace)
     ));
     let mut old = first.clone();
