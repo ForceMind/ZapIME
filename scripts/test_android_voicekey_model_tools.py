@@ -21,7 +21,7 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                  'cleanup_completed': True,
                  'voicekey_selected_for_following_ime_probe': True,
                  'result': {'recognized_codepoints': 3, 'hypothesis_sha256': 'b'*64},
-                 'fixture_sha256': 'c'*64, 'partial_updates': 1,
+                 'fixture_sha256': '3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac', 'partial_updates': 1,
                  'first_nonempty_partial_ms': 100,
                  'cases': [{'id': name, 'passed': True} for name in sorted(MODEL_CASES)]}
         model.update(audio_samples=125490, independent_producer=True,
@@ -29,6 +29,7 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
                      production_pcm_queue_reused=True, production_pcm_queue_capacity=602,
                      trailing_zero_samples=371, accepted_samples=125861, produced_samples=125861,
                      producer_first_frame_ms=100, producer_eof_elapsed_ms=7867,
+                      producer_max_lateness_ms=4,
                      producer_epoch_elapsed_realtime_ms=1000, producer_eof_elapsed_realtime_ms=8867,
                      producer_failure=False, producer_exited=True, producer_cleanup_completed=True,
                      provider_selection_method='stable_observed_filename_physical_touch',
@@ -151,6 +152,38 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
             changed[key] = value
             with self.subTest(key=key), self.assertRaises(ValueError):
                 verify_reports(changed, commit, lock)
+
+    def test_reviewed_generator_variant_retains_original_clock_and_no_drop_guards(self):
+        lock, model, commit = self.fixtures()
+        # Actual archived Nov 14 CI fixture, same synthetic Mandarin source
+        # and source-controlled generator, byte-verified separately on Android.
+        model.update(audio_samples=123549,
+                     fixture_sha256='8f9e30fed1bb1238feb208fde7ae10af158b55bd36c5413fb3e549e37f3adc35',
+                     accepted_samples=123920, produced_samples=123920,
+                     producer_eof_elapsed_ms=7745,
+                     producer_epoch_elapsed_realtime_ms=1000,
+                     producer_eof_elapsed_realtime_ms=8745)
+        verify_reports(model, commit, lock)
+        # Neither an unknown synthetic phrase, dropped frame, delayed EOF,
+        # late first frame nor a bogus clock may piggyback on the new variant.
+        for key, value in [
+            ('fixture_sha256', 'c'*64), ('audio_samples', 123550),
+            ('accepted_samples', 123919), ('produced_samples', 123919),
+            ('producer_first_frame_ms', 101), ('producer_first_frame_ms', 0),
+            ('producer_eof_elapsed_ms', 8000), ('producer_max_lateness_ms', 251),
+            ('producer_max_lateness_ms', -1),
+            ('producer_eof_elapsed_realtime_ms', 8744),
+        ]:
+            altered = copy.deepcopy(model)
+            altered[key] = value
+            with self.subTest(field=key, value=value), self.assertRaises(ValueError):
+                verify_reports(altered, commit, lock)
+
+    def test_unreviewed_audio_is_not_accepted_by_matching_length_alone(self):
+        lock, model, commit = self.fixtures()
+        model['fixture_sha256'] = 'f'*64
+        with self.assertRaises(ValueError):
+            verify_reports(model, commit, lock)
 
     def test_selection_requires_finger_source_and_one_observed_target(self):
         lock, model, commit = self.fixtures()
