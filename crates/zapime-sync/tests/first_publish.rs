@@ -164,3 +164,70 @@ fn nonterminal_or_conflicting_pull_does_not_create_upload_authority() {
     );
     assert_eq!(local.pending_count().unwrap(), 0);
 }
+
+#[test]
+fn terminal_proof_expires_after_new_pull_and_cannot_cross_key_material() {
+    let dir = tempfile::tempdir().unwrap();
+    let profile = Uuid::new_v4();
+    let material = Material::generate(profile).unwrap();
+    let restored_id = Uuid::new_v4();
+    let mut local = recovered(&dir.path().join("proof-local.db"), profile, &material, restored_id);
+    let (_, proof) =
+        client::apply_page_for_first_publish(&mut local, profile, &material, 0, &empty_response(0))
+            .unwrap();
+    let proof = proof.unwrap();
+    let selected =
+        client::inspect_first_publish(&mut local, profile, &material, &proof, restored_id).unwrap();
+
+    let foreign_material = Material::generate(profile).unwrap();
+    assert!(client::confirm_first_publish(
+        &mut local,
+        profile,
+        &foreign_material,
+        &proof,
+        std::slice::from_ref(&selected),
+        true
+    )
+    .is_err());
+    assert_eq!(local.pending_count().unwrap(), 0);
+
+    // Another authenticated publisher advances the cursor without touching
+    // the restored record. The old consent proof is now invalid.
+    let publisher_path = dir.path().join("proof-publisher.db");
+    let mut publisher = Store::open(&publisher_path).unwrap();
+    workspace::prepare(&publisher_path, profile, &material).unwrap();
+    record(
+        &mut publisher,
+        Uuid::new_v4(),
+        "A separate synthetic remote record",
+        false,
+    );
+    let upload = client::stage_next(&mut publisher, profile, &material)
+        .unwrap()
+        .unwrap();
+    let remote_page = serde_json::to_vec(&Page {
+        changes: vec![Change {
+            account_id: profile,
+            device_id: Uuid::new_v4(),
+            revision: 1,
+            operation: upload,
+        }],
+        next_cursor: 1,
+        head: 1,
+    })
+    .unwrap();
+    let applied = client::apply_page(&mut local, profile, &material, 0, &remote_page).unwrap();
+    assert_eq!(applied.cursor, 1);
+    assert!(matches!(
+        client::confirm_first_publish(
+            &mut local,
+            profile,
+            &material,
+            &proof,
+            std::slice::from_ref(&selected),
+            true
+        ),
+        Err(client::Error::FirstPublishHead)
+    ));
+    assert_eq!(local.pending_count().unwrap(), 0);
+}
