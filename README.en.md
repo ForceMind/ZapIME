@@ -11,12 +11,15 @@ A local-first native Chinese input method with portable dictionaries, phrases, s
 - Native Android full and nine-key pinyin, reading selection, personal candidate rules, light/dark themes and system-aware haptics.
 - Default-on offline candidate enhancement: pinned MSIME generates candidates; an 8M character language model asynchronously reorders eligible existing candidates. Empty trusted context, failure or timeout preserves the base order.
 - Two offline speech paths: X-ASR by default and a selectable VoiceKey adapter. Speech models are separately imported against a fixed catalog; insertion requires user confirmation after preview.
+- **New experimental local concise voice preview:** conservative standalone filler and exact repeated-clause cleanup, with a reversible raw/concise toggle. Disabled by default and never inserted without confirmation. This is not generative semantic rewriting; see [voice cleanup contract](docs/VOICE_CLEANUP.md) / [Issue #113](https://github.com/ForceMind/ZapIME/issues/113).
 - Local text search, phrases, explicitly saved clipboard entries, permanent favorites and encrypted backups. Temporary clipboard entries remain distinct from favorites.
 - Explicit manual encrypted sync on Android, a self-hosted Go/PostgreSQL service and optional R2/S3 ciphertext storage. Pairing, four-platform interoperability and complete disaster recovery remain unfinished.
 
 **Merged:** [PR #104](https://github.com/ForceMind/ZapIME/pull/104) delivers the Android local sync inventory preview on `main`: at most 40 read-only metadata entries per page, cleared when leaving, with no contents/titles, HTTP requests or upload operations. All eight workflows eventually passed on the fixed source, including Android API28/35/36 input and sync gates and Apple/Windows development checks. Earlier HTTP504, API28 fixture and first-run API36 lost-key evidence is retained. [PR #107](https://github.com/ForceMind/ZapIME/pull/107) also patches the independent sync service to Go 1.27.4. See [STATUS](docs/STATUS.md).
 
-An upload count of zero, or a record with no sync history, does not establish complete cloud backup. Locally recorded server revisions are not a live server check. Explicit initial upload of restored or imported records remains unimplemented under [Issue #77](https://github.com/ForceMind/ZapIME/issues/77); see the [read-only preview contract](docs/SYNC_INVENTORY.md).
+An upload count of zero, or missing local sync history, does not establish complete cloud backup. [PR #110](https://github.com/ForceMind/ZapIME/pull/110) has merged an **opt-in library-only initial publication safety foundation** but NOT a user-facing Android confirmation/HTTP flow. [Issue #77](https://github.com/ForceMind/ZapIME/issues/77) stays open; see [read-only preview](docs/SYNC_INVENTORY.md) and [first-publish safety](docs/SYNC_INITIAL_PUBLISH.md).
+
+[Merged development checkpoints](docs/STATUS.md): Android CI diagnostics #106, failure artifacts #111, reviewed VoiceKey synthetic fixture checks #112, candidate rail recreation #109, and opt-in voice cleanup #114. #109 fixed-head eight CI workflows passed; #114's merged-source full CI is a separate acceptance requirement. No stable distribution is claimed.
 
 ## Platform status
 

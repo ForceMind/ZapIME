@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-更新：2026-11-12（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
+更新：2026-11-16（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
 ## 先核对实时仓库
 
@@ -8,7 +8,7 @@
 - 本轮已合并 [#102](https://github.com/ForceMind/ZapIME/pull/102)，merge `88112f48464ecec9c361ba03443cc7081feb6511`，tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6`；这只是检查点，接续先 fetch 并核对最新 main、open PR、Issue、review、CI 与 Release。
 - #103 已保存同源码完整验收与首轮 Launcher ANR 原件，主线检查点为 `a199d5658f1e071059b4c4b9bd2db02c381c188f`。
 - [#104](https://github.com/ForceMind/ZapIME/pull/104) 已合并到 main：`8d484bb79f481fb047e4fc18fd6b8cb7432ecd4c`，来源 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`，八条固定源工作流最终全成功；原下载/夹具/触摸/ADB失败分别保留。只读 JNI/worker/40条分页已完成，**不要再从旧草稿重复实现**。
-- [#107](https://github.com/ForceMind/ZapIME/pull/107) 已合并Go1.27.4安全修复（`6009e4b24a42208564e6d66b77edb059fca02fa5`）；[#106](https://github.com/ForceMind/ZapIME/pull/106) 为独立Android CI诊断候选，检查其最新CI/合并状态，不假定已验收。
+- [#107](https://github.com/ForceMind/ZapIME/pull/107) Go1.27.4安全修复和[#106](https://github.com/ForceMind/ZapIME/pull/106)/[#111](https://github.com/ForceMind/ZapIME/pull/111) Android CI诊断现均已合入；[#112](https://github.com/ForceMind/ZapIME/pull/112) 双固定语音夹具、[#110](https://github.com/ForceMind/ZapIME/pull/110) 首次发布安全基础、[#109](https://github.com/ForceMind/ZapIME/pull/109) 当前候选字恢复与[#114](https://github.com/ForceMind/ZapIME/pull/114) 本机语音精简预览也已合入主线。main 检查点 `f9a4f64d450e83172a7841eaf2649dc1edcd84b9`，后续仍先实际查询实时仓库。
 - #87/#89/#91/#95/#96/#101 全部保留并由 #102 整合，不再从这些旧分支重复实现。#12/macOS、#40/Windows 仍为未通过系统验收的草稿，不能直接合并为完成。
 - 保留任何新未提交工作或开放开发分支；不强推、不 reset 别人的工作，不操作用户电脑、手机、生产服务器或 DNS。
 
@@ -28,6 +28,13 @@ python3 scripts/verify_upstream.py
 固定 head `52f812bc269f35ba636997b9c4664c2b83a22154`、实际 PR checkout `8cf2cae1fcc62827a5c508d38609c131ee6f009e` 与合并源树一致。八条 workflow SUCCESS；全量 Android `42517974761` attempt2 最终 6/6，候选 `42517974445` 6/6。API35 配置实验实际观察两次 restart，`你好sh → 你好shi → 你好是` 连续性、触摸、Editable 和清理通过。
 
 首轮 VoiceKey API35 因系统 Launcher ANR 对话框遮挡 SAF 而失败，模型未解码；只定点重跑该作业，保留原失败 ZIP/SHA。独立审查及本机 Rust143/fmt/严格Clippy、ordinary/pending JVM 回归通过。完整范围与原件见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。这不证明所有历史间歇问题、ARM/S25 或真实人声已验收。
+
+## 最新重点（2026-11-16）
+
+1. **不要重复实现 #109/#110/#112/#114。** #109 合并源固定八工作流成功；#114 合并后真实 API28/35/36 语音/候选与 iOS/Windows 的完整 CI 仍需追踪，历史失败保留。不要把源码/宿主或开发 APK 编译成功冒称三星 S25 真机通过。
+2. 继续 [Issue #113](https://github.com/ForceMind/ZapIME/issues/113)：默认关闭的本机保守精简已实现，原文切换/确认为已有产品代码；下一步收集自然语音原文/精简配对、语义错误与关键实体保持率，之后审查许可清晰的离线文字重写小模型。参见[契约](VOICE_CLEANUP.md)。
+3. 继续 [Issue #77](https://github.com/ForceMind/ZapIME/issues/77)：#110 只是无 UI/HTTP 的显式初始队列，真正 HTTPS 认证终止页、Android 确认、撤销/冲突/重复 ACK/墓碑和两端恢复验收均未交付。不能自动上传。
+4. 完成设备所有者的[S25总验收单](S25_ACCEPTANCE_CHECKLIST.md)：不能远程操作真实手机或生产数据；新候选必须使用同一源码/签名/模型清单。
 
 ## 下一轮优先顺序
 

@@ -11,12 +11,15 @@
 - Android 原生全键与九键拼音、读音选择、个人候选规则、明暗主题及系统按键反馈。
 - 默认开启本机候选增强：固定 MSIME 解码器生成候选，8M 字符语言模型异步重排已有候选。没有可信上下文时保留基础排序，失败或超时沿用基础结果。
 - 双离线语音路径：默认 X-ASR，可选择 VoiceKey 离线适配器；语音模型按固定目录单独导入，录音预览后由用户确认插入。
+- **新增本机语音精简预览（实验）**：识别完成后可保守清理独立语气词和完整重复短句；原文/精简可随时切换，默认关闭，仍需手动确认上屏。不是大模型总结或改写。见[语音精简契约](docs/VOICE_CLEANUP.md)和[Issue #113](https://github.com/ForceMind/ZapIME/issues/113)。
 - 本机资料搜索、短语、显式保存的剪贴板、永久收藏及加密备份。临时剪贴板与永久收藏分开管理。
 - Android 显式手动密文同步、可自建的 Go/PostgreSQL 服务和可选 R2/S3 密文存储。设备配对、四端互通和完整灾备仍在开发。
 
 **已合并：** [PR #104](https://github.com/ForceMind/ZapIME/pull/104) 的 Android 本地同步状态页已进入主线。只读元数据每页最多40条，离开清空，不显示正文或标题、不产生 HTTP/上传。修复后的固定源码在 Android API28/35/36、真实候选输入、VoiceKey、Apple 与 Windows 的8条工作流全部验收通过；原始 HTTP504、API28 测试夹具和 API36 首轮丢键证据仍保留。同步服务同时经 [PR #107](https://github.com/ForceMind/ZapIME/pull/107) 升级到含安全修复的 Go 1.27.4。详见 [STATUS](docs/STATUS.md)。
 
-上传0项或未找到同步记录，都不表示资料已完成云备份；本机记有服务端修订也不是云端实时确认。恢复/导入存量记录的显式首次上传尚未实现，按 [Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 继续推进，详见[只读预览契约](docs/SYNC_INVENTORY.md)。
+上传0项或未找到同步记录，都不表示资料已完成云备份。本地库已通过 [PR #110](https://github.com/ForceMind/ZapIME/pull/110) 合入**仅供显式调用的首次上传安全基础**，但尚无 Android 用户确认页面、真实 HTTP 端到端接线或完整跨端验收；[Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 仍开放。详见[只读预览](docs/SYNC_INVENTORY.md)及[首次发布边界](docs/SYNC_INITIAL_PUBLISH.md)。
+
+[2026-11-16 合并检查点](docs/STATUS.md)：#106 Android 诊断、#111 失败证据留存、#112 VoiceKey 固定语料校验、#109 Android 候选栏重建，以及 #114 语音精简预览已进入主线。#109 的固定源八条工作流最终通过；#114 仍需按其合并源码核对完整 CI。开发 Alpha 不等于稳定发布。
 
 ## 平台状态
 
