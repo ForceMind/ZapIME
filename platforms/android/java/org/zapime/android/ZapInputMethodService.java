@@ -922,7 +922,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voicePreview!=null)voicePreview.setContentDescription(voiceState.equals("result")?(voiceUseConcise?"语音识别精简版，请核对文字":"语音识别原文"):"语音识别预览");
         if(voiceToggle!=null){boolean available=voiceState.equals("result")&&voiceCommit==null&&!voiceRawText.equals(voiceConciseText);
             voiceToggle.setEnabled(available);voiceToggle.setAlpha(available?1f:.4f);
-            voiceToggle.setText(!available?"当前内容无需精简":voiceUseConcise?"查看识别原文":"查看精简版（离线）");}
+            voiceToggle.setText(!voiceState.equals("result")?"识别完成后可切换文本":!available?"当前内容无需精简":voiceUseConcise?"查看识别原文":"查看精简版（离线）");}
         if(!preview.contentEquals(voicePreview.getText())){boolean bottom=voicePreview.getHeight()-voiceScroll.getHeight()-voiceScroll.getScrollY()<=dp(24);voicePreview.setText(preview);if(bottom){final ScrollView scroll=voiceScroll;scroll.post(()->{if(scroll.isAttachedToWindow())scroll.fullScroll(View.FOCUS_DOWN);});}}
         voiceStop.setText(voiceTerminal()?"重新录音":"停止录音");voiceStop.setEnabled(voiceState.equals("recording")||voiceTerminal());voiceStop.setAlpha(voiceStop.isEnabled()?1f:.4f);voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());voiceInsert.setAlpha(voiceInsert.isEnabled()?1f:.4f);
     }
