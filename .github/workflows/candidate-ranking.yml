@@ -214,6 +214,7 @@ jobs:
             target/candidate-ranking-android/verified-restart-method-report.json
             target/candidate-ranking-android/instrumentation.txt
             target/candidate-ranking-android/offline-uid.json
+            target/candidate-ranking-android/offline-uid-root.txt
             target/candidate-ranking-android/crash.txt
             target/candidate-ranking-android/activity-errors.txt
             target/candidate-ime-android/instrumentation.txt
@@ -232,6 +233,7 @@ jobs:
             target/candidate-ime-android/runtime-errors.txt
             target/candidate-ime-android/activity-errors.txt
             target/candidate-ime-android/offline-uid.json
+            target/candidate-ime-android/offline-uid-root.txt
             target/candidate-ime-android/run-summary.json
             target/candidate-ime-android/activity-top.txt
             target/candidate-ime-android/activity-state.txt

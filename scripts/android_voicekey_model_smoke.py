@@ -41,6 +41,16 @@ COMMIT_CASES = {'commit_once', 'reentrant_finish', 'cancelled_completion',
                 'editor_exception', 'worker_thread_rejected', 'permission_granted',
                 'permission_denied', 'permission_revoked_before_confirmation'}
 
+# Frozen CI-only synthetic Mandarin PCM from actual same-source developer runs.
+# eSpeak voice-data packages produced two different waveforms from unchanged
+# text/voice/speed. Do not trust an arbitrary WAV just because it has speech.
+# CI 42579960224, artifact 13927741078: 125490 mono 16kHz samples.
+# CI 43603645102, artifact 14118040391: 123549 mono 16kHz samples.
+REVIEWED_SYNTHETIC_PCM = frozenset({
+    (125490, "3fa66ca2a8702c8ac3858eb0bf69ce9e91ba87ee59f7e3f372172393540903ac"),
+    (123549, "8f9e30fed1bb1238feb208fde7ae10af158b55bd36c5413fb3e549e37f3adc35"),
+})
+
 
 def verify_package(package, lock):
     if (package.is_symlink() or not package.is_file() or
@@ -149,7 +159,7 @@ def verify_finger_selection(model):
 
 def verify_independent_producer(model):
     audio = model.get('audio_samples', 0)
-    if (not isinstance(audio, int) or audio != 125490 or
+    if (type(audio) is not int or (audio, model.get('fixture_sha256')) not in REVIEWED_SYNTHETIC_PCM or
             model.get('independent_producer') is not True or
             model.get('producer_clock') != 'monotonic_absolute_deadlines' or
             model.get('production_pcm_queue_reused') is not True or
@@ -157,8 +167,12 @@ def verify_independent_producer(model):
             model.get('trailing_zero_samples') != 371 or
             model.get('accepted_samples') != audio+371 or
             model.get('produced_samples') != audio+371 or
-            model.get('producer_first_frame_ms', -1) < 100 or
+            type(model.get('producer_first_frame_ms')) is not int or
+            not 0 < model['producer_first_frame_ms'] <= 100 or
             model.get('producer_eof_elapsed_ms', -1) < (audio+371)*1000//16000 or
+            model.get('producer_eof_elapsed_ms', 30000) > (audio+371)*1000//16000+250 or
+            type(model.get('producer_max_lateness_ms')) is not int or
+            not 0 <= model['producer_max_lateness_ms'] <= 250 or
             model.get('producer_eof_elapsed_realtime_ms', 0) - model.get('producer_epoch_elapsed_realtime_ms', 0) != model.get('producer_eof_elapsed_ms') or
             model.get('producer_failure') is not False or
             model.get('producer_exited') is not True or
@@ -262,13 +276,14 @@ def main():
                 pull_reports()
                 model = json.loads((out/'voicekey-model-report.json').read_text())
                 commit = json.loads((out/'voice-commit-report.json').read_text())
+                # Authenticate actual WAV bytes before accepting its producer clocks.
+                verify_fixture_report(model, ROOT/'target/voice-probe/synthetic.wav')
                 verify_reports(model, commit, lock)
                 verify_boundary_report(json.loads((out/'voicekey-boundary-report.json').read_text()))
                 watchdog = json.loads((out/'voicekey-watchdog-report.json').read_text())
                 verify_watchdog_report(watchdog, lock)
                 if next(r for r in model['cases'] if r['id'] == 'actual_android_stop_watchdog') != watchdog:
                     raise ValueError('watchdog_case_and_report_differ')
-                verify_fixture_report(model, ROOT/'target/voice-probe/synthetic.wav')
                 summary['saf_jni_editable'] = 'PASS'
                 run('shell', 'pm', 'grant', 'org.zapime.android', 'android.permission.RECORD_AUDIO')
                 # Match android_smoke.py's established virtual-keyboard setup.
