@@ -82,10 +82,11 @@ public final class ZapInputMethodService extends InputMethodService {
     private int voiceTicket,selectionVersion,voiceSelection,voiceCursor=-1,selectionStart=-1,selectionEnd=-1;
     private VoiceCommitTransaction voiceCommit;
     private InputConnection voiceTarget;
-    private String voiceBefore,voiceAfter,voiceState="",voiceText="";
+    private String voiceBefore,voiceAfter,voiceState="",voiceText="",voiceRawText="",voiceConciseText="";
+    private boolean voiceUseConcise;
     private TextView voiceLabel,voicePreview;
     private ScrollView voiceScroll;
-    private Button voiceStop,voiceInsert;
+    private Button voiceStop,voiceInsert,voiceToggle;
     private boolean voiceBack;
     private int dp(int n) { return (int)(n * getResources().getDisplayMetrics().density); }
 
@@ -875,7 +876,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(!voicePermissionGranted(this)){open(VoiceSettingsActivity.class);return;}
         final VoiceEngineSession engine=new VoiceEngineSession(VoiceEnginePreferences.selected(this));
         invalidateRanking(true,true);
-        learning.invalidate();cancelVoice(false);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
+        learning.invalidate();cancelVoice(false);voiceUseConcise=VoiceTextCleanupPreferences.enabled(this);final int ticket=voiceTicket,active=epoch;layer="voice";voiceState="loading";voiceText="";renderKeys();idleToolbar();
         // Drain already queued keyboard replies before capturing the exact editor position.
         worker.execute(()->main.post(()->{
             if(ticket!=voiceTicket||epoch!=active||!layer.equals("voice"))return;
@@ -896,7 +897,13 @@ public final class ZapInputMethodService extends InputMethodService {
                     if(!voicePermissionGranted(this)){cancelVoice(true);return;}
                     if(voiceCommit!=null)return;
                     if(state.equals("recording")&&voiceState.equals("decoding"))return;
-                    voiceState=state;voiceText=text;updateVoicePanel();
+                    voiceState=state;
+                    if(state.equals("result")){
+                        voiceRawText=text==null?"":text;
+                        voiceConciseText=VoiceTextCleanup.concise(voiceRawText);
+                        voiceText=voiceUseConcise?voiceConciseText:voiceRawText;
+                    }else voiceText=text==null?"":text;
+                    updateVoicePanel();
                 });voice.start();
             });});
         }));
@@ -909,6 +916,17 @@ public final class ZapInputMethodService extends InputMethodService {
         Button cancel=Ui.button(this,"取消",theme.special,false);cancel.setPadding(0,0,0,0);cancel.setTextColor(theme.ink);place(controls,cancel,1,48);bind(cancel,()->cancelVoice(true),false);
         voiceStop=Ui.button(this,"停止录音",theme.special,false);voiceStop.setPadding(0,0,0,0);voiceStop.setTextColor(theme.ink);place(controls,voiceStop,1,48);bind(voiceStop,()->{if(voiceState.equals("recording")&&voice!=null){voice.stop();voiceState="decoding";updateVoicePanel();}else if(voiceTerminal())startVoice();},false);
         voiceInsert=Ui.button(this,"确认插入",theme.accent,true);voiceInsert.setPadding(0,0,0,0);place(controls,voiceInsert,1.2f,48);bind(voiceInsert,this::insertVoice,false);body.addView(controls);
+        voiceToggle=Ui.button(this,"查看精简版",theme.deck,false);
+        voiceToggle.setTextColor(theme.ink);
+        voiceToggle.setTextSize(14);
+        voiceToggle.setContentDescription("切换语音识别原文与本机精简版");
+        body.addView(voiceToggle,new LinearLayout.LayoutParams(-1,dp(40)));
+        bind(voiceToggle,()->{
+            if(!voiceState.equals("result")||voiceCommit!=null||voiceRawText.equals(voiceConciseText))return;
+            voiceUseConcise=!voiceUseConcise;
+            voiceText=voiceUseConcise?voiceConciseText:voiceRawText;
+            updateVoicePanel();
+        },false);
         Button settings=Ui.button(this,"语音设置",theme.deck,false);settings.setTextColor(theme.muted);settings.setTextSize(12);body.addView(settings,new LinearLayout.LayoutParams(-1,dp(40)));bind(settings,()->{cancelVoice(true);open(VoiceSettingsActivity.class);},false);updateVoicePanel();
     }
     private void updateVoicePanel(){
@@ -917,7 +935,7 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voiceState.equals("recording"))label="正在聆听 · 最长 60 秒";
         if(voiceState.equals("decoding"))label="录音已停止 · 正在整理文字…";
         if(voiceState.equals("checking"))label="正在核对输入位置…";
-        if(voiceState.equals("result"))label="识别完成 · 确认后插入";
+        if(voiceState.equals("result"))label=voiceUseConcise&&!voiceConciseText.equals(voiceRawText)?"识别完成 · 精简版（请核对）":"识别完成 · 原文（确认后插入）";
         if(voiceState.equals("empty"))label="没有识别到文字，可重新录音";
         if(voiceState.equals("microphone_error"))label="麦克风不可用，请检查权限或重试";
         if(voiceState.equals("microphone_silenced"))label="系统已暂停麦克风，请检查权限或占用后重试";
@@ -925,6 +943,10 @@ public final class ZapInputMethodService extends InputMethodService {
         if(voiceState.equals("error"))label="离线识别未完成，请检查模型或重试";
         if(!label.contentEquals(voiceLabel.getText()))voiceLabel.setText(label);
         String preview=voiceText.isEmpty()?"录音不保存、不上传":voiceText;
+        if(voicePreview!=null)voicePreview.setContentDescription(voiceState.equals("result")?(voiceUseConcise?"语音识别精简版，请核对文字":"语音识别原文"):"语音识别预览");
+        if(voiceToggle!=null){boolean available=voiceState.equals("result")&&voiceCommit==null&&!voiceRawText.equals(voiceConciseText);
+            voiceToggle.setEnabled(available);voiceToggle.setAlpha(available?1f:.4f);
+            voiceToggle.setText(!voiceState.equals("result")?"识别完成后可切换文本":!available?"当前内容无需精简":voiceUseConcise?"查看识别原文":"查看精简版（离线）");}
         if(!preview.contentEquals(voicePreview.getText())){boolean bottom=voicePreview.getHeight()-voiceScroll.getHeight()-voiceScroll.getScrollY()<=dp(24);voicePreview.setText(preview);if(bottom){final ScrollView scroll=voiceScroll;scroll.post(()->{if(scroll.isAttachedToWindow())scroll.fullScroll(View.FOCUS_DOWN);});}}
         voiceStop.setText(voiceTerminal()?"重新录音":"停止录音");voiceStop.setEnabled(voiceState.equals("recording")||voiceTerminal());voiceStop.setAlpha(voiceStop.isEnabled()?1f:.4f);voiceInsert.setEnabled(voiceState.equals("result")&&!voiceText.trim().isEmpty());voiceInsert.setAlpha(voiceInsert.isEnabled()?1f:.4f);
     }
@@ -950,7 +972,7 @@ public final class ZapInputMethodService extends InputMethodService {
     }
     private String[] voiceContext(InputConnection target){try{CharSequence before=target.getTextBeforeCursor(128,0),after=target.getTextAfterCursor(128,0);return before==null||after==null||before.length()>128||after.length()>128?null:new String[]{before.toString(),after.toString()};}catch(RuntimeException unavailable){return null;}}
     private void cancelVoice(boolean restore){
-        ++voiceTicket;voiceBack=false;if(voiceCommit!=null){voiceCommit.cancel();voiceCommit=null;}if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceCursor=-1;voiceBefore=null;voiceAfter=null;voiceText="";voiceState="";voiceLabel=null;voicePreview=null;voiceScroll=null;voiceStop=null;voiceInsert=null;
+        ++voiceTicket;voiceBack=false;if(voiceCommit!=null){voiceCommit.cancel();voiceCommit=null;}if(voice!=null){voice.cancel();voice=null;}voiceTarget=null;voiceCursor=-1;voiceBefore=null;voiceAfter=null;voiceText="";voiceRawText="";voiceConciseText="";voiceUseConcise=false;voiceState="";voiceLabel=null;voicePreview=null;voiceScroll=null;voiceStop=null;voiceInsert=null;voiceToggle=null;
         if(layer.equals("voice")){layer="letters";if(restore&&body!=null){renderKeys();idleToolbar();refreshStatus();}}
     }
     @Override public boolean onKeyDown(int code,android.view.KeyEvent event){if(code==android.view.KeyEvent.KEYCODE_BACK){if(voiceBack)return true;if(layer.equals("voice")){cancelVoice(true);voiceBack=true;return true;}}return super.onKeyDown(code,event);}

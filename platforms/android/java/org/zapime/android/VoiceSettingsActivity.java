@@ -56,6 +56,17 @@ public final class VoiceSettingsActivity extends Activity {
             try{startActivityForResult(intent,3);}catch(ActivityNotFoundException e){voiceKeyStatus.setText("此设备没有文件选择器");}
         });Ui.addButton(engines,chooseVoiceKey);
         updateEngines();
+        LinearLayout cleanup=Ui.card(page);
+        cleanup.addView(Ui.text(this,"语音识别结果精简",20,Ui.INK));
+        cleanup.addView(Ui.text(this,"仅在本机处理识别完成后的文字。保守地去掉独立语气词和完全重复的较长短句；不使用云端、不生成摘要。确认插入前可以随时切回原文。",13,Ui.MUTED));
+        Switch concise=new Switch(this);
+        concise.setText("默认预览精简版（可切回原文）");
+        concise.setTextColor(Ui.INK);
+        concise.setTextSize(15);
+        concise.setContentDescription("语音识别结果自动精简，关闭时默认显示识别原文");
+        concise.setChecked(VoiceTextCleanupPreferences.enabled(this));
+        concise.setOnCheckedChangeListener((button,checked)->VoiceTextCleanupPreferences.setEnabled(this,checked));
+        cleanup.addView(concise);
         Button permission=Ui.button(this,"允许使用麦克风",Ui.BG,false);permission.setOnClickListener(v->{if(checkSelfPermission(Manifest.permission.RECORD_AUDIO)==PackageManager.PERMISSION_GRANTED){status.setText("麦克风已允许 · 只在显式开始录音后使用");return;}requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO},2);});Ui.addButton(page,permission);
         Button legal=Ui.button(this,"模型与语音组件许可",Ui.BG,false);legal.setOnClickListener(v->showLicenses());Ui.addButton(page,legal);
         Button download=Ui.button(this,"查看项目与模型下载说明",Ui.BG,false);download.setOnClickListener(v->{try{startActivity(new Intent(Intent.ACTION_VIEW,android.net.Uri.parse("https://github.com/ForceMind/ZapIME/blob/main/docs/VOICE_INPUT.md")));}catch(ActivityNotFoundException e){status.setText("请在浏览器打开 github.com/ForceMind/ZapIME");}});Ui.addButton(page,download);
