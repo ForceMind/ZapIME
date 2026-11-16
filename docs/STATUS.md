@@ -1,6 +1,18 @@
 # ZapIME 项目执行状态
 
-## 当前开发检查点 · 2026-11-12（America/Los_Angeles）
+## 当前开发检查点 · 2026-11-16（America/Los_Angeles）
+
+**当前 main（本检查点）：** `f9a4f64d450e83172a7841eaf2649dc1edcd84b9`，Public，原 `v0.1.0-alpha.1` 发布标签及附件未改动。此 SHA 是接管记录，未来先重新核验最新 GitHub。
+
+已合并且实际包含主线：[#106](https://github.com/ForceMind/ZapIME/pull/106) ADB root失败证据/有界重试和真实文本备用键盘（`3b22e5c`）；[#111](https://github.com/ForceMind/ZapIME/pull/111) 单独上传 CI root 诊断；[#112](https://github.com/ForceMind/ZapIME/pull/112) 经 SHA 复核的两份 VoiceKey 合成语料与严格时序证据；[#110](https://github.com/ForceMind/ZapIME/pull/110) **仅供显式调用、没有 Android UI 的恢复记录首次发布安全基础**；[#109](https://github.com/ForceMind/ZapIME/pull/109) 同编辑器的当前候选栏恢复（merge `1572d999fc5bd5f07c211c91eef5cb9438b44249`）；[#114](https://github.com/ForceMind/ZapIME/pull/114) 新的**默认关闭** Android 本机语音精简预览、原文/精简切换及保留原有用户确认后一次写入（本主线 merge）。
+
+**验收级别：** #109 当前源头 `821ec74e2b1b244db8f39a20aa01d191f58b8469` 的[八条工作流](https://github.com/ForceMind/ZapIME/actions/runs/43866395739)最终均 SUCCESS，包含真实 API28/35/36 系统候选字、API35配置重启、VoiceKey、Rust/Apple/Windows及密文服务；原 CI 间歇失败不因此被抹除。#114 的纯 Java 规则/来源抽取的 JVM 回归 2/2 通过，原功能源 Android 开发 APK 构建通过；**#114 当前合并源完整 Android/语音/候选/Apple CI 仍在运行或等待结果**，不能把前一个 head 的测试代填。官方 S25 真机、自然语言语料、语义改写质量、正式升级签名和通用发布均 **NOT RUN/NOT ACCEPTED**。源码 Alpha 不是已验收的量产 APK。
+
+**语音精简具体限制：** 只在识别完成后离线移除明确独立语气词与完全相同的较长相邻短句。默认关闭、可切回原文；不云传、不过滤数字/否定/歧义、不在确认前自动上屏。后续真正基于小模型把口语转为简洁书面语、转写错误纠正、质量与 S25 实机验收仍按[Issue #113](https://github.com/ForceMind/ZapIME/issues/113)与[VOICE_CLEANUP](VOICE_CLEANUP.md)进行，不称已完成。
+
+**同步未完成：** #110 只加 Rust 本机保护/幂等初始队列，尚未接入真实 HTTP head 来源、Android 用户授权/批量进度、多端数据冲突、旧墓碑与设备撤销恢复全链路。[Issue #77](https://github.com/ForceMind/ZapIME/issues/77) 继续开放。待发0项不意味着云备份完成。保持真实数据、冻结字节、密钥材料、cursor 不被自动替换。
+
+## 历史检查点 · 2026-11-12（America/Los_Angeles）
 
 **Android 只读同步证据预览已合入主线。** [PR #104](https://github.com/ForceMind/ZapIME/pull/104) 合并提交 `8d484bb79f481fb047e4fc18fd6b8cb7432ecd4c`，来源 head `16c7d89ff7faa6c3b4979074ed9301cf25be9544`。每页至多40条，只展示记录ID/类型/修订/墓碑和本机同步证据，不读取正文/标题到页面、不联网、不上传；退出取消排队、清理页面并拒绝迟到结果。
 
