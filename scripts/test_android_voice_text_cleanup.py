@@ -96,6 +96,11 @@ class VoiceTextCleanupTest(unittest.TestCase):
         self.assertNotIn("commitText(",probe)
         self.assertNotIn("HttpURLConnection",probe)
         self.assertNotIn("String.repeat",probe)
+        marker="PASS installed Android offline voice cleanup and restored local opt-in preference"
+        native_smoke=(ROOT / "scripts/android_voice_smoke.py").read_text(encoding="utf-8")
+        voicekey_smoke=(ROOT / "scripts/android_voicekey_model_smoke.py").read_text(encoding="utf-8")
+        self.assertIn(marker,native_smoke)
+        self.assertIn(marker,voicekey_smoke)
 
     def test_both_engines_reuse_final_result_and_explicit_confirmation(self):
         service=(JAVA / "ZapInputMethodService.java").read_text(encoding="utf-8")
