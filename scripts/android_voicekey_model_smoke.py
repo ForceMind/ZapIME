@@ -269,7 +269,8 @@ def main():
                                 text=True, capture_output=True, timeout=900)
                 (out/'model-instrumentation.txt').write_text(completed.stdout+completed.stderr)
                 print(completed.stdout, flush=True)
-                if ('PASS Android VoiceKey official model acceptance' not in completed.stdout or
+                if ('PASS installed Android offline voice cleanup and restored local opt-in preference' not in completed.stdout or
+                        'PASS Android VoiceKey official model acceptance' not in completed.stdout or
                         'INSTRUMENTATION_FAILED' in completed.stdout or
                         'FAIL Android voice' in completed.stdout):
                     raise ValueError('voicekey_model_instrumentation_failed')
