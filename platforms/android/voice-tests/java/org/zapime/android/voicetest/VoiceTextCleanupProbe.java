@@ -39,7 +39,9 @@ final class VoiceTextCleanupProbe {
         assertText(concise,"🙂🙂，🙂🙂","🙂🙂，🙂🙂");
         assertText(concise,"嗯。","嗯。");
         assertText(concise,"hello hello","hello hello");
-        assertText(concise,"嗯，"+"长".repeat(8192),"嗯，"+"长".repeat(8192));
+        StringBuilder longText=new StringBuilder("嗯，");
+        for(int index=0;index<8192;index++)longText.append('长');
+        assertText(concise,longText.toString(),longText.toString());
 
         Class<?> preferences=Class.forName(
                 "org.zapime.android.VoiceTextCleanupPreferences",true,loader);
