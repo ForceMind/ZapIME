@@ -84,6 +84,19 @@ class VoiceTextCleanupTest(unittest.TestCase):
             self.assertEqual(result.returncode,0,result.stderr)
             self.assertIn("PASS actual offline voice cleanup",result.stdout)
 
+    def test_actual_android_runtime_probe_is_in_both_voice_paths_and_restores_preferences(self):
+        instrumentation=(ROOT / "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceInstrumentation.java").read_text(encoding="utf-8")
+        probe=(ROOT / "platforms/android/voice-tests/java/org/zapime/android/voicetest/VoiceTextCleanupProbe.java").read_text(encoding="utf-8")
+        self.assertEqual(instrumentation.count("VoiceTextCleanupProbe.run(this)"),2)
+        self.assertIn("Class.forName(\"org.zapime.android.VoiceTextCleanup\"",probe)
+        self.assertIn("VoiceTextCleanupPreferences",probe)
+        self.assertIn("} finally {",probe)
+        self.assertIn("setEnabled.invoke(null,target,before)",probe)
+        self.assertIn("voice_cleanup_preference_restore_failed",probe)
+        self.assertNotIn("commitText(",probe)
+        self.assertNotIn("HttpURLConnection",probe)
+        self.assertNotIn("String.repeat",probe)
+
     def test_both_engines_reuse_final_result_and_explicit_confirmation(self):
         service=(JAVA / "ZapInputMethodService.java").read_text(encoding="utf-8")
         settings=(JAVA / "VoiceSettingsActivity.java").read_text(encoding="utf-8")
