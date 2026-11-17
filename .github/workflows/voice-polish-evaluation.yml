@@ -1,0 +1,42 @@
+name: Offline voice polish frozen quality evaluator
+on:
+  pull_request:
+    paths:
+      - 'integrations/voice-polish/**'
+      - 'scripts/evaluate_voice_polish.py'
+      - 'scripts/test_voice_polish_evaluation.py'
+      - 'platforms/android/java/org/zapime/android/VoicePolishSafety.java'
+      - '.github/workflows/voice-polish-evaluation.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: voice-polish-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+jobs:
+  frozen-quality:
+    name: Frozen synthetic voice polish vs actual Java safety gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Strict corpus integrity, Java safety guard and negative tests
+        run: python3 -m unittest discover -s scripts -p 'test_voice_polish_evaluation.py' -v
+      - name: Execute reference-only baseline, no model or network
+        run: |
+          mkdir -p target/voice-polish-eval
+          python3 scripts/evaluate_voice_polish.py --report target/voice-polish-eval/metadata-only-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-voice-polish-frozen-quality-metadata
+          path: target/voice-polish-eval/metadata-only-report.json
+          if-no-files-found: warn
+          retention-days: 14
