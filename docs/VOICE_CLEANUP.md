@@ -23,7 +23,7 @@
 上游 #114 原测试只编译和执行共享 Java 算法的 JVM 主机用例；后续 #116 在现有签名测试 APK 的 `VoiceInstrumentation` 中增加真实 Android 产品类加载运行，并在 **X-ASR/native 和 VoiceKey 离线模型**两条路径中共用：
 
 - 通过目标包的 `ClassLoader` 和反射执行当前安装 APK 的 `VoiceTextCleanup.concise`，不复制测试算法或用宿主回传伪数据。
-- 逐例验证语气词、完全重复、否定、金额、模糊指代、emoji、英语及超长原文等保守处理。验证本机开关的关闭、开启、关闭三次状态和异常退出的 `finally` 恢复。
+- 逐例验证语气词、完全重复、否定、金额、模糊指代、emoji、英语及超长原文等保守处理。验证本机开关的关闭、开启、关闭三次状态和异常退出的 `finally` 恢复。额外真正打开产品私有的 `VoiceSettingsActivity`，定位当前 APK 构建的开关，在 Android 主线程触发其 **真实 Switch 点击监听器**，确认持久偏好随两次点击变化，最后恢复进入前的设置并关闭 Activity；这是程序触发控件，不冒充真人物理手指测试。
 - 不唤起网络、麦克风、不往编辑器提交合成文字、不记录识别文本或真实用户内容。与既有 `VoiceCommitProbe` 的真实 Android `Editable`/一次提交测试分别验收，不合并为假定的真实语音拨测。
 - Python 的 Android Native 和 VoiceKey 系统验收程序均要求明确的 `PASS installed Android offline voice cleanup and restored local opt-in preference` 标志；缺少/异常时不宣告该轮通过。
 - 本门禁 **不能替代** 真正说话→ASR→语音栏实时开关→确认后一次上屏的用户路径，也不能替代三星 S25 设备质量验证；它只证明真实系统 Android 在两条后端准备路径确实执行了本机规则和设置逻辑。
