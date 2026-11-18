@@ -20,6 +20,10 @@ final class VoicePolishSafety {
     private static final Pattern DATED_UNIT=Pattern.compile("[0-9]+(?:年|月|日|号|时|分)");
     private static final Pattern EN_NEGATION=Pattern.compile("\\b(?:not|never|no|without|cannot|can't|don't|won't|shouldn't|mustn't|isn't)\\b",Pattern.CASE_INSENSITIVE);
     private static final Pattern EMAIL=Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}");
+    // Exact-case technical acronyms, typed interface names and mixed-case IDs
+    // are immutable facts. This is a minimum guard, NOT name recognition.
+    private static final Pattern TECH_TOKEN=Pattern.compile(
+        "(?<![\\p{L}\\p{N}_])(?:[A-Z]{2,}[A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*|[A-Za-z]*[a-z][A-Z][A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*)(?![\\p{L}\\p{N}_])");
     private static final Pattern QUOTED=Pattern.compile("“[^”]{1,128}”|「[^」]{1,128}」|『[^』]{1,128}』|\\\"[^\\\"]{1,128}\\\"|\\x60[^\\x60]{1,128}\\x60");
     private static final String CHINESE_NUMERALS="零〇一二两三四五六七八九十百千万亿点";
     private static final String NEGATION_CHARS="不没无未别勿非";
@@ -27,7 +31,7 @@ final class VoicePolishSafety {
 
     enum Reason { ACCEPTED, INVALID, TOO_LONG, MODEL_MARKUP, NUMERIC_CHANGED,
         UNITS_CHANGED, NEGATION_CHANGED, CURRENCY_CHANGED, DATE_CHANGED,
-        QUOTES_CHANGED, URL_CHANGED, EMAIL_CHANGED }
+        QUOTES_CHANGED, URL_CHANGED, EMAIL_CHANGED, TECH_TOKEN_CHANGED }
 
     private static List<String> matches(Pattern pattern,String s) {
         List<String> values=new ArrayList<>();
@@ -77,6 +81,8 @@ final class VoicePolishSafety {
         if(!matches(QUOTED,original).equals(matches(QUOTED,rewritten)))return Reason.QUOTES_CHANGED;
         if(!matches(URL,original).equals(matches(URL,rewritten)))return Reason.URL_CHANGED;
         if(!matches(EMAIL,original).equals(matches(EMAIL,rewritten)))return Reason.EMAIL_CHANGED;
+        if(!matches(TECH_TOKEN,original).equals(matches(TECH_TOKEN,rewritten)))
+            return Reason.TECH_TOKEN_CHANGED;
         return Reason.ACCEPTED;
     }
     /** Never returns the unchecked suggestion; the host keeps the original. */
