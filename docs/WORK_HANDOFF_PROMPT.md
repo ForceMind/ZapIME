@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-更新：2026-11-16（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
+更新：2026-11-18（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
 ## 先核对实时仓库
 
@@ -29,7 +29,15 @@ python3 scripts/verify_upstream.py
 
 首轮 VoiceKey API35 因系统 Launcher ANR 对话框遮挡 SAF 而失败，模型未解码；只定点重跑该作业，保留原失败 ZIP/SHA。独立审查及本机 Rust143/fmt/严格Clippy、ordinary/pending JVM 回归通过。完整范围与原件见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。这不证明所有历史间歇问题、ARM/S25 或真实人声已验收。
 
-## 最新重点（2026-11-16）
+## 最新重点（2026-11-18）
+
+**2026-11-18 main 检查点：`df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`（非永久最新）。** 已合并 [#116](https://github.com/ForceMind/ZapIME/pull/116) 真实 Android 安装包中双离线语音清理与设置开关、[#118](https://github.com/ForceMind/ZapIME/pull/118) 24个SHA固定离线质量用例与实际 Java 门禁评估、[#119](https://github.com/ForceMind/ZapIME/pull/119) 混合汉字的 USB-C/VoiceKey 等技术标识不变保护。#119 来源归档运行了真实产品 Java/JVM 2+5+3 项检测，独立质量CI通过；系统 Android/Apple 等全部绿灯不能从前一版推断。用户真正要求的自然语音自动语义精简/模型仍未完成；#113开放，当前并未接入 LLM；默认本机保守清理不变。#116 的两条真实 Android/VoiceKey工作流通过，但API35独立配置实验失败仍归 Issue38。此前已完成#114不要重建。
+
+[Issue #120](https://github.com/ForceMind/ZapIME/issues/120) 新阻塞：固定 ONNX Runtime v1.28.2 头文件下载 HTTP404 导致 VoiceKey focused 构建失败，先确认确切 URL、可达的可信发布来源及 SHA，不得用最新main替换头文件、假造校验或降低安全条件。保持原版本签名和构建来源可审计。
+
+后续选一条独立可合并安全切片：优先解决真实资源与CI可复现、精确质量差错归因；随后经合法许可检查尝试离线模型推理，保证原文/精简/未来智能三态、用户确认才插入、数字否定专名不变与取消安全。同步 Issue77 仍需真实端到端HTTPS与 Android 明确授权；S25真机集中由用户实施而非远程触控。
+
+## 历史重点（2026-11-16）
 
 1. **不要重复实现 #109/#110/#112/#114。** #109 合并源固定八工作流成功；#114 合并后真实 API28/35/36 语音/候选与 iOS/Windows 的完整 CI 仍需追踪，历史失败保留。不要把源码/宿主或开发 APK 编译成功冒称三星 S25 真机通过。
 2. 继续 [Issue #113](https://github.com/ForceMind/ZapIME/issues/113)：默认关闭的本机保守精简已实现，原文切换/确认为已有产品代码；下一步收集自然语音原文/精简配对、语义错误与关键实体保持率，之后审查许可清晰的离线文字重写小模型。参见[契约](VOICE_CLEANUP.md)。
