@@ -23,7 +23,7 @@ final class VoicePolishSafety {
     // Exact-case technical acronyms, typed interface names and mixed-case IDs
     // are immutable facts. This is a minimum guard, NOT name recognition.
     private static final Pattern TECH_TOKEN=Pattern.compile(
-        "(?<![\\p{L}\\p{N}_])(?:[A-Z]{2,}[A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*|[A-Za-z]*[a-z][A-Z][A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*)(?![\\p{L}\\p{N}_])");
+        "(?<![A-Za-z0-9_])(?:[A-Z]{2,}[A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*|[A-Za-z]*[a-z][A-Z][A-Za-z0-9]*(?:[-_+][A-Za-z0-9]+)*)(?![A-Za-z0-9_])");
     private static final Pattern QUOTED=Pattern.compile("“[^”]{1,128}”|「[^」]{1,128}」|『[^』]{1,128}』|\\\"[^\\\"]{1,128}\\\"|\\x60[^\\x60]{1,128}\\x60");
     private static final String CHINESE_NUMERALS="零〇一二两三四五六七八九十百千万亿点";
     private static final String NEGATION_CHARS="不没无未别勿非";
