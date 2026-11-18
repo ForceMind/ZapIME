@@ -1,6 +1,16 @@
 # ZapIME 项目执行状态
 
-## 当前开发检查点 · 2026-11-16（America/Los_Angeles）
+## 当前开发检查点 · 2026-11-18（America/Los_Angeles）
+
+**main 源码（本次核验）**：`df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`。2026-11-18 已合入 [PR #116](https://github.com/ForceMind/ZapIME/pull/116)（在真实安装的 Android APK 中执行已存在的本机语音清理规则、离线设置开关和恢复偏好）与 [PR #118](https://github.com/ForceMind/ZapIME/pull/118)（不可变 SHA-256 固定的24条合成语音精简语料及离线 Java 防护评测）。后又合入 [PR #119](https://github.com/ForceMind/ZapIME/pull/119)：保护 USB-C、VoiceKey、iOS 等被汉字包围的技术标识，不允许未来改写把 USB-C 变成 USB-D。#119 merge `df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`。这不是引入本机 LLM，原 #114 保守文字清理仍默认关闭。
+
+**严格证据：** #116 固定源码的 [native Android API35/36](https://github.com/ForceMind/ZapIME/actions/runs/44034643337) 和 [VoiceKey focused API28/35/36](https://github.com/ForceMind/ZapIME/actions/runs/44034643336) 真实 Android 作业通过；独立 [API35配置/组字实验](https://github.com/ForceMind/ZapIME/actions/runs/44034643311) 仍有失败，Issue #38 不关闭。#118 的24条合成参考语料，完整语义事实标签保留24/24，而现有保守安全门禁仅接受21/24参考答案（3条保守拒绝，不是用户准确率或模型性能）。#119 我从其[源码工作流](https://github.com/ForceMind/ZapIME/actions/runs/44317336342)下载固定源码归档，实际执行产品 Java 安全门禁 2/2、冻结语料评测 5/5、已有语音清理 3/3，且 [独立离线语义评测CI](https://github.com/ForceMind/ZapIME/actions/runs/44317335066) 通过。当前其它系统/Android/Apple/Windows CI 仍分别检查，不能引用旧 head 的成功冒充新合并源全部通过。
+
+**基础设施新阻塞**：VoiceKey focused 的 [run 44317335080](https://github.com/ForceMind/ZapIME/actions/runs/44317335080) 在准备**固定 ONNX Runtime v1.28.2 头文件**时遇到上游 HTTP 404，尚未进入 VoiceKey Android 产品测试；[Issue #120](https://github.com/ForceMind/ZapIME/issues/120) 追踪官方来源、锁定长度与 SHA 的恢复方法，绝不取消校验或换用未经审核的新 ABI。其它 Root/服务/模拟器间歇失败保留原件。
+
+**真正未交付**：尚无运行的离线 LLM 语义改写模型（#113仍开放），没有自然语音/三星S25真机、长期耗电与内存的测试，没有正式签名稳定 APK。#77 只完成 Rust 恢复记录首次发布的安全基础，实际 HTTPS/Android 用户确认与跨设备冲突恢复未完成；没有自动上传。源码标签 `v0.1.0-alpha.1` 仍是旧固定源码预发布，不是当前功能的正式安装包。该检查点不是永久最新，接续必须读取实时 GitHub。
+
+## 历史检查点 · 2026-11-16（America/Los_Angeles）
 
 **当前 main（本检查点）：** `f9a4f64d450e83172a7841eaf2649dc1edcd84b9`，Public，原 `v0.1.0-alpha.1` 发布标签及附件未改动。此 SHA 是接管记录，未来先重新核验最新 GitHub。
 
