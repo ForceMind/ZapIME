@@ -1,0 +1,24 @@
+{"id":"fill-001","category":"filler","raw":"嗯，那个，今天下午三点开会。","reference":"今天下午三点开会。","preserve":["今天下午三点"]}
+{"id":"fill-002","category":"filler","raw":"呃，计划暂时不变。","reference":"计划暂时不变。","preserve":["不变"]}
+{"id":"fill-003","category":"filler","raw":"就是说，我们先检查一下配置。","reference":"我们先检查一下配置。","preserve":["检查一下配置"]}
+{"id":"fill-004","category":"filler","raw":"那个项目要继续推进。","reference":"那个项目要继续推进。","preserve":["那个项目"]}
+{"id":"repeat-001","category":"repetition","raw":"我们先检查网络，我们先检查网络，然后重试。","reference":"我们先检查网络，然后重试。","preserve":["检查网络","然后重试"]}
+{"id":"repeat-002","category":"repetition","raw":"这个功能需要测试，这个功能需要测试，不能直接发布。","reference":"这个功能需要测试，不能直接发布。","preserve":["不能直接发布"]}
+{"id":"repeat-003","category":"repetition","raw":"不要删除，不要删除。","reference":"不要删除。","preserve":["不要删除"]}
+{"id":"repeat-004","category":"repetition","raw":"今天三点开会，今天三点开会。","reference":"今天三点开会。","preserve":["三点"]}
+{"id":"repeat-005","category":"repetition","raw":"我们明天我们明天下午开会。","reference":"我们明天下午开会。","preserve":["明天下午"]}
+{"id":"repeat-006","category":"repetition","raw":"我就是就是想确认一下。","reference":"我就是想确认一下。","preserve":["确认一下"]}
+{"id":"neg-001","category":"negation","raw":"暂时不要开发这个功能。","reference":"暂时不要开发这个功能。","preserve":["不要开发"]}
+{"id":"neg-002","category":"negation","raw":"这个方案不是不可以，但还需要评估。","reference":"这个方案不是不可以，但还需要评估。","preserve":["不是不可以"]}
+{"id":"neg-003","category":"negation","raw":"Do not send this message until tomorrow.","reference":"Do not send this message until tomorrow.","preserve":["Do not"]}
+{"id":"number-001","category":"number","raw":"明天下午15:30开始会议。","reference":"明天下午15:30开始会议。","preserve":["15:30"]}
+{"id":"number-002","category":"number","raw":"预算是12000元，不是1200元。","reference":"预算是12000元，不是1200元。","preserve":["12000","1200","不是"]}
+{"id":"number-003","category":"number","raw":"第一版是1.2.3，第二版是1.2.4。","reference":"第一版是1.2.3，第二版是1.2.4。","preserve":["1.2.3","1.2.4"]}
+{"id":"health-001","category":"health","raw":"医生说每天10mg，不是100mg。","reference":"医生说每天10mg，不是100mg。","preserve":["10mg","100mg","不是"]}
+{"id":"health-002","category":"health","raw":"这份报告显示血压120/80。","reference":"这份报告显示血压120/80。","preserve":["120/80"]}
+{"id":"name-001","category":"entity","raw":"请把文件发给张三和李四。","reference":"请把文件发给张三和李四。","preserve":["张三","李四"]}
+{"id":"entity-002","category":"entity","raw":"使用安卓版和iOS版分别测试。","reference":"安卓版和iOS版都要测试。","preserve":["安卓版","iOS版"]}
+{"id":"url-001","category":"entity","raw":"官网是https://example.org/guide。","reference":"官网是https://example.org/guide。","preserve":["https://example.org/guide"]}
+{"id":"quote-001","category":"entity","raw":"这段话必须保留“未经授权不得访问”。","reference":"这段话必须保留“未经授权不得访问”。","preserve":["“未经授权不得访问”"]}
+{"id":"mixed-001","category":"mixed","raw":"嗯，那个，请在Android 16上测试VoiceKey。","reference":"请在Android 16上测试VoiceKey。","preserve":["Android 16","VoiceKey"]}
+{"id":"mixed-002","category":"mixed","raw":"明天检查USB-C接口，别把它说成Lightning。","reference":"明天检查USB-C接口，别把它说成Lightning。","preserve":["USB-C","Lightning","别"]}
