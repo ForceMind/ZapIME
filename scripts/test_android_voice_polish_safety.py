@@ -45,6 +45,14 @@ public final class VoicePolishSafetyHarness {
         reject("一百元预算。","两百元预算。");
         reject("Do not transfer any money.","Transfer any money.");
         reject("Do not transfer any money.","Never transfer any money.");
+        reject("USB-C接口需要检查。","USB-D接口需要检查。");
+        reject("保持VoiceKey与XASR分开。","保持VoiceKit与XASR分开。");
+        reject("使用iOS系统。","使用IOS系统。");
+        reject("保持API28和Android 16配置。","保持API29和Android 16配置。");
+        reject("用GPT-6检查报告。","用GPT-5检查报告。");
+        reject("用USB-C检查USB-C接口。","用USB-C检查USB-D接口。");
+        accept("嗯，USB-C接口暂时不开发。","USB-C接口暂时不开发。");
+        accept("对照VoiceKey模型和API28的结果。","对照VoiceKey和API28的结果。");
         reject("费用¥100。","费用$100。");
         reject("11月16日发布。","11日16月发布。");
         reject("测试结果稳定。","<think>秘密</think>测试结果稳定。");
@@ -73,7 +81,7 @@ class VoicePolishSafetyTests(unittest.TestCase):
             tested=subprocess.run([java,"-cp",str(root),"org.zapime.android.VoicePolishSafetyHarness"],
                                   capture_output=True,text=True,timeout=25)
             self.assertEqual(tested.returncode,0,tested.stderr)
-            self.assertIn("PASS 20 frozen synthetic safety cases",tested.stdout)
+            self.assertIn("PASS 28 frozen synthetic safety cases",tested.stdout)
 
     def test_output_gate_is_not_a_model_or_network_client(self):
         text=SOURCE.read_text(encoding="utf-8")
