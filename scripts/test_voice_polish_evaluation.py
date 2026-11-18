@@ -61,7 +61,7 @@ class VoicePolishEvaluationTests(unittest.TestCase):
                 with self.subTest(size=len(invalid)),self.assertRaises(EvaluationError):
                     check(invalid)
 
-    def test_changed_technical_entity_is_caught_by_frozen_required_fact_even_if_guard_accepts(self):
+    def test_changed_technical_entity_is_rejected_by_both_guard_and_frozen_facts(self):
         corpus,_=corpus_with_pin()
         candidates={x['id']:x['reference'] for x in corpus}
         candidates['mixed-002']='明天检查USB-D接口，别把它说成Lightning。'
@@ -71,7 +71,7 @@ class VoicePolishEvaluationTests(unittest.TestCase):
         flagged=[x for x in result['failed_ids'] if x['id']=='mixed-002']
         self.assertEqual(len(flagged),1)
         self.assertFalse(flagged[0]['required_facts_kept'])
-        self.assertEqual(flagged[0]['reason'],'ACCEPTED')
+        self.assertEqual(flagged[0]['reason'],'TECH_TOKEN_CHANGED')
 
     def test_input_rejects_bad_json_encoding_and_oversized_file(self):
         with tempfile.TemporaryDirectory(prefix='zapime-polish-invalid-') as folder:
