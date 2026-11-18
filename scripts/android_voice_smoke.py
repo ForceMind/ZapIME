@@ -47,7 +47,8 @@ try:
     result = run("shell", "am", "instrument", "-w", "-r", "-e", "zapime_ci_backup", os.environ["GITHUB_RUN_ID"]+"-"+os.environ["GITHUB_RUN_ATTEMPT"], "org.zapime.android.voicetest/.VoiceInstrumentation", text=True, capture_output=True, timeout=600)
     (out / "instrumentation.txt").write_text(result.stdout + result.stderr)
     print(result.stdout)
-    if "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout:
+    if ("PASS installed Android offline voice cleanup and restored local opt-in preference" not in result.stdout or
+            "PASS Android offline voice native acceptance" not in result.stdout or "FAIL Android voice" in result.stdout or "INSTRUMENTATION_FAILED" in result.stdout):
         raise SystemExit("Native voice acceptance failed")
     for name in ("native-report.json", "empty-pcm-report.json", "voice-commit-report.json", "sync-connection-report.json", "sync-profile-report.json", "sync-preparation-report.json", "local-backup-report.json", "voicekey-boundary-report.json"):
         run("pull","/sdcard/Android/data/org.zapime.android/files/voice-fixtures/"+name,str(out/name))

@@ -167,12 +167,15 @@ def verify_independent_producer(model):
             model.get('trailing_zero_samples') != 371 or
             model.get('accepted_samples') != audio+371 or
             model.get('produced_samples') != audio+371 or
-            type(model.get('producer_first_frame_ms')) is not int or
-            not 0 < model['producer_first_frame_ms'] <= 100 or
-            model.get('producer_eof_elapsed_ms', -1) < (audio+371)*1000//16000 or
-            model.get('producer_eof_elapsed_ms', 30000) > (audio+371)*1000//16000+250 or
             type(model.get('producer_max_lateness_ms')) is not int or
             not 0 <= model['producer_max_lateness_ms'] <= 250 or
+            type(model.get('producer_first_frame_ms')) is not int or
+            # A 100-ms monotonic deadline can be observed one scheduler tick
+            # late. Accept no more than the independently recorded lateness,
+            # capped at 25 ms; zero/late/unsubstantiated frames remain invalid.
+            not 0 < model['producer_first_frame_ms'] <= 100+min(25,model['producer_max_lateness_ms']) or
+            model.get('producer_eof_elapsed_ms', -1) < (audio+371)*1000//16000 or
+            model.get('producer_eof_elapsed_ms', 30000) > (audio+371)*1000//16000+250 or
             model.get('producer_eof_elapsed_realtime_ms', 0) - model.get('producer_epoch_elapsed_realtime_ms', 0) != model.get('producer_eof_elapsed_ms') or
             model.get('producer_failure') is not False or
             model.get('producer_exited') is not True or
@@ -269,7 +272,8 @@ def main():
                                 text=True, capture_output=True, timeout=900)
                 (out/'model-instrumentation.txt').write_text(completed.stdout+completed.stderr)
                 print(completed.stdout, flush=True)
-                if ('PASS Android VoiceKey official model acceptance' not in completed.stdout or
+                if ('PASS installed Android offline voice cleanup and restored local opt-in preference' not in completed.stdout or
+                        'PASS Android VoiceKey official model acceptance' not in completed.stdout or
                         'INSTRUMENTATION_FAILED' in completed.stdout or
                         'FAIL Android voice' in completed.stdout):
                     raise ValueError('voicekey_model_instrumentation_failed')

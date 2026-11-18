@@ -192,12 +192,14 @@ public final class VoiceInstrumentation extends Instrumentation {
                 require(voiceKeyModelCI.matches("[0-9]+-[0-9]+"),"dedicated VoiceKey model CI required");
                 fixtures=new File(getTargetContext().getExternalFilesDir(null),"voice-fixtures");
                 if(!fixtures.isDirectory()&&!fixtures.mkdirs())throw new IOException("test result storage unavailable");
+                stage="offline voice cleanup in installed Android APK";VoiceTextCleanupProbe.run(this);pass("installed Android offline voice cleanup and restored local opt-in preference (synthetic; no live IME UI claim)");
                 stage="VoiceKey real JNI boundary and timeout ABI";VoiceKeyBoundaryProbe.run(this,fixtures);
                 stage="VoiceKey official model SAF/JNI/Editable";
                 VoiceKeyModelProbe.run(this,fixtures,"ZapIME-VoiceKey-"+voiceKeyModelCI+".apk");
                 result.putString("stream","PASS Android VoiceKey official model acceptance\n");finish(Activity.RESULT_OK,result);return;
             }
             nativeVoice=Class.forName("org.zapime.android.NativeVoice",true,getTargetContext().getClassLoader());models=Class.forName("org.zapime.android.VoiceModels",true,getTargetContext().getClassLoader());
+            stage="offline voice cleanup in installed Android APK";VoiceTextCleanupProbe.run(this);pass("installed Android offline voice cleanup and restored local opt-in preference (synthetic; no live IME UI claim)");
             stage="ordered PCM completion";finalPcmRace();
             stage="recording policy state";recordingPolicyState();
             stage="sync material Keystore";syncSecretStorage();

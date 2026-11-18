@@ -169,7 +169,7 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
         for key, value in [
             ('fixture_sha256', 'c'*64), ('audio_samples', 123550),
             ('accepted_samples', 123919), ('produced_samples', 123919),
-            ('producer_first_frame_ms', 101), ('producer_first_frame_ms', 0),
+            ('producer_first_frame_ms', 126), ('producer_first_frame_ms', 0),
             ('producer_eof_elapsed_ms', 8000), ('producer_max_lateness_ms', 251),
             ('producer_max_lateness_ms', -1),
             ('producer_eof_elapsed_realtime_ms', 8744),
@@ -178,6 +178,18 @@ class VoiceKeyModelEvidenceTest(unittest.TestCase):
             altered[key] = value
             with self.subTest(field=key, value=value), self.assertRaises(ValueError):
                 verify_reports(altered, commit, lock)
+
+    def test_first_frame_one_tick_late_requires_measured_clock_lateness(self):
+        lock, model, commit = self.fixtures()
+        model['producer_first_frame_ms'] = 101
+        model['producer_max_lateness_ms'] = 19
+        verify_reports(model, commit, lock)
+        for first, late in ((101, 0), (126, 30), (100, -1), (100, 251)):
+            changed = copy.deepcopy(model)
+            changed['producer_first_frame_ms'] = first
+            changed['producer_max_lateness_ms'] = late
+            with self.subTest(first=first, lateness=late), self.assertRaises(ValueError):
+                verify_reports(changed, commit, lock)
 
     def test_unreviewed_audio_is_not_accepted_by_matching_length_alone(self):
         lock, model, commit = self.fixtures()
