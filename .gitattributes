@@ -429,3 +429,8 @@ docs/evidence/manual-sync-20261106/pages-driver-recheck/verification.json -text 
 docs/evidence/tools-panel-observation-20261119/original-api36/** -text -whitespace
 docs/evidence/tools-panel-observation-20261119/*-manifest.json -text
 docs/evidence/tools-panel-observation-20261119/local-validation.json -text
+
+# Preserve the fixed-source acceptance snapshot and evidence archive bytes.
+docs/evidence/ci-recovery-20261119/*.json -text
+docs/evidence/ci-recovery-20261119/accepted-reports.zip -text
+docs/evidence/ci-recovery-20261119/SHA256SUMS -text

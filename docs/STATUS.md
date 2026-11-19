@@ -1,6 +1,16 @@
 # ZapIME 项目执行状态
 
-## 本轮开发：固定依赖与工具面板观察修复 · 2026-11-19
+## 当前接续 · 2026-11-19（America/Los_Angeles）
+
+固定依赖与工具面板测试观察修复（PR #122 / #123）已整合至 main `c9207de739d6d1872502694826a69b8d29d4540e`。本轮完整 CI 验收固定 head `60beadee4af411541fc716fbb3bc0eb74b769591`、实际 checkout `95d93e4b6fc2dbd51cb4e2446d705c54a9166f33`，两者 tree 均为 `d4b891619c7a162e0d60db230bfadaed2b419c84`；八条工作流均在 attempt 1 最终 SUCCESS。[完整结果、原件与开发包核验](evidence/ci-recovery-20261119/README.md)。8/8 结论仅绑定上述 head / checkout / tree；集成和后续文档提交另作接续检查点，不称对新 SHA 重新跑完本轮 CI。
+
+ORT 1.28.2 头文件、MIT 与 Linux 诊断归档均按原长度和 SHA 恢复；Linux 恢复运输须显式选择，保留官方默认、同一哈希及成员验证，无自动切源。真实 1.28.2 候选主机运行已通过；工具面板改动仅稳定独立测试观察，原产品边界与失败记录保留。
+
+下一独立切片沿用 #110 的首次发布安全基础，把真实 HTTPS 身份核验后的完整终止拉取接入已有 `apply_page_for_first_publish`，沿用预检、显式确认、持久冻结请求与 ACK 完成实际服务闭环。Android 选择、确认及进度页面作为后续独立切片；已有 JNI、40 条只读状态页和本机初始队列不重做，Issue #77 仍未完成。
+
+Issue #38 的其余历史间歇问题、#113 的离线 LLM 语义改写、三星 S25 真机与正式签名稳定包仍未完成。本轮开发 APK 不等于真机或正式发布验收；以下旧 404、工具面板及 ADB 失败正文原样保留。
+
+## 历史开发切片 · 2026-11-19（PR #123 完整 CI 回读前）
 
 接续 main `e2877a85` 和仍开放的 PR #122 / `8865c969`，没有把旧主干失败改写为成功。#122 已实际构建双 ABI APK，候选 JNI 三API与独立API35配置实验通过；其最终八工作流5成功、3失败分别是 API36 工具面板观察、focused VoiceKey API35 的 `adb root/device offline`，以及独立 Linux ORT1.28.2 诊断归档404。[原运行](https://github.com/ForceMind/ZapIME/actions/runs/44503628454)。
 
@@ -10,7 +20,7 @@ API36 原报错之后的完整截图、节点层级与 `restart_keep_tools/view_
 
 新增观察器9项及既有普通/重复重启5+10项本机 Java 回归通过；真实 Android 编译、三API系统输入/语音/清理及完整 CI 仍须按本轮远端提交回读。合成主机结果不代替系统输入或手机；S25、语义LLM、正式签名及 Issue #77 的剩余范围不变。
 
-## 当前接续 · 2026-11-19（America/Los_Angeles）
+## 历史检查点 · 2026-11-19（PR #122 头文件恢复后、Linux 归档恢复前）
 
 实时起点 main `e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf`。补齐上一轮 CI 最终结果：该 main 为5条成功/Android构建1条失败；#119为6成功/3个Android相关失败；#121为4成功/2失败，其中Apple job未执行并取消、具体原因未知，同树main随后development通过。六份Android首要日志均在固定ORT头文件下载遇HTTP404，未进入设备验收；不能将它们称为语音或候选运行时失败。
 

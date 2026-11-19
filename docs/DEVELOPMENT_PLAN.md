@@ -1,12 +1,18 @@
 # ZapIME（闪电输入法）产品目标与持续交付计划
 
-更新日期：2026-11-12。当前从实时 `main` 接续，源码 Alpha `v0.1.0-alpha.1` 已公开。原 PR #71/#73/#74/#75/#78/#79/#80/#81 已经 #82 整合，#83 补齐发布证据；后续切片使用独立分支/PR。接续入口见[当前交接提示](WORK_HANDOFF_PROMPT.md)。
+更新日期：2026-11-19。当前从实时 `main` 接续，源码 Alpha `v0.1.0-alpha.1` 已公开。原 PR #71/#73/#74/#75/#78/#79/#80/#81 已经 #82 整合，#83 补齐发布证据；后续切片使用独立分支/PR。接续入口见[当前交接提示](WORK_HANDOFF_PROMPT.md)。
 
 2026-11-07 补充当前切片：按用户要求，`feat/offline-candidate-ranking` / PR #78 已从手动同步开发基线接入默认开启的 Android 本机候选增强。固定 MSIME、chinese-ime-lm rerank-v2 8M 和已有 ORT 已完成实际推理、稳定候选身份、隐私/生命周期回退及包内资源核验；固定测试修订 `5e1a87c` 的 API28/35/36 真实模型方法与系统 IME 两类门禁全部通过，已提供[双 ABI 开发包](CANDIDATE_RANKING_TRYOUT.md)。下一阶段分别验证 ARM/S25 长期输入、真实语料质量和性能，以及其他三端模型宿主；不将模拟器成功当手机验收。此切片保留下述语音、四端和同步目标；实现与边界见[候选增强](CANDIDATE_RANKING.md)，精确结果见[STATUS](STATUS.md)。
 
 本版更新近期交付优先级，不取消原有四端输入、数据归属、同步和恢复目标。原始完整规划按原文件字节保留在 [2026-10-20 基线计划](DEVELOPMENT_PLAN_BASELINE_20261020.md)。工程实施同时遵循 [AGENTS.md](../AGENTS.md)、[架构](ARCHITECTURE.md)、[技术决策](DECISIONS.md)及新增 [ADR-020](ADR_020_VOICEKEY_DELIVERY.md)。事实进度以 [STATUS](STATUS.md) 和对应提交证据为准；本文件中的目标不是已实现功能。
 
-## 当前执行接续（2026-11-12 客户端日期）
+## 当前执行接续（2026-11-19）
+
+PR #122 / #123 的固定依赖恢复与工具面板测试观察修复已整合，功能检查点为 `c9207de739d6d1872502694826a69b8d29d4540e`。本轮八条工作流 attempt 1 全部 SUCCESS，绑定固定 head `60beadee`、实际 checkout `95d93e4` 和共同 tree `d4b8916`；[精确来源与完整验收](evidence/ci-recovery-20261119/README.md)单独记录，不将后续集成或文档 SHA 称为重新跑完本轮 CI。
+
+原 C1、语音与四端计划保持。下一独立切片为 Issue #77 的真实 HTTPS 认证终止拉取接入既有首次发布 API 和实际服务闭环；Android 用户确认页面后续独立交付，不重复实现 JNI、只读状态页或初始安全队列。Issue #38、#113 离线 LLM、S25 真机及正式签名稳定包仍未完成。
+
+## 历史执行接续（2026-11-12 客户端日期）
 
 [PR #102](https://github.com/ForceMind/ZapIME/pull/102) 已将全部组字/配置实验/触摸夹具/候选扩展栈合入 main，merge `88112f48464ecec9c361ba03443cc7081feb6511`。固定 tree `2c73b5abe92214ad97eb0104f11911fa6a9d3cb6` 的八条 workflow 全部成功，API35 配置实验和三API候选系统输入已实际执行；全量Android首轮系统Launcher ANR失败保留，定点重跑后attempt2为6/6。这说明#102历史那轮固定资源504阻断曾经解除；#104当前再次遇到的下载504按下面的新固定源码另行记录。完整原件与范围见 [STATUS](STATUS.md) 和[本轮证据](evidence/android-stability-52f812b-20261108/README.md)。
 
