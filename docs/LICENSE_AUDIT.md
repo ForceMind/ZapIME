@@ -8,6 +8,8 @@
 
 本地 C++/JNI 适配采用项目 GPL-3.0-only，前缀 feed 算法对应上游 GPL Python 源；测试保留原 feed 和精确来源，不误套上游 `reference/` 子目录 Apache 许可。来源/改动见 [integrations/candidate/SOURCE.md](../integrations/candidate/SOURCE.md)。复用 APK 既有 ORT 1.28.2、nlohmann/json 和原 NDK 通知，不再分发第二份运行库。新增 Microsoft C API 头固定到具体提交并保留 MIT；仅为构建输入。
 
+2026-11-19：为解决官方仓库当前 HTTP404 的构建阻塞，将原锁认可的三个 C 头文件和完整 MIT 许可证原字节保存到 [third_party/onnxruntime-1.28.2](../third_party/onnxruntime-1.28.2/SOURCE.md)。四文件从 Intel fork 的同一完整提交恢复，长度与 SHA256 均与旧锁完全相同；原 Microsoft 来源 URL、版权、版本及 ABI 不变。构建只校验并复制本地原件，缺失、损坏或符号链接均失败，没有自动换源或新增运行库。恢复证据及独立 Linux 诊断库仍不可获取的范围见[原件记录](evidence/ort-source-recovery-20261119/README.md)。
+
 上游对 LCCC 训练来源的描述与 LCCC 原仓库研究用途声明存在差异，已按事实存入 `third_party/licenses/chinese-ime-lm-rerank-v2-SOURCE_REVIEW.txt` 并随包保留。工程测试不解决这个来源问题；没有据此宣称商业分发权利已全部澄清。SHA256 是固定资源完整性校验，不是发布者数字签名。
 
 | 组件 | 核验版本/范围 | 授权与处置 |

@@ -374,8 +374,10 @@ public final class SmokeInstrumentation extends Instrumentation {
         stage="tools_open";ensureToolsOpen("restart_tools_open");waitFor("返回键盘",true);
         // Deterministic real App restart while the non-text panel is open.
         // No IME method or editor text is injected by the test.
+        final ProbeActivity originalHost=ProbeActivity.current.get();
+        if(originalHost==null)throw new Exception("Tools restart editor unavailable");
         stage="tools_empty_editor_restart";noteDriver("tools_restart_requested");restartNormalEditor();
-        waitFor("⚡ 闪电 · 离线");waitFor("返回键盘",true);requireToolsPanelStable();requireEditor("","tools_restart_preserves_empty_editor");screenshot("tools.png");
+        requireToolsPanelStable(originalHost);waitFor("⚡ 闪电 · 离线");requireEditor("","tools_restart_preserves_empty_editor");screenshot("tools.png");
         final int[] options={0};int previous=ProbeActivity.normalConnections.get();
         stage="tools_privacy_restart";
         runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();options[0]=a.normal.getImeOptions();a.normal.setImeOptions(options[0]|android.view.inputmethod.EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING);((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).restartInput(a.normal);});
@@ -389,13 +391,54 @@ public final class SmokeInstrumentation extends Instrumentation {
         touchImeOnce(stableImeTarget("返回键盘","restart_tools_return",true),"restart_tools_return");waitFor("n",true);
         stableImeTarget("n","restart_tools_letters_postcondition",false);
     }
-    private void requireToolsPanelStable() throws Exception {
-        for(int i=0;i<10;i++){
-            boolean back=false,letters=false;
-            for(AccessibilityWindowInfo window:automation.getWindows())if(window.getType()==AccessibilityWindowInfo.TYPE_INPUT_METHOD){
-                AccessibilityNodeInfo root=window.getRoot();back|=walk(root,"返回键盘",true)!=null;letters|=walk(root,"n",true)!=null;
+    private void requireToolsPanelStable(ProbeActivity originalHost) throws Exception {
+        // A served App connection can be followed by RESET_NEW_CONFIGURATION.
+        // Reuse the physical-entry observer's public Insets and fresh geometry;
+        // a detached accessibility tree is missing proof, not a letter layout.
+        // The total deadline never resets, and no action reopens the panel.
+        ToolsPanelObservation proof=new ToolsPanelObservation(SystemClock.uptimeMillis());
+        ImeTarget previousBack=null,previousVoice=null;int previousVersion=-1;
+        String previousReason=null;
+        while(true){
+            final ProbeActivity[] host={null};final int[] counts={-1,-1};
+            final boolean[] focused={false},served={false},visible={false};
+            runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();host[0]=a;if(a!=null){counts[0]=a.activeImeAnimations;counts[1]=a.imeAnimationVersion;focused[0]=a.normal.hasFocus()&&a.normal.hasWindowFocus();served[0]=((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).isActive(a.normal);visible[0]=Build.VERSION.SDK_INT<30||ImeInsets.visible(a.normal);}});
+            ImeTarget back=imeTarget("返回键盘"),voiceEntry=imeTarget("离线语音"),letters=imeTarget("n");
+            // Accessibility traversal can span a configuration/animation change.
+            // Bracket it with independent App-thread observations, so targets
+            // read across that change cannot count as one stable sample.
+            final ProbeActivity[] afterHost={null};final int[] afterCounts={-1,-1};
+            final boolean[] afterFocused={false},afterServed={false},afterVisible={false};
+            runOnMainSync(()->{ProbeActivity a=ProbeActivity.current.get();afterHost[0]=a;if(a!=null){afterCounts[0]=a.activeImeAnimations;afterCounts[1]=a.imeAnimationVersion;afterFocused[0]=a.normal.hasFocus()&&a.normal.hasWindowFocus();afterServed[0]=((android.view.inputmethod.InputMethodManager)a.getSystemService(Context.INPUT_METHOD_SERVICE)).isActive(a.normal);afterVisible[0]=Build.VERSION.SDK_INT<30||ImeInsets.visible(a.normal);}});
+            boolean original=host[0]==originalHost&&afterHost[0]==originalHost;
+            boolean consistent=host[0]==afterHost[0]&&focused[0]==afterFocused[0]
+                    &&served[0]==afterServed[0]&&visible[0]==afterVisible[0]
+                    &&counts[0]==afterCounts[0]&&counts[1]==afterCounts[1];
+            boolean panel=back!=null&&voiceEntry!=null&&back.windowId==voiceEntry.windowId
+                    &&back.windowBounds.equals(voiceEntry.windowBounds);
+            boolean ready=original&&consistent&&focused[0]&&served[0]&&visible[0]&&counts[0]==0&&panel;
+            boolean same=ready&&back.sameTarget(previousBack)&&voiceEntry.sameTarget(previousVoice)
+                    &&counts[1]==previousVersion;
+            String reason=letters!=null?"wrong_panel":!original?"host_changed":!consistent?"inconsistent"
+                    :!focused[0]||!served[0]||!visible[0]||counts[0]!=0?"host_unready"
+                    :back==null||voiceEntry==null?"missing":!panel||!same?"inconsistent":"complete";
+            if(!reason.equals(previousReason)){
+                noteDriver("restart_tools_observation "+reason+" back="+(back!=null)+" voice="+(voiceEntry!=null)
+                        +" letters="+(letters!=null)+" focused="+focused[0]+" served="+served[0]
+                        +" visible="+visible[0]+" animations="+counts[0]+" version="+counts[1]
+                        +" consistent="+consistent+" after_focused="+afterFocused[0]
+                        +" after_served="+afterServed[0]+" after_visible="+afterVisible[0]
+                        +" after_animations="+afterCounts[0]+" after_version="+afterCounts[1]);
+                previousReason=reason;
             }
-            if(!back||letters)throw new Exception("Tools panel changed after served restart");
+            long now=SystemClock.uptimeMillis();
+            ToolsPanelObservation.Outcome result=proof.observe(now,original,letters!=null,ready,same);
+            if(result==ToolsPanelObservation.Outcome.STABLE){
+                noteDriver("restart_tools_stable samples="+proof.samples()+" interval_ms="+proof.stableMillis(now));return;
+            }
+            if(result!=ToolsPanelObservation.Outcome.WAITING)
+                throw new Exception("Tools panel proof failed after served restart: "+result);
+            previousBack=back;previousVoice=voiceEntry;previousVersion=counts[1];
             Thread.sleep(50);
         }
     }

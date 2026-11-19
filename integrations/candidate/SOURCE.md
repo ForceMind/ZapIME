@@ -72,6 +72,15 @@ headers are separately pinned to Microsoft commit
 build inputs only. The backend requests the compatible API 24 prefix and uses
 no newer API functions. It does not link or package another ORT binary.
 
+Since 2026-11-19 the same three C headers and full MIT license are retained
+verbatim in [third_party/onnxruntime-1.28.2](../../third_party/onnxruntime-1.28.2/SOURCE.md).
+They were recovered from Intel's fork at the identical commit and matched
+every pre-existing size/SHA pin while the Microsoft URLs returned 404.
+Build preparation verifies the local originals before publishing a complete
+include set; missing or modified source does not trigger a network fallback.
+This does not replace the Android library or the separately pinned Linux
+diagnostic runtime, whose availability must be checked independently.
+
 The JSON parser is the existing nlohmann/json 3.12.0 single header, MIT, already
 locked by `third_party/android-voice-lock.json`. Native NDK/runtime notices
 remain applicable to the final shared library.

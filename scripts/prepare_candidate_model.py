@@ -4,8 +4,9 @@
 
 No product runtime downloads are involved. Source pins are reviewed in
 third_party/candidate-model-lock.json; the Java catalog is generated from that
-lock, never from a downloaded or installed model. --offline requires an intact
-cache. --check-catalog and --write-catalog do not access the network.
+lock, never from a downloaded or installed model. The original ORT C headers
+and MIT license are bundled as build inputs and checked against the same pins.
+--offline requires an intact model cache. Catalog operations never connect.
 """
 import argparse
 import hashlib
@@ -26,6 +27,7 @@ CATALOG = ROOT / "platforms/android/java/org/zapime/android/CandidateModelCatalo
 CHUNK = 1024 * 1024
 MODEL_FILES = {"lm_step.ort", "model.json", "vocab.json"}
 NOTICE_FILES = {"LICENSE.txt", "NOTICE.txt", "SOURCE_REVIEW.txt"}
+BUILD_HEADERS = Path("third_party/onnxruntime-1.28.2")
 
 
 class HttpsRedirect(urllib.request.HTTPRedirectHandler):
@@ -205,6 +207,26 @@ def verify_notices(lock, root=ROOT):
             raise ValueError("reviewed candidate notice changed: " + name)
 
 
+def verify_build_headers(lock, root=ROOT):
+    """Verify every bundled original, even when the output cache is valid."""
+    source = root / BUILD_HEADERS
+    if any(path.is_symlink() for path in (source, *source.parents)):
+        raise ValueError("reviewed ORT header source contains a symbolic link")
+    if not source.is_dir():
+        raise ValueError("reviewed ORT header source directory is missing")
+    for name, spec in lock["build_headers"]["files"].items():
+        if not verified(source / name, spec):
+            raise ValueError("reviewed ORT header checksum/size mismatch: " + name)
+    return source
+
+
+def prepare_build_headers(lock, destination, root=ROOT):
+    # No fallback: missing or changed source is a build failure, not permission
+    # to fetch a different version. Stage the complete set before publishing.
+    source = verify_build_headers(lock, root)
+    publish_directory(source, destination, lock["build_headers"]["files"])
+
+
 def verify_model(directory, lock):
     expected = lock["model"]
     metadata = json.loads((directory / "model.json").read_text(encoding="utf-8"))
@@ -285,6 +307,8 @@ def publish_directory(source, destination, specs):
 
 def prepare(lock, cache, destination=None, headers=None, offline=False, root=ROOT):
     verify_notices(lock, root)
+    if headers is not None:
+        verify_build_headers(lock, root)
     real_directory(cache)
     if any(p.name not in lock["files"] for p in cache.iterdir()):
         raise ValueError("candidate cache contains unrelated entries")
@@ -297,9 +321,7 @@ def prepare(lock, cache, destination=None, headers=None, offline=False, root=ROO
         raise ValueError("candidate model cache is incomplete")
     verify_model(cache, lock)
     if headers is not None:
-        real_directory(headers)
-        for name, spec in lock["build_headers"]["files"].items():
-            download(spec, headers / name, offline)
+        prepare_build_headers(lock, headers, root)
     if destination is not None and destination.absolute() != cache.absolute():
         publish_directory(cache, destination, lock["files"])
 
@@ -317,6 +339,7 @@ def main():
         parser.error("catalog-only operations cannot be combined with resource preparation")
     lock = load_lock()
     verify_notices(lock)
+    verify_build_headers(lock)
     generated = generate_catalog(lock)
     if args.write_catalog:
         CATALOG.write_text(generated, encoding="utf-8")
@@ -325,7 +348,7 @@ def main():
     if not CATALOG.is_file() or CATALOG.read_text(encoding="utf-8") != generated:
         raise SystemExit("CandidateModelCatalog differs from the reviewed lock; regenerate and review it")
     if args.check_catalog:
-        print("PASS reviewed candidate catalog and source notices")
+        print("PASS reviewed candidate catalog, source notices and bundled ORT headers")
         return
     cache = ROOT / "target/candidate-model" / lock["model_id"]
     prepare(lock, cache, args.destination, args.headers, args.offline)

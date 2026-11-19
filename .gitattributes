@@ -1,5 +1,16 @@
 # Preserve the publisher's license bytes/SHA, including original whitespace.
 
+# Original ORT 1.28.2 build inputs: retain the already-reviewed size/SHA on checkout.
+third_party/onnxruntime-1.28.2/onnxruntime_c_api.h -text
+third_party/onnxruntime-1.28.2/onnxruntime_ep_c_api.h -text
+third_party/onnxruntime-1.28.2/onnxruntime_error_code.h -text
+third_party/onnxruntime-1.28.2/LICENSE.txt -text
+docs/evidence/ort-source-recovery-20261119/availability-and-hash.json -text
+docs/evidence/ort-source-recovery-20261119/intel-original-commit.json -text
+docs/evidence/ort-source-recovery-20261119/local-validation.json -text
+docs/evidence/ort-host-recovery-20261119/*.json -text
+docs/evidence/ort-host-recovery-20261119/SHA256SUMS -text
+
 # Exact standalone service-descriptor verification log bytes.
 docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-clippy.log -text -whitespace
 docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fixture-build.log -text -whitespace
@@ -413,3 +424,8 @@ docs/evidence/manual-sync-20261106/pages-driver-recheck/diff-check.log -text -wh
 docs/evidence/manual-sync-20261106/pages-driver-recheck/java-compile.log -text -whitespace
 docs/evidence/manual-sync-20261106/pages-driver-recheck/validator-tests.log -text -whitespace
 docs/evidence/manual-sync-20261106/pages-driver-recheck/verification.json -text -whitespace
+
+# Original API36 failure evidence must remain byte-identical on all hosts.
+docs/evidence/tools-panel-observation-20261119/original-api36/** -text -whitespace
+docs/evidence/tools-panel-observation-20261119/*-manifest.json -text
+docs/evidence/tools-panel-observation-20261119/local-validation.json -text

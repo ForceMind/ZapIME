@@ -6,6 +6,7 @@ import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
 
 import prepare_candidate_host_runtime as runtime
 
@@ -57,6 +58,74 @@ class HostRuntimeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     runtime.prepare(root, offline=True)
             self.assertEqual(library.read_bytes(), b"existing")
+
+    def test_transport_selects_reviewed_url_without_changing_pins_or_cached_bytes(self):
+        for transport in runtime.TRANSPORTS:
+            with self.subTest(transport=transport), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                spec, members, payloads = self.archive(root)
+                original = dict(spec)
+                with patch.object(runtime, "ARCHIVE", spec), patch.object(runtime, "MEMBERS", members), \
+                        patch.object(runtime, "download", wraps=runtime.download) as download, \
+                        patch("prepare_candidate_model.OPENER.open") as network:
+                    # A verified cache works offline under either explicit transport.
+                    result = runtime.prepare(root, offline=True, transport=transport)
+                    self.assertEqual(result.read_bytes(), payloads[result.name])
+                    network.assert_not_called()
+                    selected = download.call_args.args[0]
+                    self.assertEqual(selected["url"], spec["url"] if transport == "official"
+                                     else runtime.RECOVERY_TRANSPORT_URL)
+                    self.assertEqual(selected["size"], original["size"])
+                    self.assertEqual(selected["sha256"], original["sha256"])
+                    self.assertEqual(spec, original)
+
+    def test_404_from_selected_transport_never_switches_source(self):
+        for transport in runtime.TRANSPORTS:
+            with self.subTest(transport=transport), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                spec, members, _ = self.archive(root)
+                archive = root / runtime.ARCHIVE_NAME
+                archive.unlink()
+                expected = spec["url"] if transport == "official" else runtime.RECOVERY_TRANSPORT_URL
+                with patch.object(runtime, "ARCHIVE", spec), patch.object(runtime, "MEMBERS", members), \
+                        patch("prepare_candidate_model.OPENER.open",
+                              side_effect=HTTPError(expected, 404, "Not Found", {}, None)) as network:
+                    with self.assertRaises(HTTPError):
+                        runtime.prepare(root, transport=transport)
+                    network.assert_called_once()
+                    self.assertEqual(network.call_args.args[0], expected)
+                self.assertFalse(archive.exists())
+                self.assertFalse((root / "libonnxruntime.so.1.28.2").exists())
+
+    def test_changed_recovery_bytes_never_replace_existing_output(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            spec, members, _ = self.archive(root)
+            archive = root / runtime.ARCHIVE_NAME
+            original = archive.read_bytes()
+            archive.unlink()
+            library = root / "libonnxruntime.so.1.28.2"
+            library.write_bytes(b"existing")
+            # The transport supplies the correct byte count but a wrong digest.
+            changed = bytes([original[0] ^ 1]) + original[1:]
+            with patch.object(runtime, "ARCHIVE", spec), patch.object(runtime, "MEMBERS", members), \
+                    patch("prepare_candidate_model.OPENER.open", return_value=io.BytesIO(changed)) as network:
+                with self.assertRaisesRegex(ValueError, "checksum/size mismatch"):
+                    runtime.prepare(root, transport="npmmirror-recovery")
+                network.assert_called_once()
+            self.assertEqual(library.read_bytes(), b"existing")
+            self.assertFalse(archive.exists())
+            self.assertEqual(list(root.iterdir()), [library])
+
+    def test_unknown_transport_rejected_before_output_creation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            output = Path(temporary) / "not-created"
+            for transport in ("auto", "latest", "https://example.test/runtime.tgz", "", None):
+                with self.subTest(transport=transport), patch("prepare_candidate_model.OPENER.open") as network:
+                    with self.assertRaisesRegex(ValueError, "unsupported.*transport"):
+                        runtime.prepare(output, transport=transport)
+                    network.assert_not_called()
+                    self.assertFalse(output.exists())
 
     def test_links_duplicates_sizes_and_member_hash_mismatches_fail_closed(self):
         for options in (dict(linked=True), dict(duplicate=True), dict(wrong_size=True), dict(wrong_bytes=True)):
