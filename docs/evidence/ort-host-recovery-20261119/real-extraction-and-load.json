@@ -1,0 +1,63 @@
+{
+  "observed_utc": "2026-11-19T13:23:04.852968+00:00",
+  "base_commit": "8865c969ef364a671e063e4a853d9e7328ed1815",
+  "working_source_sha256": {
+    "scripts/prepare_candidate_host_runtime.py": "2b4a951b63e95fe0edf30294b18453bcc0236448e4774e42a567ecdd4e870104",
+    "scripts/prepare_candidate_model.py": "e2b1365ad040bd08944a5212a02c9a310a278eccafa8d06bde51e507ae877013",
+    "scripts/test_prepare_candidate_host_runtime.py": "140542f324acbaa586b8388d346202411cd6edf0af7f671518e7f1cadbfc147b",
+    ".github/workflows/candidate-ranking.yml": "f951b6538b4253c099c5afe2d17323cf75ff3e4571e6e6c2d03a04ccd0228317"
+  },
+  "checks": [
+    {
+      "command": [
+        "python3",
+        "scripts/prepare_candidate_host_runtime.py",
+        "--destination",
+        "<temporary-original-cache>",
+        "--offline"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS fixed official ORT1.28.2 archive, host library and MIT license; transport=official\n",
+      "stderr": "",
+      "runtime_reported_version": "1.28.2",
+      "library_bytes": 24277040,
+      "library_sha256": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb",
+      "native_scope": "Real dlopen and OrtGetApiBase/GetVersionString only; no model inference or Android execution."
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/prepare_candidate_host_runtime.py",
+        "--destination",
+        "<empty-temporary-cache>",
+        "--transport",
+        "npmmirror-recovery"
+      ],
+      "exit_code": 0,
+      "stdout": "PASS fixed official ORT1.28.2 archive, host library and MIT license; transport=npmmirror-recovery\n",
+      "stderr": "",
+      "outputs": [
+        {
+          "name": "LICENSE.txt",
+          "bytes": 1073,
+          "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+        },
+        {
+          "name": "libonnxruntime.so.1.28.2",
+          "bytes": 24277040,
+          "sha256": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb"
+        },
+        {
+          "name": "onnxruntime-linux-x64-1.28.2.tgz",
+          "bytes": 9128991,
+          "sha256": "d7209b8751b27b862b0c76332c2e20e203396edb5dab700ecf4bb485cf147415"
+        }
+      ]
+    }
+  ],
+  "not_run": [
+    "Full candidate model scoring/quality comparison",
+    "GitHub Actions for these uncommitted changes",
+    "Android or phone execution"
+  ]
+}

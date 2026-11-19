@@ -1,0 +1,22 @@
+{
+  "url": "https://registry.npmmirror.com/-/binary/onnxruntime/v1.28.2/onnxruntime-linux-x64-1.28.2.tgz",
+  "status": 200,
+  "final_url": "https://cdn.npmmirror.com/binaries/onnxruntime/v1.28.2/onnxruntime-linux-x64-1.28.2.tgz",
+  "length": 9128991,
+  "sha256": "d7209b8751b27b862b0c76332c2e20e203396edb5dab700ecf4bb485cf147415",
+  "type": "application/octet-stream",
+  "observed_utc": "2026-11-19T13:19:09.977774+00:00",
+  "saved": "/tmp/zapime-ort-recovery-20261119/onnxruntime-linux-x64-1.28.2.tgz",
+  "members": [
+    {
+      "name": "onnxruntime-linux-x64-1.28.2/LICENSE",
+      "size": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c"
+    },
+    {
+      "name": "onnxruntime-linux-x64-1.28.2/lib/libonnxruntime.so.1.28.2",
+      "size": 24277040,
+      "sha256": "088f24b1fc56714d3efaaeb3ac2ee486a5d7b50ccfbb3dd26fd1a612534a05fb"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "synthetic": true,
+  "source_head": "8865c969ef364a671e063e4a853d9e7328ed1815",
+  "run_id": 44503628454,
+  "run_attempt": 1,
+  "job_id": 135495075207,
+  "artifact_id": 14519098401,
+  "artifact_name": "ZapIME-Android-API-36-acceptance",
+  "original_status": "FAILURE",
+  "files": [
+    {
+      "path": "original-api36/instrumentation.log",
+      "bytes": 112,
+      "sha256": "857442a7b52275de1982d87ad6f0f7e7c563f48aa0690286027e966dea24f736"
+    },
+    {
+      "path": "original-api36/host-lifecycle.txt",
+      "bytes": 1884,
+      "sha256": "cf085d2af7c7f44a67ec60dac45b4c34cfabc3b077293710919c1db78cdab8cd"
+    },
+    {
+      "path": "original-api36/ci-input-service.txt",
+      "bytes": 3502,
+      "sha256": "76460858f6f7e13dcceb77a5f37b02150b03171f1301d8e5f62664bd65534a1e"
+    },
+    {
+      "path": "original-api36/hierarchy.txt",
+      "bytes": 5137,
+      "sha256": "5da05d0ca08cfec1ff97066bab2ac446d127674173380137612f65db7aa63794"
+    },
+    {
+      "path": "original-api36/ci-system-runtime.txt",
+      "bytes": 177137,
+      "sha256": "d4c5398c68b555de985d1c32c9afcdd646e6d8d95b9b5914cba3a244845caf72"
+    },
+    {
+      "path": "original-api36/runtime-errors.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "original-api36/last-anr.txt",
+      "bytes": 88,
+      "sha256": "42cf4931006fd0ff42d3522af31f9346431b409aa22a793ecc16b5aedeed28a1"
+    },
+    {
+      "path": "original-api36/smoke.png",
+      "bytes": 40335,
+      "sha256": "da95b70ee6f3b413e53d66ca077c840d8c579ec6be19b27f8cc72b60b036c684"
+    }
+  ],
+  "scope": "Unmodified original CI evidence. A later stable tools panel does not retroactively pass the failed test."
+}
