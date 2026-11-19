@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "repository": "ForceMind/ZapIME",
+  "observed_at_utc": "2026-11-19T14:04:51Z",
+  "source_head": "60beadee4af411541fc716fbb3bc0eb74b769591",
+  "ci_checkout": "95d93e4b6fc2dbd51cb4e2446d705c54a9166f33",
+  "source_tree": "d4b891619c7a162e0d60db230bfadaed2b419c84",
+  "scope": "Readback of actual fixed-source CI results; subsequent integration or documentation commits are not claimed to have rerun these checks.",
+  "workflows": [
+    {
+      "id": 44534343744,
+      "name": "Source Alpha release",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343744",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:41:25Z"
+    },
+    {
+      "id": 44534343713,
+      "name": "ZapIME development checks",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343713",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:40:40Z"
+    },
+    {
+      "id": 44534343620,
+      "name": "Independent ciphertext sync service",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343620",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:47:48Z"
+    },
+    {
+      "id": 44534343962,
+      "name": "Windows native TSF development",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343962",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:36:31Z"
+    },
+    {
+      "id": 44534343916,
+      "name": "Offline speech CPU probe",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343916",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:38:35Z"
+    },
+    {
+      "id": 44534343569,
+      "name": "VoiceKey Android model acceptance (focused)",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343569",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:51:15Z"
+    },
+    {
+      "id": 44534343576,
+      "name": "Offline candidate ranking acceptance",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343576",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T13:53:32Z"
+    },
+    {
+      "id": 44534343888,
+      "name": "Android native input acceptance",
+      "event": "pull_request",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "head_sha": "60beadee4af411541fc716fbb3bc0eb74b769591",
+      "html_url": "https://github.com/ForceMind/ZapIME/actions/runs/44534343888",
+      "created_at": "2026-11-19T13:31:46Z",
+      "updated_at": "2026-11-19T14:04:08Z"
+    }
+  ],
+  "code_review": {
+    "source_head": "60beadee4af411541fc716fbb3bc0eb74b769591",
+    "status": "completed",
+    "has_any_findings": false,
+    "has_unresolved_findings": false,
+    "url": "https://github.com/ForceMind/ZapIME/pull/123#issuecomment-7010611726",
+    "scope": "Automated code review; no separate security-review result claimed."
+  }
+}

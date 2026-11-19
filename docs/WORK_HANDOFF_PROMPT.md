@@ -29,7 +29,13 @@ python3 scripts/verify_upstream.py
 
 首轮 VoiceKey API35 因系统 Launcher ANR 对话框遮挡 SAF 而失败，模型未解码；只定点重跑该作业，保留原失败 ZIP/SHA。独立审查及本机 Rust143/fmt/严格Clippy、ordinary/pending JVM 回归通过。完整范围与原件见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。这不证明所有历史间歇问题、ARM/S25 或真实人声已验收。
 
-## 最新重点（2026-11-19）
+## 最新重点（2026-11-19，固定依赖恢复与完整 CI 收口）
+
+PR #122 / #123 的功能修复已整合至 main `c9207de739d6d1872502694826a69b8d29d4540e`。本轮八条工作流 attempt 1 全部 SUCCESS，验收固定 head `60beadee`、实际 checkout `95d93e4`、共同 tree `d4b8916`；精确 SHA、完整结果及开发包见 [最终证据](evidence/ci-recovery-20261119/README.md)。集成与后续文档提交仅为接续检查点，不能据此声称新 SHA 重新跑过本轮 8/8。原锁定 ORT 字节恢复和工具面板测试观察修复已交付，下方失败与待验状态按历史保留。
+
+下一项继续 Issue #77：将真实 HTTPS 认证的完整终止拉取接入 #110 已有首次发布 API，复用预检、确认、冻结请求与 ACK 验证实际服务闭环；Android 明确选择、确认及进度另作独立切片。已有 JNI、只读状态页和安全队列不重做。Issue #38、#113 离线 LLM、S25 真机与正式签名稳定发布仍未完成。
+
+## 前次重点（2026-11-19，PR #122 首轮）
 
 起点 main `e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf` 已重新核验，旧CI全部有最终结果。Issue #120 的三个头文件和MIT许可证已从Intel同一commit恢复原字节，551824 bytes全部匹配旧锁；本切片将其纳入源码并始终核验后本地发布，无网络回退、版本或ABI变化。资源21项/下载28项及C/C++头文件检查通过，[证据](evidence/ort-source-recovery-20261119/README.md)保留六份旧404日志与完整来源。真实新Android门禁按本切片PR固定SHA查；独立Linux ORT1.28.2诊断归档仍不可取，不以其它构建代替，Issue120不关闭。
 

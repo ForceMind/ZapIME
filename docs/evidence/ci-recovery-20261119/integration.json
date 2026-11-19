@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "repository": "ForceMind/ZapIME",
+  "observed_at_utc": "2026-11-19 14:16:44 UTC",
+  "original_main": "e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf",
+  "tested_head": "60beadee4af411541fc716fbb3bc0eb74b769591",
+  "actual_ci_checkout": "95d93e4b6fc2dbd51cb4e2446d705c54a9166f33",
+  "tested_tree": "d4b891619c7a162e0d60db230bfadaed2b419c84",
+  "pr123": {
+    "number": 123,
+    "url": "https://github.com/ForceMind/ZapIME/pull/123",
+    "merged": true,
+    "merge_commit": "e3735256fe797963227d0276ed74044e32b498b3",
+    "tree": "d4b891619c7a162e0d60db230bfadaed2b419c84"
+  },
+  "pr122": {
+    "number": 122,
+    "url": "https://github.com/ForceMind/ZapIME/pull/122",
+    "merged": true,
+    "merge_commit": "c9207de739d6d1872502694826a69b8d29d4540e",
+    "tree": "d4b891619c7a162e0d60db230bfadaed2b419c84"
+  },
+  "main_readback": {
+    "sha": "c9207de739d6d1872502694826a69b8d29d4540e",
+    "tree": "d4b891619c7a162e0d60db230bfadaed2b419c84",
+    "exact_tested_tree": true
+  },
+  "fixed_source_workflows": {
+    "passed": 8,
+    "attempt": 1,
+    "successful_jobs": 28,
+    "expected_skipped_publish_jobs": 1
+  },
+  "issue120": {
+    "state": "closed",
+    "state_reason": "completed",
+    "url": "https://github.com/ForceMind/ZapIME/issues/120",
+    "scope": "Original pinned bytes recovered and build/diagnostic gates restored; reason for old official URL 404 is not established."
+  },
+  "scope": "The eight completed workflows ran the fixed PR source. Integration commits have an identical full tree; later automatically-triggered integration/main/documentation runs are distinct and are not claimed complete here. This documentation update changes only documentation and evidence."
+}
