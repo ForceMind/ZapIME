@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -20,8 +21,123 @@ class CandidateResourceTest(unittest.TestCase):
     def test_checked_in_catalog_and_license_files_match_reviewed_lock(self):
         lock = prepare.load_lock()
         prepare.verify_notices(lock)
+        prepare.verify_build_headers(lock)
         self.assertEqual(prepare.CATALOG.read_text(encoding="utf-8"), prepare.generate_catalog(lock))
         self.assertEqual(set(lock["files"]), prepare.MODEL_FILES | prepare.NOTICE_FILES)
+
+    def test_bundled_headers_publish_exact_originals_without_network(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory, patch.object(prepare.OPENER, "open") as network:
+            output = Path(directory) / "include"
+            prepare.prepare_build_headers(lock, output)
+            self.assertTrue(prepare.verified_directory(output, lock["build_headers"]["files"]))
+            before = {p.name: p.stat().st_mtime_ns for p in output.iterdir()}
+            prepare.prepare_build_headers(lock, output)
+            self.assertEqual(before, {p.name: p.stat().st_mtime_ns for p in output.iterdir()})
+            network.assert_not_called()
+
+    def test_missing_bundled_header_directory_is_not_created_or_downloaded(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory, patch.object(prepare.OPENER, "open") as network:
+            root = Path(directory)
+            with self.assertRaises(ValueError):
+                prepare.prepare_build_headers(lock, root / "output", root)
+            self.assertEqual(list(root.iterdir()), [])
+            network.assert_not_called()
+
+    def test_missing_bundled_headers_fail_before_any_model_download(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory, patch.object(prepare.OPENER, "open") as network:
+            root = Path(directory)
+            for name in prepare.NOTICE_FILES:
+                relative = lock["files"][name]["source"]
+                target = root / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(prepare.ROOT / relative, target)
+            with self.assertRaisesRegex(ValueError, "ORT header source directory is missing"):
+                prepare.prepare(lock, root / "cache", headers=root / "include", root=root)
+            self.assertFalse((root / "cache").exists())
+            self.assertFalse((root / "include").exists())
+            network.assert_not_called()
+
+    def test_invalid_bundled_original_rejected_even_with_complete_valid_output(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory, patch.object(prepare.OPENER, "open") as network:
+            root = Path(directory)
+            source = root / prepare.BUILD_HEADERS
+            shutil.copytree(prepare.ROOT / prepare.BUILD_HEADERS, source)
+            output = root / "include"
+            prepare.prepare_build_headers(lock, output, root)
+            original_output = {p.name: p.read_bytes() for p in output.iterdir()}
+            for name in lock["build_headers"]["files"]:
+                path = source / name
+                raw = path.read_bytes()
+                for mutation in ("missing", "truncated", "oversized", "corrupt"):
+                    path.unlink()
+                    if mutation != "missing":
+                        path.write_bytes({"truncated": raw[:-1], "oversized": raw + b"?",
+                                          "corrupt": bytes([raw[0] ^ 1]) + raw[1:]}[mutation])
+                    with self.subTest(name=name, mutation=mutation), self.assertRaises(ValueError):
+                        prepare.prepare_build_headers(lock, output, root)
+                    self.assertEqual(original_output, {p.name: p.read_bytes() for p in output.iterdir()})
+                    path.write_bytes(raw)
+            network.assert_not_called()
+
+    def test_bundled_header_file_and_parent_symlinks_rejected(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory, patch.object(prepare.OPENER, "open") as network:
+            root = Path(directory)
+            source = root / prepare.BUILD_HEADERS
+            shutil.copytree(prepare.ROOT / prepare.BUILD_HEADERS, source)
+            for name in lock["build_headers"]["files"]:
+                path = source / name
+                raw = path.read_bytes()
+                path.unlink()
+                path.symlink_to(prepare.ROOT / prepare.BUILD_HEADERS / name)
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    prepare.prepare_build_headers(lock, root / "output", root)
+                path.unlink()
+                path.write_bytes(raw)
+            relocated = root / "actual-third-party"
+            source.parent.rename(relocated)
+            source.parent.symlink_to(relocated, target_is_directory=True)
+            with self.assertRaises(ValueError):
+                prepare.prepare_build_headers(lock, root / "output", root)
+            self.assertFalse((root / "output").exists())
+            network.assert_not_called()
+
+    def test_header_copy_failure_preserves_complete_previous_set(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "include"
+            output.mkdir()
+            previous = {name: b"previous known set: " + name.encode()
+                        for name in lock["build_headers"]["files"]}
+            for name, raw in previous.items():
+                (output / name).write_bytes(raw)
+            original_copy = prepare.copy_verified
+
+            def fail_later_member(source, destination, row):
+                if source.name == "onnxruntime_ep_c_api.h":
+                    raise OSError("synthetic interrupted copy")
+                return original_copy(source, destination, row)
+
+            with patch.object(prepare, "copy_verified", fail_later_member), self.assertRaises(OSError):
+                prepare.prepare_build_headers(lock, output)
+            self.assertEqual(previous, {p.name: p.read_bytes() for p in output.iterdir()})
+            self.assertEqual(list(Path(directory).iterdir()), [output])
+
+    def test_header_output_unrelated_file_is_preserved_and_rejected(self):
+        lock = prepare.load_lock()
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "include"
+            output.mkdir()
+            unrelated = output / "unrelated.h"
+            unrelated.write_bytes(b"do not replace")
+            with self.assertRaises(ValueError):
+                prepare.prepare_build_headers(lock, output)
+            self.assertEqual(unrelated.read_bytes(), b"do not replace")
+            self.assertEqual(list(output.iterdir()), [unrelated])
 
     def test_any_resource_or_notice_change_changes_install_revision(self):
         lock = prepare.load_lock()

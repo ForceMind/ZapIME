@@ -1,6 +1,14 @@
 # ZapIME 项目执行状态
 
-## 当前开发检查点 · 2026-11-18（America/Los_Angeles）
+## 当前接续 · 2026-11-19（America/Los_Angeles）
+
+实时起点 main `e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf`。补齐上一轮 CI 最终结果：该 main 为5条成功/Android构建1条失败；#119为6成功/3个Android相关失败；#121为4成功/2失败，其中Apple job未执行并取消、具体原因未知，同树main随后development通过。六份Android首要日志均在固定ORT头文件下载遇HTTP404，未进入设备验收；不能将它们称为语音或候选运行时失败。
+
+本切片将旧锁认可的三个ORT 1.28.2 C头文件及MIT许可证原字节纳入源码；从Intel fork同一完整commit恢复的四文件长度/SHA全部匹配原锁。构建先验证本地原件再原子发布，坏源即使有有效旧输出也失败，不联网回退。模型、原锁、Android运行库和ABI均不改。资源21项/下载28项及C/C++头文件语法检查通过；真实Android结果须按本切片固定提交的CI另行核验。[原失败、恢复来源和本机证据](evidence/ort-source-recovery-20261119/README.md)。
+
+独立Linux ORT1.28.2诊断归档仍未从已核来源取得，候选主机质量对照可能继续被它阻塞；不替换为相邻版本或关闭门禁，Issue #120保留。自然语音/离线LLM、S25、正式签名稳定包与Issue #77首次上传仍按各自范围待验；原源码Alpha标签和附件不动。
+
+## 历史检查点 · 2026-11-18（America/Los_Angeles）
 
 **main 源码（本次核验）**：`df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`。2026-11-18 已合入 [PR #116](https://github.com/ForceMind/ZapIME/pull/116)（在真实安装的 Android APK 中执行已存在的本机语音清理规则、离线设置开关和恢复偏好）与 [PR #118](https://github.com/ForceMind/ZapIME/pull/118)（不可变 SHA-256 固定的24条合成语音精简语料及离线 Java 防护评测）。后又合入 [PR #119](https://github.com/ForceMind/ZapIME/pull/119)：保护 USB-C、VoiceKey、iOS 等被汉字包围的技术标识，不允许未来改写把 USB-C 变成 USB-D。#119 merge `df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`。这不是引入本机 LLM，原 #114 保守文字清理仍默认关闭。
 

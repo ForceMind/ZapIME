@@ -1,0 +1,80 @@
+{
+  "scope": "Python build integrity and local C/C++ header syntax only; not runtime inference or Android acceptance",
+  "base_commit": "e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf",
+  "source_sha256": {
+    "scripts/prepare_candidate_model.py": "e2b1365ad040bd08944a5212a02c9a310a278eccafa8d06bde51e507ae877013",
+    "scripts/test_prepare_candidate_model.py": "7b4736b5152c565c1b607ddf68328b111aafcba3f29fccb2b5b1dc8cd05a5b74",
+    "third_party/candidate-model-lock.json": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01"
+  },
+  "results": [
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_prepare_candidate_model.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "test_any_resource_or_notice_change_changes_install_revision (test_prepare_candidate_model.CandidateResourceTest.test_any_resource_or_notice_change_changes_install_revision) ... ok\ntest_bundled_header_file_and_parent_symlinks_rejected (test_prepare_candidate_model.CandidateResourceTest.test_bundled_header_file_and_parent_symlinks_rejected) ... ok\ntest_bundled_headers_publish_exact_originals_without_network (test_prepare_candidate_model.CandidateResourceTest.test_bundled_headers_publish_exact_originals_without_network) ... ok\ntest_checked_in_catalog_and_license_files_match_reviewed_lock (test_prepare_candidate_model.CandidateResourceTest.test_checked_in_catalog_and_license_files_match_reviewed_lock) ... ok\ntest_corrupt_truncated_or_oversized_download_never_replaces_previous_file (test_prepare_candidate_model.CandidateResourceTest.test_corrupt_truncated_or_oversized_download_never_replaces_previous_file) ... ok\ntest_failed_directory_publish_restores_previous_files (test_prepare_candidate_model.CandidateResourceTest.test_failed_directory_publish_restores_previous_files) ... ok\ntest_failed_later_member_keeps_whole_previous_asset_directory (test_prepare_candidate_model.CandidateResourceTest.test_failed_later_member_keeps_whole_previous_asset_directory) ... ok\ntest_header_copy_failure_preserves_complete_previous_set (test_prepare_candidate_model.CandidateResourceTest.test_header_copy_failure_preserves_complete_previous_set) ... ok\ntest_header_output_unrelated_file_is_preserved_and_rejected (test_prepare_candidate_model.CandidateResourceTest.test_header_output_unrelated_file_is_preserved_and_rejected) ... ok\ntest_https_downgrade_redirect_rejected (test_prepare_candidate_model.CandidateResourceTest.test_https_downgrade_redirect_rejected) ... ok\ntest_invalid_bundled_original_rejected_even_with_complete_valid_output (test_prepare_candidate_model.CandidateResourceTest.test_invalid_bundled_original_rejected_even_with_complete_valid_output) ... ok\ntest_invalid_sizes_names_and_hashes_rejected (test_prepare_candidate_model.CandidateResourceTest.test_invalid_sizes_names_and_hashes_rejected) ... ok\ntest_missing_bundled_header_directory_is_not_created_or_downloaded (test_prepare_candidate_model.CandidateResourceTest.test_missing_bundled_header_directory_is_not_created_or_downloaded) ... ok\ntest_missing_bundled_headers_fail_before_any_model_download (test_prepare_candidate_model.CandidateResourceTest.test_missing_bundled_headers_fail_before_any_model_download) ... ok\ntest_model_interface_and_attribution_are_validated (test_prepare_candidate_model.CandidateResourceTest.test_model_interface_and_attribution_are_validated) ... ok\ntest_offline_cache_hit_and_miss_never_connect (test_prepare_candidate_model.CandidateResourceTest.test_offline_cache_hit_and_miss_never_connect) ... ok\ntest_publish_and_rollback_failure_keep_previous_resource_backup (test_prepare_candidate_model.CandidateResourceTest.test_publish_and_rollback_failure_keep_previous_resource_backup) ... ok\ntest_stream_failure_removes_stage_and_preserves_previous_file (test_prepare_candidate_model.CandidateResourceTest.test_stream_failure_removes_stage_and_preserves_previous_file) ... ok\ntest_successful_complete_publish_is_idempotent_and_rejects_unrelated_entries (test_prepare_candidate_model.CandidateResourceTest.test_successful_complete_publish_is_idempotent_and_rejects_unrelated_entries) ... ok\ntest_symlink_file_and_parent_cannot_be_overwritten (test_prepare_candidate_model.CandidateResourceTest.test_symlink_file_and_parent_cannot_be_overwritten) ... ok\ntest_unreviewed_urls_file_sets_and_path_escape_rejected (test_prepare_candidate_model.CandidateResourceTest.test_unreviewed_urls_file_sets_and_path_escape_rejected) ... ok\n\n----------------------------------------------------------------------\nRan 21 tests in 0.131s\n\nOK\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts",
+        "-p",
+        "test_build_download*.py",
+        "-v"
+      ],
+      "exit_code": 0,
+      "output": "test_candidate_504_then_valid_response_retains_exact_fixed_url (test_build_download_integrations.CallerRetryTests.test_candidate_504_then_valid_response_retains_exact_fixed_url) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nok\ntest_candidate_checksum_failure_and_offline_miss_never_retry (test_build_download_integrations.CallerRetryTests.test_candidate_checksum_failure_and_offline_miss_never_retry) ... ok\ntest_candidate_final_network_failure_keeps_old_file_and_no_partials (test_build_download_integrations.CallerRetryTests.test_candidate_final_network_failure_keeps_old_file_and_no_partials) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=504 attempt=2 next=3 wait_seconds=2\nok\ntest_candidate_partial_failure_exhausts_without_prefix_append_or_leaked_stage (test_build_download_integrations.CallerRetryTests.test_candidate_partial_failure_exhausts_without_prefix_append_or_leaked_stage) ... build_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=2 next=3 wait_seconds=2\nok\ntest_candidate_partial_response_is_discarded_before_same_get_restarts (test_build_download_integrations.CallerRetryTests.test_candidate_partial_response_is_discarded_before_same_get_restarts) ... build_download_retry reason=network attempt=1 next=2 wait_seconds=1\nok\ntest_candidate_read_that_exhausts_budget_does_not_publish_or_retry (test_build_download_integrations.CallerRetryTests.test_candidate_read_that_exhausts_budget_does_not_publish_or_retry) ... ok\ntest_complete_dictionary_cache_does_not_connect (test_build_download_integrations.CallerRetryTests.test_complete_dictionary_cache_does_not_connect) ... ok\ntest_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy (test_build_download_integrations.CallerRetryTests.test_dictionary_504_then_success_keeps_four_checksums_and_manifest_policy) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nok\ntest_dictionary_integrity_error_is_single_get_and_preserves_previous_file (test_build_download_integrations.CallerRetryTests.test_dictionary_integrity_error_is_single_get_and_preserves_previous_file) ... ok\ntest_dictionary_partial_response_is_discarded_before_verified_publication (test_build_download_integrations.CallerRetryTests.test_dictionary_partial_response_is_discarded_before_verified_publication) ... build_download_retry reason=network attempt=1 next=2 wait_seconds=1\nok\ntest_file_publication_timeout_is_not_treated_as_network_for_any_caller (test_build_download_integrations.CallerRetryTests.test_file_publication_timeout_is_not_treated_as_network_for_any_caller) ... ok\ntest_offline_import_archive_504_then_success_checks_all_regular_members (test_build_download_integrations.CallerRetryTests.test_offline_import_archive_504_then_success_checks_all_regular_members) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nok\ntest_offline_import_archive_checksum_error_is_not_retried (test_build_download_integrations.CallerRetryTests.test_offline_import_archive_checksum_error_is_not_retried) ... ok\ntest_offline_import_archive_partial_failure_preserves_old_archive_without_stages (test_build_download_integrations.CallerRetryTests.test_offline_import_archive_partial_failure_preserves_old_archive_without_stages) ... build_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=2 next=3 wait_seconds=2\nok\ntest_valid_offline_import_archive_cache_does_not_connect (test_build_download_integrations.CallerRetryTests.test_valid_offline_import_archive_cache_does_not_connect) ... ok\ntest_504_then_success_repeats_read_only_operation_with_remaining_budget (test_build_download_retry.RetryTests.test_504_then_success_repeats_read_only_operation_with_remaining_budget) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nok\ntest_exhausted_deadline_does_not_start_another_request (test_build_download_retry.RetryTests.test_exhausted_deadline_does_not_start_another_request) ... ok\ntest_explicit_transient_network_failures_can_recover (test_build_download_retry.RetryTests.test_explicit_transient_network_failures_can_recover) ... build_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=network attempt=1 next=2 wait_seconds=1\nok\ntest_final_http_failure_remains_failure_after_bounded_attempts (test_build_download_retry.RetryTests.test_final_http_failure_remains_failure_after_bounded_attempts) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=504 attempt=2 next=3 wait_seconds=2\nok\ntest_http_date_retry_after_uses_wall_clock_without_changing_monotonic_budget (test_build_download_retry.RetryTests.test_http_date_retry_after_uses_wall_clock_without_changing_monotonic_budget) ... build_download_retry reason=503 attempt=1 next=2 wait_seconds=4\nok\ntest_http_error_bodies_close_before_retry_and_final_status_is_preserved (test_build_download_retry.RetryTests.test_http_error_bodies_close_before_retry_and_final_status_is_preserved) ... build_download_retry reason=504 attempt=1 next=2 wait_seconds=1\nbuild_download_retry reason=504 attempt=2 next=3 wait_seconds=2\nok\ntest_https_redirect_preserves_get_and_rejects_insecure_or_non_http_destinations (test_build_download_retry.RetryTests.test_https_redirect_preserves_get_and_rejects_insecure_or_non_http_destinations) ... ok\ntest_permanent_http_integrity_disk_tls_and_unknown_errors_are_not_retried (test_build_download_retry.RetryTests.test_permanent_http_integrity_disk_tls_and_unknown_errors_are_not_retried) ... ok\ntest_remaining_callback_rejects_over_budget_stream_before_another_read (test_build_download_retry.RetryTests.test_remaining_callback_rejects_over_budget_stream_before_another_read) ... ok\ntest_retry_after_exceeding_budget_never_hammers_server (test_build_download_retry.RetryTests.test_retry_after_exceeding_budget_never_hammers_server) ... ok\ntest_server_retry_after_is_honored_without_retrying_early (test_build_download_retry.RetryTests.test_server_retry_after_is_honored_without_retrying_early) ... build_download_retry reason=429 attempt=1 next=2 wait_seconds=4\nok\ntest_time_spent_in_failed_attempt_reduces_next_socket_budget (test_build_download_retry.RetryTests.test_time_spent_in_failed_attempt_reduces_next_socket_budget) ... build_download_retry reason=502 attempt=1 next=2 wait_seconds=1\nok\ntest_unmarked_filesystem_timeout_does_not_retry_whole_attempt (test_build_download_retry.RetryTests.test_unmarked_filesystem_timeout_does_not_retry_whole_attempt) ... ok\n\n----------------------------------------------------------------------\nRan 28 tests in 0.046s\n\nOK\nVerified pinned pinyin/English resources; unlicensed inputs excluded\nVerified pinned pinyin/English resources; unlicensed inputs excluded\nVerified pinned pinyin/English resources; unlicensed inputs excluded\nPASS pinned model archive and four inference file checksums\nPASS pinned model archive and four inference file checksums\n"
+    },
+    {
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3",
+        "scripts/prepare_candidate_model.py",
+        "--check-catalog"
+      ],
+      "exit_code": 0,
+      "output": "PASS reviewed candidate catalog, source notices and bundled ORT headers\n"
+    },
+    {
+      "command": [
+        "cc",
+        "-std=c11",
+        "-Werror",
+        "-fsyntax-only",
+        "-Itarget/ort-header-check",
+        "-x",
+        "c",
+        "-"
+      ],
+      "stdin": "#include <onnxruntime_c_api.h>\nconst OrtApiBase *api_base;\n",
+      "exit_code": 0,
+      "output": ""
+    },
+    {
+      "command": [
+        "c++",
+        "-std=c++17",
+        "-Werror",
+        "-fsyntax-only",
+        "-Itarget/ort-header-check",
+        "-x",
+        "c++",
+        "-"
+      ],
+      "stdin": "#include <onnxruntime_c_api.h>\nconst OrtApiBase *api_base;\n",
+      "exit_code": 0,
+      "output": ""
+    }
+  ]
+}

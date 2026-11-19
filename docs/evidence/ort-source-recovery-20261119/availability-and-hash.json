@@ -1,0 +1,87 @@
+{
+  "source_commit": "33ca9628233dc8f002435e868d4c2e9f82766ca1",
+  "runtime_version": "1.28.2",
+  "existing_lock_sha256": "cc7623268feb96a669a94671cfc406497a52a7b4ce6e6f9f4eecdaa89fbb5b01",
+  "records": [
+    {
+      "name": "onnxruntime_c_api.h",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_c_api.h",
+      "mirror": false,
+      "checked_at_utc": "2026-11-19T10:04:14.038614+00:00",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "response_excerpt": "404: Not Found"
+    },
+    {
+      "name": "onnxruntime_ep_c_api.h",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_ep_c_api.h",
+      "mirror": false,
+      "checked_at_utc": "2026-11-19T10:04:14.039474+00:00",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "response_excerpt": "404: Not Found"
+    },
+    {
+      "name": "LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/LICENSE",
+      "mirror": false,
+      "checked_at_utc": "2026-11-19T10:04:14.040018+00:00",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "response_excerpt": "404: Not Found"
+    },
+    {
+      "name": "onnxruntime_error_code.h",
+      "url": "https://raw.githubusercontent.com/microsoft/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_error_code.h",
+      "mirror": false,
+      "checked_at_utc": "2026-11-19T10:04:14.040606+00:00",
+      "status": 404,
+      "error": "HTTP Error 404: Not Found",
+      "response_excerpt": "404: Not Found"
+    },
+    {
+      "name": "onnxruntime_c_api.h",
+      "url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_c_api.h",
+      "mirror": true,
+      "checked_at_utc": "2026-11-19T10:04:18.481766+00:00",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_c_api.h",
+      "size": 394991,
+      "sha256": "b69a133143c0da61782b2b02cc8a620d21ac139231fd211719776d10385135c1",
+      "matches_existing_pin": true
+    },
+    {
+      "name": "onnxruntime_ep_c_api.h",
+      "url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_ep_c_api.h",
+      "mirror": true,
+      "checked_at_utc": "2026-11-19T10:04:18.486693+00:00",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_ep_c_api.h",
+      "size": 152985,
+      "sha256": "db86df0f846b8d3bdbf429a5c76c5805293196575ca3c475878612591cd18e51",
+      "matches_existing_pin": true
+    },
+    {
+      "name": "LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/LICENSE",
+      "mirror": true,
+      "checked_at_utc": "2026-11-19T10:04:18.488555+00:00",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/LICENSE",
+      "size": 1073,
+      "sha256": "2f07c72751aed99790b8a4869cf2311df85a860b22ded05fa22803587a48922c",
+      "matches_existing_pin": true
+    },
+    {
+      "name": "onnxruntime_error_code.h",
+      "url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_error_code.h",
+      "mirror": true,
+      "checked_at_utc": "2026-11-19T10:04:18.490099+00:00",
+      "status": 200,
+      "final_url": "https://raw.githubusercontent.com/intel/onnxruntime/33ca9628233dc8f002435e868d4c2e9f82766ca1/include/onnxruntime/core/session/onnxruntime_error_code.h",
+      "size": 2775,
+      "sha256": "5ce3b054e798eced8d14f5b86e98692fd33470463f96194ce0700a2d53dd8721",
+      "matches_existing_pin": true
+    }
+  ]
+}

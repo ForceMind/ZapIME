@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-更新：2026-11-18（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
+更新：2026-11-19（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
 ## 先核对实时仓库
 
@@ -29,7 +29,11 @@ python3 scripts/verify_upstream.py
 
 首轮 VoiceKey API35 因系统 Launcher ANR 对话框遮挡 SAF 而失败，模型未解码；只定点重跑该作业，保留原失败 ZIP/SHA。独立审查及本机 Rust143/fmt/严格Clippy、ordinary/pending JVM 回归通过。完整范围与原件见[验收证据](evidence/android-stability-52f812b-20261108/README.md)。这不证明所有历史间歇问题、ARM/S25 或真实人声已验收。
 
-## 最新重点（2026-11-18）
+## 最新重点（2026-11-19）
+
+起点 main `e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf` 已重新核验，旧CI全部有最终结果。Issue #120 的三个头文件和MIT许可证已从Intel同一commit恢复原字节，551824 bytes全部匹配旧锁；本切片将其纳入源码并始终核验后本地发布，无网络回退、版本或ABI变化。资源21项/下载28项及C/C++头文件检查通过，[证据](evidence/ort-source-recovery-20261119/README.md)保留六份旧404日志与完整来源。真实新Android门禁按本切片PR固定SHA查；独立Linux ORT1.28.2诊断归档仍不可取，不以其它构建代替，Issue120不关闭。
+
+## 前次重点（2026-11-18）
 
 **2026-11-18 main 检查点：`df471fe80f99659e96ed4e5efe2c05cc00dd3b2d`（非永久最新）。** 已合并 [#116](https://github.com/ForceMind/ZapIME/pull/116) 真实 Android 安装包中双离线语音清理与设置开关、[#118](https://github.com/ForceMind/ZapIME/pull/118) 24个SHA固定离线质量用例与实际 Java 门禁评估、[#119](https://github.com/ForceMind/ZapIME/pull/119) 混合汉字的 USB-C/VoiceKey 等技术标识不变保护。#119 来源归档运行了真实产品 Java/JVM 2+5+3 项检测，独立质量CI通过；系统 Android/Apple 等全部绿灯不能从前一版推断。用户真正要求的自然语音自动语义精简/模型仍未完成；#113开放，当前并未接入 LLM；默认本机保守清理不变。#116 的两条真实 Android/VoiceKey工作流通过，但API35独立配置实验失败仍归 Issue38。此前已完成#114不要重建。
 

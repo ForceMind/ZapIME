@@ -1,5 +1,14 @@
 # Preserve the publisher's license bytes/SHA, including original whitespace.
 
+# Original ORT 1.28.2 build inputs: retain the already-reviewed size/SHA on checkout.
+third_party/onnxruntime-1.28.2/onnxruntime_c_api.h -text
+third_party/onnxruntime-1.28.2/onnxruntime_ep_c_api.h -text
+third_party/onnxruntime-1.28.2/onnxruntime_error_code.h -text
+third_party/onnxruntime-1.28.2/LICENSE.txt -text
+docs/evidence/ort-source-recovery-20261119/availability-and-hash.json -text
+docs/evidence/ort-source-recovery-20261119/intel-original-commit.json -text
+docs/evidence/ort-source-recovery-20261119/local-validation.json -text
+
 # Exact standalone service-descriptor verification log bytes.
 docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-clippy.log -text -whitespace
 docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-fixture-build.log -text -whitespace

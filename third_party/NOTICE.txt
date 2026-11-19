@@ -30,6 +30,13 @@ Sherpa Apache-2.0, ONNX MIT/ThirdPartyNotices, nlohmann-json MIT and NDK notices
 are copied into assets/voice-licenses. Voice model weights are not bundled. This native
 bridge alone is not microphone or voice-input UI acceptance.
 
+On 2026-11-19 the previously pinned ONNX Runtime 1.28.2 C headers and MIT
+license were retained verbatim in third_party/onnxruntime-1.28.2 for offline
+build preparation. Copyright (c) Microsoft Corporation. The original commit,
+file sizes and SHA256 pins are unchanged; identical bytes were recovered from
+Intel's fork at that same commit while the Microsoft repository returned 404.
+See onnxruntime-1.28.2/SOURCE.md. No runtime binary is added or replaced.
+
 Pinyin and English dictionaries: metasequoiaime/msime-dictionary dict-v2.0.24.
 Their manifest states includes_unlicensed_inputs=false. rime-ice (GPL-3.0),
 ECDICT (MIT), SCOWL (permissive notices), and other resource notices remain
