@@ -8,6 +8,8 @@ third_party/onnxruntime-1.28.2/LICENSE.txt -text
 docs/evidence/ort-source-recovery-20261119/availability-and-hash.json -text
 docs/evidence/ort-source-recovery-20261119/intel-original-commit.json -text
 docs/evidence/ort-source-recovery-20261119/local-validation.json -text
+docs/evidence/ort-host-recovery-20261119/*.json -text
+docs/evidence/ort-host-recovery-20261119/SHA256SUMS -text
 
 # Exact standalone service-descriptor verification log bytes.
 docs/evidence/sync-key-descriptor-20261106/descriptor-isolated-clippy.log -text -whitespace

@@ -52,7 +52,7 @@ jobs:
       - name: Execute actual model scores, bounded cache and JNI lifecycle
         run: CANDIDATE_TEST_PYTHON="$PWD/.venv-candidate/bin/python" bash integrations/candidate/tests/test_host.sh
       - name: Prepare fixed official Linux ORT1.28.2 diagnostic library
-        run: python3 scripts/prepare_candidate_host_runtime.py
+        run: python3 scripts/prepare_candidate_host_runtime.py --transport npmmirror-recovery
       - name: Frozen synthetic paired quality and host resource baseline
         run: |
           .venv-candidate/bin/python -m unittest discover -s integrations/candidate/tests -p 'test_quality_evaluation.py' -v
