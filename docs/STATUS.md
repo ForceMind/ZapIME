@@ -1,5 +1,15 @@
 # ZapIME 项目执行状态
 
+## 本轮开发：固定依赖与工具面板观察修复 · 2026-11-19
+
+接续 main `e2877a85` 和仍开放的 PR #122 / `8865c969`，没有把旧主干失败改写为成功。#122 已实际构建双 ABI APK，候选 JNI 三API与独立API35配置实验通过；其最终八工作流5成功、3失败分别是 API36 工具面板观察、focused VoiceKey API35 的 `adb root/device offline`，以及独立 Linux ORT1.28.2 诊断归档404。[原运行](https://github.com/ForceMind/ZapIME/actions/runs/44503628454)。
+
+本轮已取回与既有整包/库/MIT三个哈希完全一致的原 Linux 诊断归档，并增加唯一显式恢复运输选择；官方来源、版本和锁定字节不变，无自动切源或降低校验。新路径真实 HTTPS 下载、提取与 Linux 1.28.2 加载通过，本机资源/下载回归8+28+21项通过。[恢复证据](evidence/ort-host-recovery-20261119/README.md)。
+
+API36 原报错之后的完整截图、节点层级与 `restart_keep_tools/view_keep_tools` 事件不支持直接认定产品关闭了工具面板；同时观察到系统 `RESET_NEW_CONFIGURATION`。本轮只修独立测试的稳定观察：固定8秒预算、采集前后宿主/动画一致、同窗口与节点几何至少500ms及10个有效样本；真实字母/宿主改变仍立即拒绝，缺证据重新证明或超时，不再次点击工具。[未修改的原失败与修复范围](evidence/tools-panel-observation-20261119/README.md)。
+
+新增观察器9项及既有普通/重复重启5+10项本机 Java 回归通过；真实 Android 编译、三API系统输入/语音/清理及完整 CI 仍须按本轮远端提交回读。合成主机结果不代替系统输入或手机；S25、语义LLM、正式签名及 Issue #77 的剩余范围不变。
+
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
 实时起点 main `e2877a85ff2eb3b9eeba8eded83cdd014d5a0ebf`。补齐上一轮 CI 最终结果：该 main 为5条成功/Android构建1条失败；#119为6成功/3个Android相关失败；#121为4成功/2失败，其中Apple job未执行并取消、具体原因未知，同树main随后development通过。六份Android首要日志均在固定ORT头文件下载遇HTTP404，未进入设备验收；不能将它们称为语音或候选运行时失败。

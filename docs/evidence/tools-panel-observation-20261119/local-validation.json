@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "date": "2026-11-19",
+  "timezone": "America/Los_Angeles",
+  "base_head": "8865c969ef364a671e063e4a853d9e7328ed1815",
+  "environment": {
+    "java": "OpenJDK 21.0.13; jdk.compiler module entry point",
+    "compiler_options": [
+      "-source",
+      "8",
+      "-target",
+      "8"
+    ],
+    "python": "3.12.14"
+  },
+  "results": [
+    {
+      "command": "python3 -m unittest discover -s scripts -p test_android_tools_panel_observation.py -v",
+      "passed": 9,
+      "failed": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p test_android_ordinary_restart.py -v",
+      "passed": 5,
+      "failed": 0
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p test_android_pending_restart.py -v",
+      "passed": 10,
+      "failed": 0
+    }
+  ],
+  "files": [
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/SmokeInstrumentation.java",
+      "bytes": 53857,
+      "sha256": "5aea879688a8274904b3bcee43d1acf5c8508e7ca1f8f2436f0816425a8a6dd6"
+    },
+    {
+      "path": "platforms/android/tests/java/org/zapime/android/test/ToolsPanelObservation.java",
+      "bytes": 1807,
+      "sha256": "f73814e1f1e6a514a6365243f91423bb45e0cd620cb5903044a078ddb4be64e6"
+    },
+    {
+      "path": "scripts/test_android_tools_panel_observation.py",
+      "bytes": 6965,
+      "sha256": "cdef18ceb2c3cd56f30b70388bdcfa00c4495af0d03a336e5783bac442b8e517"
+    }
+  ],
+  "scope": "Actual Java policy regressions; not an Android build, system IME acceptance, natural speech or S25 result. No original gate assertions changed."
+}

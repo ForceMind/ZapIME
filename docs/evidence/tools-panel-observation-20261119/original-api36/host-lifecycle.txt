@@ -1,0 +1,29 @@
+75593:create
+75729:resume
+76965:window focus=true
+76965:normal connection created; length=0 selection=0:0 composing=-1:-1
+76966:initial snapshot before length=0
+76971:show request; attempt=0 sent=true
+77032:normal connection created; length=0 selection=0:0 composing=-1:-1
+77032:initial snapshot before length=0
+77034:IME command on connection=1 operation=finish length=0 selection=0:0 composing=-1:-1
+77035:IME command on connection=1 operation=batch-end length=0 selection=0:0 composing=-1:-1
+78824:ime_animation_prepare active=1
+78851:ime_animation_end active=0
+85918:normal connection created; length=0 selection=0:0 composing=-1:-1
+85918:initial snapshot before length=0
+85975:IME command on connection=3 operation=finish length=0 selection=0:0 composing=-1:-1
+85976:IME command on connection=3 operation=batch-end length=0 selection=0:0 composing=-1:-1
+87123:IME command on connection=3 operation=finish length=0 selection=0:0 composing=-1:-1
+87123:IME command on connection=3 operation=batch-end length=0 selection=0:0 composing=-1:-1
+Driver fixed events:
+79115:other_touch_attempt
+79152:other_touch_sent
+81054:restart_tools_open_geometry w=0 window=[0,358][320,640] button=[2,380][54,426] animations=0 version=2 focused=true served=true visible=true panel=true
+81389:restart_tools_open_geometry_stable w=0 window=[0,358][320,640] button=[2,380][54,426]
+81620:restart_tools_open_physical_down w=0 window=[0,358][320,640] button=[2,380][54,426]
+81728:restart_tools_open_physical_result down=true up=true
+83086:restart_tools_open_open_postcondition_geometry w=0 window=[0,358][320,640] button=[89,440][156,528] animations=0 version=2 focused=true served=true visible=true panel=true
+83545:restart_tools_open_open_postcondition_geometry_stable w=0 window=[0,358][320,640] button=[89,440][156,528]
+83545:restart_tools_open_open_postcondition_verified
+85918:tools_restart_requested

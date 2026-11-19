@@ -422,3 +422,8 @@ docs/evidence/manual-sync-20261106/pages-driver-recheck/diff-check.log -text -wh
 docs/evidence/manual-sync-20261106/pages-driver-recheck/java-compile.log -text -whitespace
 docs/evidence/manual-sync-20261106/pages-driver-recheck/validator-tests.log -text -whitespace
 docs/evidence/manual-sync-20261106/pages-driver-recheck/verification.json -text -whitespace
+
+# Original API36 failure evidence must remain byte-identical on all hosts.
+docs/evidence/tools-panel-observation-20261119/original-api36/** -text -whitespace
+docs/evidence/tools-panel-observation-20261119/*-manifest.json -text
+docs/evidence/tools-panel-observation-20261119/local-validation.json -text
