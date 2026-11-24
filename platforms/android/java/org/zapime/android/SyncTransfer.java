@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.json.JSONObject;
 
-/** Explicit manual transport only. Holds no database transaction across HTTPS,
+/** Explicit manual and consent-gated foreground transport. Holds no database transaction across HTTPS,
  * never borrows an input session, and never persists an enabled/upload marker. */
 final class SyncTransfer {
     private static final long ROUND_BUDGET_MS=90_000;
@@ -43,7 +43,10 @@ final class SyncTransfer {
                     throw new RejectedPage((String)retained);
                 }
                 fields(object,"error");
-                if("sync_client_record_too_large".equals(object.opt("error")))throw new IOException("sync_client_record_too_large");
+                String code=object.optString("error");
+                if("sync_client_record_too_large".equals(code)||"sync_operation_origin_unverified".equals(code)){
+                    throw new IOException(code);
+                }
                 throw new IOException("sync_native_rejected");
             }
             return object;
@@ -59,10 +62,10 @@ final class SyncTransfer {
         long value=number(object,name);if(value>SyncRound.PAGE_LIMIT)throw new IOException("sync_native_response");return (int)value;
     }
     static SyncRound.Result run(Context context,SyncKeyRegistration.Selection selected,SyncHttp.Cancellation cancellation)throws IOException {
-        return run(context,selected,cancellation,null,null);
+        return run(context,selected,cancellation,null,null,null);
     }
     static SyncRound.Result runAutomatic(Context context,AccountLoginProtocol.Config config,UUID generation,
-            SyncHttp.Cancellation cancellation)throws IOException {
+            SyncHttp.Cancellation cancellation,Runnable sending)throws IOException {
         SyncConsentController.Assessment current=SyncConsentController.inspect(context,config,cancellation);
         if(current.status!=SyncConsentController.Status.READY||!generation.equals(current.state.generation)){
             throw new IOException("sync_consent_requires_ready");
@@ -70,10 +73,10 @@ final class SyncTransfer {
         SyncConsentStore.State consent=current.state;
         SyncKeyRegistration.Selection selected=new SyncKeyRegistration.Selection(consent.account,consent.device,
                 config.syncServer,consent.expectedKey);
-        return run(context,selected,cancellation,config,consent);
+        return run(context,selected,cancellation,config,consent,sending);
     }
     private static SyncRound.Result run(Context context,SyncKeyRegistration.Selection selected,SyncHttp.Cancellation cancellation,
-            AccountLoginProtocol.Config config,SyncConsentStore.State consent)throws IOException {
+            AccountLoginProtocol.Config config,SyncConsentStore.State consent,Runnable sending)throws IOException {
         if(Looper.myLooper()==Looper.getMainLooper())throw new IOException("sync_transfer_requires_worker");
         if(context==null||selected==null||selected.account==null||selected.account.equals(new UUID(0,0))||cancellation==null)throw new IOException("sync_transfer_invalid");
         final UUID expected=selected.account;
@@ -128,6 +131,7 @@ final class SyncTransfer {
                         try{
                             // stage() returned the actual persisted immutable
                             // bytes. No HTTP retry or JSON reserialization here.
+                            if(sending!=null)sending.run();
                             try{response=snapshot.push(frozen,cancellation);}finally{check();}
                             String ackReply=consent==null?NativeCore.ackSyncUpload(root,account,snapshot.device.toString(),material,frozen,response)
                                     :NativeCore.ackAutomaticSyncUpload(root,account,snapshot.device.toString(),material,frozen,response);

@@ -34,7 +34,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         super.onCreate(arguments);
         consentOnly = arguments != null && "consent".equals(arguments.getString("stage"));
         String stage = arguments == null ? null : arguments.getString("stage");
-        foreground = "foreground-seed".equals(stage) || "foreground-verify".equals(stage) ? stage : null;
+        foreground = "foreground-seed".equals(stage) || "foreground-verify".equals(stage)
+                || "foreground-signed-out".equals(stage) ? stage : null;
         start();
     }
 
@@ -47,8 +48,10 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     byte[] input = fixture(config, "foreground", false);
                     try { ForegroundSyncProbe.seed(getTargetContext(), config, input); }
                     finally { Arrays.fill(input, (byte) 0); }
-                } else {
+                } else if ("foreground-verify".equals(foreground)) {
                     ForegroundSyncProbe.verify(getTargetContext(), true);
+                } else {
+                    ForegroundSyncProbe.signedOut(getTargetContext());
                 }
                 result.putString(foreground, "PASS");
             } else if (consentOnly) {

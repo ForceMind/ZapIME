@@ -27,19 +27,25 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
     private ConnectivityManager.NetworkCallback callback;
     private Network network;
     private boolean connected, rerun;
+    private boolean sending;
     private SyncHttp.Cancellation running;
     private SyncConsentStore.State activeConsent;
     private Outcome last;
+
+    enum Phase { IDLE, OFFLINE, CHECKING, SENDING }
 
     static final class Outcome {
         final UUID generation;
         final SyncRound.Result result;
         final String error;
+        final long completedAt;
 
         Outcome(UUID generation, SyncRound.Result result, String error) {
             this.generation = generation;
             this.result = result;
             this.error = error;
+            completedAt = error == null && result != null && !result.uploadBudgetReached && !result.downloadBudgetReached
+                    ? System.currentTimeMillis() : 0;
         }
     }
 
@@ -67,6 +73,19 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
 
     static SyncConsentStore.State activeConsent() {
         return instance == null ? null : instance.activeConsent;
+    }
+
+    static Phase phase(UUID generation) {
+        if (instance == null || instance.visible.isEmpty()) return Phase.IDLE;
+        if (!instance.connected) return Phase.OFFLINE;
+        if (instance.activeConsent == null || !generation.equals(instance.activeConsent.generation)) return Phase.IDLE;
+        return instance.sending ? Phase.SENDING : Phase.CHECKING;
+    }
+
+    private void refreshStatus() {
+        for (Activity activity : new ArrayList<>(visible)) {
+            if (activity instanceof AccountSyncActivity) ((AccountSyncActivity) activity).onAutomaticProgress();
+        }
     }
 
     private ForegroundSync(Application app, AccountLoginProtocol.Config config) {
@@ -108,6 +127,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
                 network = available;
                 connected = true;
                 request(true);
+                refreshStatus();
             }
 
             @Override public void onLost(Network lost) {
@@ -115,6 +135,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
                 network = null;
                 connected = false;
                 pause();
+                refreshStatus();
             }
         };
         callback = next;
@@ -151,9 +172,17 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
             if (consent.expectedKey != null && !SyncConsentController.isStopped(consent.generation)) {
                 SyncConsentStore.State checked = consent;
                 main.post(() -> {
-                    if (running == cancel && !SyncConsentController.isStopped(checked.generation)) activeConsent = checked;
+                    if (running == cancel && !SyncConsentController.isStopped(checked.generation)) {
+                        activeConsent = checked;
+                        refreshStatus();
+                    }
                 });
-                SyncRound.Result result = SyncTransfer.runAutomatic(app, config, consent.generation, cancel);
+                SyncRound.Result result = SyncTransfer.runAutomatic(app, config, consent.generation, cancel, () -> main.post(() -> {
+                    if (running == cancel && !sending && !SyncConsentController.isStopped(checked.generation)) {
+                        sending = true;
+                        refreshStatus();
+                    }
+                }));
                 outcome = new Outcome(consent.generation, result, null);
             }
         } catch (SyncRound.Failure incomplete) {
@@ -170,6 +199,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
         if (running != cancel) return;
         running = null;
         activeConsent = null;
+        sending = false;
         boolean again = rerun;
         rerun = false;
         if (!visible.isEmpty() && outcome != null && !SyncConsentController.isStopped(outcome.generation)) {
@@ -182,8 +212,15 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
     }
 
     private static String error(Throwable failure) {
-        return failure != null && "sync_operation_origin_unverified".equals(failure.getMessage())
-                ? "origin_unverified" : "incomplete";
+        if (failure instanceof SyncTransfer.RejectedPage) return "page_rejected";
+        if (failure instanceof SyncHttp.Failure) {
+            String code = ((SyncHttp.Failure) failure).code;
+            if ("network".equals(code) || "timeout".equals(code)) return "network";
+            if ("unauthorized".equals(code) || "forbidden".equals(code)) return "device_revoked";
+            if ("revision_conflict".equals(code)) return "revision_conflict";
+        }
+        if (failure != null && "sync_operation_origin_unverified".equals(failure.getMessage())) return "origin_unverified";
+        return "incomplete";
     }
 
     @Override public void onActivityCreated(Activity activity, Bundle state) {}

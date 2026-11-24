@@ -112,6 +112,17 @@ final class SyncConsentStore {
         }
     }
 
+    static State signOut(Context context, UUID generation, SyncHttp.Cancellation cancel) throws IOException {
+        worker();
+        synchronized (SyncConsentStore.class) {
+            cancel.check();
+            State current = requireGeneration(context, generation);
+            if (current.account == null) throw new IOException("sync_consent_identity");
+            cancel.check();
+            return persist(context, State.signedOut(UUID.randomUUID()));
+        }
+    }
+
     private static State requireGeneration(Context context, UUID generation) throws IOException {
         State current = loadLocked(context);
         if (!current.generation.equals(generation)) throw new IOException("sync_consent_changed");

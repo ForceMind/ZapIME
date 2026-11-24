@@ -77,13 +77,25 @@ final class ConsentStoreProbe {
             require(SyncConsentStore.load(context).generation.equals(off.generation));
             SyncConsentStore.State enabledAgain = SyncConsentStore.enable(context, off.generation, target, device, registered, cancel);
             reject(() -> SyncConsentStore.disable(context, off.generation));
+            reject(() -> SyncConsentStore.signOut(context, off.generation, cancel));
+            reject(() -> SyncConsentStore.signOut(context, enabledAgain.generation, stopped));
+            require(SyncConsentStore.load(context).generation.equals(enabledAgain.generation));
+            SyncConsentStore.State signedOut = SyncConsentStore.signOut(context, enabledAgain.generation, cancel);
+            require(signedOut.account == null && signedOut.device == null && signedOut.expectedKey == null
+                    && SyncConsentStore.load(context).generation.equals(signedOut.generation));
+            reject(() -> SyncConsentStore.completeLogin(context, newAttempt.generation, target, device, cancel));
+            reject(() -> SyncConsentStore.enable(context, enabledAgain.generation, target, device, registered, cancel));
+            SyncConsentStore.State nextAttempt = SyncConsentStore.beginLogin(context, cancel);
+            SyncConsentStore.State returned = SyncConsentStore.completeLogin(context, nextAttempt.generation, target, device, cancel);
+            require(returned.expectedKey == null);
+            SyncConsentStore.State beforeInterruption = SyncConsentStore.enable(context, returned.generation, target, device, registered, cancel);
 
             // An open AtomicFile write models interruption before commit on this API28 fixture.
             try (FileOutputStream interrupted = new AtomicFile(file).startWrite()) {
                 interrupted.write(new byte[]{1, 2, 3});
                 interrupted.getFD().sync();
             }
-            require(SyncConsentStore.load(context).generation.equals(enabledAgain.generation));
+            require(SyncConsentStore.load(context).generation.equals(beforeInterruption.generation));
             byte[] saved = Files.readAllBytes(file.toPath());
             byte[] corrupted = saved.clone();
             corrupted[corrupted.length - 1] ^= 1;
@@ -94,7 +106,7 @@ final class ConsentStoreProbe {
             Files.write(file.toPath(), saved);
             keys.deleteEntry(ALIAS);
             reject(() -> SyncConsentStore.load(context));
-            reject(() -> SyncConsentStore.disable(context, enabledAgain.generation));
+            reject(() -> SyncConsentStore.disable(context, beforeInterruption.generation));
             require(!keys.containsAlias(ALIAS) && Arrays.equals(saved, Files.readAllBytes(file.toPath())));
         } finally {
             new AtomicFile(file).delete();

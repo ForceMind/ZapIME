@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -36,7 +38,7 @@ public final class AccountSyncActivity extends Activity {
     private PendingLogin pending;
     private SyncHttp.Cancellation exchange;
     private Button enable, login, cancel;
-    private Button restoreKey, checkKey, loginAgain;
+    private Button restoreKey, checkKey, loginAgain, signOut;
     private Switch syncEnabled;
     private LinearLayout loginCard;
     private TextView status;
@@ -89,6 +91,9 @@ public final class AccountSyncActivity extends Activity {
         loginAgain = Ui.button(this, "重新登录", Ui.BG, false);
         loginAgain.setOnClickListener(view -> startLogin(false));
         Ui.addButton(progress, loginAgain);
+        signOut = Ui.button(this, "退出登录", Ui.BG, false);
+        signOut.setOnClickListener(view -> signOut());
+        Ui.addButton(progress, signOut);
         cancel = Ui.button(this, "取消登录", Ui.BG, false);
         cancel.setOnClickListener(view -> {
             cancelWork();
@@ -126,8 +131,7 @@ public final class AccountSyncActivity extends Activity {
         syncEnabled.setChecked(shown.expectedKey != null);
         if (shown.expectedKey != null) {
             if (readingStatus) cancelWork();
-            SyncConsentController.stop(shown.generation);
-            ForegroundSync.pause();
+            pauseGeneration(shown.generation);
             work("正在保存关闭状态", request -> {
                 request.check();
                 SyncConsentStore.disable(getApplicationContext(), shown.generation);
@@ -195,6 +199,7 @@ public final class AccountSyncActivity extends Activity {
 
     private void startLogin(boolean requestSync) {
         if (pending != null || exchange != null) return;
+        if (presented != null && presented.state.account != null) pauseGeneration(presented.state.generation);
         SyncHttp.Cancellation request = new SyncHttp.Cancellation();
         exchange = request;
         update("正在准备登录", true);
@@ -205,6 +210,8 @@ public final class AccountSyncActivity extends Activity {
                     runOnUiThread(() -> {
                         if (isDestroyed() || exchange != request) return;
                         exchange = null;
+                        presented = null;
+                        loginCard.setVisibility(View.VISIBLE);
                         launchBrowser(requestSync, login.generation);
                     });
                 } catch (IOException | RuntimeException failure) {
@@ -219,6 +226,23 @@ public final class AccountSyncActivity extends Activity {
             exchange = null;
             update("同步页面正忙，请稍后重试。", false);
         }
+    }
+
+    private void signOut() {
+        if (presented == null || presented.state.account == null || pending != null
+                || (exchange != null && !readingStatus)) return;
+        UUID generation = presented.state.generation;
+        if (readingStatus) cancelWork();
+        pauseGeneration(generation);
+        work("同步已暂停，正在退出登录", request -> {
+            SyncConsentStore.State signedOut = SyncConsentStore.signOut(getApplicationContext(), generation, request);
+            return new SyncConsentController.Assessment(signedOut, SyncConsentController.Status.SIGNED_OUT);
+        });
+    }
+
+    private static void pauseGeneration(UUID generation) {
+        SyncConsentController.stop(generation);
+        ForegroundSync.pause();
     }
 
     private void launchBrowser(boolean requestSync, UUID generation) {
@@ -311,7 +335,12 @@ public final class AccountSyncActivity extends Activity {
             case REVOKED: message = "设备授权失效\n同步已关闭"; break;
             case READY:
                 ForegroundSync.Outcome outcome = ForegroundSync.last(state.generation);
-                message = outcome == null ? "设备和密钥已核对\n等待同步任务" : syncOutcome(outcome);
+                switch (ForegroundSync.phase(state.generation)) {
+                    case OFFLINE: message = "等待网络恢复"; break;
+                    case CHECKING: message = "正在检查已有资料"; break;
+                    case SENDING: message = "正在同步，等待服务器回执"; break;
+                    default: message = outcome == null ? "设备和密钥已核对\n等待同步任务" : syncOutcome(outcome);
+                }
                 break;
             default: message = "同步已关闭";
         }
@@ -326,14 +355,24 @@ public final class AccountSyncActivity extends Activity {
                 && presented.state.generation.equals(outcome.generation)) render(presented, null);
     }
 
+    void onAutomaticProgress() {
+        if (presented != null && exchange == null && presented.status == SyncConsentController.Status.READY) {
+            render(presented, null);
+        }
+    }
+
     private static String syncOutcome(ForegroundSync.Outcome outcome) {
         SyncRound.Result result = outcome.result;
         String receipt = result != null && result.lastAcknowledgedRevision > 0
                 ? "\n服务器已确认本次写入，修订号 " + result.lastAcknowledgedRevision : "";
         if ("origin_unverified".equals(outcome.error)) return "有待发资料的来源需要核对" + receipt;
+        if ("page_rejected".equals(outcome.error)) return "远端资料未通过核对，请检查密钥或冲突记录。本机资料已保留" + receipt;
+        if ("revision_conflict".equals(outcome.error)) return "服务器资料已有更新，本机待发操作仍保留" + receipt;
+        if ("device_revoked".equals(outcome.error)) return "设备授权需要重新核对" + receipt;
+        if ("network".equals(outcome.error)) return "连接中断。待发操作和已冻结请求仍保留" + receipt;
         if (outcome.error != null) return "本轮同步未完成" + receipt;
         if (result.downloadBudgetReached || result.uploadBudgetReached) return "仍有待处理的同步任务" + receipt;
-        return "本轮同步已检查" + receipt;
+        return "本轮同步已检查\n完成时间 " + DateFormat.getDateTimeInstance().format(new Date(outcome.completedAt)) + receipt;
     }
 
     private void update(String message, boolean waiting) {
@@ -352,6 +391,8 @@ public final class AccountSyncActivity extends Activity {
         restoreKey.setVisibility(!waiting && shown == SyncConsentController.Status.WAITING_FOR_KEY ? View.VISIBLE : View.GONE);
         checkKey.setVisibility(!waiting && shown == SyncConsentController.Status.KEY_UNREGISTERED ? View.VISIBLE : View.GONE);
         loginAgain.setVisibility(!waiting && shown == SyncConsentController.Status.REVOKED ? View.VISIBLE : View.GONE);
+        signOut.setVisibility(consent != null && consent.account != null ? View.VISIBLE : View.GONE);
+        signOut.setEnabled(!waiting || readingStatus);
     }
 
     private void cancelWork() {

@@ -122,7 +122,12 @@ def read_remote(adb, filename):
 
 
 def system_links_confirmed(adb, package):
-    output = adb.shell("dumpsys", "package", "domain-preferred-apps")
+    try:
+        output = adb.shell("dumpsys", "-t", "5", "package", "domain-preferred-apps", timeout=8)
+    except Rejected as failure:
+        if str(failure) != "adb_timeout":
+            raise
+        return False
     for block in re.split(r"(?m)^\s*Package:\s+", output)[1:]:
         if block.splitlines()[0].strip() != package:
             continue
@@ -265,6 +270,7 @@ def foreground_round(report, adb, marker, status, verify_receiver):
                 stage + "_failed")
 
     instrument("foreground-seed")
+    report["foreground_seed"] = "PASS"
     require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_display")
     adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
     click_text(adb, marker, "账号与同步", scroll=True)
@@ -285,6 +291,29 @@ def foreground_round(report, adb, marker, status, verify_receiver):
     instrument("foreground-verify")
     report["foreground_sqlite_ack"] = "PASS"
     verify_receiver()
+
+    def open_account():
+        adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
+        click_text(adb, marker, "账号与同步", scroll=True)
+
+    def shows(label):
+        return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "")
+                   for node in window_nodes(adb, marker))
+
+    before = status()["dataRequests"]
+    open_account()
+    wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_reopen_round_missing")
+    require(status()["dataRequests"] > before and status()["uploads"] == 1, "foreground_reopen_replayed_upload")
+    report["foreground_reopen"] = "PASS"
+    click_text(adb, marker, "退出登录", scroll=True)
+    wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_missing")
+    instrument("foreground-signed-out")
+    before = status()["dataRequests"]
+    open_account()
+    wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_not_reloaded")
+    require(status()["dataRequests"] == before and status()["uploads"] == 1 and not status()["failure"],
+            "foreground_signed_out_sent_data")
+    report["foreground_signout"] = "PASS"
 
 
 def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None):
@@ -338,11 +367,14 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
             require(adb.shell("pm", "path", PACKAGE, check=False) == "", "first_fixture_uninstall_failed")
             ca.install()
             main_submitted = main_apk is not None
-            adb.run("install", "-t", str(main_apk or apk))
+            report["stage"] = "test_apk_install"
+            adb.run("install", "-t", str(main_apk or apk), timeout=60)
+            report["stage"] = "system_app_link_verification"
             wait_for(lambda: system_links_confirmed(adb, package) and status()["assetlinks"] > 0, bool,
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
             if bridge:
+                report["stage"] = "foreground_native_seed_and_round"
                 foreground_round(report, adb, marker, status, verify_receiver)
                 return
             if main_apk:
@@ -485,6 +517,7 @@ def main():
             run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk, sync_binary)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",
                 "fixture_cleanup_or_after_tls_failed")
+        report.pop("stage", None)
         report["status"] = "PASS"
     except Rejected as failure:
         report["failure"] = str(failure)

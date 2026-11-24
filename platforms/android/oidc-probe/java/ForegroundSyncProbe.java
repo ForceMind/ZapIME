@@ -59,9 +59,25 @@ final class ForegroundSyncProbe {
     }
 
     static void verify(Context context, boolean acknowledged) throws Exception {
-        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
         SyncConsentStore.State consent = SyncConsentStore.load(context);
         require(consent.account != null && (consent.expectedKey != null) == acknowledged);
+        checkReceipt(context, acknowledged);
+    }
+
+    static void signedOut(Context context) throws Exception {
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(consent.account == null && consent.device == null && consent.expectedKey == null);
+        try (SyncConnection connection = SyncConnectionStore.load(context)) {
+            require(connection != null);
+            byte[] material = SyncSecrets.load(context, connection.account);
+            require(material != null);
+            Arrays.fill(material, (byte) 0);
+        }
+        checkReceipt(context, true);
+    }
+
+    private static void checkReceipt(Context context, boolean acknowledged) throws Exception {
+        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
         try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
                 Cursor row = db.rawQuery("SELECT o.pending,u.ack_revision,v.server_revision "
                         + "FROM operations o LEFT JOIN sync_uploads u ON u.operation_id=o.id "
