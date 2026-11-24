@@ -30,10 +30,14 @@ jobs:
         with:
           go-version-file: services/sync/go.mod
           cache-dependency-path: services/sync/go.sum
+      - uses: android-actions/setup-android@v3
+        with:
+          packages: platform-tools
+      - name: Install the pinned Android SDK and build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
       - name: Build signed test-only App Link probe
         run: |
           set -euo pipefail
-          sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
           tools="$ANDROID_HOME/build-tools/35.0.0"
           platform="$ANDROID_HOME/platforms/android-36/android.jar"
           output="$PWD/target/a3-android-oidc"
@@ -49,6 +53,10 @@ jobs:
           keytool -genkeypair -keystore "$output/oidc-test.jks" -storepass:env ZAPIME_A3_TEST_SIGNING_PASS -keypass:env ZAPIME_A3_TEST_SIGNING_PASS -alias oidc-probe -dname 'CN=ZapIME A3 CI test' -keyalg RSA -keysize 2048 -validity 2
           "$tools/apksigner" sign --ks "$output/oidc-test.jks" --ks-pass env:ZAPIME_A3_TEST_SIGNING_PASS --key-pass env:ZAPIME_A3_TEST_SIGNING_PASS --out "$output/probe.apk" "$output/aligned.apk"
           "$tools/apksigner" verify "$output/probe.apk"
+      - name: Prepare locked Node issuer and Go verifier
+        run: |
+          set -euo pipefail
+          output="$PWD/target/a3-android-oidc"
           (cd services/sync && go test -mod=readonly -c -o "$output/oidc-auth.test" ./internal/oidcauth)
           cp scripts/fixtures/a3-oidc/{package.json,package-lock.json,issuer.mjs,android-issuer.mjs} "$output/issuer/"
           npm ci --prefix "$output/issuer" --ignore-scripts --no-audit --no-fund

@@ -39,7 +39,7 @@ func TestPostgresOIDCSubjectBinding(t *testing.T) {
 		now := time.Now().UTC()
 		wire, err := jwt.Signed(signer).Claims(jwt.Claims{Issuer: from, Subject: id, Audience: jwt.Audience{resource},
 			ID: "synthetic-token-id", IssuedAt: jwt.NewNumericDate(now), Expiry: jwt.NewNumericDate(now.Add(time.Minute))}).
-			Claims(map[string]string{"client_id": "synthetic-device", "scope": scope}).Serialize()
+			Claims(map[string]any{"client_id": "synthetic-device", "scope": scope}).Serialize()
 		if err != nil {
 			t.Fatal("sign synthetic test identity")
 		}

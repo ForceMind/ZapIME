@@ -33,6 +33,8 @@
 
 用户已追加批准 A3 独立 GitHub API28 作业在一次性模拟器内使用本轮临时 CA 和合成 `.test` 解析，结束核对清理。[隔离验收契约](ADR_A3_API28_OIDC_FIXTURE.md)与 test-only APK 已保存。作业先验证系统确实为该测试 APK 验证了回跳域，再验证外部浏览器真实 OIDC 回跳，两项独立保留状态。真实作业结果待回读。
 
+首轮隔离回跳作业在构建时找不到 `sdkmanager`，未执行 Android。首轮 Go PostgreSQL 作业在给合成身份签名时停下，未到主体绑定断言。修正为仓库既有 Android SDK 初始化和 JOSE 支持的声明类型，重新运行同一验收门禁。[APK 构建失败](https://github.com/ForceMind/ZapIME/actions/runs/45448552681/job/138638966709) · [Go 事务失败](https://github.com/ForceMind/ZapIME/actions/runs/45447034000/job/138633522538)
+
 ### 1. 账号登录、设备授权分别验证
 
 - 首版只接一个由部署者固定配置的 issuer、客户端和同步登录 API 受众，优先采用经验证的 Android App Link。回跳域名由能配置当前 Android 包名和签名关联的部署者掌控，可与同步服务域独立。先实测 API28/API36 系统浏览器回跳，并确认身份服务能签发同步登录端点可验证的 OAuth 访问令牌。OIDC 身份映射使用固定 issuer 与可信 subject，在配置阶段验证它在预期令牌中的稳定性。邮箱只用于显示。计划采用专用的 RFC 9068 访问令牌，服务校验类型、签名、issuer、audience、客户端、scope、有效期与用户授权上下文。Android 不用 ID token 作为同步登录 API 的权限凭据。[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability) · [RFC 8252](https://www.rfc-editor.org/rfc/rfc8252) · [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700) · [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html#section-4)
