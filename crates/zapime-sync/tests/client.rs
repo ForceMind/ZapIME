@@ -62,6 +62,7 @@ fn snapshot(path: &Path) -> Vec<(String, Vec<Vec<String>>)> {
         "sync_versions",
         "sync_received",
         "sync_retained_pulls",
+        "sync_local_origins",
     ]
     .into_iter()
     .map(|table| {
@@ -90,6 +91,113 @@ fn snapshot(path: &Path) -> Vec<(String, Vec<Vec<String>>)> {
         (table.to_owned(), rows)
     })
     .collect()
+}
+
+#[test]
+fn automatic_stage_preserves_old_frozen_head_and_never_skips_it() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("source.db");
+    let profile = Uuid::new_v4();
+    let material = Material::generate(profile).unwrap();
+    let mut store = Store::open(&path).unwrap();
+    let old = Uuid::new_v4();
+    edit(&mut store, old, 0, "created before account binding");
+    workspace::prepare(&path, profile, &material).unwrap();
+    let frozen = client::stage_next(&mut store, profile, &material)
+        .unwrap()
+        .unwrap();
+    assert_eq!(frozen.record_id, old);
+    let current = Uuid::new_v4();
+    edit(&mut store, current, 0, "verified local operation");
+    let before = snapshot(&path);
+    assert!(matches!(
+        client::stage_next_automatic(&mut store, profile, &material),
+        Err(client::Error::Storage(zapime_data::Error::SyncOrigin))
+    ));
+    assert_eq!(snapshot(&path), before);
+    let device = Uuid::new_v4();
+    client::acknowledge(
+        &mut store,
+        profile,
+        device,
+        &material,
+        &frozen,
+        &response(profile, device, &frozen, 1),
+    )
+    .unwrap();
+    let next = client::stage_next_automatic(&mut store, profile, &material)
+        .unwrap()
+        .unwrap();
+    assert_eq!(next.record_id, current);
+}
+
+#[test]
+fn automatic_stage_reuses_frozen_bytes_without_merging_or_trusting_import_edits() {
+    let dir = tempfile::tempdir().unwrap();
+    let path = dir.path().join("source.db");
+    let profile = Uuid::new_v4();
+    let material = Material::generate(profile).unwrap();
+    let mut store = new_store(&path, profile, &material);
+    let record = Uuid::new_v4();
+    edit(&mut store, record, 0, "first local body");
+    edit(&mut store, record, 1, "second local body");
+    let staged = client::stage_next_automatic(&mut store, profile, &material)
+        .unwrap()
+        .unwrap();
+    let first = store
+        .staged_upload(profile, staged.operation_id)
+        .unwrap()
+        .unwrap();
+    assert_eq!(first.snapshot.revision, 1);
+    assert_eq!(store.pending_count().unwrap(), 2);
+    drop(store);
+    let mut reopened = Store::open_backup_writer(&path).unwrap();
+    let retried = client::stage_next_automatic(&mut reopened, profile, &material)
+        .unwrap()
+        .unwrap();
+    assert!(retried == staged);
+    assert_eq!(
+        client::frozen_wire(&mut reopened, profile, &material, &retried).unwrap(),
+        first.wire
+    );
+    let receiving_device = Uuid::new_v4();
+    let receipt = response(profile, receiving_device, &retried, 1);
+    assert_eq!(
+        client::acknowledge_with_revision(
+            &mut reopened,
+            profile,
+            receiving_device,
+            &material,
+            &retried,
+            &receipt,
+        )
+        .unwrap(),
+        1
+    );
+    assert_eq!(reopened.sync_cursor(profile).unwrap(), 0);
+    let successor = client::stage_next_automatic(&mut reopened, profile, &material)
+        .unwrap()
+        .unwrap();
+    assert_eq!(successor.base_revision, 1);
+
+    let imported_path = dir.path().join("imported.db");
+    let mut imported = Store::open(&imported_path).unwrap();
+    imported
+        .restore_plaintext(&reopened.export_plaintext().unwrap())
+        .unwrap();
+    workspace::prepare(&imported_path, profile, &material).unwrap();
+    edit(
+        &mut imported,
+        record,
+        2,
+        "edit over unverified imported record",
+    );
+    let before = snapshot(&imported_path);
+    assert!(matches!(
+        client::stage_next_automatic(&mut imported, profile, &material),
+        Err(client::Error::Storage(zapime_data::Error::SyncOrigin))
+    ));
+    assert_eq!(snapshot(&imported_path), before);
 }
 
 #[test]

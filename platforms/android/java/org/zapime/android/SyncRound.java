@@ -11,7 +11,7 @@ final class SyncRound {
         void verifyIdentity()throws IOException;
         Page pull()throws IOException;
         byte[] stage()throws IOException;
-        void pushAndAcknowledge(byte[] frozen)throws IOException;
+        long pushAndAcknowledge(byte[] frozen)throws IOException;
     }
     static final class Page {
         final long cursor,head;
@@ -20,7 +20,7 @@ final class SyncRound {
     }
     static final class Result {
         int uploaded,applied,echoed,unchanged,pages;
-        long cursor,head;
+        long cursor,head,lastAcknowledgedRevision;
         boolean uploadBudgetReached,downloadBudgetReached;
     }
     static final class Failure extends IOException {
@@ -50,7 +50,7 @@ final class SyncRound {
             for(int i=0;i<MAX_UPLOADS;i++){
                 backend.check();byte[] frozen=backend.stage();
                 if(frozen==null)break;
-                try{backend.check();backend.pushAndAcknowledge(frozen);result.uploaded++;}
+                try{backend.check();result.lastAcknowledgedRevision=backend.pushAndAcknowledge(frozen);result.uploaded++;}
                 finally{java.util.Arrays.fill(frozen,(byte)0);}
                 if(i==MAX_UPLOADS-1)result.uploadBudgetReached=true;
             }

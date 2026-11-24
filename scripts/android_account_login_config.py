@@ -68,6 +68,9 @@ def generate(manifest_path, output_manifest, generated_java, config):
     else:
         ET.register_namespace("android", ANDROID[1:-1])
         document = ET.parse(manifest_path)
+        document.getroot().insert(1, ET.Element(
+            "uses-permission", {ANDROID + "name": "android.permission.ACCESS_NETWORK_STATE"}
+        ))
         app = document.find("application")
         ET.SubElement(app, "activity", {
             ANDROID + "name": ".AccountSyncActivity",

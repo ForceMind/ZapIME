@@ -15,6 +15,7 @@ pub mod pull;
 pub mod quarantine;
 pub mod schedule;
 pub mod sync;
+mod sync_origin;
 
 const MAX_ARCHIVE_BYTES: usize = 32 * 1024 * 1024;
 const MAX_RECORDS: usize = 100_000;
@@ -55,6 +56,8 @@ pub enum Error {
     SyncLocalConflict,
     #[error("sync_workspace_binding_mismatch")]
     SyncWorkspace,
+    #[error("sync_operation_origin_unverified")]
+    SyncOrigin,
     #[error("retained_pull_capacity_reached")]
     RetainedFull,
 }
@@ -270,6 +273,7 @@ impl Store {
         tx.execute_batch("PRAGMA user_version=2;")?;
         panel::prepare_index(&tx)?;
         quarantine::prepare(&tx)?;
+        sync_origin::prepare(&tx)?;
         tx.commit()?;
         Ok(Self { db })
     }
@@ -362,6 +366,7 @@ impl Store {
             "INSERT INTO operations VALUES(?1,?2,?3,1)",
             params![operation_id.to_string(), request, result],
         )?;
+        sync_origin::mark_local_mutation(&tx, operation_id, &record)?;
         tx.commit()?;
         Ok(record)
     }

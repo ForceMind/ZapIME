@@ -21,7 +21,9 @@ public final class MainActivity extends Activity {
         LinearLayout data=Ui.card(page);data.addView(Ui.text(this,"我的资料",20,Ui.INK));data.addView(Ui.text(this,"词库、短语与收藏，保存在你手中。",14,Ui.MUTED));Button personal=Ui.button(this,"管理资料与备份  →",Ui.BG,false);personal.setContentDescription("个人资料 · 离线管理与备份");personal.setOnClickListener(v->startActivity(new Intent(this,PersonalDataActivity.class)));Ui.addButton(data,personal);
         Button keyboard=Ui.button(this,"键盘与反馈",Ui.BG,false);keyboard.setContentDescription("键盘与反馈设置");keyboard.setOnClickListener(v->startActivity(new Intent(this,KeyboardSettingsActivity.class)));Ui.addButton(page,keyboard);
         Button voice=Ui.button(this,"离线语音 · 模型与权限",Ui.BG,false);voice.setOnClickListener(v->startActivity(new Intent(this,VoiceSettingsActivity.class)));Ui.addButton(page,voice);
-        if (AccountLoginDeployment.config() != null) {
+        AccountLoginProtocol.Config syncConfig = AccountLoginDeployment.config();
+        if (syncConfig != null) {
+            ForegroundSync.install(getApplication(), syncConfig);
             Button account = Ui.button(this, "账号与同步", Ui.BG, false);
             account.setOnClickListener(view -> startActivity(new Intent(this, AccountSyncActivity.class)));
             Ui.addButton(page, account);

@@ -7,6 +7,7 @@ on:
       - 'platforms/android/oidc-probe/**'
       - 'platforms/android/java/org/zapime/android/AccountLogin*.java'
       - 'platforms/android/java/org/zapime/android/AccountSyncActivity.java'
+      - 'platforms/android/java/org/zapime/android/ForegroundSync.java'
       - 'platforms/android/java/org/zapime/android/SyncEnrollmentVault.java'
       - 'platforms/android/java/org/zapime/android/SyncEnrollmentRequest.java'
       - 'platforms/android/java/org/zapime/android/SyncConsentStore.java'
@@ -91,6 +92,7 @@ jobs:
           zip -q -j "$output/source-only.apk" "$output/dex/classes.dex"
           "$tools/zipalign" -f 4 "$output/source-only.apk" "$output/aligned.apk"
           bash scripts/test_android_sync_http.sh
+          bash scripts/test_android_sync_round.sh
       - name: Build signed test-only App Link probe
         run: |
           set -euo pipefail

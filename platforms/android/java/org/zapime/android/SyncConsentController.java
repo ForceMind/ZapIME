@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /** Off-worker UI receives status only. All identity and readiness checks run on the sync worker. */
 final class SyncConsentController {
     enum Status {
-        SIGNED_OUT, WAITING_FOR_DEVICE, OFF, PAUSED, WAITING_FOR_KEY, WORKSPACE_REQUIRED,
+        SIGNED_OUT, WAITING_FOR_DEVICE, OFF, CHECKING, PAUSED, WAITING_FOR_KEY, WORKSPACE_REQUIRED,
         KEY_CONFLICT, KEY_UNREGISTERED, REVOKED, READY
     }
     private static final AtomicReference<UUID> STOPPED = new AtomicReference<>();
@@ -21,7 +21,7 @@ final class SyncConsentController {
         final SyncConsentStore.State state;
         final Status status;
 
-        private Assessment(SyncConsentStore.State state, Status status) {
+        Assessment(SyncConsentStore.State state, Status status) {
             this.state = state;
             this.status = status;
         }
@@ -44,6 +44,16 @@ final class SyncConsentController {
 
     static boolean isStopped(UUID generation) {
         return generation.equals(STOPPED.get());
+    }
+
+    static void requireTransfer(Context context, SyncConsentStore.State expected, AccountLoginProtocol.Config config,
+            SyncConnection connection, SyncKeyRegistration.Descriptor local, SyncHttp.Cancellation cancel) throws IOException {
+        current(context, expected, cancel);
+        SyncEnrollmentVault.Scope scope = expected.verifiedDeployment(config);
+        if (scope == null || !connection.account.equals(scope.account) || !connection.server.equals(config.syncServer)
+                || !expected.permits(scope, connection.device, local)) {
+            throw new IOException("sync_consent_identity");
+        }
     }
 
     static Assessment enable(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State confirmed,

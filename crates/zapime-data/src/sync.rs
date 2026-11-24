@@ -446,6 +446,22 @@ impl Store {
             Ok(pending)
         })
     }
+    /// Only inspect the actual oldest pending operation. Unknown origins
+    /// stay in place, including if the manual path had already frozen them.
+    pub fn automatic_pending(
+        &mut self,
+        binding: &WorkspaceBinding,
+    ) -> Result<Option<PendingOperation>, Error> {
+        workspace_budget(&mut self.db, |db| {
+            let tx = db.transaction()?;
+            require_automatic_binding(&tx, binding)?;
+            let Some(pending) = oldest_pending(&tx, None)? else {
+                return Ok(None);
+            };
+            crate::sync_origin::require_local_mutation(&tx, binding, &pending)?;
+            Ok(Some(pending))
+        })
+    }
     /// Read a frozen request without creating or restaging it. Acknowledged
     /// requests remain readable so an identical late acknowledgement is safe.
     /// The actual wire is returned, not rebuilt from the latest record.
@@ -528,29 +544,42 @@ impl Store {
         profile: Uuid,
         upload: UploadOperation,
     ) -> Result<UploadOperation, Error> {
+        self.stage_upload_with_binding(profile, upload, None)
+    }
+    pub fn stage_automatic_upload(
+        &mut self,
+        binding: &WorkspaceBinding,
+        upload: UploadOperation,
+    ) -> Result<UploadOperation, Error> {
+        self.stage_upload_with_binding(binding.profile_id, upload, Some(binding))
+    }
+    fn stage_upload_with_binding(
+        &mut self,
+        profile: Uuid,
+        upload: UploadOperation,
+        automatic: Option<&WorkspaceBinding>,
+    ) -> Result<UploadOperation, Error> {
         upload.validate()?;
         workspace_budget(&mut self.db, |db| {
             let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
             require_profile(&tx, profile)?;
-            let first: Option<(String, String)> = tx
-            .query_row(
-                "SELECT o.id,o.result FROM operations o JOIN sync_queue q ON q.operation_id=o.id WHERE o.pending=1 ORDER BY q.sequence LIMIT 1",
-                [],
-                |r| Ok((r.get(0)?, r.get(1)?)),
-            )
-            .optional()?;
-            let Some((id, result)) = first else {
+            if let Some(binding) = automatic {
+                require_automatic_binding(&tx, binding)?;
+                if binding.key_id != upload.key_id {
+                    return Err(Error::SyncWorkspace);
+                }
+            }
+            let Some(pending) = oldest_pending(&tx, Some(upload.operation_id))? else {
                 return Err(Error::SyncOrder);
             };
-            if id != upload.operation_id.to_string() {
-                return Err(Error::SyncOrder);
+            if let Some(binding) = automatic {
+                crate::sync_origin::require_local_mutation(&tx, binding, &pending)?;
             }
-            let record: Record = serde_json::from_str(&result)?;
-            upload.matches_snapshot(upload.operation_id, &record)?;
-            let revision = server_revision(&tx, record.id)?;
-            if upload.base_revision != revision {
+            upload.matches_snapshot(pending.operation_id, &pending.record)?;
+            if upload.base_revision != pending.server_revision {
                 return Err(Error::Conflict);
             }
+            let id = pending.operation_id.to_string();
             let previous: Option<String> = tx
                 .query_row(
                     "SELECT wire FROM sync_uploads WHERE operation_id=?1",
@@ -561,8 +590,8 @@ impl Store {
             if let Some(wire) = previous {
                 // 首次 nonce/密钥版本/正文属于该操作；密钥轮换不能暗中替换待发请求。
                 let saved: UploadOperation = serde_json::from_str(&wire)?;
-                saved.matches_snapshot(upload.operation_id, &record)?;
-                if saved.base_revision != revision {
+                saved.matches_snapshot(upload.operation_id, &pending.record)?;
+                if saved.base_revision != pending.server_revision {
                     return Err(Error::Conflict);
                 }
                 return Ok(saved);
@@ -594,6 +623,48 @@ impl Store {
             Ok(())
         })
     }
+}
+
+fn oldest_pending(
+    tx: &Transaction<'_>,
+    expected: Option<Uuid>,
+) -> Result<Option<PendingOperation>, Error> {
+    let oldest: Option<(String, String)> = tx
+        .query_row(
+            "SELECT o.id,o.result FROM operations o JOIN sync_queue q ON q.operation_id=o.id
+             WHERE o.pending=1 ORDER BY q.sequence LIMIT 1",
+            [],
+            |row| Ok((row.get(0)?, row.get(1)?)),
+        )
+        .optional()?;
+    oldest
+        .map(|(id, result)| {
+            if expected.is_some_and(|operation| operation.to_string() != id) {
+                return Err(Error::SyncOrder);
+            }
+            let operation_id = Uuid::parse_str(&id).map_err(|_| Error::Invalid)?;
+            if operation_id.to_string() != id {
+                return Err(Error::Invalid);
+            }
+            let record: Record = serde_json::from_str(&result)?;
+            let server_revision = server_revision(tx, record.id)?;
+            Ok(PendingOperation {
+                operation_id,
+                record,
+                server_revision,
+            })
+        })
+        .transpose()
+}
+
+fn require_automatic_binding(
+    tx: &Transaction<'_>,
+    expected: &WorkspaceBinding,
+) -> Result<(), Error> {
+    if workspace_binding(tx)?.as_ref() != Some(expected) {
+        return Err(Error::SyncWorkspace);
+    }
+    Ok(())
 }
 
 pub(crate) fn acknowledge_in_tx(

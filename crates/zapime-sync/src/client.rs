@@ -9,7 +9,7 @@ use zapime_crypto::Binding;
 use zapime_data::{
     first_publish::FirstPublishSelection,
     pull::ApplyReport,
-    sync::{StagedUpload, UploadOperation},
+    sync::{PendingOperation, StagedUpload, UploadOperation, WorkspaceBinding},
     Record, Store,
 };
 use zeroize::Zeroizing;
@@ -211,14 +211,44 @@ pub fn stage_next(
     else {
         return Ok(None);
     };
+    stage_pending(store, profile, material, pending, None).map(Some)
+}
+
+/// Preserve the oldest immutable snapshot and require its recorded source.
+/// The scope and operation order are checked again in the freezing transaction.
+pub fn stage_next_automatic(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+) -> Result<Option<UploadOperation>, Error> {
+    material.validate(profile).map_err(Error::Workspace)?;
+    let binding = material.binding();
+    let Some(pending) = store.automatic_pending(&binding).map_err(Error::Storage)? else {
+        return Ok(None);
+    };
+    stage_pending(store, profile, material, pending, Some(&binding)).map(Some)
+}
+
+fn stage_pending(
+    store: &mut Store,
+    profile: Uuid,
+    material: &workspace::Material,
+    pending: PendingOperation,
+    automatic: Option<&WorkspaceBinding>,
+) -> Result<UploadOperation, Error> {
     // Reuse a frozen request before invoking the random source. A lost network
     // response must remain retryable even if new encryption cannot proceed.
-    if let Some(frozen) = store
+    if let Some(mut frozen) = store
         .staged_upload(profile, pending.operation_id)
         .map_err(Error::Storage)?
     {
+        if let Some(binding) = automatic {
+            frozen.operation = store
+                .stage_automatic_upload(binding, frozen.operation)
+                .map_err(Error::Storage)?;
+        }
         checked_frozen(store, profile, material, &frozen.operation)?;
-        return Ok(Some(frozen.operation));
+        return Ok(frozen.operation);
     }
     let plaintext =
         Zeroizing::new(serde_json::to_vec(&pending.record).map_err(|_| Error::Ciphertext)?);
@@ -248,14 +278,16 @@ pub fn stage_next(
         )
         .map_err(|_| Error::Ciphertext)?,
     };
-    upload = store
-        .stage_upload(profile, upload)
-        .map_err(Error::Storage)?;
+    upload = match automatic {
+        Some(binding) => store.stage_automatic_upload(binding, upload),
+        None => store.stage_upload(profile, upload),
+    }
+    .map_err(Error::Storage)?;
     // Authenticate the persisted encrypted body and compare its original
     // snapshot, not the fresh nonce discarded by an idempotent retry. Existing
     // AEAD does not independently authenticate server authorship/base_revision.
     checked_frozen(store, profile, material, &upload)?;
-    Ok(Some(upload))
+    Ok(upload)
 }
 
 /// Exact bytes from the committed frozen row. No transaction remains open
@@ -291,6 +323,26 @@ pub fn acknowledge(
     expected: &UploadOperation,
     response: &[u8],
 ) -> Result<(), Error> {
+    acknowledge_with_revision(
+        store,
+        profile,
+        expected_device,
+        material,
+        expected,
+        response,
+    )
+    .map(|_| ())
+}
+
+/// Returns the authenticated server revision only after the acknowledgement is durable.
+pub fn acknowledge_with_revision(
+    store: &mut Store,
+    profile: Uuid,
+    expected_device: Uuid,
+    material: &workspace::Material,
+    expected: &UploadOperation,
+    response: &[u8],
+) -> Result<u64, Error> {
     guard(store, profile, material)?;
     if expected_device.is_nil() || response.is_empty() || response.len() > MAX_ACK_BYTES {
         return Err(Error::Acknowledgement);
@@ -308,7 +360,8 @@ pub fn acknowledge(
     checked_frozen(store, profile, material, expected)?;
     store
         .acknowledge_upload(profile, expected.operation_id, change.revision)
-        .map_err(Error::Storage)
+        .map_err(Error::Storage)?;
+    Ok(change.revision)
 }
 
 /// The existing preserving boundary authenticates the whole page, atomically
