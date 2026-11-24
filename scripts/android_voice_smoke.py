@@ -64,7 +64,7 @@ try:
         raise SystemExit("Missing complete synthetic production-confirmation evidence")
     verify_permission_cases(cases)
     account=json.loads((out/"sync-connection-report.json").read_text())
-    expected_account={"strict_schema", "identity_binding", "keystore_namespace", "store_roundtrip_switch", "worker_guard", "pre_cancel", "secure_activity_lifecycle"}
+    expected_account={"strict_schema", "identity_binding", "keystore_namespace", "enrollment_promotion", "store_roundtrip_switch", "worker_guard", "pre_cancel", "secure_activity_lifecycle"}
     cases=account.get("cases", [])
     if account.get("synthetic") is not True or len(cases)!=len(expected_account) or {row.get("id") for row in cases}!=expected_account or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing complete local account connection evidence")

@@ -31,7 +31,39 @@ final class SyncConnectionStore {
             byte[] bytes=connection.encode();
             try{SyncSecrets.saveConnection(context,connection.account,bytes);}
             finally{Arrays.fill(bytes,(byte)0);}
-            if(!context.getSharedPreferences("sync_connection",Context.MODE_PRIVATE).edit().putString("active_account",connection.account.toString()).commit())throw new IOException("sync_connection_index");
+            activate(context,connection.account);
+        }
+    }
+    static void promoteEnrollment(Context context,SyncConnection connection,SyncHttp.Cancellation cancel)throws IOException {
+        worker();
+        cancel.check();
+        synchronized(SyncConnectionStore.class){
+            SyncDatabase.check(context,connection.account);
+            if(!connection.validEnrollmentSession())throw new IOException("sync_enrollment_session");
+            try(SyncConnection previous=load(context)){
+                if(previous!=null){
+                    if(!previous.matchesSnapshot(connection))throw new IOException("sync_connection_exists");
+                    cancel.check();
+                    return;
+                }
+            }
+            byte[] bytes=connection.encode();
+            try{
+                cancel.check();
+                SyncSecrets.createConnection(context,connection.account,bytes);
+            }finally{Arrays.fill(bytes,(byte)0);}
+            // An interrupted activation leaves a create-only encrypted credential that can be read back on retry.
+            cancel.check();
+            if(!connection.validEnrollmentSession())throw new IOException("sync_enrollment_session");
+            activate(context,connection.account);
+            try(SyncConnection saved=load(context)){
+                if(!connection.matchesSnapshot(saved))throw new IOException("sync_connection_commit");
+            }
+        }
+    }
+    private static void activate(Context context,UUID account)throws IOException {
+        if(!context.getSharedPreferences("sync_connection",Context.MODE_PRIVATE).edit().putString("active_account",account.toString()).commit()){
+            throw new IOException("sync_connection_index");
         }
     }
     static void forget(Context context)throws IOException {

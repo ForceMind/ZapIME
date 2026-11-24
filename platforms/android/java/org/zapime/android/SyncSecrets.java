@@ -130,6 +130,9 @@ final class SyncSecrets {
     static void saveConnection(Context context,UUID account,byte[] bytes)throws IOException {
         worker();synchronized(SyncSecrets.class){saveLocked(context,account,bytes,Purpose.CONNECTION);}
     }
+    static void createConnection(Context context,UUID account,byte[] bytes)throws IOException {
+        worker();synchronized(SyncSecrets.class){createLocked(context,account,bytes,Purpose.CONNECTION);}
+    }
     static byte[] loadConnection(Context context,UUID account)throws IOException {
         worker();synchronized(SyncSecrets.class){return loadLocked(context,account,Purpose.CONNECTION);}
     }

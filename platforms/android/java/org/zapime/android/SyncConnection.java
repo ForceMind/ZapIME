@@ -94,6 +94,13 @@ final class SyncConnection implements AutoCloseable {
         return previous!=null&&!closed&&!previous.closed&&server.equals(previous.server)&&account.equals(previous.account)
                 &&device.equals(previous.device)&&role.equals(previous.role)&&expires.equals(previous.expires)&&Arrays.equals(token,previous.token);
     }
+    boolean matchesEnrollment(URI expectedServer, UUID expectedAccount, UUID expectedDevice, char[] original) {
+        return validEnrollmentSession() && server.equals(expectedServer) && account.equals(expectedAccount)
+                && device.equals(expectedDevice) && Arrays.equals(token, original);
+    }
+    boolean validEnrollmentSession() {
+        return !closed && "member".equals(role) && Instant.now().isBefore(OffsetDateTime.parse(expires).toInstant());
+    }
     byte[] encode()throws SyncHttp.Failure {
         if(closed||role.isEmpty())throw new SyncHttp.Failure("credential");
         try{return new JSONObject().put("version",1).put("server",server.toString()).put("account_id",account.toString()).put("device_id",device.toString())

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 package org.zapime.android;
 
+import android.content.Context;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -91,6 +92,21 @@ final class SyncEnrollmentRequest {
         } finally {
             Arrays.fill(token, '\0');
             if (reply != null) Arrays.fill(reply, (byte) 0);
+        }
+    }
+
+    void storeVerified(Context context, SyncConnection actual, SyncHttp.Cancellation cancel) throws IOException {
+        cancel.check();
+        char[] token = pending.credential();
+        try {
+            if (!actual.matchesEnrollment(pending.scope.config.syncServer, pending.scope.account, pending.id, token)) {
+                throw new SyncHttp.Failure("identity");
+            }
+            SyncConnectionStore.promoteEnrollment(context, actual, cancel);
+            cancel.check();
+            SyncEnrollmentVault.forget(context, pending.scope, pending.id);
+        } finally {
+            Arrays.fill(token, '\0');
         }
     }
 
