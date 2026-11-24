@@ -31,6 +31,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
     private SyncHttp.Cancellation running;
     private SyncConsentStore.State activeConsent;
     private Outcome last;
+    private Outcome lastConfirmedWrite;
 
     enum Phase { IDLE, OFFLINE, CHECKING, SENDING }
 
@@ -69,6 +70,12 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
     static Outcome last(UUID generation) {
         if (instance == null || instance.last == null || !instance.last.generation.equals(generation)) return null;
         return instance.last;
+    }
+
+    static long lastConfirmedRevision(UUID generation) {
+        Outcome previous = instance == null ? null : instance.lastConfirmedWrite;
+        if (previous == null || !previous.generation.equals(generation)) return 0;
+        return previous.result.lastAcknowledgedRevision;
     }
 
     static SyncConsentStore.State activeConsent() {
@@ -204,6 +211,9 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
         rerun = false;
         if (!visible.isEmpty() && outcome != null && !SyncConsentController.isStopped(outcome.generation)) {
             last = outcome;
+            if (outcome.result != null && outcome.result.lastAcknowledgedRevision > 0) {
+                lastConfirmedWrite = outcome;
+            }
             for (Activity activity : new ArrayList<>(visible)) {
                 if (activity instanceof AccountSyncActivity) ((AccountSyncActivity) activity).onAutomaticResult(outcome);
             }

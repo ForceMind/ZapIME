@@ -308,8 +308,9 @@ def foreground_round(report, adb, marker, status, verify_receiver, without_tls):
 
     def displayed_receipt(revision):
         require(not status()["failure"], "foreground_tls_handler_failed")
+        receipts = (f"服务器已确认本次写入，修订号 {revision}", f"服务器最近确认写入，修订号 {revision}")
         return any(node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
-                   and f"服务器已确认本次写入，修订号 {revision}" in node.get("text", "") for node in window_nodes(adb, marker))
+                   and any(receipt in node.get("text", "") for receipt in receipts) for node in window_nodes(adb, marker))
 
     report["stage"] = "foreground_round_and_durable_receipt"
     wait_for(lambda: displayed_receipt(1), bool, 35, "foreground_ui_receipt_missing")
@@ -344,6 +345,9 @@ def foreground_round(report, adb, marker, status, verify_receiver, without_tls):
     open_account()
     wait_for(lambda: displayed_receipt(2), bool, 35, "foreground_recovery_receipt_missing")
     require(status()["uploads"] == 2, "foreground_recovery_upload_count")
+    adb.run("shell", "input", "keyevent", "KEYCODE_BACK")
+    click_text(adb, marker, "账号与同步", scroll=True)
+    wait_for(lambda: shows("服务器最近确认写入，修订号 2"), bool, 35, "foreground_recent_receipt_lost_after_empty_round")
     instrument("foreground-recovery-ack")
     verify_receiver(2)
     report["foreground_route_recovery"] = "PASS"

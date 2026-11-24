@@ -367,8 +367,13 @@ public final class AccountSyncActivity extends Activity {
 
     private static String syncOutcome(ForegroundSync.Outcome outcome) {
         SyncRound.Result result = outcome.result;
-        String receipt = result != null && result.lastAcknowledgedRevision > 0
-                ? "\n服务器已确认本次写入，修订号 " + result.lastAcknowledgedRevision : "";
+        String receipt = "";
+        if (result != null && result.lastAcknowledgedRevision > 0) {
+            receipt = "\n服务器已确认本次写入，修订号 " + result.lastAcknowledgedRevision;
+        } else {
+            long previous = ForegroundSync.lastConfirmedRevision(outcome.generation);
+            if (previous > 0) receipt = "\n服务器最近确认写入，修订号 " + previous;
+        }
         if ("origin_unverified".equals(outcome.error)) return "有待发资料的来源需要核对" + receipt;
         if ("page_rejected".equals(outcome.error)) return "远端资料未通过核对，请检查密钥或冲突记录。本机资料已保留" + receipt;
         if ("revision_conflict".equals(outcome.error)) return "服务器资料已有更新，本机待发操作仍保留" + receipt;
