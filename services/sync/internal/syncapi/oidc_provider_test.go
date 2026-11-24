@@ -27,8 +27,8 @@ const (
 	a3ForegroundSubject = "a3-synthetic-foreground-owner"
 )
 
-// The isolated Android fixture uses the real account handler with a fresh
-// Postgres schema, an actual provider-issued token and no data-transfer routes.
+// The isolated Android fixture uses the real account handler and an actual
+// provider-issued token. The switch case shares the foreground fixture database.
 func TestProviderIssuedAccountLookup(t *testing.T) {
 	if os.Getenv("ZAPIME_A3_ACCOUNT_LOOKUP") != "1" {
 		t.Skip("driven by the isolated Android OIDC fixture")
