@@ -159,8 +159,16 @@ fn status(store: &mut Store, material: &Material, command: &str) {
 fn main() {
     // Assertion failures must not format plaintext records or secret inputs in
     // uploaded CI logs. The assertions below deliberately carry fixed labels.
-    std::panic::set_hook(Box::new(|_| {
-        eprintln!("FAIL: manual client fixture assertion")
+    std::panic::set_hook(Box::new(|info| {
+        if let Some(location) = info.location() {
+            let source = location.file().rsplit(['/', '\\']).next().unwrap_or("?");
+            eprintln!(
+                "FAIL: manual client fixture assertion {source}:{}",
+                location.line()
+            );
+        } else {
+            eprintln!("FAIL: manual client fixture assertion");
+        }
     }));
     let args: Vec<_> = std::env::args().collect();
     let command = args.get(1).map(String::as_str).expect("fixture command");

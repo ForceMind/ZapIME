@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import ssl
 import subprocess
 import tempfile
@@ -48,6 +49,10 @@ class Scenario:
         proc = subprocess.run([str(self.probe), command, str(self.directory), *map(str, args)],
                               stdin=subprocess.DEVNULL, capture_output=True, timeout=20)
         if proc.returncode != 0:
+            location = re.fullmatch(rb"FAIL: manual client fixture assertion ((?:manual_sync_fixture|first_publish)\.rs:\d+)\s*",
+                                    proc.stderr)
+            print("A2 probe failure", self.name, command, proc.returncode,
+                  location[1].decode("ascii") if location else "location unavailable")
             raise RuntimeError(f"synthetic fixture command failed: {self.name}/{command} ({proc.returncode})")
         reports = [json.loads(line) for line in proc.stdout.splitlines()]
         assert reports and all(report["status"] == "PASS" for report in reports)

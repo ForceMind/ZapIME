@@ -61,11 +61,15 @@ jobs:
       - name: Build shared manual client real-server acceptance probe
         run: cargo build --locked -p zapime-sync --example manual_sync_fixture
       - name: First publish of a restored record over authenticated HTTPS
+        env:
+          A2_POSTGRES_CONTAINER: ${{ job.services.postgres.id }}
+          ZAPIME_HTTPS_TEST_DATABASE_URL: postgres://postgres:zapime-ci-only@127.0.0.1:5432/zapime_first_publish_test?sslmode=disable
         run: |
           set -euo pipefail
+          # Keep the PostgreSQL-only TLS fixture separate from the S3 test data.
+          docker exec "$A2_POSTGRES_CONTAINER" createdb -U postgres zapime_first_publish_test
           (cd services/sync && go build -o ../../target/a2-sync-server/zapime-sync ./cmd/zapime-sync)
           ZAPIME_HTTPS_TEST_BINARY="$PWD/target/a2-sync-server/zapime-sync" \
-            ZAPIME_HTTPS_TEST_DATABASE_URL="$ZAPIME_TEST_DATABASE_URL" \
             python3 scripts/sync_first_publish_https_smoke.py | tee sync-first-publish-https.log
       - name: Two-device ciphertext and fresh-server recovery exercise
         run: python3 scripts/sync_service_smoke.py
