@@ -259,7 +259,8 @@ def foreground_server(work, report, go_binary):
             require(results[0]["applied"] == 1 and results[0]["echoed"] == 0, "foreground_receiver_did_not_apply")
             final = probe("verify-foreground-receiver", revision)[-1]
             require(final["records"] == final["cursor"] == revision and final["pending"] == 0, "foreground_receiver_state")
-            receiver_checks = {1: "independent_receiver", 2: "recovery_receiver", 3: "default_network_receiver"}
+            receiver_checks = {1: "independent_receiver", 2: "recovery_receiver", 3: "default_network_receiver",
+                               4: "interrupted_upload_receiver"}
             report[receiver_checks[revision]] = "PASS"
 
         def publish_member_edit():
@@ -269,16 +270,16 @@ def foreground_server(work, report, go_binary):
             raw = packet.read_bytes()
             require(json.loads(raw)["base_revision"] == 2, "conflict_member_used_wrong_base")
             status, receipt = api("POST", "/v1/changes", member["token"], raw=raw, decode=False)
-            require(status == 200 and json.loads(receipt)["revision"] == 4, "conflict_member_server_receipt_missing")
+            require(status == 200 and json.loads(receipt)["revision"] == 5, "conflict_member_server_receipt_missing")
             receipt_file = folder / "member-conflict-receipt.json"
             receipt_file.write_bytes(receipt)
             results = probe("ack-automatic", "b", key_file, member["device_id"], packet, receipt_file)
-            require(results[0]["revision"] == 4 and results[-1]["pending"] == 0
-                    and results[-1]["cursor"] == 3, "conflict_member_ack_not_persisted")
+            require(results[0]["revision"] == 5 and results[-1]["pending"] == 0
+                    and results[-1]["cursor"] == 4, "conflict_member_ack_not_persisted")
 
         yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == 4
+    require(summary["cleanup_completed"] and summary["service_revision"] == 5
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
@@ -412,7 +413,7 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
         adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
         click_text(adb, marker, "账号与同步", scroll=True)
 
-    def tap_control(select, reason):
+    def tap_control(select, reason, before_tap=None):
         def control():
             matches = [bounds(node) for node in window_nodes(adb, marker)
                        if node.get("package") == MAIN_PACKAGE and node.get("enabled") == "true"
@@ -423,7 +424,25 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
                     return x1, y1, x2, y2
             return None
         x1, y1, x2, y2 = wait_for(control, bool, 25, reason)
+        if before_tap:
+            before_tap()
         adb.run("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
+
+    def tap_switch(checked, before_tap=None):
+        target = "true" if checked else "false"
+        tap_control(lambda node: node.get("class") == "android.widget.Switch" and node.get("checkable") == "true"
+                    and node.get("checked") == target, "foreground_sync_switch_missing", before_tap)
+
+    def confirm_enable():
+        tap_control(lambda node: node.get("resource-id") == "android:id/button1"
+                    and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
+
+    def frozen_digest(stage):
+        output = instrument(stage)
+        digests = [match.group(1) for line in output
+                   if (match := re.fullmatch(r"INSTRUMENTATION_RESULT: frozen_sha256=([0-9a-f]{64})", line))]
+        require(len(digests) == 1, "interrupted_upload_frozen_digest_missing")
+        return digests[0]
 
     network_capability()
     instrument("foreground-seed")
@@ -432,12 +451,10 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     report["stage"] = "open_foreground_account_page"
     open_account()
     report["stage"] = "tap_unchecked_sync_switch"
-    tap_control(lambda node: node.get("class") == "android.widget.Switch" and node.get("checkable") == "true"
-                and node.get("checked") == "false", "foreground_unchecked_switch_missing")
+    tap_switch(False)
     require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_confirmation")
     report["stage"] = "confirm_foreground_sync_scope"
-    tap_control(lambda node: node.get("resource-id") == "android:id/button1"
-                and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
+    confirm_enable()
     report["foreground_trigger"] = "product_account_screen_confirmation"
 
     def shows(label):
@@ -498,15 +515,65 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     default_network_round(report, adb, identity, status, verify_receiver)
     report["foreground_uploads"] = 3
 
+    report["stage"] = "queue_upload_while_sync_off"
+    open_account()
+    wait_for(lambda: shows("本轮同步已检查"), bool, 35, "interrupted_upload_baseline_missing")
+    tap_switch(True)
+    wait_for(lambda: shows("同步已关闭"), bool, 18, "interrupted_upload_setup_not_disabled")
+    before = status()["dataRequests"]
+    instrument("foreground-queue-interrupted")
+    open_account()
+    wait_for(lambda: shows("同步已关闭"), bool, 18, "interrupted_upload_disabled_state_missing")
+    require(status()["uploads"] == 3 and status()["dataRequests"] == before, "disabled_interrupted_upload_transmitted")
+    verify_receiver(3, read_only=True)
+
+    report["stage"] = "close_while_server_receipt_is_held"
+    tap_switch(False)
+    confirm_enable()
+    wait_for(lambda: status().get("heldAckLive") is True, bool, 25, "interrupted_upload_not_committed_by_server")
+    tapped_at = 0
+
+    def record_close_tap():
+        nonlocal tapped_at
+        require(status().get("heldAckLive") is True, "interrupted_ack_not_held_at_tap")
+        tapped_at = time.time_ns() // 1_000_000
+
+    tap_switch(True, record_close_tap)
+    wait_for(lambda: status().get("heldAckLive") is False, bool, 12, "interrupted_ack_connection_not_closed")
+    observed = status()
+    require(observed["heldAckClosedAt"] >= tapped_at > 0 and not observed["heldAckDelivered"]
+            and 0 <= observed["heldAckDurationMs"] < 8500 and observed["uploads"] == 4,
+            "interrupted_ack_not_cancelled_before_deadline")
+    wait_for(lambda: shows("同步已关闭"), bool, 18, "interrupted_upload_close_not_persisted")
+    expected = observed["heldAckDigest"]
+    require(re.fullmatch(r"[0-9a-f]{64}", expected) and frozen_digest("foreground-closed-upload") == expected,
+            "interrupted_upload_pending_wire_changed")
+    verify_receiver(4, read_only=True)
+    report["close_during_upload"] = "PASS"
+
+    report["stage"] = "reconcile_interrupted_upload_by_pull"
+    before = status()["dataRequests"]
+    open_account()
+    wait_for(lambda: shows("同步已关闭"), bool, 18, "interrupted_upload_reopen_off_missing")
+    require(status()["dataRequests"] == before and status()["uploads"] == 4, "interrupted_upload_replayed_while_off")
+    tap_switch(False)
+    confirm_enable()
+    wait_for(lambda: shows("本轮同步已检查"), bool, 35, "interrupted_upload_pull_confirmation_missing")
+    require(frozen_digest("foreground-reconciled-upload") == expected, "interrupted_upload_reconciled_wire_changed")
+    verify_receiver(4)
+    require(status()["uploads"] == 4, "interrupted_upload_extra_post")
+    report["interrupted_upload_reconciled"] = "PASS"
+    report["foreground_uploads"] = 4
+
     report["stage"] = "foreground_concurrent_record_edits"
     instrument("foreground-queue-conflict")
     publish_member_edit()
     open_account()
     conflict_message = "远端资料未通过核对，请检查密钥或冲突记录。本机资料已保留"
     wait_for(lambda: shows(conflict_message), bool, 35, "foreground_conflict_message_missing")
-    require(status()["uploads"] == 3 and not status()["failure"], "foreground_conflict_uploaded_local_version")
+    require(status()["uploads"] == 4 and not status()["failure"], "foreground_conflict_uploaded_local_version")
     instrument("foreground-conflict-pending")
-    verify_receiver(4, read_only=True)
+    verify_receiver(5, read_only=True)
     report["foreground_conflict_preserved"] = "PASS"
 
     report["stage"] = "sign_out_and_reopen_without_transfer"
@@ -518,7 +585,7 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     before = status()["dataRequests"]
     open_account()
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_not_reloaded")
-    require(status()["dataRequests"] == before and status()["uploads"] == 3 and not status()["failure"],
+    require(status()["dataRequests"] == before and status()["uploads"] == 4 and not status()["failure"],
             "foreground_signed_out_sent_data")
     report["foreground_signout"] = "PASS"
 
@@ -703,7 +770,8 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
             cleanup("reverse", restore_reverse)
             cleanup("probe_apk_and_staging", remove_probe)
             try:
-                report["provider"] = {key: count for key, count in status().items() if key != "port"}
+                private_fields = {"port", "heldAckDigest", "heldAckClosedAt"}
+                report["provider"] = {key: count for key, count in status().items() if key not in private_fields}
             except (Rejected, OSError, ValueError):
                 report["provider_status_unavailable"] = True
 

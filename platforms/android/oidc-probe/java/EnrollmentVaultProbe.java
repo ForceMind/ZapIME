@@ -36,7 +36,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         String stage = arguments == null ? null : arguments.getString("stage");
         foreground = Arrays.asList("foreground-seed", "foreground-verify", "foreground-signed-out",
                 "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack",
-                "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability", "foreground-default-network")
+                "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability", "foreground-default-network",
+                "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -66,6 +67,11 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     ForegroundSyncProbe.queueConflict(getTargetContext());
                 } else if ("foreground-conflict-pending".equals(foreground)) {
                     ForegroundSyncProbe.verifyConflict(getTargetContext());
+                } else if ("foreground-queue-interrupted".equals(foreground)) {
+                    ForegroundSyncProbe.queueInterrupted(getTargetContext());
+                } else if ("foreground-closed-upload".equals(foreground) || "foreground-reconciled-upload".equals(foreground)) {
+                    result.putString("frozen_sha256", ForegroundSyncProbe.verifyInterrupted(getTargetContext(),
+                            "foreground-reconciled-upload".equals(foreground)));
                 } else {
                     ForegroundSyncProbe.signedOut(getTargetContext());
                 }

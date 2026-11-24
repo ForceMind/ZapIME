@@ -27,6 +27,34 @@ const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0
 let enrollmentSeed, backend;
 let foregroundSeedServed = false;
 
+function holdSyntheticAcknowledgement(res, payload, request) {
+  const began = performance.now();
+  totals.heldAckDigest = createHash('sha256').update(request).digest('hex');
+  totals.heldAckLive = true;
+  totals.heldAckDelivered = false;
+  res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+  res.write(' ');
+  const pulse = setInterval(() => {
+    if (performance.now() - began < 11_000) {
+      // The prefix is valid JSON whitespace. The actual receipt stays held.
+      res.write(' ');
+    } else {
+      clearInterval(pulse);
+      totals.heldAckDelivered = true;
+      record();
+      res.end(payload);
+    }
+  }, 350);
+  res.once('close', () => {
+    clearInterval(pulse);
+    totals.heldAckLive = false;
+    totals.heldAckClosedAt = Date.now();
+    totals.heldAckDurationMs = Math.round(performance.now() - began);
+    record();
+  });
+  record();
+}
+
 function record() {
   writeFileSync(summaryPath + '.tmp', JSON.stringify({ port: server.address()?.port ?? 0, ...totals }), { mode: 0o600 });
   renameSync(summaryPath + '.tmp', summaryPath);
@@ -177,16 +205,22 @@ async function handle(req, res) {
     if (plainRead || dataRead || dataWrite) {
       const authorization = req.headers.authorization;
       assert.ok(typeof authorization === 'string' && authorization.length <= 512 && authorization.startsWith('Bearer '));
+      const request = dataWrite ? await read(req, 8192, null) : undefined;
       const upstream = await fetch('http://127.0.0.1:' + foreground.port + url.pathname + url.search, {
         method, headers: { authorization, 'content-type': 'application/json' },
-        body: dataWrite ? await read(req, 8192, null) : undefined, redirect: 'error', signal: AbortSignal.timeout(5000),
+        body: request, redirect: 'error', signal: AbortSignal.timeout(5000),
       });
       const payload = await upstream.text();
       assert.ok(Buffer.byteLength(payload) <= 16_384);
       if (dataRead || dataWrite) totals.dataRequests++;
       if (dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
-        assert.ok(totals.uploads <= 3 && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
+        assert.ok(totals.uploads <= 4 && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
+        if (totals.uploads === 4) {
+          assert.equal(JSON.parse(request).operation_id, '8cbfd5d6-dc74-4fbd-b600-08da374eb8f2');
+          holdSyntheticAcknowledgement(res, payload, request);
+          return;
+        }
       }
       record();
       reply(res, upstream.status, payload, 'application/json');

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.LinkedHashSet;
@@ -30,6 +31,8 @@ final class ForegroundSyncProbe {
     private static final UUID RECOVERY_RECORD = UUID.fromString("a4208deb-74bb-4b53-984a-07faa0832711");
     private static final UUID NETWORK_RECORD = UUID.fromString("22b328d3-b4b7-4802-8de1-d83ee8d78a32");
     private static final UUID NETWORK_OPERATION = UUID.fromString("1ccfb101-a40d-4c11-aff1-17dfc8a7891e");
+    private static final UUID INTERRUPTED_RECORD = UUID.fromString("84c8e285-0d0c-4f5c-8258-ba048d906a29");
+    private static final UUID INTERRUPTED_OPERATION = UUID.fromString("8cbfd5d6-dc74-4fbd-b600-08da374eb8f2");
     private static final UUID CONFLICT_OPERATION = UUID.fromString("3bc90113-5fe3-4b79-8efc-705ab851d55d");
     private static final String LOCAL_EDIT = "synthetic A3 conflicting device edit";
 
@@ -141,7 +144,7 @@ final class ForegroundSyncProbe {
     }
 
     static void queueConflict(Context context) throws Exception {
-        verifyNetworkRecovery(context, true);
+        verifyInterrupted(context, true);
         long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
         require(core != 0);
         try {
@@ -153,8 +156,49 @@ final class ForegroundSyncProbe {
     }
 
     static void verifyConflict(Context context) throws Exception {
-        verifyNetworkRecovery(context, true);
+        verifyInterrupted(context, true);
         checkConflict(context, true);
+    }
+
+    static void queueInterrupted(Context context) throws Exception {
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(consent.account != null && consent.expectedKey == null);
+        checkFirstThreeReceipts(context);
+        checkCursor(context, 3);
+        long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+        require(core != 0);
+        try {
+            edit(core, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, 0, "a3stop", "synthetic A3 interrupted upload shortcut");
+        } finally {
+            NativeCore.close(core);
+        }
+        checkReceipt(context, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, 0);
+    }
+
+    static String verifyInterrupted(Context context, boolean acknowledged) throws Exception {
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(consent.account != null && (consent.expectedKey != null) == acknowledged);
+        checkFirstThreeReceipts(context);
+        checkReceipt(context, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, acknowledged ? 4 : 0);
+        checkCursor(context, acknowledged ? 4 : 3);
+        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
+        try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
+                Cursor row = db.rawQuery("SELECT wire FROM sync_uploads WHERE operation_id=?",
+                        new String[]{INTERRUPTED_OPERATION.toString()})) {
+            require(row.moveToFirst() && !row.isNull(0));
+            byte[] wire = row.getString(0).getBytes(StandardCharsets.UTF_8);
+            try {
+                byte[] digest = MessageDigest.getInstance("SHA-256").digest(wire);
+                StringBuilder hex = new StringBuilder(64);
+                for (byte value : digest) {
+                    hex.append(Character.forDigit((value & 0xff) >>> 4, 16));
+                    hex.append(Character.forDigit(value & 15, 16));
+                }
+                return hex.toString();
+            } finally {
+                Arrays.fill(wire, (byte) 0);
+            }
+        }
     }
 
     static void queueNetworkRecovery(Context context) throws Exception {
@@ -193,11 +237,16 @@ final class ForegroundSyncProbe {
             require(material != null);
             Arrays.fill(material, (byte) 0);
         }
+        checkFirstThreeReceipts(context);
+        checkReceipt(context, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, 4);
+        checkCursor(context, 4);
+        checkConflict(context, true);
+    }
+
+    private static void checkFirstThreeReceipts(Context context) throws Exception {
         checkReceipt(context, RECORD, OPERATION, 1);
         checkReceipt(context, RECOVERY_RECORD, RECOVERY_OPERATION, 2);
         checkReceipt(context, NETWORK_RECORD, NETWORK_OPERATION, 3);
-        checkCursor(context, 3);
-        checkConflict(context, true);
     }
 
     private static void checkConflict(Context context, boolean retained) throws Exception {
@@ -210,8 +259,8 @@ final class ForegroundSyncProbe {
             require(local.moveToFirst() && local.getInt(0) == 2 && local.getInt(2) == 1 && local.isNull(3));
             require(LOCAL_EDIT.equals(new JSONObject(local.getString(1)).getJSONObject("content").getString("text")));
             if (retained) {
-                require(failed.moveToFirst() && failed.getInt(0) == 3 && "\"local_conflict\"".equals(failed.getString(1))
-                        && new JSONObject(failed.getString(2)).getInt("head") == 4 && !failed.moveToNext());
+                require(failed.moveToFirst() && failed.getInt(0) == 4 && "\"local_conflict\"".equals(failed.getString(1))
+                        && new JSONObject(failed.getString(2)).getInt("head") == 5 && !failed.moveToNext());
             } else {
                 require(!failed.moveToFirst());
             }

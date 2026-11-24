@@ -20,6 +20,7 @@ const SHORTCUT_CODE: &str = "a3sync";
 const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
 const RECOVERY_TEXT: &str = "synthetic A3 recovered shortcut";
 const NETWORK_TEXT: &str = "synthetic A3 default network shortcut";
+const CLOSE_TEXT: &str = "synthetic A3 interrupted upload shortcut";
 const CONFLICT_TEXT: &str = "synthetic A3 independent member edit";
 
 fn shortcut() -> Content {
@@ -197,7 +198,7 @@ fn main() {
     let material = material(dir);
     if command == "verify-foreground-receiver" {
         let revision: u64 = args[3].parse().expect("fixture revision");
-        assert!((1..=3).contains(&revision), "foreground fixture head");
+        assert!((1..=4).contains(&revision), "foreground fixture head");
         let mut b = open(dir, "b");
         let records = b.records(false).unwrap();
         assert!(
@@ -214,13 +215,22 @@ fn main() {
                 "same recovered Android shortcut"
             );
         }
-        if revision == 3 {
+        if revision >= 3 {
             assert!(
                 records.iter().any(
                     |row| matches!(&row.content, Content::Snippet { code, text, tags }
                 if code == "a3wifi" && text == NETWORK_TEXT && tags.is_empty())
                 ),
                 "same default network shortcut"
+            );
+        }
+        if revision == 4 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3stop" && text == CLOSE_TEXT && tags.is_empty())
+                ),
+                "same interrupted upload shortcut"
             );
         }
         assert!(b.pending_count().unwrap() == 0, "no echo upload");
@@ -351,6 +361,7 @@ fn main() {
                     SHORTCUT_TEXT,
                     RECOVERY_TEXT,
                     NETWORK_TEXT,
+                    CLOSE_TEXT,
                     CONFLICT_TEXT
                 ]
                 .iter()
