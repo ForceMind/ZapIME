@@ -1,5 +1,7 @@
 # ZapIME（闪电输入法）产品目标与持续交付计划
 
+**2026-11-24 A3 方向：** Android 在登录时一次明确开启加密同步，后续自动执行，并在主 App 查看状态与处理异常。当前[新版效果图](design/ANDROID_ACCOUNT_SYNC.md)待确认。
+
 更新日期：2026-11-19。当前从实时 `main` 接续，源码 Alpha `v0.1.0-alpha.1` 已公开。原 PR #71/#73/#74/#75/#78/#79/#80/#81 已经 #82 整合，#83 补齐发布证据；后续切片使用独立分支/PR。接续入口见[当前交接提示](WORK_HANDOFF_PROMPT.md)。
 
 2026-11-07 补充当前切片：按用户要求，`feat/offline-candidate-ranking` / PR #78 已从手动同步开发基线接入默认开启的 Android 本机候选增强。固定 MSIME、chinese-ime-lm rerank-v2 8M 和已有 ORT 已完成实际推理、稳定候选身份、隐私/生命周期回退及包内资源核验；固定测试修订 `5e1a87c` 的 API28/35/36 真实模型方法与系统 IME 两类门禁全部通过，已提供[双 ABI 开发包](CANDIDATE_RANKING_TRYOUT.md)。下一阶段分别验证 ARM/S25 长期输入、真实语料质量和性能，以及其他三端模型宿主；不将模拟器成功当手机验收。此切片保留下述语音、四端和同步目标；实现与边界见[候选增强](CANDIDATE_RANKING.md)，精确结果见[STATUS](STATUS.md)。

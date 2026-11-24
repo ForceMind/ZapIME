@@ -1,5 +1,9 @@
 # 技术决策
 
+## 2026-11-24 · Android 登录时开启加密同步
+
+用户确认日常同步采用「登录并开启同步」的一次明确同意。账号登录、设备授权、同一把原密钥和开启状态同时具备时，设备才可自动处理该账号的资料。先核对远端与本机状态，保留冲突、墓碑、冻结请求与回执保护。当前阶段为[效果图待确认](design/ANDROID_ACCOUNT_SYNC.md)，实施前仍须明确设备接续和自动触发契约。现有手动流程沿用 ADR-022。
+
 ## ADR-025 · 2026-11-07 · 配置重启使用独立新鲜证明
 
 保留普通EditorInfo/owned选区强校验；只对同EditorInfo及InputConnection引用的受限配置重启，通过独立进程单槽worker有界读取公开SurroundingText，严格验证绝对位置、完整组字及有限上下文。Pending保留核心并hold回复/动作，经engine屏障先旧回复后新动作；先消费ticket再恢复标记，失败保App正文。800ms是逻辑有效期，不等于阻塞IPC实际退出。[完整状态机、安全边界与验收](ADR_025_VERIFIED_CONFIGURATION_RESTART.md)。本修订真实系统IME/配置实验待CI，不将编译或JVM冒充通过。
