@@ -37,6 +37,7 @@ final class SyncEnrollmentVault {
         final UUID account;
         final AccountLoginProtocol.Config config;
         private final byte[] binding;
+        final String subjectFingerprint;
 
         Scope(AccountLoginProtocol.Config config, UUID account, String subjectFingerprint) throws SyncHttp.Failure {
             if (config == null || account == null || account.equals(new UUID(0, 0))
@@ -45,9 +46,13 @@ final class SyncEnrollmentVault {
             }
             this.account = account;
             this.config = config;
+            this.subjectFingerprint = subjectFingerprint;
             binding = hash(String.join("\n", "ZapIME/enrollment-scope/v1", config.syncServer.toString(),
                     config.issuer.toString(), config.resource.toString(), config.clientId, account.toString(),
                     subjectFingerprint).getBytes(StandardCharsets.UTF_8));
+        }
+        byte[] binding() {
+            return binding.clone();
         }
     }
 

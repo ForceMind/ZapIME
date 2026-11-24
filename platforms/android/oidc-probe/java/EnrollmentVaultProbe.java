@@ -39,9 +39,13 @@ public final class EnrollmentVaultProbe extends Instrumentation {
             result.putString("enrollment_vault", "PASS");
             checkNetwork();
             result.putString("enrollment_http", "PASS");
+            ConsentStoreProbe.run(getTargetContext());
+            result.putString("sync_consent_store", "PASS");
             finish(Activity.RESULT_OK, result);
         } catch (Exception | AssertionError failed) {
-            result.putString(result.containsKey("enrollment_vault") ? "enrollment_http" : "enrollment_vault", "FAIL");
+            String field = result.containsKey("enrollment_http") ? "sync_consent_store"
+                    : result.containsKey("enrollment_vault") ? "enrollment_http" : "enrollment_vault";
+            result.putString(field, "FAIL");
             result.putString("failure_type", failed.getClass().getSimpleName());
             finish(Activity.RESULT_CANCELED, result);
         }

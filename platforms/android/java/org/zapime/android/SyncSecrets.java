@@ -24,7 +24,7 @@ final class SyncSecrets {
     private static final int MAX_MATERIAL=64*1024,HEADER=16,TAG=16;
     private static final byte[] MAGIC={'Z','K','V',1};
     private enum Purpose {
-        MATERIAL("material"), CONNECTION("connection"), ENROLLMENT("enrollment");
+        MATERIAL("material"), CONNECTION("connection"), ENROLLMENT("enrollment"), CONSENT("consent");
         final String domain;
         Purpose(String domain){this.domain=domain;}
     }
@@ -147,6 +147,12 @@ final class SyncSecrets {
     }
     static void forgetEnrollment(Context context,UUID account)throws IOException {
         worker();synchronized(SyncSecrets.class){forgetLocked(context,account,Purpose.ENROLLMENT);}
+    }
+    static void saveSyncConsent(Context context,UUID slot,byte[] bytes)throws IOException {
+        worker();synchronized(SyncSecrets.class){saveLocked(context,slot,bytes,Purpose.CONSENT);}
+    }
+    static byte[] loadSyncConsent(Context context,UUID slot)throws IOException {
+        worker();synchronized(SyncSecrets.class){return loadLocked(context,slot,Purpose.CONSENT);}
     }
     /** Only an explicit forget/reset action may call this. Material is separate from connection credentials. */
     static void forget(Context context,UUID profile)throws IOException {

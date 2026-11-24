@@ -281,11 +281,14 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
                 require("INSTRUMENTATION_RESULT: enrollment_vault=PASS" in vault, "android_enrollment_vault_not_verified")
                 report["android_enrollment_vault"] = "PASS"
                 final_counts = status()
-                require("INSTRUMENTATION_RESULT: enrollment_http=PASS" in vault and "INSTRUMENTATION_CODE: -1" in vault
+                require("INSTRUMENTATION_RESULT: enrollment_http=PASS" in vault
                         and final_counts["enrollmentFinished"] == 1 and final_counts["dataRequests"] == 0
                         and final_counts["droppedClaimReplies"] == 1 and not final_counts["failure"],
                         "android_device_enrollment_http_not_verified")
                 report["device_enrollment"] = "PASS"
+                require("INSTRUMENTATION_RESULT: sync_consent_store=PASS" in vault
+                        and "INSTRUMENTATION_CODE: -1" in vault, "android_sync_consent_not_verified")
+                report["sync_consent_store"] = "PASS"
             report["oidc_go_token_proof"] = "PASS"
             report["login_data_requests"] = 0
         finally:
@@ -363,6 +366,7 @@ def main():
         if main_mode:
             report["main_account_lookup"] = report["main_signed_in_only"] = "NOT RUN"
             report["android_enrollment_vault"] = "NOT RUN"
+            report["sync_consent_store"] = "NOT RUN"
         with tempfile.TemporaryDirectory(prefix="a3-private-") as temporary:
             run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",

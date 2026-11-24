@@ -45,7 +45,7 @@ final class SyncKeyRegistration {
         private Result(UUID account,String state,Descriptor descriptor,UUID registeredBy,String registeredAt,Descriptor local){
             this.account=account;this.state=state;this.descriptor=descriptor;this.registeredBy=registeredBy;this.registeredAt=registeredAt;this.local=local;
             this.keyId=descriptor==null?null:descriptor.keyId;this.materialSha256=descriptor==null?null:descriptor.materialSha256;
-            matchesLocal="registered".equals(state)&&local.same(descriptor);
+            matchesLocal="registered".equals(state)&&local!=null&&local.same(descriptor);
         }
     }
     private static SyncHttp.Failure invalid(){return new SyncHttp.Failure("key_response");}
@@ -100,7 +100,14 @@ final class SyncKeyRegistration {
      * legacy account. Duplicate/unknown fields and coercions are rejected.
      */
     static Result parse(byte[] wire,UUID expected,Descriptor local)throws IOException {
-        if(expected==null||expected.equals(new UUID(0,0))||local==null)throw invalid();
+        if(local==null)throw invalid();
+        return parseResponse(wire,expected,local);
+    }
+    static Result parseRemote(byte[] wire,UUID expected)throws IOException {
+        return parseResponse(wire,expected,null);
+    }
+    private static Result parseResponse(byte[] wire,UUID expected,Descriptor local)throws IOException {
+        if(expected==null||expected.equals(new UUID(0,0)))throw invalid();
         try(JsonReader reader=reader(wire,2048)){
             if(reader.peek()!=JsonToken.BEGIN_OBJECT)throw invalid();reader.beginObject();Set<String> seen=new HashSet<>();UUID account=null,by=null;String state=null,at=null;Descriptor descriptor=null;
             while(reader.hasNext()){
@@ -186,6 +193,16 @@ final class SyncKeyRegistration {
         try{return current(context,snapshot,cancellation);}
         catch(IOException fixed){throw fixed;}
         catch(RuntimeException|LinkageError unavailable){throw new IOException("sync_key_local_unavailable");}
+    }
+    /** Read the registered public identity when the original local key still needs recovery. */
+    static Result inspectRemote(Context context,SyncConnection snapshot,SyncHttp.Cancellation cancellation)throws IOException {
+        worker();if(context==null||snapshot==null||cancellation==null)throw new IOException("sync_key_invalid_request");
+        cancellation.check();sameConnection(context,snapshot);byte[] response=null;
+        try{
+            try{response=snapshot.keyDescriptor(null,cancellation);}
+            finally{cancellation.check();sameConnection(context,snapshot);}
+            return parseRemote(response,snapshot.account);
+        }finally{if(response!=null)Arrays.fill(response,(byte)0);}
     }
     private static Result exchange(Context context,SyncConnection snapshot,Descriptor local,byte[] registration,SyncHttp.Cancellation cancellation)throws IOException {
         sameLocal(context,snapshot,local,cancellation);byte[] response=null;
