@@ -10,22 +10,19 @@ use zapime_data::quarantine::MAX_PAGE_BYTES;
 const CODE: &str = "a2restore";
 const RESTORED: &str = "synthetic restored A2 snippet";
 
-fn snippet(store: &mut Store, id: Uuid, code: &str, text: &str, deleted: bool) {
+fn insert(store: &mut Store, id: Uuid, content: Content, deleted: bool) {
     let device = store.device_id().unwrap();
     store
-        .edit(
-            Uuid::new_v4(),
-            id,
-            0,
-            device,
-            Content::Snippet {
-                code: code.into(),
-                text: text.into(),
-                tags: vec!["synthetic".into()],
-            },
-            deleted,
-        )
-        .expect("fixture snippet");
+        .edit(Uuid::new_v4(), id, 0, device, content, deleted)
+        .expect("fixture record");
+}
+
+fn snippet(code: &str, text: &str) -> Content {
+    Content::Snippet {
+        code: code.into(),
+        text: text.into(),
+        tags: vec!["synthetic".into()],
+    }
 }
 
 fn record_id(dir: &Path) -> Uuid {
@@ -41,7 +38,17 @@ fn initialize(dir: &Path, args: &[String]) {
     let id = Uuid::new_v4();
     private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
     let mut source = Store::open(&dir.join("original.sqlite3")).unwrap();
-    snippet(&mut source, id, CODE, RESTORED, false);
+    let restored = if mode == "duplicate" {
+        Content::Dictionary {
+            scheme: "pinyin".into(),
+            code: CODE.into(),
+            text: RESTORED.into(),
+            weight: 1,
+        }
+    } else {
+        snippet(CODE, RESTORED)
+    };
+    insert(&mut source, id, restored.clone(), false);
     let archive = source.export_plaintext().expect("fixture archive");
     let a_path = database(dir, "a");
     let mut a = Store::open(&a_path).unwrap();
@@ -59,12 +66,22 @@ fn initialize(dir: &Path, args: &[String]) {
         "positive" => {}
         "nonterminal" => {
             for code in ["a2seedone", "a2seedtwo"] {
-                snippet(&mut b, Uuid::new_v4(), code, "synthetic remote seed", false);
+                insert(
+                    &mut b,
+                    Uuid::new_v4(),
+                    snippet(code, "synthetic remote seed"),
+                    false,
+                );
             }
         }
-        "same-id" => snippet(&mut b, id, CODE, "synthetic concurrent edit", false),
-        "duplicate" => snippet(&mut b, Uuid::new_v4(), CODE, RESTORED, false),
-        "tombstone" => snippet(&mut b, id, CODE, RESTORED, true),
+        "same-id" => insert(
+            &mut b,
+            id,
+            snippet(CODE, "synthetic concurrent edit"),
+            false,
+        ),
+        "duplicate" => insert(&mut b, Uuid::new_v4(), restored, false),
+        "tombstone" => insert(&mut b, id, restored, true),
         _ => panic!("restore fixture mode"),
     }
 }
