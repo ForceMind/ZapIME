@@ -84,7 +84,7 @@ final class ForegroundSyncProbe {
         if (!known) transports.add("other");
     }
 
-    static void seed(Context context, AccountLoginProtocol.Config config, byte[] seed) throws Exception {
+    static void seed(Context context, AccountLoginProtocol.Config config, byte[] seed, boolean queueWindow) throws Exception {
         File root = new File(context.getFilesDir(), "zapime");
         require(!root.exists() && SyncConnectionStore.load(context) == null && SyncConsentStore.load(context).account == null);
         JSONObject input = new JSONObject(new String(seed, StandardCharsets.UTF_8));
@@ -111,7 +111,15 @@ final class ForegroundSyncProbe {
                             input.getString("subject_fingerprint"));
                     SyncConsentStore.State signIn = SyncConsentStore.beginLogin(context, cancel);
                     require(SyncConsentStore.completeLogin(context, signIn.generation, scope, connection.device, cancel).expectedKey == null);
-                    edit(core, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
+                    if (queueWindow) {
+                        for (int index = 1; index <= 16; index++) {
+                            edit(core, queueRecord(index), queueOperation(index), 0, "burst" + index, "synthetic A3 queue item " + index);
+                        }
+                        edit(core, queueRecord(1), queueOperation(17), 1, "burst1", "synthetic A3 queue item 1", true);
+                        edit(core, queueRecord(18), queueOperation(18), 0, "burst18", "synthetic A3 queue item 18");
+                    } else {
+                        edit(core, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
+                    }
                 } finally {
                     NativeCore.close(core);
                 }
@@ -121,7 +129,42 @@ final class ForegroundSyncProbe {
         } finally {
             Arrays.fill(material, (byte) 0);
         }
-        verify(context, false);
+        if (queueWindow) verifyQueue(context, 0);
+        else verify(context, false);
+    }
+
+    private static UUID queueRecord(int index) {
+        return new UUID(0x96abb4f18f2c4bb3L, Long.MIN_VALUE | index);
+    }
+
+    private static UUID queueOperation(int index) {
+        return new UUID(0x324b1dfaba2b4ed3L, Long.MIN_VALUE | index);
+    }
+
+    static void verifyQueue(Context context, int acknowledged) throws Exception {
+        require(acknowledged == 0 || acknowledged == 16 || acknowledged == 18);
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(consent.account != null && (consent.expectedKey != null) == (acknowledged > 0));
+        checkCursor(context, acknowledged);
+        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
+        try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
+                Cursor rows = db.rawQuery("SELECT o.id,o.pending,u.ack_revision,u.wire FROM sync_queue q "
+                        + "JOIN operations o ON o.id=q.operation_id LEFT JOIN sync_uploads u ON u.operation_id=o.id "
+                        + "ORDER BY q.sequence", null);
+                Cursor first = db.rawQuery("SELECT r.revision,r.body,COALESCE(v.server_revision,0) FROM records r "
+                        + "LEFT JOIN sync_versions v ON v.record_id=r.id WHERE r.id=?", new String[]{queueRecord(1).toString()})) {
+            for (int index = 1; index <= 18; index++) {
+                require(rows.moveToNext() && queueOperation(index).toString().equals(rows.getString(0)));
+                if (index <= acknowledged) {
+                    require(rows.getInt(1) == 0 && rows.getInt(2) == index && !rows.isNull(3));
+                } else {
+                    require(rows.getInt(1) == 1 && rows.isNull(2) && rows.isNull(3));
+                }
+            }
+            require(!rows.moveToNext() && first.moveToFirst() && first.getInt(0) == 2);
+            require(new JSONObject(first.getString(1)).getBoolean("deleted"));
+            require(first.getInt(2) == (acknowledged == 18 ? 17 : acknowledged == 16 ? 1 : 0));
+        }
     }
 
     static void verify(Context context, boolean acknowledged) throws Exception {
@@ -223,10 +266,14 @@ final class ForegroundSyncProbe {
     }
 
     private static void edit(long core, UUID record, UUID operation, long expected, String code, String text) throws Exception {
+        edit(core, record, operation, expected, code, text, false);
+    }
+
+    private static void edit(long core, UUID record, UUID operation, long expected, String code, String text, boolean deleted) throws Exception {
         JSONObject content = new JSONObject().put("type", "snippet").put("code", code)
                 .put("text", text).put("tags", new JSONArray());
         JSONObject command = new JSONObject().put("op", "personal_edit").put("id", record.toString())
-                .put("operation_id", operation.toString()).put("expected_revision", expected).put("content", content);
+                .put("operation_id", operation.toString()).put("expected_revision", expected).put("content", content).put("deleted", deleted);
         require(!new JSONObject(NativeCore.request(core, command.toString())).has("error"));
     }
 

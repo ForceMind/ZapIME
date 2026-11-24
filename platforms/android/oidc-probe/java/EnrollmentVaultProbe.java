@@ -37,7 +37,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         foreground = Arrays.asList("foreground-seed", "foreground-verify", "foreground-signed-out",
                 "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack",
                 "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability", "foreground-default-network",
-                "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload", "foreground-switched-account")
+                "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload", "foreground-switched-account",
+                "foreground-queue-window-seed", "foreground-queue-window-first", "foreground-queue-window-final")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -50,10 +51,10 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     ForegroundSyncProbe.readDefaultNetwork(getTargetContext(), result);
                 } else if ("foreground-default-network".equals(foreground)) {
                     DefaultNetworkProbe.run(this);
-                } else if ("foreground-seed".equals(foreground)) {
+                } else if ("foreground-seed".equals(foreground) || "foreground-queue-window-seed".equals(foreground)) {
                     AccountLoginProtocol.Config config = AccountLoginDeployment.config();
                     byte[] input = fixture(config, "foreground", false);
-                    try { ForegroundSyncProbe.seed(getTargetContext(), config, input); }
+                    try { ForegroundSyncProbe.seed(getTargetContext(), config, input, "foreground-queue-window-seed".equals(foreground)); }
                     finally { Arrays.fill(input, (byte) 0); }
                 } else if ("foreground-verify".equals(foreground)) {
                     ForegroundSyncProbe.verify(getTargetContext(), true);
@@ -74,6 +75,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                             "foreground-reconciled-upload".equals(foreground)));
                 } else if ("foreground-switched-account".equals(foreground)) {
                     result.putString("frozen_sha256", ForegroundSyncProbe.switchedAccount(getTargetContext(), result));
+                } else if ("foreground-queue-window-first".equals(foreground) || "foreground-queue-window-final".equals(foreground)) {
+                    ForegroundSyncProbe.verifyQueue(getTargetContext(), "foreground-queue-window-first".equals(foreground) ? 16 : 18);
                 } else {
                     result.putString("prior_connection_sha256", ForegroundSyncProbe.signedOut(getTargetContext()));
                 }

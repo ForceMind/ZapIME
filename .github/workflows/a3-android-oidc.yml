@@ -184,6 +184,7 @@ jobs:
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-auth.test
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture
+            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture queue-window
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -192,4 +193,5 @@ jobs:
             target/a3-android-oidc/report.json
             target/a3-android-oidc/main-report.json
             target/a3-android-oidc/foreground-report.json
+            target/a3-android-oidc/queue-window-report.json
           if-no-files-found: error

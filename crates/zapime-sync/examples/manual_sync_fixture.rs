@@ -196,6 +196,51 @@ fn main() {
         return;
     }
     let material = material(dir);
+    if command == "verify-queue-window-receiver" {
+        let revision: u64 = args[3].parse().expect("fixture revision");
+        assert!(matches!(revision, 16 | 18), "queue fixture head");
+        let mut b = open(dir, "b");
+        let records = b.records(true).unwrap();
+        assert!(
+            records.len() == if revision == 16 { 16 } else { 17 },
+            "queue fixture record count"
+        );
+        for index in (1..=16).chain((revision == 18).then_some(18)) {
+            let id = Uuid::from_u128(0x96ab_b4f1_8f2c_4bb3_8000_0000_0000_0000 | index);
+            let record = records
+                .iter()
+                .find(|record| record.id == id)
+                .expect("queue record");
+            let deleted = index == 1 && revision == 18;
+            assert!(
+                record.revision == if deleted { 2 } else { 1 },
+                "queue fixture record revision"
+            );
+            assert!(record.deleted == deleted, "queue fixture deletion");
+            assert!(
+                record.content
+                    == Content::Snippet {
+                        code: format!("burst{index}"),
+                        text: format!("synthetic A3 queue item {index}"),
+                        tags: vec![],
+                    },
+                "queue fixture record content"
+            );
+        }
+        assert!(
+            b.pending_count().unwrap() == 0
+                && client::stage_next_automatic(&mut b, material.profile, &material)
+                    .unwrap()
+                    .is_none(),
+            "receiver never uploads pulled records"
+        );
+        assert!(
+            client::pull_cursor(&mut b, material.profile, &material).unwrap() == revision,
+            "receiver queue fixture cursor"
+        );
+        status(&mut b, &material, command);
+        return;
+    }
     if command == "verify-foreground-receiver" {
         let revision: u64 = args[3].parse().expect("fixture revision");
         assert!((1..=4).contains(&revision), "foreground fixture head");

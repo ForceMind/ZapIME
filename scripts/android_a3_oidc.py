@@ -207,7 +207,7 @@ def copy_hosts(adb, path, staged):
 
 
 @contextmanager
-def foreground_server(work, report, go_binary):
+def foreground_server(work, report, go_binary, queue_window=False):
     folder = work / "foreground"
     folder.mkdir(mode=0o700)
     example = ROOT / "target/debug/examples/manual_sync_fixture"
@@ -276,9 +276,37 @@ def foreground_server(work, report, go_binary):
             require(results[0]["revision"] == 5 and results[-1]["pending"] == 0
                     and results[-1]["cursor"] == 4, "conflict_member_ack_not_persisted")
 
-        yield config, verify_receiver, publish_member_edit
+        def verify_queue_receiver(revision):
+            after = {16: 0, 18: 16}[revision]
+            status, page = api("GET", f"/v1/changes?after={after}", member["token"], decode=False)
+            decoded = json.loads(page)
+            require(status == 200 and decoded["head"] == decoded["next_cursor"] == revision
+                    and len(decoded["changes"]) == revision - after, "queue_window_server_page_mismatch")
+            page_file = folder / f"queue-page-{revision}.json"
+            page_file.write_bytes(page)
+            results = probe("apply", "b", key_file, page_file)
+            require(results[0]["applied"] == revision - after and results[0]["echoed"] == 0,
+                    "queue_window_receiver_did_not_apply")
+            probe("verify-queue-window-receiver", revision)
+
+        def replay_first_upload():
+            raw = (folder / "bridge.json.first-upload").read_bytes()
+            status, receipt = api("POST", "/v1/changes", owner["token"], raw=raw, decode=False)
+            require(status == 200 and json.loads(receipt)["revision"] == 1, "queue_window_replay_receipt_mismatch")
+            status, page = api("GET", "/v1/changes?after=18", member["token"])
+            require(status == 200 and page["head"] == page["next_cursor"] == 18 and page["changes"] == [],
+                    "queue_window_replay_changed_remote_history")
+            probe("verify-queue-window-receiver", 18)
+
+        if queue_window:
+            status, page = api("GET", "/v1/changes?after=0", member["token"])
+            require(status == 200 and page["head"] == page["next_cursor"] == 0 and page["changes"] == [],
+                    "queue_window_remote_not_empty")
+            yield config, verify_queue_receiver, replay_first_upload
+        else:
+            yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == 5
+    require(summary["cleanup_completed"] and summary["service_revision"] == (18 if queue_window else 5)
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
@@ -374,13 +402,50 @@ def default_network_round(report, adb, identity, status, verify_receiver):
                     raise Rejected("default_network_observer_cleanup_failed") from None
 
 
+def foreground_instrument(adb, stage):
+    output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
+                     MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
+    require(f"INSTRUMENTATION_RESULT: {stage}=PASS" in output and "INSTRUMENTATION_CODE: -1" in output,
+            stage + "_failed")
+    return output
+
+
+def open_sync_account(adb, marker):
+    adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
+    click_text(adb, marker, "账号与同步", scroll=True)
+
+
+def tap_sync_control(adb, marker, select, reason, before_tap=None):
+    def control():
+        matches = [bounds(node) for node in window_nodes(adb, marker)
+                   if node.get("package") == MAIN_PACKAGE and node.get("enabled") == "true"
+                   and node.get("clickable") == "true" and select(node)]
+        if len(matches) == 1 and matches[0]:
+            x1, y1, x2, y2 = matches[0]
+            if x2 > x1 and y2 > y1:
+                return x1, y1, x2, y2
+        return None
+    x1, y1, x2, y2 = wait_for(control, bool, 25, reason)
+    if before_tap:
+        before_tap()
+    adb.run("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
+
+
+def tap_sync_switch(adb, marker, checked, before_tap=None):
+    target = "true" if checked else "false"
+    tap_sync_control(adb, marker, lambda node: node.get("class") == "android.widget.Switch"
+                     and node.get("checkable") == "true" and node.get("checked") == target,
+                     "foreground_sync_switch_missing", before_tap)
+
+
+def confirm_sync_enable(adb, marker):
+    tap_sync_control(adb, marker, lambda node: node.get("resource-id") == "android:id/button1"
+                     and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
+
+
 def foreground_round(report, adb, identity, marker, status, verify_receiver, publish_member_edit, without_tls):
     def instrument(stage):
-        output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
-                         MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
-        require(f"INSTRUMENTATION_RESULT: {stage}=PASS" in output and "INSTRUMENTATION_CODE: -1" in output,
-                stage + "_failed")
-        return output
+        return foreground_instrument(adb, stage)
 
     def network_capability():
         report["stage"] = "read_default_network_capability"
@@ -409,32 +474,16 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
         report["default_network_capability"] = values
 
     def open_account():
-        adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
-        click_text(adb, marker, "账号与同步", scroll=True)
+        open_sync_account(adb, marker)
 
     def tap_control(select, reason, before_tap=None):
-        def control():
-            matches = [bounds(node) for node in window_nodes(adb, marker)
-                       if node.get("package") == MAIN_PACKAGE and node.get("enabled") == "true"
-                       and node.get("clickable") == "true" and select(node)]
-            if len(matches) == 1 and matches[0]:
-                x1, y1, x2, y2 = matches[0]
-                if x2 > x1 and y2 > y1:
-                    return x1, y1, x2, y2
-            return None
-        x1, y1, x2, y2 = wait_for(control, bool, 25, reason)
-        if before_tap:
-            before_tap()
-        adb.run("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
+        tap_sync_control(adb, marker, select, reason, before_tap)
 
     def tap_switch(checked, before_tap=None):
-        target = "true" if checked else "false"
-        tap_control(lambda node: node.get("class") == "android.widget.Switch" and node.get("checkable") == "true"
-                    and node.get("checked") == target, "foreground_sync_switch_missing", before_tap)
+        tap_sync_switch(adb, marker, checked, before_tap)
 
     def confirm_enable():
-        tap_control(lambda node: node.get("resource-id") == "android:id/button1"
-                    and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
+        confirm_sync_enable(adb, marker)
 
     def private_digest(output, field):
         digests = [match.group(1) for line in output
@@ -631,7 +680,47 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     report["foreground_account_switch"] = "PASS"
 
 
-def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None):
+def queue_window_round(report, adb, marker, status, verify_receiver, replay_first_upload):
+    def wait_for_receipt(revision, stage_message):
+        def displayed():
+            counts = status()
+            require(not counts["failure"] and counts.get("uploads", 0) <= revision, "queue_window_upload_count_exceeded")
+            receipts = (f"服务器已确认本次写入，修订号 {revision}", f"服务器最近确认写入，修订号 {revision}")
+            return counts.get("uploads") == revision and any(
+                node.get("package") == MAIN_PACKAGE and stage_message in node.get("text", "")
+                and any(receipt in node.get("text", "") for receipt in receipts) for node in window_nodes(adb, marker))
+        wait_for(displayed, bool, 50, "queue_window_ui_receipt_missing")
+
+    report["stage"] = "queue_window_seed_unfrozen"
+    foreground_instrument(adb, "foreground-queue-window-seed")
+    report["initial_unfrozen_operations"] = 18
+    open_sync_account(adb, marker)
+    tap_sync_switch(adb, marker, False)
+    require(status()["dataRequests"] == 0, "queue_window_unsolicited_transfer")
+    confirm_sync_enable(adb, marker)
+
+    report["stage"] = "queue_window_first_round"
+    wait_for_receipt(16, "仍有待处理的同步任务")
+    foreground_instrument(adb, "foreground-queue-window-first")
+    require(not status()["failure"] and status().get("uploads") == 16, "queue_window_first_oversent")
+    verify_receiver(16)
+    report["first_round"] = {"posts": 16, "android_cursor": 16, "unfrozen_pending": 2, "receiver_records": 16}
+
+    report["stage"] = "queue_window_reopen_foreground"
+    open_sync_account(adb, marker)
+    wait_for_receipt(18, "本轮同步已检查")
+    foreground_instrument(adb, "foreground-queue-window-final")
+    verify_receiver(18)
+    report["second_round"] = {"posts": 2, "android_cursor": 18, "unfrozen_pending": 0,
+                              "receiver_records": 17, "receiver_tombstones": 1}
+
+    report["stage"] = "queue_window_replay_earliest_after_deletion"
+    replay_first_upload()
+    require(not status()["failure"] and status().get("uploads") == 18, "queue_window_replay_changed_android_count")
+    report["original_packet_replay"] = {"receipt_revision": 1, "remote_head": 18, "new_changes": 0}
+
+
+def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None, queue_window=False):
     package = MAIN_PACKAGE if main_apk else PACKAGE
     guard(adb, identity)
     adb.run("root")
@@ -661,10 +750,10 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
     submitted, main_submitted, mapped, reverse_added = False, False, False, False
     with ExitStack() as resources:
         if sync_binary:
-            bridge, verify_receiver, publish_member_edit = resources.enter_context(foreground_server(work, report, sync_binary))
+            bridge, verify_receiver, follow_up = resources.enter_context(foreground_server(work, report, sync_binary, queue_window))
         else:
-            bridge = verify_receiver = publish_member_edit = None
-        mode = "foreground" if bridge else "main" if main_apk else "probe"
+            bridge = verify_receiver = follow_up = None
+        mode = "queue" if queue_window else "foreground" if bridge else "main" if main_apk else "probe"
         port, status = resources.enter_context(issuer(work, leaf, leaf_key, fingerprint, go_proof, mode, bridge))
         try:
             guard(adb, identity, root=True)
@@ -688,6 +777,9 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
             wait_for(lambda: system_links_confirmed(adb, package) and status()["assetlinks"] > 0, bool,
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
+            if queue_window:
+                queue_window_round(report, adb, marker, status, verify_receiver, follow_up)
+                return
             if bridge:
                 @contextmanager
                 def without_tls():
@@ -705,7 +797,7 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
                         require(adb.run("reverse", "--list").stdout.splitlines() == current, "recovery_route_not_restored")
 
                 report["stage"] = "foreground_native_seed_and_round"
-                foreground_round(report, adb, identity, marker, status, verify_receiver, publish_member_edit, without_tls)
+                foreground_round(report, adb, identity, marker, status, verify_receiver, follow_up, without_tls)
                 return
             if main_apk:
                 consent = adb.run("shell", "am", "instrument", "-w", "-e", "stage", "consent",
@@ -818,17 +910,23 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
 
 
 def main():
-    foreground = len(sys.argv) == 6
-    main_mode = len(sys.argv) in (5, 6)
-    output = ROOT / "target/a3-android-oidc" / ("foreground-report.json" if foreground else "main-report.json" if main_mode else "report.json")
-    scope = "API28 native test-only APK with seeded sign-in; real main-app foreground HTTPS and independent shared client" if foreground else "test-only APK built from main-app Java; real OIDC and PostgreSQL" if main_mode else "disposable API28 test APK and real isolated OIDC"
+    queue_window = len(sys.argv) == 7 and sys.argv[6] == "queue-window"
+    foreground = len(sys.argv) == 6 or queue_window
+    main_mode = len(sys.argv) == 5 or foreground
+    output = ROOT / "target/a3-android-oidc" / ("queue-window-report.json" if queue_window else "foreground-report.json" if foreground else "main-report.json" if main_mode else "report.json")
+    if queue_window:
+        scope = "API28 native test-only APK with seeded sign-in; automatic upload limit and trusted tombstone over real HTTPS"
+    elif foreground:
+        scope = "API28 native test-only APK with seeded sign-in; real main-app foreground HTTPS and independent shared client"
+    else:
+        scope = "test-only APK built from main-app Java; real OIDC and PostgreSQL" if main_mode else "disposable API28 test APK and real isolated OIDC"
     report = {"status": "FAIL", "scope": scope,
               "source_sha": os.environ.get("GITHUB_SHA", ""), "tls_before": "NOT RUN", "tls_after": "NOT RUN",
               "verified_domain": "NOT RUN", "browser_launched": "NOT RUN", "verified_browser_callback": "NOT RUN",
               "oidc_go_token_proof": "NOT RUN", "login_data_requests": None, "device_enrollment": "NOT RUN",
               "certificate": {}, "cleanup": {}}
     try:
-        require(len(sys.argv) in (4, 5, 6) and os.name == "posix", "requires_a3_ci_arguments")
+        require((len(sys.argv) in (4, 5, 6) or queue_window) and os.name == "posix", "requires_a3_ci_arguments")
         adb = Adb([str(shutil.which("adb")), "-s", "emulator-5554"])
         identity = ci_identity(adb.command)
         guard(adb, identity)
@@ -837,15 +935,15 @@ def main():
         sync_binary = Path(sys.argv[5]).resolve(strict=True) if foreground else None
         report["test_apk_signer"] = obtain_fingerprint(apksigner, main_apk or apk)
         report["test_apk_sha256"] = hashlib.sha256((main_apk or apk).read_bytes()).hexdigest()
-        if foreground:
+        if foreground and not queue_window:
             report["foreground_ui_receipt"] = report["foreground_sqlite_ack"] = report["independent_receiver"] = "NOT RUN"
-        elif main_mode:
+        elif main_mode and not queue_window:
             report["main_account_lookup"] = report["main_signed_in_only"] = "NOT RUN"
             report["android_enrollment_vault"] = "NOT RUN"
             report["sync_consent_store"] = "NOT RUN"
             report["main_persisted_sign_in_off"] = "NOT RUN"
         with tempfile.TemporaryDirectory(prefix="a3-private-") as temporary:
-            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk, sync_binary)
+            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk, sync_binary, queue_window)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",
                 "fixture_cleanup_or_after_tls_failed")
         report.pop("stage", None)

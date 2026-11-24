@@ -10,8 +10,9 @@ import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
 const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe', foregroundFile] = process.argv.slice(2);
-assert.ok(['probe', 'main', 'foreground'].includes(mode));
-const foreground = mode === 'foreground' ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
+assert.ok(['probe', 'main', 'foreground', 'queue'].includes(mode));
+const queueWindow = mode === 'queue';
+const foreground = mode === 'foreground' || queueWindow ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
 if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
 const priorAccount = foreground?.bootstrap.device.account_id;
 const issuer = 'https://a3-oidc.example.test';
@@ -230,8 +231,16 @@ async function handle(req, res) {
       if (url.pathname === '/v1/key-descriptor') totals.foregroundDescriptorRequests = (totals.foregroundDescriptorRequests ?? 0) + 1;
       if (dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
-        assert.ok(totals.uploads <= 4 && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
-        if (totals.uploads === 4) {
+        assert.ok(totals.uploads <= (queueWindow ? 18 : 4) && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
+        if (queueWindow) {
+          const packet = JSON.parse(request);
+          const deleted = totals.uploads === 17;
+          const recordIndex = deleted ? 1 : totals.uploads;
+          assert.equal(packet.record_id, '96abb4f1-8f2c-4bb3-8000-' + recordIndex.toString(16).padStart(12, '0'));
+          assert.equal(packet.deleted, deleted);
+          assert.equal(packet.base_revision, deleted ? 1 : 0);
+          if (totals.uploads === 1) writeFileSync(foregroundFile + '.first-upload', request, { flag: 'wx', mode: 0o600 });
+        } else if (totals.uploads === 4) {
           assert.equal(JSON.parse(request).operation_id, '8cbfd5d6-dc74-4fbd-b600-08da374eb8f2');
           holdSyntheticAcknowledgement(res, payload, request);
           return;
@@ -270,7 +279,7 @@ async function handle(req, res) {
     await interact(req, res, url.pathname);
     return;
   }
-  if (mode !== 'probe' && req.method === 'GET' && url.pathname === '/v1/account-login') {
+  if ((mode === 'main' || mode === 'foreground') && req.method === 'GET' && url.pathname === '/v1/account-login') {
     assert.ok(!url.search && totals.accountLookups === 0);
     assert.ok(totals.login === 1 && totals.consent === 1 && totals.tokenPosts === 1);
     if (foreground) assert.ok(foregroundSeedServed && totals.uploads === 4);
