@@ -8,6 +8,7 @@ on:
       - 'platforms/android/java/org/zapime/android/AccountLogin*.java'
       - 'platforms/android/java/org/zapime/android/AccountSyncActivity.java'
       - 'platforms/android/java/org/zapime/android/SyncEnrollmentVault.java'
+      - 'platforms/android/java/org/zapime/android/SyncEnrollmentRequest.java'
       - 'platforms/android/java/org/zapime/android/SyncSecrets.java'
       - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'

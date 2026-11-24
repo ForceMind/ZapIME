@@ -7,6 +7,9 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -26,11 +29,13 @@ import java.util.UUID;
 
 /** Keeps one encrypted pending credential per account until the device has been verified. */
 final class SyncEnrollmentVault {
-    private static final int VERSION = 1, DIGEST = 32, WIRE_SIZE = 1 + DIGEST + 16 + 8 + 32 + DIGEST;
+    private static final int VERSION = 2, DIGEST = 32, FIXED_LENGTH = 1 + DIGEST + 16 + 8 + 32 + DIGEST;
+    private static final int MAX_NAME_BYTES = 128;
     private static final SecureRandom RANDOM = new SecureRandom();
 
     static final class Scope {
         final UUID account;
+        final AccountLoginProtocol.Config config;
         private final byte[] binding;
 
         Scope(AccountLoginProtocol.Config config, UUID account, String subjectFingerprint) throws SyncHttp.Failure {
@@ -39,6 +44,7 @@ final class SyncEnrollmentVault {
                 throw new SyncHttp.Failure("login_response");
             }
             this.account = account;
+            this.config = config;
             binding = hash(String.join("\n", "ZapIME/enrollment-scope/v1", config.syncServer.toString(),
                     config.issuer.toString(), config.resource.toString(), config.clientId, account.toString(),
                     subjectFingerprint).getBytes(StandardCharsets.UTF_8));
@@ -49,14 +55,16 @@ final class SyncEnrollmentVault {
         final Scope scope;
         final UUID id;
         final long deadline;
+        final String name;
         private final byte[] random, publicKey;
         private final PrivateKey signingKey;
         private boolean closed;
 
-        private Pending(Scope scope, UUID id, long deadline, byte[] random, SigningKey signingKey) {
+        private Pending(Scope scope, UUID id, long deadline, String name, byte[] random, SigningKey signingKey) {
             this.scope = scope;
             this.id = id;
             this.deadline = deadline;
+            this.name = name;
             this.random = random;
             this.publicKey = signingKey.encoded;
             this.signingKey = signingKey.privateKey;
@@ -103,12 +111,13 @@ final class SyncEnrollmentVault {
         }
     }
 
-    static Pending prepare(Context context, Scope scope) throws IOException {
+    static Pending prepare(Context context, Scope scope, String name) throws IOException {
         worker();
         synchronized (SyncEnrollmentVault.class) {
             Pending previous = loadLocked(context, scope);
             if (previous != null) return previous;
-            byte[] wire = new byte[WIRE_SIZE], random = new byte[32];
+            byte[] encodedName = encodeName(name);
+            byte[] wire = new byte[FIXED_LENGTH + 1 + encodedName.length], random = new byte[32];
             try {
                 SigningKey key = signingKey(scope.account, true);
                 UUID request = UUID.randomUUID();
@@ -116,7 +125,7 @@ final class SyncEnrollmentVault {
                 RANDOM.nextBytes(random);
                 ByteBuffer.wrap(wire).put((byte) VERSION).put(scope.binding)
                         .putLong(request.getMostSignificantBits()).putLong(request.getLeastSignificantBits())
-                        .putLong(deadline).put(random).put(hash(key.encoded));
+                        .putLong(deadline).put(random).put(hash(key.encoded)).put((byte) encodedName.length).put(encodedName);
                 SyncSecrets.createEnrollment(context, scope.account, wire);
                 Pending committed = loadLocked(context, scope);
                 if (committed == null) throw new IOException("sync_enrollment_commit");
@@ -139,7 +148,10 @@ final class SyncEnrollmentVault {
         byte[] wire = SyncSecrets.loadEnrollment(context, scope.account);
         if (wire == null) return null;
         try {
-            if (wire.length != WIRE_SIZE || wire[0] != VERSION) throw new IOException("sync_enrollment_format");
+            if (wire.length < FIXED_LENGTH || wire.length > FIXED_LENGTH + 1 + MAX_NAME_BYTES
+                    || (wire[0] != VERSION && (wire[0] != 1 || wire.length != FIXED_LENGTH))) {
+                throw new IOException("sync_enrollment_format");
+            }
             byte[] actualScope = Arrays.copyOfRange(wire, 1, 1 + DIGEST);
             if (!MessageDigest.isEqual(actualScope, scope.binding)) throw new IOException("sync_enrollment_scope");
             ByteBuffer fields = ByteBuffer.wrap(wire);
@@ -148,15 +160,44 @@ final class SyncEnrollmentVault {
             long deadline = fields.getLong();
             if (deadline <= 0 || id.version() != 4 || id.variant() != 2) throw new IOException("sync_enrollment_format");
             SigningKey key = signingKey(scope.account, false);
-            if (!MessageDigest.isEqual(Arrays.copyOfRange(wire, WIRE_SIZE - DIGEST, WIRE_SIZE), hash(key.encoded))) {
+            if (!MessageDigest.isEqual(Arrays.copyOfRange(wire, FIXED_LENGTH - DIGEST, FIXED_LENGTH), hash(key.encoded))) {
                 throw new IOException("sync_enrollment_key_changed");
             }
+            String name = wire[0] == 1 ? "Android" : readName(wire);
             byte[] random = new byte[32];
             fields.get(random);
             // An expired pending record may still identify a device whose claim response was lost.
-            return new Pending(scope, id, deadline, random, key);
+            return new Pending(scope, id, deadline, name, random, key);
         } finally {
             Arrays.fill(wire, (byte) 0);
+        }
+    }
+
+    private static String readName(byte[] wire) throws IOException {
+        if (wire.length == FIXED_LENGTH || (wire[FIXED_LENGTH] & 255) != wire.length - FIXED_LENGTH - 1) {
+            throw new IOException("sync_enrollment_format");
+        }
+        String name = StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT)
+                .decode(ByteBuffer.wrap(wire, FIXED_LENGTH + 1, wire.length - FIXED_LENGTH - 1)).toString();
+        encodeName(name);
+        return name;
+    }
+
+    private static byte[] encodeName(String name) throws IOException {
+        if (name == null || name.length() > MAX_NAME_BYTES || name.codePoints().allMatch(
+                c -> Character.isWhitespace(c) || Character.isSpaceChar(c))
+                || name.codePoints().anyMatch(c -> c < 32 || c == 127)) {
+            throw new IOException("sync_enrollment_name");
+        }
+        try {
+            ByteBuffer encoded = StandardCharsets.UTF_8.newEncoder().encode(CharBuffer.wrap(name));
+            if (encoded.remaining() > MAX_NAME_BYTES) throw new IOException("sync_enrollment_name");
+            byte[] bytes = new byte[encoded.remaining()];
+            encoded.get(bytes);
+            return bytes;
+        } catch (CharacterCodingException invalid) {
+            throw new IOException("sync_enrollment_name");
         }
     }
 

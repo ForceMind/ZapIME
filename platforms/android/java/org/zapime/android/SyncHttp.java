@@ -89,10 +89,23 @@ final class SyncHttp {
         finally{Arrays.fill(body,(byte)0);}
     }
     static byte[] accountLogin(AccountLoginProtocol.Config config,String accessToken,Cancellation cancellation)throws Failure {
-        if(config==null||cancellation==null||accessToken==null||accessToken.length()>16384
-                ||!accessToken.matches("[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+"))throw new Failure("login_response");
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        validateAccessToken(accessToken);
         return jsonRequest(config.syncServer.resolve("/v1/account-login"),"Bearer "+accessToken,
                 cancellation,"GET",null,"application/json",1024,null,false);
+    }
+    static void validateAccessToken(String accessToken)throws Failure {
+        if(accessToken==null||accessToken.length()>16384
+                ||!accessToken.matches("[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+"))throw new Failure("login_response");
+    }
+    static byte[] enrollment(AccountLoginProtocol.Config config,String accessToken,byte[] body,boolean claim,
+            Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        if(body==null||body.length==0||body.length>4096)throw new Failure("enrollment_request");
+        validateAccessToken(accessToken);
+        String path=claim?"/v1/device-enrollment/claim":"/v1/device-enrollment";
+        return jsonRequest(config.syncServer.resolve(path),"Bearer "+accessToken,cancellation,
+                "POST",body,"application/json",2048,claim?"enrollment_pending":null,false);
     }
     private static byte[] jsonRequest(URI endpoint,String authorization,Cancellation cancellation,String method,
             byte[] body,String contentType,int maximum,String conflict,boolean transfer)throws Failure {

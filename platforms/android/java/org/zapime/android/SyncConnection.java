@@ -63,6 +63,18 @@ final class SyncConnection implements AutoCloseable {
         String role=values.get("role");if(!role.equals("owner")&&!role.equals("member"))throw new SyncHttp.Failure("identity");
         return new SyncConnection(server,account,device,token.clone(),expiry(values.get("expires_at")),role);
     }
+    static SyncConnection verifyEnrolled(URI server, UUID account, UUID device, char[] credential, byte[] response)
+            throws SyncHttp.Failure {
+        SyncHttp.token(credential);
+        try (SyncConnection candidate = new SyncConnection(server, account, device, credential.clone(), "", "")) {
+            SyncConnection verified = candidate.verify(response);
+            if (!"member".equals(verified.role) || !Instant.now().isBefore(OffsetDateTime.parse(verified.expires).toInstant())) {
+                verified.close();
+                throw new SyncHttp.Failure("identity");
+            }
+            return verified;
+        }
+    }
     byte[] inspect(SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
         if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.session(server,token,cancellation);
     }
