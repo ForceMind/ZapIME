@@ -21,6 +21,8 @@
 
 ## A3.1 执行记录
 
+新增的[设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)待确认。已确认的账号页覆盖了设备待授权状态，本轮效果图补申请码与已有管理员批准页面。视觉确认后先交线稿与交互，再实现界面。
+
 **2026-11-24 · 主机 OIDC 通过。** Windows x64、Node `26.13.1`、`oidc-provider` `9.15.1`、`jose` `6.2.18`。合成账号通过真正的回环 HTTPS 授权服务器登录。Authorization Code + PKCE `S256` 兑换出面向设备登记资源的 `at+jwt`，主机校验 issuer、签名、audience、客户端、scope、subject 与到期字段。已验证错误密码、证书默认不受信、错误 verifier、错误受众、授权码重放以及将 ID token 送到资源校验入口均被拒。
 
 夹具按 `scripts/fixtures/a3-oidc` 的锁文件运行。HTTPS 域名为保留的 `.test`，只有主机测试进程覆盖解析并信任本轮证书，授权服务只监听 `127.0.0.1`。试跑确认 OIDC 原生客户端拒绝将 `127.0.0.1` 当作已声明 HTTPS 域名，并在换令牌时需明确选择本次授权的资源。源码与运行说明见[主机夹具](../scripts/fixtures/a3-oidc/README.md)。
@@ -47,7 +49,11 @@
 
 **2026-11-24 · 主 App 登录编译切片。** 按已确认的页面接入固定部署的账号入口、系统浏览器、五分钟内单次 PKCE 回跳、同步服务账号查询和已有设备会话核对。只有显式构建参数 `ZAPIME_ANDROID_OIDC_CONFIG` 指向部署者的公开 JSON 时才注册入口和固定 HTTPS App Link。文件字段为 `issuer`、`authorization`、`token`、`callback`、`resource`、`sync_server`、`client_id`。授权和令牌端点必须与 issuer 同源，受众与同步服务器同源。部署者仍须用回跳域的 `assetlinks.json` 关联实际 APK 包名和签名。未配置构建的 manifest 与原文件逐字节相同。源码编译、JVM 协议测试和此前回跳验收分别记录；目前主 App 尚未跑过实际回跳，新设备领取仍需接入客户端。
 
-`e5c0942` 的 API36 SDK 主 App 登录源码编译和 JVM 检查已通过，原 test-only 协议探针继续通过。新增独立证据入口为同一作业内从主 App 源码打包的 test-only APK。它使用真正的系统回跳、生产 Java 登录与 Go 账号查询逻辑以及同轮隔离 PostgreSQL。目标是从主页面点「仅登录」并在回跳后看到实际合成账号、设备待授权及同步已关闭，资料请求为零。此轮不捆绑 JNI 或发布 APK，实际回跳结果待回读。[编译与协议探针 CI](https://github.com/ForceMind/ZapIME/actions/runs/45455016921)
+`e5c0942` 的 API36 SDK 主 App 登录源码编译和 JVM 检查已通过，原 test-only 协议探针也通过。[编译与协议探针 CI](https://github.com/ForceMind/ZapIME/actions/runs/45455016921)
+
+**2026-11-24 · 主 App 源码的 API28「仅登录」通过。** 草稿 PR #126 的 `278bdbe` 实际检出 `ff4db78dd490f83d6699f4350153f79c31d03cd1`。使用主 App Java、资源和清单构建 test-only APK，系统自动关联回跳域，实际从主页面点进「账号与同步」和「仅登录」，经系统浏览器完成登录。真实 OAuth 提供方签发一次访问令牌，Go 处理器和同轮 PostgreSQL 回查到合成账号，界面显示该账号、设备待授权和同步已关闭。资料请求为零，账号 revision 为零且未登记新设备。前后 TLS 拒绝、CA、hosts、reverse 及 APK 清理全部通过。[原始 CI 日志](https://github.com/ForceMind/ZapIME/actions/runs/45456892683/job/138668662893)
+
+测试 APK SHA-256 `4b5b55342f992c531cbba54977afcfbeb3b7b4d1fb9fc6cbcb0906eea1005602`。两次运行报告归档 SHA-256 `958d57f022c0bd17b53b56937f30a1abeb02b582d8b85814858e2edf20f591e6`，已经从作业日志回读两个通过报告。该 APK 的范围为 API28 登录 Java 路径。Android 领取仍为 NOT RUN；完整产品 APK、API35/36 实际回跳、生产签名和正式部署分别验收。[报告归档](https://github.com/ForceMind/ZapIME/actions/runs/45456892683/artifacts/14951635913)
 
 ### 1. 账号登录、设备授权分别验证
 
@@ -74,6 +80,6 @@
 
 1. **Go 与共享层。** 用隔离的真实 OIDC 测试账号和 PostgreSQL 验证登录、绑定、设备限额、拒绝与竞态，并执行 `ZAPIME_REQUIRE_DATABASE=1` 的 Go `-race` 门禁。共享层执行工作区测试、格式及严格 Clippy，覆盖账套、来源、撤销、范围和冻结请求。服务端备份验收需包含新身份授权数据，恢复后先验证绑定再发凭据。
 2. **Android。** 先跑 JVM 身份/调度策略和本机 JNI/Keystore/SAF 探针，再在真实服务上核实际浏览器回跳及 Android 发起的 HTTPS 双端闭环。API28 系统信任库例外沿用 ADR-023，API35/36 使用本平台实际可用的生产信任路径，证据分别记录。验证仅登录零资料传输、前台自动、离线恢复、快速关闭/换号、丢回执、>16 条、冲突、旧墓碑与输入法回归。
-3. **当前接手点。** 主机签发验证、Go 主体绑定及 Android 隔离 test-only APK 回跳已有证据。回读服务 CI 的账号查询、owner 批准与一次领取，随后接主 App 登录。准备真实外部账号或域名时按各自范围授权。
+3. **当前接手点。** 主机签发验证、Go 主体绑定与一次设备领取、主 App 源码的 API28 真实回跳均已通过。当前停在新增设备授权效果图确认节点。继续时在专用同步 worker 上完成 Android Keystore 申请、一次领取和丢回执恢复，沿用已获批的同目标不覆盖边界。资料开关、自动同步和正式外部账号另按阶段验收。
 
 后台长期调度、自动传钥、跨账号资料迁移、冲突解决页和公开注册作为后续独立候选事项。当前设计分支记录方案，实施按仓库规则拆独立分支与 PR。

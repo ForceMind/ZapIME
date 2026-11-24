@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-**2026-11-24 A3 接手入口：** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。PR #126 中 API28 协议探针、Go 账号查询与设备批准领取、Android 登录源码编译均通过。接续回读主 App 源码 test-only APK 的实际回跳，再验 Android 新设备领取。A2 草稿 PR #125 保留合成双端服务证据。
+**2026-11-24 A3 接手入口：** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。PR #126 的 API28 主 App 源码 test-only APK 真实「仅登录」回跳及 Go 设备登记数据库专项已通过。先确认[新设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)，再交线稿和交互。Android 领取、密钥及同步开关仍待接入。A2 草稿 PR #125 保留合成双端服务证据。
 
 更新：2026-11-19（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 

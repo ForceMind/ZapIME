@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 隔离浏览器回跳、Go 账号查询和设备批准与领取的真实数据库通过。主 App 登录源码编译和 JVM 检查通过，实际主 App 源码回跳、Android 领取及自动同步继续验收。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录主 App 源码 test-only APK 在 API28 通过真实「仅登录」回跳，Go 账号查询与设备批准领取已通过真实 PostgreSQL。Android 新设备领取未验收，首次授权效果图待确认；自动同步继续按 A3 后续步骤实施。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
