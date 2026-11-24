@@ -155,11 +155,15 @@ def assert_tls_rejection(adb):
 
 def window_nodes(adb, marker):
     dumped = adb.run("shell", "uiautomator", "dump", marker, check=False, timeout=12)
-    if dumped.returncode != 0:
+    if dumped.returncode != 0 or marker not in dumped.stdout:
         return ()
     raw = read_remote(adb, marker)
     require(len(raw) <= 256 * 1024, "ui_probe_report_too_large")
-    return tuple(ET.fromstring(raw).iter("node"))
+    try:
+        hierarchy = ET.fromstring(raw)
+    except ET.ParseError:
+        return ()  # A window transition can leave an incomplete sample.
+    return tuple(hierarchy.iter("node")) if hierarchy.tag == "hierarchy" else ()
 
 
 def bounds(node):
