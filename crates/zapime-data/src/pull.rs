@@ -24,6 +24,8 @@ pub struct ApplyReport {
     pub applied: usize,
     pub echoed: usize,
     pub unchanged: usize,
+    /// Highest server revision of an outstanding local write first confirmed by this committed page.
+    pub acknowledged_revision: u64,
 }
 impl Store {
     /// All records MUST already have passed AEAD and outer/body binding checks.
@@ -173,6 +175,9 @@ impl Store {
                     }
                     acknowledge_in_tx(&tx, op.operation_id, change.revision)?;
                     report.echoed += 1;
+                    if ack.is_none() {
+                        report.acknowledged_revision = change.revision;
+                    }
                 } else if change.revision <= known {
                     // A newer local upload may have been acknowledged before its
                     // preceding account history is pulled. Do not regress it.

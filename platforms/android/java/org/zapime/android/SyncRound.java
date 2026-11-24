@@ -14,14 +14,18 @@ final class SyncRound {
         long pushAndAcknowledge(byte[] frozen)throws IOException;
     }
     static final class Page {
-        final long cursor,head;
+        final long cursor,head,reconciledRevision;
         final int applied,echoed,unchanged;
-        Page(long cursor,long head,int applied,int echoed,int unchanged){this.cursor=cursor;this.head=head;this.applied=applied;this.echoed=echoed;this.unchanged=unchanged;}
+        Page(long cursor,long head,int applied,int echoed,int unchanged){this(cursor,head,applied,echoed,unchanged,0);}
+        Page(long cursor,long head,int applied,int echoed,int unchanged,long reconciledRevision){
+            this.cursor=cursor;this.head=head;this.applied=applied;this.echoed=echoed;this.unchanged=unchanged;this.reconciledRevision=reconciledRevision;
+        }
     }
     static final class Result {
         int uploaded,applied,echoed,unchanged,pages;
-        long cursor,head,lastAcknowledgedRevision;
+        long cursor,head,lastAcknowledgedRevision,lastReconciledRevision;
         boolean uploadBudgetReached,downloadBudgetReached;
+        long confirmedRevision(){return Math.max(lastAcknowledgedRevision,lastReconciledRevision);}
     }
     static final class Failure extends IOException {
         final Result completed;
@@ -31,8 +35,11 @@ final class SyncRound {
         for(int i=0;i<MAX_PULL_PAGES;i++){
             backend.check();Page page=backend.pull();
             if(page==null||page.cursor<0||page.head<page.cursor||page.applied<0||page.echoed<0||page.unchanged<0)throw new IOException("sync_round_page_invalid");
+            if(page.reconciledRevision<0||page.reconciledRevision>page.cursor
+                    ||page.reconciledRevision>0&&page.echoed==0)throw new IOException("sync_round_page_invalid");
             result.pages++;result.applied+=page.applied;result.echoed+=page.echoed;result.unchanged+=page.unchanged;
             result.cursor=page.cursor;result.head=page.head;
+            result.lastReconciledRevision=Math.max(result.lastReconciledRevision,page.reconciledRevision);
             // A committed page may finish after cancellation or identity change.
             // Keep its counts, then reject an otherwise successful/limited return.
             backend.check();

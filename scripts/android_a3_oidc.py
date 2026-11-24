@@ -559,6 +559,7 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     tap_switch(False)
     confirm_enable()
     wait_for(lambda: shows("本轮同步已检查"), bool, 35, "interrupted_upload_pull_confirmation_missing")
+    wait_for(lambda: shows("服务器最近确认写入，修订号 4"), bool, 25, "interrupted_upload_pull_receipt_missing")
     require(frozen_digest("foreground-reconciled-upload") == expected, "interrupted_upload_reconciled_wire_changed")
     verify_receiver(4)
     require(status()["uploads"] == 4, "interrupted_upload_extra_post")

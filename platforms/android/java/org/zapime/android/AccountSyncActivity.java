@@ -368,7 +368,8 @@ public final class AccountSyncActivity extends Activity {
     private static String syncOutcome(ForegroundSync.Outcome outcome) {
         SyncRound.Result result = outcome.result;
         String receipt = "";
-        if (result != null && result.lastAcknowledgedRevision > 0) {
+        if (result != null && result.lastAcknowledgedRevision > 0
+                && result.lastAcknowledgedRevision >= result.lastReconciledRevision) {
             receipt = "\n服务器已确认本次写入，修订号 " + result.lastAcknowledgedRevision;
         } else {
             long previous = ForegroundSync.lastConfirmedRevision(outcome.generation);

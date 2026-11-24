@@ -11,11 +11,11 @@ public final class SyncRoundSmoke {
         final List<String> trace=new ArrayList<>();final List<byte[]> issued=new ArrayList<>();
         final Deque<SyncRound.Page> pages=new ArrayDeque<>();
         int remaining,pulls,pushes,stages;boolean stopped,cancelAfterStage,identityFailure,pullFailure,pushFailure;
-        int failPushAt=1,stopAfterPull;
+        int failPushAt=1,stopAfterPull,failPullAt=1;
         Fixture(int pending){remaining=pending;}
         public void check()throws IOException{trace.add("check");if(stopped)throw new IOException("cancelled");}
         public void verifyIdentity()throws IOException{trace.add("identity");if(identityFailure)throw new IOException("key_conflict");}
-        public SyncRound.Page pull()throws IOException{trace.add("pull");pulls++;if(pulls==stopAfterPull)stopped=true;if(pullFailure)throw new IOException("page_rejected");return pages.isEmpty()?new SyncRound.Page(0,0,0,0,0):pages.remove();}
+        public SyncRound.Page pull()throws IOException{trace.add("pull");pulls++;if(pulls==stopAfterPull)stopped=true;if(pullFailure&&pulls==failPullAt)throw new IOException("page_rejected");return pages.isEmpty()?new SyncRound.Page(0,0,0,0,0):pages.remove();}
         public byte[] stage(){trace.add("stage");stages++;if(remaining==0)return null;byte[] frozen=new byte[]{1,2,(byte)remaining--};issued.add(frozen);if(cancelAfterStage)stopped=true;return frozen;}
         public long pushAndAcknowledge(byte[] frozen)throws IOException{trace.add("push_ack");pushes++;SyncRoundSmoke.check(issued.contains(frozen)&&frozen[0]==1);if(pushFailure&&pushes==failPushAt)throw new IOException("unconfirmed");return pushes;}
         boolean zero(){for(byte[] bytes:issued)for(byte b:bytes)if(b!=0)return false;return true;}
@@ -27,6 +27,15 @@ public final class SyncRoundSmoke {
         check(empty.trace.indexOf("identity")<empty.trace.indexOf("pull")&&empty.trace.indexOf("pull")<empty.trace.indexOf("stage"));
         Fixture key=new Fixture(2);key.identityFailure=true;failed(key);check(key.pulls==0&&key.stages==0&&key.pushes==0);
         Fixture badPull=new Fixture(2);badPull.pullFailure=true;failed(badPull);check(badPull.stages==0&&badPull.pushes==0);
+        Fixture reconcile = new Fixture(0);reconcile.pages.add(new SyncRound.Page(4,4,0,1,0,4));
+        SyncRound.Result reconciled = SyncRound.run(reconcile);
+        check(reconciled.confirmedRevision()==4&&reconciled.lastAcknowledgedRevision==0&&reconciled.uploaded==0&&reconcile.pushes==0);
+        Fixture laterPullFailure = new Fixture(1);laterPullFailure.pullFailure=true;laterPullFailure.failPullAt=2;
+        laterPullFailure.pages.add(new SyncRound.Page(4,5,0,1,0,4));
+        SyncRound.Failure retained = failed(laterPullFailure);
+        check(retained.completed.confirmedRevision()==4&&retained.completed.cursor==4&&laterPullFailure.pushes==0);
+        Fixture invalidReceipt = new Fixture(1);invalidReceipt.pages.add(new SyncRound.Page(4,4,0,0,0,4));
+        check(failed(invalidReceipt).completed.confirmedRevision()==0&&invalidReceipt.stages==0);
         Fixture catchup=new Fixture(2);catchup.pages.add(new SyncRound.Page(100,300,100,0,0));catchup.pages.add(new SyncRound.Page(200,300,100,0,0));
         SyncRound.Result partial=SyncRound.run(catchup);check(partial.downloadBudgetReached&&partial.cursor==200&&partial.head==300&&partial.applied==200);check(catchup.stages==0&&catchup.pushes==0&&catchup.pulls==2);
         Fixture success=new Fixture(2);success.pages.add(new SyncRound.Page(5,5,2,1,2));success.pages.add(new SyncRound.Page(7,7,0,2,0));

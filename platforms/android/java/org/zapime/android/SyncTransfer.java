@@ -110,9 +110,17 @@ final class SyncTransfer {
                             try{response=snapshot.pull(after,SyncRound.PAGE_LIMIT,cancellation);}finally{check();}
                             // The JNI only returns head/cursor after the complete
                             // ciphertext page passed authentication and commit.
-                            JSONObject applied=reply(NativeCore.applySyncPage(root,account,material,after,response),1024);
-                            fields(applied,"cursor","head","applied","echoed","unchanged");
-                            return new SyncRound.Page(number(applied,"cursor"),number(applied,"head"),count(applied,"applied"),count(applied,"echoed"),count(applied,"unchanged"));
+                            String nativePage=consent==null?NativeCore.applySyncPage(root,account,material,after,response)
+                                    :NativeCore.applyAutomaticSyncPage(root,account,material,after,response);
+                            JSONObject applied=reply(nativePage,1024);
+                            long reconciledRevision=0;
+                            if(consent==null){
+                                fields(applied,"cursor","head","applied","echoed","unchanged");
+                            }else{
+                                fields(applied,"cursor","head","applied","echoed","unchanged","acknowledged_revision");
+                                reconciledRevision=number(applied,"acknowledged_revision");
+                            }
+                            return new SyncRound.Page(number(applied,"cursor"),number(applied,"head"),count(applied,"applied"),count(applied,"echoed"),count(applied,"unchanged"),reconciledRevision);
                         }finally{if(response!=null)Arrays.fill(response,(byte)0);}
                     }
                     public byte[] stage()throws IOException {

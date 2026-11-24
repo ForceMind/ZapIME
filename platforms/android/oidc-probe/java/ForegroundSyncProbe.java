@@ -102,6 +102,10 @@ final class ForegroundSyncProbe {
                 try {
                     require(SyncSecrets.saveIfAbsent(context, connection.account, material));
                     require(new JSONObject(NativeCore.prepareSync(root.getAbsolutePath(), account, material)).getBoolean("prepared"));
+                    byte[] empty = "{\"changes\":[],\"next_cursor\":0,\"head\":0}".getBytes(StandardCharsets.US_ASCII);
+                    JSONObject manual = new JSONObject(NativeCore.applySyncPage(root.getAbsolutePath(), account, material, 0, empty));
+                    require(manual.length() == 5 && manual.getLong("cursor") == 0 && manual.getLong("head") == 0
+                            && manual.getInt("applied") == 0 && manual.getInt("echoed") == 0 && manual.getInt("unchanged") == 0);
                     SyncConnectionStore.save(context, connection);
                     SyncEnrollmentVault.Scope scope = new SyncEnrollmentVault.Scope(config, connection.account,
                             input.getString("subject_fingerprint"));

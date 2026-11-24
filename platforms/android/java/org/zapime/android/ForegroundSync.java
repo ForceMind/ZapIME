@@ -75,7 +75,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
     static long lastConfirmedRevision(UUID generation) {
         Outcome previous = instance == null ? null : instance.lastConfirmedWrite;
         if (previous == null || !previous.generation.equals(generation)) return 0;
-        return previous.result.lastAcknowledgedRevision;
+        return previous.result.confirmedRevision();
     }
 
     static SyncConsentStore.State activeConsent() {
@@ -211,7 +211,7 @@ final class ForegroundSync implements Application.ActivityLifecycleCallbacks {
         rerun = false;
         if (!visible.isEmpty() && outcome != null && !SyncConsentController.isStopped(outcome.generation)) {
             last = outcome;
-            if (outcome.result != null && outcome.result.lastAcknowledgedRevision > 0) {
+            if (outcome.result != null && outcome.result.confirmedRevision() > lastConfirmedRevision(outcome.generation)) {
                 lastConfirmedWrite = outcome;
             }
             for (Activity activity : new ArrayList<>(visible)) {

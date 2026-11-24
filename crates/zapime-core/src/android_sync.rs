@@ -333,13 +333,38 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_syncPullCursor(
 
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeCore_applySyncPage(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _: JClass,
     root: JString,
     profile: JString,
     wire: JByteArray,
     after: jlong,
     response: JByteArray,
+) -> jstring {
+    apply_sync_page(env, root, profile, wire, after, response, false)
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_applyAutomaticSyncPage(
+    env: JNIEnv,
+    _: JClass,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    after: jlong,
+    response: JByteArray,
+) -> jstring {
+    apply_sync_page(env, root, profile, wire, after, response, true)
+}
+
+fn apply_sync_page(
+    mut env: JNIEnv,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    after: jlong,
+    response: JByteArray,
+    report_reconciled: bool,
 ) -> jstring {
     let result = catch_unwind(AssertUnwindSafe(|| {
         if after < 0 {
@@ -358,8 +383,12 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_applySyncPage(
         match client::apply_page(&mut store, profile, &material, after as u64, &response) {
             Ok(report) => {
                 let head = parsed_head.map_err(|_| "sync_client_page_rejected")?;
-                Ok(json!({"cursor":report.cursor,"applied":report.applied,
-                    "echoed":report.echoed,"unchanged":report.unchanged,"head":head}))
+                let mut result = json!({"cursor":report.cursor,"applied":report.applied,
+                    "echoed":report.echoed,"unchanged":report.unchanged,"head":head});
+                if report_reconciled {
+                    result["acknowledged_revision"] = json!(report.acknowledged_revision);
+                }
+                Ok(result)
             }
             Err(error) => Ok(client_error(error)),
         }
