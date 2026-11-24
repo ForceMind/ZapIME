@@ -1,6 +1,6 @@
 # Android 账号与自动同步 · 设计与交互
 
-2026-11-24。三屏视觉稿、线稿与交互已获用户确认。[实施计划](../ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)待批准。本稿中的账号和服务器为示例。
+2026-11-24。三屏视觉稿、线稿、交互和[实施计划](../ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已获用户确认。本稿中的账号和服务器为示例。
 
 ![安卓版登录、同步状态与密钥恢复线稿](android-account-sync-wireframe.png)
 
@@ -36,7 +36,7 @@
 
 ## 接手
 
-1. [实施计划](../ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已完成并通过 Astra 只读复核，等待实施批准。首步为隔离环境的真实登录与回跳，首次双端合成短语验收另记。
+1. 进度按[实施计划](../ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)记录。当前验证隔离环境的真实登录、回跳和设备授权，首次双端合成短语验收另记。
 2. A2 草稿 PR #125 的合成双端服务验收作为共享安全基础。当前通过三屏和文案的静态核对，A3 Android 真机及模拟器验收属于实现阶段。
 
 ## 项目记忆

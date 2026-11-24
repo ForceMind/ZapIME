@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** 安卓登录与自动加密同步的视觉及交互已确认，[实施计划](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)经 Astra 只读复核，待批准。当前 Android 可用能力为设备连接、密钥准备与显式手动同步。
+**2026-11-24 A3：** [实施计划](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已批准。主机回环 HTTPS 的真实 OIDC 签发、PKCE 与令牌初步验收通过。Android 系统回跳、Go 设备授权和自动同步仍待验。现有 Android 继续可用设备连接、密钥准备与显式手动同步。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
