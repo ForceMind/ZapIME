@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Looper;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.BooleanSupplier;
 import org.json.JSONObject;
 
 /** Explicit device-local preparation only. No HTTP, automatic upload or global
@@ -133,18 +135,50 @@ final class SyncPreparation {
         }
     }
     static State restore(Context context,UUID expected,byte[] code,byte[] encrypted)throws IOException {
+        return restore(context,expected,code,encrypted,null,null,()->false);
+    }
+    static State restoreForConsent(Context context,UUID expected,byte[] code,byte[] encrypted,
+            UUID generation,AccountLoginProtocol.Config config,BooleanSupplier stop)throws IOException {
+        if(generation==null||config==null||stop==null)throw new IOException("sync_consent_changed");
+        return restore(context,expected,code,encrypted,generation,config,stop);
+    }
+    private static State restore(Context context,UUID expected,byte[] code,byte[] encrypted,
+            UUID generation,AccountLoginProtocol.Config config,BooleanSupplier stop)throws IOException {
         worker();synchronized(SyncPreparation.class){
             if(code==null||code.length!=43||encrypted==null||encrypted.length==0||encrypted.length>MAX_RECOVERY)throw new IOException("sync_recovery_invalid");
             try(SyncConnection saved=connection(context,expected,true)){
                 SyncDatabase.check(context,saved.account);byte[] bytes=null;
                 try{
+                    if(generation!=null)checkRecoveryConsent(context,saved,generation,config,stop);
                     bytes=NativeCore.restoreSyncRecovery(saved.account.toString(),code,encrypted);
-                    if(bytes==null)throw new IOException("sync_recovery_invalid");return install(context,saved.account,bytes);
+                    if(bytes==null)throw new IOException("sync_recovery_invalid");
+                    if(generation!=null){
+                        SyncKeyRegistration.Descriptor required=checkRecoveryConsent(context,saved,generation,config,stop);
+                        String response=NativeCore.syncKeyDescriptor(saved.account.toString(),bytes);
+                        if(response==null||response.length()>1024||!required.same(SyncKeyRegistration.parseDescriptor(
+                                response.getBytes(StandardCharsets.UTF_8))))throw new IOException("sync_consent_key_mismatch");
+                        checkRecoveryConsent(context,saved,generation,config,stop);
+                    }
+                    return install(context,saved.account,bytes);
                 }catch(IOException fixed){throw fixed;}
                 catch(RuntimeException|LinkageError invalid){throw new IOException("sync_preparation_failed");}
                 finally{if(bytes!=null)Arrays.fill(bytes,(byte)0);}
             }
         }
+    }
+    private static SyncKeyRegistration.Descriptor checkRecoveryConsent(Context context,SyncConnection previous,
+            UUID generation,AccountLoginProtocol.Config config,BooleanSupplier stop)throws IOException{
+        BackupFiles.check(stop);
+        SyncConsentStore.State consent=SyncConsentStore.load(context);
+        if(!generation.equals(consent.generation)||consent.expectedKey==null)throw new IOException("sync_consent_changed");
+        SyncEnrollmentVault.Scope scope=consent.verifiedDeployment(config);
+        try(SyncConnection saved=SyncConnectionStore.load(context)){
+            if(scope==null||saved==null||!previous.matchesSnapshot(saved)||!saved.account.equals(scope.account)
+                    ||!saved.server.equals(scope.config.syncServer)||!consent.matches(scope,saved.device)){
+                throw new IOException("sync_consent_changed");
+            }
+        }
+        return consent.expectedKey;
     }
     static byte[] recovery(Context context,UUID expected,byte[] codeOut)throws IOException {
         worker();synchronized(SyncPreparation.class){

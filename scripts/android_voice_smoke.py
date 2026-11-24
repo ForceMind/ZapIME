@@ -73,7 +73,7 @@ try:
     cases=profile.get("cases", [])
     if profile.get("synthetic") is not True or len(cases)!=len(expected_profile) or {row.get("id") for row in cases}!=expected_profile or any(row.get("passed") is not True for row in cases):
         raise SystemExit("Missing persistent account guard evidence")
-    verify_sync_preparation(json.loads((out/"sync-preparation-report.json").read_text()))
+    verify_sync_preparation(json.loads((out/"sync-preparation-report.json").read_text()), minimum_version=2)
     backup=json.loads((out/"local-backup-report.json").read_text())
     expected_backup={"native_snapshot", "authentication_and_recovery", "nonempty_bound_preserved", "worker_and_limits", "sensitive_activity", "system_saf_export_and_recovery", "explicit_sensitive_copy_and_clear", "stop_clears_sensitive_state"}
     cases=backup.get("cases", [])

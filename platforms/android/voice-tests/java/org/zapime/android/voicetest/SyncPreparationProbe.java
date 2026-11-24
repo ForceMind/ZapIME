@@ -16,13 +16,16 @@ import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.util.AtomicFile;
 import android.widget.EditText;
 import android.widget.TextView;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -33,6 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BooleanSupplier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -158,6 +162,11 @@ final class SyncPreparationProbe {
             Profile occupied=new Profile(base,new File(fixture,"occupied"),template,account);profiles.add(occupied);credential(model,store,occupied,"owner");
             invoke(vault,"saveIfAbsent",new Class<?>[]{Context.class,UUID.class,byte[].class},occupied.context,account,different);byte[] occupiedCipher=Files.readAllBytes(occupied.materialFile.toPath());
             SyncAccountProbe.reject(()->restore(bridge,occupied,code,encrypted));SyncAccountProbe.check(Arrays.equals(occupiedCipher,Files.readAllBytes(occupied.materialFile.toPath()))&&!prepared(inspect(bridge,occupied)),"restore replaced existing unbound material");SyncAccountProbe.passed(cases,"different_material_and_fingerprint_preserved");
+            stage="consent key recovery";
+            Profile consentTarget=new Profile(base,new File(fixture,"consent-target"),template,account);profiles.add(consentTarget);
+            credential(model,store,consentTarget,"member");
+            consentRecovery(bridge,core,model,store,consentTarget,material,code,encrypted,badCode,variantCode,variant);
+            SyncAccountProbe.passed(cases,"consent_recovery_and_stale_rejection");
             stage="identity and role";
             rejectCode(()->create(bridge,source,UUID.randomUUID()),"sync_connection_changed");
             Profile newMember=new Profile(base,new File(fixture,"new-member"),template,account);profiles.add(newMember);credential(model,store,newMember,"member");
@@ -210,10 +219,81 @@ final class SyncPreparationProbe {
                 try{base.deleteSharedPreferences(p.preferences+"sync_connection");}catch(Throwable error){cleanup=failure(cleanup,error);}
             }
             try(java.util.stream.Stream<Path> paths=Files.walk(fixture.toPath())){for(Path path:(Iterable<Path>)paths.sorted(Comparator.reverseOrder())::iterator)Files.delete(path);}catch(Throwable error){cleanup=failure(cleanup,error);}
-            JSONObject report=new JSONObject().put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("cleanup_completed",cleanup==null)
+            JSONObject report=new JSONObject().put("schema_version",2).put("synthetic",true).put("api_level",Build.VERSION.SDK_INT).put("cases",cases).put("cleanup_completed",cleanup==null)
                     .put("scope","Real stateless JNI and Android Keystore on isolated full-v2 synthetic database copies; create-only material, explicit account/key fingerprint binding, key recovery and lifecycle/identity boundaries. No HTTP, cloud-key registration, upload, cross-device data sync, provider UI or phone acceptance.");
             if(cleanup!=null)report.put("cleanup_failure_type",cleanup.getClass().getSimpleName());Files.write(new File(output,"sync-preparation-report.json").toPath(),report.toString(2).getBytes(StandardCharsets.UTF_8));
             if(cleanup!=null){if(operationFailure!=null)operationFailure.addSuppressed(cleanup);else throw new Exception("sync preparation fixture cleanup failed",cleanup);}
+        }
+    }
+
+    private static void consentRecovery(Class<?> bridge,Class<?> core,Class<?> model,Class<?> store,Profile target,
+            byte[] material,byte[] code,byte[] encrypted,byte[] invalidCode,byte[] otherCode,byte[] other)throws Exception{
+        ClassLoader loader=bridge.getClassLoader();
+        Class<?> consent=Class.forName("org.zapime.android.SyncConsentStore",true,loader);
+        Class<?> scopeType=Class.forName("org.zapime.android.SyncEnrollmentVault$Scope",true,loader);
+        Class<?> configType=Class.forName("org.zapime.android.AccountLoginProtocol$Config",true,loader);
+        Class<?> cancelType=Class.forName("org.zapime.android.SyncHttp$Cancellation",true,loader);
+        Class<?> keysBridge=Class.forName("org.zapime.android.SyncKeyRegistration",true,loader);
+        Class<?> resultType=Class.forName("org.zapime.android.SyncKeyRegistration$Result",true,loader);
+        Class<?> descriptorType=Class.forName("org.zapime.android.SyncKeyRegistration$Descriptor",true,loader);
+        Constructor<?> configConstructor=configType.getDeclaredConstructor(String.class,String.class,String.class,String.class,
+                String.class,String.class,String.class);
+        configConstructor.setAccessible(true);
+        Object config=configConstructor.newInstance("https://synthetic.example","https://synthetic.example/auth",
+                "https://synthetic.example/token","https://callback-synthetic.example/return","https://synthetic.example/enroll",
+                "https://synthetic.example","synthetic-a3");
+        Constructor<?> scopeConstructor=scopeType.getDeclaredConstructor(configType,UUID.class,String.class);
+        scopeConstructor.setAccessible(true);
+        Object scope=scopeConstructor.newInstance(config,target.account,
+                "3333333333333333333333333333333333333333333333333333333333333333");
+        Constructor<?> cancelConstructor=cancelType.getDeclaredConstructor();cancelConstructor.setAccessible(true);
+        Object cancel=cancelConstructor.newInstance();
+        Object saved=invoke(store,"load",new Class<?>[]{Context.class},target.context);
+        UUID device=(UUID)SyncAccountProbe.field(saved,"device");
+        String descriptor=(String)invoke(core,"syncKeyDescriptor",new Class<?>[]{String.class,byte[].class},target.account.toString(),material);
+        JSONObject response=new JSONObject().put("protocol",1).put("account_id",target.account.toString())
+                .put("state","registered").put("descriptor",new JSONObject(descriptor))
+                .put("registered_by",UUID.randomUUID().toString()).put("registered_at","2026-11-24T10:00:00Z");
+        Object remote=invoke(keysBridge,"parseRemote",new Class<?>[]{byte[].class,UUID.class},
+                response.toString().getBytes(StandardCharsets.UTF_8),target.account);
+        final String slot="54ebda61-ba6c-437e-9462-e5fed5ce159a";
+        final String alias="org.zapime.android.sync.consent.v1."+slot;
+        File file=new File(target.context.getNoBackupFilesDir(),"sync-consent-"+slot+".bin");
+        KeyStore keys=KeyStore.getInstance("AndroidKeyStore");keys.load(null);
+        SyncAccountProbe.check(!file.exists()&&!keys.containsAlias(alias),"consent fixture already present");
+        try{
+            byte[] before=business(target);
+            Object login=invoke(consent,"beginLogin",new Class<?>[]{Context.class,cancelType},target.context,cancel);
+            Object signedIn=invoke(consent,"completeLogin",new Class<?>[]{Context.class,UUID.class,scopeType,UUID.class,cancelType},
+                    target.context,SyncAccountProbe.field(login,"generation"),scope,device,cancel);
+            Object allowed=invoke(consent,"enable",new Class<?>[]{Context.class,UUID.class,scopeType,UUID.class,resultType,cancelType},
+                    target.context,SyncAccountProbe.field(signedIn,"generation"),scope,device,remote,cancel);
+            UUID generation=(UUID)SyncAccountProbe.field(allowed,"generation");
+            Class<?>[] restore={Context.class,UUID.class,byte[].class,byte[].class,UUID.class,configType,BooleanSupplier.class};
+            BooleanSupplier live=()->false;
+            SyncAccountProbe.reject(()->invoke(bridge,"restoreForConsent",restore,target.context,target.account,invalidCode,encrypted,
+                    generation,config,live));
+            rejectCode(()->invoke(bridge,"restoreForConsent",restore,target.context,target.account,otherCode,other,
+                    generation,config,live),"sync_consent_key_mismatch");
+            SyncAccountProbe.check(!target.materialFile.exists()&&Arrays.equals(before,business(target)),
+                    "invalid restore touched key or data before matching account descriptor");
+            Object restored=invoke(bridge,"restoreForConsent",restore,target.context,target.account,code,encrypted,generation,config,live);
+            SyncAccountProbe.check(prepared(restored)&&Arrays.equals(before,business(target)),"consent key recovery modified business data");
+            Object local=invoke(keysBridge,"preparedLocal",new Class<?>[]{Context.class,model,cancelType},target.context,saved,cancel);
+            Object loaded=invoke(consent,"load",new Class<?>[]{Context.class},target.context);
+            SyncAccountProbe.check((Boolean)SyncAccountProbe.call(loaded.getClass(),loaded,"permits",
+                    new Class<?>[]{scopeType,UUID.class,descriptorType},scope,device,local),"restored matching key did not satisfy consent");
+            invoke(consent,"disable",new Class<?>[]{Context.class,UUID.class},target.context,generation);
+            byte[] cipher=Files.readAllBytes(target.materialFile.toPath());
+            rejectCode(()->invoke(bridge,"restoreForConsent",restore,target.context,target.account,code,encrypted,generation,config,live),
+                    "sync_consent_changed");
+            SyncAccountProbe.check(Arrays.equals(cipher,Files.readAllBytes(target.materialFile.toPath())),
+                    "stale recovery touched saved material");
+        }finally{
+            SyncAccountProbe.close(model,saved);
+            new AtomicFile(file).delete();
+            Files.deleteIfExists(new File(file+".new").toPath());
+            keys.deleteEntry(alias);
         }
     }
     private SyncPreparationProbe(){}

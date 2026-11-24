@@ -64,10 +64,12 @@ final class SyncConsentStore {
     }
 
     /** Starting any new login discards the previous permission even if the browser is later cancelled. */
-    static State beginLogin(Context context) throws IOException {
+    static State beginLogin(Context context, SyncHttp.Cancellation cancel) throws IOException {
         worker();
         synchronized (SyncConsentStore.class) {
+            cancel.check();
             loadLocked(context);
+            cancel.check();
             return persist(context, State.signedOut(UUID.randomUUID()));
         }
     }

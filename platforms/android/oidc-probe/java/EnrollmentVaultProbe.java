@@ -27,23 +27,29 @@ import org.json.JSONObject;
 
 /** Runs with the disposable A3 fixture app on the instrumentation worker. */
 public final class EnrollmentVaultProbe extends Instrumentation {
+    private boolean consentOnly;
+
     @Override public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
+        consentOnly = arguments != null && "consent".equals(arguments.getString("stage"));
         start();
     }
 
     @Override public void onStart() {
         Bundle result = new Bundle();
         try {
-            checkVault();
-            result.putString("enrollment_vault", "PASS");
-            checkNetwork();
-            result.putString("enrollment_http", "PASS");
-            ConsentStoreProbe.run(getTargetContext());
-            result.putString("sync_consent_store", "PASS");
+            if (consentOnly) {
+                ConsentStoreProbe.run(getTargetContext());
+                result.putString("sync_consent_store", "PASS");
+            } else {
+                checkVault();
+                result.putString("enrollment_vault", "PASS");
+                checkNetwork();
+                result.putString("enrollment_http", "PASS");
+            }
             finish(Activity.RESULT_OK, result);
         } catch (Exception | AssertionError failed) {
-            String field = result.containsKey("enrollment_http") ? "sync_consent_store"
+            String field = consentOnly ? "sync_consent_store"
                     : result.containsKey("enrollment_vault") ? "enrollment_http" : "enrollment_vault";
             result.putString(field, "FAIL");
             result.putString("failure_type", failed.getClass().getSimpleName());
@@ -68,6 +74,9 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         } finally {
             Arrays.fill(bootstrap, (byte) 0);
         }
+        SyncConsentStore.State storedLogin = SyncConsentStore.load(context);
+        require(account.equals(storedLogin.account) && storedLogin.device == null && storedLogin.expectedKey == null
+                && Arrays.equals(scope.binding(), storedLogin.verifiedDeployment(config).binding()));
         try (SyncEnrollmentVault.Pending ignored = SyncEnrollmentVault.load(context, scope)) {
             require(ignored == null);
         }

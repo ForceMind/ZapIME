@@ -2,6 +2,7 @@
 package org.zapime.android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,18 +12,23 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import java.io.IOException;
+import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
 public final class AccountSyncActivity extends Activity {
+    private static final String DATA_SCOPE = "同步范围包括已有和以后新增或修改的个人词库、快捷短语、候选规则、永久收藏和手动保存的剪贴板。";
     private static final class PendingLogin {
         final AccountLoginProtocol.Attempt attempt;
         final boolean requestSync;
+        final UUID generation;
 
-        PendingLogin(AccountLoginProtocol.Config config, boolean requestSync) {
+        PendingLogin(AccountLoginProtocol.Config config, boolean requestSync, UUID generation) {
             this.attempt = new AccountLoginProtocol.Attempt(config, SystemClock.elapsedRealtime());
             this.requestSync = requestSync;
+            this.generation = generation;
         }
     }
 
@@ -30,8 +36,15 @@ public final class AccountSyncActivity extends Activity {
     private PendingLogin pending;
     private SyncHttp.Cancellation exchange;
     private Button enable, login, cancel;
+    private Button restoreKey, checkKey, loginAgain;
+    private Switch syncEnabled;
     private LinearLayout loginCard;
     private TextView status;
+    private SyncConsentController.Assessment presented;
+
+    private interface AssessmentAction {
+        SyncConsentController.Assessment run(SyncHttp.Cancellation cancel) throws IOException;
+    }
 
     @Override protected void onCreate(Bundle state) {
         super.onCreate(state);
@@ -46,7 +59,7 @@ public final class AccountSyncActivity extends Activity {
         loginCard = Ui.card(page);
         loginCard.addView(Ui.text(this, "服务器 " + config.syncServer, 14, Ui.MUTED));
         loginCard.addView(Ui.text(this, "登录后可以开启加密同步", 20, Ui.INK));
-        loginCard.addView(Ui.text(this, "同步范围包括已有和以后新增或修改的个人词库、快捷短语、候选规则、永久收藏和手动保存的剪贴板。", 14, Ui.MUTED));
+        loginCard.addView(Ui.text(this, DATA_SCOPE, 14, Ui.MUTED));
         enable = Ui.button(this, "登录并开启同步", Ui.BLUE, true);
         enable.setOnClickListener(view -> startLogin(true));
         Ui.addButton(loginCard, enable);
@@ -57,10 +70,28 @@ public final class AccountSyncActivity extends Activity {
         status = Ui.text(this, "", 15, Ui.INK);
         status.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         progress.addView(status);
+        syncEnabled = new Switch(this);
+        syncEnabled.setText("加密同步");
+        syncEnabled.setOnClickListener(view -> chooseSync());
+        progress.addView(syncEnabled);
+        restoreKey = Ui.button(this, "恢复原同步密钥", Ui.BLUE, true);
+        restoreKey.setOnClickListener(view -> {
+            if (presented == null || presented.status != SyncConsentController.Status.WAITING_FOR_KEY) return;
+            startActivity(new Intent(this, SyncPreparationActivity.class)
+                    .putExtra(SyncPreparationActivity.CONSENT_GENERATION, presented.state.generation.toString()));
+        });
+        Ui.addButton(progress, restoreKey);
+        checkKey = Ui.button(this, "核对服务器密钥", Ui.BG, false);
+        checkKey.setOnClickListener(view -> startActivity(new Intent(this, SyncKeyRegistrationActivity.class)));
+        Ui.addButton(progress, checkKey);
+        loginAgain = Ui.button(this, "重新登录", Ui.BG, false);
+        loginAgain.setOnClickListener(view -> startLogin(false));
+        Ui.addButton(progress, loginAgain);
         cancel = Ui.button(this, "取消登录", Ui.BG, false);
         cancel.setOnClickListener(view -> {
             cancelWork();
-            update("登录已取消。同步已关闭。", false);
+            presented = null;
+            readStatus();
         });
         Ui.addButton(progress, cancel);
         Ui.showPage(this, page);
@@ -69,6 +100,65 @@ public final class AccountSyncActivity extends Activity {
         if (retained instanceof PendingLogin) pending = (PendingLogin) retained;
         update(pending == null ? "同步已关闭" : "请在浏览器中完成登录", pending != null);
         acceptIntent(getIntent());
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (config != null && pending == null && exchange == null) readStatus();
+    }
+
+    private void readStatus() {
+        work("正在核对本机同步状态", request -> SyncConsentController.inspect(getApplicationContext(), config, request));
+    }
+
+    private void chooseSync() {
+        if (presented == null || exchange != null) return;
+        SyncConsentStore.State shown = presented.state;
+        syncEnabled.setChecked(shown.expectedKey != null);
+        if (shown.expectedKey != null) {
+            SyncConsentController.stop(shown.generation);
+            work("正在保存关闭状态", request -> {
+                request.check();
+                SyncConsentStore.disable(getApplicationContext(), shown.generation);
+                return SyncConsentController.inspect(getApplicationContext(), config, request);
+            });
+            return;
+        }
+        new AlertDialog.Builder(this).setTitle("开启加密同步")
+                .setMessage("服务器 " + config.syncServer + "\n账号 " + shown.account + "\n设备 " + shown.device
+                        + "\n\n" + DATA_SCOPE)
+                .setNegativeButton("取消", null)
+                .setPositiveButton("开启加密同步", (dialog, button) -> work("正在核对设备和密钥",
+                        request -> SyncConsentController.enable(getApplicationContext(), config, shown, request)))
+                .show();
+    }
+
+    private void work(String progress, AssessmentAction action) {
+        if (pending != null || exchange != null) return;
+        SyncHttp.Cancellation request = new SyncHttp.Cancellation();
+        exchange = request;
+        update(progress, true);
+        try {
+            SyncWorker.EXECUTOR.execute(() -> {
+                try {
+                    SyncConsentController.Assessment result = action.run(request);
+                    runOnUiThread(() -> {
+                        if (exchange != request || isDestroyed()) return;
+                        exchange = null;
+                        render(result, null);
+                    });
+                } catch (IOException | RuntimeException failure) {
+                    runOnUiThread(() -> {
+                        if (exchange != request || isDestroyed()) return;
+                        exchange = null;
+                        update("暂时无法核对或保存同步状态，请返回后重试。", false);
+                    });
+                }
+            });
+        } catch (RejectedExecutionException busy) {
+            exchange = null;
+            update("同步页面正忙，状态尚未保存。请稍后重试。", false);
+        }
     }
 
     @Override protected void onNewIntent(Intent intent) {
@@ -91,7 +181,34 @@ public final class AccountSyncActivity extends Activity {
 
     private void startLogin(boolean requestSync) {
         if (pending != null || exchange != null) return;
-        pending = new PendingLogin(config, requestSync);
+        SyncHttp.Cancellation request = new SyncHttp.Cancellation();
+        exchange = request;
+        update("正在准备登录", true);
+        try {
+            SyncWorker.EXECUTOR.execute(() -> {
+                try {
+                    SyncConsentStore.State login = SyncConsentStore.beginLogin(getApplicationContext(), request);
+                    runOnUiThread(() -> {
+                        if (isDestroyed() || exchange != request) return;
+                        exchange = null;
+                        launchBrowser(requestSync, login.generation);
+                    });
+                } catch (IOException | RuntimeException failure) {
+                    runOnUiThread(() -> {
+                        if (isDestroyed() || exchange != request) return;
+                        exchange = null;
+                        update("无法保存本机登录状态，请重试。", false);
+                    });
+                }
+            });
+        } catch (RejectedExecutionException busy) {
+            exchange = null;
+            update("同步页面正忙，请稍后重试。", false);
+        }
+    }
+
+    private void launchBrowser(boolean requestSync, UUID generation) {
+        pending = new PendingLogin(config, requestSync, generation);
         try {
             Intent browser = new Intent(Intent.ACTION_VIEW, Uri.parse(pending.attempt.authorization().toString()));
             browser.addCategory(Intent.CATEGORY_BROWSABLE);
@@ -108,6 +225,7 @@ public final class AccountSyncActivity extends Activity {
         setIntent(new Intent(this, AccountSyncActivity.class));
         if (pending == null) return;
         final boolean requestSync = pending.requestSync;
+        final UUID generation = pending.generation;
         final AccountLoginProtocol.Exchange accepted;
         try {
             accepted = pending.attempt.accept(intent.getDataString(), SystemClock.elapsedRealtime());
@@ -126,16 +244,25 @@ public final class AccountSyncActivity extends Activity {
             SyncWorker.EXECUTOR.execute(() -> {
                 try {
                     AccountLoginExchange.Identity identity = AccountLoginExchange.verify(getApplicationContext(), accepted, request);
+                    SyncConsentStore.State stored = SyncConsentStore.completeLogin(getApplicationContext(), generation,
+                            identity.enrollmentScope, identity.device, request);
+                    SyncConsentController.Assessment result;
+                    String notice = null;
+                    try {
+                        result = requestSync && identity.device != null
+                                ? SyncConsentController.enable(getApplicationContext(), config, stored, request)
+                                : SyncConsentController.inspect(getApplicationContext(), config, request);
+                    } catch (IOException unavailable) {
+                        request.check();
+                        result = SyncConsentController.inspect(getApplicationContext(), config, request);
+                        notice = "暂时无法开启。请核对设备授权和原同步密钥。";
+                    }
+                    final SyncConsentController.Assessment rendered = result;
+                    final String message = notice;
                     runOnUiThread(() -> {
                         if (exchange != request || isDestroyed()) return;
                         exchange = null;
-                        loginCard.setVisibility(View.GONE);
-                        String syncState = requestSync
-                                ? (identity.device == null ? "同步等待设备授权" : "开启同步前需要核对密钥")
-                                : "同步已关闭";
-                        update("已登录\n服务器 " + config.syncServer + "\n账号 " + identity.enrollmentScope.account + "\n"
-                                + identity.deviceState + (identity.device == null ? "" : "\n设备 " + identity.device)
-                                + "\n" + syncState, false);
+                        render(rendered, message);
                     });
                 } catch (IOException | RuntimeException failed) {
                     runOnUiThread(() -> {
@@ -151,11 +278,43 @@ public final class AccountSyncActivity extends Activity {
         }
     }
 
+    private void render(SyncConsentController.Assessment assessment, String notice) {
+        presented = assessment;
+        SyncConsentStore.State state = assessment.state;
+        loginCard.setVisibility(state.account == null ? View.VISIBLE : View.GONE);
+        String message;
+        switch (assessment.status) {
+            case WAITING_FOR_DEVICE: message = "此设备尚未获授权\n同步已关闭"; break;
+            case WAITING_FOR_KEY: message = "需要恢复同步密钥"; break;
+            case PAUSED: message = "本机同步已暂停\n关闭状态尚未保存"; break;
+            case WORKSPACE_REQUIRED: message = "本机资料库需要完成密钥准备\n同步已关闭"; break;
+            case KEY_CONFLICT: message = "本机与服务器的密钥不一致\n同步已关闭"; break;
+            case KEY_UNREGISTERED: message = "服务器尚未登记同步密钥\n同步已关闭"; break;
+            case REVOKED: message = "设备授权失效\n同步已关闭"; break;
+            case READY: message = "设备和密钥已核对\n等待同步任务"; break;
+            default: message = "同步已关闭";
+        }
+        String target = state.account == null ? "" : "已登录\n服务器 " + config.syncServer +
+                "\n账号 " + state.account + (state.device == null ? "" : "\n设备 " + state.device) + "\n";
+        update(target + message + (notice == null ? "" : "\n" + notice), false);
+    }
+
     private void update(String message, boolean waiting) {
         status.setText(message);
         enable.setEnabled(!waiting);
         login.setEnabled(!waiting);
         cancel.setVisibility(waiting ? View.VISIBLE : View.GONE);
+        cancel.setText("取消");
+        SyncConsentController.Status shown = presented == null ? null : presented.status;
+        SyncConsentStore.State consent = presented == null ? null : presented.state;
+        boolean hasDevice = consent != null && consent.device != null && shown != SyncConsentController.Status.REVOKED
+                && shown != SyncConsentController.Status.WAITING_FOR_DEVICE;
+        syncEnabled.setVisibility(hasDevice ? View.VISIBLE : View.GONE);
+        syncEnabled.setEnabled(hasDevice && !waiting);
+        syncEnabled.setChecked(consent != null && consent.expectedKey != null);
+        restoreKey.setVisibility(!waiting && shown == SyncConsentController.Status.WAITING_FOR_KEY ? View.VISIBLE : View.GONE);
+        checkKey.setVisibility(!waiting && shown == SyncConsentController.Status.KEY_UNREGISTERED ? View.VISIBLE : View.GONE);
+        loginAgain.setVisibility(!waiting && shown == SyncConsentController.Status.REVOKED ? View.VISIBLE : View.GONE);
     }
 
     private void cancelWork() {

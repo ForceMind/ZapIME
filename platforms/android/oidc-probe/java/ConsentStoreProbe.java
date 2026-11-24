@@ -10,7 +10,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.KeyStore;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /** Synthetic, offline permission tests in the disposable A3 APK. */
 final class ConsentStoreProbe {
@@ -39,12 +45,12 @@ final class ConsentStoreProbe {
         require(registered.descriptor != null && !registered.matchesLocal);
         SyncHttp.Cancellation cancel = new SyncHttp.Cancellation();
         try {
-            SyncConsentStore.State abandoned = SyncConsentStore.beginLogin(context);
-            SyncConsentStore.State attempt = SyncConsentStore.beginLogin(context);
+            SyncConsentStore.State abandoned = SyncConsentStore.beginLogin(context, cancel);
+            SyncConsentStore.State attempt = SyncConsentStore.beginLogin(context, cancel);
             reject(() -> SyncConsentStore.completeLogin(context, abandoned.generation, target, device, cancel));
             SyncConsentStore.State pending = SyncConsentStore.completeLogin(context, attempt.generation, target, null, cancel);
             reject(() -> SyncConsentStore.enable(context, pending.generation, target, device, registered, cancel));
-            SyncConsentStore.State newAttempt = SyncConsentStore.beginLogin(context);
+            SyncConsentStore.State newAttempt = SyncConsentStore.beginLogin(context, cancel);
             SyncConsentStore.State signedIn = SyncConsentStore.completeLogin(context, newAttempt.generation, target, device, cancel);
             require(signedIn.expectedKey == null && !signedIn.permits(target, device, registered.descriptor));
             reject(() -> SyncConsentStore.enable(context, signedIn.generation, otherSubject, device, registered, cancel));
@@ -61,6 +67,7 @@ final class ConsentStoreProbe {
             require(!loaded.permits(target, device, remote(account, key, OTHER_SUBJECT, "registered").descriptor));
             reject(() -> loaded.verifiedDeployment(otherServer));
 
+            checkBusyShutdown(context, config, loaded, cancel);
             SyncConsentStore.State off = SyncConsentStore.disable(context, loaded.generation);
             require(!off.permits(target, device, registered.descriptor));
             reject(() -> SyncConsentStore.enable(context, loaded.generation, target, device, registered, cancel));
@@ -82,7 +89,7 @@ final class ConsentStoreProbe {
             corrupted[corrupted.length - 1] ^= 1;
             Files.write(file.toPath(), corrupted);
             reject(() -> SyncConsentStore.load(context));
-            reject(() -> SyncConsentStore.beginLogin(context));
+            reject(() -> SyncConsentStore.beginLogin(context, cancel));
             require(Arrays.equals(corrupted, Files.readAllBytes(file.toPath())));
             Files.write(file.toPath(), saved);
             keys.deleteEntry(ALIAS);
@@ -94,6 +101,31 @@ final class ConsentStoreProbe {
             Files.deleteIfExists(new File(file + ".new").toPath());
             keys.deleteEntry(ALIAS);
             require(!file.exists() && !new File(file + ".bak").exists() && !keys.containsAlias(ALIAS));
+        }
+    }
+
+    private static void checkBusyShutdown(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State shown,
+            SyncHttp.Cancellation cancel) throws Exception {
+        CountDownLatch occupied = new CountDownLatch(1), release = new CountDownLatch(1);
+        List<Future<?>> tasks = new ArrayList<>();
+        tasks.add(SyncWorker.EXECUTOR.submit(() -> {
+            occupied.countDown();
+            return release.await(5, TimeUnit.SECONDS);
+        }));
+        try {
+            require(occupied.await(3, TimeUnit.SECONDS));
+            for (int i = 0; i < 8; i++) tasks.add(SyncWorker.EXECUTOR.submit(() -> {}));
+            SyncConsentController.stop(shown.generation);
+            try {
+                SyncWorker.EXECUTOR.submit(() -> SyncConsentStore.disable(context, shown.generation));
+                throw new AssertionError("full_sync_queue_accepted");
+            } catch (RejectedExecutionException expected) {
+                require(SyncConsentController.inspect(context, config, cancel).status == SyncConsentController.Status.PAUSED);
+                require(SyncConsentStore.load(context).generation.equals(shown.generation));
+            }
+        } finally {
+            release.countDown();
+            for (Future<?> task : tasks) task.get(3, TimeUnit.SECONDS);
         }
     }
 
