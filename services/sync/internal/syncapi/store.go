@@ -62,7 +62,18 @@ func (s *Store) Migrate(ctx context.Context) error {
         issuer text NOT NULL CHECK(octet_length(issuer) BETWEEN 1 AND 1024),
         subject text NOT NULL CHECK(octet_length(subject) BETWEEN 1 AND 255),
         account_id uuid NOT NULL REFERENCES zapime_accounts(id),
-        PRIMARY KEY(issuer,subject));`)
+        PRIMARY KEY(issuer,subject));
+    CREATE TABLE IF NOT EXISTS zapime_device_enrollments(
+        id uuid PRIMARY KEY, account_id uuid NOT NULL REFERENCES zapime_accounts(id),
+        issuer text NOT NULL, subject text NOT NULL, token_id text NOT NULL, resource text NOT NULL,
+        name text NOT NULL, public_key bytea NOT NULL CHECK(octet_length(public_key) BETWEEN 1 AND 128),
+        new_token_hash bytea NOT NULL CHECK(octet_length(new_token_hash)=32),
+        fingerprint bytea NOT NULL CHECK(octet_length(fingerprint)=32),
+        expires_at timestamptz NOT NULL, approved_by uuid REFERENCES zapime_devices(id),
+        approval_token_hash bytea CHECK(octet_length(approval_token_hash)=32), claimed_at timestamptz,
+        CHECK((approved_by IS NULL) = (approval_token_hash IS NULL)),
+        CHECK(claimed_at IS NULL OR approved_by IS NOT NULL), UNIQUE(issuer,token_id));
+    CREATE INDEX IF NOT EXISTS zapime_enrollments_account ON zapime_device_enrollments(account_id,expires_at);`)
 	if err != nil {
 		return err
 	}

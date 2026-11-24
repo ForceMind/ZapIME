@@ -52,6 +52,8 @@ func failure(w http.ResponseWriter, err error) {
 		write(w, 409, map[string]string{"error": "key_descriptor_legacy"})
 	case errors.Is(err, ErrKeyDescriptorMismatch):
 		write(w, 409, map[string]string{"error": "key_descriptor_mismatch"})
+	case errors.Is(err, ErrEnrollmentPending):
+		write(w, 409, map[string]string{"error": "enrollment_pending"})
 	case errors.Is(err, ErrInvalid):
 		write(w, 400, map[string]string{"error": "invalid_request"})
 	case errors.Is(err, ErrLimit):
@@ -95,8 +97,12 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		write(w, 200, map[string]any{"status": "ready", "protocol": 1})
 		return
 	}
-	if r.URL.Path == "/v1/account-login" {
+	switch r.URL.Path {
+	case "/v1/account-login":
 		api.accountLogin(ctx, w, r)
+		return
+	case "/v1/device-enrollment", "/v1/device-enrollment/approve", "/v1/device-enrollment/claim":
+		api.deviceEnrollment(ctx, w, r)
 		return
 	}
 	authorization := r.Header.Get("Authorization")

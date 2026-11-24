@@ -39,7 +39,9 @@
 
 已核对 [API28 归档](https://github.com/ForceMind/ZapIME/actions/runs/45449777431/artifacts/14947461836) 的 GitHub SHA-256 `2fe30e1977a84e2589216a01ec66bf230abffdd16db8e28dbb3ddfe2b4e76fe7`。`7ce70ba` 的真实 PostgreSQL 事务步骤已通过，包含主体绑定、并发改绑拒绝和既有密钥迁移保护。[服务 CI](https://github.com/ForceMind/ZapIME/actions/runs/45449777763/job/138643335578)
 
-下一项从当前代码接续：默认关闭的 `GET /v1/account-login` 已接入主服务构造，启用后只查询已绑定账号。通过本机 Go 可用测试与 `vet`，将回读 CI 中的真实 PostgreSQL 及 HTTP 结果。设备批准、一次领取、主 App 登录与自动同步仍为后续独立验收。
+**2026-11-24 · Go 账号查询已同步。** `0941eb1` 将默认关闭的 `GET /v1/account-login` 接入主服务。启用后只查询已绑定账号。本机 Go 可用测试与 `vet` 通过，真实 PostgreSQL 与 HTTP 路由见此次[服务 CI](https://github.com/ForceMind/ZapIME/actions/runs/45451267853)。同提交的[隔离浏览器回跳](https://github.com/ForceMind/ZapIME/actions/runs/45451267594)再次通过。
+
+**2026-11-24 · Go 设备登记进入 CI。** 按 Astra 复核结论实现三步 [设备登记协议](../services/sync/README.md#设备登记协议)。部署者绑定身份，当前 owner 批准已核实的申请指纹，原申请设备凭本机 P-256 私钥和仍有效的同源身份领取。设备先安全生成凭据，服务只激活摘要。丢回执时通过既有 `/v1/session` 核原领取的设备和账号，无须再次发凭据。新增真实 PostgreSQL 测试覆盖等待批准、异账号或异主体、两路并发领取、申请重放、撤销与轮换、超限及到期。本机 Go 测试和 `vet` 已通过可用检查，数据库专项以 CI 为准。主 App 尚未接入。
 
 ### 1. 账号登录、设备授权分别验证
 
@@ -66,6 +68,6 @@
 
 1. **Go 与共享层。** 用隔离的真实 OIDC 测试账号和 PostgreSQL 验证登录、绑定、设备限额、拒绝与竞态，并执行 `ZAPIME_REQUIRE_DATABASE=1` 的 Go `-race` 门禁。共享层执行工作区测试、格式及严格 Clippy，覆盖账套、来源、撤销、范围和冻结请求。服务端备份验收需包含新身份授权数据，恢复后先验证绑定再发凭据。
 2. **Android。** 先跑 JVM 身份/调度策略和本机 JNI/Keystore/SAF 探针，再在真实服务上核实际浏览器回跳及 Android 发起的 HTTPS 双端闭环。API28 系统信任库例外沿用 ADR-023，API35/36 使用本平台实际可用的生产信任路径，证据分别记录。验证仅登录零资料传输、前台自动、离线恢复、快速关闭/换号、丢回执、>16 条、冲突、旧墓碑与输入法回归。
-3. **当前接手点。** 主机 OIDC 已通过。下一步用其签发的访问令牌验证 Go 对签发者、目标资源和身份的边界，以及真实 PostgreSQL 中的绑定、owner 授权和一次设备领取。Android 回跳另需隔离环境，其证据和主机结果分别记。准备真实外部账号或域名时按各自范围授权。
+3. **当前接手点。** 主机签发验证、Go 主体绑定及 Android 隔离 test-only APK 回跳已有证据。回读服务 CI 的账号查询、owner 批准与一次领取，随后接主 App 登录。准备真实外部账号或域名时按各自范围授权。
 
 后台长期调度、自动传钥、跨账号资料迁移、冲突解决页和公开注册作为后续独立候选事项。当前设计分支记录方案，实施按仓库规则拆独立分支与 PR。

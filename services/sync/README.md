@@ -12,7 +12,21 @@
 
 A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
-`GET /v1/account-login` 是启用后才开放的账号身份查询，返回协议号和既有账号 UUID。启用时一并设置 `ZAPIME_OIDC_ISSUER`、`ZAPIME_OIDC_AUDIENCE`、`ZAPIME_OIDC_CLIENT_ID`、`ZAPIME_OIDC_JWKS_FILE`。密钥文件只包含部署者审核的公开 JWK，配置变更或签名密钥轮换后重启服务。访问令牌须有专用受众、`zapime.device_enrollment` 范围和至多五分钟有效期。资料接口继续使用独立设备凭据，设备审批与领用单独交付。
+`GET /v1/account-login` 是启用后才开放的账号身份查询，返回协议号和既有账号 UUID。启用时一并设置 `ZAPIME_OIDC_ISSUER`、`ZAPIME_OIDC_AUDIENCE`、`ZAPIME_OIDC_CLIENT_ID`、`ZAPIME_OIDC_JWKS_FILE`。密钥文件只包含部署者审核的公开 JWK，配置变更或签名密钥轮换后重启服务。访问令牌须有专用受众、`zapime.device_enrollment` 范围和至多五分钟有效期。资料接口继续使用独立设备凭据。
+
+### 设备登记协议
+
+| 接口 | 授权 | 请求和结果 |
+| --- | --- | --- |
+| `POST /v1/device-enrollment` | 绑定已有账号的短时 OIDC 访问令牌 | 提交 `enrollment_id`、`account_id`、`name`、`deadline`（Unix 秒）、`public_key`、`token_sha256`、`signature`，返回相同 ID、期限及完整十六进制 `fingerprint`。同一令牌 ID 只能登记同一完整请求。 |
+| `POST /v1/device-enrollment/approve` | 同账号当前有效的 owner 设备凭据 | 核对并明确批准 `enrollment_id` 和完整的 `fingerprint`，返回 204。批准与该 owner 当前凭据绑定。 |
+| `POST /v1/device-enrollment/claim` | 同一 issuer、subject 和受众的有效访问令牌及原设备私钥 | 提交 `enrollment_id`、`account_id`、`signature`。等待 owner 时返回 409 `enrollment_pending`，成功时返回与 `/v1/session` 相同的公开设备身份。 |
+
+客户端先以密码学随机源生成格式为 `zap1_` 加 32 字节无填充 Base64URL 的凭据，安全保存后才申请。申请使用 P-256 公钥的 SPKI DER。公钥、凭据 SHA-256 和 ASN.1 DER 签名采用无填充 Base64URL。登记上限为每账号八个未领取的有效请求，期限不超过十分钟。设备激活占用既有 32 个有效设备限额，有效期为 30 天。被撤销的批准、轮换过的批准凭据或已撤销的申请设备均不能用旧请求激活。
+
+每个签名前消息的字段均以四字节无符号大端长度开头。文本使用 UTF-8，指纹、凭据摘要、公钥和访问令牌摘要按原字节拼接。指纹是字段 `zapime-enrollment-v1`、issuer、受众、账号、申请 ID、设备名、十进制 deadline、公钥 DER、凭据摘要依序编码的 SHA-256。签名输入是用途 `zapime-enrollment-begin-v1` 或 `zapime-enrollment-claim-v1`、原始指纹、当前访问令牌的 SHA-256 三个字段；使用 `SHA256withECDSA`。申请设备自己计算并核对返回的完整指纹，再交给 owner 核对。领取发起时可以使用同一身份新签发的访问令牌。
+
+服务器原子激活凭据摘要并消费批准，设备 ID 等于申请 ID。回执丢失时可用原有本机凭据请求 `GET /v1/session`，核对账号、设备与 `member` 角色。领用响应只包含公开身份。账号查询和设备登记均无需端到端材料或密文资料。
 
 ## 一键服务器部署与 R2
 

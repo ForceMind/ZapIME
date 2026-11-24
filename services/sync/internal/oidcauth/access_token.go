@@ -35,13 +35,15 @@ func (p AccessPolicy) valid() bool {
 // Subject is a verified issuer-scoped identity. Account membership, device
 // authorization, and redemption of the token ID are separate checks.
 type Subject struct {
-	issuer, id, tokenID string
-	expiresAt           time.Time
+	issuer, id, tokenID, audience string
+	expiresAt                     time.Time
 }
 
 func (s Subject) Claims() (issuer, id, tokenID string, expiresAt time.Time) {
 	return s.issuer, s.id, s.tokenID, s.expiresAt
 }
+
+func (s Subject) Audience() string { return s.audience }
 
 type accessClaims struct {
 	jwt.Claims
@@ -102,7 +104,7 @@ func VerifyAccessToken(policy AccessPolicy, keys jose.JSONWebKeySet, wire string
 	if !now.Before(expires) || !issued.Before(expires) || expires.Sub(issued) > policy.MaxLifetime {
 		return Subject{}, ErrInvalidAccessToken
 	}
-	return Subject{issuer: claims.Issuer, id: claims.Subject, tokenID: claims.ID, expiresAt: expires}, nil
+	return Subject{issuer: claims.Issuer, id: claims.Subject, tokenID: claims.ID, audience: policy.Audience, expiresAt: expires}, nil
 }
 
 func verificationKey(key jose.JSONWebKey) *rsa.PublicKey {
