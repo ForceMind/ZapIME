@@ -10,9 +10,9 @@ import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
 const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe', foregroundFile] = process.argv.slice(2);
-assert.ok(['probe', 'main', 'foreground', 'queue'].includes(mode));
+assert.ok(['probe', 'main', 'foreground', 'queue', 'archive'].includes(mode));
 const queueWindow = mode === 'queue';
-const foreground = mode === 'foreground' || queueWindow ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
+const foreground = ['foreground', 'queue', 'archive'].includes(mode) ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
 if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
 const priorAccount = foreground?.bootstrap.device.account_id;
 const issuer = 'https://a3-oidc.example.test';
@@ -217,6 +217,10 @@ async function handle(req, res) {
     const dataRead = method === 'GET' && url.pathname === '/v1/changes' && /^\?after=\d+&limit=\d+$/.test(url.search);
     const dataWrite = method === 'POST' && url.pathname === '/v1/changes' && !url.search;
     if (plainRead || dataRead || dataWrite) {
+      if (mode === 'archive' && dataWrite) {
+        totals.uploads = (totals.uploads ?? 0) + 1;
+        throw new Error('unexpected_archive_fixture_upload');
+      }
       const authorization = req.headers.authorization;
       assert.ok(typeof authorization === 'string' && authorization.length <= 512 && authorization.startsWith('Bearer '));
       const request = dataWrite ? await read(req, 8192, null) : undefined;

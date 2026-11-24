@@ -196,6 +196,19 @@ fn main() {
         return;
     }
     let material = material(dir);
+    if command == "export-archive-origin-fixture" {
+        let mut b = open(dir, "b");
+        let id = Uuid::from_u128(0xf867_8ce1_c77a_4f88_957d_f07f_9845_1953);
+        let device = b.device_id().expect("fixture device");
+        b.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
+            .expect("create the source record in a prepared workspace");
+        private(
+            &dir.join("records-only.json"),
+            &b.export_plaintext().unwrap(),
+        );
+        status(&mut b, &material, command);
+        return;
+    }
     if command == "verify-queue-window-receiver" {
         let revision: u64 = args[3].parse().expect("fixture revision");
         assert!(matches!(revision, 16 | 18), "queue fixture head");

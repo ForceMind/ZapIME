@@ -38,7 +38,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                 "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack",
                 "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability", "foreground-default-network",
                 "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload", "foreground-switched-account",
-                "foreground-queue-window-seed", "foreground-queue-window-first", "foreground-queue-window-final")
+                "foreground-queue-window-seed", "foreground-queue-window-first", "foreground-queue-window-final",
+                "foreground-archive-import", "foreground-archive-edit", "foreground-archive-verify")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -51,10 +52,16 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     ForegroundSyncProbe.readDefaultNetwork(getTargetContext(), result);
                 } else if ("foreground-default-network".equals(foreground)) {
                     DefaultNetworkProbe.run(this);
-                } else if ("foreground-seed".equals(foreground) || "foreground-queue-window-seed".equals(foreground)) {
+                } else if ("foreground-seed".equals(foreground) || "foreground-queue-window-seed".equals(foreground)
+                        || "foreground-archive-import".equals(foreground)) {
                     AccountLoginProtocol.Config config = AccountLoginDeployment.config();
                     byte[] input = fixture(config, "foreground", false);
-                    try { ForegroundSyncProbe.seed(getTargetContext(), config, input, "foreground-queue-window-seed".equals(foreground)); }
+                    String mode = "foreground-archive-import".equals(foreground) ? "archive"
+                            : "foreground-queue-window-seed".equals(foreground) ? "queue" : "foreground";
+                    try {
+                        String imported = ForegroundSyncProbe.seed(getTargetContext(), config, input, mode);
+                        if (imported != null) result.putString("imported_sha256", imported);
+                    }
                     finally { Arrays.fill(input, (byte) 0); }
                 } else if ("foreground-verify".equals(foreground)) {
                     ForegroundSyncProbe.verify(getTargetContext(), true);
@@ -77,6 +84,10 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     result.putString("frozen_sha256", ForegroundSyncProbe.switchedAccount(getTargetContext(), result));
                 } else if ("foreground-queue-window-first".equals(foreground) || "foreground-queue-window-final".equals(foreground)) {
                     ForegroundSyncProbe.verifyQueue(getTargetContext(), "foreground-queue-window-first".equals(foreground) ? 16 : 18);
+                } else if ("foreground-archive-edit".equals(foreground)) {
+                    result.putString("imported_sha256", ForegroundSyncProbe.editArchive(getTargetContext()));
+                } else if ("foreground-archive-verify".equals(foreground)) {
+                    ForegroundSyncProbe.verifyArchive(getTargetContext(), true, true);
                 } else {
                     result.putString("prior_connection_sha256", ForegroundSyncProbe.signedOut(getTargetContext()));
                 }

@@ -34,6 +34,10 @@ final class ForegroundSyncProbe {
     private static final UUID INTERRUPTED_RECORD = UUID.fromString("84c8e285-0d0c-4f5c-8258-ba048d906a29");
     private static final UUID INTERRUPTED_OPERATION = UUID.fromString("8cbfd5d6-dc74-4fbd-b600-08da374eb8f2");
     private static final UUID CONFLICT_OPERATION = UUID.fromString("3bc90113-5fe3-4b79-8efc-705ab851d55d");
+    private static final UUID IMPORTED_RECORD = UUID.fromString("f8678ce1-c77a-4f88-957d-f07f98451953");
+    private static final UUID IMPORTED_EDIT = UUID.fromString("d6594a60-53c9-4f99-867d-503517826b66");
+    private static final String IMPORTED_TEXT = "synthetic A3 automatic shortcut";
+    private static final String IMPORTED_EDIT_TEXT = "synthetic A3 locally edited import";
     private static final String LOCAL_EDIT = "synthetic A3 conflicting device edit";
 
     static void readDefaultNetwork(Context context, Bundle result) throws Exception {
@@ -84,7 +88,7 @@ final class ForegroundSyncProbe {
         if (!known) transports.add("other");
     }
 
-    static void seed(Context context, AccountLoginProtocol.Config config, byte[] seed, boolean queueWindow) throws Exception {
+    static String seed(Context context, AccountLoginProtocol.Config config, byte[] seed, String mode) throws Exception {
         File root = new File(context.getFilesDir(), "zapime");
         require(!root.exists() && SyncConnectionStore.load(context) == null && SyncConsentStore.load(context).account == null);
         JSONObject input = new JSONObject(new String(seed, StandardCharsets.UTF_8));
@@ -100,24 +104,30 @@ final class ForegroundSyncProbe {
                 long core = NativeCore.open(root.getAbsolutePath(), false);
                 require(core != 0);
                 try {
+                    if ("archive".equals(mode)) {
+                        JSONObject command = new JSONObject().put("op", "personal_import").put("archive", input.getString("archive"));
+                        require(!new JSONObject(NativeCore.request(core, command.toString())).has("error"));
+                    }
                     require(SyncSecrets.saveIfAbsent(context, connection.account, material));
                     require(new JSONObject(NativeCore.prepareSync(root.getAbsolutePath(), account, material)).getBoolean("prepared"));
-                    byte[] empty = "{\"changes\":[],\"next_cursor\":0,\"head\":0}".getBytes(StandardCharsets.US_ASCII);
-                    JSONObject manual = new JSONObject(NativeCore.applySyncPage(root.getAbsolutePath(), account, material, 0, empty));
-                    require(manual.length() == 5 && manual.getLong("cursor") == 0 && manual.getLong("head") == 0
-                            && manual.getInt("applied") == 0 && manual.getInt("echoed") == 0 && manual.getInt("unchanged") == 0);
+                    if (!"archive".equals(mode)) {
+                        byte[] empty = "{\"changes\":[],\"next_cursor\":0,\"head\":0}".getBytes(StandardCharsets.US_ASCII);
+                        JSONObject manual = new JSONObject(NativeCore.applySyncPage(root.getAbsolutePath(), account, material, 0, empty));
+                        require(manual.length() == 5 && manual.getLong("cursor") == 0 && manual.getLong("head") == 0
+                                && manual.getInt("applied") == 0 && manual.getInt("echoed") == 0 && manual.getInt("unchanged") == 0);
+                    }
                     SyncConnectionStore.save(context, connection);
                     SyncEnrollmentVault.Scope scope = new SyncEnrollmentVault.Scope(config, connection.account,
                             input.getString("subject_fingerprint"));
                     SyncConsentStore.State signIn = SyncConsentStore.beginLogin(context, cancel);
                     require(SyncConsentStore.completeLogin(context, signIn.generation, scope, connection.device, cancel).expectedKey == null);
-                    if (queueWindow) {
+                    if ("queue".equals(mode)) {
                         for (int index = 1; index <= 16; index++) {
                             edit(core, queueRecord(index), queueOperation(index), 0, "burst" + index, "synthetic A3 queue item " + index);
                         }
                         edit(core, queueRecord(1), queueOperation(17), 1, "burst1", "synthetic A3 queue item 1", true);
                         edit(core, queueRecord(18), queueOperation(18), 0, "burst18", "synthetic A3 queue item 18");
-                    } else {
+                    } else if ("foreground".equals(mode)) {
                         edit(core, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
                     }
                 } finally {
@@ -129,8 +139,60 @@ final class ForegroundSyncProbe {
         } finally {
             Arrays.fill(material, (byte) 0);
         }
-        if (queueWindow) verifyQueue(context, 0);
+        if ("archive".equals(mode)) return verifyArchive(context, false, false);
+        if ("queue".equals(mode)) verifyQueue(context, 0);
         else verify(context, false);
+        return null;
+    }
+
+    static String editArchive(Context context) throws Exception {
+        String imported = verifyArchive(context, true, false);
+        long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+        require(core != 0);
+        try {
+            edit(core, IMPORTED_RECORD, IMPORTED_EDIT, 1, "a3sync", IMPORTED_EDIT_TEXT);
+            edit(core, RECORD, OPERATION, 0, "a3trusted", "synthetic A3 source verified shortcut");
+        } finally {
+            NativeCore.close(core);
+        }
+        verifyArchive(context, true, true);
+        return imported;
+    }
+
+    static String verifyArchive(Context context, boolean pulled, boolean edited) throws Exception {
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(consent.account != null && (consent.expectedKey != null) == pulled);
+        checkCursor(context, pulled ? 1 : 0);
+        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
+        try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
+                Cursor record = db.rawQuery("SELECT r.revision,r.body,COALESCE(v.server_revision,0),p.record_id FROM records r "
+                        + "LEFT JOIN sync_versions v ON v.record_id=r.id LEFT JOIN sync_pulled_origins p ON p.record_id=r.id WHERE r.id=?",
+                        new String[]{IMPORTED_RECORD.toString()});
+                Cursor queue = db.rawQuery("SELECT o.id,o.pending,u.operation_id,s.operation_id,o.result,s.record_id,s.local_revision, "
+                        + "s.profile_id=(SELECT value FROM metadata WHERE key='sync_profile') "
+                        + "AND s.key_id=(SELECT value FROM metadata WHERE key='sync_key_id') "
+                        + "AND s.material_sha256=(SELECT value FROM metadata WHERE key='sync_material_sha256') "
+                        + "FROM sync_queue q JOIN operations o ON o.id=q.operation_id "
+                        + "LEFT JOIN sync_uploads u ON u.operation_id=o.id LEFT JOIN sync_local_origins s ON s.operation_id=o.id ORDER BY q.sequence", null)) {
+            require(record.moveToFirst() && record.getInt(0) == (edited ? 2 : 1)
+                    && record.getInt(2) == (pulled ? 1 : 0) && record.isNull(3));
+            String snapshot = record.getString(1);
+            JSONObject row = new JSONObject(snapshot);
+            JSONObject content = row.getJSONObject("content");
+            require(!row.getBoolean("deleted") && "snippet".equals(content.getString("type")) && "a3sync".equals(content.getString("code"))
+                    && (edited ? IMPORTED_EDIT_TEXT : IMPORTED_TEXT).equals(content.getString("text")));
+            if (edited) {
+                require(queue.moveToNext() && IMPORTED_EDIT.toString().equals(queue.getString(0))
+                        && queue.getInt(1) == 1 && queue.isNull(2) && queue.isNull(3));
+                require(queue.moveToNext() && OPERATION.toString().equals(queue.getString(0))
+                        && queue.getInt(1) == 1 && queue.isNull(2) && !queue.isNull(3) && queue.getInt(7) == 1);
+                JSONObject trusted = new JSONObject(queue.getString(4));
+                require(RECORD.toString().equals(trusted.getString("id")) && trusted.getString("id").equals(queue.getString(5))
+                        && trusted.getInt("revision") == queue.getInt(6));
+            }
+            require(!queue.moveToNext());
+            return fingerprint(snapshot.getBytes(StandardCharsets.UTF_8));
+        }
     }
 
     private static UUID queueRecord(int index) {
