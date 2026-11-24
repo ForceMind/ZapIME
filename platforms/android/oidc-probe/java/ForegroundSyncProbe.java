@@ -185,6 +185,10 @@ final class ForegroundSyncProbe {
         checkFirstThreeReceipts(context);
         checkReceipt(context, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, acknowledged ? 4 : 0);
         checkCursor(context, acknowledged ? 4 : 3);
+        return frozenInterruptedDigest(context);
+    }
+
+    private static String frozenInterruptedDigest(Context context) throws Exception {
         File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
         try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
                 Cursor row = db.rawQuery("SELECT wire FROM sync_uploads WHERE operation_id=?",
@@ -192,13 +196,7 @@ final class ForegroundSyncProbe {
             require(row.moveToFirst() && !row.isNull(0));
             byte[] wire = row.getString(0).getBytes(StandardCharsets.UTF_8);
             try {
-                byte[] digest = MessageDigest.getInstance("SHA-256").digest(wire);
-                StringBuilder hex = new StringBuilder(64);
-                for (byte value : digest) {
-                    hex.append(Character.forDigit((value & 0xff) >>> 4, 16));
-                    hex.append(Character.forDigit(value & 15, 16));
-                }
-                return hex.toString();
+                return fingerprint(wire);
             } finally {
                 Arrays.fill(wire, (byte) 0);
             }
@@ -232,19 +230,71 @@ final class ForegroundSyncProbe {
         require(!new JSONObject(NativeCore.request(core, command.toString())).has("error"));
     }
 
-    static void signedOut(Context context) throws Exception {
+    static String signedOut(Context context) throws Exception {
         SyncConsentStore.State consent = SyncConsentStore.load(context);
         require(consent.account == null && consent.device == null && consent.expectedKey == null);
+        return checkPreservedWorkspace(context, null);
+    }
+
+    static String switchedAccount(Context context, Bundle result) throws Exception {
+        UUID target = UUID.fromString("98a01050-3185-4eed-bac4-127426c17372");
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        require(target.equals(consent.account) && consent.device == null && consent.expectedKey == null
+                && target.equals(consent.verifiedDeployment(AccountLoginDeployment.config()).account));
+        byte[] material = SyncSecrets.load(context, target);
+        byte[] device = null;
+        try {
+            device = SyncSecrets.loadConnection(context, target);
+            require(material == null && device == null);
+        } finally {
+            if (material != null) Arrays.fill(material, (byte) 0);
+            if (device != null) Arrays.fill(device, (byte) 0);
+        }
+        result.putString("prior_connection_sha256", checkPreservedWorkspace(context, target));
+        try {
+            SyncDatabase.check(context, target);
+            throw new AssertionError("foreground_switch_accepted_old_database");
+        } catch (IOException expected) {
+            require("sync_connection_profile".equals(expected.getMessage()));
+        }
+        return frozenInterruptedDigest(context);
+    }
+
+    private static String checkPreservedWorkspace(Context context, UUID differentAccount) throws Exception {
+        String connectionFingerprint;
         try (SyncConnection connection = SyncConnectionStore.load(context)) {
-            require(connection != null);
+            require(connection != null && !connection.account.equals(differentAccount));
+            byte[] encoded = connection.encode();
+            try {
+                connectionFingerprint = fingerprint(encoded);
+            } finally {
+                Arrays.fill(encoded, (byte) 0);
+            }
             byte[] material = SyncSecrets.load(context, connection.account);
             require(material != null);
-            Arrays.fill(material, (byte) 0);
+            try {
+                String root = new File(context.getFilesDir(), "zapime").getAbsolutePath();
+                JSONObject workspace = new JSONObject(NativeCore.syncWorkspaceStatus(root, connection.account.toString(), material));
+                require(workspace.getBoolean("prepared") && connection.account.toString().equals(workspace.getString("account_id")));
+            } finally {
+                Arrays.fill(material, (byte) 0);
+            }
         }
         checkFirstThreeReceipts(context);
         checkReceipt(context, INTERRUPTED_RECORD, INTERRUPTED_OPERATION, 4);
         checkCursor(context, 4);
         checkConflict(context, true);
+        return connectionFingerprint;
+    }
+
+    private static String fingerprint(byte[] bytes) throws Exception {
+        byte[] digest = MessageDigest.getInstance("SHA-256").digest(bytes);
+        StringBuilder hex = new StringBuilder(64);
+        for (byte value : digest) {
+            hex.append(Character.forDigit((value & 0xff) >>> 4, 16));
+            hex.append(Character.forDigit(value & 15, 16));
+        }
+        return hex.toString();
     }
 
     private static void checkFirstThreeReceipts(Context context) throws Exception {

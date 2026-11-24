@@ -242,7 +242,6 @@ def foreground_server(work, report, go_binary):
         with os.fdopen(os.open(config, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), "w") as output:
             json.dump({"port": fixture.loopback_backend_port, "bootstrap": {
                 "device": owner, "material": base64.b64encode((folder / "material.bin").read_bytes()).decode("ascii"),
-                "subject_fingerprint": hashlib.sha256(b"A3 synthetic foreground account").hexdigest(),
             }}, output)
 
         def verify_receiver(revision, *, read_only=False):
@@ -437,12 +436,14 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
         tap_control(lambda node: node.get("resource-id") == "android:id/button1"
                     and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
 
-    def frozen_digest(stage):
-        output = instrument(stage)
+    def private_digest(output, field):
         digests = [match.group(1) for line in output
-                   if (match := re.fullmatch(r"INSTRUMENTATION_RESULT: frozen_sha256=([0-9a-f]{64})", line))]
-        require(len(digests) == 1, "interrupted_upload_frozen_digest_missing")
+                   if (match := re.fullmatch(rf"INSTRUMENTATION_RESULT: {field}=([0-9a-f]{{64}})", line))]
+        require(len(digests) == 1, "foreground_private_digest_missing")
         return digests[0]
+
+    def frozen_digest(stage):
+        return private_digest(instrument(stage), "frozen_sha256")
 
     network_capability()
     instrument("foreground-seed")
@@ -582,13 +583,52 @@ def foreground_round(report, adb, identity, marker, status, verify_receiver, pub
     wait_for(lambda: shows(conflict_message), bool, 35, "foreground_conflict_not_repeated_after_reopen")
     click_text(adb, marker, "退出登录", scroll=True)
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_missing")
-    instrument("foreground-signed-out")
+    old_connection = private_digest(instrument("foreground-signed-out"), "prior_connection_sha256")
     before = status()["dataRequests"]
     open_account()
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_not_reloaded")
     require(status()["dataRequests"] == before and status()["uploads"] == 4 and not status()["failure"],
             "foreground_signed_out_sent_data")
     report["foreground_signout"] = "PASS"
+
+    def sync_requests():
+        snapshot = status()
+        return tuple(snapshot[key] for key in ("dataRequests", "uploads", "foregroundDeviceSessions",
+                                                 "foregroundDescriptorRequests"))
+
+    def new_account_closed():
+        nodes = [node for node in window_nodes(adb, marker) if node.get("package") == MAIN_PACKAGE]
+        if not any(all(part in node.get("text", "") for part in ("已登录", MAIN_ACCOUNT, "此设备尚未获授权", "同步已关闭"))
+                   for node in nodes):
+            return False
+        require(not any(node.get("class") == "android.widget.Switch" or "修订号" in node.get("text", "")
+                        or conflict_message in node.get("text", "") for node in nodes), "foreground_account_reused_old_ui")
+        return True
+
+    report["stage"] = "switch_to_distinct_account_through_browser"
+    before_switch = sync_requests()
+    click_text(adb, marker, "登录并开启同步", scroll=True)
+    wait_for(lambda: adb.shell("dumpsys", "activity", "activities"),
+             lambda raw: any("mResumedActivity" in line and BROWSER in line for line in raw.splitlines()),
+             12, "foreground_account_switch_no_stock_browser")
+    click_text(adb, marker, "Use synthetic test account")
+    click_text(adb, marker, "Approve synthetic access")
+    wait_for(new_account_closed, bool, 30, "foreground_distinct_account_not_shown")
+    counts = status()
+    require(counts["accountLookups"] == counts["goProofs"] == counts["tokenPosts"] == 1
+            and counts["distinctAccountInForegroundDatabase"] is True and counts["callbackOpenedInBrowser"] == 0,
+            "foreground_distinct_account_not_verified_by_go")
+    require(sync_requests() == before_switch, "foreground_distinct_account_sent_sync_requests")
+
+    report["stage"] = "verify_switched_account_preserves_original_workspace"
+    result = instrument("foreground-switched-account")
+    require(private_digest(result, "frozen_sha256") == expected
+            and private_digest(result, "prior_connection_sha256") == old_connection, "foreground_account_changed_original_vault_or_wire")
+    open_account()
+    wait_for(new_account_closed, bool, 25, "foreground_distinct_account_not_reloaded")
+    require(sync_requests() == before_switch and not status()["failure"], "foreground_distinct_account_restart_attempted_transfer")
+    verify_receiver(5, read_only=True)
+    report["foreground_account_switch"] = "PASS"
 
 
 def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None):

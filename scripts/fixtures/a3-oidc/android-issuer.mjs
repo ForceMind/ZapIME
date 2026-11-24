@@ -13,6 +13,7 @@ const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe', foreg
 assert.ok(['probe', 'main', 'foreground'].includes(mode));
 const foreground = mode === 'foreground' ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
 if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
+const priorAccount = foreground?.bootstrap.device.account_id;
 const issuer = 'https://a3-oidc.example.test';
 const fallback = 'https://return-a3.example.test';
 const resource = issuer + '/a3-device-enrollment';
@@ -26,6 +27,17 @@ const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0
   enrollmentClaims: 0, enrollmentSessions: 0, droppedClaimReplies: 0, enrollmentFinished: 0 };
 let enrollmentSeed, backend;
 let foregroundSeedServed = false;
+
+function loginFingerprint(accountId, accountSubject) {
+  const identityHash = createHash('sha256');
+  for (const value of ['zapime-account-login-v1', issuer, accountSubject, resource, accountId]) {
+    const data = Buffer.from(value);
+    const length = Buffer.alloc(4);
+    length.writeUInt32BE(data.length);
+    identityHash.update(length).update(data);
+  }
+  return identityHash.digest('hex');
+}
 
 function holdSyntheticAcknowledgement(res, payload, request) {
   const began = performance.now();
@@ -194,7 +206,8 @@ async function handle(req, res) {
     if (req.method === 'GET' && url.pathname === '/fixture-enrollment/foreground' && !url.search) {
       assert.equal(foregroundSeedServed, false);
       foregroundSeedServed = true;
-      reply(res, 200, JSON.stringify(foreground.bootstrap), 'application/json');
+      const subjectFingerprint = loginFingerprint(priorAccount, 'a3-synthetic-foreground-owner');
+      reply(res, 200, JSON.stringify({ ...foreground.bootstrap, subject_fingerprint: subjectFingerprint }), 'application/json');
       delete foreground.bootstrap;
       return;
     }
@@ -213,6 +226,8 @@ async function handle(req, res) {
       const payload = await upstream.text();
       assert.ok(Buffer.byteLength(payload) <= 16_384);
       if (dataRead || dataWrite) totals.dataRequests++;
+      if (url.pathname === '/v1/session') totals.foregroundDeviceSessions = (totals.foregroundDeviceSessions ?? 0) + 1;
+      if (url.pathname === '/v1/key-descriptor') totals.foregroundDescriptorRequests = (totals.foregroundDescriptorRequests ?? 0) + 1;
       if (dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
         assert.ok(totals.uploads <= 4 && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
@@ -255,28 +270,25 @@ async function handle(req, res) {
     await interact(req, res, url.pathname);
     return;
   }
-  if (mode === 'main' && req.method === 'GET' && url.pathname === '/v1/account-login') {
+  if (mode !== 'probe' && req.method === 'GET' && url.pathname === '/v1/account-login') {
     assert.ok(!url.search && totals.accountLookups === 0);
     assert.ok(totals.login === 1 && totals.consent === 1 && totals.tokenPosts === 1);
+    if (foreground) assert.ok(foregroundSeedServed && totals.uploads === 4);
     const authorization = req.headers.authorization;
     assert.ok(typeof authorization === 'string' && authorization.startsWith('Bearer '));
     const accessToken = authorization.slice('Bearer '.length);
     const output = execFileSync(goProof, ['-test.run=^TestProviderIssuedAccountLookup$', '-test.count=1'], {
       env: { ...process.env, ZAPIME_A3_ACCOUNT_LOOKUP: '1' }, timeout: 10_000,
-      input: JSON.stringify({ accessToken, keys: { keys: [publicKey] } }), encoding: 'utf8',
+      input: JSON.stringify({ accessToken, keys: { keys: [publicKey] }, priorAccount }), encoding: 'utf8',
     });
     const account = JSON.parse(output.split('\n', 1)[0]);
     const accountId = '98a01050-3185-4eed-bac4-127426c17372';
-    const identityHash = createHash('sha256');
-    for (const value of ['zapime-account-login-v1', issuer, subject, resource, accountId]) {
-      const data = Buffer.from(value);
-      const length = Buffer.alloc(4);
-      length.writeUInt32BE(data.length);
-      identityHash.update(length).update(data);
+    assert.deepEqual(account, { protocol: 1, account_id: accountId, subject_fingerprint: loginFingerprint(accountId, subject) });
+    if (mode === 'main') {
+      enrollmentSeed = { access_token: accessToken, account_id: accountId, subject_fingerprint: account.subject_fingerprint };
+    } else {
+      totals.distinctAccountInForegroundDatabase = accountId !== priorAccount;
     }
-    assert.deepEqual(account, { protocol: 1, account_id: accountId, subject_fingerprint: identityHash.digest('hex') });
-    // This provider account and proof exist only in the disposable test mode.
-    enrollmentSeed = { access_token: accessToken, account_id: accountId, subject_fingerprint: account.subject_fingerprint };
     totals.accountLookups++;
     totals.goProofs++;
     record();
