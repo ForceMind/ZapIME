@@ -186,7 +186,7 @@ async function handle(req, res) {
       if (dataRead || dataWrite) totals.dataRequests++;
       if (dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
-        assert.ok(upstream.status === 200 && JSON.parse(payload).revision === 1);
+        assert.ok(totals.uploads <= 2 && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
       }
       record();
       reply(res, upstream.status, payload, 'application/json');

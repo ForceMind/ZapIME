@@ -167,8 +167,12 @@ public final class AccountSyncActivity extends Activity {
                     runOnUiThread(() -> {
                         if (exchange != request || isDestroyed()) return;
                         exchange = null;
+                        boolean unavailable = readingStatus && failure instanceof SyncHttp.Failure
+                                && ("network".equals(((SyncHttp.Failure) failure).code)
+                                    || "timeout".equals(((SyncHttp.Failure) failure).code));
                         readingStatus = false;
-                        update("暂时无法核对或保存同步状态，请返回后重试。", false);
+                        update(unavailable ? "无法连接同步服务器。待发操作保留。"
+                                : "暂时无法核对或保存同步状态，请返回后重试。", false);
                     });
                 }
             });

@@ -241,27 +241,30 @@ def foreground_server(work, report, go_binary):
                 "subject_fingerprint": hashlib.sha256(b"A3 synthetic foreground account").hexdigest(),
             }}, output)
 
-        def verify_receiver():
-            status, page = api("GET", "/v1/changes?after=0", member["token"], decode=False)
-            page_file = folder / "receiver-page.json"
-            page_file.write_bytes(page)
+        def verify_receiver(revision, *, read_only=False):
+            after = revision if read_only else revision - 1
+            status, page = api("GET", f"/v1/changes?after={after}", member["token"], decode=False)
             decoded = json.loads(page)
-            require(status == 200 and decoded["head"] == decoded["next_cursor"] == 1 and len(decoded["changes"]) == 1,
-                    "foreground_real_server_revision_not_one")
+            require(status == 200 and decoded["head"] == decoded["next_cursor"] == revision
+                    and len(decoded["changes"]) == (0 if read_only else 1), "foreground_real_server_revision_mismatch")
+            if read_only:
+                return
+            page_file = folder / f"receiver-page-{revision}.json"
+            page_file.write_bytes(page)
             results = probe("apply", "b", key_file, page_file)
             require(results[0]["applied"] == 1 and results[0]["echoed"] == 0, "foreground_receiver_did_not_apply")
-            final = probe("verify-foreground-receiver")[-1]
-            require(final["records"] == 1 and final["pending"] == 0 and final["cursor"] == 1, "foreground_receiver_state")
-            report["independent_receiver"] = "PASS"
+            final = probe("verify-foreground-receiver", revision)[-1]
+            require(final["records"] == final["cursor"] == revision and final["pending"] == 0, "foreground_receiver_state")
+            report["independent_receiver" if revision == 1 else "recovery_receiver"] = "PASS"
 
         yield config, verify_receiver
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == 1
+    require(summary["cleanup_completed"] and summary["service_revision"] == 2
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
 
-def foreground_round(report, adb, marker, status, verify_receiver):
+def foreground_round(report, adb, marker, status, verify_receiver, without_tls):
     def instrument(stage):
         output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
                          MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
@@ -299,23 +302,23 @@ def foreground_round(report, adb, marker, status, verify_receiver):
                 and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
     report["foreground_trigger"] = "product_account_screen_confirmation"
 
-    def displayed_receipt():
+    def shows(label):
+        return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "")
+                   for node in window_nodes(adb, marker))
+
+    def displayed_receipt(revision):
         require(not status()["failure"], "foreground_tls_handler_failed")
         return any(node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
-                   and "服务器已确认本次写入，修订号 1" in node.get("text", "") for node in window_nodes(adb, marker))
+                   and f"服务器已确认本次写入，修订号 {revision}" in node.get("text", "") for node in window_nodes(adb, marker))
 
     report["stage"] = "foreground_round_and_durable_receipt"
-    wait_for(displayed_receipt, bool, 35, "foreground_ui_receipt_missing")
+    wait_for(lambda: displayed_receipt(1), bool, 35, "foreground_ui_receipt_missing")
     report["foreground_ui_receipt"] = "PASS"
     require(status().get("uploads") == 1 and status()["dataRequests"] >= 2, "foreground_request_counts_invalid")
     report["foreground_uploads"] = 1
     instrument("foreground-verify")
     report["foreground_sqlite_ack"] = "PASS"
-    verify_receiver()
-
-    def shows(label):
-        return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "")
-                   for node in window_nodes(adb, marker))
+    verify_receiver(1)
 
     before = status()["dataRequests"]
     report["stage"] = "reopen_with_persisted_consent"
@@ -323,14 +326,40 @@ def foreground_round(report, adb, marker, status, verify_receiver):
     wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_reopen_round_missing")
     require(status()["dataRequests"] > before and status()["uploads"] == 1, "foreground_reopen_replayed_upload")
     report["foreground_reopen"] = "PASS"
+
+    report["stage"] = "foreground_unreachable_endpoint"
+    adb.run("shell", "input", "keyevent", "KEYCODE_HOME")
+    before = status()["dataRequests"]
+    with without_tls():
+        instrument("foreground-queue-recovery")
+        open_account()
+        wait_for(lambda: shows("无法连接同步服务器。待发操作保留。"), bool, 35, "foreground_unreachable_error_missing")
+        require(status()["dataRequests"] == before and status()["uploads"] == 1, "foreground_unreachable_write_observed")
+        verify_receiver(1, read_only=True)
+        adb.run("shell", "input", "keyevent", "KEYCODE_HOME")
+        instrument("foreground-recovery-pending")
+    report["foreground_unreachable_pending"] = "PASS"
+
+    report["stage"] = "foreground_resume_after_route_restore"
+    open_account()
+    wait_for(lambda: displayed_receipt(2), bool, 35, "foreground_recovery_receipt_missing")
+    require(status()["uploads"] == 2, "foreground_recovery_upload_count")
+    instrument("foreground-recovery-ack")
+    verify_receiver(2)
+    report["foreground_route_recovery"] = "PASS"
+    report["foreground_uploads"] = 2
+
     report["stage"] = "sign_out_and_reopen_without_transfer"
+    open_account()
+    wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_recovery_reopen_round_missing")
+    require(status()["uploads"] == 2, "foreground_recovery_reopen_replayed_upload")
     click_text(adb, marker, "退出登录", scroll=True)
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_missing")
     instrument("foreground-signed-out")
     before = status()["dataRequests"]
     open_account()
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_not_reloaded")
-    require(status()["dataRequests"] == before and status()["uploads"] == 1 and not status()["failure"],
+    require(status()["dataRequests"] == before and status()["uploads"] == 2 and not status()["failure"],
             "foreground_signed_out_sent_data")
     report["foreground_signout"] = "PASS"
 
@@ -393,8 +422,23 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
             if bridge:
+                @contextmanager
+                def without_tls():
+                    guard(adb, identity, root=True)
+                    expected = ["tcp:443", "tcp:" + str(port)]
+                    current = adb.run("reverse", "--list").stdout.splitlines()
+                    require(sum(line.split()[-2:] == expected for line in current) == 1, "recovery_route_not_owned")
+                    adb.run("reverse", "--remove", expected[0])
+                    try:
+                        require(adb.run("reverse", "--list").stdout.splitlines() == reverse_before, "recovery_route_not_removed")
+                        yield
+                    finally:
+                        guard(adb, identity, root=True)
+                        adb.run("reverse", "--no-rebind", *expected)
+                        require(adb.run("reverse", "--list").stdout.splitlines() == current, "recovery_route_not_restored")
+
                 report["stage"] = "foreground_native_seed_and_round"
-                foreground_round(report, adb, marker, status, verify_receiver)
+                foreground_round(report, adb, marker, status, verify_receiver, without_tls)
                 return
             if main_apk:
                 consent = adb.run("shell", "am", "instrument", "-w", "-e", "stage", "consent",

@@ -18,6 +18,7 @@ const FIRST: &str = "synthetic manual client source";
 const SECOND: &str = "synthetic manual client edited on B";
 const SHORTCUT_CODE: &str = "a3sync";
 const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
+const RECOVERY_TEXT: &str = "synthetic A3 recovered shortcut";
 
 fn shortcut() -> Content {
     Content::Snippet {
@@ -193,12 +194,24 @@ fn main() {
     }
     let material = material(dir);
     if command == "verify-foreground-receiver" {
+        let revision: u64 = args[3].parse().expect("fixture revision");
+        assert!(matches!(revision, 1 | 2), "foreground fixture head");
         let mut b = open(dir, "b");
         let records = b.records(false).unwrap();
         assert!(
-            records.len() == 1 && records[0].content == shortcut(),
+            records.len() == revision as usize
+                && records.iter().any(|row| row.content == shortcut()),
             "same Android shortcut"
         );
+        if revision == 2 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3back" && text == RECOVERY_TEXT && tags.is_empty())
+                ),
+                "same recovered Android shortcut"
+            );
+        }
         assert!(b.pending_count().unwrap() == 0, "no echo upload");
         assert!(
             client::stage_next_automatic(&mut b, material.profile, &material)
@@ -207,7 +220,7 @@ fn main() {
             "receiver queue is empty"
         );
         assert!(
-            client::pull_cursor(&mut b, material.profile, &material).unwrap() == 1,
+            client::pull_cursor(&mut b, material.profile, &material).unwrap() == revision,
             "receiver cursor persisted"
         );
         status(&mut b, &material, command);
