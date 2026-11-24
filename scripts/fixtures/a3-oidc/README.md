@@ -1,6 +1,6 @@
 # A3 主机 OIDC 验收夹具
 
-将本目录的 `package.json`、`package-lock.json` 和 `probe.mjs` 复制到仓库下忽略的 `target/a3-oidc-run`。使用 Node 26 和可用的 OpenSSL，依次运行：
+将本目录的 `package.json`、`package-lock.json`、`issuer.mjs` 和 `probe.mjs` 复制到仓库下忽略的 `target/a3-oidc-run`。使用 Node 26 和可用的 OpenSSL，依次运行：
 
 ```text
 npm ci --prefix target/a3-oidc-run --ignore-scripts --no-audit --no-fund

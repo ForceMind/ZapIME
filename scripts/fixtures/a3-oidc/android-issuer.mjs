@@ -1,0 +1,136 @@
+// SPDX-License-Identifier: GPL-3.0-only
+// The two synthetic hosts are reachable only through this CI job's adb reverse.
+import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
+import { readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { createServer } from 'node:https';
+import { importJWK, jwtVerify } from 'jose';
+import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
+
+const [cert, key, publicFingerprint, summaryPath, goProof] = process.argv.slice(2);
+const issuer = 'https://a3-oidc.example.test';
+const fallback = 'https://return-a3.example.test';
+const resource = issuer + '/a3-device-enrollment';
+const redirect = fallback + '/callback';
+const { provider, publicKey } = createIssuer(issuer, redirect, [resource]);
+const verifyKey = await importJWK(publicKey, 'RS256');
+const delegate = provider.callback();
+const interactions = new Map();
+const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0,
+  callbackOpenedInBrowser: 0, unexpected: 0, dataRequests: 0, failure: false };
+
+function record() {
+  writeFileSync(summaryPath + '.tmp', JSON.stringify({ port: server.address()?.port ?? 0, ...totals }), { mode: 0o600 });
+  renameSync(summaryPath + '.tmp', summaryPath);
+}
+
+function reply(res, status, payload, contentType = 'text/plain; charset=utf-8') {
+  res.writeHead(status, { 'Content-Type': contentType, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' });
+  res.end(payload);
+}
+
+async function read(req, limit) {
+  let size = 0;
+  const chunks = [];
+  for await (const part of req) {
+    size += part.length;
+    if (size > limit) throw new Error('bounded_fixture_input');
+    chunks.push(part);
+  }
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+async function interact(req, res, path) {
+  const details = await provider.interactionDetails(req, res);
+  const phase = details.prompt.name;
+  assert.ok(phase === 'login' || phase === 'consent');
+  if (req.method === 'GET') {
+    const challenge = randomBytes(24).toString('base64url');
+    interactions.set(path, { challenge, phase });
+    const label = phase === 'login' ? 'Use synthetic test account' : 'Approve synthetic access';
+    reply(res, 200, `<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1">` +
+      `<title>ZapIME CI login</title><form method="post" style="margin:80px 12px">` +
+      `<input type="hidden" name="challenge" value="${challenge}">` +
+      `<button style="font-size:24px;padding:16px" type="submit">${label}</button></form>`, 'text/html; charset=utf-8');
+    return;
+  }
+  assert.equal(req.method, 'POST');
+  const stored = interactions.get(path);
+  interactions.delete(path);
+  const submitted = new URLSearchParams(await read(req, 1_024));
+  assert.ok(stored && stored.phase === phase && submitted.get('challenge') === stored.challenge);
+  if (phase === 'login') {
+    totals.login++;
+    record();
+    await provider.interactionFinished(req, res, { login: { accountId: subject } }, { mergeWithLastSubmission: false });
+  } else {
+    totals.consent++;
+    record();
+    await finishConsent(provider, req, res, details);
+  }
+}
+
+async function handle(req, res) {
+  const url = new URL(req.url, issuer);
+  const host = req.headers.host;
+  if (url.pathname.startsWith('/v1/changes')) {
+    totals.dataRequests++;
+    record();
+    reply(res, 404, 'fixture does not serve data');
+    return;
+  }
+  if (host === 'return-a3.example.test') {
+    if (req.method === 'GET' && url.pathname === '/.well-known/assetlinks.json') {
+      totals.assetlinks++;
+      record();
+      reply(res, 200, JSON.stringify([{ relation: ['delegate_permission/common.handle_all_urls'], target: {
+        namespace: 'android_app', package_name: 'org.zapime.android.a3loginprobe',
+        sha256_cert_fingerprints: [publicFingerprint],
+      } }]), 'application/json');
+    } else if (url.pathname === '/callback') {
+      totals.callbackOpenedInBrowser++;
+      record();
+      reply(res, 200, 'The browser did not dispatch the App Link');
+    } else {
+      reply(res, 404, 'not found');
+    }
+    return;
+  }
+  assert.equal(host, 'a3-oidc.example.test');
+  if (url.pathname.startsWith('/fixture-login/')) {
+    await interact(req, res, url.pathname);
+    return;
+  }
+  if (req.method === 'POST' && url.pathname === '/android-proof') {
+    assert.equal(totals.goProofs, 0);
+    assert.ok(totals.login === 1 && totals.consent === 1 && totals.tokenPosts === 1);
+    const { accessToken, idToken, nonce } = JSON.parse(await read(req, 35_000));
+    const id = await jwtVerify(idToken, verifyKey, { issuer, audience: clientId, algorithms: ['RS256'] });
+    assert.ok(id.payload.sub === subject && id.payload.nonce === nonce && typeof nonce === 'string');
+    execFileSync(goProof, ['-test.run=^TestProviderIssuedAccessToken$', '-test.count=1'], {
+      env: { ...process.env, ZAPIME_OIDC_FIXTURE_PROOF: '1' }, timeout: 7_000,
+      input: JSON.stringify({ issuer, audience: resource, clientID: clientId, subject, accessToken, idToken,
+        keys: { keys: [publicKey] } }),
+    });
+    totals.goProofs++;
+    record();
+    reply(res, 200, '{"ok":true}', 'application/json');
+    return;
+  }
+  if (req.method === 'POST' && url.pathname === '/token') {
+    totals.tokenPosts++;
+    record();
+  }
+  delegate(req, res);
+}
+
+const server = createServer({ cert: readFileSync(cert), key: readFileSync(key), minVersion: 'TLSv1.2' }, (req, res) => {
+  handle(req, res).catch(() => {
+    totals.failure = true;
+    record();
+    if (!res.headersSent) reply(res, 500, 'synthetic fixture rejected');
+    else res.end();
+  });
+});
+server.listen(0, '127.0.0.1', record);

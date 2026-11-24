@@ -309,8 +309,9 @@ def baseline(adb):
 
 
 class TemporaryCA:
-    def __init__(self, adb, identity, fixture, initial, proof):
+    def __init__(self, adb, identity, fixture, initial, proof, *, guard=None):
         self.adb, self.identity, self.fixture, self.initial, self.proof = adb, identity, fixture, initial, proof
+        self.guard = guard
         subject = fixture.ca_subject_hash_old
         require(re.fullmatch(r"[0-9a-f]{8}", subject) is not None, "ca_hash_invalid")
         self.name = subject + ".0"
@@ -329,7 +330,7 @@ class TemporaryCA:
         return match[1]
 
     def install(self):
-        guard_device(self.adb, self.identity, root=True)
+        (self.guard or guard_device)(self.adb, self.identity, root=True)
         data = Path(self.fixture.ca_file).read_bytes()
         require(0 < len(data) <= 16384 and hashlib.sha256(data).hexdigest() == self.fixture.ca_sha256_pem
                 and re.fullmatch(r"[0-9a-f]{64}", self.fixture.ca_sha256_der) is not None,
@@ -363,7 +364,7 @@ class TemporaryCA:
         self.proof["installed"] = True
 
     def remove(self):
-        guard_device(self.adb, self.identity, root=True)
+        (self.guard or guard_device)(self.adb, self.identity, root=True)
         failed = False
         if self.created:
             # Never delete an unrecognized certificate, including after a failed

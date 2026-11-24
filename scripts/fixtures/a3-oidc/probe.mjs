@@ -2,21 +2,18 @@
 // Host-only OAuth/OIDC proof using a disposable issuer and synthetic credentials.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { createHash, generateKeyPairSync, randomBytes, timingSafeEqual } from 'node:crypto';
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { mkdtempSync, readFileSync, rmSync, rmdirSync, writeFileSync } from 'node:fs';
 import { createServer, request } from 'node:https';
 import { once } from 'node:events';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { importJWK, jwtVerify } from 'jose';
-import { Provider } from 'oidc-provider';
+import { clientId, createIssuer, finishConsent, scope, subject } from './issuer.mjs';
 
 const privateDirectory = mkdtempSync(join(dirname(fileURLToPath(import.meta.url)), 'tls-'));
-const clientId = 'zapime-android-synthetic';
 const fixtureHost = 'a3-oidc.example.test';
-const subject = 'a3-synthetic-user';
 const password = randomBytes(24).toString('base64url');
-const scope = 'zapime.device_enrollment';
 const deadline = AbortSignal.timeout(35_000);
 let server;
 let stage = 'certificates';
@@ -75,7 +72,8 @@ async function fields(req) {
 }
 
 async function interact(provider, req, res) {
-  const { prompt, params, session } = await provider.interactionDetails(req, res);
+  const details = await provider.interactionDetails(req, res);
+  const { prompt } = details;
   if (req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
     res.end(JSON.stringify({ prompt: prompt.name }));
@@ -93,15 +91,8 @@ async function interact(provider, req, res) {
     await provider.interactionFinished(req, res, { login: { accountId: subject } }, { mergeWithLastSubmission: false });
     return;
   }
-  assert.equal(prompt.name, 'consent');
-  assert.equal(session.accountId, subject);
   assert.equal(form.get('confirm'), 'yes');
-  const grant = new provider.Grant({ accountId: session.accountId, clientId: params.client_id });
-  if (prompt.details.missingOIDCScope) grant.addOIDCScope(prompt.details.missingOIDCScope.join(' '));
-  for (const [resource, scopes] of Object.entries(prompt.details.missingResourceScopes ?? {})) {
-    grant.addResourceScope(resource, scopes.join(' '));
-  }
-  await provider.interactionFinished(req, res, { consent: { grantId: await grant.save() } }, { mergeWithLastSubmission: true });
+  await finishConsent(provider, req, res, details);
 }
 
 function verifyToken(key, jwt, issuer, audience) {
@@ -131,31 +122,8 @@ try {
   const redirectUri = issuer + '/native-callback';
   const targetResource = issuer + '/a3-device-enrollment';
   const otherResource = issuer + '/other-audience';
-  const jwtKey = generateKeyPairSync('rsa', { modulusLength: 2048 });
   stage = 'provider_configuration';
-  provider = new Provider(issuer, {
-    clients: [{ client_id: clientId, application_type: 'native', grant_types: ['authorization_code'],
-      response_types: ['code'], redirect_uris: [redirectUri], token_endpoint_auth_method: 'none' }],
-    jwks: { keys: [{ ...jwtKey.privateKey.export({ format: 'jwk' }), kid: 'a3-fixture', alg: 'RS256', use: 'sig' }] },
-    cookies: { keys: [randomBytes(32).toString('base64url'), randomBytes(32).toString('base64url')] },
-    interactions: { url: (_ctx, interaction) => `/fixture-login/${interaction.uid}` },
-    async renderError(ctx) {
-      ctx.body = 'synthetic OIDC request rejected';
-    },
-    ttl: { AccessToken: 60, AuthorizationCode: 90, Grant: 120, IdToken: 60, Interaction: 90, Session: 120 },
-    features: {
-      devInteractions: { enabled: false },
-      resourceIndicators: { enabled: true, async getResourceServerInfo(_ctx, resource) {
-        assert.ok([targetResource, otherResource].includes(resource));
-        return { scope, audience: resource, accessTokenTTL: 60, accessTokenFormat: 'jwt', jwt: { sign: { alg: 'RS256' } } };
-      } },
-    },
-    pkce: { required: () => true },
-    async findAccount(_ctx, accountId) {
-      if (accountId === subject) return { accountId, async claims() { return { sub: accountId }; } };
-      return undefined;
-    },
-  });
+  ({ provider } = createIssuer(issuer, redirectUri, [targetResource, otherResource]));
   stage = 'scoped_tls';
   await assert.rejects(client(undefined)(issuer + '/.well-known/openid-configuration'), { code: 'DEPTH_ZERO_SELF_SIGNED_CERT' });
   const metadataResponse = await client(ca)(issuer + '/.well-known/openid-configuration');

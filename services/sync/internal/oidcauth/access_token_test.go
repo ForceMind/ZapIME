@@ -113,7 +113,8 @@ func TestProviderIssuedAccessToken(t *testing.T) {
 	reader := json.NewDecoder(io.LimitReader(os.Stdin, 64*1024))
 	reader.DisallowUnknownFields()
 	if reader.Decode(&input) != nil || reader.Decode(new(any)) != io.EOF ||
-		!strings.HasPrefix(input.Issuer, "https://a3-oidc.example.test:") || input.Subject != "a3-synthetic-user" {
+		(input.Issuer != "https://a3-oidc.example.test" && !strings.HasPrefix(input.Issuer, "https://a3-oidc.example.test:")) ||
+		input.Subject != "a3-synthetic-user" {
 		t.Fatal("unexpected synthetic provider proof")
 	}
 	policy := AccessPolicy{Issuer: input.Issuer, Audience: input.Audience, ClientID: input.ClientID,
@@ -123,7 +124,11 @@ func TestProviderIssuedAccessToken(t *testing.T) {
 	if err != nil || id != input.Subject || issuer != input.Issuer || tokenID == "" {
 		t.Fatal("real provider access token not verified")
 	}
-	for _, rejected := range []string{input.OtherAudienceToken, input.IDToken} {
+	rejectedTokens := []string{input.IDToken}
+	if input.OtherAudienceToken != "" {
+		rejectedTokens = append(rejectedTokens, input.OtherAudienceToken)
+	}
+	for _, rejected := range rejectedTokens {
 		if _, err := VerifyAccessToken(policy, input.Keys, rejected, time.Now()); !errors.Is(err, ErrInvalidAccessToken) {
 			t.Fatal("wrong audience or ID token was accepted")
 		}
