@@ -22,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGE = "org.zapime.android.a3loginprobe"
 ACTIVITY = PACKAGE + "/.ProbeActivity"
 APP_PHASE = "/data/user/0/" + PACKAGE + "/files/phase"
+MAIN_PACKAGE = "org.zapime.android"
+MAIN_ACCOUNT = "98a01050-3185-4eed-bac4-127426c17372"
 LOGIN_HOST = "a3-oidc.example.test"
 RETURN_HOST = "return-a3.example.test"
 HOSTS = "/system/etc/hosts"
@@ -86,10 +88,10 @@ def wait_for(operation, predicate, seconds, reason):
 
 
 @contextmanager
-def issuer(work, leaf, key, fingerprint, go_proof):
+def issuer(work, leaf, key, fingerprint, go_proof, mode):
     summary = work / "issuer-status.json"
     program = ROOT / "target/a3-android-oidc/issuer/android-issuer.mjs"
-    child = subprocess.Popen(["node", str(program), str(leaf), str(key), fingerprint, str(summary), str(go_proof)],
+    child = subprocess.Popen(["node", str(program), str(leaf), str(key), fingerprint, str(summary), str(go_proof), mode],
                              stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     def status():
         require(child.poll() is None, "oidc_provider_exited")
@@ -112,10 +114,10 @@ def read_remote(adb, filename):
     return command(*adb.command, "exec-out", "cat", filename)
 
 
-def system_links_confirmed(adb):
+def system_links_confirmed(adb, package):
     output = adb.shell("dumpsys", "package", "domain-preferred-apps")
     for block in re.split(r"(?m)^\s*Package:\s+", output)[1:]:
-        if block.splitlines()[0].strip() != PACKAGE:
+        if block.splitlines()[0].strip() != package:
             continue
         return (re.search(r"(?m)^\s*Domains:\s+" + re.escape(RETURN_HOST) + r"\s*$", block) is not None and
                 re.search(r"(?m)^\s*Status:\s+always(?:\s|:|$)", block) is not None)
@@ -139,18 +141,42 @@ def assert_tls_rejection(adb):
     require(marked == "tls_rejected", "default_tls_rejection_not_observed")
 
 
-def click_text(adb, marker, label):
+def window_nodes(adb, marker):
+    dumped = adb.run("shell", "uiautomator", "dump", marker, check=False, timeout=12)
+    if dumped.returncode != 0:
+        return ()
+    raw = read_remote(adb, marker)
+    require(len(raw) <= 256 * 1024, "ui_probe_report_too_large")
+    return tuple(ET.fromstring(raw).iter("node"))
+
+
+def bounds(node):
+    shape = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", node.get("bounds", ""))
+    return tuple(map(int, shape.groups())) if shape else None
+
+
+def click_text(adb, marker, label, scroll=False):
+    swipes = 0
+
     def locate():
-        dumped = adb.run("shell", "uiautomator", "dump", marker, check=False, timeout=12)
-        if dumped.returncode != 0:
-            return None
-        raw = read_remote(adb, marker)
-        require(len(raw) <= 256 * 1024, "ui_probe_report_too_large")
-        for node in ET.fromstring(raw).iter("node"):
+        nonlocal swipes
+        nodes = window_nodes(adb, marker)
+        for node in nodes:
             if label in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true":
-                bounds = re.fullmatch(r"\[(\d+),(\d+)\]\[(\d+),(\d+)\]", node.get("bounds", ""))
-                if bounds:
-                    return tuple(map(int, bounds.groups()))
+                area = bounds(node)
+                if area and area[2] > area[0] and area[3] > area[1]:
+                    return area
+        if scroll and swipes < 2:
+            for node in nodes:
+                if node.get("package") != MAIN_PACKAGE or node.get("scrollable") != "true":
+                    continue
+                area = bounds(node)
+                if area and area[2] > area[0] and area[3] - area[1] > 160:
+                    x1, y1, x2, y2 = area
+                    x = str((x1 + x2) // 2)
+                    adb.run("shell", "input", "swipe", x, str(y2 - 40), x, str(y1 + 60), "350")
+                    swipes += 1
+                    break
         return None
     x1, y1, x2, y2 = wait_for(locate, bool, 18, "expected_fixture_control_missing")
     require(x2 > x1 and y2 > y1, "fixture_control_has_no_area")
@@ -164,12 +190,15 @@ def copy_hosts(adb, path, staged):
     require(read_remote(adb, HOSTS) == path.read_bytes(), "hosts_update_bytes_differ")
 
 
-def run(report, adb, identity, apk, go_proof, fingerprint, work):
+def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
+    package = MAIN_PACKAGE if main_apk else PACKAGE
     guard(adb, identity)
     adb.run("root")
     adb.run("wait-for-device")
     guard(adb, identity, root=True)
     require(adb.shell("pm", "path", PACKAGE, check=False) == "", "probe_package_already_present")
+    if main_apk:
+        require(adb.shell("pm", "path", MAIN_PACKAGE, check=False) == "", "main_fixture_package_already_present")
     require(adb.shell("readlink", "-f", HOSTS) == HOSTS, "unexpected_hosts_path")
     original = read_remote(adb, HOSTS)
     hosts_names = {name for line in original.decode("ascii").splitlines()
@@ -188,8 +217,8 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
         adb.run("shell", "test", "!", "-e", path)
     leaf, leaf_key, cert = make_certificates(work)
     ca = TemporaryCA(adb, identity, cert, initial, report["certificate"], guard=guard)
-    submitted, mapped, reverse_added = False, False, False
-    with issuer(work, leaf, leaf_key, fingerprint, go_proof) as (port, status):
+    submitted, main_submitted, mapped, reverse_added = False, False, False, False
+    with issuer(work, leaf, leaf_key, fingerprint, go_proof, "main" if main_apk else "probe") as (port, status):
         try:
             guard(adb, identity, root=True)
             adb.run("remount")
@@ -205,12 +234,18 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
             adb.run("uninstall", PACKAGE)
             require(adb.shell("pm", "path", PACKAGE, check=False) == "", "first_fixture_uninstall_failed")
             ca.install()
-            adb.run("install", "-t", str(apk))
-            wait_for(lambda: system_links_confirmed(adb) and status()["assetlinks"] > 0, bool,
+            main_submitted = main_apk is not None
+            adb.run("install", "-t", str(main_apk or apk))
+            wait_for(lambda: system_links_confirmed(adb, package) and status()["assetlinks"] > 0, bool,
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
-            start_probe(adb)
-            click_text(adb, marker, "Only sign in")
+            if main_apk:
+                adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
+                click_text(adb, marker, "账号与同步", scroll=True)
+                click_text(adb, marker, "仅登录")
+            else:
+                start_probe(adb)
+                click_text(adb, marker, "Only sign in")
             wait_for(lambda: adb.shell("dumpsys", "activity", "activities"),
                      lambda raw: any("mResumedActivity" in line and BROWSER in line for line in raw.splitlines()),
                      12, "stock_external_browser_not_foreground")
@@ -221,13 +256,26 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
                 counts = status()
                 require(not counts["failure"], "oidc_fixture_handler_failed")
                 require(counts["callbackOpenedInBrowser"] == 0, "browser_opened_callback_without_dispatch")
+                if main_apk:
+                    for node in window_nodes(adb, marker):
+                        text = node.get("text", "")
+                        if node.get("package") == MAIN_PACKAGE and all(part in text for part in
+                                ("已登录", MAIN_ACCOUNT, "此设备尚未获授权", "同步已关闭")):
+                            return "signed_in_only"
+                    return ""
                 observed = phase(adb)
                 require(observed in ("", "ready", "external_browser_opening", "verified_callback_received", "signed_in_only"),
                         "test_app_callback_or_exchange_failed")
                 return observed
             wait_for(browser_outcome, lambda observed: observed == "signed_in_only", 24, "browser_callback_not_observed")
             report["verified_browser_callback"] = "PASS"
-            require(status()["goProofs"] == 1 and status()["dataRequests"] == 0, "unexpected_proof_or_data_requests")
+            counts = status()
+            require(counts["goProofs"] == 1 and counts["dataRequests"] == 0 and counts["unexpected"] == 0,
+                    "unexpected_proof_or_data_requests")
+            if main_apk:
+                require(counts["accountLookups"] == 1, "missing_real_account_lookup")
+                report["main_account_lookup"] = "PASS"
+                report["main_signed_in_only"] = "PASS"
             report["oidc_go_token_proof"] = "PASS"
             report["login_data_requests"] = 0
         finally:
@@ -241,7 +289,9 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
 
             def remove_ca():
                 ca.remove()
-                if report["tls_before"] == "PASS" and submitted and adb.shell("pm", "path", PACKAGE, check=False):
+                if report["tls_before"] == "PASS" and submitted:
+                    if main_apk and not adb.shell("pm", "path", PACKAGE, check=False):
+                        adb.run("install", "-t", str(apk))
                     assert_tls_rejection(adb)
                     report["tls_after"] = "PASS"
 
@@ -261,6 +311,10 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
                 require(adb.run("reverse", "--list").stdout.splitlines() == reverse_before, "reverse_baseline_changed")
 
             def remove_probe():
+                if main_submitted and adb.shell("pm", "path", MAIN_PACKAGE, check=False):
+                    adb.run("uninstall", MAIN_PACKAGE)
+                if main_apk:
+                    require(adb.shell("pm", "path", MAIN_PACKAGE, check=False) == "", "main_fixture_cleanup_failed")
                 if submitted and adb.shell("pm", "path", PACKAGE, check=False):
                     adb.run("uninstall", PACKAGE)
                 require(adb.shell("pm", "path", PACKAGE, check=False) == "", "fixture_package_cleanup_failed")
@@ -279,22 +333,27 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work):
 
 
 def main():
-    output = ROOT / "target/a3-android-oidc/report.json"
-    report = {"status": "FAIL", "scope": "disposable API28 test APK and real isolated OIDC",
+    main_mode = len(sys.argv) == 5
+    output = ROOT / "target/a3-android-oidc" / ("main-report.json" if main_mode else "report.json")
+    scope = "test-only APK built from main-app Java; real OIDC and PostgreSQL" if main_mode else "disposable API28 test APK and real isolated OIDC"
+    report = {"status": "FAIL", "scope": scope,
               "source_sha": os.environ.get("GITHUB_SHA", ""), "tls_before": "NOT RUN", "tls_after": "NOT RUN",
               "verified_domain": "NOT RUN", "browser_launched": "NOT RUN", "verified_browser_callback": "NOT RUN",
               "oidc_go_token_proof": "NOT RUN", "login_data_requests": None, "device_enrollment": "NOT RUN",
               "certificate": {}, "cleanup": {}}
     try:
-        require(len(sys.argv) == 4 and os.name == "posix", "requires_a3_ci_arguments")
+        require(len(sys.argv) in (4, 5) and os.name == "posix", "requires_a3_ci_arguments")
         adb = Adb([str(shutil.which("adb")), "-s", "emulator-5554"])
         identity = ci_identity(adb.command)
         guard(adb, identity)
-        apk, apksigner, go_proof = [Path(value).resolve(strict=True) for value in sys.argv[1:]]
-        report["test_apk_signer"] = obtain_fingerprint(apksigner, apk)
-        report["test_apk_sha256"] = hashlib.sha256(apk.read_bytes()).hexdigest()
+        apk, apksigner, go_proof = [Path(value).resolve(strict=True) for value in sys.argv[1:4]]
+        main_apk = Path(sys.argv[4]).resolve(strict=True) if main_mode else None
+        report["test_apk_signer"] = obtain_fingerprint(apksigner, main_apk or apk)
+        report["test_apk_sha256"] = hashlib.sha256((main_apk or apk).read_bytes()).hexdigest()
+        if main_mode:
+            report["main_account_lookup"] = report["main_signed_in_only"] = "NOT RUN"
         with tempfile.TemporaryDirectory(prefix="a3-private-") as temporary:
-            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary))
+            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",
                 "fixture_cleanup_or_after_tls_failed")
         report["status"] = "PASS"

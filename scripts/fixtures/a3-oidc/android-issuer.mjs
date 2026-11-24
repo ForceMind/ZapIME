@@ -8,7 +8,8 @@ import { createServer } from 'node:https';
 import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
-const [cert, key, publicFingerprint, summaryPath, goProof] = process.argv.slice(2);
+const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe'] = process.argv.slice(2);
+assert.ok(mode === 'probe' || mode === 'main');
 const issuer = 'https://a3-oidc.example.test';
 const fallback = 'https://return-a3.example.test';
 const resource = issuer + '/a3-device-enrollment';
@@ -17,7 +18,7 @@ const { provider, publicKey } = createIssuer(issuer, redirect, [resource]);
 const verifyKey = await importJWK(publicKey, 'RS256');
 const delegate = provider.callback();
 const interactions = new Map();
-const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0,
+const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0, accountLookups: 0,
   callbackOpenedInBrowser: 0, unexpected: 0, dataRequests: 0, failure: false };
 
 function record() {
@@ -85,7 +86,7 @@ async function handle(req, res) {
       totals.assetlinks++;
       record();
       reply(res, 200, JSON.stringify([{ relation: ['delegate_permission/common.handle_all_urls'], target: {
-        namespace: 'android_app', package_name: 'org.zapime.android.a3loginprobe',
+        namespace: 'android_app', package_name: mode === 'main' ? 'org.zapime.android' : 'org.zapime.android.a3loginprobe',
         sha256_cert_fingerprints: [publicFingerprint],
       } }]), 'application/json');
     } else if (url.pathname === '/callback') {
@@ -100,6 +101,30 @@ async function handle(req, res) {
   assert.equal(host, 'a3-oidc.example.test');
   if (url.pathname.startsWith('/fixture-login/')) {
     await interact(req, res, url.pathname);
+    return;
+  }
+  if (mode === 'main' && req.method === 'GET' && url.pathname === '/v1/account-login') {
+    assert.ok(!url.search && totals.accountLookups === 0);
+    assert.ok(totals.login === 1 && totals.consent === 1 && totals.tokenPosts === 1);
+    const authorization = req.headers.authorization;
+    assert.ok(typeof authorization === 'string' && authorization.startsWith('Bearer '));
+    const accessToken = authorization.slice('Bearer '.length);
+    const output = execFileSync(goProof, ['-test.run=^TestProviderIssuedAccountLookup$', '-test.count=1'], {
+      env: { ...process.env, ZAPIME_A3_ACCOUNT_LOOKUP: '1' }, timeout: 10_000,
+      input: JSON.stringify({ accessToken, keys: { keys: [publicKey] } }), encoding: 'utf8',
+    });
+    const account = JSON.parse(output.split('\n', 1)[0]);
+    assert.deepEqual(account, { protocol: 1, account_id: '98a01050-3185-4eed-bac4-127426c17372' });
+    totals.accountLookups++;
+    totals.goProofs++;
+    record();
+    reply(res, 200, JSON.stringify(account), 'application/json');
+    return;
+  }
+  if (url.pathname.startsWith('/v1/')) {
+    totals.unexpected++;
+    record();
+    reply(res, 404, 'unexpected fixture endpoint');
     return;
   }
   if (req.method === 'POST' && url.pathname === '/android-proof') {

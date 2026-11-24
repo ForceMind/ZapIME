@@ -47,6 +47,8 @@
 
 **2026-11-24 · 主 App 登录编译切片。** 按已确认的页面接入固定部署的账号入口、系统浏览器、五分钟内单次 PKCE 回跳、同步服务账号查询和已有设备会话核对。只有显式构建参数 `ZAPIME_ANDROID_OIDC_CONFIG` 指向部署者的公开 JSON 时才注册入口和固定 HTTPS App Link。文件字段为 `issuer`、`authorization`、`token`、`callback`、`resource`、`sync_server`、`client_id`。授权和令牌端点必须与 issuer 同源，受众与同步服务器同源。部署者仍须用回跳域的 `assetlinks.json` 关联实际 APK 包名和签名。未配置构建的 manifest 与原文件逐字节相同。源码编译、JVM 协议测试和此前回跳验收分别记录；目前主 App 尚未跑过实际回跳，新设备领取仍需接入客户端。
 
+`e5c0942` 的 API36 SDK 主 App 登录源码编译和 JVM 检查已通过，原 test-only 协议探针继续通过。新增独立证据入口为同一作业内从主 App 源码打包的 test-only APK。它使用真正的系统回跳、生产 Java 登录与 Go 账号查询逻辑以及同轮隔离 PostgreSQL。目标是从主页面点「仅登录」并在回跳后看到实际合成账号、设备待授权及同步已关闭，资料请求为零。此轮不捆绑 JNI 或发布 APK，实际回跳结果待回读。[编译与协议探针 CI](https://github.com/ForceMind/ZapIME/actions/runs/45455016921)
+
 ### 1. 账号登录、设备授权分别验证
 
 - 首版只接一个由部署者固定配置的 issuer、客户端和同步登录 API 受众，优先采用经验证的 Android App Link。回跳域名由能配置当前 Android 包名和签名关联的部署者掌控，可与同步服务域独立。先实测 API28/API36 系统浏览器回跳，并确认身份服务能签发同步登录端点可验证的 OAuth 访问令牌。OIDC 身份映射使用固定 issuer 与可信 subject，在配置阶段验证它在预期令牌中的稳定性。邮箱只用于显示。计划采用专用的 RFC 9068 访问令牌，服务校验类型、签名、issuer、audience、客户端、scope、有效期与用户授权上下文。Android 不用 ID token 作为同步登录 API 的权限凭据。[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability) · [RFC 8252](https://www.rfc-editor.org/rfc/rfc8252) · [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700) · [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html#section-4)
