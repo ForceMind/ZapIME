@@ -27,6 +27,11 @@ type AccessPolicy struct {
 	MaxLifetime time.Duration
 }
 
+func (p AccessPolicy) valid() bool {
+	return httpsIdentifier(p.Issuer) && len(p.Issuer) <= 1024 && httpsIdentifier(p.Audience) &&
+		visibleIdentifier(p.ClientID) && visibleIdentifier(p.Scope) && p.MaxLifetime > 0
+}
+
 // Subject is a verified issuer-scoped identity. Account membership, device
 // authorization, and redemption of the token ID are separate checks.
 type Subject struct {
@@ -64,8 +69,7 @@ func ValidSubject(issuer, id string) bool {
 // VerifyAccessToken checks a compact RFC 9068 access token using an already
 // trusted public key set. Header-provided keys and URLs are never consulted.
 func VerifyAccessToken(policy AccessPolicy, keys jose.JSONWebKeySet, wire string, now time.Time) (Subject, error) {
-	if !httpsIdentifier(policy.Issuer) || !httpsIdentifier(policy.Audience) ||
-		!visibleIdentifier(policy.ClientID) || !visibleIdentifier(policy.Scope) || policy.MaxLifetime <= 0 || now.IsZero() ||
+	if !policy.valid() || now.IsZero() ||
 		len(wire) > maxAccessTokenBytes || strings.Count(wire, ".") != 2 || strings.ContainsAny(wire, " \t\r\n") {
 		return Subject{}, ErrInvalidAccessToken
 	}
@@ -82,10 +86,8 @@ func VerifyAccessToken(policy AccessPolicy, keys jose.JSONWebKeySet, wire string
 	if len(matched) != 1 {
 		return Subject{}, ErrInvalidAccessToken
 	}
-	key := matched[0]
-	public, ok := key.Key.(*rsa.PublicKey)
-	if !ok || public == nil || public.N == nil || public.N.BitLen() < 2048 ||
-		(key.Algorithm != "" && key.Algorithm != string(jose.RS256)) || (key.Use != "" && key.Use != "sig") {
+	public := verificationKey(matched[0])
+	if public == nil {
 		return Subject{}, ErrInvalidAccessToken
 	}
 	var claims accessClaims
@@ -101,4 +103,13 @@ func VerifyAccessToken(policy AccessPolicy, keys jose.JSONWebKeySet, wire string
 		return Subject{}, ErrInvalidAccessToken
 	}
 	return Subject{issuer: claims.Issuer, id: claims.Subject, tokenID: claims.ID, expiresAt: expires}, nil
+}
+
+func verificationKey(key jose.JSONWebKey) *rsa.PublicKey {
+	public, ok := key.Key.(*rsa.PublicKey)
+	if !ok || public == nil || public.N == nil || public.N.BitLen() < 2048 ||
+		(key.Algorithm != "" && key.Algorithm != string(jose.RS256)) || (key.Use != "" && key.Use != "sig") {
+		return nil
+	}
+	return public
 }

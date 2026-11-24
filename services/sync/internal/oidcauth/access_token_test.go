@@ -2,6 +2,7 @@
 package oidcauth
 
 import (
+	"bytes"
 	"crypto/rand"
 	"crypto/rsa"
 	"encoding/json"
@@ -51,6 +52,26 @@ func TestAccessTokenPolicy(t *testing.T) {
 	}
 	if _, err := VerifyAccessToken(policy, keySet, sign(base, "application/at+jwt", "source"), now); err != nil {
 		t.Fatal("explicit media type must be accepted")
+	}
+	public, err := json.Marshal(keySet)
+	if err != nil {
+		t.Fatal("encode public key snapshot")
+	}
+	verifier, err := NewVerifier(policy, bytes.NewReader(public))
+	if err != nil {
+		t.Fatal("configure verification keys")
+	}
+	if _, err := verifier.Verify(valid, now); err != nil {
+		t.Fatal("configured issuer failed to verify access token")
+	}
+	private, err := json.Marshal(jose.JSONWebKeySet{Keys: []jose.JSONWebKey{{Key: key, KeyID: "source"}}})
+	if err != nil {
+		t.Fatal("prepare isolated private test key")
+	}
+	for _, wrong := range [][]byte{private, bytes.Repeat([]byte("x"), maxJWKSBytes+1), []byte(`{"keys":[]}`)} {
+		if _, err := NewVerifier(policy, bytes.NewReader(wrong)); !errors.Is(err, ErrConfiguration) {
+			t.Fatal("invalid public key configuration accepted")
+		}
 	}
 
 	claimChanges := map[string]func(*accessClaims){

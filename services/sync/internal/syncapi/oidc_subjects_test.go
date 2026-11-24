@@ -2,10 +2,14 @@
 package syncapi
 
 import (
+	"bytes"
 	"context"
 	"crypto/rand"
 	"crypto/rsa"
+	"encoding/json"
 	"errors"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -34,7 +38,7 @@ func TestPostgresOIDCSubjectBinding(t *testing.T) {
 	if err != nil {
 		t.Fatal("create synthetic signer")
 	}
-	proof := func(from, id string) oidcauth.Subject {
+	signToken := func(from, id string) string {
 		t.Helper()
 		now := time.Now().UTC()
 		wire, err := jwt.Signed(signer).Claims(jwt.Claims{Issuer: from, Subject: id, Audience: jwt.Audience{resource},
@@ -43,8 +47,15 @@ func TestPostgresOIDCSubjectBinding(t *testing.T) {
 		if err != nil {
 			t.Fatal("sign synthetic test identity")
 		}
-		policy := oidcauth.AccessPolicy{Issuer: from, Audience: resource, ClientID: "synthetic-device", Scope: scope, MaxLifetime: time.Minute}
-		verified, err := oidcauth.VerifyAccessToken(policy, keys, wire, now)
+		return wire
+	}
+	policy := func(from string) oidcauth.AccessPolicy {
+		return oidcauth.AccessPolicy{Issuer: from, Audience: resource, ClientID: "synthetic-device", Scope: scope, MaxLifetime: time.Minute}
+	}
+	proof := func(from, id string) oidcauth.Subject {
+		t.Helper()
+		wire := signToken(from, id)
+		verified, err := oidcauth.VerifyAccessToken(policy(from), keys, wire, time.Now())
 		if err != nil {
 			t.Fatal("validate synthetic test identity")
 		}
@@ -74,6 +85,43 @@ func TestPostgresOIDCSubjectBinding(t *testing.T) {
 		if got, err := s.ResolveOIDCAccount(ctx, proof(from, subject)); err != nil || got != expected {
 			t.Fatal("verified identity resolved to the wrong account")
 		}
+	}
+	public, err := json.Marshal(keys)
+	if err != nil {
+		t.Fatal("encode synthetic public key")
+	}
+	verifier, err := oidcauth.NewVerifier(policy(issuer), bytes.NewReader(public))
+	if err != nil {
+		t.Fatal("configure synthetic issuer")
+	}
+	api := NewAPIWithOIDC(s, verifier)
+	call := func(handler *API, endpoint, token string) *httptest.ResponseRecorder {
+		r := httptest.NewRequest(http.MethodGet, endpoint, nil)
+		r.Header.Set("Authorization", "Bearer "+token)
+		out := httptest.NewRecorder()
+		handler.ServeHTTP(out, r)
+		return out
+	}
+	validToken := signToken(issuer, subject)
+	const login = "/v1/account-login"
+	valid := call(api, login, validToken)
+	var session struct {
+		Protocol  int    `json:"protocol"`
+		AccountID string `json:"account_id"`
+	}
+	if valid.Code != http.StatusOK || json.Unmarshal(valid.Body.Bytes(), &session) != nil || session.Protocol != 1 || session.AccountID != a.AccountID {
+		t.Fatal("read-only OIDC lookup did not identify the bound account")
+	}
+	for _, token := range []string{signToken(issuer, "not-bound"), signToken(otherIssuer, subject), a.Token} {
+		if call(api, login, token).Code != http.StatusUnauthorized {
+			t.Fatal("unbound subject, other issuer or device token used as a login proof")
+		}
+	}
+	if call(api, "/v1/session", validToken).Code != http.StatusUnauthorized ||
+		call(api, "/v1/session", a.Token).Code != http.StatusOK ||
+		call(api, login+"?account_id=other", validToken).Code != http.StatusBadRequest ||
+		call(NewAPI(s), login, validToken).Code != http.StatusNotFound {
+		t.Fatal("login identity and device authorization are not independent")
 	}
 	start, results := make(chan struct{}), make(chan error, 2)
 	for _, account := range []string{a.AccountID, b.AccountID} {

@@ -10,14 +10,21 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ForceMind/ZapIME/services/sync/internal/oidcauth"
 )
 
 type API struct {
 	Store *Store
 	slots chan struct{}
+	oidc  *oidcauth.Verifier
 }
 
-func NewAPI(store *Store) *API { return &API{Store: store, slots: make(chan struct{}, 32)} }
+func NewAPI(store *Store) *API { return NewAPIWithOIDC(store, nil) }
+
+func NewAPIWithOIDC(store *Store, verifier *oidcauth.Verifier) *API {
+	return &API{Store: store, slots: make(chan struct{}, 32), oidc: verifier}
+}
 func write(w http.ResponseWriter, status int, object any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
@@ -86,6 +93,10 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		write(w, 200, map[string]any{"status": "ready", "protocol": 1})
+		return
+	}
+	if r.URL.Path == "/v1/account-login" {
+		api.accountLogin(ctx, w, r)
 		return
 	}
 	authorization := r.Header.Get("Authorization")

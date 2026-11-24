@@ -10,7 +10,9 @@
 
 服务端数据库升级为 schema4，旧 v1–v3 二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
 
-A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。当前接入的是签名和绑定基础，设备授权、领用及 Android 登录接口仍分别实现和验收。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
+A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
+
+`GET /v1/account-login` 是启用后才开放的账号身份查询，返回协议号和既有账号 UUID。启用时一并设置 `ZAPIME_OIDC_ISSUER`、`ZAPIME_OIDC_AUDIENCE`、`ZAPIME_OIDC_CLIENT_ID`、`ZAPIME_OIDC_JWKS_FILE`。密钥文件只包含部署者审核的公开 JWK，配置变更或签名密钥轮换后重启服务。访问令牌须有专用受众、`zapime.device_enrollment` 范围和至多五分钟有效期。资料接口继续使用独立设备凭据，设备审批与领用单独交付。
 
 ## 一键服务器部署与 R2
 

@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施计划](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已批准。主机回环 HTTPS 的真实 OIDC 签发、PKCE 与令牌初步验收通过。Android 系统回跳、Go 设备授权和自动同步仍待验。现有 Android 继续可用设备连接、密钥准备与显式手动同步。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录真实主机 OIDC、Go 令牌校验、API28 隔离测试 APK 的系统验证和真实浏览器回跳。主 App、设备批准与领取及自动同步继续分别验收。现有 Android 可用设备连接、密钥准备与显式手动同步。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 

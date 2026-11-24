@@ -4,6 +4,8 @@
 
 用户已确认「登录并开启同步」、三屏交互和[实施方案](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。账号登录、设备授权、匹配该账号的密钥材料和开启状态同时具备时，设备才可自动处理该账号的资料。已登记账号须恢复原密钥。阶段独立验收真登录、日常自动同步和有可信来源的首次发布。现有手动流程沿用 ADR-022。
 
+隔离登录回跳使用[独立的 API28 测试契约](ADR_A3_API28_OIDC_FIXTURE.md)。只在本轮专用临时模拟器验证合成 CA 与域名，产品默认 TLS 保持。回跳证据限定 test-only APK。
+
 ## ADR-025 · 2026-11-07 · 配置重启使用独立新鲜证明
 
 保留普通EditorInfo/owned选区强校验；只对同EditorInfo及InputConnection引用的受限配置重启，通过独立进程单槽worker有界读取公开SurroundingText，严格验证绝对位置、完整组字及有限上下文。Pending保留核心并hold回复/动作，经engine屏障先旧回复后新动作；先消费ticket再恢复标记，失败保App正文。800ms是逻辑有效期，不等于阻塞IPC实际退出。[完整状态机、安全边界与验收](ADR_025_VERIFIED_CONFIGURATION_RESTART.md)。本修订真实系统IME/配置实验待CI，不将编译或JVM冒充通过。

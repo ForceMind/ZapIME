@@ -15,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ForceMind/ZapIME/services/sync/internal/oidcauth"
 	"github.com/ForceMind/ZapIME/services/sync/internal/syncapi"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
@@ -122,7 +123,11 @@ func run() error {
 	if address == "" {
 		address = "127.0.0.1:8787"
 	}
-	server := &http.Server{Addr: address, Handler: syncapi.NewAPI(store), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
+	login, err := oidcauth.FromEnv()
+	if err != nil {
+		return err
+	}
+	server := &http.Server{Addr: address, Handler: syncapi.NewAPIWithOIDC(store, login), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
 	stopped := make(chan os.Signal, 1)
 	signal.Notify(stopped, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(stopped)
