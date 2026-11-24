@@ -16,6 +16,16 @@ use zeroize::Zeroizing;
 
 const FIRST: &str = "synthetic manual client source";
 const SECOND: &str = "synthetic manual client edited on B";
+const SHORTCUT_CODE: &str = "a3sync";
+const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
+
+fn shortcut() -> Content {
+    Content::Snippet {
+        code: SHORTCUT_CODE.into(),
+        text: SHORTCUT_TEXT.into(),
+        tags: Vec::new(),
+    }
+}
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -148,7 +158,7 @@ fn main() {
         dir.is_absolute() && dir.is_dir(),
         "private fixture directory"
     );
-    if command == "init" {
+    if matches!(command, "init" | "init-automatic") {
         assert!(args.len() == 4, "init arguments");
         let profile = Uuid::parse_str(&args[3]).expect("fixture account");
         let material = Material::generate(profile).expect("fixture material");
@@ -169,7 +179,13 @@ fn main() {
         let mut a = open(dir, "a");
         let id = Uuid::new_v4();
         private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
-        edit(&mut a, id, FIRST);
+        if command == "init-automatic" {
+            let device = a.device_id().expect("fixture device");
+            a.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
+                .expect("create shortcut in bound store");
+        } else {
+            edit(&mut a, id, FIRST);
+        }
         status(&mut a, &material, command);
         return;
     }
@@ -183,7 +199,7 @@ fn main() {
         status(&mut b, &material, command);
         return;
     }
-    if command == "verify" {
+    if matches!(command, "verify" | "verify-automatic") {
         assert!(args.len() == 3, "verify arguments");
         let mut a = open(dir, "a");
         let mut b = open(dir, "b");
@@ -192,26 +208,32 @@ fn main() {
             records == b.records(true).unwrap() && records.len() == 1,
             "stores converge"
         );
-        assert!(
-            matches!(&records[0].content, Content::Favorite {text, ..} if text == SECOND),
-            "remote edit converges"
-        );
+        let automatic = command == "verify-automatic";
+        let cursor = if automatic { 1 } else { 2 };
+        if automatic {
+            assert!(records[0].content == shortcut(), "shortcut converges");
+        } else {
+            assert!(
+                matches!(&records[0].content, Content::Favorite {text, ..} if text == SECOND),
+                "remote edit converges"
+            );
+        }
         for store in [&mut a, &mut b] {
             assert!(store.pending_count().unwrap() == 0, "no echo upload");
-            assert!(
+            let next = if automatic {
+                client::stage_next_automatic(store, material.profile, &material)
+            } else {
                 client::stage_next(store, material.profile, &material)
-                    .unwrap()
-                    .is_none(),
-                "no new ciphertext from download"
-            );
+            };
+            assert!(next.unwrap().is_none(), "no new ciphertext from download");
             assert!(
-                client::pull_cursor(store, material.profile, &material).unwrap() == 2,
+                client::pull_cursor(store, material.profile, &material).unwrap() == cursor,
                 "committed cursor"
             );
         }
         println!(
             "{}",
-            json!({"status":"PASS","command":command,"stores":2,"records_each":1,"pending_each":0,"cursor_each":2})
+            json!({"status":"PASS","command":command,"stores":2,"records_each":1,"pending_each":0,"cursor_each":cursor})
         );
         return;
     }
@@ -238,21 +260,26 @@ fn main() {
     );
     let mut store = open(dir, device);
     match command {
-        "stage" => {
+        "stage" | "stage-automatic" => {
             assert!(args.len() == 6, "stage arguments");
-            let operation = client::stage_next(&mut store, material.profile, &material)
-                .unwrap()
-                .expect("pending fixture operation");
+            let next = if command == "stage-automatic" {
+                client::stage_next_automatic(&mut store, material.profile, &material)
+            } else {
+                client::stage_next(&mut store, material.profile, &material)
+            };
+            let operation = next.unwrap().expect("pending fixture operation");
             let wire =
                 client::frozen_wire(&mut store, material.profile, &material, &operation).unwrap();
+            let packet = String::from_utf8_lossy(&wire);
             assert!(
-                !String::from_utf8_lossy(&wire).contains(FIRST)
-                    && !String::from_utf8_lossy(&wire).contains(SECOND),
+                ![FIRST, SECOND, SHORTCUT_TEXT]
+                    .iter()
+                    .any(|text| packet.contains(text)),
                 "ciphertext only"
             );
             private(Path::new(&args[5]), &wire);
         }
-        "ack" => {
+        "ack" | "ack-automatic" => {
             assert!(args.len() == 8, "ack arguments");
             let expected_device = Uuid::parse_str(&args[5]).expect("server device");
             let wire = read(Path::new(&args[6]), client::MAX_ACK_BYTES);
@@ -262,7 +289,7 @@ fn main() {
                     == wire,
                 "persisted original wire"
             );
-            client::acknowledge(
+            let revision = client::acknowledge_with_revision(
                 &mut store,
                 material.profile,
                 expected_device,
@@ -271,6 +298,12 @@ fn main() {
                 &read(Path::new(&args[7]), client::MAX_ACK_BYTES),
             )
             .expect("real server acknowledgement");
+            if command == "ack-automatic" {
+                println!(
+                    "{}",
+                    json!({"status":"PASS","command":"receipt","revision":revision})
+                );
+            }
         }
         "apply" | "reject-page" => {
             assert!(args.len() == 6, "page arguments");
