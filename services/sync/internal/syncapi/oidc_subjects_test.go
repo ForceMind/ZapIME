@@ -105,11 +105,9 @@ func TestPostgresOIDCSubjectBinding(t *testing.T) {
 	validToken := signToken(issuer, subject)
 	const login = "/v1/account-login"
 	valid := call(api, login, validToken)
-	var session struct {
-		Protocol  int    `json:"protocol"`
-		AccountID string `json:"account_id"`
-	}
-	if valid.Code != http.StatusOK || json.Unmarshal(valid.Body.Bytes(), &session) != nil || session.Protocol != 1 || session.AccountID != a.AccountID {
+	var session accountLoginIdentity
+	if valid.Code != http.StatusOK || json.Unmarshal(valid.Body.Bytes(), &session) != nil || session.Protocol != 1 || session.AccountID != a.AccountID ||
+		session.SubjectFingerprint != accountLoginFingerprint(issuer, subject, resource, a.AccountID) {
 		t.Fatal("read-only OIDC lookup did not identify the bound account")
 	}
 	for _, token := range []string{signToken(issuer, "not-bound"), signToken(otherIssuer, subject), a.Token} {

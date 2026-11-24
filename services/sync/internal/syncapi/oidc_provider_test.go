@@ -53,12 +53,10 @@ func TestProviderIssuedAccountLookup(t *testing.T) {
 	request.Header.Set("Authorization", "Bearer "+proof.AccessToken)
 	response := httptest.NewRecorder()
 	NewAPIWithOIDC(store, verifier).ServeHTTP(response, request)
-	var session struct {
-		Protocol  int    `json:"protocol"`
-		AccountID string `json:"account_id"`
-	}
+	var session accountLoginIdentity
 	if response.Code != http.StatusOK || json.Unmarshal(response.Body.Bytes(), &session) != nil ||
-		session.Protocol != 1 || session.AccountID != account {
+		session.Protocol != 1 || session.AccountID != account ||
+		session.SubjectFingerprint != accountLoginFingerprint(issuer, subject, resource, account) {
 		t.Fatal("provider-issued identity did not resolve to the bound account")
 	}
 	var head, devices int

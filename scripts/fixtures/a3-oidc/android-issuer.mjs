@@ -2,7 +2,7 @@
 // The two synthetic hosts are reachable only through this CI job's adb reverse.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { randomBytes } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:https';
 import { importJWK, jwtVerify } from 'jose';
@@ -114,7 +114,15 @@ async function handle(req, res) {
       input: JSON.stringify({ accessToken, keys: { keys: [publicKey] } }), encoding: 'utf8',
     });
     const account = JSON.parse(output.split('\n', 1)[0]);
-    assert.deepEqual(account, { protocol: 1, account_id: '98a01050-3185-4eed-bac4-127426c17372' });
+    const accountId = '98a01050-3185-4eed-bac4-127426c17372';
+    const identityHash = createHash('sha256');
+    for (const value of ['zapime-account-login-v1', issuer, subject, resource, accountId]) {
+      const data = Buffer.from(value);
+      const length = Buffer.alloc(4);
+      length.writeUInt32BE(data.length);
+      identityHash.update(length).update(data);
+    }
+    assert.deepEqual(account, { protocol: 1, account_id: accountId, subject_fingerprint: identityHash.digest('hex') });
     totals.accountLookups++;
     totals.goProofs++;
     record();

@@ -133,7 +133,7 @@ public final class AccountSyncActivity extends Activity {
                         String syncState = requestSync
                                 ? (identity.device == null ? "同步等待设备授权" : "开启同步前需要核对密钥")
                                 : "同步已关闭";
-                        update("已登录\n服务器 " + config.syncServer + "\n账号 " + identity.account + "\n"
+                        update("已登录\n服务器 " + config.syncServer + "\n账号 " + identity.enrollmentScope.account + "\n"
                                 + identity.deviceState + (identity.device == null ? "" : "\n设备 " + identity.device)
                                 + "\n" + syncState, false);
                     });

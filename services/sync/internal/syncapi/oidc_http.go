@@ -4,10 +4,17 @@ package syncapi
 import (
 	"context"
 	"crypto/sha256"
+	"encoding/hex"
 	"net/http"
 	"strings"
 	"time"
 )
+
+type accountLoginIdentity struct {
+	Protocol           int    `json:"protocol"`
+	AccountID          string `json:"account_id"`
+	SubjectFingerprint string `json:"subject_fingerprint"`
+}
 
 func (api *API) accountLogin(ctx context.Context, w http.ResponseWriter, r *http.Request) {
 	if api.oidc == nil || r.Method != http.MethodGet {
@@ -33,10 +40,14 @@ func (api *API) accountLogin(ctx context.Context, w http.ResponseWriter, r *http
 		failure(w, err)
 		return
 	}
-	write(w, http.StatusOK, struct {
-		Protocol  int    `json:"protocol"`
-		AccountID string `json:"account_id"`
-	}{1, account})
+	issuer, subject, _, _ := proof.Claims()
+	fingerprint := accountLoginFingerprint(issuer, subject, proof.Audience(), account)
+	write(w, http.StatusOK, accountLoginIdentity{1, account, fingerprint})
+}
+
+func accountLoginFingerprint(issuer, subject, audience, account string) string {
+	fingerprint := enrollmentHash("zapime-account-login-v1", issuer, subject, audience, account)
+	return hex.EncodeToString(fingerprint[:])
 }
 
 func loginBearer(r *http.Request) (string, error) {

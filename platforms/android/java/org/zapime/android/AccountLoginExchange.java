@@ -18,11 +18,12 @@ import java.util.UUID;
 /** Only login, identity lookup and device-session checks. Runs on the sync worker. */
 final class AccountLoginExchange {
     static final class Identity {
-        final UUID account, device;
+        final UUID device;
+        final SyncEnrollmentVault.Scope enrollmentScope;
         final String deviceState;
 
-        Identity(UUID account, UUID device, String deviceState) {
-            this.account = account;
+        Identity(SyncEnrollmentVault.Scope enrollmentScope, UUID device, String deviceState) {
+            this.enrollmentScope = enrollmentScope;
             this.device = device;
             this.deviceState = deviceState;
         }
@@ -37,36 +38,37 @@ final class AccountLoginExchange {
         } finally {
             Arrays.fill(tokenReply, (byte) 0);
         }
-        UUID account;
+        SyncEnrollmentVault.Scope scope;
         try {
             Map<String, String> fields = SyncConnection.object(lookup,
-                    SyncConnection.fields("protocol", "account_id"), SyncConnection.fields("protocol"));
+                    SyncConnection.fields("protocol", "account_id", "subject_fingerprint"), SyncConnection.fields("protocol"));
             if (!"1".equals(fields.get("protocol"))) throw new SyncHttp.Failure("login_response");
-            account = SyncConnection.id(fields.get("account_id"));
+            scope = new SyncEnrollmentVault.Scope(exchange.config, SyncConnection.id(fields.get("account_id")),
+                    fields.get("subject_fingerprint"));
         } finally {
             Arrays.fill(lookup, (byte) 0);
         }
         cancel.check();
         try (SyncConnection saved = SyncConnectionStore.load(context)) {
-            if (saved == null) return new Identity(account, null, "此设备尚未获授权");
-            if (!account.equals(saved.account) || !exchange.config.syncServer.equals(saved.server)) {
-                return new Identity(account, null, "已保存的设备连接属于其他账号或服务器，请先核对");
+            if (saved == null) return new Identity(scope, null, "此设备尚未获授权");
+            if (!scope.account.equals(saved.account) || !exchange.config.syncServer.equals(saved.server)) {
+                return new Identity(scope, null, "已保存的设备连接属于其他账号或服务器，请先核对");
             }
             byte[] response = saved.inspect(cancel);
             try (SyncConnection verified = saved.verify(response)) {
                 cancel.check();
-                return new Identity(account, verified.device, "设备授权有效");
+                return new Identity(scope, verified.device, "设备授权有效");
             } finally {
                 Arrays.fill(response, (byte) 0);
             }
         } catch (SyncHttp.Failure failure) {
             if (failure.code.equals("cancelled")) throw failure;
             if (failure.code.equals("unauthorized") || failure.code.equals("forbidden")) {
-                return new Identity(account, null, "设备授权已失效");
+                return new Identity(scope, null, "设备授权已失效");
             }
-            return new Identity(account, null, "暂时无法核对当前设备授权");
+            return new Identity(scope, null, "暂时无法核对当前设备授权");
         } catch (IOException unavailable) {
-            return new Identity(account, null, "暂时无法读取本机设备连接");
+            return new Identity(scope, null, "暂时无法读取本机设备连接");
         }
     }
 

@@ -276,6 +276,11 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
                 require(counts["accountLookups"] == 1, "missing_real_account_lookup")
                 report["main_account_lookup"] = "PASS"
                 report["main_signed_in_only"] = "PASS"
+                vault = adb.run("shell", "am", "instrument", "-w",
+                                MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=40).stdout.splitlines()
+                require("INSTRUMENTATION_RESULT: enrollment_vault=PASS" in vault
+                        and "INSTRUMENTATION_CODE: -1" in vault, "android_enrollment_vault_not_verified")
+                report["android_enrollment_vault"] = "PASS"
             report["oidc_go_token_proof"] = "PASS"
             report["login_data_requests"] = 0
         finally:
@@ -352,6 +357,7 @@ def main():
         report["test_apk_sha256"] = hashlib.sha256((main_apk or apk).read_bytes()).hexdigest()
         if main_mode:
             report["main_account_lookup"] = report["main_signed_in_only"] = "NOT RUN"
+            report["android_enrollment_vault"] = "NOT RUN"
         with tempfile.TemporaryDirectory(prefix="a3-private-") as temporary:
             run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",

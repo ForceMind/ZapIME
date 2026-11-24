@@ -7,6 +7,8 @@ on:
       - 'platforms/android/oidc-probe/**'
       - 'platforms/android/java/org/zapime/android/AccountLogin*.java'
       - 'platforms/android/java/org/zapime/android/AccountSyncActivity.java'
+      - 'platforms/android/java/org/zapime/android/SyncEnrollmentVault.java'
+      - 'platforms/android/java/org/zapime/android/SyncSecrets.java'
       - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'
       - 'scripts/fixtures/a3-oidc/**'
@@ -69,12 +71,17 @@ jobs:
           ET.register_namespace("android", namespace)
           manifest = ET.parse(sys.argv[1])
           manifest.find("application").set("{" + namespace + "}testOnly", "true")
+          ET.SubElement(manifest.getroot(), "instrumentation", {
+              "{" + namespace + "}name": "org.zapime.android.EnrollmentVaultProbe",
+              "{" + namespace + "}targetPackage": "org.zapime.android",
+          })
           manifest.write(sys.argv[1], encoding="utf-8", xml_declaration=True)
           PY
           "$tools/aapt2" compile --dir platforms/android/res -o "$output/resources.zip"
           "$tools/aapt2" link -o "$output/source-only.apk" --manifest "$output/AndroidManifest.xml" -I "$platform" \
             "$output/resources.zip" --java "$output/generated"
           find platforms/android/java "$output/generated" -name '*.java' > "$output/java-sources.txt"
+          printf '%s\n' platforms/android/oidc-probe/java/EnrollmentVaultProbe.java >> "$output/java-sources.txt"
           javac -source 8 -target 8 -encoding UTF-8 -classpath "$platform" -d "$output/classes" @"$output/java-sources.txt"
           jar cf "$output/classes.jar" -C "$output/classes" .
           "$tools/d8" --lib "$platform" --min-api 28 --output "$output/dex" "$output/classes.jar"

@@ -23,6 +23,8 @@
 
 新增的[设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)待确认。已确认的账号页覆盖了设备待授权状态，本轮效果图补申请码与已有管理员批准页面。视觉确认后先交线稿与交互，再实现界面。
 
+**续接 · Android 领取凭据暂存。** 账号查询在现有 UUID 之外返回已验证主体的指纹。Android 将它和部署地址、签发者、受众、客户端及账号共同绑定到专用 AES-GCM 暂存。每账号只有一个待领取申请。重复准备读取已保存的 ID、期限及设备凭据，跨主体或跨部署、缺失签名私钥时拒绝覆盖。P-256 私钥保留于 Android Keystore。「仅登录」仍只读取账号和已有设备状态。API28 增加真实 Keystore 验收，领取 HTTP 和正式凭据保存继续单独验收。
+
 **2026-11-24 · 主机 OIDC 通过。** Windows x64、Node `26.13.1`、`oidc-provider` `9.15.1`、`jose` `6.2.18`。合成账号通过真正的回环 HTTPS 授权服务器登录。Authorization Code + PKCE `S256` 兑换出面向设备登记资源的 `at+jwt`，主机校验 issuer、签名、audience、客户端、scope、subject 与到期字段。已验证错误密码、证书默认不受信、错误 verifier、错误受众、授权码重放以及将 ID token 送到资源校验入口均被拒。
 
 夹具按 `scripts/fixtures/a3-oidc` 的锁文件运行。HTTPS 域名为保留的 `.test`，只有主机测试进程覆盖解析并信任本轮证书，授权服务只监听 `127.0.0.1`。试跑确认 OIDC 原生客户端拒绝将 `127.0.0.1` 当作已声明 HTTPS 域名，并在换令牌时需明确选择本次授权的资源。源码与运行说明见[主机夹具](../scripts/fixtures/a3-oidc/README.md)。

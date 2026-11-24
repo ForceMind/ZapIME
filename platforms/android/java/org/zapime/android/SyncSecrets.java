@@ -23,20 +23,24 @@ import javax.crypto.spec.GCMParameterSpec;
 final class SyncSecrets {
     private static final int MAX_MATERIAL=64*1024,HEADER=16,TAG=16;
     private static final byte[] MAGIC={'Z','K','V',1};
-    private enum Purpose { MATERIAL, CONNECTION }
+    private enum Purpose {
+        MATERIAL("material"), CONNECTION("connection"), ENROLLMENT("enrollment");
+        final String domain;
+        Purpose(String domain){this.domain=domain;}
+    }
     private static void worker()throws IOException {
         if(Looper.myLooper()==Looper.getMainLooper())throw new IOException("sync_material_requires_worker");
     }
     private static String alias(UUID profile)throws IOException {return alias(profile,Purpose.MATERIAL);}
     private static String alias(UUID profile,Purpose purpose)throws IOException {
         if(profile==null||profile.equals(new UUID(0,0)))throw new IOException("sync_material_profile");
-        return "org.zapime.android.sync."+(purpose==Purpose.MATERIAL?"material":"connection")+".v1."+profile;
+        return "org.zapime.android.sync."+purpose.domain+".v1."+profile;
     }
     private static File file(Context context,UUID profile)throws IOException {return file(context,profile,Purpose.MATERIAL);}
     private static File file(Context context,UUID profile,Purpose purpose)throws IOException {
         alias(profile,purpose);File parent=context.getNoBackupFilesDir();
         if(parent==null||!parent.isDirectory()||Files.isSymbolicLink(parent.toPath()))throw new IOException("sync_material_storage");
-        File file=new File(parent,(purpose==Purpose.MATERIAL?"sync-material-":"sync-connection-")+profile+".bin");
+        File file=new File(parent,"sync-"+purpose.domain+"-"+profile+".bin");
         for(String suffix:new String[]{"",".bak",".new"}){
             File candidate=new File(file+suffix);
             if(Files.exists(candidate.toPath(),LinkOption.NOFOLLOW_LINKS)&&!Files.isRegularFile(candidate.toPath(),LinkOption.NOFOLLOW_LINKS))throw new IOException("sync_material_storage");
@@ -44,7 +48,7 @@ final class SyncSecrets {
         return file;
     }
     private static byte[] aad(UUID profile,Purpose purpose)throws IOException {
-        return ("ZapIME/sync-"+(purpose==Purpose.MATERIAL?"material":"connection")+"/v1/"+alias(profile,purpose)).getBytes(StandardCharsets.UTF_8);
+        return ("ZapIME/sync-"+purpose.domain+"/v1/"+alias(profile,purpose)).getBytes(StandardCharsets.UTF_8);
     }
     private static KeyStore keys()throws GeneralSecurityException,IOException {
         KeyStore store=KeyStore.getInstance("AndroidKeyStore");store.load(null);return store;
@@ -63,15 +67,16 @@ final class SyncSecrets {
      * never replaced by initialization. Returns true only after a new write.
      */
     static boolean saveIfAbsent(Context context,UUID profile,byte[] material)throws IOException {
-        worker();synchronized(SyncSecrets.class){
-            if(material==null||material.length==0||material.length>MAX_MATERIAL)throw new IOException("sync_material_size");
-            byte[] previous=loadLocked(context,profile,Purpose.MATERIAL);
-            if(previous!=null){
-                try{if(!MessageDigest.isEqual(previous,material))throw new IOException("sync_material_exists");return false;}
-                finally{Arrays.fill(previous,(byte)0);}
-            }
-            saveLocked(context,profile,material,Purpose.MATERIAL);return true;
+        worker();synchronized(SyncSecrets.class){return createLocked(context,profile,material,Purpose.MATERIAL);}
+    }
+    private static boolean createLocked(Context context,UUID profile,byte[] bytes,Purpose purpose)throws IOException {
+        if(bytes==null||bytes.length==0||bytes.length>MAX_MATERIAL)throw new IOException("sync_material_size");
+        byte[] previous=loadLocked(context,profile,purpose);
+        if(previous!=null){
+            try{if(!MessageDigest.isEqual(previous,bytes))throw new IOException("sync_material_exists");return false;}
+            finally{Arrays.fill(previous,(byte)0);}
         }
+        saveLocked(context,profile,bytes,purpose);return true;
     }
     private static void saveLocked(Context context,UUID profile,byte[] material,Purpose purpose)throws IOException {
         if(material==null||material.length==0||material.length>MAX_MATERIAL)throw new IOException("sync_material_size");
@@ -130,6 +135,15 @@ final class SyncSecrets {
     }
     static void forgetConnection(Context context,UUID account)throws IOException {
         worker();synchronized(SyncSecrets.class){forgetLocked(context,account,Purpose.CONNECTION);}
+    }
+    static void createEnrollment(Context context,UUID account,byte[] bytes)throws IOException {
+        worker();synchronized(SyncSecrets.class){createLocked(context,account,bytes,Purpose.ENROLLMENT);}
+    }
+    static byte[] loadEnrollment(Context context,UUID account)throws IOException {
+        worker();synchronized(SyncSecrets.class){return loadLocked(context,account,Purpose.ENROLLMENT);}
+    }
+    static void forgetEnrollment(Context context,UUID account)throws IOException {
+        worker();synchronized(SyncSecrets.class){forgetLocked(context,account,Purpose.ENROLLMENT);}
     }
     /** Only an explicit forget/reset action may call this. Material is separate from connection credentials. */
     static void forget(Context context,UUID profile)throws IOException {

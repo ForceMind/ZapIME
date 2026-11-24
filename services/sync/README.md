@@ -16,6 +16,8 @@ A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-su
 
 ### 设备登记协议
 
+账号查询同时返回 `subject_fingerprint`，客户端据此将待领取凭据绑定到经过服务核实的主体。SHA-256 输入依次为 `zapime-account-login-v1`、issuer、subject、受众和账号 UUID，各字段先写四字节无符号大端 UTF-8 长度，再写字段字节。响应只返回小写十六进制摘要。
+
 | 接口 | 授权 | 请求和结果 |
 | --- | --- | --- |
 | `POST /v1/device-enrollment` | 绑定已有账号的短时 OIDC 访问令牌 | 提交 `enrollment_id`、`account_id`、`name`、`deadline`（Unix 秒）、`public_key`、`token_sha256`、`signature`，返回相同 ID、期限及完整十六进制 `fingerprint`。同一令牌 ID 只能登记同一完整请求。 |
