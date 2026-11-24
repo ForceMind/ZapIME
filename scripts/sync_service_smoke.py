@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import secrets
 import subprocess
+import sys
 import tempfile
 import uuid
 import urllib.error
@@ -101,8 +102,26 @@ def manual_client_roundtrip(api, owner, member, probe=None):
         "commands":len(reports), "stores":2, "server_revisions":2,
         "records_each":1, "pending_each":0, "private_temporary_files_removed":True}))
 
-def main():
+def oidc_restore_probe(stage, directory, owner=None):
+    program = ROOT / "scripts/fixtures/a3-oidc/service-restore.mjs"
+    result = subprocess.run(["node", str(program), stage, str(directory)],
+                            input=json.dumps(owner), stdout=subprocess.PIPE, text=True, check=True, timeout=90)
+    return json.loads(result.stdout) if result.stdout else None
+
+
+def exercise(oidc_directory):
+    oidc = oidc_restore_probe("prepare", oidc_directory)
+    jwks_target = "/a3-restore-jwks.json"
+    override = oidc_directory / "compose-oidc.json"
+    override.write_text(json.dumps({"services": {"sync": {
+        "environment": {"ZAPIME_OIDC_ISSUER": oidc["issuer"], "ZAPIME_OIDC_AUDIENCE": oidc["audience"],
+                        "ZAPIME_OIDC_CLIENT_ID": oidc["client_id"], "ZAPIME_OIDC_JWKS_FILE": jwks_target},
+        "volumes": [{"type": "bind", "source": str(oidc_directory / "jwks.json"), "target": jwks_target,
+                     "read_only": True, "bind": {"create_host_path": False}}],
+    }}}), encoding="utf-8")
     env = dict(os.environ, COMPOSE_PROJECT_NAME="zapime-ci-" + secrets.token_hex(6),
+               COMPOSE_FILE=os.pathsep.join((str(SERVICE / "compose.yml"), str(override))), COMPOSE_PATH_SEPARATOR=os.pathsep,
+               COMPOSE_DISABLE_ENV_FILE="1", ZAPIME_ENV_FILE="", ZAPIME_OBJECT_BACKEND="postgres",
                POSTGRES_PASSWORD=secrets.token_hex(32))
     def command(args, capture=False):
         result = subprocess.run(args, cwd=SERVICE, env=env, check=True,
@@ -159,6 +178,9 @@ def main():
             stored = compose("exec", "-T", "db", "psql", "-U", "zapime", "-d", "zapime", "-Atc",
                              "SELECT change::text FROM zapime_records", capture=True)
             assert "永久收藏恢复探针" not in stored and owner["token"] not in stored
+            compose("exec", "-T", "sync", "/usr/local/bin/zapime-sync", "bind-oidc-subject",
+                    owner["account_id"], oidc["issuer"], oidc["subject"])
+            oidc_restore_probe("pending", oidc_directory, owner)
             backup = directory / "database.dump"
             command(["bash", "backup.sh", str(backup)])
             # 项目名随机且只包含本脚本的合成数据；保留备份后销毁原数据库卷。
@@ -170,6 +192,7 @@ def main():
                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             assert refusal.returncode != 0
             compose("up", "-d", "--wait", "sync")
+            identity_report = oidc_restore_probe("verify", oidc_directory, owner)
             status, page = api("GET", "/v1/changes?after=0", owner["token"])
             assert status == 200 and page["head"] == 1 and page["changes"] == [first]
             assert api("GET", "/v1/changes", member["token"])[0] == 401
@@ -186,6 +209,19 @@ def main():
         print("PASS: two-device ciphertext exchange, create-once key identity, revoke, empty-server descriptor/database restore and client key recovery")
     finally:
         compose("down", "--volumes")
+    print(json.dumps({**identity_report, "probe": "a3_oidc_database_restore", "compose_cleanup": True}), flush=True)
+
+
+def main():
+    repository = os.environ.get("GITHUB_REPOSITORY", "")
+    workflow = os.environ.get("GITHUB_WORKFLOW_REF", "")
+    if (sys.platform != "linux" or os.environ.get("GITHUB_ACTIONS") != "true" or not repository
+            or not workflow.startswith(f"{repository}/.github/workflows/sync-service.yml@")
+            or not all(os.environ.get(name, "").isascii() and os.environ[name].isdecimal()
+                       for name in ("GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT"))):
+        raise SystemExit("Requires the isolated sync-service GitHub Actions job")
+    with tempfile.TemporaryDirectory(prefix="zapime-oidc-restore-") as temporary:
+        exercise(Path(temporary))
 
 if __name__ == "__main__":
     main()
