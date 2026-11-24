@@ -158,7 +158,7 @@ fn main() {
         dir.is_absolute() && dir.is_dir(),
         "private fixture directory"
     );
-    if matches!(command, "init" | "init-automatic") {
+    if matches!(command, "init" | "init-automatic" | "init-foreground") {
         assert!(args.len() == 4, "init arguments");
         let profile = Uuid::parse_str(&args[3]).expect("fixture account");
         let material = Material::generate(profile).expect("fixture material");
@@ -177,19 +177,42 @@ fn main() {
             workspace::prepare(&path, profile, &material).expect("prepare real workspace");
         }
         let mut a = open(dir, "a");
-        let id = Uuid::new_v4();
-        private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
-        if command == "init-automatic" {
-            let device = a.device_id().expect("fixture device");
-            a.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
-                .expect("create shortcut in bound store");
-        } else {
-            edit(&mut a, id, FIRST);
+        if command != "init-foreground" {
+            let id = Uuid::new_v4();
+            private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
+            if command == "init-automatic" {
+                let device = a.device_id().expect("fixture device");
+                a.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
+                    .expect("create shortcut in bound store");
+            } else {
+                edit(&mut a, id, FIRST);
+            }
         }
         status(&mut a, &material, command);
         return;
     }
     let material = material(dir);
+    if command == "verify-foreground-receiver" {
+        let mut b = open(dir, "b");
+        let records = b.records(false).unwrap();
+        assert!(
+            records.len() == 1 && records[0].content == shortcut(),
+            "same Android shortcut"
+        );
+        assert!(b.pending_count().unwrap() == 0, "no echo upload");
+        assert!(
+            client::stage_next_automatic(&mut b, material.profile, &material)
+                .unwrap()
+                .is_none(),
+            "receiver queue is empty"
+        );
+        assert!(
+            client::pull_cursor(&mut b, material.profile, &material).unwrap() == 1,
+            "receiver cursor persisted"
+        );
+        status(&mut b, &material, command);
+        return;
+    }
     if command == "edit-b" {
         assert!(args.len() == 3, "edit arguments");
         let mut b = open(dir, "b");

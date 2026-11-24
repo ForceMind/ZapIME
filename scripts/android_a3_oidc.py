@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-only
 """Stock platform HTTPS/App Links on the authorized disposable A3 CI emulator."""
-from contextlib import contextmanager
+import base64
+from contextlib import ExitStack, contextmanager
 import hashlib
 import json
 import os
@@ -8,6 +9,7 @@ from pathlib import Path
 import re
 import secrets
 import shutil
+import ssl
 import subprocess
 import sys
 import tempfile
@@ -16,6 +18,8 @@ from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 from android_sync_https_smoke import Adb, Rejected, TemporaryCA, baseline, ci_identity, require
+from fixtures.sync_https_server import Fixture
+from test_sync_https_server import request as fixture_https
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -88,10 +92,13 @@ def wait_for(operation, predicate, seconds, reason):
 
 
 @contextmanager
-def issuer(work, leaf, key, fingerprint, go_proof, mode):
+def issuer(work, leaf, key, fingerprint, go_proof, mode, foreground=None):
     summary = work / "issuer-status.json"
     program = ROOT / "target/a3-android-oidc/issuer/android-issuer.mjs"
-    child = subprocess.Popen(["node", str(program), str(leaf), str(key), fingerprint, str(summary), str(go_proof), mode],
+    args = ["node", str(program), str(leaf), str(key), fingerprint, str(summary), str(go_proof), mode]
+    if foreground is not None:
+        args.append(str(foreground))
+    child = subprocess.Popen(args,
                              stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     def status():
         require(child.poll() is None, "oidc_provider_exited")
@@ -155,14 +162,15 @@ def bounds(node):
     return tuple(map(int, shape.groups())) if shape else None
 
 
-def click_text(adb, marker, label, scroll=False):
+def click_text(adb, marker, label, scroll=False, clickable=False):
     swipes = 0
 
     def locate():
         nonlocal swipes
         nodes = window_nodes(adb, marker)
         for node in nodes:
-            if label in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true":
+            if (label in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true"
+                    and (not clickable or node.get("clickable") == "true")):
                 area = bounds(node)
                 if area and area[2] > area[0] and area[3] > area[1]:
                     return area
@@ -190,7 +198,96 @@ def copy_hosts(adb, path, staged):
     require(read_remote(adb, HOSTS) == path.read_bytes(), "hosts_update_bytes_differ")
 
 
-def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
+@contextmanager
+def foreground_server(work, report, go_binary):
+    folder = work / "foreground"
+    folder.mkdir(mode=0o700)
+    example = ROOT / "target/debug/examples/manual_sync_fixture"
+
+    def probe(command, *args):
+        raw = subprocess.run([str(example), command, str(folder), *map(str, args)],
+                             text=True, capture_output=True, timeout=15, check=False)
+        require(raw.returncode == 0, "foreground_shared_client_failed")
+        rows = [json.loads(line) for line in raw.stdout.splitlines()]
+        require(rows and all(row["status"] == "PASS" for row in rows), "foreground_shared_report_invalid")
+        return rows
+
+    fixture = Fixture(folder, go_binary, os.environ.get("ZAPIME_TEST_DATABASE_URL", ""))
+    with fixture:
+        tls = ssl.create_default_context(cafile=str(fixture.ca_file))
+
+        def api(method, path, token=None, body=None, decode=True):
+            return fixture_https(fixture.origin, tls, method, path, token, body, decode=decode)
+
+        status, devices = api("GET", fixture.bootstrap_path)
+        require(status == 200 and set(devices) == {"owner", "member"}, "foreground_go_bootstrap_failed")
+        owner, member = devices["owner"], devices["member"]
+        require(owner["account_id"] == member["account_id"] and owner["device_id"] != member["device_id"],
+                "foreground_devices_not_independent")
+        require(probe("init-foreground", owner["account_id"])[-1]["pending"] == 0, "foreground_receiver_has_pending")
+        descriptor = json.loads((folder / "descriptor.json").read_bytes())
+        status, key = api("PUT", "/v1/key-descriptor", owner["token"], descriptor, decode=False)
+        require(status == 200 and json.loads(key)["descriptor"] == descriptor, "foreground_key_not_registered")
+        key_file = folder / "registered.json"
+        key_file.write_bytes(key)
+        config = folder / "bridge.json"
+        with os.fdopen(os.open(config, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), "w") as output:
+            json.dump({"port": fixture.loopback_backend_port, "bootstrap": {
+                "device": owner, "material": base64.b64encode((folder / "material.bin").read_bytes()).decode("ascii"),
+                "subject_fingerprint": hashlib.sha256(b"A3 synthetic foreground account").hexdigest(),
+            }}, output)
+
+        def verify_receiver():
+            status, page = api("GET", "/v1/changes?after=0", member["token"], decode=False)
+            page_file = folder / "receiver-page.json"
+            page_file.write_bytes(page)
+            decoded = json.loads(page)
+            require(status == 200 and decoded["head"] == decoded["next_cursor"] == 1 and len(decoded["changes"]) == 1,
+                    "foreground_real_server_revision_not_one")
+            results = probe("apply", "b", key_file, page_file)
+            require(results[0]["applied"] == 1 and results[0]["echoed"] == 0, "foreground_receiver_did_not_apply")
+            final = probe("verify-foreground-receiver")[-1]
+            require(final["records"] == 1 and final["pending"] == 0 and final["cursor"] == 1, "foreground_receiver_state")
+            report["independent_receiver"] = "PASS"
+
+        yield config, verify_receiver
+    summary = fixture.safe_summary()
+    require(summary["cleanup_completed"] and summary["service_revision"] == 1
+            and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
+    report["foreground_service_cleanup"] = True
+
+
+def foreground_round(report, adb, marker, status, verify_receiver):
+    def instrument(stage):
+        output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
+                         MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
+        require(f"INSTRUMENTATION_RESULT: {stage}=PASS" in output and "INSTRUMENTATION_CODE: -1" in output,
+                stage + "_failed")
+
+    instrument("foreground-seed")
+    require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_display")
+    adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
+    click_text(adb, marker, "账号与同步", scroll=True)
+    click_text(adb, marker, "加密同步")
+    require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_confirmation")
+    click_text(adb, marker, "开启加密同步", clickable=True)
+    report["foreground_trigger"] = "product_account_screen_confirmation"
+
+    def displayed_receipt():
+        require(not status()["failure"], "foreground_tls_handler_failed")
+        return any(node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
+                   and "服务器已确认本次写入，修订号 1" in node.get("text", "") for node in window_nodes(adb, marker))
+
+    wait_for(displayed_receipt, bool, 35, "foreground_ui_receipt_missing")
+    report["foreground_ui_receipt"] = "PASS"
+    require(status().get("uploads") == 1 and status()["dataRequests"] >= 2, "foreground_request_counts_invalid")
+    report["foreground_uploads"] = 1
+    instrument("foreground-verify")
+    report["foreground_sqlite_ack"] = "PASS"
+    verify_receiver()
+
+
+def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None):
     package = MAIN_PACKAGE if main_apk else PACKAGE
     guard(adb, identity)
     adb.run("root")
@@ -218,7 +315,13 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
     leaf, leaf_key, cert = make_certificates(work)
     ca = TemporaryCA(adb, identity, cert, initial, report["certificate"], guard=guard)
     submitted, main_submitted, mapped, reverse_added = False, False, False, False
-    with issuer(work, leaf, leaf_key, fingerprint, go_proof, "main" if main_apk else "probe") as (port, status):
+    with ExitStack() as resources:
+        if sync_binary:
+            bridge, verify_receiver = resources.enter_context(foreground_server(work, report, sync_binary))
+        else:
+            bridge = verify_receiver = None
+        mode = "foreground" if bridge else "main" if main_apk else "probe"
+        port, status = resources.enter_context(issuer(work, leaf, leaf_key, fingerprint, go_proof, mode, bridge))
         try:
             guard(adb, identity, root=True)
             adb.run("remount")
@@ -239,6 +342,9 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
             wait_for(lambda: system_links_confirmed(adb, package) and status()["assetlinks"] > 0, bool,
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
+            if bridge:
+                foreground_round(report, adb, marker, status, verify_receiver)
+                return
             if main_apk:
                 consent = adb.run("shell", "am", "instrument", "-w", "-e", "stage", "consent",
                                   MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=35).stdout.splitlines()
@@ -349,30 +455,34 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
 
 
 def main():
-    main_mode = len(sys.argv) == 5
-    output = ROOT / "target/a3-android-oidc" / ("main-report.json" if main_mode else "report.json")
-    scope = "test-only APK built from main-app Java; real OIDC and PostgreSQL" if main_mode else "disposable API28 test APK and real isolated OIDC"
+    foreground = len(sys.argv) == 6
+    main_mode = len(sys.argv) in (5, 6)
+    output = ROOT / "target/a3-android-oidc" / ("foreground-report.json" if foreground else "main-report.json" if main_mode else "report.json")
+    scope = "API28 native test-only APK with seeded sign-in; real main-app foreground HTTPS and independent shared client" if foreground else "test-only APK built from main-app Java; real OIDC and PostgreSQL" if main_mode else "disposable API28 test APK and real isolated OIDC"
     report = {"status": "FAIL", "scope": scope,
               "source_sha": os.environ.get("GITHUB_SHA", ""), "tls_before": "NOT RUN", "tls_after": "NOT RUN",
               "verified_domain": "NOT RUN", "browser_launched": "NOT RUN", "verified_browser_callback": "NOT RUN",
               "oidc_go_token_proof": "NOT RUN", "login_data_requests": None, "device_enrollment": "NOT RUN",
               "certificate": {}, "cleanup": {}}
     try:
-        require(len(sys.argv) in (4, 5) and os.name == "posix", "requires_a3_ci_arguments")
+        require(len(sys.argv) in (4, 5, 6) and os.name == "posix", "requires_a3_ci_arguments")
         adb = Adb([str(shutil.which("adb")), "-s", "emulator-5554"])
         identity = ci_identity(adb.command)
         guard(adb, identity)
         apk, apksigner, go_proof = [Path(value).resolve(strict=True) for value in sys.argv[1:4]]
         main_apk = Path(sys.argv[4]).resolve(strict=True) if main_mode else None
+        sync_binary = Path(sys.argv[5]).resolve(strict=True) if foreground else None
         report["test_apk_signer"] = obtain_fingerprint(apksigner, main_apk or apk)
         report["test_apk_sha256"] = hashlib.sha256((main_apk or apk).read_bytes()).hexdigest()
-        if main_mode:
+        if foreground:
+            report["foreground_ui_receipt"] = report["foreground_sqlite_ack"] = report["independent_receiver"] = "NOT RUN"
+        elif main_mode:
             report["main_account_lookup"] = report["main_signed_in_only"] = "NOT RUN"
             report["android_enrollment_vault"] = "NOT RUN"
             report["sync_consent_store"] = "NOT RUN"
             report["main_persisted_sign_in_off"] = "NOT RUN"
         with tempfile.TemporaryDirectory(prefix="a3-private-") as temporary:
-            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk)
+            run(report, adb, identity, apk, go_proof, report["test_apk_signer"], Path(temporary), main_apk, sync_binary)
         require(all(report["cleanup"].values()) and len(report["cleanup"]) == 4 and report["tls_after"] == "PASS",
                 "fixture_cleanup_or_after_tls_failed")
         report["status"] = "PASS"

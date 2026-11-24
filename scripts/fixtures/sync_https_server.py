@@ -318,6 +318,13 @@ class Fixture:
         status, data, _ = self._backend(method, path, json.dumps(body).encode() if body is not None else None, headers)
         return status, json.loads(data)
 
+    @property
+    def loopback_backend_port(self):
+        """The current Go process behind the disposable fixture's TLS proxy."""
+        if self._closed or self._process is None or self._process.poll() is not None:
+            raise RuntimeError("fixture_backend_not_running")
+        return self._backend_port
+
     def __enter__(self):
         with self._lifecycle_lock:
             if self._temporary is not None or self._closed:

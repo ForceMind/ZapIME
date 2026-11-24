@@ -28,17 +28,30 @@ import org.json.JSONObject;
 /** Runs with the disposable A3 fixture app on the instrumentation worker. */
 public final class EnrollmentVaultProbe extends Instrumentation {
     private boolean consentOnly;
+    private String foreground;
 
     @Override public void onCreate(Bundle arguments) {
         super.onCreate(arguments);
         consentOnly = arguments != null && "consent".equals(arguments.getString("stage"));
+        String stage = arguments == null ? null : arguments.getString("stage");
+        foreground = "foreground-seed".equals(stage) || "foreground-verify".equals(stage) ? stage : null;
         start();
     }
 
     @Override public void onStart() {
         Bundle result = new Bundle();
         try {
-            if (consentOnly) {
+            if (foreground != null) {
+                if ("foreground-seed".equals(foreground)) {
+                    AccountLoginProtocol.Config config = AccountLoginDeployment.config();
+                    byte[] input = fixture(config, "foreground", false);
+                    try { ForegroundSyncProbe.seed(getTargetContext(), config, input); }
+                    finally { Arrays.fill(input, (byte) 0); }
+                } else {
+                    ForegroundSyncProbe.verify(getTargetContext(), true);
+                }
+                result.putString(foreground, "PASS");
+            } else if (consentOnly) {
                 ConsentStoreProbe.run(getTargetContext());
                 result.putString("sync_consent_store", "PASS");
             } else {
@@ -48,8 +61,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                 result.putString("enrollment_http", "PASS");
             }
             finish(Activity.RESULT_OK, result);
-        } catch (Exception | AssertionError failed) {
-            String field = consentOnly ? "sync_consent_store"
+        } catch (Exception | AssertionError | LinkageError failed) {
+            String field = foreground != null ? foreground : consentOnly ? "sync_consent_store"
                     : result.containsKey("enrollment_vault") ? "enrollment_http" : "enrollment_vault";
             result.putString(field, "FAIL");
             result.putString("failure_type", failed.getClass().getSimpleName());

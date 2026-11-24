@@ -9,8 +9,10 @@ import { createInterface } from 'node:readline';
 import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
-const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe'] = process.argv.slice(2);
-assert.ok(mode === 'probe' || mode === 'main');
+const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe', foregroundFile] = process.argv.slice(2);
+assert.ok(['probe', 'main', 'foreground'].includes(mode));
+const foreground = mode === 'foreground' ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
+if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
 const issuer = 'https://a3-oidc.example.test';
 const fallback = 'https://return-a3.example.test';
 const resource = issuer + '/a3-device-enrollment';
@@ -23,6 +25,7 @@ const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0
   callbackOpenedInBrowser: 0, unexpected: 0, dataRequests: 0, failure: false, enrollmentBegins: 0,
   enrollmentClaims: 0, enrollmentSessions: 0, droppedClaimReplies: 0, enrollmentFinished: 0 };
 let enrollmentSeed, backend;
+let foregroundSeedServed = false;
 
 function record() {
   writeFileSync(summaryPath + '.tmp', JSON.stringify({ port: server.address()?.port ?? 0, ...totals }), { mode: 0o600 });
@@ -34,7 +37,7 @@ function reply(res, status, payload, contentType = 'text/plain; charset=utf-8') 
   res.end(payload);
 }
 
-async function read(req, limit) {
+async function read(req, limit, encoding = 'utf8') {
   let size = 0;
   const chunks = [];
   for await (const part of req) {
@@ -42,7 +45,8 @@ async function read(req, limit) {
     if (size > limit) throw new Error('bounded_fixture_input');
     chunks.push(part);
   }
-  return Buffer.concat(chunks).toString('utf8');
+  const body = Buffer.concat(chunks);
+  return encoding === null ? body : body.toString(encoding);
 }
 
 async function enrollmentBackend() {
@@ -158,6 +162,37 @@ async function interact(req, res, path) {
 async function handle(req, res) {
   const url = new URL(req.url, issuer);
   const host = req.headers.host;
+  if (foreground && host === 'a3-oidc.example.test') {
+    if (req.method === 'GET' && url.pathname === '/fixture-enrollment/foreground' && !url.search) {
+      assert.equal(foregroundSeedServed, false);
+      foregroundSeedServed = true;
+      reply(res, 200, JSON.stringify(foreground.bootstrap), 'application/json');
+      delete foreground.bootstrap;
+      return;
+    }
+    const method = req.method;
+    const plainRead = method === 'GET' && !url.search && ['/v1/session', '/v1/key-descriptor'].includes(url.pathname);
+    const dataRead = method === 'GET' && url.pathname === '/v1/changes' && /^\?after=\d+&limit=\d+$/.test(url.search);
+    const dataWrite = method === 'POST' && url.pathname === '/v1/changes' && !url.search;
+    if (plainRead || dataRead || dataWrite) {
+      const authorization = req.headers.authorization;
+      assert.ok(typeof authorization === 'string' && authorization.length <= 512 && authorization.startsWith('Bearer '));
+      const upstream = await fetch('http://127.0.0.1:' + foreground.port + url.pathname + url.search, {
+        method, headers: { authorization, 'content-type': 'application/json' },
+        body: dataWrite ? await read(req, 8192, null) : undefined, redirect: 'error', signal: AbortSignal.timeout(5000),
+      });
+      const payload = await upstream.text();
+      assert.ok(Buffer.byteLength(payload) <= 16_384);
+      if (dataRead || dataWrite) totals.dataRequests++;
+      if (dataWrite) {
+        totals.uploads = (totals.uploads ?? 0) + 1;
+        assert.ok(upstream.status === 200 && JSON.parse(payload).revision === 1);
+      }
+      record();
+      reply(res, upstream.status, payload, 'application/json');
+      return;
+    }
+  }
   if (url.pathname.startsWith('/v1/changes')) {
     totals.dataRequests++;
     record();
@@ -169,7 +204,7 @@ async function handle(req, res) {
       totals.assetlinks++;
       record();
       reply(res, 200, JSON.stringify([{ relation: ['delegate_permission/common.handle_all_urls'], target: {
-        namespace: 'android_app', package_name: mode === 'main' ? 'org.zapime.android' : 'org.zapime.android.a3loginprobe',
+        namespace: 'android_app', package_name: mode === 'probe' ? 'org.zapime.android.a3loginprobe' : 'org.zapime.android',
         sha256_cert_fingerprints: [publicFingerprint],
       } }]), 'application/json');
     } else if (url.pathname === '/callback') {

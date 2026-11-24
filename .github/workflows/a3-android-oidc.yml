@@ -30,7 +30,7 @@ jobs:
   isolated-oidc-api28:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    timeout-minutes: 21
+    timeout-minutes: 28
     services:
       postgres:
         image: postgres:16
@@ -58,6 +58,8 @@ jobs:
           go-version-file: services/sync/go.mod
           cache-dependency-path: services/sync/go.sum
       - uses: dtolnay/rust-toolchain@1.97.1
+        with:
+          targets: x86_64-linux-android
       - name: Verify shared automatic sync against real HTTPS and PostgreSQL
         run: |
           set -euo pipefail
@@ -72,7 +74,24 @@ jobs:
         with:
           packages: platform-tools
       - name: Install the pinned Android SDK and build tools
-        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358'
+      - name: Build native core and pinned dictionary for the foreground probe
+        run: |
+          set -euo pipefail
+          ndk="$ANDROID_HOME/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          export PATH="$ndk:$PATH"
+          export CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER="$ndk/x86_64-linux-android28-clang"
+          export CC_x86_64_linux_android="$CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER"
+          python3 scripts/verify_upstream.py
+          python3 scripts/fetch_resources.py
+          cargo build --locked --release -p zapime-core --target x86_64-linux-android
+          assets="$PWD/target/a3-android-oidc/main-source/assets"
+          mkdir -p "$assets/dictionary" "$assets/licenses"
+          cp target/resources/* "$assets/dictionary/"
+          cp LICENSE "$assets/licenses/GPL-3.0.txt"
+          cp third_party/licenses/* "$assets/licenses/"
+          cp third_party/NOTICE.txt "$assets/NOTICE.txt"
+          python3 scripts/collect_rust_notices.py x86_64-linux-android "$assets/rust-licenses"
       - name: Build the opt-in main app source for the isolated login test
         run: |
           set -euo pipefail
@@ -101,13 +120,16 @@ jobs:
           PY
           "$tools/aapt2" compile --dir platforms/android/res -o "$output/resources.zip"
           "$tools/aapt2" link -o "$output/source-only.apk" --manifest "$output/AndroidManifest.xml" -I "$platform" \
-            "$output/resources.zip" --java "$output/generated"
+            "$output/resources.zip" -A "$output/assets" --java "$output/generated"
           find platforms/android/java "$output/generated" -name '*.java' > "$output/java-sources.txt"
-          printf '%s\n' platforms/android/oidc-probe/java/{EnrollmentVaultProbe,ConsentStoreProbe}.java >> "$output/java-sources.txt"
+          printf '%s\n' platforms/android/oidc-probe/java/{EnrollmentVaultProbe,ConsentStoreProbe,ForegroundSyncProbe}.java >> "$output/java-sources.txt"
           javac -source 8 -target 8 -encoding UTF-8 -classpath "$platform" -d "$output/classes" @"$output/java-sources.txt"
           jar cf "$output/classes.jar" -C "$output/classes" .
           "$tools/d8" --lib "$platform" --min-api 28 --output "$output/dex" "$output/classes.jar"
           zip -q -j "$output/source-only.apk" "$output/dex/classes.dex"
+          mkdir -p "$output/lib/x86_64"
+          cp target/x86_64-linux-android/release/libzapime_core.so "$output/lib/x86_64/"
+          (cd "$output" && zip -q -0 source-only.apk lib/x86_64/libzapime_core.so)
           "$tools/zipalign" -f 4 "$output/source-only.apk" "$output/aligned.apk"
           bash scripts/test_android_sync_http.sh
           bash scripts/test_android_sync_round.sh
@@ -161,6 +183,7 @@ jobs:
             set -e
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-auth.test
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk
+            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -168,4 +191,5 @@ jobs:
           path: |
             target/a3-android-oidc/report.json
             target/a3-android-oidc/main-report.json
+            target/a3-android-oidc/foreground-report.json
           if-no-files-found: error
