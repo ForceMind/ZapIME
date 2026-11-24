@@ -224,8 +224,8 @@ def foreground_server(work, report, go_binary):
     with fixture:
         tls = ssl.create_default_context(cafile=str(fixture.ca_file))
 
-        def api(method, path, token=None, body=None, decode=True):
-            return fixture_https(fixture.origin, tls, method, path, token, body, decode=decode)
+        def api(method, path, token=None, body=None, raw=None, decode=True):
+            return fixture_https(fixture.origin, tls, method, path, token, body, raw, decode=decode)
 
         status, devices = api("GET", fixture.bootstrap_path)
         require(status == 200 and set(devices) == {"owner", "member"}, "foreground_go_bootstrap_failed")
@@ -261,14 +261,28 @@ def foreground_server(work, report, go_binary):
             require(final["records"] == final["cursor"] == revision and final["pending"] == 0, "foreground_receiver_state")
             report["independent_receiver" if revision == 1 else "recovery_receiver"] = "PASS"
 
-        yield config, verify_receiver
+        def publish_member_edit():
+            require(probe("edit-foreground-member")[-1]["pending"] == 1, "conflict_member_edit_missing")
+            packet = folder / "member-conflict.json"
+            require(probe("stage-automatic", "b", key_file, packet)[-1]["pending"] == 1, "conflict_member_stage_failed")
+            raw = packet.read_bytes()
+            require(json.loads(raw)["base_revision"] == 2, "conflict_member_used_wrong_base")
+            status, receipt = api("POST", "/v1/changes", member["token"], raw=raw, decode=False)
+            require(status == 200 and json.loads(receipt)["revision"] == 3, "conflict_member_server_receipt_missing")
+            receipt_file = folder / "member-conflict-receipt.json"
+            receipt_file.write_bytes(receipt)
+            results = probe("ack-automatic", "b", key_file, member["device_id"], packet, receipt_file)
+            require(results[0]["revision"] == 3 and results[-1]["pending"] == 0
+                    and results[-1]["cursor"] == 2, "conflict_member_ack_not_persisted")
+
+        yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == 2
+    require(summary["cleanup_completed"] and summary["service_revision"] == 3
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
 
-def foreground_round(report, adb, marker, status, verify_receiver, without_tls):
+def foreground_round(report, adb, marker, status, verify_receiver, publish_member_edit, without_tls):
     def instrument(stage):
         output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
                          MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
@@ -357,10 +371,24 @@ def foreground_round(report, adb, marker, status, verify_receiver, without_tls):
     report["foreground_route_recovery"] = "PASS"
     report["foreground_uploads"] = 2
 
-    report["stage"] = "sign_out_and_reopen_without_transfer"
     open_account()
     wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_recovery_reopen_round_missing")
     require(status()["uploads"] == 2, "foreground_recovery_reopen_replayed_upload")
+
+    report["stage"] = "foreground_concurrent_record_edits"
+    instrument("foreground-queue-conflict")
+    publish_member_edit()
+    open_account()
+    conflict_message = "远端资料未通过核对，请检查密钥或冲突记录。本机资料已保留"
+    wait_for(lambda: shows(conflict_message), bool, 35, "foreground_conflict_message_missing")
+    require(status()["uploads"] == 2 and not status()["failure"], "foreground_conflict_uploaded_local_version")
+    instrument("foreground-conflict-pending")
+    verify_receiver(3, read_only=True)
+    report["foreground_conflict_preserved"] = "PASS"
+
+    report["stage"] = "sign_out_and_reopen_without_transfer"
+    open_account()
+    wait_for(lambda: shows(conflict_message), bool, 35, "foreground_conflict_not_repeated_after_reopen")
     click_text(adb, marker, "退出登录", scroll=True)
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_missing")
     instrument("foreground-signed-out")
@@ -402,9 +430,9 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
     submitted, main_submitted, mapped, reverse_added = False, False, False, False
     with ExitStack() as resources:
         if sync_binary:
-            bridge, verify_receiver = resources.enter_context(foreground_server(work, report, sync_binary))
+            bridge, verify_receiver, publish_member_edit = resources.enter_context(foreground_server(work, report, sync_binary))
         else:
-            bridge = verify_receiver = None
+            bridge = verify_receiver = publish_member_edit = None
         mode = "foreground" if bridge else "main" if main_apk else "probe"
         port, status = resources.enter_context(issuer(work, leaf, leaf_key, fingerprint, go_proof, mode, bridge))
         try:
@@ -446,7 +474,7 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
                         require(adb.run("reverse", "--list").stdout.splitlines() == current, "recovery_route_not_restored")
 
                 report["stage"] = "foreground_native_seed_and_round"
-                foreground_round(report, adb, marker, status, verify_receiver, without_tls)
+                foreground_round(report, adb, marker, status, verify_receiver, publish_member_edit, without_tls)
                 return
             if main_apk:
                 consent = adb.run("shell", "am", "instrument", "-w", "-e", "stage", "consent",

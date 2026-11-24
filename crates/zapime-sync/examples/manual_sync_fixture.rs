@@ -19,6 +19,7 @@ const SECOND: &str = "synthetic manual client edited on B";
 const SHORTCUT_CODE: &str = "a3sync";
 const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
 const RECOVERY_TEXT: &str = "synthetic A3 recovered shortcut";
+const CONFLICT_TEXT: &str = "synthetic A3 independent member edit";
 
 fn shortcut() -> Content {
     Content::Snippet {
@@ -235,6 +236,32 @@ fn main() {
         status(&mut b, &material, command);
         return;
     }
+    if command == "edit-foreground-member" {
+        let mut b = open(dir, "b");
+        let id = Uuid::parse_str("a4208deb-74bb-4b53-984a-07faa0832711").unwrap();
+        let row = b.get(id).unwrap().expect("receiver has recovered shortcut");
+        assert!(
+            matches!(&row.content, Content::Snippet { code, text, .. }
+            if code == "a3back" && text == RECOVERY_TEXT),
+            "expected receiver base"
+        );
+        let device = b.device_id().unwrap();
+        b.edit(
+            Uuid::new_v4(),
+            id,
+            row.revision,
+            device,
+            Content::Snippet {
+                code: "a3back".into(),
+                text: CONFLICT_TEXT.into(),
+                tags: Vec::new(),
+            },
+            false,
+        )
+        .expect("member edit from authenticated source");
+        status(&mut b, &material, command);
+        return;
+    }
     if matches!(command, "verify" | "verify-automatic") {
         assert!(args.len() == 3, "verify arguments");
         let mut a = open(dir, "a");
@@ -308,7 +335,7 @@ fn main() {
                 client::frozen_wire(&mut store, material.profile, &material, &operation).unwrap();
             let packet = String::from_utf8_lossy(&wire);
             assert!(
-                ![FIRST, SECOND, SHORTCUT_TEXT]
+                ![FIRST, SECOND, SHORTCUT_TEXT, RECOVERY_TEXT, CONFLICT_TEXT]
                     .iter()
                     .any(|text| packet.contains(text)),
                 "ciphertext only"

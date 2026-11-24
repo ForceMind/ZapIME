@@ -19,6 +19,8 @@ final class ForegroundSyncProbe {
     private static final UUID RECORD = UUID.fromString("000d046e-1a0e-42a0-9ce8-fa42a626d0ce");
     private static final UUID RECOVERY_OPERATION = UUID.fromString("cec2bc8b-b259-41a8-bb70-7e92a5d96042");
     private static final UUID RECOVERY_RECORD = UUID.fromString("a4208deb-74bb-4b53-984a-07faa0832711");
+    private static final UUID CONFLICT_OPERATION = UUID.fromString("3bc90113-5fe3-4b79-8efc-705ab851d55d");
+    private static final String LOCAL_EDIT = "synthetic A3 conflicting device edit";
 
     static void seed(Context context, AccountLoginProtocol.Config config, byte[] seed) throws Exception {
         File root = new File(context.getFilesDir(), "zapime");
@@ -43,7 +45,7 @@ final class ForegroundSyncProbe {
                             input.getString("subject_fingerprint"));
                     SyncConsentStore.State signIn = SyncConsentStore.beginLogin(context, cancel);
                     require(SyncConsentStore.completeLogin(context, signIn.generation, scope, connection.device, cancel).expectedKey == null);
-                    edit(core, RECORD, OPERATION, "a3sync", "synthetic A3 automatic shortcut");
+                    edit(core, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
                 } finally {
                     NativeCore.close(core);
                 }
@@ -67,7 +69,7 @@ final class ForegroundSyncProbe {
         long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
         require(core != 0);
         try {
-            edit(core, RECOVERY_RECORD, RECOVERY_OPERATION, "a3back", "synthetic A3 recovered shortcut");
+            edit(core, RECOVERY_RECORD, RECOVERY_OPERATION, 0, "a3back", "synthetic A3 recovered shortcut");
         } finally {
             NativeCore.close(core);
         }
@@ -79,11 +81,28 @@ final class ForegroundSyncProbe {
         checkRecovery(context, acknowledged);
     }
 
-    private static void edit(long core, UUID record, UUID operation, String code, String text) throws Exception {
+    static void queueConflict(Context context) throws Exception {
+        verifyRecovery(context, true);
+        long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+        require(core != 0);
+        try {
+            edit(core, RECOVERY_RECORD, CONFLICT_OPERATION, 1, "a3back", LOCAL_EDIT);
+        } finally {
+            NativeCore.close(core);
+        }
+        checkConflict(context, false);
+    }
+
+    static void verifyConflict(Context context) throws Exception {
+        verifyRecovery(context, true);
+        checkConflict(context, true);
+    }
+
+    private static void edit(long core, UUID record, UUID operation, long expected, String code, String text) throws Exception {
         JSONObject content = new JSONObject().put("type", "snippet").put("code", code)
                 .put("text", text).put("tags", new JSONArray());
         JSONObject command = new JSONObject().put("op", "personal_edit").put("id", record.toString())
-                .put("operation_id", operation.toString()).put("expected_revision", 0).put("content", content);
+                .put("operation_id", operation.toString()).put("expected_revision", expected).put("content", content);
         require(!new JSONObject(NativeCore.request(core, command.toString())).has("error"));
     }
 
@@ -98,6 +117,25 @@ final class ForegroundSyncProbe {
         }
         checkReceipt(context, RECORD, OPERATION, 1);
         checkRecovery(context, true);
+        checkConflict(context, true);
+    }
+
+    private static void checkConflict(Context context, boolean retained) throws Exception {
+        File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
+        try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
+                Cursor local = db.rawQuery("SELECT r.revision,r.body,o.pending,u.operation_id FROM records r "
+                        + "JOIN operations o ON o.id=? LEFT JOIN sync_uploads u ON u.operation_id=o.id WHERE r.id=?",
+                        new String[]{CONFLICT_OPERATION.toString(), RECOVERY_RECORD.toString()});
+                Cursor failed = db.rawQuery("SELECT after_cursor,reason,wire FROM sync_retained_pulls", null)) {
+            require(local.moveToFirst() && local.getInt(0) == 2 && local.getInt(2) == 1 && local.isNull(3));
+            require(LOCAL_EDIT.equals(new JSONObject(local.getString(1)).getJSONObject("content").getString("text")));
+            if (retained) {
+                require(failed.moveToFirst() && failed.getInt(0) == 2 && "\"local_conflict\"".equals(failed.getString(1))
+                        && new JSONObject(failed.getString(2)).getInt("head") == 3 && !failed.moveToNext());
+            } else {
+                require(!failed.moveToFirst());
+            }
+        }
     }
 
     private static void checkRecovery(Context context, boolean acknowledged) throws Exception {

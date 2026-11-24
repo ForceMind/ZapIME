@@ -35,7 +35,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         consentOnly = arguments != null && "consent".equals(arguments.getString("stage"));
         String stage = arguments == null ? null : arguments.getString("stage");
         foreground = Arrays.asList("foreground-seed", "foreground-verify", "foreground-signed-out",
-                "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack")
+                "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack",
+                "foreground-queue-conflict", "foreground-conflict-pending")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -57,6 +58,10 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     ForegroundSyncProbe.verifyRecovery(getTargetContext(), false);
                 } else if ("foreground-recovery-ack".equals(foreground)) {
                     ForegroundSyncProbe.verifyRecovery(getTargetContext(), true);
+                } else if ("foreground-queue-conflict".equals(foreground)) {
+                    ForegroundSyncProbe.queueConflict(getTargetContext());
+                } else if ("foreground-conflict-pending".equals(foreground)) {
+                    ForegroundSyncProbe.verifyConflict(getTargetContext());
                 } else {
                     ForegroundSyncProbe.signedOut(getTargetContext());
                 }
