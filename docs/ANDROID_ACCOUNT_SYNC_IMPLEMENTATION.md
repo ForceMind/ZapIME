@@ -110,6 +110,8 @@ Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公
 
 **2026-11-24 · API28 前台短语闭环通过。** `9707934` 实际检出 `d69dd92be49ebda503ec61751aaf272ca96e0429`。独立资料轮以预置合成登录、真实 HTTPS 设备核对和 Keystore 准备开始。实际账号页先点开关，再点「开启加密同步」。开关确认前资料请求为零。页面读到修订 1，重新打开 SQLite 核对同一操作的持久 ACK 和同一记录的服务修订均为 1。实际 Go/PostgreSQL 只有一次资料上传，另一个授权客户端使用独立 SQLite 解密得到同一条短语，待发为零。重启原 App 自动发起检查，POST 总数仍为 1。退出后重启显示「仅登录」，资料请求计数不变，密钥、设备连接和原 ACK 仍可读。独立的真实 OIDC 回跳与设备领用轮都通过，登录资料请求为零。三轮 TLS、CA、hosts、reverse、测试包与相关服务清理通过。测试 APK SHA-256 `9efdf0b4d618a411a9cbd39a9177b0db94937345aadfe221f59ab9707bd20328`。[隔离 Android 与主机接收作业](https://github.com/ForceMind/ZapIME/actions/runs/45476973988/job/138739655538)
 
+之后只有文档改动的 `722706c` 复验同一隔离门禁，结果通过。[隔离复验](https://github.com/ForceMind/ZapIME/actions/runs/45478809804/job/138746100820)
+
 **存量首次发布的当前条件。** 本机新建记录与待发操作在同一事务生成。认证下载保留服务器修订；只保存记录的备份没有账号和密钥来源证明。现有产品写入路径中还没有一份可视为原账号资料、同时没有本机操作和服务器修订的可核实样本。A2 的显式选择验收不能代替该条件。保留原资料与人工处理入口，可信恢复来源单独评估后才能实现此正向分支。
 
 - 实现前回读 A2 状态。用合入后的基线或经仓库审查的明确依赖纳入其验收，确认第 3 步的提交确实包含 A2 的范围与证据。第 1、2 步可用当前基线先完成。复用 `SyncHttp`、`SyncRound`、`NativeCore` 和 `zapime-sync::client`。终止证明留在原生执行范围，从已认证的原始响应得到后立即用于预检与排队。
@@ -122,7 +124,7 @@ Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公
 
 账号页按实际阶段反馈网络等待、资料检查、发送和本轮完成时间。原生明确返回来源未知时显示需核对，拒绝或版本冲突各自保留本机资料和队列。退出登录及重新开始登录先暂停现场传输，再更换持久授权代次。退出保留本机资料、恢复密钥、设备连接及已冻结请求；再次登录默认关闭。本轮同时检查断开 Activity 进程后获得持久同意并重开一轮、A 的已确认操作不重复 POST、退出重新启动后网络资料请求维持不变。实际断网与恢复仍单列。
 
-本机固定工具链全工作区测试、格式与严格 Clippy 已通过。`9707934` 同提交的独立 Go 服务 PostgreSQL 作业通过。此前 `a1f238e` 的 Android 原生门禁已整体通过。后续 `dffef30` 的普通 API28 输入作业在模拟器 `adb root` 失败处终止，返回 `device offline`，该作业未完成输入门禁。独立 API28 登录与前台作业的通过证据如上。[Go PostgreSQL](https://github.com/ForceMind/ZapIME/actions/runs/45476973604/job/138739979111) · [原生基线](https://github.com/ForceMind/ZapIME/actions/runs/45473239598) · [原生 API28 环境失败](https://github.com/ForceMind/ZapIME/actions/runs/45475529366/job/138739620211)
+本机固定工具链全工作区测试、格式与严格 Clippy 已通过。`9707934` 同提交的独立 Go 服务 PostgreSQL 作业通过。此前 `a1f238e` 的 Android 原生门禁已整体通过。`dffef30` 的 API35/36 普通原生输入和本机回归已通过；其普通 API28 输入和 API36 VoiceKey 单项在模拟器 `adb root` 失败处终止，保留环境失败结果。`9707934` 在该提交基础上只改前台测试控件定位和文档。API35/36 实际 OIDC 登录和前台真实 HTTPS 仍单列。[Go PostgreSQL](https://github.com/ForceMind/ZapIME/actions/runs/45476973604/job/138739979111) · [原生基线](https://github.com/ForceMind/ZapIME/actions/runs/45473239598) · [按 API 的原生结果](https://github.com/ForceMind/ZapIME/actions/runs/45475529366)
 
 ### 4. 验证顺序与接手
 
