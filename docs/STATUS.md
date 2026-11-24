@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [登录与自动加密同步效果图](design/ANDROID_ACCOUNT_SYNC.md)已完成静态核对，待用户确认。当前 Android 可用能力为设备连接、密钥准备与显式手动同步。
+**2026-11-24 A3：** [登录与自动加密同步线稿及交互](design/ANDROID_ACCOUNT_SYNC.md)已完成静态核对，待用户确认。当前 Android 可用能力为设备连接、密钥准备与显式手动同步。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
