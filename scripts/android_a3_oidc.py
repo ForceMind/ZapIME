@@ -288,6 +288,33 @@ def foreground_round(report, adb, marker, status, verify_receiver, publish_membe
                          MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
         require(f"INSTRUMENTATION_RESULT: {stage}=PASS" in output and "INSTRUMENTATION_CODE: -1" in output,
                 stage + "_failed")
+        return output
+
+    def network_capability():
+        report["stage"] = "read_default_network_capability"
+        values = {}
+        kinds = "wifi|cellular|ethernet|vpn|other"
+        patterns = {"network_callback": r"matches_default|no_event|changed_during_read",
+                    "network_default": rf"none|unknown|(?:{kinds})(?:,(?:{kinds}))*",
+                    "network_available": rf"none|(?:{kinds})(?:,(?:{kinds}))*",
+                    "network_validated": r"true|false"}
+        for line in instrument("foreground-network-capability"):
+            match = re.fullmatch(r"INSTRUMENTATION_RESULT: (network_[a-z]+)=(.*)", line)
+            if match:
+                key, value = match.groups()
+                require(key in patterns and key not in values and re.fullmatch(patterns[key], value),
+                        "foreground_network_capability_invalid")
+                values[key] = value
+        require(values.keys() == patterns.keys(), "foreground_network_capability_incomplete")
+        services = adb.run("shell", "svc", "help", check=False, timeout=10)
+        wifi = adb.shell("settings", "get", "global", "wifi_on", timeout=10)
+        mobile = adb.shell("settings", "get", "global", "mobile_data", timeout=10)
+        commands = services.stdout + services.stderr
+        values["svc_wifi_present"] = re.search(r"(?m)^\s+wifi\s+", commands) is not None
+        values["svc_data_present"] = re.search(r"(?m)^\s+data\s+", commands) is not None
+        values["wifi_setting"] = wifi if wifi in ("0", "1", "2") else "unavailable"
+        values["mobile_data_setting"] = mobile if mobile in ("0", "1") else "unavailable"
+        report["default_network_capability"] = values
 
     def open_account():
         adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
@@ -306,6 +333,7 @@ def foreground_round(report, adb, marker, status, verify_receiver, publish_membe
         x1, y1, x2, y2 = wait_for(control, bool, 25, reason)
         adb.run("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
 
+    network_capability()
     instrument("foreground-seed")
     report["foreground_seed"] = "PASS"
     require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_display")

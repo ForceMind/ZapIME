@@ -4,12 +4,21 @@ package org.zapime.android;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.os.Bundle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,6 +30,54 @@ final class ForegroundSyncProbe {
     private static final UUID RECOVERY_RECORD = UUID.fromString("a4208deb-74bb-4b53-984a-07faa0832711");
     private static final UUID CONFLICT_OPERATION = UUID.fromString("3bc90113-5fe3-4b79-8efc-705ab851d55d");
     private static final String LOCAL_EDIT = "synthetic A3 conflicting device edit";
+
+    static void readDefaultNetwork(Context context, Bundle result) throws Exception {
+        ConnectivityManager manager = context.getSystemService(ConnectivityManager.class);
+        require(manager != null);
+        CountDownLatch available = new CountDownLatch(1);
+        AtomicReference<Network> callbackNetwork = new AtomicReference<>();
+        ConnectivityManager.NetworkCallback callback = new ConnectivityManager.NetworkCallback() {
+            @Override public void onAvailable(Network network) {
+                callbackNetwork.set(network);
+                available.countDown();
+            }
+        };
+        manager.registerDefaultNetworkCallback(callback);
+        try {
+            available.await(8, TimeUnit.SECONDS);
+            Network active = manager.getActiveNetwork();
+            NetworkCapabilities capabilities = active == null ? null : manager.getNetworkCapabilities(active);
+            Set<String> defaults = new LinkedHashSet<>();
+            Set<String> networks = new LinkedHashSet<>();
+            collectTransports(capabilities, defaults);
+            for (Network network : manager.getAllNetworks()) collectTransports(manager.getNetworkCapabilities(network), networks);
+            Network observed = callbackNetwork.get();
+            result.putString("network_callback", observed == null ? "no_event"
+                    : observed.equals(active) ? "matches_default" : "changed_during_read");
+            result.putString("network_default", active == null ? "none"
+                    : defaults.isEmpty() ? "unknown" : String.join(",", defaults));
+            result.putString("network_available", networks.isEmpty() ? "none" : String.join(",", networks));
+            result.putString("network_validated", capabilities != null
+                    && capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED) ? "true" : "false");
+        } finally {
+            manager.unregisterNetworkCallback(callback);
+        }
+    }
+
+    private static void collectTransports(NetworkCapabilities capabilities, Set<String> transports) {
+        if (capabilities == null) return;
+        boolean known = false;
+        int[] kinds = {NetworkCapabilities.TRANSPORT_WIFI, NetworkCapabilities.TRANSPORT_CELLULAR,
+                NetworkCapabilities.TRANSPORT_ETHERNET, NetworkCapabilities.TRANSPORT_VPN};
+        String[] names = {"wifi", "cellular", "ethernet", "vpn"};
+        for (int index = 0; index < kinds.length; index++) {
+            if (capabilities.hasTransport(kinds[index])) {
+                transports.add(names[index]);
+                known = true;
+            }
+        }
+        if (!known) transports.add("other");
+    }
 
     static void seed(Context context, AccountLoginProtocol.Config config, byte[] seed) throws Exception {
         File root = new File(context.getFilesDir(), "zapime");

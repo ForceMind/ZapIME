@@ -132,6 +132,8 @@ Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公
 
 **真实双端冲突通过。** `de9a68a` 实际检出 `8ac884ad5d639450d179d349d17d6cb13ad34075`。两份已同步资料库各自修改同一条短语。独立主机设备在真实 HTTPS 上提交修订 3，主机持久 ACK 为 3、拉取游标仍为 2。Android 前台拉取显示本机资料已保留，原库仍是本机所写版本、操作待发且未冻结，旧回执和游标为 2。拉取失败页以 `local_conflict` 原因保留，重开后再次检查和退出后均只留一份。Android 的上传次数仍为 2，未覆盖服务修订 3。独立真实 OIDC、设备领取和通路恢复回归一并通过，环境清理通过。测试 APK SHA-256 `cd5ca254ec7f915ba30aa10996a8b6998942f58df75dce75a0703188a812ee94`。[冲突与原库报告](https://github.com/ForceMind/ZapIME/actions/runs/45486334769/job/138772796696)
 
+**持续前台默认网络验收准备。** Astra 已复核。先从原隔离 API28 镜像获得公开 `ConnectivityManager` 的实际默认网络回调、传输类型及系统开关是否可读。只采集枚举和状态。后续正向门禁要求同一进程、同一账号 Activity 持续前台，观察默认网络变为空、页面显示「等待网络恢复」、本机新操作仍待发和服务器修订不动。恢复本轮网络开关后，无需点同步或重新打开页面，必须自动取得新操作的实际回执和独立接收证据。若固定镜像始终有可用默认网络，保留对应能力限制。`VALIDATED` 仅作环境信息。[Android 默认网络和回调约定](https://developer.android.com/develop/connectivity/network-ops/reading-network-state)
+
 账号页按实际阶段反馈网络等待、资料检查、发送和本轮完成时间。原生明确返回来源未知时显示需核对，拒绝或版本冲突各自保留本机资料和队列。退出登录及重新开始登录先暂停现场传输，再更换持久授权代次。退出保留本机资料、恢复密钥、设备连接及已冻结请求；再次登录默认关闭。本轮同时检查断开 Activity 进程后获得持久同意并重开一轮、A 的已确认操作不重复 POST、退出重新启动后网络资料请求维持不变。实际断网与恢复仍单列。
 
 本机固定工具链全工作区测试、格式与严格 Clippy 已通过。`9707934` 同提交的独立 Go 服务 PostgreSQL 作业通过。此前 `a1f238e` 的 Android 原生门禁已整体通过。`dffef30` 的 API35/36 普通原生输入和本机回归已通过；其普通 API28 输入和 API36 VoiceKey 单项在模拟器 `adb root` 失败处终止，保留环境失败结果。`9707934` 在该提交基础上只改前台测试控件定位和文档。API35/36 实际 OIDC 登录和前台真实 HTTPS 仍单列。[Go PostgreSQL](https://github.com/ForceMind/ZapIME/actions/runs/45476973604/job/138739979111) · [原生基线](https://github.com/ForceMind/ZapIME/actions/runs/45473239598) · [按 API 的原生结果](https://github.com/ForceMind/ZapIME/actions/runs/45475529366)

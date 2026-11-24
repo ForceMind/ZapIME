@@ -36,7 +36,7 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         String stage = arguments == null ? null : arguments.getString("stage");
         foreground = Arrays.asList("foreground-seed", "foreground-verify", "foreground-signed-out",
                 "foreground-queue-recovery", "foreground-recovery-pending", "foreground-recovery-ack",
-                "foreground-queue-conflict", "foreground-conflict-pending")
+                "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -45,7 +45,9 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         Bundle result = new Bundle();
         try {
             if (foreground != null) {
-                if ("foreground-seed".equals(foreground)) {
+                if ("foreground-network-capability".equals(foreground)) {
+                    ForegroundSyncProbe.readDefaultNetwork(getTargetContext(), result);
+                } else if ("foreground-seed".equals(foreground)) {
                     AccountLoginProtocol.Config config = AccountLoginDeployment.config();
                     byte[] input = fixture(config, "foreground", false);
                     try { ForegroundSyncProbe.seed(getTargetContext(), config, input); }
