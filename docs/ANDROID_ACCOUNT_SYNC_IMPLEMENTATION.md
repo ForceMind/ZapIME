@@ -23,6 +23,8 @@
 
 新增的[设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)待确认。已确认的账号页覆盖了设备待授权状态，本轮效果图补申请码与已有管理员批准页面。视觉确认后先交线稿与交互，再实现界面。
 
+**线稿阶段的接口核对。** 现有批准接口在提交时按管理员凭据、申请 ID、完整指纹和有效期进行校验。效果图中的设备名称和剩余有效期要在提交前显示。线稿阶段需明确这两项如何通过同账号管理员权限从服务读取，以及申请已过期或已处理时页面如何反馈。申请码的现有内容为申请 ID 与完整指纹。
+
 **续接 · Android 领取凭据暂存。** 账号查询在现有 UUID 之外返回已验证主体的指纹。Android 将它和部署地址、签发者、受众、客户端及账号共同绑定到专用 AES-GCM 暂存。本机每账号只保留一个待领取申请。重复准备读取已保存的 ID、期限及设备凭据，跨主体或跨部署、缺失签名私钥时拒绝覆盖。P-256 私钥保留于 Android Keystore。「仅登录」仍只读取账号和已有设备状态。
 
 Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公钥和临时凭据摘要。提交后核对原申请、完整指纹及期限；领取后以原凭据读取既有设备会话并要求账号、设备、成员角色及有效期匹配。回执不确定时可单独读会话核对，暂存保留。实际 Keystore 生成的签名消息和会话拒绝路径已在 `ff48e7b` 验收。[API28 签名与身份校验](https://github.com/ForceMind/ZapIME/actions/runs/45461238818)
@@ -155,6 +157,8 @@ Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公
 **API28 队列分轮和可信墓碑通过。** PR #126 的 `d4a8755` 实际检出 `3ffc0b09339743b4da0a0bffd721ea3a9e3fa0c8`。首次确认时原库有 18 条未冻结操作。首轮实际 POST 16 次，页面显示仍有待处理，Android 持久回执及游标为 16，原库保留删除标记，最后两条未冻结。独立主机此时解密 16 条有效记录。重新打开主 App 后自动发出余下两条，原库确认及游标到 18，主机解密到 17 条记录，其中一条是基于服务修订 1 的墓碑，双方待发为零。独立重放首条原始密文返回原回执 1，服务仍为 18 且无新增变更。整轮只观察到 18 次 Android POST，临时服务及模拟器清理通过。四份报告区分真实登录、设备领取、日常前台与队列专项，队列专项采用预置合成登录。测试 APK SHA-256 `02cbbd8907b887e61953b29d0b9cd2d02e21488300f83f56f467af3b1675c95b`。本机固定 Rust 全工作区测试、格式及严格 Clippy 与同提交独立 Go PostgreSQL 作业通过。[API28 作业](https://github.com/ForceMind/ZapIME/actions/runs/45500641810/job/138822676375) · [四份报告](https://github.com/ForceMind/ZapIME/actions/runs/45500641810/artifacts/14969344386) · [Go 作业](https://github.com/ForceMind/ZapIME/actions/runs/45500641241)
 
 换号提交的独立 Go PostgreSQL 作业通过。包含 `c7e4842` 生产 JNI 的 `70e9543` 已通过普通 API28、API35、API36 原生键盘输入，以及三版本的 VoiceKey 独立作业。现代 API 的实际 OIDC 和自动同步仍单列。[Go PostgreSQL](https://github.com/ForceMind/ZapIME/actions/runs/45497594373) · [三版本原生作业](https://github.com/ForceMind/ZapIME/actions/runs/45496375266)
+
+`bcc0349` 复验五项 API28 隔离流程，实际检出 `d2268da0bf97b35db771dd20d1b1d5afb653720a`。独立 Go PostgreSQL 同时通过。上轮 API35 配置与 API36 候选专项报告了 ADB 和系统输入验收失败，两项在相同产品源码上通过本轮复验。现代 API 的账号回跳仍单列。[API28 复验](https://github.com/ForceMind/ZapIME/actions/runs/45507439072/job/138846173675) · [本轮候选和配置复验](https://github.com/ForceMind/ZapIME/actions/runs/45507439065) · [上轮失败](https://github.com/ForceMind/ZapIME/actions/runs/45505798563) · [Go 作业](https://github.com/ForceMind/ZapIME/actions/runs/45507439066)
 
 账号页按实际阶段反馈网络等待、资料检查、发送和本轮完成时间。原生明确返回来源未知时显示需核对，拒绝或版本冲突各自保留本机资料和队列。退出登录及重新开始登录先暂停现场传输，再更换持久授权代次。退出保留本机资料、恢复密钥、设备连接及已冻结请求。再次登录默认关闭。退出重新启动后资料请求计数保持，实际两类断网恢复分别留证。
 
