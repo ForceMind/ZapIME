@@ -126,6 +126,8 @@ Android 申请协议在发送前固定设备名、申请 ID、期限、P-256 公
 
 本机固定工具链全工作区测试、格式与严格 Clippy 已通过。`9707934` 同提交的独立 Go 服务 PostgreSQL 作业通过。此前 `a1f238e` 的 Android 原生门禁已整体通过。`dffef30` 的 API35/36 普通原生输入和本机回归已通过；其普通 API28 输入和 API36 VoiceKey 单项在模拟器 `adb root` 失败处终止，保留环境失败结果。`9707934` 在该提交基础上只改前台测试控件定位和文档。API35/36 实际 OIDC 登录和前台真实 HTTPS 仍单列。[Go PostgreSQL](https://github.com/ForceMind/ZapIME/actions/runs/45476973604/job/138739979111) · [原生基线](https://github.com/ForceMind/ZapIME/actions/runs/45473239598) · [按 API 的原生结果](https://github.com/ForceMind/ZapIME/actions/runs/45475529366)
 
+`722706c` 复验的普通 API28 原生键盘步骤已通过。[原生 API28 复验](https://github.com/ForceMind/ZapIME/actions/runs/45478809741/job/138748430507)
+
 ### 4. 验证顺序与接手
 
 1. **Go 与共享层。** 用隔离的真实 OIDC 测试账号和 PostgreSQL 验证登录、绑定、设备限额、拒绝与竞态，并执行 `ZAPIME_REQUIRE_DATABASE=1` 的 Go `-race` 门禁。共享层执行工作区测试、格式及严格 Clippy，覆盖账套、来源、撤销、范围和冻结请求。服务端备份验收需包含新身份授权数据，恢复后先验证绑定再发凭据。
