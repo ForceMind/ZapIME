@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-**2026-11-24 A3 接手入口：** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。PR #126 的 `9707934` 通过 API28 真实登录，以及实际开关、持久回执、独立主机解密、重启和退出。接续回读原生回归，验证实际断网恢复。存量仍须可信来源。待确认[新设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)后先交线稿与交互。
+**2026-11-24 A3 接手入口：** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。PR #126 已通过 API28 真实登录、前台同步，以及 `7951044` HTTPS 通路恢复后补传、持久回执与独立解密。接续验证持续前台系统网络回调与冲突拒绝。存量仍须可信来源。待确认[新设备首次授权效果图](design/ANDROID_DEVICE_APPROVAL.md)后先交线稿与交互。
 
 更新：2026-11-19（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 

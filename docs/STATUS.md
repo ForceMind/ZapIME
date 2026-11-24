@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、设备协议和 `9707934` Android 前台短语闭环。页面与 SQLite 均核实服务器修订，独立主机解密，重启和退出无重发。存量证明、现代 API 真实登录与首次授权界面仍待后续门禁。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、设备协议、前台自动同步和 `7951044` 服务通路恢复。页面与 SQLite 均核实服务器修订，独立主机解密，重启和退出无重发。持续前台网络变化、冲突、存量证明、现代 API 真实登录与首次授权界面仍待后续门禁。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
