@@ -259,7 +259,8 @@ def foreground_server(work, report, go_binary):
             require(results[0]["applied"] == 1 and results[0]["echoed"] == 0, "foreground_receiver_did_not_apply")
             final = probe("verify-foreground-receiver", revision)[-1]
             require(final["records"] == final["cursor"] == revision and final["pending"] == 0, "foreground_receiver_state")
-            report["independent_receiver" if revision == 1 else "recovery_receiver"] = "PASS"
+            receiver_checks = {1: "independent_receiver", 2: "recovery_receiver", 3: "default_network_receiver"}
+            report[receiver_checks[revision]] = "PASS"
 
         def publish_member_edit():
             require(probe("edit-foreground-member")[-1]["pending"] == 1, "conflict_member_edit_missing")
@@ -268,21 +269,112 @@ def foreground_server(work, report, go_binary):
             raw = packet.read_bytes()
             require(json.loads(raw)["base_revision"] == 2, "conflict_member_used_wrong_base")
             status, receipt = api("POST", "/v1/changes", member["token"], raw=raw, decode=False)
-            require(status == 200 and json.loads(receipt)["revision"] == 3, "conflict_member_server_receipt_missing")
+            require(status == 200 and json.loads(receipt)["revision"] == 4, "conflict_member_server_receipt_missing")
             receipt_file = folder / "member-conflict-receipt.json"
             receipt_file.write_bytes(receipt)
             results = probe("ack-automatic", "b", key_file, member["device_id"], packet, receipt_file)
-            require(results[0]["revision"] == 3 and results[-1]["pending"] == 0
-                    and results[-1]["cursor"] == 2, "conflict_member_ack_not_persisted")
+            require(results[0]["revision"] == 4 and results[-1]["pending"] == 0
+                    and results[-1]["cursor"] == 3, "conflict_member_ack_not_persisted")
 
         yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == 3
+    require(summary["cleanup_completed"] and summary["service_revision"] == 4
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
 
-def foreground_round(report, adb, marker, status, verify_receiver, publish_member_edit, without_tls):
+def default_network_round(report, adb, identity, status, verify_receiver):
+    report["stage"] = "default_network_baseline"
+    report["default_network_cycle"] = "FAIL"
+    baseline = report["default_network_capability"]
+    require(baseline["network_default"] == "wifi" and set(baseline["network_available"].split(",")) == {"wifi", "cellular"}
+            and baseline["svc_wifi_present"] and baseline["svc_data_present"], "default_network_controls_unavailable")
+    guard(adb, identity, root=True)
+    settings = {"data": "mobile_data", "wifi": "wifi_on"}
+
+    def original_settings():
+        return {name: adb.shell("settings", "get", "global", option, timeout=10) for name, option in settings.items()}
+
+    original = original_settings()
+    require(original == {"data": "1", "wifi": "1"}, "default_network_baseline_not_restorable")
+    routes = adb.run("reverse", "--list").stdout.splitlines()
+    marker = f"/data/user/0/{MAIN_PACKAGE}/cache/a3-default-network.phase"
+    adb.run("shell", "test", "!", "-e", marker)
+    command = adb.command + ["shell", "am", "instrument", "-w", "-e", "stage", "foreground-default-network",
+                             MAIN_PACKAGE + "/.EnrollmentVaultProbe"]
+    changed = []
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+        def phase(expected):
+            value = adb.shell("cat", marker, check=False, timeout=10)
+            require(value in ("", "ready", "pending", "acknowledged"), "default_network_phase_invalid")
+            require(value == expected or process.poll() is None, "default_network_instrumentation_ended_early")
+            return value == expected
+
+        def restore_controls():
+            restored = True
+            for service in reversed(changed):
+                try:
+                    guard(adb, identity, root=True)
+                    adb.run("shell", "svc", service, "enable", timeout=10)
+                except Rejected:
+                    restored = False
+            try:
+                guard(adb, identity, root=True)
+                wait_for(original_settings, lambda observed: observed == original, 10, "default_network_settings_not_restored")
+            except Rejected:
+                restored = False
+            report["default_network_settings_restored"] = restored
+
+        try:
+            try:
+                wait_for(lambda: phase("ready"), bool, 42, "default_network_activity_not_ready")
+                process_before = adb.shell("pidof", MAIN_PACKAGE, timeout=10)
+                require(re.fullmatch(r"[1-9]\d*", process_before), "default_network_process_missing")
+                before = status()["dataRequests"]
+                report["stage"] = "default_network_loss"
+                for service in settings:
+                    guard(adb, identity, root=True)
+                    changed.append(service)
+                    adb.run("shell", "svc", service, "disable", timeout=10)
+                wait_for(lambda: phase("pending"), bool, 42, "default_network_loss_not_observed")
+                wait_for(original_settings, lambda observed: observed == {"data": "0", "wifi": "0"},
+                         10, "default_network_disable_not_confirmed")
+                require(adb.shell("pidof", MAIN_PACKAGE, timeout=10) == process_before
+                        and status()["uploads"] == 2 and status()["dataRequests"] == before,
+                        "default_network_offline_state_changed")
+                verify_receiver(2, read_only=True)
+                require(adb.run("reverse", "--list").stdout.splitlines() == routes, "default_network_reverse_changed")
+                report["default_network_loss"] = "PASS"
+            finally:
+                if changed:
+                    restore_controls()
+            require(report.get("default_network_settings_restored"), "default_network_settings_not_restored")
+            report["stage"] = "default_network_return"
+            wait_for(lambda: phase("acknowledged"), bool, 45, "default_network_return_not_observed")
+            output, _ = process.communicate(timeout=12)
+            require(process.returncode == 0 and "INSTRUMENTATION_RESULT: foreground-default-network=PASS" in output.splitlines()
+                    and "INSTRUMENTATION_CODE: -1" in output.splitlines(), "default_network_observer_failed")
+            require(status()["uploads"] == 3 and not status()["failure"], "default_network_recovery_upload_count")
+            require(adb.run("reverse", "--list").stdout.splitlines() == routes, "default_network_reverse_changed")
+            verify_receiver(3)
+            report["default_network_cycle"] = "PASS"
+        finally:
+            failed = sys.exc_info()[0] is not None
+            try:
+                if process.poll() is None:
+                    process.kill()
+                    process.communicate(timeout=8)
+                guard(adb, identity, root=True)
+                for file in (marker, marker + ".new", marker + ".bak"):
+                    adb.run("shell", "rm", "-f", file)
+                report["default_network_observer_cleanup"] = True
+            except (Rejected, OSError, subprocess.TimeoutExpired):
+                report["default_network_observer_cleanup"] = False
+                if not failed:
+                    raise Rejected("default_network_observer_cleanup_failed") from None
+
+
+def foreground_round(report, adb, identity, marker, status, verify_receiver, publish_member_edit, without_tls):
     def instrument(stage):
         output = adb.run("shell", "am", "instrument", "-w", "-e", "stage", stage,
                          MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=65).stdout.splitlines()
@@ -403,15 +495,18 @@ def foreground_round(report, adb, marker, status, verify_receiver, publish_membe
     wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_recovery_reopen_round_missing")
     require(status()["uploads"] == 2, "foreground_recovery_reopen_replayed_upload")
 
+    default_network_round(report, adb, identity, status, verify_receiver)
+    report["foreground_uploads"] = 3
+
     report["stage"] = "foreground_concurrent_record_edits"
     instrument("foreground-queue-conflict")
     publish_member_edit()
     open_account()
     conflict_message = "远端资料未通过核对，请检查密钥或冲突记录。本机资料已保留"
     wait_for(lambda: shows(conflict_message), bool, 35, "foreground_conflict_message_missing")
-    require(status()["uploads"] == 2 and not status()["failure"], "foreground_conflict_uploaded_local_version")
+    require(status()["uploads"] == 3 and not status()["failure"], "foreground_conflict_uploaded_local_version")
     instrument("foreground-conflict-pending")
-    verify_receiver(3, read_only=True)
+    verify_receiver(4, read_only=True)
     report["foreground_conflict_preserved"] = "PASS"
 
     report["stage"] = "sign_out_and_reopen_without_transfer"
@@ -423,7 +518,7 @@ def foreground_round(report, adb, marker, status, verify_receiver, publish_membe
     before = status()["dataRequests"]
     open_account()
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_not_reloaded")
-    require(status()["dataRequests"] == before and status()["uploads"] == 2 and not status()["failure"],
+    require(status()["dataRequests"] == before and status()["uploads"] == 3 and not status()["failure"],
             "foreground_signed_out_sent_data")
     report["foreground_signout"] = "PASS"
 
@@ -502,7 +597,7 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
                         require(adb.run("reverse", "--list").stdout.splitlines() == current, "recovery_route_not_restored")
 
                 report["stage"] = "foreground_native_seed_and_round"
-                foreground_round(report, adb, marker, status, verify_receiver, publish_member_edit, without_tls)
+                foreground_round(report, adb, identity, marker, status, verify_receiver, publish_member_edit, without_tls)
                 return
             if main_apk:
                 consent = adb.run("shell", "am", "instrument", "-w", "-e", "stage", "consent",

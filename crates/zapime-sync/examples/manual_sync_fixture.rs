@@ -19,6 +19,7 @@ const SECOND: &str = "synthetic manual client edited on B";
 const SHORTCUT_CODE: &str = "a3sync";
 const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
 const RECOVERY_TEXT: &str = "synthetic A3 recovered shortcut";
+const NETWORK_TEXT: &str = "synthetic A3 default network shortcut";
 const CONFLICT_TEXT: &str = "synthetic A3 independent member edit";
 
 fn shortcut() -> Content {
@@ -196,7 +197,7 @@ fn main() {
     let material = material(dir);
     if command == "verify-foreground-receiver" {
         let revision: u64 = args[3].parse().expect("fixture revision");
-        assert!(matches!(revision, 1 | 2), "foreground fixture head");
+        assert!((1..=3).contains(&revision), "foreground fixture head");
         let mut b = open(dir, "b");
         let records = b.records(false).unwrap();
         assert!(
@@ -204,13 +205,22 @@ fn main() {
                 && records.iter().any(|row| row.content == shortcut()),
             "same Android shortcut"
         );
-        if revision == 2 {
+        if revision >= 2 {
             assert!(
                 records.iter().any(
                     |row| matches!(&row.content, Content::Snippet { code, text, tags }
                 if code == "a3back" && text == RECOVERY_TEXT && tags.is_empty())
                 ),
                 "same recovered Android shortcut"
+            );
+        }
+        if revision == 3 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3wifi" && text == NETWORK_TEXT && tags.is_empty())
+                ),
+                "same default network shortcut"
             );
         }
         assert!(b.pending_count().unwrap() == 0, "no echo upload");
@@ -335,9 +345,16 @@ fn main() {
                 client::frozen_wire(&mut store, material.profile, &material, &operation).unwrap();
             let packet = String::from_utf8_lossy(&wire);
             assert!(
-                ![FIRST, SECOND, SHORTCUT_TEXT, RECOVERY_TEXT, CONFLICT_TEXT]
-                    .iter()
-                    .any(|text| packet.contains(text)),
+                ![
+                    FIRST,
+                    SECOND,
+                    SHORTCUT_TEXT,
+                    RECOVERY_TEXT,
+                    NETWORK_TEXT,
+                    CONFLICT_TEXT
+                ]
+                .iter()
+                .any(|text| packet.contains(text)),
                 "ciphertext only"
             );
             private(Path::new(&args[5]), &wire);

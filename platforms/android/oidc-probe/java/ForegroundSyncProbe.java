@@ -28,6 +28,8 @@ final class ForegroundSyncProbe {
     private static final UUID RECORD = UUID.fromString("000d046e-1a0e-42a0-9ce8-fa42a626d0ce");
     private static final UUID RECOVERY_OPERATION = UUID.fromString("cec2bc8b-b259-41a8-bb70-7e92a5d96042");
     private static final UUID RECOVERY_RECORD = UUID.fromString("a4208deb-74bb-4b53-984a-07faa0832711");
+    private static final UUID NETWORK_RECORD = UUID.fromString("22b328d3-b4b7-4802-8de1-d83ee8d78a32");
+    private static final UUID NETWORK_OPERATION = UUID.fromString("1ccfb101-a40d-4c11-aff1-17dfc8a7891e");
     private static final UUID CONFLICT_OPERATION = UUID.fromString("3bc90113-5fe3-4b79-8efc-705ab851d55d");
     private static final String LOCAL_EDIT = "synthetic A3 conflicting device edit";
 
@@ -139,7 +141,7 @@ final class ForegroundSyncProbe {
     }
 
     static void queueConflict(Context context) throws Exception {
-        verifyRecovery(context, true);
+        verifyNetworkRecovery(context, true);
         long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
         require(core != 0);
         try {
@@ -151,8 +153,27 @@ final class ForegroundSyncProbe {
     }
 
     static void verifyConflict(Context context) throws Exception {
-        verifyRecovery(context, true);
+        verifyNetworkRecovery(context, true);
         checkConflict(context, true);
+    }
+
+    static void queueNetworkRecovery(Context context) throws Exception {
+        verifyRecovery(context, true);
+        long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+        require(core != 0);
+        try {
+            edit(core, NETWORK_RECORD, NETWORK_OPERATION, 0, "a3wifi", "synthetic A3 default network shortcut");
+        } finally {
+            NativeCore.close(core);
+        }
+        verifyNetworkRecovery(context, false);
+    }
+
+    static void verifyNetworkRecovery(Context context, boolean acknowledged) throws Exception {
+        verify(context, true);
+        checkReceipt(context, RECOVERY_RECORD, RECOVERY_OPERATION, 2);
+        checkReceipt(context, NETWORK_RECORD, NETWORK_OPERATION, acknowledged ? 3 : 0);
+        checkCursor(context, acknowledged ? 3 : 2);
     }
 
     private static void edit(long core, UUID record, UUID operation, long expected, String code, String text) throws Exception {
@@ -173,7 +194,9 @@ final class ForegroundSyncProbe {
             Arrays.fill(material, (byte) 0);
         }
         checkReceipt(context, RECORD, OPERATION, 1);
-        checkRecovery(context, true);
+        checkReceipt(context, RECOVERY_RECORD, RECOVERY_OPERATION, 2);
+        checkReceipt(context, NETWORK_RECORD, NETWORK_OPERATION, 3);
+        checkCursor(context, 3);
         checkConflict(context, true);
     }
 
@@ -187,8 +210,8 @@ final class ForegroundSyncProbe {
             require(local.moveToFirst() && local.getInt(0) == 2 && local.getInt(2) == 1 && local.isNull(3));
             require(LOCAL_EDIT.equals(new JSONObject(local.getString(1)).getJSONObject("content").getString("text")));
             if (retained) {
-                require(failed.moveToFirst() && failed.getInt(0) == 2 && "\"local_conflict\"".equals(failed.getString(1))
-                        && new JSONObject(failed.getString(2)).getInt("head") == 3 && !failed.moveToNext());
+                require(failed.moveToFirst() && failed.getInt(0) == 3 && "\"local_conflict\"".equals(failed.getString(1))
+                        && new JSONObject(failed.getString(2)).getInt("head") == 4 && !failed.moveToNext());
             } else {
                 require(!failed.moveToFirst());
             }
@@ -197,10 +220,14 @@ final class ForegroundSyncProbe {
 
     private static void checkRecovery(Context context, boolean acknowledged) throws Exception {
         checkReceipt(context, RECOVERY_RECORD, RECOVERY_OPERATION, acknowledged ? 2 : 0);
+        checkCursor(context, acknowledged ? 2 : 1);
+    }
+
+    private static void checkCursor(Context context, int revision) throws Exception {
         File file = new File(context.getFilesDir(), "zapime/data/personal.sqlite3");
         try (SQLiteDatabase db = SQLiteDatabase.openDatabase(file.toString(), null, SQLiteDatabase.OPEN_READONLY);
                 Cursor row = db.rawQuery("SELECT value FROM metadata WHERE key='sync_cursor'", null)) {
-            require(row.moveToFirst() && row.getInt(0) == (acknowledged ? 2 : 1));
+            require(row.moveToFirst() && row.getInt(0) == revision);
         }
     }
 
