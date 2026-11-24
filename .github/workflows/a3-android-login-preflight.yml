@@ -1,0 +1,39 @@
+name: Android API28 login capabilities
+on:
+  pull_request:
+    branches: [main]
+    types: [opened]
+    paths:
+      - '.github/workflows/a3-android-login-preflight.yml'
+      - 'scripts/android_login_preflight.py'
+permissions:
+  contents: read
+jobs:
+  api28-stock-capabilities:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable KVM on the fresh GitHub runner
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-a3-kvm.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Inspect and open the stock API28 HTTPS handler
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 28
+          target: default
+          arch: x86_64
+          avd-name: zapime-a3-login-${{ github.run_id }}-${{ github.run_attempt }}
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -wipe-data -noaudio -no-boot-anim
+          emulator-boot-timeout: 300
+          script: python3 scripts/android_login_preflight.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ZapIME-API28-login-capabilities
+          path: target/a3-api28-login-preflight/report.json
+          if-no-files-found: error

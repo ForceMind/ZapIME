@@ -25,7 +25,7 @@
 
 夹具按 `scripts/fixtures/a3-oidc` 的锁文件运行。HTTPS 域名为保留的 `.test`，只有主机测试进程覆盖解析并信任本轮证书，授权服务只监听 `127.0.0.1`。试跑确认 OIDC 原生客户端拒绝将 `127.0.0.1` 当作已声明 HTTPS 域名，并在换令牌时需明确选择本次授权的资源。源码与运行说明见[主机夹具](../scripts/fixtures/a3-oidc/README.md)。
 
-主机模拟客户端观察到了协议重定向。实际 Android 浏览器、系统 App Link 关联、Go 账号绑定及设备领取均待验。当前 Windows 无 Android SDK/AVD，ADR-023 的系统 CA 例外仍限原作业。Astra 已复核，先继续 Go 身份验证，并等待 Android 测试环境或新增隔离能力检查的授权。
+主机模拟客户端观察到了协议重定向。实际 Android 浏览器、系统 App Link 关联、Go 账号绑定及设备领取均分别验收。当前 Windows 无 Android SDK/AVD，ADR-023 的系统 CA 例外仍限原作业。Astra 已复核独立推进 Go 验证的顺序。用户已批准新增并执行一次 [API28 原厂镜像能力检查](../.github/workflows/a3-android-login-preflight.yml)。该检查仅判定浏览器和系统验证器是否具备，既不安装 CA，也不修改 DNS 或官网。
 
 ### 1. 账号登录、设备授权分别验证
 
