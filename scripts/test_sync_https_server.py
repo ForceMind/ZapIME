@@ -20,7 +20,7 @@ from fixtures.sync_https_server import Fixture, MAX_BOOTSTRAP, MAX_REQUEST, MAX_
 from sync_service_smoke import manual_client_roundtrip
 
 
-def request(origin, context, method, path, token=None, body=None, raw=None):
+def request_raw(origin, context, method, path, token=None, body=None, raw=None):
     origin = urlsplit(origin)
     connection = http.client.HTTPConnection(origin.hostname, origin.port, timeout=10)
     try:
@@ -37,9 +37,14 @@ def request(origin, context, method, path, token=None, body=None, raw=None):
         contents = response.read(MAX_RESPONSE + 1)
         if len(contents) > MAX_RESPONSE:
             raise RuntimeError("host_fixture_response_too_large")
-        return response.status, json.loads(contents)
+        return response.status, contents
     finally:
         connection.close()
+
+
+def request(origin, context, method, path, token=None, body=None, raw=None):
+    status, contents = request_raw(origin, context, method, path, token, body, raw)
+    return status, json.loads(contents)
 
 
 @unittest.skipUnless(os.environ.get("ZAPIME_HTTPS_TEST_BINARY") and os.environ.get("ZAPIME_HTTPS_TEST_DATABASE_URL"),
