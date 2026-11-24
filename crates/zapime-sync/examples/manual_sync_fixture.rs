@@ -14,6 +14,9 @@ use zapime_sync::{
 };
 use zeroize::Zeroizing;
 
+#[path = "support/first_publish.rs"]
+mod first_publish;
+
 const FIRST: &str = "synthetic manual client source";
 const SECOND: &str = "synthetic manual client edited on B";
 
@@ -54,6 +57,24 @@ fn material(dir: &Path) -> Material {
     let account: Uuid =
         serde_json::from_slice(&read(&dir.join("account.json"), 128)).expect("fixture account");
     Material::decode(account, &bytes).expect("fixture material")
+}
+fn initialize_material(dir: &Path, profile: Uuid) -> Material {
+    let material = Material::generate(profile).expect("fixture material");
+    private(
+        &dir.join("account.json"),
+        &serde_json::to_vec(&profile).unwrap(),
+    );
+    private(&dir.join("material.bin"), &material.encode());
+    private(
+        &dir.join("descriptor.json"),
+        &serde_json::to_vec(&material.descriptor()).unwrap(),
+    );
+    material
+}
+
+fn prepare_store(path: &Path, material: &Material) {
+    drop(Store::open(path).expect("new fixture store"));
+    workspace::prepare(path, material.profile, material).expect("prepare real workspace");
 }
 fn guarded(material: &Material, path: &Path) -> bool {
     let state: Registered = serde_json::from_slice(&read(path, 4096)).expect("registered response");
@@ -148,23 +169,15 @@ fn main() {
         dir.is_absolute() && dir.is_dir(),
         "private fixture directory"
     );
+    if first_publish::run(dir, command, &args[3..]) {
+        return;
+    }
     if command == "init" {
         assert!(args.len() == 4, "init arguments");
         let profile = Uuid::parse_str(&args[3]).expect("fixture account");
-        let material = Material::generate(profile).expect("fixture material");
-        private(
-            &dir.join("account.json"),
-            &serde_json::to_vec(&profile).unwrap(),
-        );
-        private(&dir.join("material.bin"), &material.encode());
-        private(
-            &dir.join("descriptor.json"),
-            &serde_json::to_vec(&material.descriptor()).unwrap(),
-        );
+        let material = initialize_material(dir, profile);
         for device in ["a", "b"] {
-            let path = database(dir, device);
-            drop(Store::open(&path).expect("new fixture store"));
-            workspace::prepare(&path, profile, &material).expect("prepare real workspace");
+            prepare_store(&database(dir, device), &material);
         }
         let mut a = open(dir, "a");
         let id = Uuid::new_v4();

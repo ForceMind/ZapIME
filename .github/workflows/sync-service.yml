@@ -60,6 +60,13 @@ jobs:
         run: cargo build --locked -p zapime-crypto --example sync_fixture
       - name: Build shared manual client real-server acceptance probe
         run: cargo build --locked -p zapime-sync --example manual_sync_fixture
+      - name: First publish of a restored record over authenticated HTTPS
+        run: |
+          set -euo pipefail
+          (cd services/sync && go build -o ../../target/a2-sync-server/zapime-sync ./cmd/zapime-sync)
+          ZAPIME_HTTPS_TEST_BINARY="$PWD/target/a2-sync-server/zapime-sync" \
+            ZAPIME_HTTPS_TEST_DATABASE_URL="$ZAPIME_TEST_DATABASE_URL" \
+            python3 scripts/sync_first_publish_https_smoke.py | tee sync-first-publish-https.log
       - name: Two-device ciphertext and fresh-server recovery exercise
         run: python3 scripts/sync_service_smoke.py
       - name: One-command installer, repeat install and fresh DB + object bucket recovery
@@ -68,4 +75,6 @@ jobs:
         if: always()
         with:
           name: ZapIME-sync-service-tests
-          path: sync-service-tests.log
+          path: |
+            sync-service-tests.log
+            sync-first-publish-https.log
