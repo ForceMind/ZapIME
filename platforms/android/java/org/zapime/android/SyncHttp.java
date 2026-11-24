@@ -77,16 +77,35 @@ final class SyncHttp {
     }
     private static byte[] request(URI server,char[] credential,Cancellation cancellation,String path,String method,byte[] body,int maximum,String conflict,boolean transfer)throws Failure {
         if(server==null||!server.equals(origin(server.toString()))||cancellation==null)throw new Failure("server");
-        token(credential);cancellation.check();HttpsURLConnection connection=null;
+        token(credential);
+        return jsonRequest(server.resolve(path),"Bearer "+new String(credential),cancellation,method,body,
+                "application/json",maximum,conflict,transfer);
+    }
+    static byte[] exchangeLogin(AccountLoginProtocol.Exchange exchange,Cancellation cancellation)throws Failure {
+        if(exchange==null||cancellation==null)throw new Failure("login_config");
+        byte[] body=exchange.body();
+        try{return jsonRequest(exchange.config.token,null,cancellation,"POST",body,
+                "application/x-www-form-urlencoded",32768,null,false);}
+        finally{Arrays.fill(body,(byte)0);}
+    }
+    static byte[] accountLogin(AccountLoginProtocol.Config config,String accessToken,Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null||accessToken==null||accessToken.length()>16384
+                ||!accessToken.matches("[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+"))throw new Failure("login_response");
+        return jsonRequest(config.syncServer.resolve("/v1/account-login"),"Bearer "+accessToken,
+                cancellation,"GET",null,"application/json",1024,null,false);
+    }
+    private static byte[] jsonRequest(URI endpoint,String authorization,Cancellation cancellation,String method,
+            byte[] body,String contentType,int maximum,String conflict,boolean transfer)throws Failure {
+        cancellation.check();HttpsURLConnection connection=null;
         long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(12);
         try{
-            connection=(HttpsURLConnection)server.resolve(path).toURL().openConnection();
+            connection=(HttpsURLConnection)endpoint.toURL().openConnection();
             connection.setInstanceFollowRedirects(false);connection.setUseCaches(false);
             connection.setConnectTimeout(timeout(deadline,cancellation));connection.setReadTimeout(timeout(deadline,cancellation));
             connection.setRequestMethod(method);connection.setRequestProperty("Accept","application/json");
-            connection.setRequestProperty("Authorization","Bearer "+new String(credential));
+            if(authorization!=null)connection.setRequestProperty("Authorization",authorization);
             if(body!=null){
-                connection.setDoOutput(true);connection.setFixedLengthStreamingMode(body.length);connection.setRequestProperty("Content-Type","application/json");
+                connection.setDoOutput(true);connection.setFixedLengthStreamingMode(body.length);connection.setRequestProperty("Content-Type",contentType);
                 cancellation.check();try(OutputStream out=connection.getOutputStream()){cancellation.check();out.write(body);out.flush();}
             }
             // Refresh the read budget after connect/body output. DNS and output

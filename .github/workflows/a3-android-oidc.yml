@@ -5,6 +5,9 @@ on:
     paths:
       - '.github/workflows/a3-android-oidc.yml'
       - 'platforms/android/oidc-probe/**'
+      - 'platforms/android/java/org/zapime/android/AccountLogin*.java'
+      - 'platforms/android/java/org/zapime/android/AccountSyncActivity.java'
+      - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'
       - 'scripts/fixtures/a3-oidc/**'
 permissions:
@@ -35,6 +38,24 @@ jobs:
           packages: platform-tools
       - name: Install the pinned Android SDK and build tools
         run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0'
+      - name: Check the main app's opt-in account login build
+        run: |
+          set -euo pipefail
+          tools="$ANDROID_HOME/build-tools/35.0.0"
+          platform="$ANDROID_HOME/platforms/android-36/android.jar"
+          output="$PWD/target/a3-android-oidc/main-source"
+          mkdir -p "$output/classes"
+          cat > "$output/public.json" <<'JSON'
+          {"issuer":"https://login.zapime-a3.test","authorization":"https://login.zapime-a3.test/auth","token":"https://login.zapime-a3.test/token","callback":"https://link.zapime-a3.test/android/oidc-callback","resource":"https://sync.zapime-a3.test/device-enrollment","sync_server":"https://sync.zapime-a3.test","client_id":"zapime-android-a3-test"}
+          JSON
+          python3 scripts/android_account_login_config.py platforms/android/AndroidManifest.xml "$output/AndroidManifest.xml" \
+            "$output/generated/org/zapime/android/AccountLoginDeployment.java" --config "$output/public.json"
+          "$tools/aapt2" compile --dir platforms/android/res -o "$output/resources.zip"
+          "$tools/aapt2" link -o "$output/source-only.apk" --manifest "$output/AndroidManifest.xml" -I "$platform" \
+            "$output/resources.zip" --java "$output/generated"
+          find platforms/android/java "$output/generated" -name '*.java' > "$output/java-sources.txt"
+          javac -source 8 -target 8 -encoding UTF-8 -classpath "$platform" -d "$output/classes" @"$output/java-sources.txt"
+          bash scripts/test_android_sync_http.sh
       - name: Build signed test-only App Link probe
         run: |
           set -euo pipefail

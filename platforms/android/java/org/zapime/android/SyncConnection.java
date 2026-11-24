@@ -21,7 +21,7 @@ final class SyncConnection implements AutoCloseable {
     private SyncConnection(URI server,UUID account,UUID device,char[] token,String expires,String role){
         this.server=server;this.account=account;this.device=device;this.token=token;this.expires=expires;this.role=role;
     }
-    private static UUID id(String text)throws SyncHttp.Failure {
+    static UUID id(String text)throws SyncHttp.Failure {
         try{UUID value=UUID.fromString(text);if(!value.toString().equals(text)||value.equals(new UUID(0,0)))throw new IllegalArgumentException();return value;}
         catch(RuntimeException invalid){throw new SyncHttp.Failure("credential");}
     }
@@ -29,7 +29,7 @@ final class SyncConnection implements AutoCloseable {
         try{if(text.length()>64)throw new IllegalArgumentException();OffsetDateTime.parse(text).toInstant();return text;}
         catch(RuntimeException invalid){throw new SyncHttp.Failure("credential");}
     }
-    private static Map<String,String> object(byte[] wire,Set<String> fields,Set<String> numbers)throws SyncHttp.Failure {
+    static Map<String,String> object(byte[] wire,Set<String> fields,Set<String> numbers)throws SyncHttp.Failure {
         if(wire==null||wire.length==0||wire.length>4096)throw new SyncHttp.Failure("response");
         Map<String,String> values=new HashMap<>();
         CharsetDecoder utf8=StandardCharsets.UTF_8.newDecoder().onMalformedInput(CodingErrorAction.REPORT).onUnmappableCharacter(CodingErrorAction.REPORT);
@@ -43,7 +43,7 @@ final class SyncConnection implements AutoCloseable {
             reader.endObject();if(reader.peek()!=JsonToken.END_DOCUMENT||!values.keySet().equals(fields))throw new IOException();return values;
         }catch(IOException|RuntimeException invalid){throw new SyncHttp.Failure("response");}
     }
-    private static Set<String> fields(String... values){return new HashSet<>(Arrays.asList(values));}
+    static Set<String> fields(String... values){return new HashSet<>(Arrays.asList(values));}
     private static SyncConnection create(URI server,Map<String,String> values,String role)throws SyncHttp.Failure {
         char[] secret=values.remove("token").toCharArray();
         try{SyncHttp.token(secret);return new SyncConnection(server,id(values.get("account_id")),id(values.get("device_id")),secret,expiry(values.get("expires_at")),role);}

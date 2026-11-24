@@ -43,6 +43,10 @@
 
 **2026-11-24 · Go 设备登记进入 CI。** 按 Astra 复核结论实现三步 [设备登记协议](../services/sync/README.md#设备登记协议)。部署者绑定身份，当前 owner 批准已核实的申请指纹，原申请设备凭本机 P-256 私钥和仍有效的同源身份领取。设备先安全生成凭据，服务只激活摘要。丢回执时通过既有 `/v1/session` 核原领取的设备和账号，无须再次发凭据。新增真实 PostgreSQL 测试覆盖等待批准、异账号或异主体、两路并发领取、申请重放、撤销与轮换、超限及到期。本机 Go 测试和 `vet` 已通过可用检查，数据库专项以 CI 为准。主 App 尚未接入。
 
+**2026-11-24 · Go 实测。** `0941eb1` 的账号查询真实 PostgreSQL 和完整服务 CI 通过。设备登记 `f0f6296` 的真实 PostgreSQL `-race`、密文恢复及原有安装回归均通过；同提交的 test-only Android APK 再次通过真实浏览器回跳。[设备登记服务 CI](https://github.com/ForceMind/ZapIME/actions/runs/45452945641) · [隔离回跳 CI](https://github.com/ForceMind/ZapIME/actions/runs/45452945690)
+
+**2026-11-24 · 主 App 登录编译切片。** 按已确认的页面接入固定部署的账号入口、系统浏览器、五分钟内单次 PKCE 回跳、同步服务账号查询和已有设备会话核对。只有显式构建参数 `ZAPIME_ANDROID_OIDC_CONFIG` 指向部署者的公开 JSON 时才注册入口和固定 HTTPS App Link。文件字段为 `issuer`、`authorization`、`token`、`callback`、`resource`、`sync_server`、`client_id`。授权和令牌端点必须与 issuer 同源，受众与同步服务器同源。部署者仍须用回跳域的 `assetlinks.json` 关联实际 APK 包名和签名。未配置构建的 manifest 与原文件逐字节相同。源码编译、JVM 协议测试和此前回跳验收分别记录；目前主 App 尚未跑过实际回跳，新设备领取仍需接入客户端。
+
 ### 1. 账号登录、设备授权分别验证
 
 - 首版只接一个由部署者固定配置的 issuer、客户端和同步登录 API 受众，优先采用经验证的 Android App Link。回跳域名由能配置当前 Android 包名和签名关联的部署者掌控，可与同步服务域独立。先实测 API28/API36 系统浏览器回跳，并确认身份服务能签发同步登录端点可验证的 OAuth 访问令牌。OIDC 身份映射使用固定 issuer 与可信 subject，在配置阶段验证它在预期令牌中的稳定性。邮箱只用于显示。计划采用专用的 RFC 9068 访问令牌，服务校验类型、签名、issuer、audience、客户端、scope、有效期与用户授权上下文。Android 不用 ID token 作为同步登录 API 的权限凭据。[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability) · [RFC 8252](https://www.rfc-editor.org/rfc/rfc8252) · [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700) · [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html#section-4)
