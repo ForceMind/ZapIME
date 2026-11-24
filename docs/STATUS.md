@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、设备协议、前台同步、服务通路恢复和 `de9a68a` 双端冲突保留。持续前台默认网络变化、存量证明、现代 API 真实登录与首次授权界面仍待验收。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、设备协议、前台同步、通路恢复和冲突保留。`84a7a29` 已通过持续前台时的系统默认网络恢复。存量证明、现代 API 真实登录与首次授权界面仍待验收。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
