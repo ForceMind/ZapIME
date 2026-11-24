@@ -7,6 +7,8 @@ import android.content.Context;
 import android.os.Bundle;
 import java.io.File;
 import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,6 +22,7 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import javax.net.ssl.HttpsURLConnection;
 import org.json.JSONObject;
 
 /** Runs with the disposable A3 fixture app on the instrumentation worker. */
@@ -34,11 +37,98 @@ public final class EnrollmentVaultProbe extends Instrumentation {
         try {
             checkVault();
             result.putString("enrollment_vault", "PASS");
+            checkNetwork();
+            result.putString("enrollment_http", "PASS");
             finish(Activity.RESULT_OK, result);
         } catch (Exception | AssertionError failed) {
-            result.putString("enrollment_vault", "FAIL");
+            result.putString(result.containsKey("enrollment_vault") ? "enrollment_http" : "enrollment_vault", "FAIL");
             result.putString("failure_type", failed.getClass().getSimpleName());
             finish(Activity.RESULT_CANCELED, result);
+        }
+    }
+
+    private void checkNetwork() throws Exception {
+        Context context = getTargetContext();
+        AccountLoginProtocol.Config config = AccountLoginDeployment.config();
+        byte[] bootstrap = fixture(config, "access", false);
+        UUID account;
+        SyncEnrollmentVault.Scope scope;
+        String access;
+        try {
+            JSONObject signedIn = new JSONObject(new String(bootstrap, StandardCharsets.UTF_8));
+            require(signedIn.length() == 3);
+            account = UUID.fromString(signedIn.getString("account_id"));
+            require(account.toString().equals("98a01050-3185-4eed-bac4-127426c17372"));
+            scope = new SyncEnrollmentVault.Scope(config, account, signedIn.getString("subject_fingerprint"));
+            access = signedIn.getString("access_token");
+        } finally {
+            Arrays.fill(bootstrap, (byte) 0);
+        }
+        try (SyncEnrollmentVault.Pending ignored = SyncEnrollmentVault.load(context, scope)) {
+            require(ignored == null);
+        }
+        UUID id = null;
+        SyncHttp.Cancellation cancel = new SyncHttp.Cancellation();
+        try {
+            try (SyncEnrollmentVault.Pending pending = SyncEnrollmentVault.prepare(context, scope, "A3 合成客户端")) {
+                id = pending.id;
+                SyncEnrollmentRequest request = new SyncEnrollmentRequest(pending);
+                expectFailure("unauthorized", () -> request.recover(cancel));
+                require(request.submit(access, cancel).matches("[0-9a-f]{64}"));
+                expectFailure("enrollment_pending", () -> request.claim(access, cancel));
+                fixture(config, "approve", true);
+                try (SyncConnection unexpected = request.claim(access, cancel)) {
+                    throw new AssertionError("claim_reply_expected_to_drop");
+                } catch (SyncHttp.Failure dropped) {
+                    require(Arrays.asList("network", "timeout", "http").contains(dropped.code));
+                }
+            }
+            try (SyncEnrollmentVault.Pending reopened = SyncEnrollmentVault.load(context, scope)) {
+                require(reopened != null && id.equals(reopened.id));
+                SyncEnrollmentRequest request = new SyncEnrollmentRequest(reopened);
+                try (SyncConnection actual = request.recover(cancel)) {
+                    require(actual.account.equals(account) && actual.device.equals(id) && "member".equals(actual.role));
+                }
+                fixture(config, "revoke", true);
+                expectFailure("unauthorized", () -> request.recover(cancel));
+            }
+            fixture(config, "finish", true);
+        } finally {
+            if (id != null) SyncEnrollmentVault.forget(context, scope, id);
+        }
+    }
+
+    private static byte[] fixture(AccountLoginProtocol.Config config, String command, boolean post) throws IOException {
+        HttpsURLConnection connection = (HttpsURLConnection) config.syncServer
+                .resolve("/fixture-enrollment/" + command).toURL().openConnection();
+        try {
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(6000);
+            connection.setInstanceFollowRedirects(false);
+            connection.setRequestMethod(post ? "POST" : "GET");
+            if (connection.getResponseCode() != (post ? 204 : 200)) throw new IOException("a3_enrollment_fixture");
+            if (post) return new byte[0];
+            try (InputStream in = connection.getInputStream()) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buffer = new byte[2048];
+                int read;
+                while ((read = in.read(buffer)) != -1) {
+                    if (out.size() + read > 2048) throw new IOException("a3_enrollment_fixture");
+                    out.write(buffer, 0, read);
+                }
+                Arrays.fill(buffer, (byte) 0);
+                return out.toByteArray();
+            }
+        } finally {
+            connection.disconnect();
+        }
+    }
+
+    private static void expectFailure(String code, SessionCheck call) throws Exception {
+        try (SyncConnection unexpected = call.run()) {
+            throw new AssertionError("invalid_enrollment_session");
+        } catch (SyncHttp.Failure expected) {
+            require(code.equals(expected.code));
         }
     }
 
@@ -215,5 +305,9 @@ public final class EnrollmentVaultProbe extends Instrumentation {
 
     private interface Checked {
         SyncEnrollmentVault.Pending run() throws Exception;
+    }
+
+    private interface SessionCheck {
+        SyncConnection run() throws Exception;
     }
 }

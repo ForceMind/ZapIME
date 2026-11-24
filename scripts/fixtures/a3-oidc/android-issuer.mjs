@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-only
 // The two synthetic hosts are reachable only through this CI job's adb reverse.
 import assert from 'node:assert/strict';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:https';
+import { createInterface } from 'node:readline';
 import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
@@ -19,7 +20,9 @@ const verifyKey = await importJWK(publicKey, 'RS256');
 const delegate = provider.callback();
 const interactions = new Map();
 const totals = { assetlinks: 0, login: 0, consent: 0, tokenPosts: 0, goProofs: 0, accountLookups: 0,
-  callbackOpenedInBrowser: 0, unexpected: 0, dataRequests: 0, failure: false };
+  callbackOpenedInBrowser: 0, unexpected: 0, dataRequests: 0, failure: false, enrollmentBegins: 0,
+  enrollmentClaims: 0, enrollmentSessions: 0, droppedClaimReplies: 0, enrollmentFinished: 0 };
+let enrollmentSeed, backend;
 
 function record() {
   writeFileSync(summaryPath + '.tmp', JSON.stringify({ port: server.address()?.port ?? 0, ...totals }), { mode: 0o600 });
@@ -40,6 +43,86 @@ async function read(req, limit) {
     chunks.push(part);
   }
   return Buffer.concat(chunks).toString('utf8');
+}
+
+async function enrollmentBackend() {
+  const child = spawn(goProof, ['-test.run=^TestProviderIssuedEnrollmentRoutes$', '-test.count=1'], {
+    env: { ...process.env, ZAPIME_A3_ENROLLMENT_ROUTES: '1' },
+    stdio: ['pipe', 'pipe', 'ignore'],
+  });
+  const exit = new Promise((resolve) => {
+    child.once('exit', resolve);
+    child.once('error', () => resolve(null));
+  });
+  child.stdin.on('error', () => {});
+  const output = createInterface({ input: child.stdout })[Symbol.asyncIterator]();
+  async function next() {
+    const { value, done } = await output.next();
+    assert.ok(!done && value.length <= 8192);
+    return JSON.parse(value);
+  }
+  child.stdin.write(JSON.stringify({ keys: [publicKey] }) + '\n');
+  assert.equal((await next()).status, 200);
+  return async (request) => {
+    child.stdin.write(JSON.stringify(request) + '\n');
+    const result = await next();
+    if (request.operation === 'finish') {
+      child.stdin.end();
+      assert.equal(await exit, 0);
+    }
+    return result;
+  };
+}
+
+async function enrollment(req, res, path) {
+  if (req.method === 'GET' && path === '/fixture-enrollment/access') {
+    assert.ok(totals.accountLookups === 1 && enrollmentSeed !== undefined && backend === undefined);
+    backend = await enrollmentBackend();
+    const seed = enrollmentSeed;
+    enrollmentSeed = undefined;
+    reply(res, 200, JSON.stringify(seed), 'application/json');
+    return true;
+  }
+  if (!backend) return false;
+  const operation = {
+    'POST /v1/device-enrollment': 'begin',
+    'POST /v1/device-enrollment/claim': 'claim',
+    'GET /v1/session': 'session',
+    'POST /fixture-enrollment/approve': 'approve',
+    'POST /fixture-enrollment/revoke': 'revoke',
+    'POST /fixture-enrollment/finish': 'finish',
+  }[req.method + ' ' + path];
+  if (!operation) return false;
+  let result;
+  if (operation === 'begin' || operation === 'claim') {
+    result = await backend({ operation, authorization: req.headers.authorization, body: JSON.parse(await read(req, 4096)) });
+    if (operation === 'begin') {
+      assert.ok(++totals.enrollmentBegins === 1 && result.status === 200);
+    } else if (++totals.enrollmentClaims === 1) {
+      assert.equal(result.status, 409);
+    } else {
+      assert.ok(totals.enrollmentClaims === 2 && result.status === 200);
+      totals.droppedClaimReplies++;
+      record();
+      // Drop the reply only after the real Go/PostgreSQL claim has succeeded.
+      res.destroy();
+      return true;
+    }
+  } else if (operation === 'session') {
+    result = await backend({ operation, authorization: req.headers.authorization });
+    assert.equal(result.status, [401, 200, 401][totals.enrollmentSessions++]);
+  } else {
+    result = await backend({ operation });
+    assert.equal(result.status, 204);
+    if (operation === 'finish') {
+      assert.ok(totals.enrollmentBegins === 1 && totals.enrollmentClaims === 2 && totals.enrollmentSessions === 3
+        && totals.droppedClaimReplies === 1 && totals.dataRequests === 0);
+      totals.enrollmentFinished++;
+    }
+  }
+  record();
+  reply(res, result.status, result.body === null ? '' : JSON.stringify(result.body), 'application/json');
+  return true;
 }
 
 async function interact(req, res, path) {
@@ -123,12 +206,15 @@ async function handle(req, res) {
       identityHash.update(length).update(data);
     }
     assert.deepEqual(account, { protocol: 1, account_id: accountId, subject_fingerprint: identityHash.digest('hex') });
+    // This provider account and proof exist only in the disposable test mode.
+    enrollmentSeed = { access_token: accessToken, account_id: accountId, subject_fingerprint: account.subject_fingerprint };
     totals.accountLookups++;
     totals.goProofs++;
     record();
     reply(res, 200, JSON.stringify(account), 'application/json');
     return;
   }
+  if (mode === 'main' && await enrollment(req, res, url.pathname)) return;
   if (url.pathname.startsWith('/v1/')) {
     totals.unexpected++;
     record();

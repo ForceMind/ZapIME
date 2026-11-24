@@ -277,10 +277,15 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None):
                 report["main_account_lookup"] = "PASS"
                 report["main_signed_in_only"] = "PASS"
                 vault = adb.run("shell", "am", "instrument", "-w",
-                                MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=40).stdout.splitlines()
-                require("INSTRUMENTATION_RESULT: enrollment_vault=PASS" in vault
-                        and "INSTRUMENTATION_CODE: -1" in vault, "android_enrollment_vault_not_verified")
+                                MAIN_PACKAGE + "/.EnrollmentVaultProbe", timeout=50).stdout.splitlines()
+                require("INSTRUMENTATION_RESULT: enrollment_vault=PASS" in vault, "android_enrollment_vault_not_verified")
                 report["android_enrollment_vault"] = "PASS"
+                final_counts = status()
+                require("INSTRUMENTATION_RESULT: enrollment_http=PASS" in vault and "INSTRUMENTATION_CODE: -1" in vault
+                        and final_counts["enrollmentFinished"] == 1 and final_counts["dataRequests"] == 0
+                        and final_counts["droppedClaimReplies"] == 1 and not final_counts["failure"],
+                        "android_device_enrollment_http_not_verified")
+                report["device_enrollment"] = "PASS"
             report["oidc_go_token_proof"] = "PASS"
             report["login_data_requests"] = 0
         finally:
