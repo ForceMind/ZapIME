@@ -8,7 +8,9 @@
 
 新增 `GET/PUT /v1/key-descriptor`：owner在空历史账号上明确登记一次 `{version:1,key_id,material_sha256}`；相同描述符重试幂等，不同描述符拒绝。member只能读取和核对。描述符不含根密钥、恢复码或恢复包，不会自动创建客户端材料或配对。登记后的新Push必须使用同key ID，旧API不能绕过登记写入另一套key。已有历史但没有描述符的账号保留旧v1操作兼容，但不能自动登记新根；legacy迁移、密钥轮换和客户端HTTP编排仍未完成。
 
-服务端数据库升级为schema3，旧v1/v2二进制将拒绝启动，升级前保存成套备份。R2对象 `storage_version=2` 和HTTP协议v1保持不变；不要修改对象引用或客户端SQLite版本来假装回滚。只读/登记查询都只访问PostgreSQL，不产生R2读写。接口、错误码和限制见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+服务端数据库升级为 schema4，旧 v1–v3 二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+
+A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。当前接入的是签名和绑定基础，设备授权、领用及 Android 登录接口仍分别实现和验收。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
 ## 一键服务器部署与 R2
 

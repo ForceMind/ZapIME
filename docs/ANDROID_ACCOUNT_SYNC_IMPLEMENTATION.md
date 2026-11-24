@@ -27,6 +27,12 @@
 
 主机模拟客户端观察到了协议重定向。实际 Android 浏览器、系统 App Link 关联、Go 账号绑定及设备领取均分别验收。当前 Windows 无 Android SDK/AVD，ADR-023 的系统 CA 例外仍限原作业。Astra 已复核独立推进 Go 验证的顺序。用户已批准新增并执行一次 [API28 原厂镜像能力检查](../.github/workflows/a3-android-login-preflight.yml)。该检查仅判定浏览器和系统验证器是否具备，既不安装 CA，也不修改 DNS 或官网。
 
+**2026-11-24 · API28 能力检查通过。** [草稿 PR #126](https://github.com/ForceMind/ZapIME/pull/126) `20f53bb` 的临时原厂镜像以 implicit intent 打开了 `org.chromium.webview_shell/.WebViewBrowserActivity`。系统 `com.android.statementservice/.IntentFilterVerificationReceiver` 存在且具备验证权限。实际 CI 检出为 `a2538169140aa471f5d08fc79d6f65d035718bb4`。已核对运行和 artifact。真实 OIDC Android 登录与系统验证回跳仍为 NOT RUN。[CI 日志](https://github.com/ForceMind/ZapIME/actions/runs/45444570099/job/138624668444) · [报告](https://github.com/ForceMind/ZapIME/actions/runs/45444570099/artifacts/14943859174)
+
+**2026-11-24 · Go 令牌代码已通过真实提供方验证。** `oidcauth` 使用固定的 `go-jose` `v4.1.9` 验证专用 `at+jwt`，19 个拒绝分支通过。回环提供方实际签发的访问令牌经标准输入交给同一 Go 校验代码，正确受众通过、错误受众及真实 ID token 拒绝。新增 schema4 主体绑定、管理员命令和竞争拒绝测试。本机模块测试、`vet` 和真实令牌重跑通过，PostgreSQL 事务须由现有同步服务 CI 实测。Go HTTP 登录及设备领取仍待实现。
+
+用户已追加批准 A3 独立 GitHub API28 作业在一次性模拟器内使用本轮临时 CA 和合成 `.test` 解析，结束核对清理。下一项交付先验证系统确实为该测试 APK 验证了回跳域，再验证外部浏览器真实 OIDC 回跳；两项独立保留状态。
+
 ### 1. 账号登录、设备授权分别验证
 
 - 首版只接一个由部署者固定配置的 issuer、客户端和同步登录 API 受众，优先采用经验证的 Android App Link。回跳域名由能配置当前 Android 包名和签名关联的部署者掌控，可与同步服务域独立。先实测 API28/API36 系统浏览器回跳，并确认身份服务能签发同步登录端点可验证的 OAuth 访问令牌。OIDC 身份映射使用固定 issuer 与可信 subject，在配置阶段验证它在预期令牌中的稳定性。邮箱只用于显示。计划采用专用的 RFC 9068 访问令牌，服务校验类型、签名、issuer、audience、客户端、scope、有效期与用户授权上下文。Android 不用 ID token 作为同步登录 API 的权限凭据。[OIDC Core](https://openid.net/specs/openid-connect-core-1_0.html#ClaimStability) · [RFC 8252](https://www.rfc-editor.org/rfc/rfc8252) · [RFC 9700](https://www.rfc-editor.org/rfc/rfc9700) · [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html#section-4)

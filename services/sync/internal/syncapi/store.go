@@ -33,7 +33,7 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err = tx.QueryRowContext(ctx, `SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil {
 		return err
 	}
-	if version != 1 && version != 2 && version != 3 {
+	if version < 1 || version > 4 {
 		return errors.New("unsupported_database_version")
 	}
 	_, err = tx.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS zapime_accounts(
@@ -57,11 +57,16 @@ func (s *Store) Migrate(ctx context.Context) error {
         key_id uuid NOT NULL CHECK(key_id<>'00000000-0000-0000-0000-000000000000'::uuid),
         material_sha256 bytea NOT NULL CHECK(octet_length(material_sha256)=32),
         registered_by uuid NOT NULL REFERENCES zapime_devices(id),
-        registered_at timestamptz NOT NULL DEFAULT now());`)
+        registered_at timestamptz NOT NULL DEFAULT now());
+    CREATE TABLE IF NOT EXISTS zapime_oidc_subjects(
+        issuer text NOT NULL CHECK(octet_length(issuer) BETWEEN 1 AND 1024),
+        subject text NOT NULL CHECK(octet_length(subject) BETWEEN 1 AND 255),
+        account_id uuid NOT NULL REFERENCES zapime_accounts(id),
+        PRIMARY KEY(issuer,subject));`)
 	if err != nil {
 		return err
 	}
-	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=3 WHERE id=1`); err != nil {
+	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=4 WHERE id=1`); err != nil {
 		return err
 	}
 	return tx.Commit()

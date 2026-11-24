@@ -53,7 +53,7 @@ sudo zapime verify-objects
 
 修改错误/失效的 R2 设置时使用 `sudoedit /opt/zapime/config.env`，只改 `ZAPIME_S3_*`；**保留 POSTGRES_PASSWORD**，不能删掉配置让安装器重新随机生成数据库密码。之后重新执行安装命令。不要执行 `docker compose config` 将凭据完整打印到普通日志；可用 `config --quiet` 校验。
 
-重复运行相同安装命令会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。安装文件保存于 `/opt/zapime/releases/<SHA>`；没有 `down --volumes` 或自动清空用户资料。数据库 schema3 拒绝旧v1/v2程序降级；账号密钥身份表随完整数据库备份保存。新版保留旧内联/对象记录，legacy历史不会自动猜测根密钥，不能把切换旧镜像当作数据库回滚；需要时从升级前备份恢复到全新库。
+重复运行相同安装命令会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。安装文件保存于 `/opt/zapime/releases/<SHA>`。数据库 schema4 拒绝旧 v1–v3 程序打开，账号密钥身份和 OIDC 主体映射随完整 PostgreSQL 备份保存。升级保留旧内联及对象记录。回滚从升级前备份恢复到全新库。
 
 支持 systemd 时自动安装每日备份 timer。备份存放 `/opt/zapime/backups`，不自动删除旧归档；应监控磁盘并将成套备份复制到自己控制的异地位置。Docker 普通日志按 10 MB × 3 轮转，不记录正文/令牌。当前是可部署的开发服务，尚未完成第三方安全审计、外层限流与生产监控。
 

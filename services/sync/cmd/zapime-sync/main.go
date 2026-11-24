@@ -86,9 +86,20 @@ func run() error {
 		}
 		return nil
 	}
+	if len(os.Args) == 5 && os.Args[1] == "bind-oidc-subject" {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := store.BindOIDCSubject(ctx, os.Args[2], os.Args[3], os.Args[4]); err != nil {
+			if errors.Is(err, syncapi.ErrOIDCSubjectBound) {
+				return syncapi.ErrOIDCSubjectBound
+			}
+			return errors.New("oidc_subject_binding_failed")
+		}
+		return nil
+	}
 	if len(os.Args) > 1 {
 		if len(os.Args) != 3 || (os.Args[1] != "provision" && os.Args[1] != "recover-device") {
-			return errors.New("usage: zapime-sync [provision device-name | recover-device device-id]")
+			return errors.New("usage: zapime-sync [provision device-name | recover-device device-id | bind-oidc-subject account-id issuer subject]")
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()

@@ -238,12 +238,21 @@ try {
   const otherToken = JSON.parse(otherExchange.body).access_token;
   await verifyToken(publicKey, otherToken, issuer, otherResource);
   await assert.rejects(verifyToken(publicKey, otherToken, issuer, targetResource), { code: 'ERR_JWT_CLAIM_VALIDATION_FAILED' });
+  if (process.argv[3]) {
+    stage = 'go_provider_token_verifier';
+    execFileSync(process.argv[3], ['-test.run=^TestProviderIssuedAccessToken$', '-test.count=1'], {
+      env: { ...process.env, ZAPIME_OIDC_FIXTURE_PROOF: '1' }, timeout: 7_000,
+      input: JSON.stringify({ issuer, audience: targetResource, clientID: clientId, subject,
+        accessToken: tokens.access_token, otherAudienceToken: otherToken, idToken: tokens.id_token,
+        keys: { keys: publicKeys } }),
+    });
+  }
   console.log(JSON.stringify({ scope: 'host loopback TLS and real OIDC provider', runtime: process.version,
     standard: 'authorization_code + PKCE S256', accessTokenType: validated.protectedHeader.typ,
     correctCredential: 'PASS', incorrectCredential: 'PASS', untrustedTlsRejected: 'PASS',
     wrongVerifierRejected: 'PASS', wrongAudienceRejected: 'PASS', codeReplayRejected: 'PASS',
     idTokenRejectedAsAccessToken: 'PASS', callback: 'host HTTP client observed authenticated redirect',
-    androidAppLink: 'NOT RUN', deviceEnrollment: 'NOT RUN' }));
+    goVerifier: process.argv[3] ? 'PASS' : 'NOT RUN', androidAppLink: 'NOT RUN', deviceEnrollment: 'NOT RUN' }));
 } catch (error) {
   const location = error.stack?.split('\n').slice(1).find((line) => line.includes('probe.mjs'))?.match(/probe\.mjs:(\d+:\d+)/)?.[1];
   console.error(`A3 OIDC fixture failed at ${stage} (${error.name}, ${error.code ?? 'no_code'}, ${location ?? '-'})`);
