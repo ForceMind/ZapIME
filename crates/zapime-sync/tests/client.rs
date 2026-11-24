@@ -63,6 +63,7 @@ fn snapshot(path: &Path) -> Vec<(String, Vec<Vec<String>>)> {
         "sync_received",
         "sync_retained_pulls",
         "sync_local_origins",
+        "sync_pulled_origins",
     ]
     .into_iter()
     .map(|table| {
@@ -91,6 +92,58 @@ fn snapshot(path: &Path) -> Vec<(String, Vec<Vec<String>>)> {
         (table.to_owned(), rows)
     })
     .collect()
+}
+
+#[test]
+fn authenticated_row_can_seed_a_local_edit_but_an_adopted_import_cannot() {
+    let dir = tempfile::tempdir().unwrap();
+    let profile = Uuid::new_v4();
+    let material = Material::generate(profile).unwrap();
+    let mut a = new_store(&dir.path().join("source.db"), profile, &material);
+    let id = Uuid::new_v4();
+    edit(&mut a, id, 0, "synthetic first body");
+    let operation = client::stage_next_automatic(&mut a, profile, &material)
+        .unwrap()
+        .unwrap();
+    let change = serde_json::from_slice(&response(profile, Uuid::new_v4(), &operation, 1)).unwrap();
+    let wire = page(0, vec![change]);
+
+    let path_b = dir.path().join("receiver.db");
+    drop(new_store(&path_b, profile, &material));
+    let db = Connection::open(&path_b).unwrap();
+    db.execute_batch("DROP TABLE sync_pulled_origins; DROP TABLE sync_local_origins;")
+        .unwrap();
+    drop(db);
+    let mut b = Store::open_sync_writer(&path_b.canonicalize().unwrap()).unwrap();
+    let report = client::apply_page(&mut b, profile, &material, 0, &wire).unwrap();
+    assert_eq!((report.applied, report.cursor), (1, 1));
+    assert!(client::stage_next_automatic(&mut b, profile, &material)
+        .unwrap()
+        .is_none());
+    edit(&mut b, id, 1, "edited after authenticated pull");
+    let next = client::stage_next_automatic(&mut b, profile, &material)
+        .unwrap()
+        .unwrap();
+    assert_eq!((next.record_id, next.base_revision), (id, 1));
+
+    let path_import = dir.path().join("imported.db");
+    let mut imported = Store::open(&path_import).unwrap();
+    imported
+        .restore_plaintext(&a.export_plaintext().unwrap())
+        .unwrap();
+    workspace::prepare(&path_import, profile, &material).unwrap();
+    let report = client::apply_page(&mut imported, profile, &material, 0, &wire).unwrap();
+    assert_eq!((report.unchanged, report.cursor), (1, 1));
+    edit(
+        &mut imported,
+        id,
+        1,
+        "edit after matching a records-only archive",
+    );
+    assert!(matches!(
+        client::stage_next_automatic(&mut imported, profile, &material),
+        Err(client::Error::Storage(zapime_data::Error::SyncOrigin))
+    ));
 }
 
 #[test]

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-only
-//! Immutable origin of locally edited snapshots eligible for automatic sync.
+//! Sources of locally edited snapshots eligible for automatic sync.
 use crate::{sync::WorkspaceBinding, Error, Record};
 use rusqlite::{params, Transaction};
 use uuid::Uuid;
@@ -14,7 +14,13 @@ pub(crate) fn prepare(tx: &Transaction<'_>) -> Result<(), Error> {
              key_id TEXT NOT NULL,
              material_sha256 TEXT NOT NULL);
          CREATE INDEX IF NOT EXISTS sync_local_origins_record
-             ON sync_local_origins(record_id,local_revision);",
+             ON sync_local_origins(record_id,local_revision);
+         CREATE TABLE IF NOT EXISTS sync_pulled_origins(
+             record_id TEXT PRIMARY KEY REFERENCES records(id),
+             local_revision INTEGER NOT NULL CHECK(local_revision>0),
+             profile_id TEXT NOT NULL,
+             key_id TEXT NOT NULL,
+             material_sha256 TEXT NOT NULL);",
     )?;
     Ok(())
 }
@@ -37,6 +43,10 @@ pub(crate) fn mark_local_mutation(
            AND ((?3=1 AND NOT ?4) OR EXISTS(
              SELECT 1 FROM sync_local_origins r
              WHERE r.record_id=?2 AND r.local_revision=?3-1
+               AND r.profile_id=p.value AND r.key_id=k.value AND r.material_sha256=f.value)
+             OR EXISTS(
+             SELECT 1 FROM sync_pulled_origins r
+             WHERE r.record_id=?2 AND r.local_revision=?3-1
                AND r.profile_id=p.value AND r.key_id=k.value AND r.material_sha256=f.value))",
         params![
             operation.to_string(),
@@ -48,11 +58,40 @@ pub(crate) fn mark_local_mutation(
     Ok(())
 }
 
+pub(crate) fn mark_pulled_record(
+    tx: &Transaction<'_>,
+    binding: &WorkspaceBinding,
+    record: &Record,
+) -> Result<(), Error> {
+    tx.execute(
+        "INSERT INTO sync_pulled_origins VALUES(?1,?2,?3,?4,?5)
+         ON CONFLICT(record_id) DO UPDATE SET local_revision=excluded.local_revision,
+             profile_id=excluded.profile_id,key_id=excluded.key_id,
+             material_sha256=excluded.material_sha256",
+        params![
+            record.id.to_string(),
+            record.revision as i64,
+            binding.profile_id.to_string(),
+            binding.key_id.to_string(),
+            hex::encode(binding.material_sha256),
+        ],
+    )?;
+    Ok(())
+}
+
 pub(crate) fn require_local_mutation(
     tx: &Transaction<'_>,
     binding: &WorkspaceBinding,
     pending: &super::sync::PendingOperation,
 ) -> Result<(), Error> {
+    let available: bool = tx.query_row(
+        "SELECT EXISTS(SELECT 1 FROM sqlite_schema WHERE type='table' AND name='sync_local_origins')",
+        [],
+        |row| row.get(0),
+    )?;
+    if !available {
+        return Err(Error::SyncOrigin);
+    }
     let known: bool = tx.query_row(
         "SELECT EXISTS(SELECT 1 FROM sync_local_origins
          WHERE operation_id=?1 AND record_id=?2 AND local_revision=?3

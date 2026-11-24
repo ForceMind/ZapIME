@@ -3,7 +3,8 @@
 //! Hosts must use the crypto-verifying sync layer, never raw server JSON here.
 use crate::{
     sync::{
-        acknowledge_in_tx, require_profile, server_revision, workspace_budget, UploadOperation,
+        acknowledge_in_tx, require_profile, server_revision, workspace_binding, workspace_budget,
+        UploadOperation, WorkspaceBinding,
     },
     Error, Record, Store,
 };
@@ -36,6 +37,38 @@ impl Store {
         head: u64,
         changes: &[RemoteRecord],
     ) -> Result<ApplyReport, Error> {
+        self.apply_pull(profile, after, next, head, changes, None)
+    }
+
+    /// The crypto-verifying caller must additionally prove every operation uses
+    /// the given current root. Only actual row writes acquire a source marker.
+    pub fn apply_verified_workspace_pull(
+        &mut self,
+        binding: &WorkspaceBinding,
+        after: u64,
+        next: u64,
+        head: u64,
+        changes: &[RemoteRecord],
+    ) -> Result<ApplyReport, Error> {
+        self.apply_pull(
+            binding.profile_id,
+            after,
+            next,
+            head,
+            changes,
+            Some(binding),
+        )
+    }
+
+    fn apply_pull(
+        &mut self,
+        profile: Uuid,
+        after: u64,
+        next: u64,
+        head: u64,
+        changes: &[RemoteRecord],
+        binding: Option<&WorkspaceBinding>,
+    ) -> Result<ApplyReport, Error> {
         if after > i64::MAX as u64
             || head > i64::MAX as u64
             || changes.len() > 100
@@ -58,6 +91,7 @@ impl Store {
                 || record.revision > i64::MAX as u64
                 || record.content.kind() != change.operation.kind
                 || record.deleted != change.operation.deleted
+                || binding.is_some_and(|bound| change.operation.key_id != bound.key_id)
             {
                 return Err(Error::SyncHistory);
             }
@@ -66,6 +100,14 @@ impl Store {
         workspace_budget(&mut self.db, |db| {
             let tx = db.transaction_with_behavior(TransactionBehavior::Immediate)?;
             require_profile(&tx, profile)?;
+            if let Some(binding) = binding {
+                if workspace_binding(&tx)?.as_ref() != Some(binding) {
+                    return Err(Error::SyncWorkspace);
+                }
+                if !changes.is_empty() {
+                    crate::sync_origin::prepare(&tx)?;
+                }
+            }
             let saved: String = tx.query_row(
                 "SELECT value FROM metadata WHERE key='sync_cursor'",
                 [],
@@ -172,6 +214,9 @@ impl Store {
                         let mut record = change.record.clone();
                         record.revision = revision;
                         tx.execute("INSERT INTO records VALUES(?1,?2,?3) ON CONFLICT(id) DO UPDATE SET revision=excluded.revision,body=excluded.body",params![record.id.to_string(),revision as i64,serde_json::to_string(&record)?])?;
+                        if let Some(binding) = binding {
+                            crate::sync_origin::mark_pulled_record(&tx, binding, &record)?;
+                        }
                         // Applying a download never enqueues a new upload.
                         report.applied += 1;
                     }

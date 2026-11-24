@@ -13,7 +13,7 @@ use zapime_crypto::{Binding, SecretKey};
 use zapime_data::{
     pull::{ApplyReport, RemoteRecord},
     quarantine::{FailureKind, RetainedPull, RetainedSummary},
-    sync::UploadOperation,
+    sync::{UploadOperation, WorkspaceBinding},
     Record, Store,
 };
 
@@ -117,41 +117,47 @@ pub fn apply_encrypted_page_preserving_failure<'key, F>(
 where
     F: FnMut(Uuid) -> Option<&'key SecretKey>,
 {
-    apply_encrypted_page(store, profile, after, bytes, key_for).map_err(|cause| {
-        let reason = match &cause {
-            Error::KeyUnavailable => Some(FailureKind::MissingKey),
-            Error::Authentication => Some(FailureKind::Authentication),
-            Error::Invalid
-            | Error::Data(zapime_data::Error::Invalid | zapime_data::Error::Json(_)) => {
-                Some(FailureKind::InvalidPayload)
-            }
-            Error::Data(
-                zapime_data::Error::SyncLocalConflict
-                | zapime_data::Error::PositionConflict
-                | zapime_data::Error::Duplicate,
-            ) => Some(FailureKind::LocalConflict),
-            Error::Data(zapime_data::Error::SyncHistory) => Some(FailureKind::History),
-            _ => None,
-        };
-        let retention = match reason {
-            Some(reason)
-                if parse_page(profile, after, bytes).is_ok_and(|p| !p.changes.is_empty()) =>
-            {
-                match std::str::from_utf8(bytes)
-                    .map_err(|_| zapime_data::Error::Invalid)
-                    .and_then(|wire| store.retain_failed_pull(profile, after, reason, wire))
-                {
-                    Ok(summary) => Retention::Saved(summary),
-                    Err(error) => Retention::Failed(error),
-                }
-            }
-            _ => Retention::NotEligible,
-        };
-        PreservedError {
-            cause: Box::new(cause),
-            retention,
+    apply_encrypted_page_in_scope(store, profile, after, bytes, key_for, None)
+        .map_err(|cause| preserve_page_failure(store, profile, after, bytes, cause))
+}
+
+fn preserve_page_failure(
+    store: &mut Store,
+    profile: Uuid,
+    after: u64,
+    bytes: &[u8],
+    cause: Error,
+) -> PreservedError {
+    let reason = match &cause {
+        Error::KeyUnavailable => Some(FailureKind::MissingKey),
+        Error::Authentication => Some(FailureKind::Authentication),
+        Error::Invalid | Error::Data(zapime_data::Error::Invalid | zapime_data::Error::Json(_)) => {
+            Some(FailureKind::InvalidPayload)
         }
-    })
+        Error::Data(
+            zapime_data::Error::SyncLocalConflict
+            | zapime_data::Error::PositionConflict
+            | zapime_data::Error::Duplicate,
+        ) => Some(FailureKind::LocalConflict),
+        Error::Data(zapime_data::Error::SyncHistory) => Some(FailureKind::History),
+        _ => None,
+    };
+    let retention = match reason {
+        Some(reason) if parse_page(profile, after, bytes).is_ok_and(|p| !p.changes.is_empty()) => {
+            match std::str::from_utf8(bytes)
+                .map_err(|_| zapime_data::Error::Invalid)
+                .and_then(|wire| store.retain_failed_pull(profile, after, reason, wire))
+            {
+                Ok(summary) => Retention::Saved(summary),
+                Err(error) => Retention::Failed(error),
+            }
+        }
+        _ => Retention::NotEligible,
+    };
+    PreservedError {
+        cause: Box::new(cause),
+        retention,
+    }
 }
 /// Portable ciphertext bundle, separate from the records-only plaintext v1 archive.
 /// Its checksum detects corruption, not authenticity; retry always redoes AEAD.
@@ -207,7 +213,39 @@ pub fn apply_encrypted_page<'key, F>(
     profile: Uuid,
     after: u64,
     bytes: &[u8],
+    key_for: F,
+) -> Result<ApplyReport, Error>
+where
+    F: FnMut(Uuid) -> Option<&'key SecretKey>,
+{
+    apply_encrypted_page_in_scope(store, profile, after, bytes, key_for, None)
+}
+
+fn apply_workspace_page_preserving_failure(
+    store: &mut Store,
+    after: u64,
+    bytes: &[u8],
+    material: &workspace::Material,
+) -> Result<ApplyReport, PreservedError> {
+    let binding = material.binding();
+    apply_encrypted_page_in_scope(
+        store,
+        binding.profile_id,
+        after,
+        bytes,
+        |key_id| (key_id == binding.key_id).then_some(&material.key),
+        Some(&binding),
+    )
+    .map_err(|cause| preserve_page_failure(store, binding.profile_id, after, bytes, cause))
+}
+
+fn apply_encrypted_page_in_scope<'key, F>(
+    store: &mut Store,
+    profile: Uuid,
+    after: u64,
+    bytes: &[u8],
     mut key_for: F,
+    workspace: Option<&WorkspaceBinding>,
 ) -> Result<ApplyReport, Error>
 where
     F: FnMut(Uuid) -> Option<&'key SecretKey>,
@@ -241,5 +279,20 @@ where
             record,
         });
     }
-    Ok(store.apply_verified_pull(profile, after, page.next_cursor, page.head, &verified)?)
+    match workspace {
+        Some(binding) => Ok(store.apply_verified_workspace_pull(
+            binding,
+            after,
+            page.next_cursor,
+            page.head,
+            &verified,
+        )?),
+        None => Ok(store.apply_verified_pull(
+            profile,
+            after,
+            page.next_cursor,
+            page.head,
+            &verified,
+        )?),
+    }
 }

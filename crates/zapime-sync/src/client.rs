@@ -375,8 +375,6 @@ pub fn apply_page(
     bytes: &[u8],
 ) -> Result<ApplyReport, Error> {
     guard(store, profile, material)?;
-    crate::apply_encrypted_page_preserving_failure(store, profile, after, bytes, |key_id| {
-        (key_id == material.key_id).then_some(&material.key)
-    })
-    .map_err(Error::Page)
+    crate::apply_workspace_page_preserving_failure(store, after, bytes, material)
+        .map_err(Error::Page)
 }

@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实回跳、HTTPS 领取、丢回执恢复、撤销、原生正式凭据保存及本机同步同意通过。开关与限定密钥恢复已接入，待回归。首次授权效果图待确认。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录与设备协议，API28/35/36 原生同意与原密钥恢复通过。`ac4860e` 的主机双端真实 HTTPS 快捷短语、丢回执重试和解密通过。实际 Android 前台传输待验，首次授权效果图待确认。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
