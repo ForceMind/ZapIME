@@ -167,15 +167,14 @@ def bounds(node):
     return tuple(map(int, shape.groups())) if shape else None
 
 
-def click_text(adb, marker, label, scroll=False, clickable=False):
+def click_text(adb, marker, label, scroll=False):
     swipes = 0
 
     def locate():
         nonlocal swipes
         nodes = window_nodes(adb, marker)
         for node in nodes:
-            if (label in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true"
-                    and (not clickable or node.get("clickable") == "true")):
+            if label in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true":
                 area = bounds(node)
                 if area and area[2] > area[0] and area[3] > area[1]:
                     return area
@@ -269,14 +268,35 @@ def foreground_round(report, adb, marker, status, verify_receiver):
         require(f"INSTRUMENTATION_RESULT: {stage}=PASS" in output and "INSTRUMENTATION_CODE: -1" in output,
                 stage + "_failed")
 
+    def open_account():
+        adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
+        click_text(adb, marker, "账号与同步", scroll=True)
+
+    def tap_control(select, reason):
+        def control():
+            matches = [bounds(node) for node in window_nodes(adb, marker)
+                       if node.get("package") == MAIN_PACKAGE and node.get("enabled") == "true"
+                       and node.get("clickable") == "true" and select(node)]
+            if len(matches) == 1 and matches[0]:
+                x1, y1, x2, y2 = matches[0]
+                if x2 > x1 and y2 > y1:
+                    return x1, y1, x2, y2
+            return None
+        x1, y1, x2, y2 = wait_for(control, bool, 25, reason)
+        adb.run("shell", "input", "tap", str((x1+x2)//2), str((y1+y2)//2))
+
     instrument("foreground-seed")
     report["foreground_seed"] = "PASS"
     require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_display")
-    adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
-    click_text(adb, marker, "账号与同步", scroll=True)
-    click_text(adb, marker, "加密同步")
+    report["stage"] = "open_foreground_account_page"
+    open_account()
+    report["stage"] = "tap_unchecked_sync_switch"
+    tap_control(lambda node: node.get("class") == "android.widget.Switch" and node.get("checkable") == "true"
+                and node.get("checked") == "false", "foreground_unchecked_switch_missing")
     require(status()["dataRequests"] == 0, "foreground_unsolicited_data_before_confirmation")
-    click_text(adb, marker, "开启加密同步", clickable=True)
+    report["stage"] = "confirm_foreground_sync_scope"
+    tap_control(lambda node: node.get("resource-id") == "android:id/button1"
+                and node.get("text") == "开启加密同步", "foreground_confirmation_button_missing")
     report["foreground_trigger"] = "product_account_screen_confirmation"
 
     def displayed_receipt():
@@ -284,6 +304,7 @@ def foreground_round(report, adb, marker, status, verify_receiver):
         return any(node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
                    and "服务器已确认本次写入，修订号 1" in node.get("text", "") for node in window_nodes(adb, marker))
 
+    report["stage"] = "foreground_round_and_durable_receipt"
     wait_for(displayed_receipt, bool, 35, "foreground_ui_receipt_missing")
     report["foreground_ui_receipt"] = "PASS"
     require(status().get("uploads") == 1 and status()["dataRequests"] >= 2, "foreground_request_counts_invalid")
@@ -292,19 +313,17 @@ def foreground_round(report, adb, marker, status, verify_receiver):
     report["foreground_sqlite_ack"] = "PASS"
     verify_receiver()
 
-    def open_account():
-        adb.run("shell", "am", "start", "-W", "-n", MAIN_PACKAGE + "/.MainActivity")
-        click_text(adb, marker, "账号与同步", scroll=True)
-
     def shows(label):
         return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "")
                    for node in window_nodes(adb, marker))
 
     before = status()["dataRequests"]
+    report["stage"] = "reopen_with_persisted_consent"
     open_account()
     wait_for(lambda: shows("本轮同步已检查"), bool, 35, "foreground_reopen_round_missing")
     require(status()["dataRequests"] > before and status()["uploads"] == 1, "foreground_reopen_replayed_upload")
     report["foreground_reopen"] = "PASS"
+    report["stage"] = "sign_out_and_reopen_without_transfer"
     click_text(adb, marker, "退出登录", scroll=True)
     wait_for(lambda: shows("仅登录"), bool, 18, "foreground_signout_missing")
     instrument("foreground-signed-out")
