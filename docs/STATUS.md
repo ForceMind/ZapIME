@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** `58ccfc7` 的[隔离实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已通过 API28 真实登录后自动授权、空账号首密钥登记、换机缺原密钥提示、回执恢复及恢复后自动同步，独立客户端完成解密。Go PostgreSQL 和普通 API28/35/36 系统输入通过。正式 SSO、API35/36 实际账号回跳、可信存量首次发布和实体双机仍待验收。
+**2026-11-24 A3** `58ccfc7` 的 API28 新版自动流程已通过。 `b223e5f` 已在 API35/36 通过真实 Chrome 回跳、系统文件选择器取消及选文件、错码拒绝、原密钥恢复后自动加密同步和独立客户端解密。Go PostgreSQL 和普通 API28/35/36 系统输入通过。正式 SSO、可信存量首次发布和实体双机仍待验收。[证据与真机步骤](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 

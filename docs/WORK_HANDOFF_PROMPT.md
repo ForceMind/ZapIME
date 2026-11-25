@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-**2026-11-24 A3 接手入口：** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。`58ccfc7` 已验证 API28 自动授权、首密钥、换机恢复与前台上传，以及独立客户端解密。部署者配置 OIDC 与 `ZAPIME_OIDC_AUTO_ENROLL=1` 后启用。可信存量、正式 SSO 与 API35/36 回跳、实体双机及实际文件选择器继续按门禁验收。
+**2026-11-24 A3 接手入口** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。API28 自动授权、首密钥和恢复后同步已通过。API35/36 的真实 Chrome 回跳、系统选择器、错码拒绝、正确恢复后自动同步均已通过。按记录中的双机清单准备同版候选 APK 和独立测试账号；部署者配置 OIDC 与 `ZAPIME_OIDC_AUTO_ENROLL=1` 后启用。正式环境、可信存量与实体双机待验收。
 
 更新：2026-11-19（America/Los_Angeles）。这是已有工程的延续：实际读取仓库、修改代码、测试和提交，不重建项目，不每完成一步就等待“继续”。[前次交接原文](WORK_HANDOFF_PRE_INTEGRATION_20261108.md)作为历史保留，旧待验状态不能覆盖本页。
 
