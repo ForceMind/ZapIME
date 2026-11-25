@@ -1,6 +1,6 @@
 # ZapIME 项目执行状态
 
-**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、前台同步、异常恢复、队列保护及服务数据库灾备。`7b0a856` 已验证来源未知的导入编辑保留本机且零资料 POST。新设备授权视觉已确认，[四屏线稿与交互](design/ANDROID_DEVICE_APPROVAL.md)待确认。API35/36 普通输入通过，实际账号回跳、可信存量首次发布、正式 SSO 与实体双机仍待验收。
+**2026-11-24 A3：** [实施实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)已记录 API28 真实登录、前台同步、异常恢复、队列保护及服务数据库灾备。用户已确认登录后自动授权和同步，[新版三屏线稿与交互](design/ANDROID_ACCOUNT_SYNC.md)待确认。自动授权及首次初始化待实现。API35/36 普通输入通过，实际账号回跳、可信存量首次发布、正式 SSO 与实体双机仍待验收。
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
