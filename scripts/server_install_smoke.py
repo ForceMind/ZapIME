@@ -95,6 +95,8 @@ def main():
 
         @contextmanager
         def local_proxy(cert, key):
+            upstream = urllib.request.build_opener(urllib.request.ProxyHandler({}))
+
             class Handler(BaseHTTPRequestHandler):
                 def log_message(self, *args):
                     pass
@@ -107,15 +109,20 @@ def main():
                             return
                         self.send_response(200)
                         self.send_header('Content-Type', 'application/json')
+                        data = path.read_bytes()
+                        self.send_header('Content-Length', str(len(data)))
                         self.end_headers()
-                        self.wfile.write(path.read_bytes())
+                        self.wfile.write(data)
                         return
                     if self.path == '/healthz' or self.path.startswith('/.well-known/zapime-deploy/'):
                         try:
-                            with urllib.request.urlopen('http://127.0.0.1:8787' + self.path, timeout=4) as reply:
+                            with upstream.open('http://127.0.0.1:8787' + self.path, timeout=4) as reply:
+                                data = reply.read(8192)
                                 self.send_response(reply.status)
+                                if reply.status != 204:
+                                    self.send_header('Content-Length', str(len(data)))
                                 self.end_headers()
-                                self.wfile.write(reply.read(8192))
+                                self.wfile.write(data)
                             return
                         except OSError:
                             self.send_error(502)
@@ -128,13 +135,17 @@ def main():
                 proxy.socket = tls.wrap_socket(proxy.socket, server_side=True)
                 worker = threading.Thread(target=proxy.serve_forever, daemon=True)
                 worker.start()
-                previous = env.get('CURL_CA_BUNDLE')
-                env['CURL_CA_BUNDLE'] = str(cert)
+                fixture_env = {'CURL_CA_BUNDLE': str(cert), 'NO_PROXY': '127.0.0.1', 'no_proxy': '127.0.0.1'}
+                previous = {name: env.get(name) for name in fixture_env}
+                env.update(fixture_env)
                 try:
                     yield
                 finally:
-                    if previous is None: env.pop('CURL_CA_BUNDLE', None)
-                    else: env['CURL_CA_BUNDLE'] = previous
+                    for name, value in previous.items():
+                        if value is None:
+                            env.pop(name, None)
+                        else:
+                            env[name] = value
                     proxy.shutdown()
                     worker.join(timeout=5)
 
@@ -181,6 +192,7 @@ def main():
                     '--android-signer', 'ab' * 32]
             with local_proxy(tls_cert, tls_key):
                 installed = command(*args, capture=True)
+                print(installed.rstrip(), flush=True)
                 assert 'HTTPS [PASS]' in installed and 'App Link [PASS]' in installed
                 assert 'Android App Link [PASS]' in command('/usr/local/bin/zapime', 'doctor', capture=True)
             current = INSTALL / 'current'

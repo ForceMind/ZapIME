@@ -344,6 +344,16 @@ if [[ -f $root/oidc/binding.json ]]; then
 fi
 if [[ $proxy == existing ]]; then "${compose[@]}" stop https; fi
 "${compose[@]}" up -d --wait sync
+local_sync_ready=0
+for attempt in {1..20}; do
+  if curl --noproxy 127.0.0.1 --connect-timeout 1 --max-time 2 --fail --silent \
+      http://127.0.0.1:8787/healthz >/dev/null; then
+    local_sync_ready=1
+    break
+  fi
+  sleep 1
+done
+[[ $local_sync_ready == 1 ]] || { echo 'The sync container is running but its HTTP health check never became ready.' >&2; exit 1; }
 if [[ ! -f $root/owner.json && ! -f $root/oidc/binding.json && -z $restore ]]; then
   owner=$(mktemp "$root/owner.json.incoming.XXXXXX")
   "${compose[@]}" exec -T sync zapime-sync provision 'Server owner' > "$owner"
@@ -374,8 +384,11 @@ if [[ $proxy == caddy ]]; then
     sleep 2
   done
   [[ $https_verified == 1 ]] || { echo 'Local service is ready, but public HTTPS did not reach this instance. Check DNS, ports and Caddy logs, then rerun.' >&2; exit 1; }
-elif verify_public_https; then
-  https_verified=1
+else
+  for attempt in {1..3}; do
+    if verify_public_https; then https_verified=1; break; fi
+    [[ $attempt == 3 ]] || sleep 1
+  done
 fi
 if [[ -n $verified_runtime ]]; then
   if [[ ${upgrading:-0} == 1 && -f $root/public-https.verified && $https_verified != 1 ]]; then
