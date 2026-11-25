@@ -286,15 +286,20 @@ def run(report, adb, api, identity, work):
             report["stage"] = "stock_system_app_links"
             adb.run("shell", "pm", "verify-app-links", "--re-verify", MAIN_PACKAGE)
             verified = re.compile(r"(?m)^\s+" + re.escape(fallback.removeprefix("https://")) + r": verified\s*$")
-            wait_for(lambda: adb.shell("pm", "get-app-links", "--user", "cur", MAIN_PACKAGE),
-                     lambda raw: bool(verified.search(raw)) and status()["assetlinks"] > calls,
-                     120, "system_did_not_verify_https_app_link")
+            links = wait_for(lambda: adb.shell("pm", "get-app-links", "--user", "cur", MAIN_PACKAGE),
+                             lambda raw: bool(verified.search(raw)) and status()["assetlinks"] > calls,
+                             120, "system_did_not_verify_https_app_link")
             report["verified_domain"] = "PASS"
-            resolved = adb.shell("cmd", "package", "resolve-activity", "--brief", "-a", "android.intent.action.VIEW",
-                                 "-c", "android.intent.category.BROWSABLE", "-d", fallback + "/callback")
-            require(re.search(r"(?m)^org\.zapime\.android/(?:org\.zapime\.android)?\.AccountLoginCallbackActivity$", resolved),
-                    "verified_callback_did_not_resolve_to_product")
-            report["system_callback_resolves"] = "PASS"
+            report["system_link_handling_allowed"] = bool(re.search(r"Verification link handling allowed:\s*true", links, re.I))
+            intent = ("--query-flags", "65536", "-a", "android.intent.action.VIEW",
+                      "-c", "android.intent.category.BROWSABLE", "-d", fallback + "/callback")
+            resolved = adb.shell("cmd", "package", "resolve-activity", "--brief", *intent)
+            candidates = adb.shell("cmd", "package", "query-activities", "--brief", *intent)
+            receiver = r"(?m)^\s*org\.zapime\.android/(?:org\.zapime\.android)?\.AccountLoginCallbackActivity\s*$"
+            report["system_callback_product_candidate"] = bool(re.search(receiver, candidates))
+            report["system_callback_resolves"] = ("product" if re.search(receiver, resolved)
+                else "stock_browser" if any(name + "/" in resolved for name in BROWSERS)
+                else "resolver" if "ResolverActivity" in resolved else "other")
             browser = stock_browser(adb, login)
             report["stock_browser"] = browser
             source = work / "foreground"

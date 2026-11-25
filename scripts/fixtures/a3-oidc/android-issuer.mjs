@@ -348,10 +348,15 @@ async function handle(req, res) {
     if (req.method === 'GET' && url.pathname === '/.well-known/assetlinks.json') {
       totals.assetlinks++;
       record();
-      reply(res, 200, JSON.stringify([{ relation: ['delegate_permission/common.handle_all_urls'], target: {
+      const relation = 'delegate_permission/common.handle_all_urls';
+      const statement = { relation: [relation], target: {
         namespace: 'android_app', package_name: mode === 'probe' ? 'org.zapime.android.a3loginprobe' : 'org.zapime.android',
         sha256_cert_fingerprints: [publicFingerprint],
-      } }]), 'application/json');
+      } };
+      if (publicPort) statement.relation_extensions = {
+        [relation]: { dynamic_app_link_components: [{ '/': '/callback' }, { '/': '*', exclude: true }] },
+      };
+      reply(res, 200, JSON.stringify([statement]), 'application/json');
     } else if (url.pathname === '/callback') {
       totals.callbackOpenedInBrowser++;
       record();

@@ -27,6 +27,8 @@
 
 `11cc105` 的两个现代镜像均使用原厂信任验证域名，Chrome 打开真实授权页。此轮停止于授权后状态断言，尚无成功回跳或文件选择器证据；所有临时入口、测试包及文件清理通过。复验增加精确回跳地址的系统解析及不含地址、令牌与恢复码的链路计数。正确导入后，先核对无额外开启操作的自动资料检查，再用已绑定资料库生成待发记录，验证持久回执，并保留恢复前的资料来源边界。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45551310511/job/138992912028) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45551310511/job/138992912418)
 
+`264fffa` 两版均验证域名，精确路径的 shell 解析探针提前失败。复验记录只读候选、默认处理器和系统的允许状态，实际 Chrome 到 App 回跳仍以真实授权与产品页面为准。临时域的 Digital Asset Links 明确限于 `/callback`，与现有 APK 的静态路径一致。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45552327355/job/138996135829) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45552327355/job/138996135581) · [Android 动态关联规则](https://developer.android.com/training/app-links/configure-assetlinks)
+
 ### 实体双机验收
 
 准备两台 Android 手机，记为 A 和 B，优先覆盖 Android 15 与 16。两台安装同版本、同签名、已配置正式测试环境的候选 APK。需要一个独立合成测试账号、允许该 APK 回跳且可自动授权的 HTTPS OIDC 和同步后端。B 需为全新测试安装或使用空白的独立 Android 用户配置。现有手机的数据保留。
