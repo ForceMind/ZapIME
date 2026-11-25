@@ -892,8 +892,10 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode):
     def restored_sync():
         counts = status()
         require(not counts["failure"], "automatic_restored_provider_failed")
+        receipts = ("服务器已确认本次写入，修订号 1", "服务器最近确认写入，修订号 1")
         return counts.get("uploads") == 1 and any(
-            node.get("package") == MAIN_PACKAGE and "已确认本次写入，修订号 1" in node.get("text", "")
+            node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
+            and any(receipt in node.get("text", "") for receipt in receipts)
             for node in window_nodes(adb, marker))
 
     wait_for(restored_sync, bool, 45, "automatic_restored_sync_not_observed")
