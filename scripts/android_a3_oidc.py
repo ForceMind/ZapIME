@@ -93,13 +93,13 @@ def wait_for(operation, predicate, seconds, reason):
 
 
 @contextmanager
-def issuer(work, leaf, key, fingerprint, go_proof, mode, foreground=None):
+def issuer(work, leaf, key, fingerprint, go_proof, mode, foreground=None, environment=None):
     summary = work / "issuer-status.json"
     program = ROOT / "target/a3-android-oidc/issuer/android-issuer.mjs"
     args = ["node", str(program), str(leaf), str(key), fingerprint, str(summary), str(go_proof), mode]
     if foreground is not None:
         args.append(str(foreground))
-    child = subprocess.Popen(args,
+    child = subprocess.Popen(args, env=environment,
                              stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     def status():
         require(child.poll() is None, "oidc_provider_exited")
@@ -208,7 +208,7 @@ def copy_hosts(adb, path, staged):
 
 
 @contextmanager
-def foreground_server(work, report, go_binary, mode):
+def foreground_server(work, report, go_binary, mode, public_origin=None, client_id="zapime-android-synthetic"):
     folder = work / "foreground"
     folder.mkdir(mode=0o700)
     example = ROOT / "target/debug/examples/manual_sync_fixture"
@@ -233,9 +233,9 @@ const publicKey=createPublicKey(readFileSync(process.argv[1])).export({format:'j
 writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixture',alg:'RS256',use:'sig'}]}), {flag:'wx',mode:0o600});
 """
         command("node", "-e", public_config, signing_key, jwks)
-        issuer_url = f"https://{LOGIN_HOST}"
+        issuer_url = public_origin or f"https://{LOGIN_HOST}"
         login_subject = "a3-auto-" + secrets.token_hex(12)
-        oidc = (issuer_url, issuer_url + "/a3-device-enrollment", "zapime-android-synthetic", login_subject, jwks)
+        oidc = (issuer_url, issuer_url + "/a3-device-enrollment", client_id, login_subject, jwks)
     fixture = Fixture(folder, go_binary, os.environ.get("ZAPIME_TEST_DATABASE_URL", ""), oidc=oidc)
     with fixture:
         tls = ssl.create_default_context(cafile=str(fixture.ca_file))
@@ -261,10 +261,11 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
             bridge.update(account=owner["account_id"], signingKeyPath=str(signing_key), loginSubject=login_subject)
             if mode == "automatic-recovery":
                 probe("export-automatic-recovery-fixture")
-                bridge["recovery"] = {
-                    "code": (folder / "recovery-code.txt").read_text(encoding="ascii"),
-                    "package": base64.b64encode((folder / "recovery-key.bin").read_bytes()).decode("ascii"),
-                }
+                if not public_origin:
+                    bridge["recovery"] = {
+                        "code": (folder / "recovery-code.txt").read_text(encoding="ascii"),
+                        "package": base64.b64encode((folder / "recovery-key.bin").read_bytes()).decode("ascii"),
+                    }
             status, original_key = api("GET", "/v1/key-descriptor", member["token"])
             require(status == 200 and original_key["state"] == ("empty" if mode == "automatic" else "registered"),
                     "automatic_fixture_initial_key_state")
@@ -842,15 +843,18 @@ def archive_origin_round(report, adb, marker, status, verify_server):
                                "cursor": 1, "remote_head": 1, "remote_history_unchanged": True}
 
 
-def automatic_login_round(report, adb, marker, status, verify_service, mode):
+def automatic_login_round(report, adb, marker, status, verify_service, mode, *,
+                          browser=BROWSER, browser_ready=None, select_recovery=None):
     ready = mode == "automatic"
     report["stage"] = "automatic_browser_sign_in"
     open_sync_account(adb, marker)
     click_text(adb, marker, "登录并开启同步")
     wait_for(lambda: adb.shell("dumpsys", "activity", "activities"),
-             lambda raw: any("mResumedActivity" in line and BROWSER in line for line in raw.splitlines()),
+             lambda raw: any(re.search(r"(?i)resumedactivity", line) and browser in line for line in raw.splitlines()),
              12, "stock_external_browser_not_foreground")
     report["browser_launched"] = "PASS"
+    if browser_ready is not None:
+        browser_ready()
     click_text(adb, marker, "Use synthetic test account")
     click_text(adb, marker, "Approve synthetic access")
     report["stage"] = "automatic_login_expected_outcome"
@@ -868,7 +872,10 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode):
             "automatic_login_grant_count_mismatch")
     require(counts.get("automaticInitializations", 0) == int(ready) and counts.get("uploads", 0) == 0
             and (counts["dataRequests"] > 0 if ready else counts["dataRequests"] == 0), "automatic_login_unexpected_transfer")
-    foreground_instrument(adb, "foreground-automatic-ready" if ready else "foreground-automatic-needs-key")
+    stage = "foreground-automatic-ready" if ready else "foreground-automatic-needs-key"
+    if select_recovery is not None:
+        stage = "foreground-automatic-queue-before-recovery"
+    foreground_instrument(adb, stage)
     verify_service()
     report["automatic_login"] = {"grant": "PASS", "durable_state": "PASS", "first_key_registered": ready,
                                  "recovery_prompt": not ready, "real_data_check": ready, "android_uploads": 0}
@@ -876,18 +883,22 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode):
         require(status().get("droppedAutomaticKeyReceipt") is True, "automatic_initialization_loss_not_exercised")
         report["initialization_receipt_reconciled"] = True
         return
-    require(status().get("droppedAutomaticGrantReceipt") is True, "automatic_grant_loss_not_exercised")
-    report["grant_receipt_reconciled"] = True
+    if select_recovery is None:
+        require(status().get("droppedAutomaticGrantReceipt") is True, "automatic_grant_loss_not_exercised")
+        report["grant_receipt_reconciled"] = True
     report["stage"] = "automatic_original_key_recovery"
     open_sync_account(adb, marker)
     click_text(adb, marker, "恢复同步密钥", scroll=True)
     wait_for(lambda: window_nodes(adb, marker), lambda nodes: any(
         node.get("package") == MAIN_PACKAGE and node.get("text") == "恢复原同步密钥" for node in nodes),
         25, "automatic_recovery_page_missing")
-    foreground_instrument(adb, "foreground-automatic-restore")
+    if select_recovery is None:
+        foreground_instrument(adb, "foreground-automatic-restore")
+        open_sync_account(adb, marker)
+    else:
+        select_recovery()
 
     report["stage"] = "automatic_restored_key_sync"
-    open_sync_account(adb, marker)
 
     def restored_sync():
         counts = status()

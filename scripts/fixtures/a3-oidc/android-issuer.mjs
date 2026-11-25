@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-only
-// The two synthetic hosts are reachable only through this CI job's adb reverse.
+// The fixture is private over adb reverse on API28, or reaches stock modern
+// devices through two short-lived HTTPS origins with an explicit route allowlist.
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
 import { createHash, createPrivateKey, randomBytes } from 'node:crypto';
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { createServer } from 'node:https';
+import { createServer as createHttpServer } from 'node:http';
+import { createServer as createHttpsServer } from 'node:https';
 import { createInterface } from 'node:readline';
 import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
@@ -16,14 +18,27 @@ const automatic = mode === 'automatic' || mode === 'automatic-recovery';
 const foreground = automatic || ['foreground', 'queue', 'archive'].includes(mode) ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
 if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
 const priorAccount = foreground?.bootstrap?.device.account_id;
-const issuer = 'https://a3-oidc.example.test';
-const fallback = 'https://return-a3.example.test';
+const publicPort = Number(process.env.ZAPIME_A3_PUBLIC_PORT || 0);
+const issuer = process.env.ZAPIME_A3_PUBLIC_ISSUER || 'https://a3-oidc.example.test';
+const fallback = process.env.ZAPIME_A3_PUBLIC_RETURN || 'https://return-a3.example.test';
+const registeredClient = process.env.ZAPIME_A3_PUBLIC_CLIENT || clientId;
+if (publicPort) {
+  assert.equal(mode, 'automatic-recovery');
+  assert.ok(Number.isInteger(publicPort) && publicPort > 1024 && publicPort <= 65535);
+  for (const origin of [issuer, fallback]) assert.match(origin, /^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/);
+  assert.notEqual(issuer, fallback);
+  assert.match(registeredClient, /^zapime-ci-[0-9a-f]{32}$/);
+  assert.equal(foreground.recovery, undefined);
+}
+const loginHost = new URL(issuer).host;
+const returnHost = new URL(fallback).host;
 const resource = issuer + '/a3-device-enrollment';
 const redirect = fallback + '/callback';
 const loginSubject = automatic ? foreground.loginSubject : subject;
 if (automatic) assert.match(loginSubject, /^a3-auto-[0-9a-f]{24}$/);
 const { provider, publicKey } = createIssuer(issuer, redirect, [resource],
-  automatic ? createPrivateKey(readFileSync(foreground.signingKeyPath)) : undefined, loginSubject);
+  automatic ? createPrivateKey(readFileSync(foreground.signingKeyPath)) : undefined, loginSubject, registeredClient);
+if (publicPort) provider.proxy = true;
 const verifyKey = await importJWK(publicKey, 'RS256');
 const delegate = provider.callback();
 const interactions = new Map();
@@ -80,6 +95,18 @@ function record() {
 function reply(res, status, payload, contentType = 'text/plain; charset=utf-8') {
   res.writeHead(status, { 'Content-Type': contentType, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' });
   res.end(payload);
+}
+
+function publicRoute(req, host, url) {
+  if (host === returnHost) {
+    return req.method === 'GET' && (url.pathname === '/.well-known/assetlinks.json' || url.pathname === '/callback');
+  }
+  if (host !== loginHost) return false;
+  if (req.method === 'GET' && ['/auth', '/v1/account-login', '/v1/session', '/v1/key-descriptor', '/v1/changes'].includes(url.pathname)) {
+    return true;
+  }
+  if (req.method === 'POST' && ['/token', '/v1/device-enrollment/automatic', '/v1/changes'].includes(url.pathname)) return true;
+  return ['GET', 'POST'].includes(req.method) && /^\/fixture-login\/[A-Za-z0-9_-]{12,128}$/.test(url.pathname);
 }
 
 async function read(req, limit, encoding = 'utf8') {
@@ -207,8 +234,16 @@ async function interact(req, res, path) {
 async function handle(req, res) {
   const url = new URL(req.url, issuer);
   const host = req.headers.host;
-  if (foreground && host === 'a3-oidc.example.test') {
-    if (mode === 'automatic-recovery' && req.method === 'GET' && url.pathname === '/fixture-enrollment/automatic-recovery' && !url.search) {
+  if (publicPort) {
+    if (!publicRoute(req, host, url)) {
+      reply(res, 404, 'not found');
+      return;
+    }
+    req.headers['x-forwarded-host'] = host;
+    req.headers['x-forwarded-proto'] = 'https';
+  }
+  if (foreground && host === loginHost) {
+    if (!publicPort && mode === 'automatic-recovery' && req.method === 'GET' && url.pathname === '/fixture-enrollment/automatic-recovery' && !url.search) {
       assert.ok(foreground.recovery && totals.automaticGrants === 1 && totals.dataRequests === 0);
       reply(res, 200, JSON.stringify(foreground.recovery), 'application/json');
       delete foreground.recovery;
@@ -259,7 +294,7 @@ async function handle(req, res) {
         assert.equal(device.device_id, JSON.parse(request).device_id);
         assert.equal(device.role, 'member');
         totals.automaticGrants = (totals.automaticGrants ?? 0) + 1;
-        if (mode === 'automatic-recovery') {
+        if (mode === 'automatic-recovery' && !publicPort) {
           assert.equal(totals.automaticGrants, 1);
           totals.droppedAutomaticGrantReceipt = true;
           record();
@@ -308,7 +343,7 @@ async function handle(req, res) {
     reply(res, 404, 'fixture does not serve data');
     return;
   }
-  if (host === 'return-a3.example.test') {
+  if (host === returnHost) {
     if (req.method === 'GET' && url.pathname === '/.well-known/assetlinks.json') {
       totals.assetlinks++;
       record();
@@ -325,7 +360,7 @@ async function handle(req, res) {
     }
     return;
   }
-  assert.equal(host, 'a3-oidc.example.test');
+  assert.equal(host, loginHost);
   if (url.pathname.startsWith('/fixture-login/')) {
     await interact(req, res, url.pathname);
     return;
@@ -385,12 +420,14 @@ async function handle(req, res) {
   delegate(req, res);
 }
 
-const server = createServer({ cert: readFileSync(cert), key: readFileSync(key), minVersion: 'TLSv1.2' }, (req, res) => {
+function handler(req, res) {
   handle(req, res).catch(() => {
     totals.failure = true;
     record();
     if (!res.headersSent) reply(res, 500, 'synthetic fixture rejected');
     else res.end();
   });
-});
-server.listen(0, '127.0.0.1', record);
+}
+const server = publicPort ? createHttpServer(handler)
+  : createHttpsServer({ cert: readFileSync(cert), key: readFileSync(key), minVersion: 'TLSv1.2' }, handler);
+server.listen(publicPort, '127.0.0.1', record);

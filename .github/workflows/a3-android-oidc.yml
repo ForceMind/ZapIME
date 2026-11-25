@@ -1,4 +1,4 @@
-name: Android API28 isolated OIDC login
+name: Android isolated OIDC login and key recovery
 on:
   pull_request:
     branches: [main]
@@ -15,6 +15,9 @@ on:
       - 'platforms/android/java/org/zapime/android/SyncSecrets.java'
       - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'
+      - 'scripts/android_a3_modern_oidc.py'
+      - 'scripts/build_android_a3_source_fixture.sh'
+      - 'platforms/android/java/org/zapime/android/SyncPreparation*.java'
       - 'scripts/run_android_a3_oidc_suite.sh'
       - 'scripts/fixtures/a3-oidc/**'
       - 'services/sync/internal/syncapi/automatic_enrollment*.go'
@@ -29,7 +32,12 @@ concurrency:
   group: a3-oidc-${{ github.head_ref }}
   cancel-in-progress: true
 jobs:
-  isolated-oidc-api28:
+  isolated-oidc:
+    name: Android API ${{ matrix.api }} account acceptance
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [28, 35, 36]
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 28
@@ -94,48 +102,19 @@ jobs:
           cp third_party/licenses/* "$assets/licenses/"
           cp third_party/NOTICE.txt "$assets/NOTICE.txt"
           python3 scripts/collect_rust_notices.py x86_64-linux-android "$assets/rust-licenses"
-      - name: Build the opt-in main app source for the isolated login test
+      - name: Build the opt-in main app source for isolated API28
+        if: matrix.api == 28
         run: |
           set -euo pipefail
-          tools="$ANDROID_HOME/build-tools/35.0.0"
-          platform="$ANDROID_HOME/platforms/android-36/android.jar"
           output="$PWD/target/a3-android-oidc/main-source"
-          mkdir -p "$output/classes" "$output/dex"
           cat > "$output/public.json" <<'JSON'
           {"issuer":"https://a3-oidc.example.test","authorization":"https://a3-oidc.example.test/auth","token":"https://a3-oidc.example.test/token","callback":"https://return-a3.example.test/callback","resource":"https://a3-oidc.example.test/a3-device-enrollment","sync_server":"https://a3-oidc.example.test","client_id":"zapime-android-synthetic"}
           JSON
-          python3 scripts/android_account_login_config.py platforms/android/AndroidManifest.xml "$output/AndroidManifest.xml" \
-            "$output/generated/org/zapime/android/AccountLoginDeployment.java" --config "$output/public.json"
-          python3 - "$output/AndroidManifest.xml" <<'PY'
-          import sys
-          import xml.etree.ElementTree as ET
-
-          namespace = "http://schemas.android.com/apk/res/android"
-          ET.register_namespace("android", namespace)
-          manifest = ET.parse(sys.argv[1])
-          manifest.find("application").set("{" + namespace + "}testOnly", "true")
-          ET.SubElement(manifest.getroot(), "instrumentation", {
-              "{" + namespace + "}name": "org.zapime.android.EnrollmentVaultProbe",
-              "{" + namespace + "}targetPackage": "org.zapime.android",
-          })
-          manifest.write(sys.argv[1], encoding="utf-8", xml_declaration=True)
-          PY
-          "$tools/aapt2" compile --dir platforms/android/res -o "$output/resources.zip"
-          "$tools/aapt2" link -o "$output/source-only.apk" --manifest "$output/AndroidManifest.xml" -I "$platform" \
-            "$output/resources.zip" -A "$output/assets" --java "$output/generated"
-          find platforms/android/java "$output/generated" -name '*.java' > "$output/java-sources.txt"
-          printf '%s\n' platforms/android/oidc-probe/java/{EnrollmentVaultProbe,ConsentStoreProbe,ForegroundSyncProbe,DefaultNetworkProbe}.java >> "$output/java-sources.txt"
-          javac -source 8 -target 8 -encoding UTF-8 -classpath "$platform" -d "$output/classes" @"$output/java-sources.txt"
-          jar cf "$output/classes.jar" -C "$output/classes" .
-          "$tools/d8" --lib "$platform" --min-api 28 --output "$output/dex" "$output/classes.jar"
-          zip -q -j "$output/source-only.apk" "$output/dex/classes.dex"
-          mkdir -p "$output/lib/x86_64"
-          cp target/x86_64-linux-android/release/libzapime_core.so "$output/lib/x86_64/"
-          (cd "$output" && zip -q -0 source-only.apk lib/x86_64/libzapime_core.so)
-          "$tools/zipalign" -f 4 "$output/source-only.apk" "$output/aligned.apk"
+          bash scripts/build_android_a3_source_fixture.sh "$output" "$output/public.json"
           bash scripts/test_android_sync_http.sh
           bash scripts/test_android_sync_round.sh
       - name: Build signed test-only App Link probe
+        if: matrix.api == 28
         run: |
           set -euo pipefail
           tools="$ANDROID_HOME/build-tools/35.0.0"
@@ -171,7 +150,8 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-zapime-a3-oidc-kvm.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - name: Verify an actual system App Link and OIDC browser return
+      - name: Verify an actual API28 system App Link and OIDC browser return
+        if: matrix.api == 28
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 28
@@ -182,10 +162,30 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -wipe-data -no-snapshot -noaudio -no-boot-anim -writable-system
           emulator-boot-timeout: 300
           script: bash scripts/run_android_a3_oidc_suite.sh
+      - name: Prepare pinned Cloudflare client for temporary test HTTPS
+        if: matrix.api != 28
+        run: |
+          set -euo pipefail
+          output="$PWD/target/a3-android-oidc/cloudflared"
+          curl --fail --silent --show-error --location --retry 3 --max-time 90 https://github.com/cloudflare/cloudflared/releases/download/2026.10.6/cloudflared-linux-amd64 -o "$output"
+          echo "1d356dac769d0dbf62ebe588c4034824bbff98d5790c2f844cc99e0e2f57462d  $output" | sha256sum --check
+          chmod 700 "$output"
+      - name: Verify stock App Links, browser login and system file selection
+        if: matrix.api != 28
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          target: google_apis
+          arch: x86_64
+          avd-name: zapime-a3-modern-${{ matrix.api }}-${{ github.run_id }}-${{ github.run_attempt }}
+          force-avd-creation: true
+          emulator-options: -no-window -gpu swiftshader_indirect -wipe-data -no-snapshot -noaudio -no-boot-anim
+          emulator-boot-timeout: 300
+          script: python3 scripts/android_a3_modern_oidc.py ${{ matrix.api }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ZapIME-API28-isolated-OIDC
+          name: ZapIME-API-${{ matrix.api }}-isolated-OIDC
           path: |
             target/a3-android-oidc/report.json
             target/a3-android-oidc/main-report.json
@@ -194,4 +194,5 @@ jobs:
             target/a3-android-oidc/archive-origin-report.json
             target/a3-android-oidc/automatic-report.json
             target/a3-android-oidc/automatic-recovery-report.json
+            target/a3-android-oidc/modern-report.json
           if-no-files-found: error

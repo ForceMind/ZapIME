@@ -286,18 +286,22 @@ final class ForegroundSyncProbe {
             verifyAutomaticLogin(context, false);
             SyncPreparation.restoreForConsent(context, consent.account, code, encrypted, consent.generation, config, () -> false);
             verifyAutomaticLogin(context, true);
-            long handle = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
-            require(handle != 0);
-            try {
-                edit(handle, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
-            } finally {
-                NativeCore.close(handle);
-            }
-            checkReceipt(context, RECORD, OPERATION, 0);
+            queueAutomaticRecovery(context);
         } finally {
             Arrays.fill(code, (byte) 0);
             Arrays.fill(encrypted, (byte) 0);
         }
+    }
+
+    static void queueAutomaticRecovery(Context context) throws Exception {
+        long handle = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+        require(handle != 0);
+        try {
+            edit(handle, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
+        } finally {
+            NativeCore.close(handle);
+        }
+        checkReceipt(context, RECORD, OPERATION, 0);
     }
 
     static void queueRecovery(Context context) throws Exception {
