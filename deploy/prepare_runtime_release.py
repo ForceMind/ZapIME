@@ -6,6 +6,7 @@ import argparse
 import hashlib
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import tempfile
 
@@ -55,12 +56,15 @@ def prepare(args):
         launcher = run("git", "show", f"{commit}:deploy/bootstrap.sh", capture_output=True).stdout
         (package / "bootstrap.sh").write_bytes(launcher)
         bootstrap_digest = hashlib.sha256(launcher).hexdigest()
-        command = (
-            f"( set -e; printf '%s  %s\\n' {bootstrap_digest} bootstrap.sh | sha256sum -c;"
-            ' sudo bash -c "$(cat bootstrap.sh)" zapime-install --install'
-            f' --bundle "$PWD/runtime" --version {args.version} --key-sha256 {pin}'
-            ' -- --image-archive "$PWD/images.tar" )'
+        launcher_command = (
+            'set -e; umask 077; stage=$(mktemp -d /tmp/zapime-launch.XXXXXXXX);'
+            """ trap 'rm -rf -- "$stage"' EXIT;"""
+            ' cp -- "$1/bootstrap.sh" "$stage/bootstrap.sh";'
+            ' printf "%s  %s\\n" "$2" "$stage/bootstrap.sh" | sha256sum -c;'
+            ' bash "$stage/bootstrap.sh" --install --bundle "$1/runtime"'
+            ' --version "$3" --key-sha256 "$4" -- --image-archive "$1/images.tar"'
         )
+        command = f'sudo bash -c {shlex.quote(launcher_command)} zapime-install "$PWD" {bootstrap_digest} {args.version} {pin}'
         (package / "INSTALL.txt").write_text(command + "\n", encoding="utf-8", newline="\n")
         output.mkdir(mode=0o700)
         for name in ("runtime", "images.tar", "bootstrap.sh", "INSTALL.txt"):

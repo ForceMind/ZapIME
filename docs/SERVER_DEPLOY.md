@@ -45,7 +45,7 @@ bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.
 新版入口为 `deploy/bootstrap.sh --install`。同时指定固定发布版本、HTTPS 发布目录或本地包路径，以及从独立渠道确认的公钥 SHA-256。线上首条命令先确认启动器自身的固定摘要，再把这份完整脚本以管理员权限执行。下面的环境变量来自待发布版本的可信清单，域名按最终发布地址填写。
 
 ```bash
-( set -e; file=$(mktemp); trap 'rm -f -- "$file"' EXIT; curl -fsSL "$ZAPIME_BOOTSTRAP_URL" -o "$file"; printf '%s  %s\n' "$ZAPIME_BOOTSTRAP_SHA256" "$file" | sha256sum -c; sudo bash -c "$(cat "$file")" zapime-install --install --source "$ZAPIME_RELEASE_URL" --version "$ZAPIME_VERSION" --key-sha256 "$ZAPIME_RELEASE_KEY_SHA256" )
+sudo bash -c 'set -e; umask 077; stage=$(mktemp -d /tmp/zapime-launch.XXXXXXXX); trap "rm -rf -- \"$stage\"" EXIT; curl -fsSL --proto "=https" --proto-redir "=https" "$1" -o "$stage/bootstrap.sh"; printf "%s  %s\n" "$2" "$stage/bootstrap.sh" | sha256sum -c; bash "$stage/bootstrap.sh" --install --source "$3" --version "$4" --key-sha256 "$5"' zapime-install "$ZAPIME_BOOTSTRAP_URL" "$ZAPIME_BOOTSTRAP_SHA256" "$ZAPIME_RELEASE_URL" "$ZAPIME_VERSION" "$ZAPIME_RELEASE_KEY_SHA256"
 ```
 
 已有离线包时，已核对摘要的启动器用 `--bundle /absolute/runtime`。入口参数后的 `-- --image-archive /absolute/images.tar` 传给运行安装器。服务器须已有可工作的 Docker 和基础依赖才能全程离线。安装器能在文件可用时按包管理器补齐基础依赖，使用 Linux、架构、Docker Engine 和 Compose v2 的实际能力决定是否继续。既有容器引擎优先复用。发行版仓库缺少所需 Docker 包时，输出缺少的运行时。
@@ -77,6 +77,8 @@ python3 deploy/prepare_runtime_release.py --version 0.1.0-server.1 --architectur
 2026-11-25，本机用合成镜像清单实测了 Git 快照、OpenSSL 签名、归档绑定、重复输出目录拒绝及安装命令语法。`45e0c9a` 在 Ubuntu amd64 CI 使用同一打包入口生成真实镜像归档，回读一行命令中的启动器和公钥摘要，卸载发包镜像标签后用成套目录完成首装、重复安装、HTTPS 和升级回归。作业目录及测试签名只用于当次验收。供下载的双架构试装包仍需确认使用 CI 产物区；arm64、正式签名、上海服务器和实体双机尚待对应验收。[发包与安装 CI](https://github.com/ForceMind/ZapIME/actions/runs/45594644857/job/139137401162)
 
 `24efde1` 在 Ubuntu amd64 CI 增加两项实测。用隔离回环 HTTPS 下载公钥、签名和运行 ZIP，并从签名绑定的本地镜像归档完成首装与重复安装。直接执行发包生成的原样 `INSTALL.txt` 命令，启动器篡改时在运行前被拒绝，原包完成历史 schema 4→5 升级且保留密文。此次 HTTPS 使用作业私有信任范围，线上发布地址和镜像仓库仍待验收。现有 CI 只保留测试日志。[一行命令及 HTTPS 下载 CI](https://github.com/ForceMind/ZapIME/actions/runs/45598541310/job/139150969400)
+
+用户已批准在部署草稿 PR 的既有 GitHub Actions 构建双架构试装包。两个原生 runner 使用同一版本和提交，各自生成临时签名并真实安装验证。清理隔离实例后仅保留白名单内的已测运行包、校验清单和试装说明，保存 7 天。试装应使用全新隔离主机。正式版本使用另一个长期签名信任起点。
 
 ### 更新与中断续跑
 

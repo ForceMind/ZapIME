@@ -3,12 +3,15 @@
 """Destructive only to this job's ephemeral synthetic /opt/zapime and Compose project.
 No Cloudflare credentials, real domain, user host, or production storage are used.
 """
+import argparse
 import json
 from contextlib import contextmanager
-from hashlib import sha256
+from hashlib import file_digest, sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 from pathlib import Path
+import platform
+import re
 import shutil
 import secrets
 import ssl
@@ -26,7 +29,34 @@ ROOT = Path(__file__).resolve().parents[1]
 INSTALL = Path('/opt/zapime')
 
 
+def save_preview(delivery, metadata, output):
+    output.mkdir(mode=0o755)
+    platform_archive = output / f'zapime-server-preview-{metadata["architecture"]}.tar.gz'
+    # Only transfer the already-tested package. The enclosing directory also
+    # contains private keys, TLS material and synthetic user data.
+    subprocess.run(['tar', '-C', str(delivery), '-czf', str(platform_archive),
+                    'bootstrap.sh', 'INSTALL.txt', 'images.tar', 'runtime/release-public.pem',
+                    'runtime/zapime-runtime.zip', 'runtime/zapime-runtime.sig'], check=True)
+    with platform_archive.open('rb') as archive:
+        metadata['delivery_sha256'] = file_digest(archive, 'sha256').hexdigest()
+    metadata['delivery_bytes'] = platform_archive.stat().st_size
+    (output / 'preview.json').write_text(json.dumps(metadata, indent=2, sort_keys=True) + '\n')
+    (output / 'README.txt').write_text(
+        'ZapIME temporary server preview. Use a fresh disposable Linux instance.\n'
+        'This per-job signing key is temporary. Install future production releases on a fresh instance.\n'
+        'Verify the delivery SHA-256 against the independently published value before extracting.\n'
+        'Extract the tar.gz, enter its directory, and run the command in INSTALL.txt.\n'
+    )
+    output.chmod(0o755)
+    for name in (platform_archive.name, 'preview.json', 'README.txt'):
+        (output / name).chmod(0o644)
+    print(f'PASS retained preview: {metadata["architecture"]} {metadata["version"]} {metadata["delivery_sha256"]}', flush=True)
+
+
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--save-preview', action='store_true')
+    args = parser.parse_args()
     if os.environ.get('GITHUB_ACTIONS') != 'true' or os.geteuid() != 0:
         raise SystemExit('Dedicated root CI runner required; refuses local installs/data deletion')
     sha = os.environ.get('GITHUB_SHA', '')
@@ -34,6 +64,19 @@ def main():
         raise SystemExit('Exact CI commit required')
     if INSTALL.exists() or Path('/usr/local/bin/zapime').exists():
         raise SystemExit('Installer acceptance requires a fresh dedicated runner')
+    architecture = {'x86_64': 'amd64', 'aarch64': 'arm64'}.get(platform.machine())
+    if architecture is None:
+        raise SystemExit('Native amd64 or arm64 runner required')
+    version = '0.1.0-runtime.1'
+    preview_output = None
+    if args.save_preview:
+        run_id, attempt = (os.environ.get(name, '') for name in ('GITHUB_RUN_ID', 'GITHUB_RUN_ATTEMPT'))
+        runner_temp = Path(os.environ.get('RUNNER_TEMP', ''))
+        if (os.environ.get('RUNNER_ENVIRONMENT') != 'github-hosted' or not runner_temp.is_absolute()
+                or not all(re.fullmatch(r'[1-9][0-9]*', value) for value in (run_id, attempt))):
+            raise SystemExit('Preview output requires a dedicated GitHub-hosted run and attempt')
+        version = f'0.1.0-server-preview.{run_id}.{attempt}'
+        preview_output = runner_temp / 'zapime-server-preview'
     env = dict(os.environ, COMPOSE_PROJECT_NAME='zapime')
     def command(*args, capture=False, check=True, cwd=ROOT):
         result = subprocess.run(args, cwd=cwd, env=env, check=check,
@@ -179,14 +222,13 @@ def main():
             subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1',
                             '-subj', '/CN=ZapIME synthetic loopback', '-addext', 'subjectAltName=IP:127.0.0.1',
                             '-keyout', str(tls_key), '-out', str(tls_cert)], check=True, capture_output=True)
-            version = '0.1.0-runtime.1'
             delivery = work / 'delivery'
             command(sys.executable, str(ROOT / 'deploy/prepare_runtime_release.py'), '--version', version,
-                    '--architecture', 'amd64', '--output', str(delivery), '--private-key', str(key))
+                    '--architecture', architecture, '--output', str(delivery), '--private-key', str(key))
             archive, bundle, launcher = (delivery / name for name in ('images.tar', 'runtime', 'bootstrap.sh'))
             with ZipFile(bundle / 'zapime-runtime.zip') as package:
                 manifest = json.loads(package.read('manifest.json'))
-            assert manifest['source'] == sha
+            assert manifest['source'] == sha and manifest['architecture'] == architecture
             images = {name: image['reference'] for name, image in manifest['images'].items()}
             image_args = [argument for name, reference in images.items() for argument in ('--' + name, reference)]
             pin = sha256((bundle / 'release-public.pem').read_bytes()).hexdigest()
@@ -201,7 +243,7 @@ def main():
             for image in images.values():
                 command('docker', 'image', 'rm', image)
             release_files = {
-                f'/releases/{version}/amd64/{name}': (bundle / name).read_bytes()
+                f'/releases/{version}/{architecture}/{name}': (bundle / name).read_bytes()
                 for name in ('release-public.pem', 'zapime-runtime.sig', 'zapime-runtime.zip')
             }
             args = ['bash', str(launcher), '--install', '--source', 'https://127.0.0.1/releases',
@@ -242,9 +284,9 @@ def main():
             first = api('POST', '/v1/changes', device['token'], json.loads(packet.read_text()))
             assert first['revision'] == 1
             later = work / 'later-version'
-            later_version = '0.1.0-runtime.2'
+            later_version = f'{version}.upgrade'
             later_pin = command(sys.executable, str(ROOT / 'deploy/build_runtime_bundle.py'), '--version', later_version,
-                                '--architecture', 'amd64', '--output', str(later), '--private-key', str(key),
+                                '--architecture', architecture, '--output', str(later), '--private-key', str(key),
                                 '--archive', str(archive), *image_args, capture=True).strip()
             assert pin == later_pin
             original_release = current.resolve()
@@ -299,6 +341,14 @@ def main():
             assert command(*old_command, check=False).returncode != 0
             assert api('GET', '/v1/changes?after=0', legacy_owner['token'])['head'] == 1
             print('PASS packaged one-line install: launcher digest enforced; schema4 to schema5 migrated original encrypted record; downgrade rejected', flush=True)
+            if preview_output is not None:
+                cleanup()
+                save_preview(delivery, {
+                    'version': version, 'architecture': architecture, 'source': sha,
+                    'run_id': run_id, 'run_attempt': attempt, 'trust': 'temporary-ci-preview',
+                    'bootstrap_sha256': sha256(launcher.read_bytes()).hexdigest(),
+                    'public_key_sha256': pin, 'images_tar_sha256': manifest['archive_sha256'],
+                }, preview_output)
     try:
         setup('zapime-ci-install')
         install()
