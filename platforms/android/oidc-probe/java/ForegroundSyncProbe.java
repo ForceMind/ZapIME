@@ -266,6 +266,40 @@ final class ForegroundSyncProbe {
         }
     }
 
+    static void restoreAutomaticLogin(Context context, AccountLoginProtocol.Config config, byte[] fixture) throws Exception {
+        verifyAutomaticLogin(context, false);
+        SyncConsentStore.State consent = SyncConsentStore.load(context);
+        JSONObject input = new JSONObject(new String(fixture, StandardCharsets.UTF_8));
+        byte[] code = input.getString("code").getBytes(StandardCharsets.US_ASCII);
+        byte[] encrypted = Base64.getDecoder().decode(input.getString("package"));
+        try {
+            require(code.length == 43);
+            byte original = code[0];
+            code[0] = original == 'A' ? (byte) 'B' : (byte) 'A';
+            try {
+                SyncPreparation.restoreForConsent(context, consent.account, code, encrypted, consent.generation, config, () -> false);
+                throw new AssertionError("accepted invalid recovery code");
+            } catch (IOException rejected) {
+                require("sync_recovery_invalid".equals(rejected.getMessage()));
+            }
+            code[0] = original;
+            verifyAutomaticLogin(context, false);
+            SyncPreparation.restoreForConsent(context, consent.account, code, encrypted, consent.generation, config, () -> false);
+            verifyAutomaticLogin(context, true);
+            long handle = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);
+            require(handle != 0);
+            try {
+                edit(handle, RECORD, OPERATION, 0, "a3sync", "synthetic A3 automatic shortcut");
+            } finally {
+                NativeCore.close(handle);
+            }
+            checkReceipt(context, RECORD, OPERATION, 0);
+        } finally {
+            Arrays.fill(code, (byte) 0);
+            Arrays.fill(encrypted, (byte) 0);
+        }
+    }
+
     static void queueRecovery(Context context) throws Exception {
         verify(context, true);
         long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);

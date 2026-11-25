@@ -15,6 +15,7 @@ on:
       - 'platforms/android/java/org/zapime/android/SyncSecrets.java'
       - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'
+      - 'scripts/run_android_a3_oidc_suite.sh'
       - 'scripts/fixtures/a3-oidc/**'
       - 'services/sync/internal/syncapi/automatic_enrollment*.go'
       - 'scripts/fixtures/sync_https_server.py'
@@ -180,15 +181,7 @@ jobs:
           force-avd-creation: true
           emulator-options: -no-window -gpu swiftshader_indirect -wipe-data -no-snapshot -noaudio -no-boot-anim -writable-system
           emulator-boot-timeout: 300
-          script: |
-            set -e
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-auth.test
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture queue-window
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture archive-origin
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture automatic
-            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture automatic-recovery
+          script: bash scripts/run_android_a3_oidc_suite.sh
       - uses: actions/upload-artifact@v4
         if: always()
         with:

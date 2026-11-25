@@ -40,7 +40,7 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                 "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload", "foreground-switched-account",
                 "foreground-queue-window-seed", "foreground-queue-window-first", "foreground-queue-window-final",
                 "foreground-archive-import", "foreground-archive-edit", "foreground-archive-verify",
-                "foreground-automatic-ready", "foreground-automatic-needs-key")
+                "foreground-automatic-ready", "foreground-automatic-needs-key", "foreground-automatic-restore")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -91,6 +91,11 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     ForegroundSyncProbe.verifyArchive(getTargetContext(), true, true);
                 } else if ("foreground-automatic-ready".equals(foreground) || "foreground-automatic-needs-key".equals(foreground)) {
                     ForegroundSyncProbe.verifyAutomaticLogin(getTargetContext(), "foreground-automatic-ready".equals(foreground));
+                } else if ("foreground-automatic-restore".equals(foreground)) {
+                    AccountLoginProtocol.Config config = AccountLoginDeployment.config();
+                    byte[] input = fixture(config, "automatic-recovery", false);
+                    try { ForegroundSyncProbe.restoreAutomaticLogin(getTargetContext(), config, input); }
+                    finally { Arrays.fill(input, (byte) 0); }
                 } else {
                     result.putString("prior_connection_sha256", ForegroundSyncProbe.signedOut(getTargetContext()));
                 }

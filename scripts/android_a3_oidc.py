@@ -258,11 +258,17 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
         bootstrap = None
         if mode in AUTOMATIC_MODES:
             bridge.update(account=owner["account_id"], signingKeyPath=str(signing_key))
+            if mode == "automatic-recovery":
+                probe("export-automatic-recovery-fixture")
+                bridge["recovery"] = {
+                    "code": (folder / "recovery-code.txt").read_text(encoding="ascii"),
+                    "package": base64.b64encode((folder / "recovery-key.bin").read_bytes()).decode("ascii"),
+                }
             status, original_key = api("GET", "/v1/key-descriptor", member["token"])
             require(status == 200 and original_key["state"] == ("empty" if mode == "automatic" else "registered"),
                     "automatic_fixture_initial_key_state")
 
-            def verify_automatic_service():
+            def verify_automatic_service(revision=0):
                 status, devices = api("GET", "/v1/devices", owner["token"])
                 require(status == 200 and len(devices["devices"]) == 3, "automatic_fixture_device_count")
                 new = [item for item in devices["devices"] if item["id"] not in (owner["device_id"], member["device_id"])]
@@ -274,9 +280,18 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
                     require(key["registered_by"] == new[0]["id"], "automatic_fixture_not_initialized_by_android")
                 else:
                     require(key == original_key, "automatic_fixture_replaced_original_key")
-                status, page = api("GET", "/v1/changes?after=0", member["token"])
-                require(status == 200 and page["head"] == page["next_cursor"] == 0 and page["changes"] == [],
-                        "automatic_fixture_unexpected_data_changes")
+                status, page = api("GET", "/v1/changes?after=0", member["token"], decode=False)
+                observed = json.loads(page)
+                require(status == 200 and observed["head"] == observed["next_cursor"] == revision
+                        and len(observed["changes"]) == revision, "automatic_fixture_unexpected_data_changes")
+                if revision:
+                    page_file = folder / "restored-receiver-page.json"
+                    page_file.write_bytes(page)
+                    result = probe("apply", "b", key_file, page_file)
+                    require(result[0]["applied"] == 1 and result[0]["echoed"] == 0, "automatic_restored_receiver_apply_failed")
+                    final = probe("verify-foreground-receiver", revision)[-1]
+                    require(final["records"] == final["cursor"] == revision and final["pending"] == 0,
+                            "automatic_restored_receiver_state")
         else:
             bootstrap = {"device": owner, "material": base64.b64encode((folder / "material.bin").read_bytes()).decode("ascii")}
             bridge["bootstrap"] = bootstrap
@@ -373,7 +388,7 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
         else:
             yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    expected_revision = {"archive": 1, "queue": 18, "foreground": 5}.get(mode, 0)
+    expected_revision = {"archive": 1, "queue": 18, "foreground": 5, "automatic-recovery": 1}.get(mode, 0)
     require(summary["cleanup_completed"] and summary["service_revision"] == expected_revision
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
@@ -435,8 +450,11 @@ def default_network_round(report, adb, identity, status, verify_receiver):
                 wait_for(lambda: phase("pending"), bool, 42, "default_network_loss_not_observed")
                 wait_for(original_settings, lambda observed: observed == {"data": "0", "wifi": "0"},
                          10, "default_network_disable_not_confirmed")
-                require(adb.shell("pidof", MAIN_PACKAGE, timeout=10) == process_before
-                        and status()["uploads"] == 2 and status()["dataRequests"] == before,
+                same_process = adb.shell("pidof", MAIN_PACKAGE, timeout=10) == process_before
+                offline = status()
+                report["default_network_offline_evidence"] = {"same_process": same_process, "baseline_requests": before,
+                                                              "offline_requests": offline["dataRequests"], "offline_uploads": offline["uploads"]}
+                require(same_process and offline["uploads"] == 2 and offline["dataRequests"] == before,
                         "default_network_offline_state_changed")
                 verify_receiver(2, read_only=True)
                 require(adb.run("reverse", "--list").stdout.splitlines() == routes, "default_network_reverse_changed")
@@ -853,6 +871,35 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode):
     verify_service()
     report["automatic_login"] = {"grant": "PASS", "durable_state": "PASS", "first_key_registered": ready,
                                  "recovery_prompt": not ready, "real_data_check": ready, "android_uploads": 0}
+    if ready:
+        require(status().get("droppedAutomaticKeyReceipt") is True, "automatic_initialization_loss_not_exercised")
+        report["initialization_receipt_reconciled"] = True
+        return
+    require(status().get("droppedAutomaticGrantReceipt") is True, "automatic_grant_loss_not_exercised")
+    report["grant_receipt_reconciled"] = True
+    report["stage"] = "automatic_original_key_recovery"
+    open_sync_account(adb, marker)
+    click_text(adb, marker, "恢复同步密钥", scroll=True)
+    wait_for(lambda: window_nodes(adb, marker), lambda nodes: any(
+        node.get("package") == MAIN_PACKAGE and node.get("text") == "恢复原同步密钥" for node in nodes),
+        25, "automatic_recovery_page_missing")
+    foreground_instrument(adb, "foreground-automatic-restore")
+
+    report["stage"] = "automatic_restored_key_sync"
+    open_sync_account(adb, marker)
+
+    def restored_sync():
+        counts = status()
+        require(not counts["failure"], "automatic_restored_provider_failed")
+        return counts.get("uploads") == 1 and any(
+            node.get("package") == MAIN_PACKAGE and "已确认本次写入，修订号 1" in node.get("text", "")
+            for node in window_nodes(adb, marker))
+
+    wait_for(restored_sync, bool, 45, "automatic_restored_sync_not_observed")
+    foreground_instrument(adb, "foreground-verify")
+    verify_service(1)
+    report["automatic_recovery"] = {"opened_product_recovery_page": True, "key_authentication": "PASS",
+                                    "android_foreground_uploads": 1, "independent_receiver": "PASS"}
 
 
 def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None, specialized=None):

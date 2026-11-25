@@ -206,6 +206,12 @@ async function handle(req, res) {
   const url = new URL(req.url, issuer);
   const host = req.headers.host;
   if (foreground && host === 'a3-oidc.example.test') {
+    if (mode === 'automatic-recovery' && req.method === 'GET' && url.pathname === '/fixture-enrollment/automatic-recovery' && !url.search) {
+      assert.ok(foreground.recovery && totals.automaticGrants === 1 && totals.dataRequests === 0);
+      reply(res, 200, JSON.stringify(foreground.recovery), 'application/json');
+      delete foreground.recovery;
+      return;
+    }
     if (!automatic && req.method === 'GET' && url.pathname === '/fixture-enrollment/foreground' && !url.search) {
       assert.equal(foregroundSeedServed, false);
       foregroundSeedServed = true;
@@ -251,12 +257,24 @@ async function handle(req, res) {
         assert.equal(device.device_id, JSON.parse(request).device_id);
         assert.equal(device.role, 'member');
         totals.automaticGrants = (totals.automaticGrants ?? 0) + 1;
+        if (mode === 'automatic-recovery') {
+          assert.equal(totals.automaticGrants, 1);
+          totals.droppedAutomaticGrantReceipt = true;
+          record();
+          res.destroy();
+          return;
+        }
       }
       if (initialize) {
         assert.equal(mode, 'automatic');
         assert.equal(upstream.status, 200);
         assert.deepEqual(JSON.parse(payload).descriptor, JSON.parse(request));
         totals.automaticInitializations = (totals.automaticInitializations ?? 0) + 1;
+        assert.equal(totals.automaticInitializations, 1);
+        totals.droppedAutomaticKeyReceipt = true;
+        record();
+        res.destroy();
+        return;
       }
       if (url.pathname === '/v1/session') totals.foregroundDeviceSessions = (totals.foregroundDeviceSessions ?? 0) + 1;
       if (url.pathname === '/v1/key-descriptor') totals.foregroundDescriptorRequests = (totals.foregroundDescriptorRequests ?? 0) + 1;

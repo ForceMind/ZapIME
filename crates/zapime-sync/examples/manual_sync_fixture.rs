@@ -196,6 +196,15 @@ fn main() {
         return;
     }
     let material = material(dir);
+    if command == "export-automatic-recovery-fixture" {
+        let (code, encrypted) =
+            workspace::create_recovery(&material).expect("make a key-only recovery file");
+        private(&dir.join("recovery-code.txt"), code.expose().as_bytes());
+        private(&dir.join("recovery-key.bin"), &encrypted);
+        let mut b = open(dir, "b");
+        status(&mut b, &material, command);
+        return;
+    }
     if command == "export-archive-origin-fixture" {
         let mut b = open(dir, "b");
         let id = Uuid::from_u128(0xf867_8ce1_c77a_4f88_957d_f07f_9845_1953);
