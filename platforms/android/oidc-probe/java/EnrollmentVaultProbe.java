@@ -39,7 +39,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                 "foreground-queue-conflict", "foreground-conflict-pending", "foreground-network-capability", "foreground-default-network",
                 "foreground-queue-interrupted", "foreground-closed-upload", "foreground-reconciled-upload", "foreground-switched-account",
                 "foreground-queue-window-seed", "foreground-queue-window-first", "foreground-queue-window-final",
-                "foreground-archive-import", "foreground-archive-edit", "foreground-archive-verify")
+                "foreground-archive-import", "foreground-archive-edit", "foreground-archive-verify",
+                "foreground-automatic-ready", "foreground-automatic-needs-key")
                 .contains(stage) ? stage : null;
         start();
     }
@@ -88,6 +89,8 @@ public final class EnrollmentVaultProbe extends Instrumentation {
                     result.putString("imported_sha256", ForegroundSyncProbe.editArchive(getTargetContext()));
                 } else if ("foreground-archive-verify".equals(foreground)) {
                     ForegroundSyncProbe.verifyArchive(getTargetContext(), true, true);
+                } else if ("foreground-automatic-ready".equals(foreground) || "foreground-automatic-needs-key".equals(foreground)) {
+                    ForegroundSyncProbe.verifyAutomaticLogin(getTargetContext(), "foreground-automatic-ready".equals(foreground));
                 } else {
                     result.putString("prior_connection_sha256", ForegroundSyncProbe.signedOut(getTargetContext()));
                 }

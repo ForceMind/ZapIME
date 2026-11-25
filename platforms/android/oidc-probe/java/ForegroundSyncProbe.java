@@ -235,6 +235,37 @@ final class ForegroundSyncProbe {
         checkReceipt(context, RECORD, OPERATION, acknowledged ? 1 : 0);
     }
 
+    static void verifyAutomaticLogin(Context context, boolean ready) throws Exception {
+        SyncConsentStore.State state = SyncConsentStore.load(context);
+        require(state.account != null && state.device != null && state.expectedKey != null);
+        SyncEnrollmentVault.Scope scope = state.verifiedDeployment(AccountLoginDeployment.config());
+        SyncHttp.Cancellation cancel = new SyncHttp.Cancellation();
+        try (SyncConnection saved = SyncConnectionStore.load(context);
+                SyncEnrollmentVault.Pending installed = SyncEnrollmentVault.loadAutomatic(context, scope)) {
+            require(saved != null && installed != null && state.matches(scope, saved.device) && "member".equals(saved.role));
+            char[] token = installed.credential();
+            try {
+                require(saved.matchesEnrollment(scope.config.syncServer, scope.account, installed.id, token));
+            } finally {
+                Arrays.fill(token, '\0');
+            }
+            SyncPreparation.State local = SyncPreparation.inspect(context);
+            require(local.initialized && local.prepared == ready && local.materialPresent == ready);
+            if (ready) {
+                require(state.expectedKey.same(SyncKeyRegistration.preparedLocal(context, saved, cancel)));
+                checkCursor(context, 0);
+            } else {
+                require(local.account == null && local.keyId == null);
+            }
+            byte[] candidate = SyncSecrets.loadInitialKey(context, scope.account);
+            try {
+                require(candidate == null);
+            } finally {
+                if (candidate != null) Arrays.fill(candidate, (byte) 0);
+            }
+        }
+    }
+
     static void queueRecovery(Context context) throws Exception {
         verify(context, true);
         long core = NativeCore.open(new File(context.getFilesDir(), "zapime").getAbsolutePath(), false);

@@ -12,14 +12,14 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 import org.json.JSONObject;
 
-/** Explicit device-local preparation only. No HTTP, automatic upload or global
- * account-key registration. All calls belong on the independent sync worker.
+/** Device-local preparation and first-key initialization on the sync worker.
  * Secret material loaded/created here is cleared in finally; successful recovery
  * output/codeOut and restore input buffers remain the caller's responsibility.
  */
 final class SyncPreparation {
     static final int MAX_RECOVERY=16*1024;
     private static final int MAX_MATERIAL=64*1024;
+    interface CommitCheck { void check() throws IOException; }
     static final class State {
         final UUID connectedAccount,account,keyId;
         final boolean initialized,materialPresent,prepared;
@@ -95,16 +95,21 @@ final class SyncPreparation {
         }
     }
     private static State install(Context context,UUID account,byte[] bytes)throws IOException {
+        return install(context,account,bytes,()->{});
+    }
+    private static State install(Context context,UUID account,byte[] bytes,CommitCheck guard)throws IOException {
         UUID key=materialKey(account,bytes);check(context,account);
         // Incoming material must match any existing database identity/fingerprint
         // before even a create-only vault write is attempted.
         State before=status(context,account,bytes);
         if(!before.initialized)throw new IOException("sync_workspace_uninitialized");
+        guard.check();
         SyncSecrets.saveIfAbsent(context,account,bytes);
         byte[] committed=SyncSecrets.load(context,account);
         try{
             if(committed==null||!MessageDigest.isEqual(bytes,committed))throw new IOException("sync_preparation_failed");
             check(context,account);
+            guard.check();
             JSONObject response=reply(NativeCore.prepareSync(root(context),account.toString(),committed));
             // Re-read actual persisted state; a returned success cannot replace
             // the identity checks or a failed database/vault readback.
@@ -114,6 +119,77 @@ final class SyncPreparation {
         }catch(IOException fixed){throw fixed;}
         catch(Exception|LinkageError invalid){throw new IOException("sync_preparation_failed");}
         finally{if(committed!=null)Arrays.fill(committed,(byte)0);}
+    }
+    private static SyncKeyRegistration.Descriptor descriptor(UUID account,byte[] bytes)throws IOException {
+        materialKey(account,bytes);
+        String wire=NativeCore.syncKeyDescriptor(account.toString(),bytes);
+        if(wire==null||wire.length()>1024)throw new IOException("sync_key_local_unavailable");
+        return SyncKeyRegistration.parseDescriptor(wire.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /** Only the exact registered material is promoted to the workspace vault. */
+    static SyncKeyRegistration.Result prepareAutomatic(Context context,SyncConnection device,SyncKeyRegistration.Result remote,
+            SyncHttp.Cancellation cancel,CommitCheck guard)throws IOException {
+        worker();guard.check();
+        UUID account=device.account;
+        SyncDatabase.check(context,account);
+        byte[] saved=null,candidate=null;
+        try{
+            saved=SyncSecrets.load(context,account);
+            State local=status(context,account,saved);
+            if(!local.initialized){
+                ResourceInstaller.prepare(context);
+                guard.check();
+                long handle=NativeCore.open(root(context),false);
+                if(handle==0)throw new IOException("sync_workspace_uninitialized");
+                NativeCore.close(handle);
+                local=status(context,account,saved);
+            }
+            if(!local.initialized)throw new IOException("sync_workspace_uninitialized");
+            guard.check();
+            if(saved==null)candidate=SyncSecrets.loadInitialKey(context,account);
+            if("empty".equals(remote.state)&&saved==null&&candidate==null){
+                if(local.account!=null||local.keyId!=null)throw new IOException("sync_material_missing");
+                byte[] generated=NativeCore.newSyncMaterial(account.toString());
+                try{
+                    materialKey(account,generated);
+                    guard.check();
+                    SyncSecrets.createInitialKey(context,account,generated);
+                }finally{if(generated!=null)Arrays.fill(generated,(byte)0);}
+                candidate=SyncSecrets.loadInitialKey(context,account);
+                if(candidate==null)throw new IOException("sync_preparation_failed");
+            }
+            byte[] material=saved!=null?saved:candidate;
+            if(material==null)return remote;
+            SyncKeyRegistration.Descriptor wanted=descriptor(account,material);
+            if("empty".equals(remote.state)){
+                if(local.keyId!=null&&!local.keyId.equals(wanted.keyId))throw new IOException("sync_consent_key_mismatch");
+                // Validate the candidate against existing SQLite identity before a service side effect.
+                status(context,account,material);
+                guard.check();
+                try{
+                    remote=SyncKeyRegistration.initializeRemote(context,device,wanted,cancel);
+                }catch(SyncHttp.Failure uncertain){
+                    if(!("key_conflict".equals(uncertain.code)||"network".equals(uncertain.code)||"timeout".equals(uncertain.code)))throw uncertain;
+                    guard.check();
+                    remote=SyncKeyRegistration.inspectRemote(context,device,cancel);
+                    if("empty".equals(remote.state))throw uncertain;
+                }
+            }
+            guard.check();
+            if("registered".equals(remote.state)&&wanted.same(remote.descriptor)){
+                if(!local.prepared)install(context,account,material,guard);
+                if(candidate!=null){
+                    guard.check();
+                    SyncSecrets.forgetInitialKey(context,account);
+                }
+            }
+            return remote;
+        }catch(RuntimeException|LinkageError invalid){throw new IOException("sync_preparation_failed");}
+        finally{
+            if(saved!=null)Arrays.fill(saved,(byte)0);
+            if(candidate!=null)Arrays.fill(candidate,(byte)0);
+        }
     }
     static State create(Context context,UUID expected)throws IOException {
         worker();synchronized(SyncPreparation.class){

@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicReference;
 final class SyncConsentController {
     enum Status {
         SIGNED_OUT, WAITING_FOR_DEVICE, OFF, CHECKING, PAUSED, WAITING_FOR_KEY, WORKSPACE_REQUIRED,
-        KEY_CONFLICT, KEY_UNREGISTERED, REVOKED, READY
+        KEY_CONFLICT, KEY_UNREGISTERED, PREPARATION_FAILED, REVOKED, READY
     }
     private static final AtomicReference<UUID> STOPPED = new AtomicReference<>();
 
@@ -58,14 +58,24 @@ final class SyncConsentController {
 
     static Assessment enable(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State confirmed,
             SyncHttp.Cancellation cancel) throws IOException {
+        return enable(context, config, confirmed, cancel, () -> {});
+    }
+
+    static Assessment enable(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State confirmed,
+            SyncHttp.Cancellation cancel, Runnable initializing) throws IOException {
         if (confirmed.account == null || confirmed.device == null || confirmed.expectedKey != null) {
             throw new IOException("sync_consent_identity");
         }
-        return check(context, config, confirmed, cancel, true);
+        return check(context, config, confirmed, cancel, true, initializing);
     }
 
     private static Assessment check(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State state,
             SyncHttp.Cancellation cancel, boolean confirm) throws IOException {
+        return check(context, config, state, cancel, confirm, () -> {});
+    }
+
+    private static Assessment check(Context context, AccountLoginProtocol.Config config, SyncConsentStore.State state,
+            SyncHttp.Cancellation cancel, boolean confirm, Runnable initializing) throws IOException {
         current(context, state, cancel);
         SyncEnrollmentVault.Scope scope = state.verifiedDeployment(config);
         try (SyncConnection saved = SyncConnectionStore.load(context)) {
@@ -76,6 +86,18 @@ final class SyncConsentController {
             verifyDevice(saved, cancel);
             current(context, state, cancel);
             SyncKeyRegistration.Result remote = SyncKeyRegistration.inspectRemote(context, saved, cancel);
+            if (confirm && ("registered".equals(remote.state) || "empty".equals(remote.state))) {
+                if ("empty".equals(remote.state)) initializing.run();
+                SyncConsentStore.State confirmed = state;
+                try {
+                    remote = SyncPreparation.prepareAutomatic(context, saved, remote, cancel, () -> current(context, confirmed, cancel));
+                } catch (SyncHttp.Failure failed) {
+                    if ("empty".equals(remote.state) && ("forbidden".equals(failed.code) || "unsupported".equals(failed.code))) {
+                        return disable(context, state, Status.KEY_UNREGISTERED);
+                    }
+                    throw failed;
+                }
+            }
             if (!"registered".equals(remote.state)) {
                 Status status = "empty".equals(remote.state) ? Status.KEY_UNREGISTERED : Status.KEY_CONFLICT;
                 return disable(context, state, status);

@@ -24,7 +24,8 @@ final class SyncSecrets {
     private static final int MAX_MATERIAL=64*1024,HEADER=16,TAG=16;
     private static final byte[] MAGIC={'Z','K','V',1};
     private enum Purpose {
-        MATERIAL("material"), CONNECTION("connection"), ENROLLMENT("enrollment"), CONSENT("consent");
+        MATERIAL("material"), CONNECTION("connection"), ENROLLMENT("enrollment"), CONSENT("consent"),
+        AUTOMATIC_DEVICE("automatic-device"), INITIAL_KEY("initial-key");
         final String domain;
         Purpose(String domain){this.domain=domain;}
     }
@@ -147,6 +148,21 @@ final class SyncSecrets {
     }
     static void forgetEnrollment(Context context,UUID account)throws IOException {
         worker();synchronized(SyncSecrets.class){forgetLocked(context,account,Purpose.ENROLLMENT);}
+    }
+    static void createAutomaticDevice(Context context,UUID account,byte[] bytes)throws IOException {
+        worker();synchronized(SyncSecrets.class){createLocked(context,account,bytes,Purpose.AUTOMATIC_DEVICE);}
+    }
+    static byte[] loadAutomaticDevice(Context context,UUID account)throws IOException {
+        worker();synchronized(SyncSecrets.class){return loadLocked(context,account,Purpose.AUTOMATIC_DEVICE);}
+    }
+    static void createInitialKey(Context context,UUID account,byte[] bytes)throws IOException {
+        worker();synchronized(SyncSecrets.class){createLocked(context,account,bytes,Purpose.INITIAL_KEY);}
+    }
+    static byte[] loadInitialKey(Context context,UUID account)throws IOException {
+        worker();synchronized(SyncSecrets.class){return loadLocked(context,account,Purpose.INITIAL_KEY);}
+    }
+    static void forgetInitialKey(Context context,UUID account)throws IOException {
+        worker();synchronized(SyncSecrets.class){forgetLocked(context,account,Purpose.INITIAL_KEY);}
     }
     static void saveSyncConsent(Context context,UUID slot,byte[] bytes)throws IOException {
         worker();synchronized(SyncSecrets.class){saveLocked(context,slot,bytes,Purpose.CONSENT);}

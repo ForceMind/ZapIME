@@ -61,6 +61,42 @@ final class SyncConnectionStore {
             }
         }
     }
+    static void promoteAutomatic(Context context,SyncConnection connection,SyncHttp.Cancellation cancel)throws IOException {
+        worker();
+        synchronized(SyncConnectionStore.class){
+            cancel.check();
+            SyncDatabase.check(context,connection.account);
+            if(!connection.validEnrollmentSession())throw new IOException("sync_enrollment_session");
+            boolean known=false;
+            try(SyncConnection active=load(context)){
+                if(active!=null){
+                    if(!connection.sameDeviceCredential(active))throw new IOException("sync_connection_exists");
+                    known=true;
+                }
+            }
+            // A successful write can outlive an interrupted activation of the account index.
+            byte[] previous=SyncSecrets.loadConnection(context,connection.account);
+            try{
+                if(previous!=null){
+                    try(SyncConnection stored=SyncConnection.stored(previous)){
+                        if(!connection.sameDeviceCredential(stored))throw new IOException("sync_connection_exists");
+                        known=true;
+                    }
+                }
+            }finally{if(previous!=null)Arrays.fill(previous,(byte)0);}
+            byte[] bytes=connection.encode();
+            try{
+                cancel.check();
+                if(known)SyncSecrets.saveConnection(context,connection.account,bytes);
+                else SyncSecrets.createConnection(context,connection.account,bytes);
+            }finally{Arrays.fill(bytes,(byte)0);}
+            cancel.check();
+            activate(context,connection.account);
+            try(SyncConnection committed=load(context)){
+                if(!connection.matchesSnapshot(committed))throw new IOException("sync_connection_commit");
+            }
+        }
+    }
     private static void activate(Context context,UUID account)throws IOException {
         if(!context.getSharedPreferences("sync_connection",Context.MODE_PRIVATE).edit().putString("active_account",account.toString()).commit()){
             throw new IOException("sync_connection_index");

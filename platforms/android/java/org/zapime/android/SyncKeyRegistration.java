@@ -204,6 +204,21 @@ final class SyncKeyRegistration {
             return parseRemote(response,snapshot.account);
         }finally{if(response!=null)Arrays.fill(response,(byte)0);}
     }
+    static Result initializeRemote(Context context,SyncConnection snapshot,Descriptor candidate,
+            SyncHttp.Cancellation cancellation)throws IOException {
+        worker();cancellation.check();sameConnection(context,snapshot);
+        byte[] request=candidate.wire(),response=null;
+        try{
+            try{response=snapshot.initializeKeyDescriptor(request,cancellation);}
+            finally{cancellation.check();sameConnection(context,snapshot);}
+            Result result=parse(response,snapshot.account,candidate);
+            if(!result.matchesLocal)throw invalid();
+            return result;
+        }finally{
+            Arrays.fill(request,(byte)0);
+            if(response!=null)Arrays.fill(response,(byte)0);
+        }
+    }
     private static Result exchange(Context context,SyncConnection snapshot,Descriptor local,byte[] registration,SyncHttp.Cancellation cancellation)throws IOException {
         sameLocal(context,snapshot,local,cancellation);byte[] response=null;
         try{

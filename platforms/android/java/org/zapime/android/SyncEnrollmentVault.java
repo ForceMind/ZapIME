@@ -117,22 +117,31 @@ final class SyncEnrollmentVault {
     }
 
     static Pending prepare(Context context, Scope scope, String name) throws IOException {
+        return prepare(context, scope, name, false);
+    }
+
+    static Pending prepareAutomatic(Context context, Scope scope) throws IOException {
+        return prepare(context, scope, "Android", true);
+    }
+
+    private static Pending prepare(Context context, Scope scope, String name, boolean automatic) throws IOException {
         worker();
         synchronized (SyncEnrollmentVault.class) {
-            Pending previous = loadLocked(context, scope);
+            Pending previous = loadLocked(context, scope, automatic);
             if (previous != null) return previous;
             byte[] encodedName = encodeName(name);
             byte[] wire = new byte[FIXED_LENGTH + 1 + encodedName.length], random = new byte[32];
             try {
-                SigningKey key = signingKey(scope.account, true);
+                SigningKey key = signingKey(scope.account, true, automatic);
                 UUID request = UUID.randomUUID();
                 long deadline = Instant.now().plusSeconds(9 * 60).getEpochSecond();
                 RANDOM.nextBytes(random);
                 ByteBuffer.wrap(wire).put((byte) VERSION).put(scope.binding)
                         .putLong(request.getMostSignificantBits()).putLong(request.getLeastSignificantBits())
                         .putLong(deadline).put(random).put(hash(key.encoded)).put((byte) encodedName.length).put(encodedName);
-                SyncSecrets.createEnrollment(context, scope.account, wire);
-                Pending committed = loadLocked(context, scope);
+                if (automatic) SyncSecrets.createAutomaticDevice(context, scope.account, wire);
+                else SyncSecrets.createEnrollment(context, scope.account, wire);
+                Pending committed = loadLocked(context, scope, automatic);
                 if (committed == null) throw new IOException("sync_enrollment_commit");
                 return committed;
             } finally {
@@ -145,12 +154,20 @@ final class SyncEnrollmentVault {
     static Pending load(Context context, Scope scope) throws IOException {
         worker();
         synchronized (SyncEnrollmentVault.class) {
-            return loadLocked(context, scope);
+            return loadLocked(context, scope, false);
         }
     }
 
-    private static Pending loadLocked(Context context, Scope scope) throws IOException {
-        byte[] wire = SyncSecrets.loadEnrollment(context, scope.account);
+    static Pending loadAutomatic(Context context, Scope scope) throws IOException {
+        worker();
+        synchronized (SyncEnrollmentVault.class) {
+            return loadLocked(context, scope, true);
+        }
+    }
+
+    private static Pending loadLocked(Context context, Scope scope, boolean automatic) throws IOException {
+        byte[] wire = automatic ? SyncSecrets.loadAutomaticDevice(context, scope.account)
+                : SyncSecrets.loadEnrollment(context, scope.account);
         if (wire == null) return null;
         try {
             if (wire.length < FIXED_LENGTH || wire.length > FIXED_LENGTH + 1 + MAX_NAME_BYTES
@@ -164,7 +181,7 @@ final class SyncEnrollmentVault {
             UUID id = new UUID(fields.getLong(), fields.getLong());
             long deadline = fields.getLong();
             if (deadline <= 0 || id.version() != 4 || id.variant() != 2) throw new IOException("sync_enrollment_format");
-            SigningKey key = signingKey(scope.account, false);
+            SigningKey key = signingKey(scope.account, false, automatic);
             if (!MessageDigest.isEqual(Arrays.copyOfRange(wire, FIXED_LENGTH - DIGEST, FIXED_LENGTH), hash(key.encoded))) {
                 throw new IOException("sync_enrollment_key_changed");
             }
@@ -209,11 +226,11 @@ final class SyncEnrollmentVault {
     static void forget(Context context, Scope scope, UUID id) throws IOException {
         worker();
         synchronized (SyncEnrollmentVault.class) {
-            try (Pending saved = loadLocked(context, scope)) {
+            try (Pending saved = loadLocked(context, scope, false)) {
                 if (saved == null || !saved.id.equals(id)) throw new IOException("sync_enrollment_scope");
                 SyncSecrets.forgetEnrollment(context, scope.account);
                 try {
-                    keyStore().deleteEntry(signingAlias(scope.account));
+                    keyStore().deleteEntry(signingAlias(scope.account, false));
                 } catch (GeneralSecurityException failure) {
                     throw new IOException("sync_enrollment_key");
                 }
@@ -221,8 +238,8 @@ final class SyncEnrollmentVault {
         }
     }
 
-    private static String signingAlias(UUID account) {
-        return "org.zapime.android.sync.enrollment-sign.v1." + account;
+    private static String signingAlias(UUID account, boolean automatic) {
+        return (automatic ? "org.zapime.android.sync.automatic-sign.v1." : "org.zapime.android.sync.enrollment-sign.v1.") + account;
     }
 
     private static KeyStore keyStore() throws GeneralSecurityException, IOException {
@@ -231,9 +248,9 @@ final class SyncEnrollmentVault {
         return store;
     }
 
-    private static SigningKey signingKey(UUID account, boolean create) throws IOException {
+    private static SigningKey signingKey(UUID account, boolean create, boolean automatic) throws IOException {
         try {
-            String alias = signingAlias(account);
+            String alias = signingAlias(account, automatic);
             KeyStore store = keyStore();
             if (!store.containsAlias(alias) && create) {
                 KeyPairGenerator generator = KeyPairGenerator.getInstance("EC", "AndroidKeyStore");

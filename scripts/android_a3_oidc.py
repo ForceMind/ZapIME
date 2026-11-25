@@ -29,6 +29,7 @@ APP_PHASE = "/data/user/0/" + PACKAGE + "/files/phase"
 MAIN_PACKAGE = "org.zapime.android"
 MAIN_ACCOUNT = "98a01050-3185-4eed-bac4-127426c17372"
 LOGIN_HOST = "a3-oidc.example.test"
+AUTOMATIC_MODES = ("automatic", "automatic-recovery")
 RETURN_HOST = "return-a3.example.test"
 HOSTS = "/system/etc/hosts"
 BROWSER = "org.chromium.webview_shell/.WebViewBrowserActivity"
@@ -220,7 +221,21 @@ def foreground_server(work, report, go_binary, mode):
         require(rows and all(row["status"] == "PASS" for row in rows), "foreground_shared_report_invalid")
         return rows
 
-    fixture = Fixture(folder, go_binary, os.environ.get("ZAPIME_TEST_DATABASE_URL", ""))
+    oidc = None
+    if mode in AUTOMATIC_MODES:
+        signing_key, jwks = folder / "issuer.pem", folder / "jwks.json"
+        command("openssl", "genpkey", "-algorithm", "RSA", "-pkeyopt", "rsa_keygen_bits:2048", "-out", signing_key)
+        signing_key.chmod(0o600)
+        public_config = """
+const {createPublicKey}=require('node:crypto');
+const {readFileSync,writeFileSync}=require('node:fs');
+const publicKey=createPublicKey(readFileSync(process.argv[1])).export({format:'jwk'});
+writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixture',alg:'RS256',use:'sig'}]}), {flag:'wx',mode:0o600});
+"""
+        command("node", "-e", public_config, signing_key, jwks)
+        issuer_url = f"https://{LOGIN_HOST}"
+        oidc = (issuer_url, issuer_url + "/a3-device-enrollment", "zapime-android-synthetic", "a3-synthetic-user", jwks)
+    fixture = Fixture(folder, go_binary, os.environ.get("ZAPIME_TEST_DATABASE_URL", ""), oidc=oidc)
     with fixture:
         tls = ssl.create_default_context(cafile=str(fixture.ca_file))
 
@@ -232,13 +247,39 @@ def foreground_server(work, report, go_binary, mode):
         owner, member = devices["owner"], devices["member"]
         require(owner["account_id"] == member["account_id"] and owner["device_id"] != member["device_id"],
                 "foreground_devices_not_independent")
-        require(probe("init-foreground", owner["account_id"])[-1]["pending"] == 0, "foreground_receiver_has_pending")
-        descriptor = json.loads((folder / "descriptor.json").read_bytes())
-        status, key = api("PUT", "/v1/key-descriptor", owner["token"], descriptor, decode=False)
-        require(status == 200 and json.loads(key)["descriptor"] == descriptor, "foreground_key_not_registered")
         key_file = folder / "registered.json"
-        key_file.write_bytes(key)
-        bootstrap = {"device": owner, "material": base64.b64encode((folder / "material.bin").read_bytes()).decode("ascii")}
+        if mode != "automatic":
+            require(probe("init-foreground", owner["account_id"])[-1]["pending"] == 0, "foreground_receiver_has_pending")
+            descriptor = json.loads((folder / "descriptor.json").read_bytes())
+            status, key = api("PUT", "/v1/key-descriptor", owner["token"], descriptor, decode=False)
+            require(status == 200 and json.loads(key)["descriptor"] == descriptor, "foreground_key_not_registered")
+            key_file.write_bytes(key)
+        bridge = {"port": fixture.loopback_backend_port}
+        bootstrap = None
+        if mode in AUTOMATIC_MODES:
+            bridge.update(account=owner["account_id"], signingKeyPath=str(signing_key))
+            status, original_key = api("GET", "/v1/key-descriptor", member["token"])
+            require(status == 200 and original_key["state"] == ("empty" if mode == "automatic" else "registered"),
+                    "automatic_fixture_initial_key_state")
+
+            def verify_automatic_service():
+                status, devices = api("GET", "/v1/devices", owner["token"])
+                require(status == 200 and len(devices["devices"]) == 3, "automatic_fixture_device_count")
+                new = [item for item in devices["devices"] if item["id"] not in (owner["device_id"], member["device_id"])]
+                require(len(new) == 1 and new[0]["role"] == "member" and new[0]["revoked_at"] is None,
+                        "automatic_fixture_expected_member")
+                status, key = api("GET", "/v1/key-descriptor", member["token"])
+                require(status == 200 and key["state"] == "registered", "automatic_fixture_key_not_registered")
+                if mode == "automatic":
+                    require(key["registered_by"] == new[0]["id"], "automatic_fixture_not_initialized_by_android")
+                else:
+                    require(key == original_key, "automatic_fixture_replaced_original_key")
+                status, page = api("GET", "/v1/changes?after=0", member["token"])
+                require(status == 200 and page["head"] == page["next_cursor"] == 0 and page["changes"] == [],
+                        "automatic_fixture_unexpected_data_changes")
+        else:
+            bootstrap = {"device": owner, "material": base64.b64encode((folder / "material.bin").read_bytes()).decode("ascii")}
+            bridge["bootstrap"] = bootstrap
         if mode == "archive":
             require(probe("export-archive-origin-fixture")[-1]["pending"] == 1, "archive_origin_source_not_pending")
             bootstrap["archive"] = (folder / "records-only.json").read_bytes().decode("utf-8")
@@ -264,7 +305,7 @@ def foreground_server(work, report, go_binary, mode):
 
         config = folder / "bridge.json"
         with os.fdopen(os.open(config, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600), "w") as output:
-            json.dump({"port": fixture.loopback_backend_port, "bootstrap": bootstrap}, output)
+            json.dump(bridge, output)
 
         def verify_receiver(revision, *, read_only=False):
             after = revision if read_only else revision - 1
@@ -320,7 +361,9 @@ def foreground_server(work, report, go_binary, mode):
                     "queue_window_replay_changed_remote_history")
             probe("verify-queue-window-receiver", 18)
 
-        if mode == "archive":
+        if mode in AUTOMATIC_MODES:
+            yield config, verify_automatic_service, None
+        elif mode == "archive":
             yield config, verify_archive_server, None
         elif mode == "queue":
             status, page = api("GET", "/v1/changes?after=0", member["token"])
@@ -330,7 +373,8 @@ def foreground_server(work, report, go_binary, mode):
         else:
             yield config, verify_receiver, publish_member_edit
     summary = fixture.safe_summary()
-    require(summary["cleanup_completed"] and summary["service_revision"] == {"archive": 1, "queue": 18, "foreground": 5}[mode]
+    expected_revision = {"archive": 1, "queue": 18, "foreground": 5}.get(mode, 0)
+    require(summary["cleanup_completed"] and summary["service_revision"] == expected_revision
             and summary["owner_session_valid"] and summary["member_session_valid"], "foreground_service_cleanup_or_final_state")
     report["foreground_service_cleanup"] = True
 
@@ -779,6 +823,38 @@ def archive_origin_round(report, adb, marker, status, verify_server):
                                "cursor": 1, "remote_head": 1, "remote_history_unchanged": True}
 
 
+def automatic_login_round(report, adb, marker, status, verify_service, mode):
+    ready = mode == "automatic"
+    report["stage"] = "automatic_browser_sign_in"
+    open_sync_account(adb, marker)
+    click_text(adb, marker, "登录并开启同步")
+    wait_for(lambda: adb.shell("dumpsys", "activity", "activities"),
+             lambda raw: any("mResumedActivity" in line and BROWSER in line for line in raw.splitlines()),
+             12, "stock_external_browser_not_foreground")
+    report["browser_launched"] = "PASS"
+    click_text(adb, marker, "Use synthetic test account")
+    click_text(adb, marker, "Approve synthetic access")
+    report["stage"] = "automatic_login_expected_outcome"
+
+    def observed():
+        counts = status()
+        require(not counts["failure"] and counts["callbackOpenedInBrowser"] == 0, "automatic_login_provider_failed")
+        label = "本轮同步已检查" if ready else "需要恢复同步密钥"
+        return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "") for node in window_nodes(adb, marker))
+
+    wait_for(observed, bool, 45, "automatic_login_status_missing")
+    report["verified_browser_callback"] = "PASS"
+    counts = status()
+    require(counts["accountLookups"] == counts["tokenPosts"] == counts.get("automaticGrants") == 1,
+            "automatic_login_grant_count_mismatch")
+    require(counts.get("automaticInitializations", 0) == int(ready) and counts.get("uploads", 0) == 0
+            and (counts["dataRequests"] > 0 if ready else counts["dataRequests"] == 0), "automatic_login_unexpected_transfer")
+    foreground_instrument(adb, "foreground-automatic-ready" if ready else "foreground-automatic-needs-key")
+    verify_service()
+    report["automatic_login"] = {"grant": "PASS", "durable_state": "PASS", "first_key_registered": ready,
+                                 "recovery_prompt": not ready, "real_data_check": ready, "android_uploads": 0}
+
+
 def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, sync_binary=None, specialized=None):
     package = MAIN_PACKAGE if main_apk else PACKAGE
     guard(adb, identity)
@@ -836,6 +912,9 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
             wait_for(lambda: system_links_confirmed(adb, package) and status()["assetlinks"] > 0, bool,
                      80, "system_app_link_verification_not_observed")
             report["verified_domain"] = "PASS"
+            if mode in AUTOMATIC_MODES:
+                automatic_login_round(report, adb, marker, status, verify_receiver, mode)
+                return
             if mode == "archive":
                 archive_origin_round(report, adb, marker, status, verify_receiver)
                 return
@@ -972,11 +1051,15 @@ def run(report, adb, identity, apk, go_proof, fingerprint, work, main_apk=None, 
 
 
 def main():
-    specialized = {"queue-window": "queue", "archive-origin": "archive"}.get(sys.argv[6]) if len(sys.argv) == 7 else None
+    modes = {"queue-window": "queue", "archive-origin": "archive", "automatic": "automatic",
+             "automatic-recovery": "automatic-recovery"}
+    specialized = modes.get(sys.argv[6]) if len(sys.argv) == 7 else None
     foreground = len(sys.argv) == 6 or specialized is not None
     main_mode = len(sys.argv) == 5 or foreground
     output = ROOT / "target/a3-android-oidc" / (f"{sys.argv[6]}-report.json" if specialized else "foreground-report.json" if foreground else "main-report.json" if main_mode else "report.json")
-    if specialized == "archive":
+    if specialized in AUTOMATIC_MODES:
+        scope = "API28 native test-only APK with real Android browser OIDC, automatic authorization, and PostgreSQL"
+    elif specialized == "archive":
         scope = "API28 native test-only APK with seeded sign-in; imported origin remains unverified after matching authenticated HTTPS pull"
     elif specialized == "queue":
         scope = "API28 native test-only APK with seeded sign-in; automatic upload limit and trusted tombstone over real HTTPS"

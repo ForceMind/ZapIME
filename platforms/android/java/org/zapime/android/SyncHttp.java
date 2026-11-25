@@ -50,6 +50,10 @@ final class SyncHttp {
     }
     /** Only the normalized public descriptor encoding is permitted in a PUT body. */
     static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,Cancellation cancellation)throws Failure {
+        return keyDescriptor(server,credential,registration,false,cancellation);
+    }
+    static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,boolean initialize,Cancellation cancellation)throws Failure {
+        if(initialize&&registration==null)throw new Failure("key_request");
         if(registration!=null&&(registration.length==0||registration.length>1024))throw new Failure("key_request");
         byte[] body=registration==null?null:registration.clone();
         try{
@@ -59,7 +63,8 @@ final class SyncHttp {
                 java.util.regex.Matcher shape=java.util.regex.Pattern.compile("\\{\"version\":1,\"key_id\":\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\",\"material_sha256\":\"[0-9a-f]{64}\"\\}").matcher(wire);
                 if(!shape.matches()||shape.group(1).equals("00000000-0000-0000-0000-000000000000"))throw new Failure("key_request");
             }
-            return request(server,credential,cancellation,"/v1/key-descriptor",body==null?"GET":"PUT",body,2048,"key_conflict",false);
+            return request(server,credential,cancellation,initialize?"/v1/key-descriptor/initialize":"/v1/key-descriptor",
+                    body==null?"GET":"PUT",body,2048,"key_conflict",false);
         }finally{if(body!=null)Arrays.fill(body,(byte)0);}
     }
     /** Caller must supply the exact durable staged ciphertext request. No JSON
@@ -106,6 +111,14 @@ final class SyncHttp {
         String path=claim?"/v1/device-enrollment/claim":"/v1/device-enrollment";
         return jsonRequest(config.syncServer.resolve(path),"Bearer "+accessToken,cancellation,
                 "POST",body,"application/json",2048,claim?"enrollment_pending":null,false);
+    }
+    static byte[] automaticEnrollment(AccountLoginProtocol.Config config,String accessToken,byte[] body,
+            Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        if(body==null||body.length==0||body.length>4096)throw new Failure("enrollment_request");
+        validateAccessToken(accessToken);
+        return jsonRequest(config.syncServer.resolve("/v1/device-enrollment/automatic"),"Bearer "+accessToken,cancellation,
+                "POST",body,"application/json",2048,null,false);
     }
     private static byte[] jsonRequest(URI endpoint,String authorization,Cancellation cancellation,String method,
             byte[] body,String contentType,int maximum,String conflict,boolean transfer)throws Failure {

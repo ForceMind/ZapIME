@@ -2,7 +2,7 @@
 // The two synthetic hosts are reachable only through this CI job's adb reverse.
 import assert from 'node:assert/strict';
 import { execFileSync, spawn } from 'node:child_process';
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, createPrivateKey, randomBytes } from 'node:crypto';
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:https';
 import { createInterface } from 'node:readline';
@@ -10,16 +10,18 @@ import { importJWK, jwtVerify } from 'jose';
 import { clientId, createIssuer, finishConsent, subject } from './issuer.mjs';
 
 const [cert, key, publicFingerprint, summaryPath, goProof, mode = 'probe', foregroundFile] = process.argv.slice(2);
-assert.ok(['probe', 'main', 'foreground', 'queue', 'archive'].includes(mode));
+assert.ok(['probe', 'main', 'foreground', 'queue', 'archive', 'automatic', 'automatic-recovery'].includes(mode));
 const queueWindow = mode === 'queue';
-const foreground = ['foreground', 'queue', 'archive'].includes(mode) ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
+const automatic = mode === 'automatic' || mode === 'automatic-recovery';
+const foreground = automatic || ['foreground', 'queue', 'archive'].includes(mode) ? JSON.parse(readFileSync(foregroundFile, 'utf8')) : null;
 if (foreground) assert.ok(Number.isInteger(foreground.port) && foreground.port > 1024 && foreground.port <= 65535);
-const priorAccount = foreground?.bootstrap.device.account_id;
+const priorAccount = foreground?.bootstrap?.device.account_id;
 const issuer = 'https://a3-oidc.example.test';
 const fallback = 'https://return-a3.example.test';
 const resource = issuer + '/a3-device-enrollment';
 const redirect = fallback + '/callback';
-const { provider, publicKey } = createIssuer(issuer, redirect, [resource]);
+const { provider, publicKey } = createIssuer(issuer, redirect, [resource],
+  automatic ? createPrivateKey(readFileSync(foreground.signingKeyPath)) : undefined);
 const verifyKey = await importJWK(publicKey, 'RS256');
 const delegate = provider.callback();
 const interactions = new Map();
@@ -204,7 +206,7 @@ async function handle(req, res) {
   const url = new URL(req.url, issuer);
   const host = req.headers.host;
   if (foreground && host === 'a3-oidc.example.test') {
-    if (req.method === 'GET' && url.pathname === '/fixture-enrollment/foreground' && !url.search) {
+    if (!automatic && req.method === 'GET' && url.pathname === '/fixture-enrollment/foreground' && !url.search) {
       assert.equal(foregroundSeedServed, false);
       foregroundSeedServed = true;
       const subjectFingerprint = loginFingerprint(priorAccount, 'a3-synthetic-foreground-owner');
@@ -214,16 +216,20 @@ async function handle(req, res) {
     }
     const method = req.method;
     const plainRead = method === 'GET' && !url.search && ['/v1/session', '/v1/key-descriptor'].includes(url.pathname);
+    const lookup = automatic && method === 'GET' && !url.search && url.pathname === '/v1/account-login';
+    const grant = automatic && method === 'POST' && !url.search && url.pathname === '/v1/device-enrollment/automatic';
+    const initialize = automatic && method === 'PUT' && !url.search && url.pathname === '/v1/key-descriptor/initialize';
     const dataRead = method === 'GET' && url.pathname === '/v1/changes' && /^\?after=\d+&limit=\d+$/.test(url.search);
     const dataWrite = method === 'POST' && url.pathname === '/v1/changes' && !url.search;
-    if (plainRead || dataRead || dataWrite) {
+    if (plainRead || dataRead || dataWrite || lookup || grant || initialize) {
       if (mode === 'archive' && dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
         throw new Error('unexpected_archive_fixture_upload');
       }
       const authorization = req.headers.authorization;
-      assert.ok(typeof authorization === 'string' && authorization.length <= 512 && authorization.startsWith('Bearer '));
-      const request = dataWrite ? await read(req, 8192, null) : undefined;
+      const tokenLimit = lookup || grant ? 16_391 : 512;
+      assert.ok(typeof authorization === 'string' && authorization.length <= tokenLimit && authorization.startsWith('Bearer '));
+      const request = dataWrite || grant || initialize ? await read(req, 8192, null) : undefined;
       const upstream = await fetch('http://127.0.0.1:' + foreground.port + url.pathname + url.search, {
         method, headers: { authorization, 'content-type': 'application/json' },
         body: request, redirect: 'error', signal: AbortSignal.timeout(5000),
@@ -231,11 +237,32 @@ async function handle(req, res) {
       const payload = await upstream.text();
       assert.ok(Buffer.byteLength(payload) <= 16_384);
       if (dataRead || dataWrite) totals.dataRequests++;
+      if (lookup) {
+        const identity = JSON.parse(payload);
+        assert.equal(upstream.status, 200);
+        assert.equal(identity.account_id, foreground.account);
+        assert.equal(identity.subject_fingerprint, loginFingerprint(foreground.account, subject));
+        totals.accountLookups++;
+      }
+      if (grant) {
+        const device = JSON.parse(payload);
+        assert.equal(upstream.status, 200);
+        assert.equal(device.account_id, foreground.account);
+        assert.equal(device.device_id, JSON.parse(request).device_id);
+        assert.equal(device.role, 'member');
+        totals.automaticGrants = (totals.automaticGrants ?? 0) + 1;
+      }
+      if (initialize) {
+        assert.equal(mode, 'automatic');
+        assert.equal(upstream.status, 200);
+        assert.deepEqual(JSON.parse(payload).descriptor, JSON.parse(request));
+        totals.automaticInitializations = (totals.automaticInitializations ?? 0) + 1;
+      }
       if (url.pathname === '/v1/session') totals.foregroundDeviceSessions = (totals.foregroundDeviceSessions ?? 0) + 1;
       if (url.pathname === '/v1/key-descriptor') totals.foregroundDescriptorRequests = (totals.foregroundDescriptorRequests ?? 0) + 1;
       if (dataWrite) {
         totals.uploads = (totals.uploads ?? 0) + 1;
-        assert.ok(totals.uploads <= (queueWindow ? 18 : 4) && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
+        assert.ok(totals.uploads <= (automatic ? 1 : queueWindow ? 18 : 4) && upstream.status === 200 && JSON.parse(payload).revision === totals.uploads);
         if (queueWindow) {
           const packet = JSON.parse(request);
           const deleted = totals.uploads === 17;

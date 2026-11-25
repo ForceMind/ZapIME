@@ -81,6 +81,10 @@ final class SyncConnection implements AutoCloseable {
     byte[] keyDescriptor(byte[] registration,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
         if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.keyDescriptor(server,token,registration,cancellation);
     }
+    byte[] initializeKeyDescriptor(byte[] registration,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
+        if(closed)throw new SyncHttp.Failure("credential");
+        return SyncHttp.keyDescriptor(server,token,registration,"member".equals(role),cancellation);
+    }
     byte[] push(byte[] frozen,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
         if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.push(server,token,frozen,cancellation);
     }
@@ -91,12 +95,17 @@ final class SyncConnection implements AutoCloseable {
      * A token rotation or role/expiry update invalidates an in-flight snapshot.
      */
     boolean matchesSnapshot(SyncConnection previous){
-        return previous!=null&&!closed&&!previous.closed&&server.equals(previous.server)&&account.equals(previous.account)
-                &&device.equals(previous.device)&&role.equals(previous.role)&&expires.equals(previous.expires)&&Arrays.equals(token,previous.token);
+        return sameDeviceCredential(previous)&&expires.equals(previous.expires);
+    }
+    boolean sameDeviceCredential(SyncConnection previous){
+        return previous!=null&&!closed&&!previous.closed&&matchesCredential(previous.server,previous.account,previous.device,previous.token)
+                &&role.equals(previous.role);
+    }
+    boolean matchesCredential(URI expectedServer,UUID expectedAccount,UUID expectedDevice,char[] original){
+        return !closed&&server.equals(expectedServer)&&account.equals(expectedAccount)&&device.equals(expectedDevice)&&Arrays.equals(token,original);
     }
     boolean matchesEnrollment(URI expectedServer, UUID expectedAccount, UUID expectedDevice, char[] original) {
-        return validEnrollmentSession() && server.equals(expectedServer) && account.equals(expectedAccount)
-                && device.equals(expectedDevice) && Arrays.equals(token, original);
+        return validEnrollmentSession() && matchesCredential(expectedServer,expectedAccount,expectedDevice,original);
     }
     boolean validEnrollmentSession() {
         return !closed && "member".equals(role) && Instant.now().isBefore(OffsetDateTime.parse(expires).toInstant());

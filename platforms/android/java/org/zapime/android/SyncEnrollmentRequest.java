@@ -80,6 +80,31 @@ final class SyncEnrollmentRequest {
         }
     }
 
+    SyncConnection authorize(String accessToken, SyncHttp.Cancellation cancel) throws IOException {
+        cancel.check();
+        byte[] request = wire(accessToken, false, true);
+        byte[] reply = null;
+        try {
+            try {
+                reply = SyncHttp.automaticEnrollment(pending.scope.config, accessToken, request, cancel);
+            } catch (SyncHttp.Failure failed) {
+                if (!("network".equals(failed.code) || "timeout".equals(failed.code))) throw failed;
+                return recover(cancel);
+            }
+            try (SyncConnection granted = verify(reply)) {
+                SyncConnection checked = recover(cancel);
+                if (!checked.matchesSnapshot(granted)) {
+                    checked.close();
+                    throw new SyncHttp.Failure("identity");
+                }
+                return checked;
+            }
+        } finally {
+            Arrays.fill(request, (byte) 0);
+            if (reply != null) Arrays.fill(reply, (byte) 0);
+        }
+    }
+
     /** Call independently after an uncertain claim. This endpoint cannot create a device. */
     SyncConnection recover(SyncHttp.Cancellation cancel) throws IOException {
         cancel.check();
@@ -121,8 +146,12 @@ final class SyncEnrollmentRequest {
     }
 
     byte[] wire(String accessToken, boolean claim) throws IOException {
+        return wire(accessToken, claim, false);
+    }
+
+    private byte[] wire(String accessToken, boolean claim, boolean automatic) throws IOException {
         SyncHttp.validateAccessToken(accessToken);
-        if (Instant.now().getEpochSecond() >= pending.deadline) throw new SyncHttp.Failure("enrollment_expired");
+        if (!automatic && Instant.now().getEpochSecond() >= pending.deadline) throw new SyncHttp.Failure("enrollment_expired");
         byte[] accessBytes = accessToken.getBytes(StandardCharsets.US_ASCII);
         byte[] accessHash;
         try {
@@ -130,15 +159,23 @@ final class SyncEnrollmentRequest {
         } finally {
             Arrays.fill(accessBytes, (byte) 0);
         }
-        String purpose = claim ? "zapime-enrollment-claim-v1" : "zapime-enrollment-begin-v1";
+        String purpose = automatic ? "zapime-auto-device-sign-v1" : claim ? "zapime-enrollment-claim-v1" : "zapime-enrollment-begin-v1";
         byte[] signature = null;
         try {
-            signature = pending.sign(frame(text(purpose), fingerprint, accessHash));
-            JSONObject object = new JSONObject().put("enrollment_id", pending.id.toString())
+            byte[] signedFingerprint = fingerprint;
+            if (automatic) {
+                AccountLoginProtocol.Config config = pending.scope.config;
+                signedFingerprint = sha256(frame(text("zapime-auto-device-v1"), text(config.issuer.toString()), text(config.resource.toString()),
+                        text(pending.scope.account.toString()), text(pending.id.toString()), text(pending.scope.subjectFingerprint),
+                        text(pending.name), publicKey, candidateHash));
+            }
+            signature = pending.sign(frame(text(purpose), signedFingerprint, accessHash));
+            JSONObject object = new JSONObject().put(automatic ? "device_id" : "enrollment_id", pending.id.toString())
                     .put("account_id", pending.scope.account.toString()).put("signature", base64(signature));
             if (!claim) {
-                object.put("name", pending.name).put("deadline", pending.deadline)
+                object.put("name", pending.name)
                         .put("public_key", base64(publicKey)).put("token_sha256", base64(candidateHash));
+                if (!automatic) object.put("deadline", pending.deadline);
             }
             return text(object.toString());
         } catch (JSONException failure) {

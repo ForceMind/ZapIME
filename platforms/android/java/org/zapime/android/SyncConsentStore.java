@@ -86,6 +86,14 @@ final class SyncConsentStore {
         }
     }
 
+    static void requireLoginAttempt(Context context, UUID attempt, SyncHttp.Cancellation cancel) throws IOException {
+        worker();
+        synchronized (SyncConsentStore.class) {
+            cancel.check();
+            if (requireGeneration(context, attempt).account != null) throw new IOException("sync_consent_changed");
+        }
+    }
+
     /** Consent locks the registered identity, including when local material still needs recovery. */
     static State enable(Context context, UUID generation, SyncEnrollmentVault.Scope verified, UUID device,
             SyncKeyRegistration.Result remote, SyncHttp.Cancellation cancel) throws IOException {

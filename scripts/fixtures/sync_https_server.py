@@ -243,10 +243,11 @@ class Fixture:
     idempotent, removes only its own private child directory, and caches safe
     server observations before shutting down. It does not delete database rows.
     """
-    def __init__(self, work_dir: Path, binary: Path, database_url: str):
+    def __init__(self, work_dir: Path, binary: Path, database_url: str, *, oidc=None):
         self.work_dir = Path(work_dir)
         self.binary = Path(binary)
         self._database_url = database_url
+        self._oidc = oidc
         self._temporary = None
         self._private_dir = None
         self._process = None
@@ -347,6 +348,14 @@ class Fixture:
                 if provision.returncode or len(provision.stdout) > MAX_BOOTSTRAP:
                     raise RuntimeError("fixture_owner_provision_failed")
                 self._owner = _credential(json.loads(provision.stdout))
+                if self._oidc is not None:
+                    issuer, audience, client, subject, jwks = self._oidc
+                    env.update(ZAPIME_OIDC_ISSUER=issuer, ZAPIME_OIDC_AUDIENCE=audience,
+                               ZAPIME_OIDC_CLIENT_ID=client, ZAPIME_OIDC_JWKS_FILE=str(jwks), ZAPIME_OIDC_AUTO_ENROLL="1")
+                    binding = subprocess.run([str(self.binary), "bind-oidc-subject", self._owner["account_id"], issuer, subject],
+                        env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL, timeout=30)
+                    if binding.returncode:
+                        raise RuntimeError("fixture_oidc_binding_failed")
                 self._process = subprocess.Popen([str(self.binary)], env=env, stdin=subprocess.DEVNULL,
                                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 for _ in range(100):

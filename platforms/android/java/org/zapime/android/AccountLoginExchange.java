@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-/** Only login, identity lookup and device-session checks. Runs on the sync worker. */
+/** Verifies the login and, for the confirmed sync path, prepares the device. */
 final class AccountLoginExchange {
     static final class Identity {
         final UUID device;
@@ -29,12 +29,15 @@ final class AccountLoginExchange {
         }
     }
 
-    static Identity verify(Context context, AccountLoginProtocol.Exchange exchange, SyncHttp.Cancellation cancel)
+    static Identity verify(Context context, AccountLoginProtocol.Exchange exchange, UUID attempt,
+            boolean requestSync, UUID expectedAccount, SyncHttp.Cancellation cancel)
             throws IOException {
         byte[] tokenReply = SyncHttp.exchangeLogin(exchange, cancel);
         byte[] lookup;
+        String token;
         try {
-            lookup = SyncHttp.accountLogin(exchange.config, accessToken(tokenReply), cancel);
+            token = accessToken(tokenReply);
+            lookup = SyncHttp.accountLogin(exchange.config, token, cancel);
         } finally {
             Arrays.fill(tokenReply, (byte) 0);
         }
@@ -48,27 +51,66 @@ final class AccountLoginExchange {
         } finally {
             Arrays.fill(lookup, (byte) 0);
         }
-        cancel.check();
+        SyncConsentStore.requireLoginAttempt(context, attempt, cancel);
+        if (expectedAccount != null && !expectedAccount.equals(scope.account)) {
+            return new Identity(scope, null, "当前登录账号已改变。请核对账号后再开启同步。");
+        }
         try (SyncConnection saved = SyncConnectionStore.load(context)) {
-            if (saved == null) return new Identity(scope, null, "此设备尚未获授权");
+            if (saved == null) {
+                if (!requestSync) return new Identity(scope, null, null);
+                SyncDatabase.check(context, scope.account);
+                try (SyncEnrollmentVault.Pending pending = SyncEnrollmentVault.prepareAutomatic(context, scope)) {
+                    return authorize(context, attempt, pending, token, cancel);
+                }
+            }
             if (!scope.account.equals(saved.account) || !exchange.config.syncServer.equals(saved.server)) {
                 return new Identity(scope, null, "已保存的设备连接属于其他账号或服务器，请先核对");
             }
-            byte[] response = saved.inspect(cancel);
-            try (SyncConnection verified = saved.verify(response)) {
-                cancel.check();
-                return new Identity(scope, verified.device, "设备授权有效");
-            } finally {
-                Arrays.fill(response, (byte) 0);
+            try {
+                byte[] response = saved.inspect(cancel);
+                try (SyncConnection verified = saved.verify(response)) {
+                    cancel.check();
+                    return new Identity(scope, verified.device, null);
+                } finally {
+                    Arrays.fill(response, (byte) 0);
+                }
+            } catch (SyncHttp.Failure failed) {
+                if (!requestSync || !"unauthorized".equals(failed.code)) throw failed;
+                SyncDatabase.check(context, scope.account);
+                try (SyncEnrollmentVault.Pending pending = SyncEnrollmentVault.loadAutomatic(context, scope)) {
+                    if (pending == null) throw failed;
+                    char[] credential = pending.credential();
+                    try {
+                        if (!saved.matchesCredential(scope.config.syncServer, scope.account, pending.id, credential)) throw failed;
+                    } finally {
+                        Arrays.fill(credential, '\0');
+                    }
+                    return authorize(context, attempt, pending, token, cancel);
+                }
             }
         } catch (SyncHttp.Failure failure) {
-            if (failure.code.equals("cancelled")) throw failure;
+            SyncConsentStore.requireLoginAttempt(context, attempt, cancel);
             if (failure.code.equals("unauthorized") || failure.code.equals("forbidden")) {
                 return new Identity(scope, null, "设备授权已失效");
             }
+            if (failure.code.equals("unsupported")) return new Identity(scope, null, "此服务器尚未启用自动设备授权");
             return new Identity(scope, null, "暂时无法核对当前设备授权");
         } catch (IOException unavailable) {
-            return new Identity(scope, null, "暂时无法读取本机设备连接");
+            SyncConsentStore.requireLoginAttempt(context, attempt, cancel);
+            if ("sync_connection_profile".equals(unavailable.getMessage())) {
+                return new Identity(scope, null, "本机资料已绑定其他账号，已暂停同步");
+            }
+            return new Identity(scope, null, "暂时无法准备本机设备授权，请重试");
+        }
+    }
+
+    private static Identity authorize(Context context, UUID attempt, SyncEnrollmentVault.Pending pending,
+            String token, SyncHttp.Cancellation cancel) throws IOException {
+        SyncConsentStore.requireLoginAttempt(context, attempt, cancel);
+        try (SyncConnection verified = new SyncEnrollmentRequest(pending).authorize(token, cancel)) {
+            SyncConsentStore.requireLoginAttempt(context, attempt, cancel);
+            SyncConnectionStore.promoteAutomatic(context, verified, cancel);
+            return new Identity(pending.scope, verified.device, null);
         }
     }
 

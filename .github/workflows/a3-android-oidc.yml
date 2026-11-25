@@ -16,6 +16,7 @@ on:
       - 'scripts/android_account_login_config.py'
       - 'scripts/android_a3_oidc.py'
       - 'scripts/fixtures/a3-oidc/**'
+      - 'services/sync/internal/syncapi/automatic_enrollment*.go'
       - 'scripts/fixtures/sync_https_server.py'
       - 'scripts/test_sync_https_server.py'
       - 'crates/zapime-data/src/sync*.rs'
@@ -186,6 +187,8 @@ jobs:
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture queue-window
             python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture archive-origin
+            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture automatic
+            python3 scripts/android_a3_oidc.py target/a3-android-oidc/probe.apk "$ANDROID_HOME/build-tools/35.0.0/apksigner" target/a3-android-oidc/oidc-account.test target/a3-android-oidc/main-source/fixture.apk target/a3-android-oidc/sync-host-fixture automatic-recovery
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -196,4 +199,6 @@ jobs:
             target/a3-android-oidc/foreground-report.json
             target/a3-android-oidc/queue-window-report.json
             target/a3-android-oidc/archive-origin-report.json
+            target/a3-android-oidc/automatic-report.json
+            target/a3-android-oidc/automatic-recovery-report.json
           if-no-files-found: error

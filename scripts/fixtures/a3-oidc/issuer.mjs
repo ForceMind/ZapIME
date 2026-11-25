@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-only
 import assert from 'node:assert/strict';
-import { generateKeyPairSync, randomBytes } from 'node:crypto';
+import { createPublicKey, generateKeyPairSync, randomBytes } from 'node:crypto';
 import { Provider } from 'oidc-provider';
 
 export const clientId = 'zapime-android-synthetic';
 export const subject = 'a3-synthetic-user';
 export const scope = 'zapime.device_enrollment';
 
-export function createIssuer(issuer, redirectUri, resources) {
-  const jwtKey = generateKeyPairSync('rsa', { modulusLength: 2048 });
+export function createIssuer(issuer, redirectUri, resources, privateKey = generateKeyPairSync('rsa', { modulusLength: 2048 }).privateKey) {
   const attributes = { kid: 'a3-fixture', alg: 'RS256', use: 'sig' };
-  const publicKey = { ...jwtKey.publicKey.export({ format: 'jwk' }), ...attributes };
+  const publicKey = { ...createPublicKey(privateKey).export({ format: 'jwk' }), ...attributes };
   const provider = new Provider(issuer, {
     clients: [{ client_id: clientId, application_type: 'native', grant_types: ['authorization_code'],
       response_types: ['code'], redirect_uris: [redirectUri], token_endpoint_auth_method: 'none' }],
-    jwks: { keys: [{ ...jwtKey.privateKey.export({ format: 'jwk' }), ...attributes }] },
+    jwks: { keys: [{ ...privateKey.export({ format: 'jwk' }), ...attributes }] },
     cookies: { keys: [randomBytes(32).toString('base64url'), randomBytes(32).toString('base64url')] },
     interactions: { url: (_ctx, interaction) => `/fixture-login/${interaction.uid}` },
     async renderError(ctx) { ctx.body = 'synthetic OIDC request rejected'; },
