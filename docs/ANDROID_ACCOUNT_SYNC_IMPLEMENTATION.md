@@ -29,6 +29,8 @@
 
 `264fffa` 两版均验证域名，精确路径的 shell 解析探针提前失败。复验记录只读候选、默认处理器和系统的允许状态，实际 Chrome 到 App 回跳仍以真实授权与产品页面为准。临时域的 Digital Asset Links 明确限于 `/callback`，与现有 APK 的静态路径一致。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45552327355/job/138996135829) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45552327355/job/138996135581) · [Android 动态关联规则](https://developer.android.com/training/app-links/configure-assetlinks)
 
+`3b12206` 两版系统均把精确路径解析到 ZapIME。用户动作只有 Chrome 登录和同意，真实令牌兑换、账号查询及设备自动授权各一次，资料请求为零。每轮还观察到回跳域的一次 HTTP 访问，原断言因此提前退出，缺少 App 前台与文件恢复证据。复验继续保留 HTTP 访问计数，要求原账号页实际回到前台并显示缺密钥，随后进入系统文件选择器。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45553730144/job/139000695991) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45553730144/job/139000695907)
+
 ### 实体双机验收
 
 准备两台 Android 手机，记为 A 和 B，优先覆盖 Android 15 与 16。两台安装同版本、同签名、已配置正式测试环境的候选 APK。需要一个独立合成测试账号、允许该 APK 回跳且可自动授权的 HTTPS OIDC 和同步后端。B 需为全新测试安装或使用空白的独立 Android 用户配置。现有手机的数据保留。

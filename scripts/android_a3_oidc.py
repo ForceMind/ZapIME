@@ -862,11 +862,17 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode, *,
     def observed():
         counts = status()
         require(not counts["failure"], "automatic_login_provider_failed")
-        require(counts["callbackOpenedInBrowser"] == 0, "android_app_link_opened_as_browser_page")
+        if select_recovery is None:
+            require(counts["callbackOpenedInBrowser"] == 0, "android_app_link_opened_as_browser_page")
         label = "本轮同步已检查" if ready else "需要恢复同步密钥"
         return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "") for node in window_nodes(adb, marker))
 
     wait_for(observed, bool, 45, "automatic_login_status_missing")
+    if select_recovery is not None:
+        activities = adb.shell("dumpsys", "activity", "activities")
+        require(any(re.search(r"(?i)resumedactivity", line) and MAIN_PACKAGE in line and "AccountSyncActivity" in line
+                    for line in activities.splitlines()), "system_browser_did_not_return_to_account_activity")
+        report["product_resumed_after_browser"] = True
     report["verified_browser_callback"] = "PASS"
     counts = status()
     require(counts["accountLookups"] == counts["tokenPosts"] == counts.get("automaticGrants") == 1,

@@ -322,6 +322,9 @@ def run(report, adb, api, identity, work):
             report["issuer_counters"] = {key: counts.get(key, 0) for key in ("assetlinks", "login", "consent",
                 "tokenPosts", "accountLookups", "automaticGrants", "callbackOpenedInBrowser", "dataRequests", "uploads")}
             report["issuer_failure_route"] = counts.get("failureRoute")
+            report["callback_http_observation"] = {
+                "kind": counts.get("callbackHttpKind"), "had_code_and_state": bool(counts.get("callbackHttpContainedCode")),
+            }
 
 
 def main():

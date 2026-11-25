@@ -359,6 +359,12 @@ async function handle(req, res) {
       reply(res, 200, JSON.stringify([statement]), 'application/json');
     } else if (url.pathname === '/callback') {
       totals.callbackOpenedInBrowser++;
+      if (publicPort) {
+        const purpose = req.headers['sec-purpose'] ?? req.headers.purpose;
+        totals.callbackHttpKind = purpose === 'prefetch' || purpose === 'prefetch;prerender' ? 'prefetch'
+          : req.headers['sec-fetch-mode'] === 'navigate' ? 'navigation' : 'other';
+        totals.callbackHttpContainedCode = url.searchParams.has('code') && url.searchParams.has('state');
+      }
       record();
       reply(res, 200, 'The browser did not dispatch the App Link');
     } else {
