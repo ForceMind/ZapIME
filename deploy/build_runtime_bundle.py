@@ -41,7 +41,10 @@ def image(source, architecture):
 def build(args):
     if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+([.-][a-z0-9]+)*)?", args.version):
         raise ValueError("fixed release version required")
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+    requested = args.commit or "HEAD"
+    if requested != "HEAD" and not re.fullmatch(r"[0-9a-f]{40}", requested):
+        raise ValueError("select HEAD or an exact source commit")
+    commit = subprocess.check_output(["git", "rev-parse", "--verify", requested + "^{commit}"], cwd=ROOT, text=True).strip()
     images = {service: image(getattr(args, service), args.architecture) for service in SERVICES}
     if not args.archive and any("@sha256:" not in item["reference"] for item in images.values()):
         raise ValueError("use registry digest references online, or export an offline image archive")
@@ -90,6 +93,7 @@ def main():
     parser.add_argument("--architecture", required=True, choices=("amd64", "arm64"))
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--private-key", required=True, type=Path)
+    parser.add_argument("--commit", help="exact Git commit to package, defaults to HEAD")
     parser.add_argument("--archive", type=Path, help="optional docker save archive alongside the bundle")
     for service in SERVICES:
         parser.add_argument("--" + service, required=True, help="locally inspected image reference")

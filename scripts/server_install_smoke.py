@@ -5,6 +5,7 @@ No Cloudflare credentials, real domain, user host, or production storage are use
 """
 import json
 from contextlib import contextmanager
+from hashlib import sha256
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 from pathlib import Path
@@ -19,6 +20,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 import uuid
+from zipfile import ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
 INSTALL = Path('/opt/zapime')
@@ -170,23 +172,24 @@ def main():
             subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1',
                             '-subj', '/CN=ZapIME synthetic loopback', '-addext', 'subjectAltName=IP:127.0.0.1',
                             '-keyout', str(tls_key), '-out', str(tls_cert)], check=True, capture_output=True)
-            images = {'db': 'zapime-release/db:ci', 'sync': 'zapime-release/sync:ci', 'https': 'zapime-release/https:ci'}
-            command('docker', 'build', '-t', images['sync'], str(ROOT / 'services/sync'))
-            command('docker', 'pull', 'caddy:2')
-            command('docker', 'tag', 'caddy:2', images['https'])
-            command('docker', 'tag', 'postgres:16', images['db'])
-            archive = work / 'images.tar'
-            command('docker', 'save', '-o', str(archive), *images.values())
-            bundle = work / 'runtime'
             version = '0.1.0-runtime.1'
+            delivery = work / 'delivery'
+            command(sys.executable, str(ROOT / 'deploy/prepare_runtime_release.py'), '--version', version,
+                    '--architecture', 'amd64', '--output', str(delivery), '--private-key', str(key))
+            archive, bundle, launcher = (delivery / name for name in ('images.tar', 'runtime', 'bootstrap.sh'))
+            with ZipFile(bundle / 'zapime-runtime.zip') as package:
+                manifest = json.loads(package.read('manifest.json'))
+            assert manifest['source'] == sha
+            images = {name: image['reference'] for name, image in manifest['images'].items()}
             image_args = [argument for name, reference in images.items() for argument in ('--' + name, reference)]
-            pin = command(sys.executable, str(ROOT / 'deploy/build_runtime_bundle.py'), '--version', version,
-                          '--architecture', 'amd64', '--output', str(bundle), '--private-key', str(key),
-                          '--archive', str(archive), *image_args, capture=True).strip()
+            pin = sha256((bundle / 'release-public.pem').read_bytes()).hexdigest()
+            install_line = (delivery / 'INSTALL.txt').read_text()
+            assert pin in install_line and sha256(launcher.read_bytes()).hexdigest() in install_line
+            command('bash', '-n', str(delivery / 'INSTALL.txt'))
             # Drop the release aliases to prove the offline archive supplied them.
             for image in images.values():
                 command('docker', 'image', 'rm', image)
-            args = ['bash', str(ROOT / 'deploy/bootstrap.sh'), '--install', '--bundle', str(bundle),
+            args = ['bash', str(launcher), '--install', '--bundle', str(bundle),
                     '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive),
                     '--oidc-config', str(config), '--oidc-jwks', str(work / 'jwks.json'), '--oidc-subject-file', str(subject),
                     '--android-signer', 'ab' * 32]
@@ -269,7 +272,7 @@ def main():
             command(str(probe), 'descriptor', legacy_owner['account_id'], str(legacy_key), str(legacy_descriptor))
             api('PUT', '/v1/key-descriptor', legacy_owner['token'], json.loads(legacy_descriptor.read_text()))
             legacy_first = api('POST', '/v1/changes', legacy_owner['token'], json.loads(legacy_packet.read_text()))
-            command('bash', str(ROOT / 'deploy/bootstrap.sh'), '--install', '--bundle', str(bundle),
+            command('bash', str(launcher), '--install', '--bundle', str(bundle),
                     '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive))
             assert 'Database schema: 5' in command('/usr/local/bin/zapime', 'status', capture=True)
             migrated = api('GET', '/v1/changes?after=0', legacy_owner['token'])

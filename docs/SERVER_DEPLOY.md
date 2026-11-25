@@ -64,6 +64,18 @@ Docker 只读挂载公开 JWKS。Android 公共配置保存于 `/opt/zapime/oidc
 
 发布方用 `deploy/build_runtime_bundle.py` 打包。工具校验三个容器的实际平台及 ID，将源码提交、版本、架构、部署文件和镜像清单签名。在线镜像传仓库摘要引用。离线用 `docker save` 导出三项 `zapime-release/<服务>:<唯一版本>`，签名清单绑定归档 SHA-256 与实际镜像 ID。安装器在私有目录校验归档、核对已经存在的标签归属，再按固定 Compose 镜像运行。
 
+#### 生成可传到上海服务器的离线包
+
+在具备目标架构构建能力的 Docker 发布机上检出经过审核的提交。使用发布者保管的长期签名密钥。每个架构构建一次，`--architecture` 支持 `amd64` 和 `arm64`，输出目录按架构区分。
+
+```bash
+python3 deploy/prepare_runtime_release.py --version 0.1.0-server.1 --architecture amd64 --private-key /secure/zapime-release.pem --output ./out/0.1.0-server.1/amd64
+```
+
+这一步从同一 Git 提交取服务源码和安装文件，构建镜像及离线归档，写出 `runtime/`、`images.tar`、`bootstrap.sh` 和 `INSTALL.txt`。打包器打印提交、启动器摘要和发布公钥摘要。通过独立可信渠道把这两个摘要交给部署者。将成套目录传到上海服务器，在服务器进入该目录，核对 `INSTALL.txt` 中的两个摘要后执行其中的一行命令。升级继续使用同一长期签名密钥。
+
+2026-11-25，本机用合成镜像清单实测了 Git 快照、OpenSSL 签名、归档绑定、重复输出目录拒绝及安装命令语法。真实双架构发包、正式签名和上海服务器仍待验证。上阶段服务端已有实际 Ubuntu amd64 安装与升级记录。[服务端 CI](https://github.com/ForceMind/ZapIME/actions/runs/45589645465)
+
 ### 更新与中断续跑
 
 `sudo zapime status` 显示已选版本、实际运行镜像、数据库 schema 及未完成的升级。 `sudo zapime doctor` 核对本机健康、公网实例见证及 Android 关联。`sudo zapime update <HTTPS发布目录或绝对包目录> <版本> [离线镜像归档]` 复用首次保存的签名信任。
