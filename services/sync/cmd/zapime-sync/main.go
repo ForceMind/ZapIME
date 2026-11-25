@@ -15,6 +15,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ForceMind/ZapIME/services/sync/internal/oidcauth"
 	"github.com/ForceMind/ZapIME/services/sync/internal/syncapi"
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
@@ -86,9 +87,20 @@ func run() error {
 		}
 		return nil
 	}
+	if len(os.Args) == 5 && os.Args[1] == "bind-oidc-subject" {
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		if err := store.BindOIDCSubject(ctx, os.Args[2], os.Args[3], os.Args[4]); err != nil {
+			if errors.Is(err, syncapi.ErrOIDCSubjectBound) {
+				return syncapi.ErrOIDCSubjectBound
+			}
+			return errors.New("oidc_subject_binding_failed")
+		}
+		return nil
+	}
 	if len(os.Args) > 1 {
 		if len(os.Args) != 3 || (os.Args[1] != "provision" && os.Args[1] != "recover-device") {
-			return errors.New("usage: zapime-sync [provision device-name | recover-device device-id]")
+			return errors.New("usage: zapime-sync [provision device-name | recover-device device-id | bind-oidc-subject account-id issuer subject]")
 		}
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
@@ -111,7 +123,17 @@ func run() error {
 	if address == "" {
 		address = "127.0.0.1:8787"
 	}
-	server := &http.Server{Addr: address, Handler: syncapi.NewAPI(store), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
+	login, err := oidcauth.FromEnv()
+	if err != nil {
+		return err
+	}
+	automatic := os.Getenv("ZAPIME_OIDC_AUTO_ENROLL")
+	if (automatic != "" && automatic != "0" && automatic != "1") || (automatic == "1" && login == nil) {
+		return oidcauth.ErrConfiguration
+	}
+	api := syncapi.NewAPIWithOIDC(store, login)
+	api.AllowAutomaticEnrollment = automatic == "1"
+	server := &http.Server{Addr: address, Handler: api, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
 	stopped := make(chan os.Signal, 1)
 	signal.Notify(stopped, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(stopped)

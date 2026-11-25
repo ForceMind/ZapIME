@@ -45,7 +45,7 @@ def main():
                 raise RuntimeError("Local sync preparation instrumentation failed")
             run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/sync-preparation-report.json",
                 str(out / "sync-preparation-report.json"))
-            verify_report(json.loads((out / "sync-preparation-report.json").read_text()), api)
+            verify_report(json.loads((out / "sync-preparation-report.json").read_text()), api, minimum_version=2)
             for filename, validator in (("sync-key-registration-report.json", verify_key_report), ("sync-transfer-report.json", verify_transfer_report), ("sync-pages-ui-report.json", verify_pages_report)):
                 run("pull", "/sdcard/Android/data/org.zapime.android/files/voice-fixtures/" + filename, str(out / filename))
                 validator(json.loads((out / filename).read_text()), api)

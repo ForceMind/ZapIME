@@ -8,7 +8,35 @@
 
 新增 `GET/PUT /v1/key-descriptor`：owner在空历史账号上明确登记一次 `{version:1,key_id,material_sha256}`；相同描述符重试幂等，不同描述符拒绝。member只能读取和核对。描述符不含根密钥、恢复码或恢复包，不会自动创建客户端材料或配对。登记后的新Push必须使用同key ID，旧API不能绕过登记写入另一套key。已有历史但没有描述符的账号保留旧v1操作兼容，但不能自动登记新根；legacy迁移、密钥轮换和客户端HTTP编排仍未完成。
 
-服务端数据库升级为schema3，旧v1/v2二进制将拒绝启动，升级前保存成套备份。R2对象 `storage_version=2` 和HTTP协议v1保持不变；不要修改对象引用或客户端SQLite版本来假装回滚。只读/登记查询都只访问PostgreSQL，不产生R2读写。接口、错误码和限制见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+服务端数据库升级为 schema5，旧版二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+
+A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
+
+`GET /v1/account-login` 是启用后才开放的账号身份查询，返回协议号和既有账号 UUID。启用时一并设置 `ZAPIME_OIDC_ISSUER`、`ZAPIME_OIDC_AUDIENCE`、`ZAPIME_OIDC_CLIENT_ID`、`ZAPIME_OIDC_JWKS_FILE`。密钥文件只包含部署者审核的公开 JWK，配置变更或签名密钥轮换后重启服务。访问令牌须有专用受众、`zapime.device_enrollment` 范围和至多五分钟有效期。资料接口继续使用独立设备凭据。
+
+### 设备登记协议
+
+账号查询同时返回 `subject_fingerprint`，客户端据此将待领取凭据绑定到经过服务核实的主体。SHA-256 输入依次为 `zapime-account-login-v1`、issuer、subject、受众和账号 UUID，各字段先写四字节无符号大端 UTF-8 长度，再写字段字节。响应只返回小写十六进制摘要。
+
+配置 `ZAPIME_OIDC_AUTO_ENROLL=1` 的部署可在登录后自动授权已绑定账号的设备。`POST /v1/device-enrollment/automatic` 使用同一短时 OIDC 令牌，提交 `device_id`、`account_id`、`name`、`public_key`、`token_sha256`、`signature`。客户端先持久保存本机 P-256 安装密钥和随机设备凭据。响应是 `/v1/session` 同格式的普通成员会话，服务只保存凭据摘要。重复使用同一安装、设备 ID 和凭据会返回原身份。过期身份可通过同一安装和新的登录授权续期，撤销仍生效。自动与人工登记共用 issuer 与令牌 ID 的互斥检查。
+
+自动登记签名使用与下文相同的四字节大端长度编码。先计算字段 `zapime-auto-device-v1`、issuer、受众、账号 UUID、设备 UUID、账号查询返回的小写十六进制 `subject_fingerprint`、设备名、公钥 DER、凭据 SHA-256 的摘要。对 `zapime-auto-device-sign-v1`、该原始摘要、当前访问令牌 SHA-256 三个字段使用 `SHA256withECDSA`。公钥采用标准 P-256 SPKI DER，公钥、凭据摘要和签名在 JSON 中均使用无填充 Base64URL。
+
+空账号的合格自动设备可用独立 `PUT /v1/key-descriptor/initialize` 登记首个公开描述符。服务在账号事务中复验设备、撤销、初始化资格及空历史。并发登记只保留首个描述符，相同请求可核对；人工 `PUT /v1/key-descriptor` 继续由 owner 使用。自动授权角色为普通成员，客户端负责生成和持有根密钥。
+
+以下为管理员设备登记协议，用于既有部署和兼容性验收。
+
+| 接口 | 授权 | 请求和结果 |
+| --- | --- | --- |
+| `POST /v1/device-enrollment` | 绑定已有账号的短时 OIDC 访问令牌 | 提交 `enrollment_id`、`account_id`、`name`、`deadline`（Unix 秒）、`public_key`、`token_sha256`、`signature`，返回相同 ID、期限及完整十六进制 `fingerprint`。同一令牌 ID 只能登记同一完整请求。 |
+| `POST /v1/device-enrollment/approve` | 同账号当前有效的 owner 设备凭据 | 核对并明确批准 `enrollment_id` 和完整的 `fingerprint`，返回 204。批准与该 owner 当前凭据绑定。 |
+| `POST /v1/device-enrollment/claim` | 同一 issuer、subject 和受众的有效访问令牌及原设备私钥 | 提交 `enrollment_id`、`account_id`、`signature`。等待 owner 时返回 409 `enrollment_pending`，成功时返回与 `/v1/session` 相同的公开设备身份。 |
+
+客户端先以密码学随机源生成格式为 `zap1_` 加 32 字节无填充 Base64URL 的凭据，安全保存后才申请。申请使用 P-256 公钥的 SPKI DER。公钥、凭据 SHA-256 和 ASN.1 DER 签名采用无填充 Base64URL。登记上限为每账号八个未领取的有效请求，期限不超过十分钟。设备激活占用既有 32 个有效设备限额，有效期为 30 天。被撤销的批准、轮换过的批准凭据或已撤销的申请设备均不能用旧请求激活。
+
+每个签名前消息的字段均以四字节无符号大端长度开头。文本使用 UTF-8，指纹、凭据摘要、公钥和访问令牌摘要按原字节拼接。指纹是字段 `zapime-enrollment-v1`、issuer、受众、账号、申请 ID、设备名、十进制 deadline、公钥 DER、凭据摘要依序编码的 SHA-256。签名输入是用途 `zapime-enrollment-begin-v1` 或 `zapime-enrollment-claim-v1`、原始指纹、当前访问令牌的 SHA-256 三个字段；使用 `SHA256withECDSA`。申请设备自己计算并核对返回的完整指纹，再交给 owner 核对。领取发起时可以使用同一身份新签发的访问令牌。
+
+服务器原子激活凭据摘要并消费批准，设备 ID 等于申请 ID。回执丢失时可用原有本机凭据请求 `GET /v1/session`，核对账号、设备与 `member` 角色。领用响应只包含公开身份。账号查询和设备登记均无需端到端材料或密文资料。
 
 ## 一键服务器部署与 R2
 

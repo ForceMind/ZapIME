@@ -1,5 +1,7 @@
 # ZapIME 项目执行状态
 
+**2026-11-24 A3** `58ccfc7` 的 API28 新版自动流程已通过。 `b223e5f` 已在 API35/36 通过真实 Chrome 回跳、系统文件选择器取消及选文件、错码拒绝、原密钥恢复后自动加密同步和独立客户端解密。Go PostgreSQL 和普通 API28/35/36 系统输入通过。正式 SSO、可信存量首次发布和实体双机仍待验收。[证据与真机步骤](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
+
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
 
 固定依赖与工具面板测试观察修复（PR #122 / #123）已整合至 main `c9207de739d6d1872502694826a69b8d29d4540e`。本轮完整 CI 验收固定 head `60beadee4af411541fc716fbb3bc0eb74b769591`、实际 checkout `95d93e4b6fc2dbd51cb4e2446d705c54a9166f33`，两者 tree 均为 `d4b891619c7a162e0d60db230bfadaed2b419c84`；八条工作流均在 attempt 1 最终 SUCCESS。[完整结果、原件与开发包核验](evidence/ci-recovery-20261119/README.md)。8/8 结论仅绑定上述 head / checkout / tree；集成和后续文档提交另作接续检查点，不称对新 SHA 重新跑完本轮 CI。

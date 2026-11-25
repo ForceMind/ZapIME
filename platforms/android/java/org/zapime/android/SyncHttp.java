@@ -50,6 +50,10 @@ final class SyncHttp {
     }
     /** Only the normalized public descriptor encoding is permitted in a PUT body. */
     static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,Cancellation cancellation)throws Failure {
+        return keyDescriptor(server,credential,registration,false,cancellation);
+    }
+    static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,boolean initialize,Cancellation cancellation)throws Failure {
+        if(initialize&&registration==null)throw new Failure("key_request");
         if(registration!=null&&(registration.length==0||registration.length>1024))throw new Failure("key_request");
         byte[] body=registration==null?null:registration.clone();
         try{
@@ -59,7 +63,8 @@ final class SyncHttp {
                 java.util.regex.Matcher shape=java.util.regex.Pattern.compile("\\{\"version\":1,\"key_id\":\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\",\"material_sha256\":\"[0-9a-f]{64}\"\\}").matcher(wire);
                 if(!shape.matches()||shape.group(1).equals("00000000-0000-0000-0000-000000000000"))throw new Failure("key_request");
             }
-            return request(server,credential,cancellation,"/v1/key-descriptor",body==null?"GET":"PUT",body,2048,"key_conflict",false);
+            return request(server,credential,cancellation,initialize?"/v1/key-descriptor/initialize":"/v1/key-descriptor",
+                    body==null?"GET":"PUT",body,2048,"key_conflict",false);
         }finally{if(body!=null)Arrays.fill(body,(byte)0);}
     }
     /** Caller must supply the exact durable staged ciphertext request. No JSON
@@ -77,16 +82,56 @@ final class SyncHttp {
     }
     private static byte[] request(URI server,char[] credential,Cancellation cancellation,String path,String method,byte[] body,int maximum,String conflict,boolean transfer)throws Failure {
         if(server==null||!server.equals(origin(server.toString()))||cancellation==null)throw new Failure("server");
-        token(credential);cancellation.check();HttpsURLConnection connection=null;
+        token(credential);
+        return jsonRequest(server.resolve(path),"Bearer "+new String(credential),cancellation,method,body,
+                "application/json",maximum,conflict,transfer);
+    }
+    static byte[] exchangeLogin(AccountLoginProtocol.Exchange exchange,Cancellation cancellation)throws Failure {
+        if(exchange==null||cancellation==null)throw new Failure("login_config");
+        byte[] body=exchange.body();
+        try{return jsonRequest(exchange.config.token,null,cancellation,"POST",body,
+                "application/x-www-form-urlencoded",32768,null,false);}
+        finally{Arrays.fill(body,(byte)0);}
+    }
+    static byte[] accountLogin(AccountLoginProtocol.Config config,String accessToken,Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        validateAccessToken(accessToken);
+        return jsonRequest(config.syncServer.resolve("/v1/account-login"),"Bearer "+accessToken,
+                cancellation,"GET",null,"application/json",1024,null,false);
+    }
+    static void validateAccessToken(String accessToken)throws Failure {
+        if(accessToken==null||accessToken.length()>16384
+                ||!accessToken.matches("[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+"))throw new Failure("login_response");
+    }
+    static byte[] enrollment(AccountLoginProtocol.Config config,String accessToken,byte[] body,boolean claim,
+            Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        if(body==null||body.length==0||body.length>4096)throw new Failure("enrollment_request");
+        validateAccessToken(accessToken);
+        String path=claim?"/v1/device-enrollment/claim":"/v1/device-enrollment";
+        return jsonRequest(config.syncServer.resolve(path),"Bearer "+accessToken,cancellation,
+                "POST",body,"application/json",2048,claim?"enrollment_pending":null,false);
+    }
+    static byte[] automaticEnrollment(AccountLoginProtocol.Config config,String accessToken,byte[] body,
+            Cancellation cancellation)throws Failure {
+        if(config==null||cancellation==null)throw new Failure("login_config");
+        if(body==null||body.length==0||body.length>4096)throw new Failure("enrollment_request");
+        validateAccessToken(accessToken);
+        return jsonRequest(config.syncServer.resolve("/v1/device-enrollment/automatic"),"Bearer "+accessToken,cancellation,
+                "POST",body,"application/json",2048,null,false);
+    }
+    private static byte[] jsonRequest(URI endpoint,String authorization,Cancellation cancellation,String method,
+            byte[] body,String contentType,int maximum,String conflict,boolean transfer)throws Failure {
+        cancellation.check();HttpsURLConnection connection=null;
         long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(12);
         try{
-            connection=(HttpsURLConnection)server.resolve(path).toURL().openConnection();
+            connection=(HttpsURLConnection)endpoint.toURL().openConnection();
             connection.setInstanceFollowRedirects(false);connection.setUseCaches(false);
             connection.setConnectTimeout(timeout(deadline,cancellation));connection.setReadTimeout(timeout(deadline,cancellation));
             connection.setRequestMethod(method);connection.setRequestProperty("Accept","application/json");
-            connection.setRequestProperty("Authorization","Bearer "+new String(credential));
+            if(authorization!=null)connection.setRequestProperty("Authorization",authorization);
             if(body!=null){
-                connection.setDoOutput(true);connection.setFixedLengthStreamingMode(body.length);connection.setRequestProperty("Content-Type","application/json");
+                connection.setDoOutput(true);connection.setFixedLengthStreamingMode(body.length);connection.setRequestProperty("Content-Type",contentType);
                 cancellation.check();try(OutputStream out=connection.getOutputStream()){cancellation.check();out.write(body);out.flush();}
             }
             // Refresh the read budget after connect/body output. DNS and output

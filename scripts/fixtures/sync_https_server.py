@@ -243,10 +243,11 @@ class Fixture:
     idempotent, removes only its own private child directory, and caches safe
     server observations before shutting down. It does not delete database rows.
     """
-    def __init__(self, work_dir: Path, binary: Path, database_url: str):
+    def __init__(self, work_dir: Path, binary: Path, database_url: str, *, oidc=None):
         self.work_dir = Path(work_dir)
         self.binary = Path(binary)
         self._database_url = database_url
+        self._oidc = oidc
         self._temporary = None
         self._private_dir = None
         self._process = None
@@ -318,6 +319,13 @@ class Fixture:
         status, data, _ = self._backend(method, path, json.dumps(body).encode() if body is not None else None, headers)
         return status, json.loads(data)
 
+    @property
+    def loopback_backend_port(self):
+        """The current Go process behind the disposable fixture's TLS proxy."""
+        if self._closed or self._process is None or self._process.poll() is not None:
+            raise RuntimeError("fixture_backend_not_running")
+        return self._backend_port
+
     def __enter__(self):
         with self._lifecycle_lock:
             if self._temporary is not None or self._closed:
@@ -340,6 +348,14 @@ class Fixture:
                 if provision.returncode or len(provision.stdout) > MAX_BOOTSTRAP:
                     raise RuntimeError("fixture_owner_provision_failed")
                 self._owner = _credential(json.loads(provision.stdout))
+                if self._oidc is not None:
+                    issuer, audience, client, subject, jwks = self._oidc
+                    env.update(ZAPIME_OIDC_ISSUER=issuer, ZAPIME_OIDC_AUDIENCE=audience,
+                               ZAPIME_OIDC_CLIENT_ID=client, ZAPIME_OIDC_JWKS_FILE=str(jwks), ZAPIME_OIDC_AUTO_ENROLL="1")
+                    binding = subprocess.run([str(self.binary), "bind-oidc-subject", self._owner["account_id"], issuer, subject],
+                        env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.DEVNULL, timeout=30)
+                    if binding.returncode:
+                        raise RuntimeError("fixture_oidc_binding_failed")
                 self._process = subprocess.Popen([str(self.binary)], env=env, stdin=subprocess.DEVNULL,
                                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
                 for _ in range(100):

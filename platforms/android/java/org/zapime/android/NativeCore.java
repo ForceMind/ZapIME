@@ -13,10 +13,13 @@ final class NativeCore {
     static native String syncWorkspaceStatus(String root, String account, byte[] material);
     static native String prepareSync(String root, String account, byte[] material);
     static native String stageSyncUpload(String root, String account, byte[] material);
+    static native String stageAutomaticSyncUpload(String root, String account, byte[] material);
     static native String ackSyncUpload(String root, String account, String device, byte[] material, byte[] expectedWire, byte[] response);
+    static native String ackAutomaticSyncUpload(String root, String account, String device, byte[] material, byte[] expectedWire, byte[] response);
     static native String syncPullCursor(String root, String account, byte[] material);
     static native String syncInventoryPage(String root, String account, byte[] material, String after, int limit);
     static native String applySyncPage(String root, String account, byte[] material, long after, byte[] response);
+    static native String applyAutomaticSyncPage(String root, String account, byte[] material, long after, byte[] response);
     static native byte[] createSyncRecovery(String account, byte[] material, byte[] codeOut);
     static native byte[] restoreSyncRecovery(String account, byte[] code, byte[] encrypted);
     static native byte[] createLocalBackup(String root, byte[] codeOut);

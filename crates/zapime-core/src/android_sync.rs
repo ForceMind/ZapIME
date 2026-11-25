@@ -186,18 +186,48 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_syncInventoryPage(
 /// comes from the frozen row, never a Java reconstruction or current record.
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeCore_stageSyncUpload(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _: JClass,
     root: JString,
     profile: JString,
     wire: JByteArray,
 ) -> jstring {
+    stage_sync_upload(env, root, profile, wire, false)
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_stageAutomaticSyncUpload(
+    env: JNIEnv,
+    _: JClass,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+) -> jstring {
+    stage_sync_upload(env, root, profile, wire, true)
+}
+
+fn stage_sync_upload(
+    mut env: JNIEnv,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    automatic: bool,
+) -> jstring {
     let result = catch_unwind(AssertUnwindSafe(|| {
         let profile = account(&mut env, &profile)?;
         let material = material(&mut env, profile, &wire)?;
         let mut store = sync_store(&mut env, &root)?;
-        let upload = client::stage_next(&mut store, profile, &material)
-            .map_err(|error| error.to_string())?;
+        let upload = if automatic {
+            client::stage_next_automatic(&mut store, profile, &material)
+        } else {
+            client::stage_next(&mut store, profile, &material)
+        }
+        .map_err(|error| match error {
+            client::Error::Storage(zapime_data::Error::SyncOrigin) => {
+                "sync_operation_origin_unverified".into()
+            }
+            other => other.to_string(),
+        })?;
         match upload {
             None => Ok(json!({"pending":false})),
             Some(operation) => {
@@ -217,7 +247,7 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_stageSyncUpload(
 
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeCore_ackSyncUpload(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _: JClass,
     root: JString,
     profile: JString,
@@ -225,6 +255,38 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_ackSyncUpload(
     wire: JByteArray,
     expected: JByteArray,
     response: JByteArray,
+) -> jstring {
+    acknowledge_sync_upload(
+        env,
+        root,
+        profile,
+        device,
+        [wire, expected, response],
+        false,
+    )
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_ackAutomaticSyncUpload(
+    env: JNIEnv,
+    _: JClass,
+    root: JString,
+    profile: JString,
+    device: JString,
+    wire: JByteArray,
+    expected: JByteArray,
+    response: JByteArray,
+) -> jstring {
+    acknowledge_sync_upload(env, root, profile, device, [wire, expected, response], true)
+}
+
+fn acknowledge_sync_upload(
+    mut env: JNIEnv,
+    root: JString,
+    profile: JString,
+    device: JString,
+    [wire, expected, response]: [JByteArray; 3],
+    automatic: bool,
 ) -> jstring {
     let result = catch_unwind(AssertUnwindSafe(|| {
         let profile = account(&mut env, &profile)?;
@@ -235,9 +297,15 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_ackSyncUpload(
             serde_json::from_slice(&expected).map_err(|_| "sync_client_ack_invalid")?;
         let response = bytes(&mut env, &response, client::MAX_ACK_BYTES)?;
         let mut store = sync_store(&mut env, &root)?;
-        client::acknowledge(&mut store, profile, device, &material, &expected, &response)
-            .map_err(|error| error.to_string())?;
-        Ok(json!({"acknowledged":true}))
+        let revision = client::acknowledge_with_revision(
+            &mut store, profile, device, &material, &expected, &response,
+        )
+        .map_err(|error| error.to_string())?;
+        if automatic {
+            Ok(json!({"acknowledged":true,"server_revision":revision}))
+        } else {
+            Ok(json!({"acknowledged":true}))
+        }
     }))
     .unwrap_or_else(|_| Err("sync_workspace_failed".into()));
     reply(&mut env, result)
@@ -265,13 +333,38 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_syncPullCursor(
 
 #[no_mangle]
 pub extern "system" fn Java_org_zapime_android_NativeCore_applySyncPage(
-    mut env: JNIEnv,
+    env: JNIEnv,
     _: JClass,
     root: JString,
     profile: JString,
     wire: JByteArray,
     after: jlong,
     response: JByteArray,
+) -> jstring {
+    apply_sync_page(env, root, profile, wire, after, response, false)
+}
+
+#[no_mangle]
+pub extern "system" fn Java_org_zapime_android_NativeCore_applyAutomaticSyncPage(
+    env: JNIEnv,
+    _: JClass,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    after: jlong,
+    response: JByteArray,
+) -> jstring {
+    apply_sync_page(env, root, profile, wire, after, response, true)
+}
+
+fn apply_sync_page(
+    mut env: JNIEnv,
+    root: JString,
+    profile: JString,
+    wire: JByteArray,
+    after: jlong,
+    response: JByteArray,
+    report_reconciled: bool,
 ) -> jstring {
     let result = catch_unwind(AssertUnwindSafe(|| {
         if after < 0 {
@@ -290,8 +383,12 @@ pub extern "system" fn Java_org_zapime_android_NativeCore_applySyncPage(
         match client::apply_page(&mut store, profile, &material, after as u64, &response) {
             Ok(report) => {
                 let head = parsed_head.map_err(|_| "sync_client_page_rejected")?;
-                Ok(json!({"cursor":report.cursor,"applied":report.applied,
-                    "echoed":report.echoed,"unchanged":report.unchanged,"head":head}))
+                let mut result = json!({"cursor":report.cursor,"applied":report.applied,
+                    "echoed":report.echoed,"unchanged":report.unchanged,"head":head});
+                if report_reconciled {
+                    result["acknowledged_revision"] = json!(report.acknowledged_revision);
+                }
+                Ok(result)
             }
             Err(error) => Ok(client_error(error)),
         }

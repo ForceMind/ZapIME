@@ -9,7 +9,7 @@ from android_sync_preparation_report import (CASES, UI_CASES, FAILURE_SUBSTEPS, 
 
 class SyncPreparationReportTests(unittest.TestCase):
     def setUp(self):
-        self.report = {"synthetic": True, "api_level": 36, "cleanup_completed": True,
+        self.report = {"schema_version": 2, "synthetic": True, "api_level": 36, "cleanup_completed": True,
                        "cases": [{"id": name, "passed": True} for name in sorted(CASES)],
                        "scope": "Synthetic JNI/vault/Activity; no HTTP, provider or phone acceptance"}
 
@@ -29,6 +29,13 @@ class SyncPreparationReportTests(unittest.TestCase):
             if mutation == "cleanup": report["cleanup_completed"] = False
             if mutation == "api_bool": report["api_level"] = True
             with self.subTest(mutation=mutation), self.assertRaises(ValueError): verify_report(report)
+
+    def test_older_reports_do_not_pass_the_consent_gate(self):
+        report = copy.deepcopy(self.report)
+        del report["schema_version"]
+        report["cases"] = [row for row in report["cases"] if row["id"] != "consent_recovery_and_stale_rejection"]
+        verify_report(report, 36)
+        with self.assertRaises(ValueError): verify_report(report, 36, minimum_version=2)
 
 
 class SyncRecoveryUiReportTests(unittest.TestCase):

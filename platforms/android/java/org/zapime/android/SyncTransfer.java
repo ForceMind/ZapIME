@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 import org.json.JSONObject;
 
-/** Explicit manual transport only. Holds no database transaction across HTTPS,
+/** Explicit manual and consent-gated foreground transport. Holds no database transaction across HTTPS,
  * never borrows an input session, and never persists an enabled/upload marker. */
 final class SyncTransfer {
     private static final long ROUND_BUDGET_MS=90_000;
@@ -43,7 +43,10 @@ final class SyncTransfer {
                     throw new RejectedPage((String)retained);
                 }
                 fields(object,"error");
-                if("sync_client_record_too_large".equals(object.opt("error")))throw new IOException("sync_client_record_too_large");
+                String code=object.optString("error");
+                if("sync_client_record_too_large".equals(code)||"sync_operation_origin_unverified".equals(code)){
+                    throw new IOException(code);
+                }
                 throw new IOException("sync_native_rejected");
             }
             return object;
@@ -59,6 +62,21 @@ final class SyncTransfer {
         long value=number(object,name);if(value>SyncRound.PAGE_LIMIT)throw new IOException("sync_native_response");return (int)value;
     }
     static SyncRound.Result run(Context context,SyncKeyRegistration.Selection selected,SyncHttp.Cancellation cancellation)throws IOException {
+        return run(context,selected,cancellation,null,null,null);
+    }
+    static SyncRound.Result runAutomatic(Context context,AccountLoginProtocol.Config config,UUID generation,
+            SyncHttp.Cancellation cancellation,Runnable sending)throws IOException {
+        SyncConsentController.Assessment current=SyncConsentController.inspect(context,config,cancellation);
+        if(current.status!=SyncConsentController.Status.READY||!generation.equals(current.state.generation)){
+            throw new IOException("sync_consent_requires_ready");
+        }
+        SyncConsentStore.State consent=current.state;
+        SyncKeyRegistration.Selection selected=new SyncKeyRegistration.Selection(consent.account,consent.device,
+                config.syncServer,consent.expectedKey);
+        return run(context,selected,cancellation,config,consent,sending);
+    }
+    private static SyncRound.Result run(Context context,SyncKeyRegistration.Selection selected,SyncHttp.Cancellation cancellation,
+            AccountLoginProtocol.Config config,SyncConsentStore.State consent,Runnable sending)throws IOException {
         if(Looper.myLooper()==Looper.getMainLooper())throw new IOException("sync_transfer_requires_worker");
         if(context==null||selected==null||selected.account==null||selected.account.equals(new UUID(0,0))||cancellation==null)throw new IOException("sync_transfer_invalid");
         final UUID expected=selected.account;
@@ -77,7 +95,9 @@ final class SyncTransfer {
                 return SyncRound.run(new SyncRound.Backend(){
                     public void check()throws IOException {
                         cancellation.check();if(SystemClock.elapsedRealtime()-began>=ROUND_BUDGET_MS)throw new IOException("sync_round_budget");
+                        if(consent!=null)SyncConsentController.requireTransfer(context,consent,config,snapshot,local,cancellation);
                         if(!local.same(SyncKeyRegistration.preparedLocal(context,snapshot,cancellation)))throw new IOException("sync_key_local_changed");
+                        if(consent!=null)SyncConsentController.requireTransfer(context,consent,config,snapshot,local,cancellation);
                     }
                     public void verifyIdentity()throws IOException {
                         check();SyncKeyRegistration.Result remote=SyncKeyRegistration.inspect(context,selected,cancellation);check();
@@ -90,27 +110,46 @@ final class SyncTransfer {
                             try{response=snapshot.pull(after,SyncRound.PAGE_LIMIT,cancellation);}finally{check();}
                             // The JNI only returns head/cursor after the complete
                             // ciphertext page passed authentication and commit.
-                            JSONObject applied=reply(NativeCore.applySyncPage(root,account,material,after,response),1024);
-                            fields(applied,"cursor","head","applied","echoed","unchanged");
-                            return new SyncRound.Page(number(applied,"cursor"),number(applied,"head"),count(applied,"applied"),count(applied,"echoed"),count(applied,"unchanged"));
+                            String nativePage=consent==null?NativeCore.applySyncPage(root,account,material,after,response)
+                                    :NativeCore.applyAutomaticSyncPage(root,account,material,after,response);
+                            JSONObject applied=reply(nativePage,1024);
+                            long reconciledRevision=0;
+                            if(consent==null){
+                                fields(applied,"cursor","head","applied","echoed","unchanged");
+                            }else{
+                                fields(applied,"cursor","head","applied","echoed","unchanged","acknowledged_revision");
+                                reconciledRevision=number(applied,"acknowledged_revision");
+                            }
+                            return new SyncRound.Page(number(applied,"cursor"),number(applied,"head"),count(applied,"applied"),count(applied,"echoed"),count(applied,"unchanged"),reconciledRevision);
                         }finally{if(response!=null)Arrays.fill(response,(byte)0);}
                     }
                     public byte[] stage()throws IOException {
-                        check();JSONObject staged=reply(NativeCore.stageSyncUpload(root,account,material),110_000);
+                        check();
+                        String stagedReply=consent==null?NativeCore.stageSyncUpload(root,account,material)
+                                :NativeCore.stageAutomaticSyncUpload(root,account,material);
+                        JSONObject staged=reply(stagedReply,110_000);
                         Object pending=staged.opt("pending");if(!(pending instanceof Boolean))throw new IOException("sync_native_response");
                         if(!(Boolean)pending){fields(staged,"pending");return null;}
                         fields(staged,"pending","wire");Object wire=staged.opt("wire");if(!(wire instanceof String))throw new IOException("sync_native_response");
                         byte[] frozen=((String)wire).getBytes(StandardCharsets.UTF_8);
                         if(frozen.length==0||frozen.length>100_000){Arrays.fill(frozen,(byte)0);throw new IOException("sync_native_response");}return frozen;
                     }
-                    public void pushAndAcknowledge(byte[] frozen)throws IOException {
+                    public long pushAndAcknowledge(byte[] frozen)throws IOException {
                         check();byte[] response=null;
                         try{
                             // stage() returned the actual persisted immutable
                             // bytes. No HTTP retry or JSON reserialization here.
+                            if(sending!=null)sending.run();
                             try{response=snapshot.push(frozen,cancellation);}finally{check();}
-                            JSONObject ack=reply(NativeCore.ackSyncUpload(root,account,snapshot.device.toString(),material,frozen,response),512);
-                            fields(ack,"acknowledged");if(!Boolean.TRUE.equals(ack.opt("acknowledged")))throw new IOException("sync_native_response");
+                            String ackReply=consent==null?NativeCore.ackSyncUpload(root,account,snapshot.device.toString(),material,frozen,response)
+                                    :NativeCore.ackAutomaticSyncUpload(root,account,snapshot.device.toString(),material,frozen,response);
+                            JSONObject ack=reply(ackReply,512);
+                            if(!Boolean.TRUE.equals(ack.opt("acknowledged")))throw new IOException("sync_native_response");
+                            if(consent==null){fields(ack,"acknowledged");return 0;}
+                            fields(ack,"acknowledged","server_revision");
+                            long revision=number(ack,"server_revision");
+                            if(revision==0)throw new IOException("sync_native_response");
+                            return revision;
                         }finally{if(response!=null)Arrays.fill(response,(byte)0);}
                     }
                 });

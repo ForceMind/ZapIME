@@ -10,14 +10,22 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ForceMind/ZapIME/services/sync/internal/oidcauth"
 )
 
 type API struct {
-	Store *Store
-	slots chan struct{}
+	Store                    *Store
+	AllowAutomaticEnrollment bool
+	slots                    chan struct{}
+	oidc                     *oidcauth.Verifier
 }
 
-func NewAPI(store *Store) *API { return &API{Store: store, slots: make(chan struct{}, 32)} }
+func NewAPI(store *Store) *API { return NewAPIWithOIDC(store, nil) }
+
+func NewAPIWithOIDC(store *Store, verifier *oidcauth.Verifier) *API {
+	return &API{Store: store, slots: make(chan struct{}, 32), oidc: verifier}
+}
 func write(w http.ResponseWriter, status int, object any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Cache-Control", "no-store")
@@ -45,6 +53,8 @@ func failure(w http.ResponseWriter, err error) {
 		write(w, 409, map[string]string{"error": "key_descriptor_legacy"})
 	case errors.Is(err, ErrKeyDescriptorMismatch):
 		write(w, 409, map[string]string{"error": "key_descriptor_mismatch"})
+	case errors.Is(err, ErrEnrollmentPending):
+		write(w, 409, map[string]string{"error": "enrollment_pending"})
 	case errors.Is(err, ErrInvalid):
 		write(w, 400, map[string]string{"error": "invalid_request"})
 	case errors.Is(err, ErrLimit):
@@ -88,6 +98,17 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		write(w, 200, map[string]any{"status": "ready", "protocol": 1})
 		return
 	}
+	switch r.URL.Path {
+	case "/v1/account-login":
+		api.accountLogin(ctx, w, r)
+		return
+	case "/v1/device-enrollment/automatic":
+		api.automaticDeviceEnrollment(ctx, w, r)
+		return
+	case "/v1/device-enrollment", "/v1/device-enrollment/approve", "/v1/device-enrollment/claim":
+		api.deviceEnrollment(ctx, w, r)
+		return
+	}
 	authorization := r.Header.Get("Authorization")
 	if !strings.HasPrefix(authorization, "Bearer ") {
 		failure(w, ErrUnauthorized)
@@ -110,13 +131,18 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		write(w, 200, state)
-	case r.URL.Path == "/v1/key-descriptor" && r.Method == http.MethodPut:
+	case (r.URL.Path == "/v1/key-descriptor" || r.URL.Path == "/v1/key-descriptor/initialize") && r.Method == http.MethodPut:
+		initialize := r.URL.Path == "/v1/key-descriptor/initialize"
+		if initialize && (api.oidc == nil || !api.AllowAutomaticEnrollment) {
+			write(w, http.StatusNotFound, map[string]string{"error": "not_found"})
+			return
+		}
 		input, err := decodeKeyDescriptor(w, r)
 		if err != nil {
 			failure(w, err)
 			return
 		}
-		state, err := api.Store.RegisterKeyDescriptor(ctx, actor, input)
+		state, err := api.Store.registerKeyDescriptor(ctx, actor, input, initialize)
 		if err != nil {
 			failure(w, err)
 			return

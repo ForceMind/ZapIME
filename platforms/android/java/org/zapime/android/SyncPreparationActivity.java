@@ -29,12 +29,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Explicit device-local key preparation. No network, upload toggle or account pairing. */
 public final class SyncPreparationActivity extends Activity {
+    static final String CONSENT_GENERATION = "org.zapime.android.consent_generation";
     private static final int SAVE_RECOVERY=201,OPEN_RECOVERY=202,MAX_RECOVERY=16*1024;
     private final Handler main=new Handler(Looper.getMainLooper());
     private TextView status,recovery;
     private EditText confirmCode,restoreCode;
     private Button create,export,choose,restore,confirm,reload;
     private UUID currentAccount,pickerAccount,restoreAccount,pendingAccount;
+    private UUID consentGeneration;
     private Uri pendingUri,restoreUri,lastExportUri;
     private int pendingOperation,generation;
     private boolean active,busy,initialized,prepared,requiresRecovery;
@@ -43,10 +45,16 @@ public final class SyncPreparationActivity extends Activity {
 
     @Override public void onCreate(Bundle state){
         super.onCreate(state);
+        if(getIntent().hasExtra(CONSENT_GENERATION)){
+            try{
+                consentGeneration=UUID.fromString(getIntent().getStringExtra(CONSENT_GENERATION));
+            }catch(RuntimeException malformed){finish();return;}
+        }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
         LinearLayout page=Ui.page(this);
-        page.addView(Ui.text(this,"准备加密同步",27,Ui.INK));
-        page.addView(Ui.text(this,"先在本机准备密钥，再保存密钥恢复文件。此页面不会连接服务器，也不会上传个人资料。",14,Ui.MUTED));
+        page.addView(Ui.text(this,consentGeneration==null?"准备加密同步":"恢复原同步密钥",27,Ui.INK));
+        page.addView(Ui.text(this,consentGeneration==null?"先在本机准备密钥，再保存密钥恢复文件。此页面不会连接服务器，也不会上传个人资料。":
+                "选择这个账号原有的密钥恢复文件，再输入对应恢复码。导入时会核对原同步密钥。",14,Ui.MUTED));
         status=Ui.text(this,"正在读取本机状态…",14,Ui.BLUE);page.addView(status);
         reload=Ui.button(this,"重新读取本机状态",Ui.BG,false);Ui.addButton(page,reload);reload.setOnClickListener(v->{if(active&&!busy)refresh();});
         LinearLayout setup=Ui.card(page);setup.addView(Ui.text(this,"首次准备",20,Ui.INK));
@@ -69,7 +77,11 @@ public final class SyncPreparationActivity extends Activity {
         restoreCode=secret("输入该文件对应的43字符恢复码");load.addView(restoreCode);
         restore=Ui.button(this,"验证并导入密钥…",Ui.BLUE,true);Ui.addButton(load,restore);
         restore.setOnClickListener(v->confirmRestore());
-        page.addView(Ui.text(this,"本机准备完成不表示已同步或已向服务器登记密钥。资料上传、新设备配对和完整账号恢复仍需后续接入。移除连接也不会清除这里的密钥或资料库绑定。",12,Ui.MUTED));
+        if(consentGeneration==null){
+            page.addView(Ui.text(this,"本机准备完成不表示已同步或已向服务器登记密钥。资料上传、新设备配对和完整账号恢复仍需后续接入。移除连接也不会清除这里的密钥或资料库绑定。",12,Ui.MUTED));
+        }else{
+            setup.setVisibility(View.GONE);save.setVisibility(View.GONE);
+        }
         Ui.showPage(this,page);controls();
     }
 
@@ -96,7 +108,8 @@ public final class SyncPreparationActivity extends Activity {
     private void controls(){
         if(create==null)return;
         reload.setEnabled(active&&!busy);
-        boolean ready=canUse();create.setEnabled(ready&&!prepared&&!requiresRecovery);export.setEnabled(ready&&prepared);
+        boolean ready=canUse();create.setEnabled(consentGeneration==null&&ready&&!prepared&&!requiresRecovery);
+        export.setEnabled(consentGeneration==null&&ready&&prepared);
         choose.setEnabled(ready);restore.setEnabled(ready&&restoreUri!=null&&currentAccount.equals(restoreAccount));
         confirm.setEnabled(active&&!busy&&expectedCode!=null);confirmCode.setEnabled(!busy);restoreCode.setEnabled(!busy);
     }
@@ -128,7 +141,7 @@ public final class SyncPreparationActivity extends Activity {
         });}catch(RejectedExecutionException failure){fail(ticket,failure,true);}
     }
     private void confirmCreate(){
-        if(!canUse()||prepared||requiresRecovery)return;final UUID account=currentAccount;
+        if(consentGeneration!=null||!canUse()||prepared||requiresRecovery)return;final UUID account=currentAccount;
         new AlertDialog.Builder(this).setTitle("准备首次使用的同步密钥？")
                 .setMessage("仅在首次为这个账号设置加密资料时创建。已有其他设备或恢复文件，请改用导入，避免产生另一套密钥。此处无法判断其他设备的密钥状态。准备仅在本机完成，不会上传资料或向服务器登记。")
                 .setNegativeButton("取消",null).setPositiveButton("准备本机密钥",(d,w)->create(account)).show();
@@ -194,8 +207,16 @@ public final class SyncPreparationActivity extends Activity {
         try{SyncWorker.EXECUTOR.execute(()->{
             byte[] encrypted=null;
             try{BackupFiles.check(stop::get);try(InputStream in=getContentResolver().openInputStream(uri)){encrypted=BackupFiles.read(in,stop::get,MAX_RECOVERY);}BackupFiles.check(stop::get);
-                final SyncPreparation.State state=SyncPreparation.restore(getApplicationContext(),account,entered,encrypted);BackupFiles.check(stop::get);
-                main.post(()->{if(!current(ticket))return;setBusy(false);render(state,"同步密钥已验证并保存在本机。");});
+                final SyncPreparation.State state=consentGeneration==null
+                        ?SyncPreparation.restore(getApplicationContext(),account,entered,encrypted)
+                        :SyncPreparation.restoreForConsent(getApplicationContext(),account,entered,encrypted,consentGeneration,
+                                AccountLoginDeployment.config(),stop::get);
+                BackupFiles.check(stop::get);
+                main.post(()->{
+                    if(!current(ticket))return;
+                    if(consentGeneration!=null){setResult(RESULT_OK);finish();return;}
+                    setBusy(false);render(state,"同步密钥已验证并保存在本机。");
+                });
             }catch(Exception|LinkageError failure){fail(ticket,failure,false);}
             finally{Arrays.fill(entered,(byte)0);if(encrypted!=null)Arrays.fill(encrypted,(byte)0);}
         });}catch(RejectedExecutionException failure){Arrays.fill(entered,(byte)0);fail(ticket,failure,false);}
@@ -213,6 +234,8 @@ public final class SyncPreparationActivity extends Activity {
     private static String message(Throwable failure){
         String code=failure.getMessage();
         if("sync_connection_missing".equals(code))return "请先返回服务器连接页，验证并保存设备连接。准备材料本身不会联网。";
+        if("sync_consent_changed".equals(code)||"sync_consent_deployment_changed".equals(code))return "同步授权或账号已变化。请返回「账号与同步」重新核对。";
+        if("sync_consent_key_mismatch".equals(code))return "这个文件与服务器登记的密钥不一致。请使用这个账号原有的密钥恢复文件。";
         if("sync_connection_changed".equals(code)||"sync_connection_profile".equals(code))return "连接账号已变化或与资料库不一致。请返回重新读取状态；现有密钥不会被替换。";
         if("sync_preparation_owner".equals(code))return "只有管理员设备可显式创建首次使用的密钥。此设备请导入同一账号已有的密钥恢复文件。";
         if("sync_workspace_uninitialized".equals(code))return "本机资料库尚未初始化。请返回个人资料页打开资料库后重试。";

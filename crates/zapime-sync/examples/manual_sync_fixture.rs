@@ -16,6 +16,20 @@ use zeroize::Zeroizing;
 
 const FIRST: &str = "synthetic manual client source";
 const SECOND: &str = "synthetic manual client edited on B";
+const SHORTCUT_CODE: &str = "a3sync";
+const SHORTCUT_TEXT: &str = "synthetic A3 automatic shortcut";
+const RECOVERY_TEXT: &str = "synthetic A3 recovered shortcut";
+const NETWORK_TEXT: &str = "synthetic A3 default network shortcut";
+const CLOSE_TEXT: &str = "synthetic A3 interrupted upload shortcut";
+const CONFLICT_TEXT: &str = "synthetic A3 independent member edit";
+
+fn shortcut() -> Content {
+    Content::Snippet {
+        code: SHORTCUT_CODE.into(),
+        text: SHORTCUT_TEXT.into(),
+        tags: Vec::new(),
+    }
+}
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -148,7 +162,7 @@ fn main() {
         dir.is_absolute() && dir.is_dir(),
         "private fixture directory"
     );
-    if command == "init" {
+    if matches!(command, "init" | "init-automatic" | "init-foreground") {
         assert!(args.len() == 4, "init arguments");
         let profile = Uuid::parse_str(&args[3]).expect("fixture account");
         let material = Material::generate(profile).expect("fixture material");
@@ -167,13 +181,139 @@ fn main() {
             workspace::prepare(&path, profile, &material).expect("prepare real workspace");
         }
         let mut a = open(dir, "a");
-        let id = Uuid::new_v4();
-        private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
-        edit(&mut a, id, FIRST);
+        if command != "init-foreground" {
+            let id = Uuid::new_v4();
+            private(&dir.join("record.json"), &serde_json::to_vec(&id).unwrap());
+            if command == "init-automatic" {
+                let device = a.device_id().expect("fixture device");
+                a.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
+                    .expect("create shortcut in bound store");
+            } else {
+                edit(&mut a, id, FIRST);
+            }
+        }
         status(&mut a, &material, command);
         return;
     }
     let material = material(dir);
+    if command == "export-automatic-recovery-fixture" {
+        let (code, encrypted) =
+            workspace::create_recovery(&material).expect("make a key-only recovery file");
+        private(&dir.join("recovery-code.txt"), code.expose().as_bytes());
+        private(&dir.join("recovery-key.bin"), &encrypted);
+        let mut b = open(dir, "b");
+        status(&mut b, &material, command);
+        return;
+    }
+    if command == "export-archive-origin-fixture" {
+        let mut b = open(dir, "b");
+        let id = Uuid::from_u128(0xf867_8ce1_c77a_4f88_957d_f07f_9845_1953);
+        let device = b.device_id().expect("fixture device");
+        b.edit(Uuid::new_v4(), id, 0, device, shortcut(), false)
+            .expect("create the source record in a prepared workspace");
+        private(
+            &dir.join("records-only.json"),
+            &b.export_plaintext().unwrap(),
+        );
+        status(&mut b, &material, command);
+        return;
+    }
+    if command == "verify-queue-window-receiver" {
+        let revision: u64 = args[3].parse().expect("fixture revision");
+        assert!(matches!(revision, 16 | 18), "queue fixture head");
+        let mut b = open(dir, "b");
+        let records = b.records(true).unwrap();
+        assert!(
+            records.len() == if revision == 16 { 16 } else { 17 },
+            "queue fixture record count"
+        );
+        for index in (1..=16).chain((revision == 18).then_some(18)) {
+            let id = Uuid::from_u128(0x96ab_b4f1_8f2c_4bb3_8000_0000_0000_0000 | index);
+            let record = records
+                .iter()
+                .find(|record| record.id == id)
+                .expect("queue record");
+            let deleted = index == 1 && revision == 18;
+            assert!(
+                record.revision == if deleted { 2 } else { 1 },
+                "queue fixture record revision"
+            );
+            assert!(record.deleted == deleted, "queue fixture deletion");
+            assert!(
+                record.content
+                    == Content::Snippet {
+                        code: format!("burst{index}"),
+                        text: format!("synthetic A3 queue item {index}"),
+                        tags: vec![],
+                    },
+                "queue fixture record content"
+            );
+        }
+        assert!(
+            b.pending_count().unwrap() == 0
+                && client::stage_next_automatic(&mut b, material.profile, &material)
+                    .unwrap()
+                    .is_none(),
+            "receiver never uploads pulled records"
+        );
+        assert!(
+            client::pull_cursor(&mut b, material.profile, &material).unwrap() == revision,
+            "receiver queue fixture cursor"
+        );
+        status(&mut b, &material, command);
+        return;
+    }
+    if command == "verify-foreground-receiver" {
+        let revision: u64 = args[3].parse().expect("fixture revision");
+        assert!((1..=4).contains(&revision), "foreground fixture head");
+        let mut b = open(dir, "b");
+        let records = b.records(false).unwrap();
+        assert!(
+            records.len() == revision as usize
+                && records.iter().any(|row| row.content == shortcut()),
+            "same Android shortcut"
+        );
+        if revision >= 2 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3back" && text == RECOVERY_TEXT && tags.is_empty())
+                ),
+                "same recovered Android shortcut"
+            );
+        }
+        if revision >= 3 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3wifi" && text == NETWORK_TEXT && tags.is_empty())
+                ),
+                "same default network shortcut"
+            );
+        }
+        if revision == 4 {
+            assert!(
+                records.iter().any(
+                    |row| matches!(&row.content, Content::Snippet { code, text, tags }
+                if code == "a3stop" && text == CLOSE_TEXT && tags.is_empty())
+                ),
+                "same interrupted upload shortcut"
+            );
+        }
+        assert!(b.pending_count().unwrap() == 0, "no echo upload");
+        assert!(
+            client::stage_next_automatic(&mut b, material.profile, &material)
+                .unwrap()
+                .is_none(),
+            "receiver queue is empty"
+        );
+        assert!(
+            client::pull_cursor(&mut b, material.profile, &material).unwrap() == revision,
+            "receiver cursor persisted"
+        );
+        status(&mut b, &material, command);
+        return;
+    }
     if command == "edit-b" {
         assert!(args.len() == 3, "edit arguments");
         let mut b = open(dir, "b");
@@ -183,7 +323,33 @@ fn main() {
         status(&mut b, &material, command);
         return;
     }
-    if command == "verify" {
+    if command == "edit-foreground-member" {
+        let mut b = open(dir, "b");
+        let id = Uuid::parse_str("a4208deb-74bb-4b53-984a-07faa0832711").unwrap();
+        let row = b.get(id).unwrap().expect("receiver has recovered shortcut");
+        assert!(
+            matches!(&row.content, Content::Snippet { code, text, .. }
+            if code == "a3back" && text == RECOVERY_TEXT),
+            "expected receiver base"
+        );
+        let device = b.device_id().unwrap();
+        b.edit(
+            Uuid::new_v4(),
+            id,
+            row.revision,
+            device,
+            Content::Snippet {
+                code: "a3back".into(),
+                text: CONFLICT_TEXT.into(),
+                tags: Vec::new(),
+            },
+            false,
+        )
+        .expect("member edit from authenticated source");
+        status(&mut b, &material, command);
+        return;
+    }
+    if matches!(command, "verify" | "verify-automatic") {
         assert!(args.len() == 3, "verify arguments");
         let mut a = open(dir, "a");
         let mut b = open(dir, "b");
@@ -192,26 +358,32 @@ fn main() {
             records == b.records(true).unwrap() && records.len() == 1,
             "stores converge"
         );
-        assert!(
-            matches!(&records[0].content, Content::Favorite {text, ..} if text == SECOND),
-            "remote edit converges"
-        );
+        let automatic = command == "verify-automatic";
+        let cursor = if automatic { 1 } else { 2 };
+        if automatic {
+            assert!(records[0].content == shortcut(), "shortcut converges");
+        } else {
+            assert!(
+                matches!(&records[0].content, Content::Favorite {text, ..} if text == SECOND),
+                "remote edit converges"
+            );
+        }
         for store in [&mut a, &mut b] {
             assert!(store.pending_count().unwrap() == 0, "no echo upload");
-            assert!(
+            let next = if automatic {
+                client::stage_next_automatic(store, material.profile, &material)
+            } else {
                 client::stage_next(store, material.profile, &material)
-                    .unwrap()
-                    .is_none(),
-                "no new ciphertext from download"
-            );
+            };
+            assert!(next.unwrap().is_none(), "no new ciphertext from download");
             assert!(
-                client::pull_cursor(store, material.profile, &material).unwrap() == 2,
+                client::pull_cursor(store, material.profile, &material).unwrap() == cursor,
                 "committed cursor"
             );
         }
         println!(
             "{}",
-            json!({"status":"PASS","command":command,"stores":2,"records_each":1,"pending_each":0,"cursor_each":2})
+            json!({"status":"PASS","command":command,"stores":2,"records_each":1,"pending_each":0,"cursor_each":cursor})
         );
         return;
     }
@@ -238,21 +410,34 @@ fn main() {
     );
     let mut store = open(dir, device);
     match command {
-        "stage" => {
+        "stage" | "stage-automatic" => {
             assert!(args.len() == 6, "stage arguments");
-            let operation = client::stage_next(&mut store, material.profile, &material)
-                .unwrap()
-                .expect("pending fixture operation");
+            let next = if command == "stage-automatic" {
+                client::stage_next_automatic(&mut store, material.profile, &material)
+            } else {
+                client::stage_next(&mut store, material.profile, &material)
+            };
+            let operation = next.unwrap().expect("pending fixture operation");
             let wire =
                 client::frozen_wire(&mut store, material.profile, &material, &operation).unwrap();
+            let packet = String::from_utf8_lossy(&wire);
             assert!(
-                !String::from_utf8_lossy(&wire).contains(FIRST)
-                    && !String::from_utf8_lossy(&wire).contains(SECOND),
+                ![
+                    FIRST,
+                    SECOND,
+                    SHORTCUT_TEXT,
+                    RECOVERY_TEXT,
+                    NETWORK_TEXT,
+                    CLOSE_TEXT,
+                    CONFLICT_TEXT
+                ]
+                .iter()
+                .any(|text| packet.contains(text)),
                 "ciphertext only"
             );
             private(Path::new(&args[5]), &wire);
         }
-        "ack" => {
+        "ack" | "ack-automatic" => {
             assert!(args.len() == 8, "ack arguments");
             let expected_device = Uuid::parse_str(&args[5]).expect("server device");
             let wire = read(Path::new(&args[6]), client::MAX_ACK_BYTES);
@@ -262,7 +447,7 @@ fn main() {
                     == wire,
                 "persisted original wire"
             );
-            client::acknowledge(
+            let revision = client::acknowledge_with_revision(
                 &mut store,
                 material.profile,
                 expected_device,
@@ -271,6 +456,12 @@ fn main() {
                 &read(Path::new(&args[7]), client::MAX_ACK_BYTES),
             )
             .expect("real server acknowledgement");
+            if command == "ack-automatic" {
+                println!(
+                    "{}",
+                    json!({"status":"PASS","command":"receipt","revision":revision})
+                );
+            }
         }
         "apply" | "reject-page" => {
             assert!(args.len() == 6, "page arguments");

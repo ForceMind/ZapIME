@@ -66,7 +66,13 @@ done
 "$ndk/llvm-readelf" -l "$build/lib/$abi/libzapime_voicekey_adapter.so" | \
   awk '/LOAD/{if ($NF != "0x4000" && $NF != "0x10000" ) {print "Unexpected LOAD alignment:",$NF; exit 1}}'
 "$tools/aapt2" compile --dir platforms/android/res -o "$build/resources.zip"
-"$tools/aapt2" link -o "$build/base.apk" --manifest platforms/android/AndroidManifest.xml -I "$android_jar" -A "$build/assets" "$build/resources.zip" --java "$build/generated"
+login_config_args=()
+if [[ -n "${ZAPIME_ANDROID_OIDC_CONFIG:-}" ]]; then
+  login_config_args=(--config "$ZAPIME_ANDROID_OIDC_CONFIG")
+fi
+python3 scripts/android_account_login_config.py platforms/android/AndroidManifest.xml "$build/AndroidManifest.xml" \
+  "$build/generated/org/zapime/android/AccountLoginDeployment.java" "${login_config_args[@]}"
+"$tools/aapt2" link -o "$build/base.apk" --manifest "$build/AndroidManifest.xml" -I "$android_jar" -A "$build/assets" "$build/resources.zip" --java "$build/generated"
 find platforms/android/java "$build/generated" -name '*.java' > "$build/java-sources.txt"
 javac -source 8 -target 8 -encoding UTF-8 -classpath "$android_jar" -d "$build/classes" @"$build/java-sources.txt"
 find "$build/classes" -name '*.class' > "$build/classes.txt"

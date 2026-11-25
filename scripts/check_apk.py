@@ -20,8 +20,9 @@ CORE_JNI = {"Java_org_zapime_android_NativeCore_" + name for name in
             ("open", "request", "queryPersonal", "syncProfile", "close",
              "createLocalBackup", "restoreLocalBackup", "newSyncMaterial",
              "syncMaterialInfo", "syncKeyDescriptor", "syncWorkspaceStatus", "prepareSync",
-             "createSyncRecovery", "restoreSyncRecovery", "stageSyncUpload",
-             "ackSyncUpload", "syncPullCursor", "syncInventoryPage", "applySyncPage")}
+             "createSyncRecovery", "restoreSyncRecovery", "stageSyncUpload", "stageAutomaticSyncUpload",
+             "ackSyncUpload", "ackAutomaticSyncUpload", "syncPullCursor", "syncInventoryPage", "applySyncPage",
+             "applyAutomaticSyncPage")}
 CANDIDATE_JNI = {"Java_org_zapime_android_NativeCandidateRanker_" + name for name in
                  ("open", "score", "clear", "cancel", "close")}
 

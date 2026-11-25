@@ -265,14 +265,15 @@ fn own_echo_acknowledges_only_the_frozen_request_and_preserves_later_edits() {
     let one = staged(&mut s, p, kid, &key, 1);
     edit(&mut s, id, 1, "later offline edit");
     let report = apply(&mut s, p, 0, &page(0, vec![one], 1), kid, &key).unwrap();
-    assert_eq!(report.echoed, 1);
+    assert_eq!((report.echoed, report.acknowledged_revision), (1, 1));
     assert_eq!(s.get(id).unwrap().unwrap().revision, 2);
     assert_eq!(s.pending_count().unwrap(), 1);
     assert_eq!(s.pending_operations(p, 1).unwrap()[0].server_revision, 1);
     let two = staged(&mut s, p, kid, &key, 2);
     s.acknowledge_upload(p, two.operation.operation_id, 2)
         .unwrap();
-    apply(&mut s, p, 1, &page(1, vec![two], 2), kid, &key).unwrap();
+    let report = apply(&mut s, p, 1, &page(1, vec![two], 2), kid, &key).unwrap();
+    assert_eq!((report.echoed, report.acknowledged_revision), (1, 0));
     assert_eq!(s.get(id).unwrap().unwrap().revision, 2);
 }
 
