@@ -8,15 +8,18 @@ import json
 from pathlib import Path
 import re
 import subprocess
+import tarfile
 
 from build_preflight_bundle import write_bundle
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_FILES = (
-    "deploy/install.sh", "deploy/manage.sh", "deploy/oidc_setup.py", "deploy/preflight.py",
+    "deploy/bootstrap.sh", "deploy/install.sh", "deploy/manage.sh", "deploy/oidc_setup.py", "deploy/preflight.py",
+    "deploy/upgrade.sh",
     "scripts/android_account_login_config.py", "services/sync/compose.yml", "services/sync/Caddyfile",
     "services/sync/backup.sh", "services/sync/restore.sh", "services/sync/oidc-disabled.json",
     "services/sync/assetlinks-disabled.json", "LICENSE", "services/sync/LICENSE",
+    "services/sync/deployment-state/.keep",
 )
 SERVICES = {"db": "image: postgres:16", "sync": "build: .", "https": "image: caddy:2"}
 IMAGE = re.compile(r"[a-z0-9][a-z0-9./:-]{1,200}(?:@sha256:[0-9a-f]{64})?")
@@ -44,6 +47,23 @@ def build(args):
         raise ValueError("use registry digest references online, or export an offline image archive")
     archive_sha = ""
     if args.archive:
+        expected = {item["reference"]: item["id"] for item in images.values()}
+        if not all(name.startswith("zapime-release/") and "@" not in name for name in expected):
+            raise ValueError("offline images need dedicated zapime-release/* tags")
+        with tarfile.open(args.archive, "r:*") as saved:
+            member = saved.getmember("manifest.json")
+            if not member.isfile() or not 0 < member.size <= 65536:
+                raise ValueError("invalid offline image inventory")
+            manifest_rows = json.load(saved.extractfile(member))
+        observed = {}
+        for row in manifest_rows:
+            image_id = "sha256:" + Path(row["Config"]).name.removesuffix(".json")
+            for tag in row.get("RepoTags") or ():
+                if tag in observed:
+                    raise ValueError("duplicate offline image tag")
+                observed[tag] = image_id
+        if observed != expected:
+            raise ValueError("offline archive tags or image IDs differ from the selected images")
         digest = hashlib.sha256()
         with args.archive.open("rb") as source:
             for chunk in iter(lambda: source.read(1024 * 1024), b""):

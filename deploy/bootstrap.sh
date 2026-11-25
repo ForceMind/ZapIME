@@ -122,10 +122,12 @@ identity = {"format": 1, "purpose": kind, "version": sys.argv[2], "architecture"
 limits = {"manifest.json": 4096, "preflight.py": 65536}
 if kind == "zapime-runtime":
     limits = {"manifest.json": 4096, **{name: 262144 for name in (
-        "deploy/install.sh", "deploy/manage.sh", "deploy/oidc_setup.py", "deploy/preflight.py",
+        "deploy/bootstrap.sh", "deploy/install.sh", "deploy/manage.sh", "deploy/oidc_setup.py", "deploy/preflight.py",
+        "deploy/upgrade.sh",
         "scripts/android_account_login_config.py", "services/sync/compose.yml", "services/sync/Caddyfile",
         "services/sync/backup.sh", "services/sync/restore.sh", "services/sync/oidc-disabled.json",
         "services/sync/assetlinks-disabled.json", "LICENSE", "services/sync/LICENSE",
+        "services/sync/deployment-state/.keep",
     )}}
 try:
     with ZipFile(directory / (kind + ".zip")) as package:

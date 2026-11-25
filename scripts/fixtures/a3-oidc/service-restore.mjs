@@ -140,6 +140,11 @@ async function automatic(owner) {
   check(JSON.stringify(session) === JSON.stringify(retry) && session.account_id === owner.account_id &&
     session.device_id === device && session.role === 'member', 'automatic_identity');
   check((await call('/v1/session', token, 200, 'automatic_session')).device_id === device, 'automatic_device_session');
+  const credential = join(folder, 'automatic-device.json');
+  if (owner.save_credential === true) {
+    writeFileSync(credential, JSON.stringify({ account_id: owner.account_id, device_id: device, token }),
+      { mode: 0o600, flag: 'wx' });
+  }
   console.log(JSON.stringify({ status: 'PASS', bound_login: true, automatic_member: true, repeated_grant: true }));
 }
 

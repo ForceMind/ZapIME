@@ -161,16 +161,29 @@ func run() error {
 	api := syncapi.NewAPIWithOIDC(store, login)
 	api.AllowAutomaticEnrollment = automatic == "1"
 	handler := http.Handler(api)
+	maintenance := os.Getenv("ZAPIME_MAINTENANCE_FLAG")
+	route := ""
 	if installation := os.Getenv("ZAPIME_DEPLOYMENT_ID"); installation != "" {
 		if decoded, err := hex.DecodeString(installation); err != nil || len(decoded) != 16 {
 			return errors.New("deployment_id_invalid")
 		}
-		route := "/.well-known/zapime-deploy/" + installation
+		route = "/.well-known/zapime-deploy/" + installation
+	}
+	if route != "" || maintenance != "" {
 		handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			if r.Method == http.MethodGet && r.URL.EscapedPath() == route && r.URL.RawQuery == "" {
+			if route != "" && r.Method == http.MethodGet && r.URL.EscapedPath() == route && r.URL.RawQuery == "" {
 				w.Header().Set("Cache-Control", "no-store")
 				w.WriteHeader(http.StatusNoContent)
 				return
+			}
+			if maintenance != "" && r.URL.EscapedPath() != "/healthz" {
+				if _, err := os.Stat(maintenance); err == nil || !errors.Is(err, os.ErrNotExist) {
+					w.Header().Set("Content-Type", "application/json")
+					w.Header().Set("Cache-Control", "no-store")
+					w.WriteHeader(http.StatusServiceUnavailable)
+					_, _ = io.WriteString(w, "{\"error\":\"maintenance\"}\n")
+					return
+				}
 			}
 			api.ServeHTTP(w, r)
 		})

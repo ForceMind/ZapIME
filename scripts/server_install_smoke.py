@@ -138,12 +138,49 @@ def main():
             assert (binding_path.stat().st_mode & 0o077) == 0
             command(*args)
             assert binding_path.read_bytes() == original
-            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            assert oidc_restore_probe('automatic', work, {'account_id': account, 'save_credential': True})['automatic_member']
             report = command('docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f',
                              str(current/'services/sync/compose.yml'), 'exec', '-T', 'db',
                              'psql', '-U', 'zapime', '-Atc', 'SELECT count(*) FROM zapime_accounts', capture=True)
             assert report.strip() == '1'
             print('PASS signed runtime: offline verified images, real S3, repeat OIDC bootstrap, container public JWKS, automatic enrollment and Android configuration', flush=True)
+            device = json.loads((work / 'automatic-device.json').read_text())
+            fixture, packet, identity, page = [work / name for name in ('e2ee.json', 'packet.json', 'key.json', 'page.json')]
+            probe = ROOT / 'target/debug/examples/sync_fixture'
+            command(str(probe), 'seal', account, str(fixture), str(packet))
+            command(str(probe), 'descriptor', account, str(fixture), str(identity))
+            api('PUT', '/v1/key-descriptor/initialize', device['token'], json.loads(identity.read_text()))
+            first = api('POST', '/v1/changes', device['token'], json.loads(packet.read_text()))
+            assert first['revision'] == 1
+            later = work / 'later-version'
+            later_version = '0.1.0-runtime.2'
+            later_pin = command(sys.executable, str(ROOT / 'deploy/build_runtime_bundle.py'), '--version', later_version,
+                                '--architecture', 'amd64', '--output', str(later), '--private-key', str(key),
+                                '--archive', str(archive), *image_args, capture=True).strip()
+            assert pin == later_pin
+            original_release = current.resolve()
+            public = INSTALL / 'public-https.verified'
+            public.touch()
+            update = ['/usr/local/bin/zapime', 'update', str(later), later_version, str(archive)]
+            assert command(*update, check=False).returncode != 0
+            pending = INSTALL / 'upgrade.pending'
+            frozen = INSTALL / 'deployment-state/frozen'
+            assert current.resolve() == original_release and pending.is_file() and frozen.is_file()
+            before = pending.read_text().splitlines()
+            assert before[3] == 'backup_complete' and Path(before[2]).is_file() and Path(before[2] + '.objects.tar').is_file()
+            rejected_api('POST', '/v1/changes', device['token'], json.loads(packet.read_text()), 503, 'maintenance')
+            assert 'Upgrade pending' in command('/usr/local/bin/zapime', 'status', capture=True)
+            assert command('/usr/local/bin/zapime', 'start', check=False).returncode != 0
+            public.unlink()  # This mock existing proxy was never actually HTTPS-enabled.
+            command(*update)
+            assert current.resolve() != original_release and not pending.exists() and not frozen.exists()
+            assert (INSTALL / 'upgrade.last').read_text().splitlines()[2] == before[2]
+            restored = api('GET', '/v1/changes?after=0', device['token'])
+            assert restored['changes'] == [first]
+            page.write_text(json.dumps(first))
+            command(str(probe), 'verify', str(fixture), str(page))
+            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            print('PASS signed upgrade: isolated migration, stopped writer backup, failed public check freezes data, same-bundle resume, original ciphertext and OIDC', flush=True)
     try:
         setup('zapime-ci-install')
         install()

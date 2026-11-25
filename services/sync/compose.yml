@@ -21,6 +21,7 @@ services:
       PGPASSWORD: ${POSTGRES_PASSWORD:?Set a strong POSTGRES_PASSWORD in .env}
       ZAPIME_LISTEN: 0.0.0.0:8787
       ZAPIME_DEPLOYMENT_ID: ${ZAPIME_INSTALLATION_ID:-}
+      ZAPIME_MAINTENANCE_FLAG: /run/zapime-deployment/frozen
       ZAPIME_OIDC_ISSUER: ${ZAPIME_OIDC_ISSUER:-}
       ZAPIME_OIDC_AUDIENCE: ${ZAPIME_OIDC_AUDIENCE:-}
       ZAPIME_OIDC_CLIENT_ID: ${ZAPIME_OIDC_CLIENT_ID:-}
@@ -39,6 +40,11 @@ services:
       db: {condition: service_healthy}
     read_only: true
     volumes:
+      - type: bind
+        source: ${ZAPIME_DEPLOYMENT_STATE:-./deployment-state}
+        target: /run/zapime-deployment
+        read_only: true
+        bind: {create_host_path: false}
       - type: bind
         source: ${ZAPIME_OIDC_PUBLIC_JWKS:-./oidc-disabled.json}
         target: /run/zapime-oidc.json

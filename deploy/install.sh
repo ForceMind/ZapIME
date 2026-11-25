@@ -39,6 +39,9 @@ if [[ -n $verified_runtime ]]; then
 elif [[ -n $image_archive ]]; then
   echo 'An image archive requires the signed runtime entry.' >&2; exit 1
 fi
+if [[ -f $root/upgrade.pending && -z $verified_runtime ]]; then
+  echo 'A signed upgrade is pending. Retry it with the same verified release.' >&2; exit 1
+fi
 [[ -z $restore || ( $restore == /* && -f $restore && -f $restore.objects.tar ) ]] || { echo 'Restore requires both backup files at an absolute path' >&2; exit 1; }
 if [[ -n $oidc_config || -n $oidc_jwks || -n $oidc_subject || -n $oidc_account || -n $android_signer ]]; then
   [[ -f $oidc_config && -f $oidc_jwks && -f $oidc_subject ]] || { echo 'OIDC requires configuration, public JWKS, and verified issuer subject files' >&2; exit 1; }
@@ -160,6 +163,14 @@ for image in manifest["images"].values():
 (work / "images.txt").write_text("\n".join(lines) + "\n")
 PY
   if [[ -n $image_archive ]]; then
+    {
+      read -r architecture
+      while read -r reference expected; do
+        metadata=$(docker image inspect --format '{{.Id}}' "$reference" 2>/dev/null) || metadata=
+        [[ -z $metadata || $metadata == "$expected" ]] ||
+          { echo 'Offline image tag belongs to a different image. Use distinct release tags.' >&2; return 1; }
+      done
+    } < "$verified_runtime/images.txt"
     docker image load --input "$verified_runtime/images.tar" >/dev/null
     rm -f -- "$verified_runtime/images.tar"
   fi
@@ -177,7 +188,16 @@ PY
   } < "$verified_runtime/images.txt"
 }
 if [[ -n $verified_runtime ]]; then
+  trust=$(sha256sum "$verified_runtime/release-public.pem")
+  trust=${trust%% *}
+  if [[ -f $root/release-trust.sha256 ]]; then
+    [[ $(cat "$root/release-trust.sha256") == "$trust" ]] ||
+      { echo 'Release signer differs from the existing trusted signer.' >&2; exit 1; }
+  fi
   prepare_runtime_images
+  if [[ ! -f $root/release-trust.sha256 ]]; then
+    printf '%s\n' "$trust" > "$root/release-trust.sha256"
+  fi
 fi
 if [[ ! -f $root/config.env ]]; then
   exec 3<>/dev/tty || { echo 'First run needs a terminal to enter your R2 settings' >&2; exit 1; }
@@ -199,6 +219,10 @@ if [[ ! -f $root/config.env ]]; then
   unset secret access password
 fi
 if [[ $proxy_explicit == 1 ]]; then
+  if [[ -e $root/current && -n $verified_runtime ]] &&
+    [[ $(sed -n 's/^ZAPIME_HTTPS_MODE=//p' "$root/config.env") != existing ]]; then
+    echo 'Change the HTTPS mode separately from a signed release update.' >&2; exit 1
+  fi
   sed -i '/^ZAPIME_HTTPS_MODE=/d' "$root/config.env"
   printf 'ZAPIME_HTTPS_MODE=existing\n' >> "$root/config.env"
 else
@@ -206,6 +230,10 @@ else
   proxy=${proxy:-caddy}
 fi
 [[ $proxy == caddy || $proxy == existing ]] || { echo 'Invalid HTTPS mode in protected configuration' >&2; exit 1; }
+install -d -m 755 "$root/deployment-state"
+if ! grep -Fxq "ZAPIME_DEPLOYMENT_STATE=$root/deployment-state" "$root/config.env"; then
+  printf 'ZAPIME_DEPLOYMENT_STATE=%s/deployment-state\n' "$root" >> "$root/config.env"
+fi
 # Refuse a pre-existing Compose project/volume belonging to another installation.
 installation_id=$(sed -n 's/^ZAPIME_INSTALLATION_ID=//p' "$root/config.env")
 [[ $installation_id =~ ^[0-9a-f]{32}$ ]] || { echo 'Invalid installation ID in protected configuration' >&2; exit 1; }
@@ -241,8 +269,13 @@ export COMPOSE_PROJECT_NAME=zapime ZAPIME_ENV_FILE="$root/config.env"
 compose=(docker compose --env-file "$root/config.env" -f "$release/services/sync/compose.yml")
 if [[ -e $root/current ]]; then
   [[ -z $restore ]] || { echo 'Restore is only accepted on a fresh installation' >&2; exit 1; }
-  # Back up with the currently installed image BEFORE building its replacement.
-  bash "$root/current/deploy/manage.sh" backup
+  if [[ -z $verified_runtime ]]; then
+    # The outer lock is held here; use the previous Compose file directly.
+    COMPOSE_FILE="$root/current/services/sync/compose.yml" bash "$root/current/services/sync/backup.sh" \
+      "$root/backups/legacy-$(date -u +%Y%m%dT%H%M%SZ)-$(openssl rand -hex 4).dump"
+  elif [[ -n $oidc_config && $(readlink -f "$root/current") != "$release" ]]; then
+    echo 'Apply OIDC configuration on the current release before changing its version.' >&2; exit 1
+  fi
 fi
 if [[ -n $oidc_config ]]; then
   oidc_args=()
@@ -261,6 +294,10 @@ PY
 fi
 if [[ -z $verified_runtime ]]; then "${compose[@]}" build sync; fi
 "${compose[@]}" run --rm --no-deps -T sync check-storage
+if [[ -n $verified_runtime ]]; then
+  source "$release/deploy/upgrade.sh"
+  begin_upgrade
+fi
 "${compose[@]}" up -d --wait db
 if [[ -n $restore ]]; then bash "$release/services/sync/restore.sh" "$restore"; fi
 if [[ -f $root/oidc/binding.json ]]; then
@@ -299,7 +336,15 @@ if [[ $proxy == caddy ]]; then
 elif verify_public_https; then
   https_verified=1
 fi
-ln -s "$release" "$root/current.next"; mv -Tf "$root/current.next" "$root/current"
+if [[ -n $verified_runtime ]]; then
+  if [[ ${upgrading:-0} == 1 && -f $root/public-https.verified && $https_verified != 1 ]]; then
+    echo 'The previously verified public route is unavailable. The new release remains frozen.' >&2; exit 1
+  fi
+  verify_upgrade
+fi
+if [[ $https_verified == 1 ]]; then : > "$root/public-https.verified"; fi
+ln -sfn "$release" "$root/current.next"; mv -Tf "$root/current.next" "$root/current"
+if [[ -n $verified_runtime ]]; then finish_upgrade; fi
 install -m 755 "$release/deploy/manage.sh" /usr/local/bin/zapime
 # Daily recoverable backup, no automatic deletion of user archives.
 if [[ -d /run/systemd/system ]]; then
