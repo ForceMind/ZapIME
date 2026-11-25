@@ -234,7 +234,8 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
 """
         command("node", "-e", public_config, signing_key, jwks)
         issuer_url = f"https://{LOGIN_HOST}"
-        oidc = (issuer_url, issuer_url + "/a3-device-enrollment", "zapime-android-synthetic", "a3-synthetic-user", jwks)
+        login_subject = "a3-auto-" + secrets.token_hex(12)
+        oidc = (issuer_url, issuer_url + "/a3-device-enrollment", "zapime-android-synthetic", login_subject, jwks)
     fixture = Fixture(folder, go_binary, os.environ.get("ZAPIME_TEST_DATABASE_URL", ""), oidc=oidc)
     with fixture:
         tls = ssl.create_default_context(cafile=str(fixture.ca_file))
@@ -257,7 +258,7 @@ writeFileSync(process.argv[2], JSON.stringify({keys:[{...publicKey,kid:'a3-fixtu
         bridge = {"port": fixture.loopback_backend_port}
         bootstrap = None
         if mode in AUTOMATIC_MODES:
-            bridge.update(account=owner["account_id"], signingKeyPath=str(signing_key))
+            bridge.update(account=owner["account_id"], signingKeyPath=str(signing_key), loginSubject=login_subject)
             if mode == "automatic-recovery":
                 probe("export-automatic-recovery-fixture")
                 bridge["recovery"] = {

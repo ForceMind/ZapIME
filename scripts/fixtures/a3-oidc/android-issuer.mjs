@@ -20,8 +20,10 @@ const issuer = 'https://a3-oidc.example.test';
 const fallback = 'https://return-a3.example.test';
 const resource = issuer + '/a3-device-enrollment';
 const redirect = fallback + '/callback';
+const loginSubject = automatic ? foreground.loginSubject : subject;
+if (automatic) assert.match(loginSubject, /^a3-auto-[0-9a-f]{24}$/);
 const { provider, publicKey } = createIssuer(issuer, redirect, [resource],
-  automatic ? createPrivateKey(readFileSync(foreground.signingKeyPath)) : undefined);
+  automatic ? createPrivateKey(readFileSync(foreground.signingKeyPath)) : undefined, loginSubject);
 const verifyKey = await importJWK(publicKey, 'RS256');
 const delegate = provider.callback();
 const interactions = new Map();
@@ -194,11 +196,11 @@ async function interact(req, res, path) {
   if (phase === 'login') {
     totals.login++;
     record();
-    await provider.interactionFinished(req, res, { login: { accountId: subject } }, { mergeWithLastSubmission: false });
+    await provider.interactionFinished(req, res, { login: { accountId: loginSubject } }, { mergeWithLastSubmission: false });
   } else {
     totals.consent++;
     record();
-    await finishConsent(provider, req, res, details);
+    await finishConsent(provider, req, res, details, loginSubject);
   }
 }
 
@@ -247,7 +249,7 @@ async function handle(req, res) {
         const identity = JSON.parse(payload);
         assert.equal(upstream.status, 200);
         assert.equal(identity.account_id, foreground.account);
-        assert.equal(identity.subject_fingerprint, loginFingerprint(foreground.account, subject));
+        assert.equal(identity.subject_fingerprint, loginFingerprint(foreground.account, loginSubject));
         totals.accountLookups++;
       }
       if (grant) {
