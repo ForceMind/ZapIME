@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 import platform
 import re
+import shlex
 import shutil
 import socket
 import subprocess
@@ -43,8 +44,15 @@ def operating_system():
     if platform.system() != "Linux":
         return "FAIL", "仅在 Linux 服务器运行预检"
     try:
-        info = platform.freedesktop_os_release()
-    except OSError:
+        parts = Path("/etc/os-release").read_text(encoding="utf-8").splitlines()
+        info = {}
+        for line in parts:
+            name, separator, value = line.partition("=")
+            if separator and name in {"ID", "VERSION_CODENAME"}:
+                fields = shlex.split(value)
+                if len(fields) == 1:
+                    info[name] = fields[0]
+    except (OSError, ValueError):
         info = {}
     family, codename = info.get("ID", ""), info.get("VERSION_CODENAME", "")
     return "PASS", " ".join(part for part in (family or "Linux", codename) if part)

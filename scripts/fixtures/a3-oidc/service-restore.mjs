@@ -4,10 +4,10 @@ import { createHash, generateKeyPairSync, randomBytes, randomUUID, sign } from '
 import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const [stage, folder] = process.argv.slice(2);
+const [stage, folder, transport] = process.argv.slice(2);
 const issuer = 'https://restore-login.example.test';
 const subject = 'a3-restore-bound-subject';
-const audience = 'https://restore-sync.example.test/device-enrollment';
+const audience = (transport === 'loopback-https' ? 'https://127.0.0.1' : 'https://restore-sync.example.test') + '/device-enrollment';
 const clientId = 'zapime-a3-restore-fixture';
 const keyId = 'a3-restore-rsa';
 const endpoint = '/v1/device-enrollment';

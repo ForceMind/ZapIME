@@ -102,9 +102,9 @@ def manual_client_roundtrip(api, owner, member, probe=None):
         "commands":len(reports), "stores":2, "server_revisions":2,
         "records_each":1, "pending_each":0, "private_temporary_files_removed":True}))
 
-def oidc_restore_probe(stage, directory, owner=None):
+def oidc_restore_probe(stage, directory, owner=None, transport=""):
     program = ROOT / "scripts/fixtures/a3-oidc/service-restore.mjs"
-    result = subprocess.run(["node", str(program), stage, str(directory)],
+    result = subprocess.run(["node", str(program), stage, str(directory), transport],
                             input=json.dumps(owner), stdout=subprocess.PIPE, text=True, check=True, timeout=90)
     return json.loads(result.stdout) if result.stdout else None
 

@@ -8,10 +8,30 @@ upgrade_journal="$root/upgrade.pending"
 maintenance_flag="$root/deployment-state/frozen"
 
 upgrade_record() {
-  local step=$1 staged
-  staged=$(mktemp "$root/upgrade.incoming.XXXXXXXX")
-  printf '%s\n%s\n%s\n%s\n' "$old_release" "$release" "$final_backup" "$step" > "$staged"
-  mv -f -- "$staged" "$upgrade_journal"
+  local step=$1
+  python3 -I - "$upgrade_journal" "$old_release" "$release" "$final_backup" "$step" <<'PY'
+import os
+from pathlib import Path
+import sys
+import tempfile
+
+journal = Path(sys.argv[1])
+descriptor, staged = tempfile.mkstemp(prefix="upgrade.incoming.", dir=journal.parent)
+try:
+    with os.fdopen(descriptor, "w", encoding="ascii") as output:
+        output.write("\n".join(sys.argv[2:]) + "\n")
+        output.flush()
+        os.fsync(output.fileno())
+    os.replace(staged, journal)
+    directory = os.open(journal.parent, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory)
+    finally:
+        os.close(directory)
+finally:
+    if os.path.exists(staged):
+        os.unlink(staged)
+PY
   phase=$step
 }
 

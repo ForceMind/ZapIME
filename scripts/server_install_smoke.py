@@ -4,13 +4,17 @@
 No Cloudflare credentials, real domain, user host, or production storage are used.
 """
 import json
+from contextlib import contextmanager
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 from pathlib import Path
 import shutil
 import secrets
+import ssl
 import subprocess
 import sys
 import tempfile
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -89,9 +93,55 @@ def main():
     def signed_runtime_test():
         from sync_service_smoke import oidc_restore_probe
 
+        @contextmanager
+        def local_proxy(cert, key):
+            class Handler(BaseHTTPRequestHandler):
+                def log_message(self, *args):
+                    pass
+
+                def do_GET(self):
+                    if self.path == '/.well-known/assetlinks.json':
+                        path = INSTALL / 'oidc/assetlinks.json'
+                        if not path.is_file():
+                            self.send_error(404)
+                            return
+                        self.send_response(200)
+                        self.send_header('Content-Type', 'application/json')
+                        self.end_headers()
+                        self.wfile.write(path.read_bytes())
+                        return
+                    if self.path == '/healthz' or self.path.startswith('/.well-known/zapime-deploy/'):
+                        try:
+                            with urllib.request.urlopen('http://127.0.0.1:8787' + self.path, timeout=4) as reply:
+                                self.send_response(reply.status)
+                                self.end_headers()
+                                self.wfile.write(reply.read(8192))
+                            return
+                        except OSError:
+                            self.send_error(502)
+                            return
+                    self.send_error(404)
+
+            with ThreadingHTTPServer(('127.0.0.1', 443), Handler) as proxy:
+                tls = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+                tls.load_cert_chain(cert, key)
+                proxy.socket = tls.wrap_socket(proxy.socket, server_side=True)
+                worker = threading.Thread(target=proxy.serve_forever, daemon=True)
+                worker.start()
+                previous = env.get('CURL_CA_BUNDLE')
+                env['CURL_CA_BUNDLE'] = str(cert)
+                try:
+                    yield
+                finally:
+                    if previous is None: env.pop('CURL_CA_BUNDLE', None)
+                    else: env['CURL_CA_BUNDLE'] = previous
+                    proxy.shutdown()
+                    worker.join(timeout=5)
+
         with tempfile.TemporaryDirectory(prefix='zapime-signed-install-') as path:
             work = Path(path)
-            oidc = oidc_restore_probe('prepare', work)
+            transport = 'loopback-https'
+            oidc = oidc_restore_probe('prepare', work, transport=transport)
             host = urllib.parse.urlsplit(oidc['audience']).hostname
             setup('zapime-ci-signed-runtime', host)
             config = work / 'android.json'
@@ -105,6 +155,10 @@ def main():
             key = work / 'release-private.pem'
             subprocess.run(['openssl', 'genpkey', '-algorithm', 'RSA', '-pkeyopt', 'rsa_keygen_bits:2048', '-out', str(key)],
                            check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            tls_cert, tls_key = work / 'proxy-cert.pem', work / 'proxy-key.pem'
+            subprocess.run(['openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-nodes', '-days', '1',
+                            '-subj', '/CN=ZapIME synthetic loopback', '-addext', 'subjectAltName=IP:127.0.0.1',
+                            '-keyout', str(tls_key), '-out', str(tls_cert)], check=True, capture_output=True)
             images = {'db': 'zapime-release/db:ci', 'sync': 'zapime-release/sync:ci', 'https': 'zapime-release/https:ci'}
             command('docker', 'build', '-t', images['sync'], str(ROOT / 'services/sync'))
             command('docker', 'pull', 'caddy:2')
@@ -125,25 +179,30 @@ def main():
                     '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive),
                     '--oidc-config', str(config), '--oidc-jwks', str(work / 'jwks.json'), '--oidc-subject-file', str(subject),
                     '--android-signer', 'ab' * 32]
-            command(*args)
+            with local_proxy(tls_cert, tls_key):
+                installed = command(*args, capture=True)
+                assert 'HTTPS [PASS]' in installed and 'App Link [PASS]' in installed
+                assert 'Android App Link [PASS]' in command('/usr/local/bin/zapime', 'doctor', capture=True)
             current = INSTALL / 'current'
             assert (current / 'manifest.json').is_file() and not (INSTALL / 'owner.json').exists()
             binding_path = INSTALL / 'oidc/binding.json'
             original = binding_path.read_bytes()
             account = json.loads(original)['account']
-            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            assert oidc_restore_probe('automatic', work, {'account_id': account}, transport)['automatic_member']
             assert json.loads((INSTALL / 'oidc/android.json').read_text()) == json.loads(config.read_text())
             assets = json.loads((INSTALL / 'oidc/assetlinks.json').read_text())
             assert assets[0]['target']['sha256_cert_fingerprints'] == [':'.join(['AB'] * 32)]
             assert (binding_path.stat().st_mode & 0o077) == 0
-            command(*args)
+            with local_proxy(tls_cert, tls_key):
+                command(*args)
             assert binding_path.read_bytes() == original
-            assert oidc_restore_probe('automatic', work, {'account_id': account, 'save_credential': True})['automatic_member']
+            assert oidc_restore_probe('automatic', work, {'account_id': account, 'save_credential': True}, transport)['automatic_member']
             report = command('docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f',
                              str(current/'services/sync/compose.yml'), 'exec', '-T', 'db',
                              'psql', '-U', 'zapime', '-Atc', 'SELECT count(*) FROM zapime_accounts', capture=True)
             assert report.strip() == '1'
             print('PASS signed runtime: offline verified images, real S3, repeat OIDC bootstrap, container public JWKS, automatic enrollment and Android configuration', flush=True)
+            print('PASS signed runtime HTTPS: local-scope CA, existing reverse proxy routes to verified instance, exact public Android association', flush=True)
             device = json.loads((work / 'automatic-device.json').read_text())
             fixture, packet, identity, page = [work / name for name in ('e2ee.json', 'packet.json', 'key.json', 'page.json')]
             probe = ROOT / 'target/debug/examples/sync_fixture'
@@ -160,7 +219,7 @@ def main():
             assert pin == later_pin
             original_release = current.resolve()
             public = INSTALL / 'public-https.verified'
-            public.touch()
+            assert public.is_file()
             update = ['/usr/local/bin/zapime', 'update', str(later), later_version, str(archive)]
             assert command(*update, check=False).returncode != 0
             pending = INSTALL / 'upgrade.pending'
@@ -171,15 +230,16 @@ def main():
             rejected_api('POST', '/v1/changes', device['token'], json.loads(packet.read_text()), 503, 'maintenance')
             assert 'Upgrade pending' in command('/usr/local/bin/zapime', 'status', capture=True)
             assert command('/usr/local/bin/zapime', 'start', check=False).returncode != 0
-            public.unlink()  # This mock existing proxy was never actually HTTPS-enabled.
-            command(*update)
+            with local_proxy(tls_cert, tls_key):
+                command(*update)
+                assert 'Android App Link [PASS]' in command('/usr/local/bin/zapime', 'doctor', capture=True)
             assert current.resolve() != original_release and not pending.exists() and not frozen.exists()
             assert (INSTALL / 'upgrade.last').read_text().splitlines()[2] == before[2]
             restored = api('GET', '/v1/changes?after=0', device['token'])
             assert restored['changes'] == [first]
             page.write_text(json.dumps(first))
             command(str(probe), 'verify', str(fixture), str(page))
-            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            assert oidc_restore_probe('automatic', work, {'account_id': account}, transport)['automatic_member']
             print('PASS signed upgrade: isolated migration, stopped writer backup, failed public check freezes data, same-bundle resume, original ciphertext and OIDC', flush=True)
     try:
         setup('zapime-ci-install')
