@@ -35,8 +35,8 @@ def main():
     if INSTALL.exists() or Path('/usr/local/bin/zapime').exists():
         raise SystemExit('Installer acceptance requires a fresh dedicated runner')
     env = dict(os.environ, COMPOSE_PROJECT_NAME='zapime')
-    def command(*args, capture=False, check=True):
-        result = subprocess.run(args, cwd=ROOT, env=env, check=check,
+    def command(*args, capture=False, check=True, cwd=ROOT):
+        result = subprocess.run(args, cwd=cwd, env=env, check=check,
                                 stdout=subprocess.PIPE if capture else None, text=True)
         return result.stdout if capture else result
     def compose(*args):
@@ -96,7 +96,7 @@ def main():
         from sync_service_smoke import oidc_restore_probe
 
         @contextmanager
-        def local_proxy(cert, key):
+        def local_proxy(cert, key, release_files=None):
             upstream = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
             class Handler(BaseHTTPRequestHandler):
@@ -104,6 +104,13 @@ def main():
                     pass
 
                 def do_GET(self):
+                    if release_files and self.path in release_files:
+                        data = release_files[self.path]
+                        self.send_response(200)
+                        self.send_header('Content-Length', str(len(data)))
+                        self.end_headers()
+                        self.wfile.write(data)
+                        return
                     if self.path == '/.well-known/assetlinks.json':
                         path = INSTALL / 'oidc/assetlinks.json'
                         if not path.is_file():
@@ -185,15 +192,23 @@ def main():
             pin = sha256((bundle / 'release-public.pem').read_bytes()).hexdigest()
             install_line = (delivery / 'INSTALL.txt').read_text()
             assert pin in install_line and sha256(launcher.read_bytes()).hexdigest() in install_line
-            command('bash', '-n', str(delivery / 'INSTALL.txt'))
+            altered = work / 'altered launcher'
+            altered.mkdir()
+            (altered / 'bootstrap.sh').write_text('touch launcher-ran\n')
+            assert command('bash', '-c', install_line, cwd=altered, check=False).returncode != 0
+            assert not (altered / 'launcher-ran').exists() and not (INSTALL / 'current').exists()
             # Drop the release aliases to prove the offline archive supplied them.
             for image in images.values():
                 command('docker', 'image', 'rm', image)
-            args = ['bash', str(launcher), '--install', '--bundle', str(bundle),
+            release_files = {
+                f'/releases/{version}/amd64/{name}': (bundle / name).read_bytes()
+                for name in ('release-public.pem', 'zapime-runtime.sig', 'zapime-runtime.zip')
+            }
+            args = ['bash', str(launcher), '--install', '--source', 'https://127.0.0.1/releases',
                     '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive),
                     '--oidc-config', str(config), '--oidc-jwks', str(work / 'jwks.json'), '--oidc-subject-file', str(subject),
                     '--android-signer', 'ab' * 32]
-            with local_proxy(tls_cert, tls_key):
+            with local_proxy(tls_cert, tls_key, release_files):
                 installed = command(*args, capture=True)
                 print(installed.rstrip(), flush=True)
                 assert 'HTTPS [PASS]' in installed and 'App Link [PASS]' in installed
@@ -208,7 +223,7 @@ def main():
             assets = json.loads((INSTALL / 'oidc/assetlinks.json').read_text())
             assert assets[0]['target']['sha256_cert_fingerprints'] == [':'.join(['AB'] * 32)]
             assert (binding_path.stat().st_mode & 0o077) == 0
-            with local_proxy(tls_cert, tls_key):
+            with local_proxy(tls_cert, tls_key, release_files):
                 command(*args)
             assert binding_path.read_bytes() == original
             assert oidc_restore_probe('automatic', work, {'account_id': account, 'save_credential': True}, transport)['automatic_member']
@@ -216,7 +231,7 @@ def main():
                              str(current/'services/sync/compose.yml'), 'exec', '-T', 'db',
                              'psql', '-U', 'zapime', '-Atc', 'SELECT count(*) FROM zapime_accounts', capture=True)
             assert report.strip() == '1'
-            print('PASS signed runtime: offline verified images, real S3, repeat OIDC bootstrap, container public JWKS, automatic enrollment and Android configuration', flush=True)
+            print('PASS signed runtime: HTTPS release download, offline verified images, real S3, repeat OIDC bootstrap, container public JWKS, automatic enrollment and Android configuration', flush=True)
             print('PASS signed runtime HTTPS: local-scope CA, existing reverse proxy routes to verified instance, exact public Android association', flush=True)
             device = json.loads((work / 'automatic-device.json').read_text())
             fixture, packet, identity, page = [work / name for name in ('e2ee.json', 'packet.json', 'key.json', 'page.json')]
@@ -272,8 +287,7 @@ def main():
             command(str(probe), 'descriptor', legacy_owner['account_id'], str(legacy_key), str(legacy_descriptor))
             api('PUT', '/v1/key-descriptor', legacy_owner['token'], json.loads(legacy_descriptor.read_text()))
             legacy_first = api('POST', '/v1/changes', legacy_owner['token'], json.loads(legacy_packet.read_text()))
-            command('bash', str(launcher), '--install', '--bundle', str(bundle),
-                    '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive))
+            command('bash', '-c', install_line, cwd=delivery)
             assert 'Database schema: 5' in command('/usr/local/bin/zapime', 'status', capture=True)
             migrated = api('GET', '/v1/changes?after=0', legacy_owner['token'])
             assert migrated['changes'] == [legacy_first]
@@ -284,7 +298,7 @@ def main():
                            'sync', 'verify-objects']
             assert command(*old_command, check=False).returncode != 0
             assert api('GET', '/v1/changes?after=0', legacy_owner['token'])['head'] == 1
-            print('PASS schema4 to schema5: actual legacy binary and bucket, encrypted record migrated, downgrade rejected', flush=True)
+            print('PASS packaged one-line install: launcher digest enforced; schema4 to schema5 migrated original encrypted record; downgrade rejected', flush=True)
     try:
         setup('zapime-ci-install')
         install()
