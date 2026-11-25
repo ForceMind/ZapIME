@@ -4,6 +4,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      server_preview:
+        description: Build and retain native amd64 and arm64 server previews
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -16,9 +21,8 @@ jobs:
       fail-fast: false
       matrix:
         include: >-
-          ${{ fromJSON(github.event_name == 'pull_request'
-            && github.event.pull_request.head.repo.full_name == github.repository
-            && github.head_ref == 'feat/server-deployment-runtime'
+          ${{ fromJSON(github.event_name == 'workflow_dispatch'
+            && inputs.server_preview
             && '[{"runner":"ubuntu-latest","architecture":"amd64","preview":true},{"runner":"ubuntu-24.04-arm","architecture":"arm64","preview":true}]'
             || '[{"runner":"ubuntu-latest","architecture":"amd64","preview":false}]') }}
     runs-on: ${{ matrix.runner }}

@@ -78,7 +78,24 @@ python3 deploy/prepare_runtime_release.py --version 0.1.0-server.1 --architectur
 
 `24efde1` 在 Ubuntu amd64 CI 增加两项实测。用隔离回环 HTTPS 下载公钥、签名和运行 ZIP，并从签名绑定的本地镜像归档完成首装与重复安装。直接执行发包生成的原样 `INSTALL.txt` 命令，启动器篡改时在运行前被拒绝，原包完成历史 schema 4→5 升级且保留密文。此次 HTTPS 使用作业私有信任范围，线上发布地址和镜像仓库仍待验收。现有 CI 只保留测试日志。[一行命令及 HTTPS 下载 CI](https://github.com/ForceMind/ZapIME/actions/runs/45598541310/job/139150969400)
 
-用户已批准在部署草稿 PR 的既有 GitHub Actions 构建双架构试装包。两个原生 runner 使用同一版本和提交，各自生成临时签名并真实安装验证。清理隔离实例后仅保留白名单内的已测运行包、校验清单和试装说明，保存 7 天。试装应使用全新隔离主机。正式版本使用另一个长期签名信任起点。
+##### 可下载的双架构试装包
+
+已交付 `0.1.0-server-preview.45611015601.1`。草稿 PR 源分支是 `f2ab55e`，两个原生 runner 实际构建的 GitHub 合并检验提交均为 `ea0560cd4bde625861b0643f8019cb5649d1d3c5`。两包均通过真实 PostgreSQL、S3 兼容存储、签名首装、重复安装、HTTPS 下载和 Android App Link 回读。原样一行安装命令在启动器篡改时拒绝执行，原包完成 schema 4→5 升级并保留原密文。同作业另用下一个测试版本通过冻结写入后的升级恢复。已从 Actions 下载两包，复核外层 ZIP 摘要、内层归档摘要、OpenSSL 签名、启动器摘要和三张容器镜像的架构。[构建与验收](https://github.com/ForceMind/ZapIME/actions/runs/45611015601)
+
+| 服务器架构 | Actions 附件 | 内层 `.tar.gz` SHA-256 |
+| --- | --- | --- |
+| `x86_64` → amd64 | [下载 amd64](https://github.com/ForceMind/ZapIME/actions/runs/45611015601/artifacts/15020281796) | `74935c253224793f48645fa9ad33c57d12585c6a8f5930384c744ce8b19d5ae2` |
+| `aarch64` → arm64 | [下载 arm64](https://github.com/ForceMind/ZapIME/actions/runs/45611015601/artifacts/15020537464) | `1bdc60f26283e0ed24eb3f722f505f210a423b8e5c892825e14add41121f1e8b` |
+
+两个归档的启动器 SHA-256 均为 `dcf65311ba633e25c1c22c1372c68552214945a67439fa032bd1d2904cccd547`。amd64 临时公钥 SHA-256 为 `76d4143c190a33a3c100df934c1e6f9fc85d9f0bdc600e3725b493ce542e0d39`，arm64 为 `f2a86404884490319d7a7acc425f4639e49f9bf702717cae54236382dfd19935`。Actions 附件预计于 2026-12-02 到期。
+
+将 ZIP 里的 `.tar.gz` 传到全新隔离 Linux 实例，核对上表的内层归档摘要，再解包并执行 `INSTALL.txt`。以下命令以 amd64 为例，arm64 替换归档文件名。
+
+```bash
+( mkdir zapime-preview && tar -xzf zapime-server-preview-amd64.tar.gz -C zapime-preview && cd zapime-preview && bash INSTALL.txt )
+```
+
+本次使用各架构独立的临时签名。正式安装使用干净实例及长期发布签名。后续构建试装包需显式选择现有工作流的 `server_preview` 参数。正式发布、上海服务配置和实体双机仍另行验收。
 
 ### 更新与中断续跑
 
