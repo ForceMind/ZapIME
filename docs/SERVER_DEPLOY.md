@@ -22,9 +22,11 @@ bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.
 
 将独立渠道核验的公钥文件摘要填入 `ZAPIME_RELEASE_KEY_SHA256`。打包目录包含预检 ZIP、分离签名和公开 PEM。arm64 另建对应目录并以 `--architecture arm64` 打包。私钥由签发者保管。远端按 `VERSION/amd64` 或 `VERSION/arm64` 布置这三个文件。`--offline` 跳过 DNS、镜像源和 R2 的网络探针，与 `--bundle` 同用时可全程离线。`--json` 输出机器可读结果。预检退出码为 0 已核对、1 失败、2 尚有待查项。预检只读，不申请 sudo。R2 探针只验证 HTTPS 可达，读写仍由原安装器及后续向导验收。
 
-阶段交接从 `deploy/bootstrap.sh`、`deploy/preflight.py` 与签发脚本接续。`scripts/test_server_preflight.py` 经现有服务器验收入口运行，使用隔离的合成证书、公钥、目录及监听端口。当前待 CI 回读，正式域名、生产签名与全套运行镜像进入后续阶段。
+阶段交接从 `deploy/bootstrap.sh`、`deploy/preflight.py` 与签发脚本接续。`scripts/test_server_preflight.py` 经现有服务器验收入口运行，使用隔离的合成证书、公钥、目录及监听端口。第一阶段已通过。第二阶段接入运行镜像、实际首次配置和 OIDC，再为上海现场准备正式信任入口。
 
 首轮 `7b9989c` 在前序容器使用 TCP 8787 后运行，签名和 HTTPS 下载已执行，四项预检因 8787 尚无法重新绑定失败。复验先在独立 runner 验证真实监听冲突、监听继续存活及连接关闭后的正常重绑，再运行原容器和备份验收。[首轮 CI](https://github.com/ForceMind/ZapIME/actions/runs/45570489655/job/139055732437)
+
+复验 `331b1a7` 在 Ubuntu resolute 的 amd64 GitHub runner 完成六项门禁。实际 HTTPS 单行入口与离线包通过，错误公钥、签名、版本、架构及缺失下载均提前退出。真实端口冲突时原监听生存，连接关闭后可重绑。旧安装器的重复安装、PostgreSQL 与对象存储恢复作业也通过。两架构的合成包已在本机生成并独立验签。arm64 实机、上海连通性、R2 凭据读写与正式身份服务等候各自的现场或发布验收。[通过 CI 与预检输出](https://github.com/ForceMind/ZapIME/actions/runs/45571594367/job/139059309113) · [草稿 PR #127](https://github.com/ForceMind/ZapIME/pull/127)
 
 架构：客户端 → 自有服务器（HTTPS、账号/设备、PostgreSQL 修订索引）→ 私有 R2 Standard 存储桶（端到端密文）。所有对象访问经过自己的服务器；不会向客户端下发 R2 管理密钥或公开存储桶。Android 已提供[手工设备连接](ACCOUNT_CONNECTION.md)，资料同步及配对仍在开发，部署此服务不等于已完成四端同步。
 
