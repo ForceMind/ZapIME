@@ -327,6 +327,7 @@ PY
 fi
 if [[ -z $verified_runtime ]]; then "${compose[@]}" build sync; fi
 "${compose[@]}" run --rm --no-deps -T sync check-storage
+echo 'Storage [PASS] S3 write, read and delete checked.'
 if [[ -n $verified_runtime ]]; then
   source "$release/deploy/upgrade.sh"
   begin_upgrade

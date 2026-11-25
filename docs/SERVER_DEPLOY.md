@@ -6,6 +6,8 @@
 
 首轮 `5e5adf4` 已完成原有 Linux 同步和安装器路径。新版离线包在 Docker 导出的清单核对处提前退出。复验对齐 Docker Hub 的标准标签，并将已签名归档摘要与加载后的 Docker 镜像 ID 分开核对，兼容 OCI 索引和 attestations。[首轮隔离验收](https://github.com/ForceMind/ZapIME/actions/runs/45579672493/job/139086249864)
 
+`971820b` 已通过归档签名和离线镜像装载，实际容器的对象存储探针因隔离夹具未创建新版用例的桶而拒绝继续。专用 S3 测试追加独立桶，原真实读写门禁保留。[第二轮隔离验收](https://github.com/ForceMind/ZapIME/actions/runs/45581171539/job/139091320078)
+
 2026-11-24，用户确认采用一行启动、完整向导与统一运维。首个切片为已签名预检，后续依次接入首次安装与登录、升级恢复、隔离 Linux 和获准上海服务器的实际验收。实体双机沿用[账号同步验收清单](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md#实体双机验收)。
 
 | 阶段 | 可验收交付 |
