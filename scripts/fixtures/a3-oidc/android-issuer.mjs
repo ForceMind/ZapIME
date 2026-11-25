@@ -424,6 +424,12 @@ async function handle(req, res) {
 function handler(req, res) {
   handle(req, res).catch(() => {
     totals.failure = true;
+    if (publicPort) {
+      const path = new URL(req.url, issuer).pathname;
+      totals.failureRoute = ['/auth', '/token', '/v1/account-login', '/v1/device-enrollment/automatic',
+        '/v1/session', '/v1/key-descriptor', '/v1/changes', '/callback', '/.well-known/assetlinks.json'].includes(path) ? path
+        : path.startsWith('/fixture-login/') ? 'interaction' : path.startsWith('/auth/') ? 'auth-resume' : 'other';
+    }
     record();
     if (!res.headersSent) reply(res, 500, 'synthetic fixture rejected');
     else res.end();

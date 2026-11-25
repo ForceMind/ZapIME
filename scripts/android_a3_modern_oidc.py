@@ -151,6 +151,16 @@ def browser_page(adb, marker, browser):
 
 
 def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packages):
+    def provider_nodes():
+        return [node for node in window_nodes(adb, marker) if node.get("package") in docs_packages]
+
+    def tap(area):
+        left, top, right, bottom = area
+        adb.run("shell", "input", "tap", str((left + right) // 2), str((top + bottom) // 2))
+
+    def drawer(nodes):
+        return next((node for node in nodes if node.get("resource-id", "").endswith(":id/roots_list") and bounds(node)), None)
+
     def state(label, available=None):
         def seen():
             nodes = window_nodes(adb, marker)
@@ -163,11 +173,11 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
 
     def picker_open():
         click_text(adb, marker, "选择密钥恢复文件", scroll=True)
-        wait_for(lambda: window_nodes(adb, marker),
-                 lambda nodes: any(node.get("package") in docs_packages for node in nodes),
-                 25, "system_documentsui_not_foreground")
+        return wait_for(provider_nodes, bool, 25, "system_documentsui_not_foreground")
 
-    picker_open()
+    if drawer(picker_open()) is not None:
+        adb.run("shell", "input", "keyevent", "KEYCODE_BACK")
+        wait_for(provider_nodes, lambda nodes: nodes and drawer(nodes) is None, 20, "system_documentsui_drawer_not_closed")
     adb.run("shell", "input", "keyevent", "KEYCODE_BACK")
     wait_for(state("恢复原同步密钥", False), bool, 20, "picker_cancel_not_observed")
     require(status()["dataRequests"] == 0, "picker_cancel_started_transfer")
@@ -175,14 +185,33 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
     picker_open()
 
     def locate():
-        for node in window_nodes(adb, marker):
-            if node.get("package") in docs_packages and Path(recovery_file).name in (node.get("text"), node.get("content-desc")):
+        nodes = provider_nodes()
+        navigation = drawer(nodes)
+        if navigation is not None:
+            return "drawer", navigation
+        for node in nodes:
+            if Path(recovery_file).name in (node.get("text"), node.get("content-desc")) and node.get("enabled") == "true":
                 area = bounds(node)
                 if area and area[2] > area[0] and area[3] > area[1]:
-                    return area
+                    return "file", area
         return None
-    left, top, right, bottom = wait_for(locate, bool, 25, "synthetic_file_not_listed_by_documentsui")
-    adb.run("shell", "input", "tap", str((left + right) // 2), str((top + bottom) // 2))
+
+    found = locate()
+    if not found:
+        switcher = next((bounds(node) for node in provider_nodes() if node.get("content-desc") in
+                         ("Show roots", "Open navigation drawer") and node.get("enabled") == "true" and bounds(node)), None)
+        if switcher:
+            tap(switcher)
+    kind, target = wait_for(locate, bool, 25, "synthetic_file_not_listed_by_documentsui")
+    if kind == "drawer":
+        downloads = next((bounds(node) for node in target.iter("node") if node.get("text") in ("Downloads", "下载")
+                          and node.get("enabled") == "true" and bounds(node)), None)
+        require(downloads, "system_documentsui_downloads_root_missing")
+        tap(downloads)
+        kind, target = wait_for(locate, lambda candidate: candidate and candidate[0] == "file",
+                                25, "synthetic_file_not_listed_in_downloads")
+        report["picker_downloads_root_selected"] = True
+    tap(target)
     wait_for(state("已选择密钥恢复文件", True), bool, 25, "system_file_result_not_consumed")
     report["picker_selection"] = "PASS"
 
@@ -261,6 +290,11 @@ def run(report, adb, api, identity, work):
                      lambda raw: bool(verified.search(raw)) and status()["assetlinks"] > calls,
                      120, "system_did_not_verify_https_app_link")
             report["verified_domain"] = "PASS"
+            resolved = adb.shell("cmd", "package", "resolve-activity", "--brief", "-a", "android.intent.action.VIEW",
+                                 "-c", "android.intent.category.BROWSABLE", "-d", fallback + "/callback")
+            require(re.search(r"(?m)^org\.zapime\.android/(?:org\.zapime\.android)?\.AccountLoginCallbackActivity$", resolved),
+                    "verified_callback_did_not_resolve_to_product")
+            report["system_callback_resolves"] = "PASS"
             browser = stock_browser(adb, login)
             report["stock_browser"] = browser
             source = work / "foreground"
@@ -279,6 +313,10 @@ def run(report, adb, api, identity, work):
                 if adb.shell("pm", "path", package, check=False):
                     adb.run("uninstall", package, check=False)
                 cleanup[package + "_removed"] = not adb.shell("pm", "path", package, check=False)
+            counts = status()
+            report["issuer_counters"] = {key: counts.get(key, 0) for key in ("assetlinks", "login", "consent",
+                "tokenPosts", "accountLookups", "automaticGrants", "callbackOpenedInBrowser", "dataRequests", "uploads")}
+            report["issuer_failure_route"] = counts.get("failureRoute")
 
 
 def main():

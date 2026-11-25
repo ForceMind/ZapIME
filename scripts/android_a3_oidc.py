@@ -861,7 +861,8 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode, *,
 
     def observed():
         counts = status()
-        require(not counts["failure"] and counts["callbackOpenedInBrowser"] == 0, "automatic_login_provider_failed")
+        require(not counts["failure"], "automatic_login_provider_failed")
+        require(counts["callbackOpenedInBrowser"] == 0, "android_app_link_opened_as_browser_page")
         label = "本轮同步已检查" if ready else "需要恢复同步密钥"
         return any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "") for node in window_nodes(adb, marker))
 
@@ -872,10 +873,7 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode, *,
             "automatic_login_grant_count_mismatch")
     require(counts.get("automaticInitializations", 0) == int(ready) and counts.get("uploads", 0) == 0
             and (counts["dataRequests"] > 0 if ready else counts["dataRequests"] == 0), "automatic_login_unexpected_transfer")
-    stage = "foreground-automatic-ready" if ready else "foreground-automatic-needs-key"
-    if select_recovery is not None:
-        stage = "foreground-automatic-queue-before-recovery"
-    foreground_instrument(adb, stage)
+    foreground_instrument(adb, "foreground-automatic-ready" if ready else "foreground-automatic-needs-key")
     verify_service()
     report["automatic_login"] = {"grant": "PASS", "durable_state": "PASS", "first_key_registered": ready,
                                  "recovery_prompt": not ready, "real_data_check": ready, "android_uploads": 0}
@@ -897,6 +895,15 @@ def automatic_login_round(report, adb, marker, status, verify_service, mode, *,
         open_sync_account(adb, marker)
     else:
         select_recovery()
+        report["stage"] = "automatic_restored_key_first_check"
+        wait_for(lambda: status()["dataRequests"] > 0 and any(
+            node.get("package") == MAIN_PACKAGE and "本轮同步已检查" in node.get("text", "")
+            for node in window_nodes(adb, marker)), bool, 50, "saf_restore_did_not_resume_sync")
+        report["picker_positive_auto_check"] = "PASS"
+        # Local edits only have upload provenance once the original key has
+        # been installed and the workspace is bound.
+        foreground_instrument(adb, "foreground-automatic-queue-after-recovery")
+        open_sync_account(adb, marker)
 
     report["stage"] = "automatic_restored_key_sync"
 
