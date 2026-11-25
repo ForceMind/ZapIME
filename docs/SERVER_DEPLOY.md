@@ -76,6 +76,8 @@ python3 deploy/prepare_runtime_release.py --version 0.1.0-server.1 --architectur
 
 2026-11-25，本机用合成镜像清单实测了 Git 快照、OpenSSL 签名、归档绑定、重复输出目录拒绝及安装命令语法。`45e0c9a` 在 Ubuntu amd64 CI 使用同一打包入口生成真实镜像归档，回读一行命令中的启动器和公钥摘要，卸载发包镜像标签后用成套目录完成首装、重复安装、HTTPS 和升级回归。作业目录及测试签名只用于当次验收。供下载的双架构试装包仍需确认使用 CI 产物区；arm64、正式签名、上海服务器和实体双机尚待对应验收。[发包与安装 CI](https://github.com/ForceMind/ZapIME/actions/runs/45594644857/job/139137401162)
 
+`24efde1` 在 Ubuntu amd64 CI 增加两项实测。用隔离回环 HTTPS 下载公钥、签名和运行 ZIP，并从签名绑定的本地镜像归档完成首装与重复安装。直接执行发包生成的原样 `INSTALL.txt` 命令，启动器篡改时在运行前被拒绝，原包完成历史 schema 4→5 升级且保留密文。此次 HTTPS 使用作业私有信任范围，线上发布地址和镜像仓库仍待验收。现有 CI 只保留测试日志。[一行命令及 HTTPS 下载 CI](https://github.com/ForceMind/ZapIME/actions/runs/45598541310/job/139150969400)
+
 ### 更新与中断续跑
 
 `sudo zapime status` 显示已选版本、实际运行镜像、数据库 schema 及未完成的升级。 `sudo zapime doctor` 核对本机健康、公网实例见证及 Android 关联。`sudo zapime update <HTTPS发布目录或绝对包目录> <版本> [离线镜像归档]` 复用首次保存的签名信任。
