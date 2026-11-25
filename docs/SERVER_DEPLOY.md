@@ -74,7 +74,7 @@ python3 deploy/prepare_runtime_release.py --version 0.1.0-server.1 --architectur
 
 这一步从同一 Git 提交取服务源码和安装文件，构建镜像及离线归档，写出 `runtime/`、`images.tar`、`bootstrap.sh` 和 `INSTALL.txt`。打包器打印提交、启动器摘要和发布公钥摘要。通过独立可信渠道把这两个摘要交给部署者。将成套目录传到上海服务器，在服务器进入该目录，核对 `INSTALL.txt` 中的两个摘要后执行其中的一行命令。升级继续使用同一长期签名密钥。
 
-2026-11-25，本机用合成镜像清单实测了 Git 快照、OpenSSL 签名、归档绑定、重复输出目录拒绝及安装命令语法。真实双架构发包、正式签名和上海服务器仍待验证。上阶段服务端已有实际 Ubuntu amd64 安装与升级记录。[服务端 CI](https://github.com/ForceMind/ZapIME/actions/runs/45589645465)
+2026-11-25，本机用合成镜像清单实测了 Git 快照、OpenSSL 签名、归档绑定、重复输出目录拒绝及安装命令语法。`45e0c9a` 在 Ubuntu amd64 CI 使用同一打包入口生成真实镜像归档，回读一行命令中的启动器和公钥摘要，卸载发包镜像标签后用成套目录完成首装、重复安装、HTTPS 和升级回归。作业目录及测试签名只用于当次验收。供下载的双架构试装包仍需确认使用 CI 产物区；arm64、正式签名、上海服务器和实体双机尚待对应验收。[发包与安装 CI](https://github.com/ForceMind/ZapIME/actions/runs/45594644857/job/139137401162)
 
 ### 更新与中断续跑
 

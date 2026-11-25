@@ -1,6 +1,6 @@
 # ZapIME（闪电输入法）｜持续研发接管
 
-**部署接手** [统一部署文档](SERVER_DEPLOY.md#新部署入口路线图)记录签名包、首次安装、OIDC、升级和复验。Ubuntu amd64 隔离 CI 的基线为 `5412919`。从正式发布包和摘要接续，在上海运行安装与 `sudo zapime doctor`，再交 APK 实际签名和双机验收。
+**部署接手** [统一部署文档](SERVER_DEPLOY.md#新部署入口路线图)记录发包、首装、OIDC、升级和复验。Ubuntu amd64 已用 `45e0c9a` 的打包器实际生成并安装同套产物。从双架构交付件及长期签名继续，在上海运行安装与 `sudo zapime doctor`，再交 APK 实际签名和双机验收。
 
 **2026-11-24 A3 接手入口** [账号登录与自动加密同步实施计划及实测](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。API28 自动授权、首密钥和恢复后同步已通过。API35/36 的真实 Chrome 回跳、系统选择器、错码拒绝、正确恢复后自动同步均已通过。按记录中的双机清单准备同版候选 APK 和独立测试账号；部署者配置 OIDC 与 `ZAPIME_OIDC_AUTO_ENROLL=1` 后启用。正式环境、可信存量与实体双机待验收。
 
