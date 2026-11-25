@@ -1,5 +1,29 @@
 # 自建服务器 + Cloudflare R2 部署
 
+## 新部署入口路线图
+
+2026-11-24，用户确认采用一行启动、完整向导与统一运维。首个切片为已签名预检，后续依次接入首次安装与登录、升级恢复、隔离 Linux 和获准上海服务器的实际验收。实体双机沿用[账号同步验收清单](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md#实体双机验收)。
+
+| 阶段 | 可验收交付 |
+| --- | --- |
+| 1. 下载和预检 | 完整下载后验发布公钥、签名、固定版本、架构与归档内容。Linux 检查系统、磁盘、Docker、端口、DNS、发布源、镜像源和 R2 HTTPS 可达性。错误签名、错误架构、下载失败、端口冲突可分别观察到失败。 |
+| 2. 首装与登录 | 签名发布包包含实际版本的 Compose 和镜像摘要。完成 R2 真实读写、HTTPS 和 OIDC。向导核对真实 JWKS、绑定测试账号的 issuer/sub、生成候选 APK 配置并按实际签名关联回跳域。 |
+| 3. 运维与升级 | 提供实际版本及运行状态、诊断、备份、升级和恢复入口。先在复制库检查迁移，正式切换前停写、保存数据库与密文成套备份、验证失败后的恢复路径。 |
+| 4. 上海服务器及双机 | 用获准的发布域名或同一离线包实测下载、正式测试 HTTPS 和签名关联，最后在两台实体 Android 手机上核对双向资料和修订。 |
+
+### 第一阶段预检
+
+`deploy/bootstrap.sh` 的入口可用 `--source` 从 HTTPS 目录下载，也可用 `--bundle` 读取本地包。准备步骤和入口的版本、公钥文件 SHA-256 取自可信渠道。公网发布前，启动脚本本身也需要提供独立固定摘要。
+
+```bash
+python3 deploy/build_preflight_bundle.py --output ./preview/0.1.0-preview.1/amd64 --version 0.1.0-preview.1 --architecture amd64 --private-key /path/to/release-key.pem
+bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.0-preview.1 --key-sha256 <公钥SHA256> -- --domain sync.example.com --proxy existing --r2-endpoint https://account.r2.cloudflarestorage.com
+```
+
+输出目录包含预检 ZIP、分离签名和公开 PEM。arm64 另建对应目录并以 `--architecture arm64` 打包。私钥由签发者保管。远端按 `VERSION/amd64` 或 `VERSION/arm64` 布置这三个文件。`--offline` 只检查本机并标明待查项，`--json` 输出机器可读结果。预检退出码为 0 已核对、1 失败、2 尚有待查项。预检只读，不申请 sudo。R2 探针只验证 HTTPS 可达，读写仍由原安装器及后续向导验收。
+
+阶段交接从 `deploy/bootstrap.sh`、`deploy/preflight.py` 与签发脚本接续。`scripts/test_server_preflight.py` 经现有服务器验收入口运行，使用隔离的合成证书、公钥、目录及监听端口。当前待 CI 回读，正式域名、生产签名与全套运行镜像进入后续阶段。
+
 架构：客户端 → 自有服务器（HTTPS、账号/设备、PostgreSQL 修订索引）→ 私有 R2 Standard 存储桶（端到端密文）。所有对象访问经过自己的服务器；不会向客户端下发 R2 管理密钥或公开存储桶。Android 已提供[手工设备连接](ACCOUNT_CONNECTION.md)，资料同步及配对仍在开发，部署此服务不等于已完成四端同步。
 
 ## 首次准备
