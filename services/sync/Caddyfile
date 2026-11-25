@@ -1,3 +1,9 @@
 {$ZAPIME_HOST} {
-    reverse_proxy sync:8787
+    handle /.well-known/assetlinks.json {
+        root * /srv
+        file_server
+    }
+    handle {
+        reverse_proxy sync:8787
+    }
 }

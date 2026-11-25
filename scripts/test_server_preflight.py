@@ -9,6 +9,7 @@ import json
 import os
 from pathlib import Path
 import platform
+import runpy
 import shutil
 import socket
 import ssl
@@ -17,6 +18,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,6 +26,21 @@ VERSION = "0.1.0-preview.1"
 ARCH = {"x86_64": "amd64", "aarch64": "arm64"}.get(platform.machine())
 FILES = ("zapime-preflight.zip", "zapime-preflight.sig", "release-public.pem")
 SHORT_ENTRY = 'payload=$(curl -fsSL "$1") && test -n "$payload" && shift && bash -c "$payload" zapime-install "$@"'
+
+
+class LinuxPlatformDetectionTests(unittest.TestCase):
+    def test_known_and_custom_distributions_use_capability_gate(self):
+        functions = runpy.run_path(str(ROOT / "deploy/preflight.py"))
+        cases = {"ubuntu": "apt-get", "debian": "apt-get", "fedora": "dnf", "rocky": "dnf", "centos": "yum",
+                 "alpine": "apk", "arch": "pacman", "opensuse": "zypper", "custom": None}
+        for distribution, manager in cases.items():
+            with self.subTest(distribution=distribution), patch.object(platform, "system", return_value="Linux"), \
+                patch.object(Path, "read_text", return_value=f'ID="{distribution}"\nNAME="synthetic"\n'), \
+                patch.object(shutil, "which", side_effect=lambda name: f"/usr/bin/{name}" if name == manager else None):
+                self.assertEqual(functions["operating_system"](), ("PASS", distribution))
+                state, detail = functions["package_manager_status"]()
+                self.assertEqual(state, "PASS")
+                self.assertIn(manager or "自备依赖", detail)
 
 
 @unittest.skipUnless(sys.platform == "linux" and ARCH, "requires a supported Linux CI host")

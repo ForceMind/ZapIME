@@ -20,6 +20,13 @@ services:
       DATABASE_URL: postgres://zapime@db:5432/zapime?sslmode=disable
       PGPASSWORD: ${POSTGRES_PASSWORD:?Set a strong POSTGRES_PASSWORD in .env}
       ZAPIME_LISTEN: 0.0.0.0:8787
+      ZAPIME_DEPLOYMENT_ID: ${ZAPIME_INSTALLATION_ID:-}
+      ZAPIME_MAINTENANCE_FLAG: /run/zapime-deployment/frozen
+      ZAPIME_OIDC_ISSUER: ${ZAPIME_OIDC_ISSUER:-}
+      ZAPIME_OIDC_AUDIENCE: ${ZAPIME_OIDC_AUDIENCE:-}
+      ZAPIME_OIDC_CLIENT_ID: ${ZAPIME_OIDC_CLIENT_ID:-}
+      ZAPIME_OIDC_JWKS_FILE: ${ZAPIME_OIDC_JWKS_FILE:-}
+      ZAPIME_OIDC_AUTO_ENROLL: ${ZAPIME_OIDC_AUTO_ENROLL:-0}
       ZAPIME_OBJECT_BACKEND: ${ZAPIME_OBJECT_BACKEND:-postgres}
       ZAPIME_S3_ENDPOINT: ${ZAPIME_S3_ENDPOINT:-}
       ZAPIME_S3_BUCKET: ${ZAPIME_S3_BUCKET:-}
@@ -32,6 +39,17 @@ services:
     depends_on:
       db: {condition: service_healthy}
     read_only: true
+    volumes:
+      - type: bind
+        source: ${ZAPIME_DEPLOYMENT_STATE:-./deployment-state}
+        target: /run/zapime-deployment
+        read_only: true
+        bind: {create_host_path: false, selinux: z}
+      - type: bind
+        source: ${ZAPIME_OIDC_PUBLIC_JWKS:-./oidc-disabled.json}
+        target: /run/zapime-oidc.json
+        read_only: true
+        bind: {create_host_path: false, selinux: z}
     cap_drop: [ALL]
     security_opt: ['no-new-privileges:true']
     labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}
@@ -44,7 +62,12 @@ services:
     environment:
       ZAPIME_HOST: ${ZAPIME_HOST:-localhost}
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - type: bind
+        source: ${ZAPIME_ASSETLINKS:-./assetlinks-disabled.json}
+        target: /srv/.well-known/assetlinks.json
+        read_only: true
+        bind: {create_host_path: false, selinux: z}
       - zapime-caddy:/data
     depends_on: [sync]
     labels: {io.zapime.installation: "${ZAPIME_INSTALLATION_ID:-manual}"}

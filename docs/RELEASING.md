@@ -27,3 +27,7 @@
 首轮真实发布的 None 失败仍保存在[原始公开记录](evidence/source-alpha-publication-20261107/README.md)。[健壮性回归](evidence/release-draft-recovery-20261107/README.md)复现不安全解引用并覆盖缺失响应与恢复状态机；它不证明原 GitHub 可见性的唯一根因，也没有重发或修改 `v0.1.0-alpha.1`。
 
 `v0.1.0-alpha.1` 不附 APK/语音权重。开发包来源和独立验收见[候选试用](CANDIDATE_RANKING_TRYOUT.md)；公开通用二进制先处理[许可待办](LICENSE_AUDIT.md)、稳定签名和集中设备验收。
+
+## 同步服务器运行包
+
+同步服务器的签名运行包使用独立版本、发布签名和镜像清单。Docker 发布机可从固定 Git 提交生成离线目录和一行安装命令。发布者保管长期签名密钥，并通过独立可信渠道交付启动器和公钥的摘要。实际首装、升级中断恢复及双机前置步骤见[服务器部署](SERVER_DEPLOY.md#生成可传到上海服务器的离线包)。

@@ -4,6 +4,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -98,6 +99,32 @@ func run() error {
 		}
 		return nil
 	}
+	if len(os.Args) == 2 && (os.Args[1] == "bootstrap-oidc-account" || os.Args[1] == "bind-oidc-account") {
+		var request struct {
+			Account string `json:"account"`
+			Issuer  string `json:"issuer"`
+			Subject string `json:"subject"`
+		}
+		decoder := json.NewDecoder(io.LimitReader(os.Stdin, 4097))
+		decoder.DisallowUnknownFields()
+		if err := decoder.Decode(&request); err != nil || decoder.Decode(new(any)) != io.EOF {
+			return errors.New("oidc_binding_input_invalid")
+		}
+		login, err := oidcauth.FromEnv()
+		if err != nil || login == nil || request.Issuer != os.Getenv("ZAPIME_OIDC_ISSUER") {
+			return oidcauth.ErrConfiguration
+		}
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		bind := store.BindOIDCSubject
+		if os.Args[1] == "bootstrap-oidc-account" {
+			bind = store.BootstrapOIDCAccount
+		}
+		if err := bind(ctx, request.Account, request.Issuer, request.Subject); err != nil {
+			return errors.New("oidc_subject_binding_failed")
+		}
+		return nil
+	}
 	if len(os.Args) > 1 {
 		if len(os.Args) != 3 || (os.Args[1] != "provision" && os.Args[1] != "recover-device") {
 			return errors.New("usage: zapime-sync [provision device-name | recover-device device-id | bind-oidc-subject account-id issuer subject]")
@@ -133,7 +160,35 @@ func run() error {
 	}
 	api := syncapi.NewAPIWithOIDC(store, login)
 	api.AllowAutomaticEnrollment = automatic == "1"
-	server := &http.Server{Addr: address, Handler: api, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
+	handler := http.Handler(api)
+	maintenance := os.Getenv("ZAPIME_MAINTENANCE_FLAG")
+	route := ""
+	if installation := os.Getenv("ZAPIME_DEPLOYMENT_ID"); installation != "" {
+		if decoded, err := hex.DecodeString(installation); err != nil || len(decoded) != 16 {
+			return errors.New("deployment_id_invalid")
+		}
+		route = "/.well-known/zapime-deploy/" + installation
+	}
+	if route != "" || maintenance != "" {
+		handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if route != "" && r.Method == http.MethodGet && r.URL.EscapedPath() == route && r.URL.RawQuery == "" {
+				w.Header().Set("Cache-Control", "no-store")
+				w.WriteHeader(http.StatusNoContent)
+				return
+			}
+			if maintenance != "" && r.URL.EscapedPath() != "/healthz" {
+				if _, err := os.Stat(maintenance); err == nil || !errors.Is(err, os.ErrNotExist) {
+					w.Header().Set("Content-Type", "application/json")
+					w.Header().Set("Cache-Control", "no-store")
+					w.WriteHeader(http.StatusServiceUnavailable)
+					_, _ = io.WriteString(w, "{\"error\":\"maintenance\"}\n")
+					return
+				}
+			}
+			api.ServeHTTP(w, r)
+		})
+	}
+	server := &http.Server{Addr: address, Handler: handler, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
 	stopped := make(chan os.Signal, 1)
 	signal.Notify(stopped, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(stopped)
