@@ -141,6 +141,7 @@ jobs:
         run: |
           set -euo pipefail
           output="$PWD/target/a3-android-oidc"
+          mkdir -p "$output/issuer"
           (cd services/sync && go test -mod=readonly -c -o "$output/oidc-auth.test" ./internal/oidcauth)
           (cd services/sync && go test -mod=readonly -c -o "$output/oidc-account.test" ./internal/syncapi)
           cp scripts/fixtures/a3-oidc/{package.json,package-lock.json,issuer.mjs,android-issuer.mjs} "$output/issuer/"

@@ -106,6 +106,7 @@ function publicRoute(req, host, url) {
     return true;
   }
   if (req.method === 'POST' && ['/token', '/v1/device-enrollment/automatic', '/v1/changes'].includes(url.pathname)) return true;
+  if (req.method === 'GET' && /^\/auth\/[A-Za-z0-9_-]{12,128}$/.test(url.pathname)) return true;
   return ['GET', 'POST'].includes(req.method) && /^\/fixture-login\/[A-Za-z0-9_-]{12,128}$/.test(url.pathname);
 }
 

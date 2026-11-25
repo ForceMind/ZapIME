@@ -25,6 +25,7 @@ public final class RecoveryPickerProbe extends Instrumentation {
         Bundle result = new Bundle();
         byte[] code = new byte[43];
         File input = new File(getContext().getDataDir(), "fixture-recovery-code");
+        String stage = "private_code";
         try {
             try (DataInputStream source = new DataInputStream(new FileInputStream(input))) {
                 source.readFully(code);
@@ -32,18 +33,22 @@ public final class RecoveryPickerProbe extends Instrumentation {
             } finally {
                 if (!input.delete()) throw new IllegalStateException();
             }
+            stage = "password_field";
             AccessibilityNodeInfo password = await(null);
             Bundle text = new Bundle();
             text.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
                     new String(code, StandardCharsets.US_ASCII));
             if (!password.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, text)) throw new IllegalStateException();
             text.clear();
+            stage = "import_button";
             click("验证并导入密钥…");
+            stage = "import_dialog";
             click("验证并导入");
             result.putString("recovery_submitted", "PASS");
             finish(Activity.RESULT_OK, result);
         } catch (Exception failure) {
             result.putString("recovery_submitted", "FAIL");
+            result.putString("recovery_ui_stage", stage);
             finish(Activity.RESULT_CANCELED, result);
         } finally {
             Arrays.fill(code, (byte) 0);

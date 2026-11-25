@@ -190,6 +190,9 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
         checked(adb.command + ["exec-in", "run-as", PICKER_PROBE, "dd", "of=fixture-recovery-code"],
                 "private_recovery_input_failed", data=value)
         result = adb.shell("am", "instrument", "-w", PICKER_PROBE + "/.RecoveryPickerProbe", timeout=30)
+        failed_stage = re.search(r"(?m)^INSTRUMENTATION_RESULT: recovery_ui_stage=(private_code|password_field|import_button|import_dialog)$", result)
+        if failed_stage:
+            report["picker_submit_failure"] = failed_stage[1]
         require("INSTRUMENTATION_RESULT: recovery_submitted=PASS" in result
                 and "INSTRUMENTATION_CODE: -1" in result, "recovery_password_or_dialog_not_submitted")
 
