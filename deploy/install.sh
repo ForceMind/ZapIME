@@ -114,6 +114,17 @@ APT
       apt-get install -y -qq docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin ;;
     alpine) apk add docker docker-cli-compose ;;
     arch|manjaro) pacman -S --needed --noconfirm docker docker-compose ;;
+    fedora|rhel|centos|rocky|almalinux|ol)
+      rpm_manager=dnf
+      command -v dnf >/dev/null || rpm_manager=yum
+      if "$rpm_manager" -q list --available docker-ce docker-compose-plugin >/dev/null 2>&1; then
+        "$rpm_manager" install -y docker-ce docker-ce-cli containerd.io docker-compose-plugin
+      elif [[ $ID == fedora ]]; then
+        "$rpm_manager" install -y moby-engine docker-compose
+      else
+        echo 'Enable your Docker package repository (Engine and Compose v2), then rerun.' >&2; exit 1
+      fi ;;
+    opensuse*|sles) zypper --non-interactive install docker docker-compose ;;
     *)
       echo 'Install Docker Engine and Compose v2 from your configured distribution repositories, then rerun.' >&2
       exit 1 ;;
@@ -183,7 +194,10 @@ PY
         docker pull --platform "linux/$architecture" "$reference" >/dev/null
         metadata=$(docker image inspect --format '{{.Id}} {{.Architecture}} {{.Os}}' "$reference")
       fi
-      [[ $metadata == "$candidate" ]] || { echo 'Container image ID or architecture mismatch' >&2; return 1; }
+      [[ $metadata == "$candidate" ]] || {
+        printf 'Container image verification failed for %s\nExpected %s\nObserved %s\n' "$reference" "$candidate" "${metadata:-unavailable}" >&2
+        return 1
+      }
     done
   } < "$verified_runtime/images.txt"
 }
@@ -203,6 +217,11 @@ if [[ ! -f $root/config.env ]]; then
   exec 3<>/dev/tty || { echo 'First run needs a terminal to enter your R2 settings' >&2; exit 1; }
   printf '\nZapIME · private R2 storage\nCreate an R2 Standard PRIVATE bucket and bucket-scoped Object Read & Write credentials first.\nFree tier is metered, not an unlimited free plan.\n' >&3
   read -r -p 'HTTPS domain (DNS must point to this server): ' domain <&3
+  if [[ -n $verified_runtime && $proxy_explicit != 1 ]]; then
+    read -r -p 'HTTPS mode [caddy/existing] (caddy): ' selected_proxy <&3
+    proxy=${selected_proxy:-caddy}
+    [[ $proxy == caddy || $proxy == existing ]] || { echo 'Select caddy or existing.' >&2; exit 1; }
+  fi
   read -r -p 'Cloudflare Account ID (32 hex): ' account <&3
   read -r -p 'R2 bucket name: ' bucket <&3
   read -r -p 'R2 jurisdiction [default/eu/us/fedramp] (default): ' jurisdiction <&3
@@ -217,6 +236,20 @@ if [[ ! -f $root/config.env ]]; then
   printf 'ZAPIME_INSTALLATION_ID=%s\nPOSTGRES_PASSWORD=%s\nZAPIME_HOST=%s\nZAPIME_OBJECT_BACKEND=s3\nZAPIME_S3_ENDPOINT=%s\nZAPIME_S3_BUCKET=%s\nZAPIME_S3_ACCESS_KEY_ID=%s\nZAPIME_S3_SECRET_ACCESS_KEY=%s\nZAPIME_S3_REGION=auto\nZAPIME_HTTPS_MODE=%s\n' "$installation_id" "$password" "$domain" "$endpoint" "$bucket" "$access" "$secret" "$proxy" > "$config"
   ln "$config" "$root/config.env"; rm -f "$config"
   unset secret access password
+fi
+if [[ -n $verified_runtime && ! -e $root/current && ! -f $root/oidc/binding.json && -z $oidc_config ]] &&
+  { exec 3<>/dev/tty; } 2>/dev/null; then
+  echo 'Android sign-in requires a compatible OIDC provider.' >&3
+  read -r -p 'Configure Android sign-in now? [y/N]: ' choose_oidc <&3
+  if [[ $choose_oidc == y || $choose_oidc == Y ]]; then
+    read -r -p 'Public Android OIDC configuration JSON path: ' oidc_config <&3
+    read -r -p 'Verified public JWKS JSON path: ' oidc_jwks <&3
+    read -r -p 'Verified OIDC subject file path: ' oidc_subject <&3
+    read -r -p 'Android APK certificate SHA-256 (Enter if not signed yet): ' android_signer <&3
+    if [[ -n $restore ]]; then read -r -p 'Existing ZapIME account UUID: ' oidc_account <&3; fi
+    [[ -f $oidc_config && -f $oidc_jwks && -f $oidc_subject && ( -z $restore || -n $oidc_account ) ]] ||
+      { echo 'OIDC inputs incomplete. Rerun with the same server configuration.' >&2; exit 1; }
+  fi
 fi
 if [[ $proxy_explicit == 1 ]]; then
   if [[ -e $root/current && -n $verified_runtime ]] &&

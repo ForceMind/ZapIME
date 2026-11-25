@@ -4,6 +4,8 @@
 
 **继续施工记录。** 用户要求安装器自动适配 Linux 发行版。平台门禁改为 Linux amd64/arm64 及实际 Docker Compose v2 能力，优先复用已安装运行时。预检识别 apt、dnf、yum、apk、pacman、zypper；未知发行版可预装依赖使用。各包管理器和架构的现场证据分别记录。第二阶段先连通已兼容 OIDC 和实际签名运行包，第三阶段实施迁移演练、停写备份及恢复，上海最终验收使用这套入口。
 
+首轮 `5e5adf4` 已完成原有 Linux 同步和安装器路径。新版离线包在 Docker 导出的清单核对处提前退出。复验对齐 Docker Hub 的标准标签，并将已签名归档摘要与加载后的 Docker 镜像 ID 分开核对，兼容 OCI 索引和 attestations。[首轮隔离验收](https://github.com/ForceMind/ZapIME/actions/runs/45579672493/job/139086249864)
+
 2026-11-24，用户确认采用一行启动、完整向导与统一运维。首个切片为已签名预检，后续依次接入首次安装与登录、升级恢复、隔离 Linux 和获准上海服务器的实际验收。实体双机沿用[账号同步验收清单](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md#实体双机验收)。
 
 | 阶段 | 可验收交付 |
@@ -29,6 +31,28 @@ bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.
 首轮 `7b9989c` 在前序容器使用 TCP 8787 后运行，签名和 HTTPS 下载已执行，四项预检因 8787 尚无法重新绑定失败。复验先在独立 runner 验证真实监听冲突、监听继续存活及连接关闭后的正常重绑，再运行原容器和备份验收。[首轮 CI](https://github.com/ForceMind/ZapIME/actions/runs/45570489655/job/139055732437)
 
 复验 `331b1a7` 在 Ubuntu resolute 的 amd64 GitHub runner 完成六项门禁。实际 HTTPS 单行入口与离线包通过，错误公钥、签名、版本、架构及缺失下载均提前退出。真实端口冲突时原监听生存，连接关闭后可重绑。旧安装器的重复安装、PostgreSQL 与对象存储恢复作业也通过。两架构的合成包已在本机生成并独立验签。arm64 实机、上海连通性、R2 凭据读写与正式身份服务等候各自的现场或发布验收。[通过 CI 与预检输出](https://github.com/ForceMind/ZapIME/actions/runs/45571594367/job/139059309113) · [草稿 PR #127](https://github.com/ForceMind/ZapIME/pull/127)
+
+### 一次命令完成首装
+
+新版入口为 `deploy/bootstrap.sh --install`。同时指定固定发布版本、HTTPS 发布目录或本地包路径，以及从独立渠道确认的公钥 SHA-256。线上首条命令先确认启动器自身的固定摘要，再把这份完整脚本以管理员权限执行。下面的环境变量来自待发布版本的可信清单，域名按最终发布地址填写。
+
+```bash
+( set -e; file=$(mktemp); trap 'rm -f -- "$file"' EXIT; curl -fsSL "$ZAPIME_BOOTSTRAP_URL" -o "$file"; printf '%s  %s\n' "$ZAPIME_BOOTSTRAP_SHA256" "$file" | sha256sum -c; sudo bash -c "$(cat "$file")" zapime-install --install --source "$ZAPIME_RELEASE_URL" --version "$ZAPIME_VERSION" --key-sha256 "$ZAPIME_RELEASE_KEY_SHA256" )
+```
+
+已有离线包时，已核对摘要的启动器用 `--bundle /absolute/runtime`。入口参数后的 `-- --image-archive /absolute/images.tar` 传给运行安装器。服务器须已有可工作的 Docker 和基础依赖才能全程离线。安装器能在文件可用时按包管理器补齐基础依赖，使用 Linux、架构、Docker Engine 和 Compose v2 的实际能力决定是否继续。既有容器引擎优先复用。发行版仓库缺少所需 Docker 包时，输出缺少的运行时。
+
+首装向导收集域名、代理模式和私有 R2 参数。已有兼容 OIDC 时，可在提示中选择接入，也可在入口的 `--` 后传 `--oidc-config android.json --oidc-jwks jwks.json --oidc-subject-file subject.txt --android-signer SHA256`。subject 由身份服务的管理员界面核对，文件留在服务器。已有资料库加登录时显式传 `--oidc-account UUID`。新库在事务中建立唯一账号映射，重复运行复用持久选择。正式可用性还取决于签发者和客户端发出的实际访问令牌通过 ZapIME 的严格校验。
+
+Docker 只读挂载公开 JWKS。Android 公共配置保存于 `/opt/zapime/oidc/android.json`，签名关联在 `/opt/zapime/oidc/assetlinks.json`。内置 Caddy 提供关联文件，已有反代时由原代理将该精确路径映射到关联文件。安装结束分别报告存储、HTTPS、OIDC 和 App Link。反代需将业务流量送到 `127.0.0.1:8787`。实测浏览器登录及真机同步仍按独立门禁。
+
+发布方用 `deploy/build_runtime_bundle.py` 打包。工具校验三个容器的实际平台及 ID，将源码提交、版本、架构、部署文件和镜像清单签名。在线镜像传仓库摘要引用。离线用 `docker save` 导出三项 `zapime-release/<服务>:<唯一版本>`，签名清单绑定归档 SHA-256 与实际镜像 ID。安装器在私有目录校验归档、核对已经存在的标签归属，再按固定 Compose 镜像运行。
+
+### 更新与中断续跑
+
+`sudo zapime status` 显示已选版本、实际运行镜像、数据库 schema 及未完成的升级。 `sudo zapime doctor` 核对本机健康、公网实例见证及 Android 关联。`sudo zapime update <HTTPS发布目录或绝对包目录> <版本> [离线镜像归档]` 复用首次保存的签名信任。
+
+升级先把数据库快照恢复到独立 Compose 项目，在复制库运行新版本迁移并校验不可变对象。之后冻结写入、停止旧进程、使用旧工具生成成套最终备份。候选服务在冻结状态核对对象、健康和此前已验证的公网路由，通过后切换版本并解除冻结。中断时按 `status` 显示的目标重跑同一签名版本，保留原最终备份。需要改回旧 schema 时，用对应版本及成套备份在空库执行恢复。已重新开放写入后，先保全新写入再选择恢复点。
 
 架构：客户端 → 自有服务器（HTTPS、账号/设备、PostgreSQL 修订索引）→ 私有 R2 Standard 存储桶（端到端密文）。所有对象访问经过自己的服务器；不会向客户端下发 R2 管理密钥或公开存储桶。Android 已提供[手工设备连接](ACCOUNT_CONNECTION.md)，资料同步及配对仍在开发，部署此服务不等于已完成四端同步。
 

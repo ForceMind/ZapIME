@@ -47,23 +47,26 @@ def build(args):
         raise ValueError("use registry digest references online, or export an offline image archive")
     archive_sha = ""
     if args.archive:
-        expected = {item["reference"]: item["id"] for item in images.values()}
-        if not all(name.startswith("zapime-release/") and "@" not in name for name in expected):
+        expected = {item["reference"].removeprefix("docker.io/") for item in images.values()}
+        if len(expected) != len(SERVICES) or not all(name.startswith("zapime-release/") and "@" not in name for name in expected):
             raise ValueError("offline images need dedicated zapime-release/* tags")
         with tarfile.open(args.archive, "r:*") as saved:
             member = saved.getmember("manifest.json")
             if not member.isfile() or not 0 < member.size <= 65536:
                 raise ValueError("invalid offline image inventory")
             manifest_rows = json.load(saved.extractfile(member))
-        observed = {}
+        observed = set()
         for row in manifest_rows:
-            image_id = "sha256:" + Path(row["Config"]).name.removesuffix(".json")
             for tag in row.get("RepoTags") or ():
+                tag = tag.removeprefix("docker.io/")
                 if tag in observed:
                     raise ValueError("duplicate offline image tag")
-                observed[tag] = image_id
+                observed.add(tag)
         if observed != expected:
-            raise ValueError("offline archive tags or image IDs differ from the selected images")
+            raise ValueError(f"offline archive tags differ from selected images: {sorted(observed)}")
+        # The archive Config digest and daemon image ID can describe different
+        # objects with an OCI index/attestations. The signed manifest binds the
+        # archive bytes and each daemon image ID checked after loading.
         digest = hashlib.sha256()
         with args.archive.open("rb") as source:
             for chunk in iter(lambda: source.read(1024 * 1024), b""):
