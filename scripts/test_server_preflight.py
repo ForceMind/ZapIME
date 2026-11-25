@@ -95,6 +95,8 @@ class SignedPreflightTests(unittest.TestCase):
 
     def test_valid_bundle_reports_actual_host_and_offline_limits(self):
         result = self.invoke(self.bundle)
+        if result.stdout:
+            print("ZapIME verified Linux preflight sample: " + result.stdout.strip(), flush=True)
         self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
         report = json.loads(result.stdout)
         self.assertEqual(report["系统"]["status"], "PASS")
@@ -102,12 +104,11 @@ class SignedPreflightTests(unittest.TestCase):
         self.assertEqual(report["现有反代"]["status"], "PENDING")
         self.assertEqual(report["R2"]["status"], "PENDING")
         self.assertNotIn("HTTP 端口", report)
-        print("ZapIME verified Linux preflight sample: " + json.dumps(report, ensure_ascii=False), flush=True)
 
     def test_https_verified_download_and_missing_release(self):
         with self.publication() as (origin, env):
             result = self.invoke(origin, remote=True, env=env)
-            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
             self.assertEqual(json.loads(result.stdout)["发布源"]["status"], "PASS")
             failure = self.invoke(origin, version="0.1.0-absent", remote=True, env=env)
             self.assert_rejected_before_payload(failure, "下载 release-public.pem 失败")
@@ -144,13 +145,19 @@ class SignedPreflightTests(unittest.TestCase):
 
     def test_port_conflict_is_fatal_without_stopping_the_listener(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as original:
+            original.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             original.bind(("127.0.0.1", 8787))
             original.listen()
             result = self.invoke(self.bundle)
             self.assertEqual(result.returncode, 1, result.stderr)
             self.assertEqual(json.loads(result.stdout)["同步端口"]["status"], "FAIL")
-            with socket.create_connection(("127.0.0.1", 8787), timeout=3):
-                pass
+            with socket.create_connection(("127.0.0.1", 8787), timeout=3) as client:
+                accepted, _ = original.accept()
+                accepted.close()
+                self.assertEqual(client.recv(1), b"")
+        result = self.invoke(self.bundle)
+        self.assertEqual(result.returncode, 2, result.stderr + result.stdout)
+        self.assertEqual(json.loads(result.stdout)["同步端口"]["status"], "PASS")
 
 
 if __name__ == "__main__":

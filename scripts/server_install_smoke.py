@@ -9,7 +9,6 @@ from pathlib import Path
 import shutil
 import secrets
 import subprocess
-import sys
 import tempfile
 import urllib.error
 import urllib.request
@@ -27,7 +26,6 @@ def main():
         raise SystemExit('Exact CI commit required')
     if INSTALL.exists() or Path('/usr/local/bin/zapime').exists():
         raise SystemExit('Installer acceptance requires a fresh dedicated runner')
-    subprocess.run([sys.executable, str(ROOT / 'scripts/test_server_preflight.py')], cwd=ROOT, check=True)
     env = dict(os.environ, COMPOSE_PROJECT_NAME='zapime')
     def command(*args, capture=False, check=True):
         result = subprocess.run(args, cwd=ROOT, env=env, check=check,

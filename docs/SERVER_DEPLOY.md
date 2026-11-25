@@ -24,6 +24,8 @@ bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.
 
 阶段交接从 `deploy/bootstrap.sh`、`deploy/preflight.py` 与签发脚本接续。`scripts/test_server_preflight.py` 经现有服务器验收入口运行，使用隔离的合成证书、公钥、目录及监听端口。当前待 CI 回读，正式域名、生产签名与全套运行镜像进入后续阶段。
 
+首轮 `7b9989c` 在前序容器使用 TCP 8787 后运行，签名和 HTTPS 下载已执行，四项预检因 8787 尚无法重新绑定失败。复验先在独立 runner 验证真实监听冲突、监听继续存活及连接关闭后的正常重绑，再运行原容器和备份验收。[首轮 CI](https://github.com/ForceMind/ZapIME/actions/runs/45570489655/job/139055732437)
+
 架构：客户端 → 自有服务器（HTTPS、账号/设备、PostgreSQL 修订索引）→ 私有 R2 Standard 存储桶（端到端密文）。所有对象访问经过自己的服务器；不会向客户端下发 R2 管理密钥或公开存储桶。Android 已提供[手工设备连接](ACCOUNT_CONNECTION.md)，资料同步及配对仍在开发，部署此服务不等于已完成四端同步。
 
 ## 首次准备

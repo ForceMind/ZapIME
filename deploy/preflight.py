@@ -65,9 +65,12 @@ def port_status(port, loopback=False):
         for family, address in addresses:
             try:
                 with socket.socket(family, socket.SOCK_STREAM) as candidate:
+                    # Match a normal Linux server restart after a closed connection.
+                    candidate.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
                     if family == socket.AF_INET6:
                         candidate.setsockopt(socket.IPPROTO_IPV6, socket.IPV6_V6ONLY, 1)
                     candidate.bind((address, port))
+                    candidate.listen()
             except OSError as error:
                 if family != socket.AF_INET6 or error.errno not in {errno.EAFNOSUPPORT, errno.EADDRNOTAVAIL}:
                     raise

@@ -220,6 +220,7 @@ def main():
             or not all(os.environ.get(name, "").isascii() and os.environ[name].isdecimal()
                        for name in ("GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT"))):
         raise SystemExit("Requires the isolated sync-service GitHub Actions job")
+    subprocess.run([sys.executable, str(ROOT / "scripts/test_server_preflight.py")], cwd=ROOT, check=True)
     with tempfile.TemporaryDirectory(prefix="zapime-oidc-restore-") as temporary:
         exercise(Path(temporary))
 
