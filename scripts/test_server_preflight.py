@@ -23,6 +23,7 @@ ROOT = Path(__file__).resolve().parents[1]
 VERSION = "0.1.0-preview.1"
 ARCH = {"x86_64": "amd64", "aarch64": "arm64"}.get(platform.machine())
 FILES = ("zapime-preflight.zip", "zapime-preflight.sig", "release-public.pem")
+SHORT_ENTRY = 'payload=$(curl -fsSL "$1") && test -n "$payload" && shift && bash -c "$payload" zapime-install "$@"'
 
 
 @unittest.skipUnless(sys.platform == "linux" and ARCH, "requires a supported Linux CI host")
@@ -40,6 +41,7 @@ class SignedPreflightTests(unittest.TestCase):
                        check=True, capture_output=True)
         cls.bundle = cls.root / "published" / VERSION / ARCH
         cls.key_hash = cls.build(cls.bundle, ARCH)
+        shutil.copyfile(ROOT / "deploy/bootstrap.sh", cls.root / "published" / "install.sh")
 
     @classmethod
     def build(cls, target, architecture):
@@ -100,6 +102,7 @@ class SignedPreflightTests(unittest.TestCase):
         self.assertEqual(report["现有反代"]["status"], "PENDING")
         self.assertEqual(report["R2"]["status"], "PENDING")
         self.assertNotIn("HTTP 端口", report)
+        print("ZapIME verified Linux preflight sample: " + json.dumps(report, ensure_ascii=False), flush=True)
 
     def test_https_verified_download_and_missing_release(self):
         with self.publication() as (origin, env):
@@ -108,6 +111,20 @@ class SignedPreflightTests(unittest.TestCase):
             self.assertEqual(json.loads(result.stdout)["发布源"]["status"], "PASS")
             failure = self.invoke(origin, version="0.1.0-absent", remote=True, env=env)
             self.assert_rejected_before_payload(failure, "下载 release-public.pem 失败")
+
+    def test_one_line_entry_checks_download_before_running_shell(self):
+        with self.publication() as (origin, env):
+            entry = ["bash", "-c", SHORT_ENTRY, "test"]
+            failed = subprocess.run(entry + [origin + "/missing.sh"], capture_output=True, env=env, timeout=15)
+            self.assertNotEqual(failed.returncode, 0)
+            self.assertEqual(failed.stdout, b"")
+            completed = subprocess.run(
+                entry + [origin + "/install.sh", "--source", origin, "--version", VERSION,
+                         "--key-sha256", self.key_hash, "--", "--offline", "--proxy", "existing", "--json"],
+                capture_output=True, env=env, timeout=30,
+            )
+            self.assertEqual(completed.returncode, 2, completed.stderr)
+            self.assertEqual(json.loads(completed.stdout)["发布源"]["status"], "PASS")
 
     def test_unknown_key_and_changed_payload_are_rejected(self):
         self.assertEqual(self.key_hash, hashlib.sha256((self.bundle / FILES[2]).read_bytes()).hexdigest())

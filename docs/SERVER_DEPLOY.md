@@ -17,10 +17,10 @@
 
 ```bash
 python3 deploy/build_preflight_bundle.py --output ./preview/0.1.0-preview.1/amd64 --version 0.1.0-preview.1 --architecture amd64 --private-key /path/to/release-key.pem
-bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.0-preview.1 --key-sha256 <公钥SHA256> -- --domain sync.example.com --proxy existing --r2-endpoint https://account.r2.cloudflarestorage.com
+bash deploy/bootstrap.sh --bundle ./preview/0.1.0-preview.1/amd64 --version 0.1.0-preview.1 --key-sha256 "$ZAPIME_RELEASE_KEY_SHA256" -- --domain sync.example.com --proxy existing --r2-endpoint https://account.r2.cloudflarestorage.com
 ```
 
-输出目录包含预检 ZIP、分离签名和公开 PEM。arm64 另建对应目录并以 `--architecture arm64` 打包。私钥由签发者保管。远端按 `VERSION/amd64` 或 `VERSION/arm64` 布置这三个文件。`--offline` 只检查本机并标明待查项，`--json` 输出机器可读结果。预检退出码为 0 已核对、1 失败、2 尚有待查项。预检只读，不申请 sudo。R2 探针只验证 HTTPS 可达，读写仍由原安装器及后续向导验收。
+将独立渠道核验的公钥文件摘要填入 `ZAPIME_RELEASE_KEY_SHA256`。打包目录包含预检 ZIP、分离签名和公开 PEM。arm64 另建对应目录并以 `--architecture arm64` 打包。私钥由签发者保管。远端按 `VERSION/amd64` 或 `VERSION/arm64` 布置这三个文件。`--offline` 跳过 DNS、镜像源和 R2 的网络探针，与 `--bundle` 同用时可全程离线。`--json` 输出机器可读结果。预检退出码为 0 已核对、1 失败、2 尚有待查项。预检只读，不申请 sudo。R2 探针只验证 HTTPS 可达，读写仍由原安装器及后续向导验收。
 
 阶段交接从 `deploy/bootstrap.sh`、`deploy/preflight.py` 与签发脚本接续。`scripts/test_server_preflight.py` 经现有服务器验收入口运行，使用隔离的合成证书、公钥、目录及监听端口。当前待 CI 回读，正式域名、生产签名与全套运行镜像进入后续阶段。
 
