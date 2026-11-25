@@ -9,8 +9,10 @@ from pathlib import Path
 import shutil
 import secrets
 import subprocess
+import sys
 import tempfile
 import urllib.error
+import urllib.parse
 import urllib.request
 import uuid
 
@@ -34,12 +36,12 @@ def main():
     def compose(*args):
         return command('docker', 'compose', '--env-file', str(INSTALL/'config.env'),
                        '-f', str(INSTALL/'current/services/sync/compose.yml'), *args)
-    def setup(bucket):
+    def setup(bucket, host='zapime-ci.invalid'):
         INSTALL.mkdir(mode=0o700)
         (INSTALL/'installation-v1').write_text('zapime-installer-v1\n')
         config = ('ZAPIME_INSTALLATION_ID='+secrets.token_hex(16)+'\n'
                   'POSTGRES_PASSWORD=zapime-ci-only-password\n'
-                  'ZAPIME_HOST=zapime-ci.invalid\nZAPIME_HTTPS_MODE=existing\n'
+                  f'ZAPIME_HOST={host}\nZAPIME_HTTPS_MODE=existing\n'
                   'ZAPIME_OBJECT_BACKEND=s3\nZAPIME_S3_ENDPOINT=http://zapime-object-test:9000\n'
                   f'ZAPIME_S3_BUCKET={bucket}\nZAPIME_S3_ACCESS_KEY_ID=zapime-ci-key\n'
                   'ZAPIME_S3_SECRET_ACCESS_KEY=zapime-ci-synthetic-secret\n'
@@ -73,12 +75,75 @@ def main():
         for name in ('zapime-backup.timer','zapime-backup.service'):
             Path('/etc/systemd/system',name).unlink(missing_ok=True)
         command('systemctl','daemon-reload',check=False)
-        if (INSTALL/'current').exists():
+        active = INSTALL/'current/services/sync/compose.yml'
+        if not active.is_file():
+            candidates = sorted(INSTALL.glob('releases/*/services/sync/compose.yml'))
+            active = candidates[-1] if candidates else active
+        if active.is_file():
             # Disconnect the separate test object server before removing this network.
             command('docker','network','disconnect','zapime_default','zapime-object-test',check=False)
-            compose('--profile','https','down','--volumes')
+            command('docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f', str(active),
+                    '--profile', 'https', 'down', '--volumes')
         if INSTALL.exists():shutil.rmtree(INSTALL)
         Path('/usr/local/bin/zapime').unlink(missing_ok=True)
+    def signed_runtime_test():
+        from sync_service_smoke import oidc_restore_probe
+
+        with tempfile.TemporaryDirectory(prefix='zapime-signed-install-') as path:
+            work = Path(path)
+            oidc = oidc_restore_probe('prepare', work)
+            host = urllib.parse.urlsplit(oidc['audience']).hostname
+            setup('zapime-ci-signed-runtime', host)
+            config = work / 'android.json'
+            subject = work / 'subject.txt'
+            config.write_text(json.dumps({
+                'issuer': oidc['issuer'], 'authorization': oidc['issuer'] + '/auth', 'token': oidc['issuer'] + '/token',
+                'resource': oidc['audience'], 'client_id': oidc['client_id'], 'sync_server': 'https://' + host,
+                'callback': 'https://' + host + '/callback',
+            }))
+            subject.write_text(oidc['subject'])
+            key = work / 'release-private.pem'
+            subprocess.run(['openssl', 'genpkey', '-algorithm', 'RSA', '-pkeyopt', 'rsa_keygen_bits:2048', '-out', str(key)],
+                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            images = {'db': 'zapime-release/db:ci', 'sync': 'zapime-release/sync:ci', 'https': 'zapime-release/https:ci'}
+            command('docker', 'build', '-t', images['sync'], str(ROOT / 'services/sync'))
+            command('docker', 'pull', 'caddy:2')
+            command('docker', 'tag', 'caddy:2', images['https'])
+            command('docker', 'tag', 'postgres:16', images['db'])
+            archive = work / 'images.tar'
+            command('docker', 'save', '-o', str(archive), *images.values())
+            bundle = work / 'runtime'
+            version = '0.1.0-runtime.1'
+            image_args = [argument for name, reference in images.items() for argument in ('--' + name, reference)]
+            pin = command(sys.executable, str(ROOT / 'deploy/build_runtime_bundle.py'), '--version', version,
+                          '--architecture', 'amd64', '--output', str(bundle), '--private-key', str(key),
+                          '--archive', str(archive), *image_args, capture=True).strip()
+            # Drop the release aliases to prove the offline archive supplied them.
+            for image in images.values():
+                command('docker', 'image', 'rm', image)
+            args = ['bash', str(ROOT / 'deploy/bootstrap.sh'), '--install', '--bundle', str(bundle),
+                    '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive),
+                    '--oidc-config', str(config), '--oidc-jwks', str(work / 'jwks.json'), '--oidc-subject-file', str(subject),
+                    '--android-signer', 'ab' * 32]
+            command(*args)
+            current = INSTALL / 'current'
+            assert (current / 'manifest.json').is_file() and not (INSTALL / 'owner.json').exists()
+            binding_path = INSTALL / 'oidc/binding.json'
+            original = binding_path.read_bytes()
+            account = json.loads(original)['account']
+            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            assert json.loads((INSTALL / 'oidc/android.json').read_text()) == json.loads(config.read_text())
+            assets = json.loads((INSTALL / 'oidc/assetlinks.json').read_text())
+            assert assets[0]['target']['sha256_cert_fingerprints'] == [':'.join(['AB'] * 32)]
+            assert (binding_path.stat().st_mode & 0o077) == 0
+            command(*args)
+            assert binding_path.read_bytes() == original
+            assert oidc_restore_probe('automatic', work, {'account_id': account})['automatic_member']
+            report = command('docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f',
+                             str(current/'services/sync/compose.yml'), 'exec', '-T', 'db',
+                             'psql', '-U', 'zapime', '-Atc', 'SELECT count(*) FROM zapime_accounts', capture=True)
+            assert report.strip() == '1'
+            print('PASS signed runtime: offline verified images, real S3, repeat OIDC bootstrap, container public JWKS, automatic enrollment and Android configuration', flush=True)
     try:
         setup('zapime-ci-install')
         install()
@@ -131,6 +196,8 @@ def main():
             command(str(probe),'verify',str(fixture),str(change_file))
             command('/usr/local/bin/zapime','verify-objects')
         print('PASS installer: one entry command, repeat install preserves data/key descriptor, private credentials, fresh DB + alternate bucket descriptor restore, real client AEAD recovery; HTTPS/Cloudflare live credentials not tested',flush=True)
+        cleanup()
+        signed_runtime_test()
     finally:
         cleanup()
 

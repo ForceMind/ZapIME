@@ -121,6 +121,28 @@ async function verify(owner) {
   console.log(JSON.stringify({ status: 'PASS', binding_restored: true, unbound_rejected: true, pending_restored: true, new_devices: 1 }));
 }
 
+async function automatic(owner) {
+  const access = accessToken(subject);
+  await identity(owner, access);
+  await call('/v1/account-login', accessToken('a3-restore-unbound-subject'), 401, 'unbound_login');
+  const installation = generateKeyPairSync('ec', { namedCurve: 'prime256v1' });
+  const publicKey = installation.publicKey.export({ format: 'der', type: 'spki' });
+  const device = randomUUID();
+  const token = `zap1_${randomBytes(32).toString('base64url')}`;
+  const tokenHash = createHash('sha256').update(token).digest();
+  const name = 'installer automatic synthetic test';
+  const subjectHash = digest('zapime-account-login-v1', issuer, subject, audience, owner.account_id).toString('hex');
+  const fingerprint = digest('zapime-auto-device-v1', issuer, audience, owner.account_id, device, subjectHash, name, publicKey, tokenHash);
+  const request = { device_id: device, account_id: owner.account_id, name, public_key: publicKey.toString('base64url'),
+    token_sha256: tokenHash.toString('base64url'), signature: signature('zapime-auto-device-sign-v1', fingerprint, access, installation.privateKey) };
+  const session = await call(`${endpoint}/automatic`, access, 200, 'automatic_device', request);
+  const retry = await call(`${endpoint}/automatic`, access, 200, 'automatic_retry', request);
+  check(JSON.stringify(session) === JSON.stringify(retry) && session.account_id === owner.account_id &&
+    session.device_id === device && session.role === 'member', 'automatic_identity');
+  check((await call('/v1/session', token, 200, 'automatic_session')).device_id === device, 'automatic_device_session');
+  console.log(JSON.stringify({ status: 'PASS', bound_login: true, automatic_member: true, repeated_grant: true }));
+}
+
 try {
   if (stage === 'prepare') {
     prepare();
@@ -128,6 +150,7 @@ try {
     const owner = JSON.parse(readFileSync(0, 'utf8'));
     if (stage === 'pending') await pending(owner);
     else if (stage === 'verify') await verify(owner);
+    else if (stage === 'automatic') await automatic(owner);
     else throw new Error('unknown_stage');
   }
 } catch (error) {

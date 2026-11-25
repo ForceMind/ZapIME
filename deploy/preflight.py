@@ -16,10 +16,6 @@ import urllib.parse
 import urllib.request
 
 
-SUPPORTED = {
-    "ubuntu": {"jammy", "noble", "resolute", "stonking"},
-    "debian": {"bookworm", "trixie"},
-}
 MIN_DISK = 2 * 1024**3
 
 
@@ -49,11 +45,16 @@ def operating_system():
     try:
         info = platform.freedesktop_os_release()
     except OSError:
-        return "FAIL", "无法读取 Linux 发行版信息"
+        info = {}
     family, codename = info.get("ID", ""), info.get("VERSION_CODENAME", "")
-    if codename not in SUPPORTED.get(family, set()):
-        return "FAIL", "发行版不在 Ubuntu 或 Debian 支持范围内"
-    return "PASS", f"{family} {codename}"
+    return "PASS", " ".join(part for part in (family or "Linux", codename) if part)
+
+
+def package_manager_status():
+    for manager in ("apt-get", "dnf", "yum", "apk", "pacman", "zypper"):
+        if shutil.which(manager):
+            return "PASS", f"识别到 {manager}"
+    return "PASS", "Linux 自备依赖模式"
 
 
 def port_status(port, loopback=False):
@@ -144,7 +145,9 @@ def main():
     results = {}
     results["系统"] = operating_system()
     if results["系统"][0] == "PASS":
-        results["磁盘"] = ("PASS", "可用空间至少 2 GiB") if shutil.disk_usage("/opt").free >= MIN_DISK else (
+        results["包管理器"] = package_manager_status()
+        storage = "/opt" if Path("/opt").is_dir() else "/"
+        results["磁盘"] = ("PASS", "可用空间至少 2 GiB") if shutil.disk_usage(storage).free >= MIN_DISK else (
             "FAIL", "/opt 可用空间低于 2 GiB"
         )
         results["Docker"] = docker_status()

@@ -15,6 +15,16 @@ var ErrOIDCSubjectBound = errors.New("oidc_subject_already_bound")
 // BindOIDCSubject is a local administrator operation. The identity must come
 // from the operator's configured issuer, not a user-supplied email address.
 func (s *Store) BindOIDCSubject(ctx context.Context, accountID, issuer, subject string) error {
+	return s.bindOIDCSubject(ctx, accountID, issuer, subject, false)
+}
+
+// BootstrapOIDCAccount binds the first account without creating an owner
+// credential. The installer persists its selected ID before the transaction.
+func (s *Store) BootstrapOIDCAccount(ctx context.Context, accountID, issuer, subject string) error {
+	return s.bindOIDCSubject(ctx, accountID, issuer, subject, true)
+}
+
+func (s *Store) bindOIDCSubject(ctx context.Context, accountID, issuer, subject string, bootstrap bool) error {
 	if !validID(accountID) || !oidcauth.ValidSubject(issuer, subject) {
 		return ErrInvalid
 	}
@@ -23,6 +33,31 @@ func (s *Store) BindOIDCSubject(ctx context.Context, accountID, issuer, subject 
 		return err
 	}
 	defer tx.Rollback()
+	if bootstrap {
+		if _, err = tx.ExecContext(ctx, `LOCK TABLE zapime_accounts IN SHARE ROW EXCLUSIVE MODE`); err != nil {
+			return err
+		}
+		var already string
+		err = tx.QueryRowContext(ctx, `SELECT account_id::text FROM zapime_oidc_subjects WHERE issuer=$1 AND subject=$2`, issuer, subject).Scan(&already)
+		if err == nil {
+			if already != accountID {
+				return ErrOIDCSubjectBound
+			}
+			return tx.Commit()
+		}
+		if !errors.Is(err, sql.ErrNoRows) {
+			return err
+		}
+		// An existing installation must use the explicit binding operation.
+		result, err := tx.ExecContext(ctx, `INSERT INTO zapime_accounts(id)
+			SELECT $1::uuid WHERE NOT EXISTS (SELECT 1 FROM zapime_accounts)`, accountID)
+		if err != nil {
+			return err
+		}
+		if count, err := result.RowsAffected(); err != nil || count != 1 {
+			return ErrInvalid
+		}
+	}
 	_, err = tx.ExecContext(ctx, `INSERT INTO zapime_oidc_subjects(issuer,subject,account_id)
         SELECT $1,$2,id FROM zapime_accounts WHERE id=$3 ON CONFLICT(issuer,subject) DO NOTHING`, issuer, subject, accountID)
 	if err != nil {

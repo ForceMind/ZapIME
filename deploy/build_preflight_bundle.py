@@ -14,19 +14,23 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 def build(output, version, architecture, key):
     if not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9]+([.-][a-z0-9]+)*)?", version):
         raise ValueError("Use an explicit version such as 0.1.0-preview.1")
-    output.mkdir(mode=0o700, parents=True, exist_ok=False)
-    archive = output / "zapime-preflight.zip"
-    public = output / "release-public.pem"
     manifest = {"format": 1, "purpose": "zapime-preflight", "version": version, "architecture": architecture}
+    return write_bundle(output, "zapime-preflight", key, manifest, {
+        "preflight.py": Path(__file__).with_name("preflight.py").read_bytes(),
+    })
+
+
+def write_bundle(output, name, key, manifest, payload):
+    output.mkdir(mode=0o700, parents=True, exist_ok=False)
+    archive = output / (name + ".zip")
+    public = output / "release-public.pem"
     with ZipFile(archive, "x", compression=ZIP_DEFLATED) as package:
-        for name, payload in (
-            ("manifest.json", (json.dumps(manifest, sort_keys=True) + "\n").encode()),
-            ("preflight.py", Path(__file__).with_name("preflight.py").read_bytes()),
-        ):
-            package.writestr(ZipInfo(name), payload, compress_type=ZIP_DEFLATED)
+        files = {"manifest.json": (json.dumps(manifest, sort_keys=True) + "\n").encode(), **payload}
+        for filename, content in files.items():
+            package.writestr(ZipInfo(filename), content, compress_type=ZIP_DEFLATED)
     subprocess.run(["openssl", "pkey", "-in", str(key), "-pubout", "-out", str(public)], check=True)
     subprocess.run(["openssl", "dgst", "-sha256", "-sign", str(key), "-out",
-                    str(output / "zapime-preflight.sig"), str(archive)], check=True)
+                    str(output / (name + ".sig")), str(archive)], check=True)
     return hashlib.sha256(public.read_bytes()).hexdigest()
 
 
