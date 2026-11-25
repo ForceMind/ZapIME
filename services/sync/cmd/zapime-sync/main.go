@@ -127,7 +127,13 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	server := &http.Server{Addr: address, Handler: syncapi.NewAPIWithOIDC(store, login), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
+	automatic := os.Getenv("ZAPIME_OIDC_AUTO_ENROLL")
+	if (automatic != "" && automatic != "0" && automatic != "1") || (automatic == "1" && login == nil) {
+		return oidcauth.ErrConfiguration
+	}
+	api := syncapi.NewAPIWithOIDC(store, login)
+	api.AllowAutomaticEnrollment = automatic == "1"
+	server := &http.Server{Addr: address, Handler: api, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16 * 1024}
 	stopped := make(chan os.Signal, 1)
 	signal.Notify(stopped, syscall.SIGINT, syscall.SIGTERM)
 	defer signal.Stop(stopped)

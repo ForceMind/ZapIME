@@ -15,9 +15,10 @@ import (
 )
 
 type API struct {
-	Store *Store
-	slots chan struct{}
-	oidc  *oidcauth.Verifier
+	Store                    *Store
+	AllowAutomaticEnrollment bool
+	slots                    chan struct{}
+	oidc                     *oidcauth.Verifier
 }
 
 func NewAPI(store *Store) *API { return NewAPIWithOIDC(store, nil) }
@@ -101,6 +102,9 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/v1/account-login":
 		api.accountLogin(ctx, w, r)
 		return
+	case "/v1/device-enrollment/automatic":
+		api.automaticDeviceEnrollment(ctx, w, r)
+		return
 	case "/v1/device-enrollment", "/v1/device-enrollment/approve", "/v1/device-enrollment/claim":
 		api.deviceEnrollment(ctx, w, r)
 		return
@@ -127,13 +131,18 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		write(w, 200, state)
-	case r.URL.Path == "/v1/key-descriptor" && r.Method == http.MethodPut:
+	case (r.URL.Path == "/v1/key-descriptor" || r.URL.Path == "/v1/key-descriptor/initialize") && r.Method == http.MethodPut:
+		initialize := r.URL.Path == "/v1/key-descriptor/initialize"
+		if initialize && (api.oidc == nil || !api.AllowAutomaticEnrollment) {
+			write(w, http.StatusNotFound, map[string]string{"error": "not_found"})
+			return
+		}
 		input, err := decodeKeyDescriptor(w, r)
 		if err != nil {
 			failure(w, err)
 			return
 		}
-		state, err := api.Store.RegisterKeyDescriptor(ctx, actor, input)
+		state, err := api.Store.registerKeyDescriptor(ctx, actor, input, initialize)
 		if err != nil {
 			failure(w, err)
 			return

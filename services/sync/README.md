@@ -8,7 +8,7 @@
 
 新增 `GET/PUT /v1/key-descriptor`：owner在空历史账号上明确登记一次 `{version:1,key_id,material_sha256}`；相同描述符重试幂等，不同描述符拒绝。member只能读取和核对。描述符不含根密钥、恢复码或恢复包，不会自动创建客户端材料或配对。登记后的新Push必须使用同key ID，旧API不能绕过登记写入另一套key。已有历史但没有描述符的账号保留旧v1操作兼容，但不能自动登记新根；legacy迁移、密钥轮换和客户端HTTP编排仍未完成。
 
-服务端数据库升级为 schema4，旧 v1–v3 二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+服务端数据库升级为 schema5，旧版二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
 
 A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
@@ -17,6 +17,14 @@ A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-su
 ### 设备登记协议
 
 账号查询同时返回 `subject_fingerprint`，客户端据此将待领取凭据绑定到经过服务核实的主体。SHA-256 输入依次为 `zapime-account-login-v1`、issuer、subject、受众和账号 UUID，各字段先写四字节无符号大端 UTF-8 长度，再写字段字节。响应只返回小写十六进制摘要。
+
+配置 `ZAPIME_OIDC_AUTO_ENROLL=1` 的部署可在登录后自动授权已绑定账号的设备。`POST /v1/device-enrollment/automatic` 使用同一短时 OIDC 令牌，提交 `device_id`、`account_id`、`name`、`public_key`、`token_sha256`、`signature`。客户端先持久保存本机 P-256 安装密钥和随机设备凭据。响应是 `/v1/session` 同格式的普通成员会话，服务只保存凭据摘要。重复使用同一安装、设备 ID 和凭据会返回原身份。过期身份可通过同一安装和新的登录授权续期，撤销仍生效。自动与人工登记共用 issuer 与令牌 ID 的互斥检查。
+
+自动登记签名使用与下文相同的四字节大端长度编码。先计算字段 `zapime-auto-device-v1`、issuer、受众、账号 UUID、设备 UUID、账号查询返回的小写十六进制 `subject_fingerprint`、设备名、公钥 DER、凭据 SHA-256 的摘要。对 `zapime-auto-device-sign-v1`、该原始摘要、当前访问令牌 SHA-256 三个字段使用 `SHA256withECDSA`。公钥采用标准 P-256 SPKI DER，公钥、凭据摘要和签名在 JSON 中均使用无填充 Base64URL。
+
+空账号的合格自动设备可用独立 `PUT /v1/key-descriptor/initialize` 登记首个公开描述符。服务在账号事务中复验设备、撤销、初始化资格及空历史。并发登记只保留首个描述符，相同请求可核对；人工 `PUT /v1/key-descriptor` 继续由 owner 使用。自动授权角色为普通成员，客户端负责生成和持有根密钥。
+
+以下为管理员设备登记协议，用于既有部署和兼容性验收。
 
 | 接口 | 授权 | 请求和结果 |
 | --- | --- | --- |

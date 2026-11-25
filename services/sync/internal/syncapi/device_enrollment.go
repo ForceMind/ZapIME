@@ -119,7 +119,7 @@ func (s *Store) beginEnrollment(ctx context.Context, proof oidcauth.Subject, acc
 	if err != nil || len(tokenHash) != sha256.Size {
 		return receipt, ErrInvalid
 	}
-	issuer, subject, tokenID, _ := proof.Claims()
+	issuer, subject, tokenID, expiresAt := proof.Claims()
 	resource := proof.Audience()
 	fingerprint := enrollmentHash("zapime-enrollment-v1", issuer, resource, req.AccountID, req.ID,
 		req.Name, strconv.FormatInt(req.Deadline, 10), string(key), string(tokenHash))
@@ -131,6 +131,21 @@ func (s *Store) beginEnrollment(ctx context.Context, proof oidcauth.Subject, acc
 		return receipt, err
 	}
 	defer tx.Rollback()
+	if err = lockEnrollmentToken(ctx, tx, issuer, tokenID); err != nil {
+		return receipt, err
+	}
+	if !time.Now().Before(expiresAt) {
+		return receipt, ErrUnauthorized
+	}
+	var usedAutomatically bool
+	err = tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM zapime_automatic_enrollment_tokens
+        WHERE issuer=$1 AND token_id=$2 AND expires_at>clock_timestamp())`, issuer, tokenID).Scan(&usedAutomatically)
+	if err != nil || usedAutomatically {
+		if err == nil {
+			err = ErrUnauthorized
+		}
+		return receipt, err
+	}
 	receipt = enrollmentReceipt{req.ID, hex.EncodeToString(fingerprint[:]), req.Deadline}
 	var existing []byte
 	err = tx.QueryRowContext(ctx, `SELECT fingerprint FROM zapime_device_enrollments
@@ -256,20 +271,31 @@ func activateEnrolledDevice(ctx context.Context, tx *sql.Tx, session *Session, n
 	if !owner {
 		return ErrUnauthorized
 	}
-	var count int
-	if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM zapime_devices WHERE account_id=$1
-        AND revoked_at IS NULL AND expires_at>clock_timestamp()`, session.AccountID).Scan(&count); err != nil {
-		return err
-	}
-	if count >= 32 {
-		return ErrLimit
-	}
-	if err := tx.QueryRowContext(ctx, `INSERT INTO zapime_devices (id,account_id,name,role,token_hash,expires_at)
-        VALUES($1,$2,$3,'member',$4,clock_timestamp()+interval '30 days')
-        ON CONFLICT DO NOTHING RETURNING expires_at`, session.DeviceID, session.AccountID, name, tokenHash).Scan(&session.ExpiresAt); err != nil {
+	if err := createEnrolledMember(ctx, tx, session, name, tokenHash); err != nil {
 		return err
 	}
 	var id string
 	return tx.QueryRowContext(ctx, `UPDATE zapime_device_enrollments SET claimed_at=clock_timestamp()
         WHERE id=$1 AND claimed_at IS NULL AND expires_at>clock_timestamp() RETURNING id::text`, session.DeviceID).Scan(&id)
+}
+
+func createEnrolledMember(ctx context.Context, tx *sql.Tx, session *Session, name string, tokenHash []byte) error {
+	if err := requireEnrollmentCapacity(ctx, tx, session.AccountID); err != nil {
+		return err
+	}
+	return tx.QueryRowContext(ctx, `INSERT INTO zapime_devices (id,account_id,name,role,token_hash,expires_at)
+        VALUES($1,$2,$3,'member',$4,clock_timestamp()+interval '30 days')
+        ON CONFLICT DO NOTHING RETURNING expires_at`, session.DeviceID, session.AccountID, name, tokenHash).Scan(&session.ExpiresAt)
+}
+
+func requireEnrollmentCapacity(ctx context.Context, tx *sql.Tx, account string) error {
+	var count int
+	if err := tx.QueryRowContext(ctx, `SELECT count(*) FROM zapime_devices WHERE account_id=$1
+        AND revoked_at IS NULL AND expires_at>clock_timestamp()`, account).Scan(&count); err != nil {
+		return err
+	}
+	if count >= 32 {
+		return ErrLimit
+	}
+	return nil
 }

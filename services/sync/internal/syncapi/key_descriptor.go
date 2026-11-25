@@ -119,6 +119,10 @@ func (s *Store) KeyDescriptor(ctx context.Context, actor Identity) (KeyDescripto
 // Existing historical accounts need a separately reviewed migration/recovery
 // procedure; neither their ciphertext nor their server identity is reset here.
 func (s *Store) RegisterKeyDescriptor(ctx context.Context, actor Identity, input KeyDescriptor) (KeyDescriptorState, error) {
+	return s.registerKeyDescriptor(ctx, actor, input, false)
+}
+
+func (s *Store) registerKeyDescriptor(ctx context.Context, actor Identity, input KeyDescriptor, initialize bool) (KeyDescriptorState, error) {
 	if err := input.Validate(); err != nil {
 		return KeyDescriptorState{}, err
 	}
@@ -127,7 +131,17 @@ func (s *Store) RegisterKeyDescriptor(ctx context.Context, actor Identity, input
 		return KeyDescriptorState{}, err
 	}
 	defer tx.Rollback()
-	if actor.Role != "owner" {
+	if initialize {
+		var allowed bool
+		err = tx.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM zapime_automatic_devices
+            WHERE device_id=$1 AND account_id=$2 AND may_initialize)`, actor.DeviceID, actor.AccountID).Scan(&allowed)
+		if err != nil {
+			return KeyDescriptorState{}, err
+		}
+		if actor.Role != "member" || !allowed {
+			return KeyDescriptorState{}, ErrForbidden
+		}
+	} else if actor.Role != "owner" {
 		return KeyDescriptorState{}, ErrForbidden
 	}
 	row, err := readKeyDescriptor(ctx, tx, actor.AccountID)

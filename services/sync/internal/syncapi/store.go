@@ -33,7 +33,7 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err = tx.QueryRowContext(ctx, `SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil {
 		return err
 	}
-	if version < 1 || version > 4 {
+	if version < 1 || version > 5 {
 		return errors.New("unsupported_database_version")
 	}
 	_, err = tx.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS zapime_accounts(
@@ -73,11 +73,23 @@ func (s *Store) Migrate(ctx context.Context) error {
         approval_token_hash bytea CHECK(octet_length(approval_token_hash)=32), claimed_at timestamptz,
         CHECK((approved_by IS NULL) = (approval_token_hash IS NULL)),
         CHECK(claimed_at IS NULL OR approved_by IS NOT NULL), UNIQUE(issuer,token_id));
-    CREATE INDEX IF NOT EXISTS zapime_enrollments_account ON zapime_device_enrollments(account_id,expires_at);`)
+    CREATE INDEX IF NOT EXISTS zapime_enrollments_account ON zapime_device_enrollments(account_id,expires_at);
+    CREATE TABLE IF NOT EXISTS zapime_automatic_devices(
+        device_id uuid PRIMARY KEY REFERENCES zapime_devices(id),
+        account_id uuid NOT NULL REFERENCES zapime_accounts(id),
+        public_key bytea NOT NULL CHECK(octet_length(public_key) BETWEEN 1 AND 128),
+        subject_fingerprint bytea NOT NULL CHECK(octet_length(subject_fingerprint)=32),
+        may_initialize boolean NOT NULL,
+        UNIQUE(account_id,public_key));
+    CREATE TABLE IF NOT EXISTS zapime_automatic_enrollment_tokens(
+        issuer text NOT NULL,token_id text NOT NULL,account_id uuid NOT NULL REFERENCES zapime_accounts(id),
+        request_hash bytea NOT NULL CHECK(octet_length(request_hash)=32),expires_at timestamptz NOT NULL,
+        PRIMARY KEY(issuer,token_id));
+    CREATE INDEX IF NOT EXISTS zapime_automatic_tokens_account ON zapime_automatic_enrollment_tokens(account_id,expires_at);`)
 	if err != nil {
 		return err
 	}
-	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=4 WHERE id=1`); err != nil {
+	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=5 WHERE id=1`); err != nil {
 		return err
 	}
 	return tx.Commit()
