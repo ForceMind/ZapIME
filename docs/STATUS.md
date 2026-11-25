@@ -1,5 +1,7 @@
 # ZapIME 项目执行状态
 
+**服务器一键部署第一阶段** `331b1a7` 的 Ubuntu amd64 单行 HTTPS、离线签名包、错误版本与架构、实际端口冲突和重绑全部通过，既有安装及恢复回归通过。两架构合成包本机验签完成。[证据](SERVER_DEPLOY.md#第一阶段预检)
+
 **2026-11-24 A3** `58ccfc7` 的 API28 新版自动流程已通过。 `b223e5f` 已在 API35/36 通过真实 Chrome 回跳、系统文件选择器取消及选文件、错码拒绝、原密钥恢复后自动加密同步和独立客户端解密。Go PostgreSQL 和普通 API28/35/36 系统输入通过。正式 SSO、可信存量首次发布和实体双机仍待验收。[证据与真机步骤](ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
 ## 当前接续 · 2026-11-19（America/Los_Angeles）
