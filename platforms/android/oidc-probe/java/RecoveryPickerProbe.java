@@ -24,14 +24,19 @@ public final class RecoveryPickerProbe extends Instrumentation {
     @Override public void onStart() {
         Bundle result = new Bundle();
         byte[] code = new byte[43];
-        File input = new File(getContext().getDataDir(), "fixture-recovery-code");
-        String stage = "private_code";
+        File input = new File(getTargetContext().getFilesDir(), "fixture-recovery-code");
+        String stage = "private_code_missing";
         try {
+            if (!input.isFile()) throw new IllegalStateException();
+            stage = "private_code_read";
             try (DataInputStream source = new DataInputStream(new FileInputStream(input))) {
                 source.readFully(code);
                 if (source.read() != -1) throw new IllegalStateException();
             } finally {
-                if (!input.delete()) throw new IllegalStateException();
+                if (!input.delete()) {
+                    stage = "private_code_delete";
+                    throw new IllegalStateException();
+                }
             }
             stage = "password_field";
             AccessibilityNodeInfo password = await(null);

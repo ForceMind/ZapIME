@@ -33,6 +33,8 @@
 
 `76ee571` 的 API35/36 均证实原厂 Chrome 完成真实回跳后「账号与同步」回到前台，自动授权的普通设备凭据可读回，恢复原密钥前资料请求为零。实际系统文件选择器已打开；两版取消首轮都未通过返回与禁用按钮的组合断言。复验依据实际前台区分系统选择器与恢复页，兼容系统目录或抽屉的返回层级并保留恢复按钮禁用条件。此轮 API28 七项回归通过，三台模拟器夹具清理通过。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774922) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774656) · [API28](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774930)
 
+`9251714` API35 证实真正的系统选择器完成取消返回（两次系统返回动作），实际点选合成恢复文件并返回产品页。测试工具在传入恢复码前的私有读写阶段失败，错码及正向导入尚未执行。复验使用会等待完整输出的非终端标准输入、应用私有 `files` 路径及长度核对。API36 本轮第一个临时 HTTPS 客户端退出，早于模拟器的应用步骤，保留前轮成功真实登录证据；复验只对临时入口启动加入有界重试。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45556276898/job/139008982102) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45556276898/job/139008982567)
+
 ### 实体双机验收
 
 准备两台 Android 手机，记为 A 和 B，优先覆盖 Android 15 与 16。两台安装同版本、同签名、已配置正式测试环境的候选 APK。需要一个独立合成测试账号、允许该 APK 回跳且可自动授权的 HTTPS OIDC 和同步后端。B 需为全新测试安装或使用空白的独立 Android 用户配置。现有手机的数据保留。

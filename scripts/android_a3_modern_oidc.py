@@ -12,6 +12,7 @@ import socket
 import subprocess
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.request
 
@@ -69,36 +70,57 @@ def read_https(origin, path):
 
 
 @contextmanager
-def tunnel(work, port, role, cleanup):
-    logfile = work / f"{role}.cloudflared"
-    with logfile.open("w+b") as log:
-        child = subprocess.Popen([str(OUTPUT / "cloudflared"), "tunnel", "--no-autoupdate", "--protocol", "http2",
-                                  "--url", f"http://127.0.0.1:{port}"],
-                                 cwd=work, stdin=subprocess.DEVNULL, stdout=log, stderr=log)
-        origin = None
+def tunnel(work, port, role, report):
+    cleanup = report["cleanup"]
+    setup = report.setdefault("tunnel_setup", {}).setdefault(role, {})
 
-        def assigned():
-            require(child.poll() is None, "temporary_https_client_exited")
-            match = ORIGIN.search(logfile.read_bytes()[:65_536])
-            return match.group().decode("ascii") if match else None
+    def stop(child):
+        if child.poll() is None:
+            child.terminate()
+            try:
+                child.wait(timeout=8)
+            except subprocess.TimeoutExpired:
+                child.kill()
+                child.wait(timeout=5)
+        cleanup[role + "_process_stopped"] = child.poll() is not None
 
-        try:
-            origin = wait_for(assigned, bool, 45, "temporary_https_origin_not_assigned")
-            yield origin
-        finally:
-            if child.poll() is None:
-                child.terminate()
-                try:
-                    child.wait(timeout=8)
-                except subprocess.TimeoutExpired:
-                    child.kill()
-                    child.wait(timeout=5)
-            cleanup[role + "_process_stopped"] = child.poll() is not None
-            if origin:
+    for attempt in range(1, 4):
+        setup["attempts"] = attempt
+        logfile = work / f"{role}-{attempt}.cloudflared"
+        with logfile.open("w+b") as log:
+            child = subprocess.Popen([str(OUTPUT / "cloudflared"), "tunnel", "--no-autoupdate", "--protocol", "http2",
+                                      "--url", f"http://127.0.0.1:{port}"],
+                                     cwd=work, stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+            origin = None
+
+            def assigned():
+                require(child.poll() is None, "temporary_https_client_exited")
+                match = ORIGIN.search(logfile.read_bytes()[:65_536])
+                return match.group().decode("ascii") if match else None
+
+            try:
+                origin = wait_for(assigned, bool, 30, "temporary_https_origin_not_assigned")
+            except Rejected:
+                stop(child)
+                diagnostics = logfile.read_bytes()[:65_536].lower()
+                setup["last_start_error"] = (
+                    "rate_limited" if re.search(rb"\b429\b|rate limit", diagnostics)
+                    else "edge_unavailable" if re.search(rb"\b50[0234]\b|service unavailable", diagnostics)
+                    else "client_exited" if child.returncode else "assignment_timeout"
+                )
+                if attempt == 3:
+                    raise
+                time.sleep(2 * attempt)
+                continue
+            try:
+                yield origin
+            finally:
+                stop(child)
                 path = "/.well-known/assetlinks.json" if role == "return" else "/auth"
                 wait_for(lambda: read_https(origin, path)[0], lambda code: code in (0, 404, 502, 503, 530),
                          25, "temporary_https_origin_still_reachable")
                 cleanup[role + "_origin_closed"] = True
+            return
 
 
 def build_apks(work, login, fallback, client):
@@ -239,10 +261,15 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
     report["picker_selection"] = "PASS"
 
     def submit(value):
-        checked(adb.command + ["exec-in", "run-as", PICKER_PROBE, "dd", "of=fixture-recovery-code"],
+        adb.run("shell", "run-as", PICKER_PROBE, "mkdir", "-p", "files")
+        name = "files/fixture-recovery-code"
+        adb.run("shell", "run-as", PICKER_PROBE, "test", "!", "-e", name)
+        checked(adb.command + ["shell", "-T", "run-as", PICKER_PROBE, "dd", "of=" + name],
                 "private_recovery_input_failed", data=value)
+        count = adb.shell("run-as", PICKER_PROBE, "wc", "-c", name)
+        require(re.fullmatch(r"43\s+files/fixture-recovery-code", count), "private_recovery_input_length_mismatch")
         result = adb.shell("am", "instrument", "-w", PICKER_PROBE + "/.RecoveryPickerProbe", timeout=30)
-        failed_stage = re.search(r"(?m)^INSTRUMENTATION_RESULT: recovery_ui_stage=(private_code|password_field|import_button|import_dialog)$", result)
+        failed_stage = re.search(r"(?m)^INSTRUMENTATION_RESULT: recovery_ui_stage=(private_code_(?:missing|read|delete)|password_field|import_button|import_dialog)$", result)
         if failed_stage:
             report["picker_submit_failure"] = failed_stage[1]
         require("INSTRUMENTATION_RESULT: recovery_submitted=PASS" in result
@@ -273,8 +300,8 @@ def run(report, adb, api, identity, work):
 
     with ExitStack() as resources:
         report["stage"] = "temporary_public_https"
-        login = resources.enter_context(tunnel(work, port, "login", cleanup))
-        fallback = resources.enter_context(tunnel(work, port, "return", cleanup))
+        login = resources.enter_context(tunnel(work, port, "login", report))
+        fallback = resources.enter_context(tunnel(work, port, "return", report))
         require(login != fallback, "temporary_hosts_not_distinct")
         client = "zapime-ci-" + secrets.token_hex(16)
         report["stage"] = "test_apk_build"
