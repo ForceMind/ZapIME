@@ -198,6 +198,7 @@ func TestPostgresRealObjectStorageAndPortableArchive(t *testing.T) {
 	_ = liveObjects(t, "zapime-ci-install")
 	_ = liveObjects(t, "zapime-ci-install-restored")
 	_ = liveObjects(t, "zapime-ci-signed-runtime")
+	_ = liveObjects(t, "zapime-ci-schema4-upgrade")
 	restored := liveObjects(t, "zapime-ci-restore")
 	s := database(t)
 	s.Objects = objects

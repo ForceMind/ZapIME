@@ -56,8 +56,8 @@ def main():
         command('docker', 'network', 'create', '--label', 'com.docker.compose.project=zapime',
                 '--label', 'com.docker.compose.network=default', 'zapime_default')
         command('docker', 'network', 'connect', 'zapime_default', 'zapime-object-test')
-    def install(restore=None):
-        args=['bash',str(ROOT/'deploy/install.sh'),'--ref',sha,'--existing-proxy']
+    def install(restore=None, ref=sha):
+        args=['bash',str(ROOT/'deploy/install.sh'),'--ref',ref,'--existing-proxy']
         if restore is not None: args += ['--restore',str(restore)]
         command(*args)
     def api(method, path, token, body=None):
@@ -241,6 +241,35 @@ def main():
             command(str(probe), 'verify', str(fixture), str(page))
             assert oidc_restore_probe('automatic', work, {'account_id': account}, transport)['automatic_member']
             print('PASS signed upgrade: isolated migration, stopped writer backup, failed public check freezes data, same-bundle resume, original ciphertext and OIDC', flush=True)
+            cleanup()
+
+            # The previous draft's actual production binary used schema 4.
+            # Start it with a separate DB and bucket before upgrading.
+            setup('zapime-ci-schema4-upgrade')
+            install(ref='f0f62964a80ce7027782efd171a3f8886a1c8498')
+            legacy = current.resolve()
+            assert command('docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f',
+                           str(legacy/'services/sync/compose.yml'), 'exec', '-T', 'db',
+                           'psql', '-U', 'zapime', '-Atc', 'SELECT version FROM zapime_schema', capture=True).strip() == '4'
+            legacy_owner = json.loads((INSTALL / 'owner.json').read_text())
+            legacy_key, legacy_packet, legacy_descriptor = [work / name for name in ('legacy-key.json', 'legacy-packet.json', 'legacy-descriptor.json')]
+            command(str(probe), 'seal', legacy_owner['account_id'], str(legacy_key), str(legacy_packet))
+            command(str(probe), 'descriptor', legacy_owner['account_id'], str(legacy_key), str(legacy_descriptor))
+            api('PUT', '/v1/key-descriptor', legacy_owner['token'], json.loads(legacy_descriptor.read_text()))
+            legacy_first = api('POST', '/v1/changes', legacy_owner['token'], json.loads(legacy_packet.read_text()))
+            command('bash', str(ROOT / 'deploy/bootstrap.sh'), '--install', '--bundle', str(bundle),
+                    '--version', version, '--key-sha256', pin, '--', '--existing-proxy', '--image-archive', str(archive))
+            assert 'Database schema: 5' in command('/usr/local/bin/zapime', 'status', capture=True)
+            migrated = api('GET', '/v1/changes?after=0', legacy_owner['token'])
+            assert migrated['changes'] == [legacy_first]
+            page.write_text(json.dumps(legacy_first))
+            command(str(probe), 'verify', str(legacy_key), str(page))
+            old_command = ['docker', 'compose', '--env-file', str(INSTALL/'config.env'), '-f',
+                           str(legacy/'services/sync/compose.yml'), 'run', '--rm', '--no-deps', '-T',
+                           'sync', 'verify-objects']
+            assert command(*old_command, check=False).returncode != 0
+            assert api('GET', '/v1/changes?after=0', legacy_owner['token'])['head'] == 1
+            print('PASS schema4 to schema5: actual legacy binary and bucket, encrypted record migrated, downgrade rejected', flush=True)
     try:
         setup('zapime-ci-install')
         install()

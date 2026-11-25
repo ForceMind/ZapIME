@@ -356,8 +356,15 @@ verify_public_https() {
   code=$(curl --connect-timeout 3 --max-time 5 --fail --silent -o /dev/null -w '%{http_code}' \
     "https://$domain/.well-known/zapime-deploy/$installation_id") || return 1
   [[ $code == 204 ]] || return 1
-  curl --connect-timeout 3 --max-time 5 --fail --silent "https://$domain/healthz" | \
-    python3 -c 'import json,sys; v=json.load(sys.stdin); sys.exit(not (v.get("status")=="ready" and v.get("protocol")==1))' 2>/dev/null
+  curl --connect-timeout 3 --max-time 5 --fail --silent --max-filesize 8192 -w '\n%{http_code}' "https://$domain/healthz" | \
+    python3 -c 'import json,sys; body, status = sys.stdin.read(8200).rsplit("\n", 1); v=json.loads(body); sys.exit(not (status == "200" and v.get("status")=="ready" and v.get("protocol")==1))' 2>/dev/null
+}
+verify_public_app_link() {
+  [[ -f $root/oidc/assetlinks.json && $https_verified == 1 ]] || return 1
+  curl --connect-timeout 3 --max-time 5 --fail --silent --max-filesize 8192 -w '\n%{http_code}' \
+    "https://$domain/.well-known/assetlinks.json" |
+    python3 -c 'import json,sys; body, status = sys.stdin.read(8200).rsplit("\n",1); sys.exit(status != "200" or json.loads(body) != json.load(open(sys.argv[1])))' \
+      "$root/oidc/assetlinks.json" 2>/dev/null
 }
 if [[ $proxy == caddy ]]; then
   "${compose[@]}" --profile https up -d --wait
@@ -374,9 +381,17 @@ if [[ -n $verified_runtime ]]; then
   if [[ ${upgrading:-0} == 1 && -f $root/public-https.verified && $https_verified != 1 ]]; then
     echo 'The previously verified public route is unavailable. The new release remains frozen.' >&2; exit 1
   fi
+  if [[ ${upgrading:-0} == 1 && -f $root/public-app-link.verified ]] && ! verify_public_app_link; then
+    echo 'The previously verified Android App Link is unavailable. The new release remains frozen.' >&2; exit 1
+  fi
   verify_upgrade
 fi
 if [[ $https_verified == 1 ]]; then : > "$root/public-https.verified"; fi
+app_link_verified=0
+if verify_public_app_link; then
+  : > "$root/public-app-link.verified"
+  app_link_verified=1
+fi
 ln -sfn "$release" "$root/current.next"; mv -Tf "$root/current.next" "$root/current"
 if [[ -n $verified_runtime ]]; then finish_upgrade; fi
 install -m 755 "$release/deploy/manage.sh" /usr/local/bin/zapime
@@ -410,9 +425,7 @@ else echo 'HTTPS [PENDING] Configure existing reverse proxy upstream 127.0.0.1:8
 if [[ -f $root/oidc/binding.json ]]; then
   echo 'OIDC [CONFIGURED] Account binding persisted. Validate actual browser login with the candidate APK.'
   echo 'Android deployment JSON: /opt/zapime/oidc/android.json'
-  if [[ -f $root/oidc/assetlinks.json && $https_verified == 1 ]] &&
-    curl --connect-timeout 3 --max-time 5 --fail --silent "https://$domain/.well-known/assetlinks.json" |
-      python3 -c 'import json,sys; sys.exit(json.load(sys.stdin) != json.load(open(sys.argv[1])))' "$root/oidc/assetlinks.json" 2>/dev/null; then
+  if [[ $app_link_verified == 1 ]]; then
     echo 'App Link [PASS] Public association matches the selected APK certificate.'
   else
     echo 'App Link [PENDING] Publish the association for the candidate APK signer and verify public HTTPS.'

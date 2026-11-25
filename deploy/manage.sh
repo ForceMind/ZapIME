@@ -53,8 +53,8 @@ doctor() {
   if [[ -f $root/oidc/android.json ]]; then
     echo 'OIDC [CONFIGURED] Browser login requires the signed Android candidate.'
     if [[ -f $root/oidc/assetlinks.json && $code == 204 ]] &&
-      curl --connect-timeout 3 --max-time 5 --fail --silent "https://$host/.well-known/assetlinks.json" |
-        python3 -c 'import json,sys; sys.exit(json.load(sys.stdin) != json.load(open(sys.argv[1])))' "$root/oidc/assetlinks.json" 2>/dev/null; then
+      curl --connect-timeout 3 --max-time 5 --fail --silent --max-filesize 8192 -w '\n%{http_code}' "https://$host/.well-known/assetlinks.json" |
+        python3 -c 'import json,sys; body,status=sys.stdin.read(8200).rsplit("\n",1); sys.exit(status != "200" or json.loads(body) != json.load(open(sys.argv[1])))' "$root/oidc/assetlinks.json" 2>/dev/null; then
       echo 'Android App Link [PASS]'
     else echo 'Android App Link [PENDING]'; result=1; fi
   else echo 'OIDC [PENDING]'; result=1; fi
