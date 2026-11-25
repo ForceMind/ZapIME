@@ -151,6 +151,15 @@ def browser_page(adb, marker, browser):
 
 
 def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packages):
+    def foreground():
+        resumed = [line for line in adb.shell("dumpsys", "activity", "activities").splitlines()
+                   if re.search(r"(?i)resumedactivity", line)]
+        if any(any(package + "/" in line for package in docs_packages) for line in resumed):
+            return "documents"
+        if any(MAIN_PACKAGE + "/" in line and "SyncPreparationActivity" in line for line in resumed):
+            return "recovery"
+        return "other"
+
     def provider_nodes():
         return [node for node in window_nodes(adb, marker) if node.get("package") in docs_packages]
 
@@ -164,7 +173,7 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
     def state(label, available=None):
         def seen():
             nodes = window_nodes(adb, marker)
-            shown = any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "") for node in nodes)
+            shown = label is None or any(node.get("package") == MAIN_PACKAGE and label in node.get("text", "") for node in nodes)
             if available is None:
                 return shown
             return shown and any(node.get("package") == MAIN_PACKAGE and node.get("text") == "验证并导入密钥…"
@@ -173,13 +182,27 @@ def recovery_picker(report, adb, marker, status, recovery_file, code, docs_packa
 
     def picker_open():
         click_text(adb, marker, "选择密钥恢复文件", scroll=True)
-        return wait_for(provider_nodes, bool, 25, "system_documentsui_not_foreground")
+        wait_for(lambda: foreground() == "documents" and provider_nodes(), bool, 25, "system_documentsui_not_foreground")
 
-    if drawer(picker_open()) is not None:
+    picker_open()
+    report["picker_opened"] = "PASS"
+    # Starting in Download can add a provider navigation level. Send Back
+    # only while a fresh sample puts the actual system picker in front.
+    for index in range(3):
+        owner = foreground()
+        report["picker_cancel_foreground"] = owner
+        if owner != "documents":
+            break
         adb.run("shell", "input", "keyevent", "KEYCODE_BACK")
-        wait_for(provider_nodes, lambda nodes: nodes and drawer(nodes) is None, 20, "system_documentsui_drawer_not_closed")
-    adb.run("shell", "input", "keyevent", "KEYCODE_BACK")
-    wait_for(state("恢复原同步密钥", False), bool, 20, "picker_cancel_not_observed")
+        report["picker_cancel_back_actions"] = index + 1
+        try:
+            wait_for(foreground, lambda value: value != "documents", 3, "system_picker_still_open")
+        except Rejected as failure:
+            if str(failure) != "system_picker_still_open":
+                raise
+    wait_for(foreground, lambda owner: owner == "recovery", 15, "picker_cancel_did_not_return_to_recovery")
+    report["picker_cancel_foreground"] = "recovery"
+    wait_for(state(None, False), bool, 20, "picker_cancel_left_import_enabled_or_missing")
     require(status()["dataRequests"] == 0, "picker_cancel_started_transfer")
     report["picker_cancel"] = "PASS"
     picker_open()

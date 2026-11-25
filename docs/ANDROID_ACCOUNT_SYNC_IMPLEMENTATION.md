@@ -31,6 +31,8 @@
 
 `3b12206` 两版系统均把精确路径解析到 ZapIME。用户动作只有 Chrome 登录和同意，真实令牌兑换、账号查询及设备自动授权各一次，资料请求为零。每轮还观察到回跳域的一次 HTTP 访问，原断言因此提前退出，缺少 App 前台与文件恢复证据。复验继续保留 HTTP 访问计数，要求原账号页实际回到前台并显示缺密钥，随后进入系统文件选择器。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45553730144/job/139000695991) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45553730144/job/139000695907)
 
+`76ee571` 的 API35/36 均证实原厂 Chrome 完成真实回跳后「账号与同步」回到前台，自动授权的普通设备凭据可读回，恢复原密钥前资料请求为零。实际系统文件选择器已打开；两版取消首轮都未通过返回与禁用按钮的组合断言。复验依据实际前台区分系统选择器与恢复页，兼容系统目录或抽屉的返回层级并保留恢复按钮禁用条件。此轮 API28 七项回归通过，三台模拟器夹具清理通过。[API35](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774922) · [API36](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774656) · [API28](https://github.com/ForceMind/ZapIME/actions/runs/45554989319/job/139004774930)
+
 ### 实体双机验收
 
 准备两台 Android 手机，记为 A 和 B，优先覆盖 Android 15 与 16。两台安装同版本、同签名、已配置正式测试环境的候选 APK。需要一个独立合成测试账号、允许该 APK 回跳且可自动授权的 HTTPS OIDC 和同步后端。B 需为全新测试安装或使用空白的独立 Android 用户配置。现有手机的数据保留。
