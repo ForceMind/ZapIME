@@ -8,9 +8,17 @@
 
 | 步骤 | 验收条件 | 进度 |
 | --- | --- | --- |
-| 接通同一向导 | 选 Caddy 或 Tunnel，输入 R2 和身份提供方信息，完成后台配置并保留已有密钥与配置 | 已接通，待空白 Linux 实测 |
-| 空白 Linux 隔离验收 | 单行执行，在同一终端完成配置，走 HTTPS、OIDC 回调与首位管理员实际登录。重复执行时保留安装、账号和同一密钥 | 待验收 |
-| 交付 | 在新分支固化源码，回读安装入口与摘要，交付已验收提交的一条命令 | 待验收 |
+| 接通同一向导 | 选 Caddy 或 Tunnel，输入 R2 和身份提供方信息，完成后台配置并保留已有密钥与配置 | 16 项向导配置和中断恢复检查通过 |
+| 空白 Linux 隔离验收 | 单行执行，在同一终端完成配置，走 HTTPS、OIDC 回调与首位管理员实际登录。重复执行时保留安装、账号和同一密钥 | Ubuntu amd64 CI 通过，现有签名升级与恢复门禁也通过 |
+| 交付 | 在新分支固化源码，回读安装入口与摘要，交付已验收提交的一条命令 | 固定并复核 `bd29e73` 的公开安装脚本 |
+
+#### 上海服务器安装命令
+
+登录全新的 Linux amd64 或 arm64 实例，在交互式 SSH 终端复制下面整行。入口需要 Bash、curl、sha256sum 和 sudo。命令下载并核对固定版本，再启动向导。
+
+```bash
+sudo bash -c 'set -e; t=$(mktemp); trap '\''rm -f "$t"'\'' EXIT; curl -fsSL --proto =https --proto-redir =https "https://raw.githubusercontent.com/ForceMind/ZapIME/$1/deploy/install.sh" -o "$t"; printf "%s  %s\n" "$2" "$t" | sha256sum -c - >/dev/null; bash "$t" --wizard --ref "$1"' zapime-install bd29e738da889efdbbf2fd47c290e8d9038a0eac c4bd3dfd4bdc2e0e6ffd668f56df7330ff2d6569c2c267df078398a1cedebfb8
+```
 
 操作者在自己的 Cloudflare 和身份服务中准备域名、私有 R2 桶、读写凭据和兼容的 OIDC 客户端。向导计算回调地址，读取公开身份配置，引导绑定首位管理员。终端只需要运行安装命令，敏感值按提示输入。
 
@@ -18,9 +26,9 @@
 - 选择 Tunnel 时，在 Cloudflare 将同步主机名映射到宿主机 `http://127.0.0.1:8787`。已有连接器可以复用。空白机可在向导中隐藏输入远程托管的连接器 token，安装器用固定摘要的官方镜像启动 `zapime-tunnel`。token 由 root 和连接器读取，位于 `/opt/zapime/tunnel/token`，更换服务器时使用 Cloudflare 提供的正式凭据。[Cloudflare 连接器凭据说明](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/#token-file)
 - 向导会给出用户中心和管理后台的 HTTPS 地址。首次从后台登录并看到用户目录后，回到同一 SSH 窗口继续。向导同时检查有效会话和用户目录审计，再显示 `Console login [PASS]`。从提示处按 `q` 可退出并保留已装服务，执行同一命令继续核对。
 
-验收使用合成身份提供方、隔离存储和回环 HTTPS 代理。实际 Cloudflare 账号、DNS、R2 和身份提供方由上海部署现场核对。
+2026-11-27，Ubuntu amd64 runner 从空安装目录执行上面的源码命令主体，实际下载 `bd29e73` 并核对 SHA-256。隔离容器使用真实 PostgreSQL 和 MinIO。测试先核对向导写入合成 R2 参数，再在 CI 专用适配器中接入 MinIO。HTTPS 走仅监听回环和 Docker 私有接口的代理。合成 OIDC 完成 PKCE 回调并返回真实后台会话，管理员目录返回 200 且写入审计。复跑验证配置、主密钥、账号及设备数量一致。CI 预装 Docker。实际 R2、Cloudflare Tunnel 边缘连接、上海域名和正式 OIDC 由部署现场核对。 [通过的服务器 CI](https://github.com/ForceMind/ZapIME/actions/runs/46042769879/job/140654531351) · [草稿 PR #131](https://github.com/ForceMind/ZapIME/pull/131)
 
-新服务器的操作顺序见[一次命令完成首装](#一次命令完成首装)。签名发布已经具备打包和安装入口。上海服务器的可复制指令使用最终发布 URL、公钥摘要和启动器摘要。已有离线包也可以通过同一入口安装。
+签名运行包及离线安装见[一次命令完成首装](#一次命令完成首装)。签名包的入口使用发布 URL、公钥摘要和启动器摘要。
 
 2026-11-25，`5412919` 的 Ubuntu amd64 隔离 CI 完成签名首装、真实 PostgreSQL 和 S3 兼容存储读写、OIDC 自动授权、重复安装复用账号、回环 HTTPS 反代及 App Link 精确文件回读。升级验收实际断开反代，确认原最终备份保留、写请求返回维护状态，恢复反代后用同一签名包续跑并解密原密文。另以历史二进制将 schema 4 迁移到 5，核对原密文及旧版拒绝打开新版数据库。发行版检测在本机覆盖 Ubuntu、Debian、Fedora、Rocky、CentOS、Alpine、Arch、openSUSE 和未知发行版的合成输入。完整容器实测为 Ubuntu amd64。正式发布源及其签名、上海服务器、实际 R2/OIDC 配置和实体双机仍待现场执行。[隔离验收](https://github.com/ForceMind/ZapIME/actions/runs/45587740283/job/139113571186) · [草稿 PR #128](https://github.com/ForceMind/ZapIME/pull/128)
 
