@@ -4,6 +4,9 @@
 
 The calling installer holds its installation lock. No provider account,
 Tunnel, password reset request, database, or deployment is created here.
+The provider must issue RFC9068 RS256 access tokens for the configured
+resource/client, with zapime.device_enrollment scope and at most five minutes
+of validity. Its browser client must support Authorization Code + PKCE S256.
 """
 
 import argparse
@@ -18,7 +21,6 @@ import secrets
 import stat
 import sys
 import tempfile
-import urllib.error
 import urllib.request
 import uuid
 import warnings
@@ -50,7 +52,7 @@ class Terminal:
                 if value == "":
                     raise EOFError("terminal closed")
                 value = value.rstrip("\r\n")
-        if len(value) > 4096 or any(ord(c) < 32 or ord(c) == 127 for c in value):
+        if len(value) > 4096 or any(not c.isprintable() for c in value):
             raise ValueError("terminal input invalid")
         return value
 
@@ -62,28 +64,14 @@ def dotenv_decode(value):
             return json.loads(value)
         return value.split(" #", 1)[0].rstrip()
     # compose-go single-quoted values preserve backslashes except escaped '.
-    chars, escaped = [], False
-    for offset, char in enumerate(value[1:], 1):
-        if char != "'":
-            if not escaped and char == "\\":
-                escaped = True
-                continue
-            if escaped:
-                chars.append("\\")
-                escaped = False
-            chars.append(char)
-        elif escaped:
-            chars.append(char)
-            escaped = False
-        else:
-            if value[offset + 1:].strip():
-                raise ValueError("dotenv trailing value")
-            return "".join(chars)
-    raise ValueError("dotenv quote not terminated")
+    quoted = re.fullmatch(r"'((?:[^'\\]|\\.)*)'\s*", value)
+    if quoted is None:
+        raise ValueError("dotenv quoted value invalid")
+    return re.sub(r"\\(.)", lambda token: "'" if token.group(1) == "'" else token.group(0), quoted.group(1))
 
 
 def dotenv_quote(value):
-    if not isinstance(value, str) or len(value) > 8192 or any(ord(c) < 32 or ord(c) == 127 for c in value):
+    if not isinstance(value, str) or len(value) > 8192 or any(not c.isprintable() for c in value):
         raise ValueError("dotenv value invalid")
     encoded = "'" + value.replace("'", "\\'") + "'"
     if dotenv_decode(encoded) != value:
@@ -376,6 +364,7 @@ def configure(root, signer="", terminal=None, require_existing=False):
             print("Console configuration [READY]", flush=True)
             return
     else:
+        print("Provider requires RFC9068 RS256 access tokens, zapime.device_enrollment scope, at most 5-minute validity, and browser Code + PKCE S256.", flush=True)
         issuer = binding["issuer"] if binding is not None else terminal.ask("OIDC issuer HTTPS URL: ").strip()
         android = {"issuer": issuer,
                    "authorization": terminal.ask("OIDC authorization HTTPS endpoint: ").strip(),

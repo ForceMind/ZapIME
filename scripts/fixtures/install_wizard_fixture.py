@@ -213,7 +213,8 @@ def run_pty(command, env, prompts, ready, timeout=600):
 @contextmanager
 def proxy(cert, key, issuer_host, oidc_port, release_files, gateway):
     address = ipaddress.ip_address(gateway)
-    if not address.is_private or address.is_loopback or address.version != 4:
+    private_ranges = ('10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16')
+    if address.version != 4 or not any(address in ipaddress.ip_network(block) for block in private_ranges):
         raise RuntimeError('explicit Docker private IPv4 gateway required')
     upstream = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
 
@@ -274,11 +275,15 @@ def proxy(cert, key, issuer_host, oidc_port, release_files, gateway):
     try:
         for bind_address in ('127.0.0.1', gateway):
             server = ThreadingHTTPServer((bind_address, 443), Handler)
+            try:
+                server.socket = context.wrap_socket(server.socket, server_side=True)
+                worker = threading.Thread(target=server.serve_forever, daemon=True)
+                worker.start()
+            except BaseException:
+                server.server_close()
+                raise
             servers.append(server)
-            server.socket = context.wrap_socket(server.socket, server_side=True)
-            worker = threading.Thread(target=server.serve_forever, daemon=True)
             workers.append(worker)
-            worker.start()
         yield
     finally:
         for server in servers:
@@ -343,7 +348,7 @@ os.execv(settings['docker'],[settings['docker'],*arguments])
 '''
 
 
-def exercise(root, install, parent_work, env, command, cleanup):
+def _exercise(root, install, parent_work, env, command, cleanup):
     require_ci(install)
     assert not install.exists() and not Path('/usr/local/bin/zapime').exists()
     from sync_service_smoke import oidc_restore_probe
@@ -489,3 +494,34 @@ def exercise(root, install, parent_work, env, command, cleanup):
             provider.kill()
             provider.wait(timeout=5)
         cleanup()
+
+
+def exercise(root, install, parent_work, env, command, cleanup):
+    require_ci(install)
+    inspect = ['docker', 'network', 'inspect', 'zapime_default']
+    before = subprocess.run(inspect, env=env, capture_output=True)
+    if before.returncode == 0:
+        raise RuntimeError('wizard requires its own absent Compose network')
+    failure = None
+    try:
+        return _exercise(root, install, parent_work, env, command, cleanup)
+    except BaseException as problem:
+        failure = problem
+        raise
+    finally:
+        try:
+            # Also cover errors before the installer creates a Compose file.
+            # Only this invocation can own this formerly absent job network.
+            cleanup()
+            current = subprocess.run(inspect, env=env, capture_output=True)
+            if current.returncode == 0:
+                metadata, = json.loads(current.stdout)
+                assert metadata['Labels'].get('com.docker.compose.project') == 'zapime'
+                assert metadata['Labels'].get('com.docker.compose.network') == 'default'
+                command('docker', 'network', 'disconnect', 'zapime_default', 'zapime-object-test', check=False)
+                command('docker', 'network', 'rm', 'zapime_default')
+                assert subprocess.run(inspect, env=env, capture_output=True).returncode != 0
+        except Exception:
+            if failure is None:
+                raise
+            failure.add_note('The isolated wizard resource cleanup also failed; original error retained.')

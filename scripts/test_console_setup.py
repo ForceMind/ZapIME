@@ -46,7 +46,7 @@ class ConsoleWizardInputTests(unittest.TestCase):
                 self.assertEqual(setup.dotenv_decode(wire), secret)
 
     def test_dotenv_rejects_multiline_and_nonrepresentable_values(self):
-        for secret in ("s\nINJECT=value", "s\rX", "s\x00X", "s\x1bX", "ending\\", "slash\\'quote"):
+        for secret in ("s\nINJECT=value", "s\rX", "s\x00X", "s\x1bX", "s\u0085X", "s\u2028X", "ending\\", "slash\\'quote"):
             with self.subTest(index=len(secret)), self.assertRaises(ValueError):
                 setup.dotenv_quote(secret)
 
