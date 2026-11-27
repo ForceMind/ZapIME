@@ -2,6 +2,24 @@
 
 ## 新部署入口路线图
 
+### 同一向导安装后台
+
+2026-11-27 已确认实施。首装从一条命令进入 SSH 向导，复用现有 Linux 运行时检测、R2 探针、OIDC 绑定、HTTPS 实例确认和持久运维命令。向导同时配置用户中心、首位管理员和受保护的托管主密钥。上海服务器由用户亲自执行。
+
+| 步骤 | 验收条件 | 进度 |
+| --- | --- | --- |
+| 接通同一向导 | 选 Caddy 或 Tunnel，输入 R2 和身份提供方信息，完成后台配置并保留已有密钥与配置 | 已接通，待空白 Linux 实测 |
+| 空白 Linux 隔离验收 | 单行执行，在同一终端完成配置，走 HTTPS、OIDC 回调与首位管理员实际登录。重复执行时保留安装、账号和同一密钥 | 待验收 |
+| 交付 | 在新分支固化源码，回读安装入口与摘要，交付已验收提交的一条命令 | 待验收 |
+
+操作者在自己的 Cloudflare 和身份服务中准备域名、私有 R2 桶、读写凭据和兼容的 OIDC 客户端。向导计算回调地址，读取公开身份配置，引导绑定首位管理员。终端只需要运行安装命令，敏感值按提示输入。
+
+- 选择 Caddy 时，由安装器启动本机反代，使用域名和入站 80/443。
+- 选择 Tunnel 时，在 Cloudflare 将同步主机名映射到宿主机 `http://127.0.0.1:8787`。已有连接器可以复用。空白机可在向导中隐藏输入远程托管的连接器 token，安装器用固定摘要的官方镜像启动 `zapime-tunnel`。token 由 root 和连接器读取，位于 `/opt/zapime/tunnel/token`，更换服务器时使用 Cloudflare 提供的正式凭据。[Cloudflare 连接器凭据说明](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/#token-file)
+- 向导会给出用户中心和管理后台的 HTTPS 地址。首次从后台登录并看到用户目录后，回到同一 SSH 窗口继续。向导同时检查有效会话和用户目录审计，再显示 `Console login [PASS]`。从提示处按 `q` 可退出并保留已装服务，执行同一命令继续核对。
+
+验收使用合成身份提供方、隔离存储和回环 HTTPS 代理。实际 Cloudflare 账号、DNS、R2 和身份提供方由上海部署现场核对。
+
 新服务器的操作顺序见[一次命令完成首装](#一次命令完成首装)。签名发布已经具备打包和安装入口。上海服务器的可复制指令使用最终发布 URL、公钥摘要和启动器摘要。已有离线包也可以通过同一入口安装。
 
 2026-11-25，`5412919` 的 Ubuntu amd64 隔离 CI 完成签名首装、真实 PostgreSQL 和 S3 兼容存储读写、OIDC 自动授权、重复安装复用账号、回环 HTTPS 反代及 App Link 精确文件回读。升级验收实际断开反代，确认原最终备份保留、写请求返回维护状态，恢复反代后用同一签名包续跑并解密原密文。另以历史二进制将 schema 4 迁移到 5，核对原密文及旧版拒绝打开新版数据库。发行版检测在本机覆盖 Ubuntu、Debian、Fedora、Rocky、CentOS、Alpine、Arch、openSUSE 和未知发行版的合成输入。完整容器实测为 Ubuntu amd64。正式发布源及其签名、上海服务器、实际 R2/OIDC 配置和实体双机仍待现场执行。[隔离验收](https://github.com/ForceMind/ZapIME/actions/runs/45587740283/job/139113571186) · [草稿 PR #128](https://github.com/ForceMind/ZapIME/pull/128)

@@ -132,6 +132,8 @@ if kind == "zapime-runtime":
 try:
     with ZipFile(directory / (kind + ".zip")) as package:
         entries = package.infolist()
+        if kind == "zapime-runtime" and any(item.filename == "deploy/console_setup.py" for item in entries):
+            limits["deploy/console_setup.py"] = 262144
         if len(entries) != len(limits) or {item.filename for item in entries} != set(limits):
             raise ValueError()
         for item in entries:
