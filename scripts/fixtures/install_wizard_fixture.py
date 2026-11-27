@@ -402,12 +402,21 @@ def _exercise(root, install, parent_work, env, command, cleanup):
     checkout = os.environ['GITHUB_SHA']
     assert re.fullmatch(r'[0-9a-f]{40}', checkout)
     source = checkout
-    ancestry = command('git', 'rev-list', '--parents', '-n', '1', checkout, capture=True).split()
-    if len(ancestry) == 3:
-        checkout_tree = command('git', 'rev-parse', checkout + '^{tree}', capture=True).strip()
-        head_tree = command('git', 'rev-parse', ancestry[2] + '^{tree}', capture=True).strip()
+    # rev-list hides parents at a shallow boundary. Read the actual commit
+    # header, then fetch only the public PR parent needed for the tree proof.
+    commit_header = subprocess.check_output(['git', 'cat-file', '-p', checkout], cwd=root).split(b'\n\n', 1)[0]
+    parents = re.findall(rb'^parent ([0-9a-f]{40})$', commit_header, re.MULTILINE)
+    trees = re.findall(rb'^tree ([0-9a-f]{40})$', commit_header, re.MULTILINE)
+    assert len(trees) == 1
+    if len(parents) == 2:
+        candidate = parents[1].decode('ascii')
+        command('git', 'fetch', '--no-tags', '--depth=1', '--recurse-submodules=no', 'origin', candidate, capture=True)
+        parent_header = subprocess.check_output(['git', 'cat-file', '-p', candidate], cwd=root).split(b'\n\n', 1)[0]
+        parent_trees = re.findall(rb'^tree ([0-9a-f]{40})$', parent_header, re.MULTILINE)
+        assert len(parent_trees) == 1
+        checkout_tree, head_tree = trees[0], parent_trees[0]
         if checkout_tree == head_tree:
-            source = ancestry[2]
+            source = candidate
     installer_blob = subprocess.check_output(['git', 'show', source + ':deploy/install.sh'], cwd=root)
     assert 0 < len(installer_blob) <= 256 * 1024
     bootstrap_sha = sha256(installer_blob).hexdigest()
