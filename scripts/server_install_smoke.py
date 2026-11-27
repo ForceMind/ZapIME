@@ -330,7 +330,7 @@ def main():
             api('PUT', '/v1/key-descriptor', legacy_owner['token'], json.loads(legacy_descriptor.read_text()))
             legacy_first = api('POST', '/v1/changes', legacy_owner['token'], json.loads(legacy_packet.read_text()))
             command('bash', '-c', install_line, cwd=delivery)
-            assert 'Database schema: 5' in command('/usr/local/bin/zapime', 'status', capture=True)
+            assert 'Database schema: 6' in command('/usr/local/bin/zapime', 'status', capture=True)
             migrated = api('GET', '/v1/changes?after=0', legacy_owner['token'])
             assert migrated['changes'] == [legacy_first]
             page.write_text(json.dumps(legacy_first))
@@ -340,7 +340,7 @@ def main():
                            'sync', 'verify-objects']
             assert command(*old_command, check=False).returncode != 0
             assert api('GET', '/v1/changes?after=0', legacy_owner['token'])['head'] == 1
-            print('PASS packaged one-line install: launcher digest enforced; schema4 to schema5 migrated original encrypted record; downgrade rejected', flush=True)
+            print('PASS packaged one-line install: launcher digest enforced; schema4 to schema6 migrated original encrypted record; downgrade rejected', flush=True)
             if preview_output is not None:
                 cleanup()
                 save_preview(delivery, {

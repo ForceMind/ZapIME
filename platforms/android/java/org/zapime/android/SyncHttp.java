@@ -53,6 +53,12 @@ final class SyncHttp {
         return keyDescriptor(server,credential,registration,false,cancellation);
     }
     static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,boolean initialize,Cancellation cancellation)throws Failure {
+        return keyDescriptor(server,credential,registration,initialize,cancellation,null);
+    }
+    static final class Capabilities {
+        boolean consoleMaterial;
+    }
+    static byte[] keyDescriptor(URI server,char[] credential,byte[] registration,boolean initialize,Cancellation cancellation,Capabilities capabilities)throws Failure {
         if(initialize&&registration==null)throw new Failure("key_request");
         if(registration!=null&&(registration.length==0||registration.length>1024))throw new Failure("key_request");
         byte[] body=registration==null?null:registration.clone();
@@ -62,6 +68,12 @@ final class SyncHttp {
                 String wire=new String(body,StandardCharsets.US_ASCII);
                 java.util.regex.Matcher shape=java.util.regex.Pattern.compile("\\{\"version\":1,\"key_id\":\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\",\"material_sha256\":\"[0-9a-f]{64}\"\\}").matcher(wire);
                 if(!shape.matches()||shape.group(1).equals("00000000-0000-0000-0000-000000000000"))throw new Failure("key_request");
+            }
+            if (body == null && capabilities != null) {
+                token(credential);
+                if (!server.equals(origin(server.toString()))) throw new Failure("server");
+                return exchange(server.resolve("/v1/key-descriptor"),"Bearer "+new String(credential),cancellation,
+                        "GET",null,"application/json","application/json",2048,"key_conflict",false,capabilities);
             }
             return request(server,credential,cancellation,initialize?"/v1/key-descriptor/initialize":"/v1/key-descriptor",
                     body==null?"GET":"PUT",body,2048,"key_conflict",false);
@@ -122,13 +134,26 @@ final class SyncHttp {
     }
     private static byte[] jsonRequest(URI endpoint,String authorization,Cancellation cancellation,String method,
             byte[] body,String contentType,int maximum,String conflict,boolean transfer)throws Failure {
+        return exchange(endpoint,authorization,cancellation,method,body,contentType,"application/json",maximum,conflict,transfer,null);
+    }
+    static byte[] consoleMaterial(URI server,char[] credential,byte[] imported,Cancellation cancel)throws Failure {
+        if (server==null || !server.equals(origin(server.toString())) || imported!=null && imported.length!=72) throw new Failure("key_request");
+        token(credential);
+        String path = imported==null ? "/v1/console-material/enable" : "/v1/console-material/import";
+        byte[] result=exchange(server.resolve(path),"Bearer "+new String(credential),cancel,"POST",
+                imported==null ? new byte[0] : imported,"application/octet-stream","application/octet-stream",72,"console_material_missing",false,null);
+        if (result.length!=72) {Arrays.fill(result,(byte)0); throw new Failure("key_response");}
+        return result;
+    }
+    private static byte[] exchange(URI endpoint,String authorization,Cancellation cancellation,String method,
+            byte[] body,String contentType,String responseType,int maximum,String conflict,boolean transfer,Capabilities capabilities)throws Failure {
         cancellation.check();HttpsURLConnection connection=null;
         long deadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(12);
         try{
             connection=(HttpsURLConnection)endpoint.toURL().openConnection();
             connection.setInstanceFollowRedirects(false);connection.setUseCaches(false);
             connection.setConnectTimeout(timeout(deadline,cancellation));connection.setReadTimeout(timeout(deadline,cancellation));
-            connection.setRequestMethod(method);connection.setRequestProperty("Accept","application/json");
+            connection.setRequestMethod(method);connection.setRequestProperty("Accept",responseType);
             if(authorization!=null)connection.setRequestProperty("Authorization",authorization);
             if(body!=null){
                 connection.setDoOutput(true);connection.setFixedLengthStreamingMode(body.length);connection.setRequestProperty("Content-Type",contentType);
@@ -146,7 +171,8 @@ final class SyncHttp {
                 throw new Failure(status==401?"unauthorized":status==403?"forbidden":status==404?"unsupported":status==429?"limited":"http");
             }
             String type=connection.getContentType();
-            if(type==null||!type.split(";",2)[0].trim().equalsIgnoreCase("application/json"))throw new Failure("response");
+            if(type==null||!type.split(";",2)[0].trim().equalsIgnoreCase(responseType))throw new Failure("response");
+            if(capabilities!=null)capabilities.consoleMaterial="1".equals(connection.getHeaderField("Zapime-Console-Material"));
             long length=connection.getContentLengthLong();if(length>maximum)throw new Failure("response");
             ByteArrayOutputStream out=new ByteArrayOutputStream((int)Math.max(32,Math.min(length,maximum)));byte[] buffer=new byte[8192];
             try(InputStream in=connection.getInputStream()){

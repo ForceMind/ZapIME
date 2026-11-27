@@ -92,7 +92,7 @@ func (s *Store) lockEnrollment(ctx context.Context, account string, proof oidcau
 	}
 	err = tx.QueryRowContext(ctx, `SELECT a.id::text FROM zapime_accounts a
         JOIN zapime_oidc_subjects b ON b.account_id=a.id
-        WHERE a.id=$1 AND b.issuer=$2 AND b.subject=$3 FOR UPDATE OF a`, account, issuer, subject).Scan(&account)
+        WHERE a.id=$1 AND b.issuer=$2 AND b.subject=$3 AND a.disabled_at IS NULL FOR UPDATE OF a`, account, issuer, subject).Scan(&account)
 	if err == nil && time.Now().Before(expiresAt) {
 		return tx, nil
 	}

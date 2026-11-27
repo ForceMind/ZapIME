@@ -142,6 +142,63 @@ curl -fsSL https://raw.githubusercontent.com/ForceMind/ZapIME/main/deploy/instal
 
 将现有代理的 HTTPS 上游配置为 `127.0.0.1:8787`；这个模式不启动 Caddy，不声称已经验证公网 HTTPS。数据库端口不发布，API 只发布到回环地址；只允许 HTTPS 对公网提供服务。
 
+## 用户中心与管理后台
+
+2026-11-26 源码接线：本节适用于包含浏览器 Console 和 schema6 的新构建。上方 `2026-11-25` 试装包及其旧 schema4→5 证据保持原范围，不代表已包含或验收本节功能。本次未部署用户服务器，也未创建 Cloudflare Tunnel。
+
+浏览器使用既有 OIDC 账号，身份服务必须给同一 `ZAPIME_OIDC_CLIENT_ID` 注册精确回调 `https://你的同步域名/console/auth/callback`，支持 Authorization Code + PKCE S256，并按原受众签发 `zapime.device_enrollment` 范围、至多五分钟的 RFC9068 RS256 访问令牌。服务继续使用管理员审核的公开 JWKS。管理员由精确 issuer/subject 名单授予；邮箱和客户端提交的角色不能授予权限。账号仍须有既有 OIDC 主体绑定，不会通过网页任意建立账号。
+
+**先准备独立主密钥，再开启。** 在自有 Linux 服务器生成一次原始 32 字节文件；恢复已有托管数据时必须放回旧文件，不能运行生成命令。以下目录位于数据库 Docker volume 和 Web 静态目录之外，root 拥有，容器 GID `65532` 可读，不能被容器修改：
+
+```sh
+sudo install -d -o root -g 65532 -m 0750 /etc/zapime-console
+sudo sh -c 'umask 077; set -C; openssl rand 32 > /etc/zapime-console/master.key'
+sudo chown root:65532 /etc/zapime-console/master.key
+sudo chmod 0640 /etc/zapime-console/master.key
+```
+
+命令拒绝覆盖已有文件。不要打印、粘贴、提交该文件，不放进发布包、镜像或公开 Web 目录。不要将它替换为 64 位十六进制文本、Base64 或带换行字符串。单独备份到受保护的离线位置，例如首次保存到一个全新文件：
+
+```sh
+sudo sh -c 'umask 077; set -C; cat /etc/zapime-console/master.key > /media/PRIVATE_RECOVERY/zapime-console-master.key'
+```
+
+`/media/PRIVATE_RECOVERY` 须是自己已准备的私密备份位置；保留已有备份，不覆盖历史。运行服务的机器和备份位置均能解开托管材料，应限制访问。`zapime backup` 不复制此主密钥。失去它不会被服务自动生成新密钥补救；仅凭数据库和 R2 管理凭据不能解开旧托管材料。持有原客户端密钥的设备仍可按原恢复流程处理自己的资料。
+
+在 root 可读的 `/opt/zapime/config.env`（手工 Compose 则在私密 `.env`）增加以下配置，保留已有数据库、R2、OIDC 和安装标识。将示例域名和主体替换为已核实的实际值，origin 不带尾部 `/`：
+
+```dotenv
+ZAPIME_CONSOLE_ORIGIN=https://sync.example.org
+ZAPIME_CONSOLE_AUTHORIZATION_ENDPOINT=https://login.example.org/authorize
+ZAPIME_CONSOLE_TOKEN_ENDPOINT=https://login.example.org/token
+ZAPIME_CONSOLE_SECRET_DIR=/etc/zapime-console
+ZAPIME_CONSOLE_MASTER_KEY_FILE=/run/zapime-console/master.key
+ZAPIME_CONSOLE_ADMINS='[{"issuer":"https://login.example.org","subject":"verified-admin-subject"}]'
+```
+
+OIDC `issuer`、端点和受众必须使用提供方的精确值，不能按示例猜测。机密客户端另设 `ZAPIME_CONSOLE_CLIENT_SECRET`；公共 PKCE 客户端留空。只有提供方的固定 HTTPS 重置适配器已实现时，才成对设置 `ZAPIME_CONSOLE_PASSWORD_RESET_ENDPOINT` 和 `ZAPIME_CONSOLE_PASSWORD_RESET_TOKEN`。适配器接受 JSON `issuer/subject/account_id/request_id`、服务端 Bearer 和同值 `Idempotency-Key`，只以 HTTP 200/202/204 表示受理通知；不得把密码或重置链接返回 ZapIME。未配置时界面禁用入口，超时或受理结果无法落审计时显示待核实，不自动重试，也不重置资料密钥。
+
+在已安装本次新版本的服务器执行 `sudo zapime start`，Compose 会按新配置重建服务；手工部署使用 `docker compose --env-file .env up -d --wait sync`。启动只在启用 Console 时读取该绝对路径的普通文件，不跟随文件符号链接。读取后清理原始缓冲；缺失、尺寸错误或 Linux 上其他用户可读/组可写等过宽权限返回固定 `console_master_key_file_invalid`，不输出路径或内容。关闭 Console 时清空 `ZAPIME_CONSOLE_ORIGIN` 并重启，保留托管主密钥及备份。旧部署无需配置或创建主密钥。
+
+浏览器打开 `https://你的同步域名/console/`，管理员使用 `/console/admin/`。页面通过同源安全 cookie、CSRF、当前账号校验和事务内复核访问资料；管理员读取其他账号正文先记录查看审计，审计失败不返回正文。封禁对现有浏览器会话和同步设备生效，解封不复活旧浏览器会话。本地设备已有副本仍可使用。只有明确接受管理员可读范围并托管原材料后才显示正文；旧账户未迁移时保留迁移提示。
+
+**HTTPS 入口。** Caddy 模式已有 `reverse_proxy sync:8787`，会将 `/console/`、回调和 API 一起转发，无需把密钥目录映射到 Caddy。已有反代模式将同一公网 HTTPS 域名完整代理到 `127.0.0.1:8787`，保留请求 `Origin` 和 cookie，不缓存 Console 的 HTML/API/回调响应。不要将 Console 另挂到跨域地址或在 TLS 失败时退回公网 HTTP。
+
+Cloudflare Tunnel 沿用 `--existing-proxy` 模式，由服务器上已授权、已配置的 Tunnel 把所选公开主机映射到宿主回环入口。已有配置的 ingress 形状如下；本项目不创建 Tunnel、域名或凭据：
+
+```yaml
+ingress:
+  - hostname: sync.example.org
+    service: http://127.0.0.1:8787
+  - service: http_status:404
+```
+
+此例要求 `cloudflared` 运行在宿主机；独立容器里的 `127.0.0.1` 不指向宿主。浏览器与身份服务仍使用公开 `https://sync.example.org` 的精确回调和 origin，不能将回环地址注册为公网回调。Tunnel 自身的凭据不进入 Compose、数据库备份或源码。公网证书、实际 OIDC 登录和所选 Tunnel 路由须在获准的目标环境另验。
+
+**升级与恢复。** 新版本仍使用现有签名安装/升级流程及 root 保护的 `config.env`；可选参数默认关闭，旧配置不要求额外密钥文件。升级试运行复制库时只验证数据库和对象，外部主密钥保留在原位置；最终启动才按上述路径加载，不能随发布版本重新生成。schema6 的备份包含受保护托管材料、封禁和审计，不允许旧服务降级打开。
+
+在新服务器恢复时先放回**同一个**主密钥：目录仍为 `root:65532/0750`，文件为 `root:65532/0640`，设置相同容器路径与独立宿主源目录；然后按下节的空库成套恢复执行。没有旧主密钥时不得以新随机文件声称完成托管恢复。恢复脚本会使快照中的浏览器会话和待完成登录失效，要求重新登录；手机访问凭据及不可变资料历史按备份点保留，客户端恢复材料仍由用户另行保存。容器及真实 HTTPS/OIDC/恢复验收结果须分别报告，不能把配置单测或健康检查当作浏览器、生产部署或灾备完成。
+
 ## 管理、升级与密钥
 
 ```sh
@@ -156,7 +213,7 @@ sudo zapime verify-objects
 
 修改错误/失效的 R2 设置时使用 `sudoedit /opt/zapime/config.env`，只改 `ZAPIME_S3_*`；**保留 POSTGRES_PASSWORD**，不能删掉配置让安装器重新随机生成数据库密码。之后重新执行安装命令。不要执行 `docker compose config` 将凭据完整打印到普通日志；可用 `config --quiet` 校验。
 
-原有源码入口重复运行时会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。源码安装文件保存于 `/opt/zapime/releases/<SHA>`。签名运行包使用上文的迁移演练与冻结流程。账号密钥身份和 OIDC 主体映射随完整 PostgreSQL 备份保存。需要恢复旧版本时，从相应版本的备份恢复到全新库。
+原有源码入口重复运行时会保留配置、账号与数据库，先用当前版本备份，再构建并启动指定版本。源码安装文件保存于 `/opt/zapime/releases/<SHA>`。签名运行包使用上文的迁移演练与冻结流程。账号密钥身份、OIDC 主体映射及已开启托管的加密材料随完整 PostgreSQL 备份保存；外部 Console 主密钥单独保存。需要恢复旧版本时，从相应版本的备份恢复到全新库。
 
 支持 systemd 时自动安装每日备份 timer。备份存放 `/opt/zapime/backups`，不自动删除旧归档；应监控磁盘并将成套备份复制到自己控制的异地位置。Docker 普通日志按 10 MB × 3 轮转，不记录正文/令牌。当前是可部署的开发服务，尚未完成第三方安全审计、外层限流与生产监控。
 
@@ -165,7 +222,7 @@ sudo zapime verify-objects
 `zapime backup` 产生一对私密文件：
 
 1. `日期.dump`：一致的 PostgreSQL 账号、设备摘要、记录、操作与修订快照。
-2. `日期.dump.objects.tar`：随后导出的不可变密文对象超集，采用标准 tar。两者一起保存；客户端另行保管 E2EE 恢复包/恢复码。
+2. `日期.dump.objects.tar`：随后导出的不可变密文对象超集，采用标准 tar。两者一起保存；客户端另行保管 E2EE 恢复包/恢复码。已开启 Console 托管的部署另外独立保存同一外部主密钥，不在这两个文件内。
 
 先完成数据库快照，再导出追加写对象；当前没有后台对象清理，所以并发新增不会让快照引用的对象漏出归档。失败不发布完整 dump；不要把 `.incoming.*` 当成成功备份。
 

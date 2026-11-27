@@ -85,7 +85,7 @@ func (s *Store) ResolveOIDCAccount(ctx context.Context, proof oidcauth.Subject) 
 		return "", ErrUnauthorized
 	}
 	var account string
-	err := s.DB.QueryRowContext(ctx, `SELECT account_id::text FROM zapime_oidc_subjects WHERE issuer=$1 AND subject=$2`, issuer, subject).Scan(&account)
+	err := s.DB.QueryRowContext(ctx, `SELECT b.account_id::text FROM zapime_oidc_subjects b JOIN zapime_accounts a ON a.id=b.account_id WHERE b.issuer=$1 AND b.subject=$2 AND a.disabled_at IS NULL`, issuer, subject).Scan(&account)
 	if errors.Is(err, sql.ErrNoRows) {
 		return "", ErrUnauthorized
 	}

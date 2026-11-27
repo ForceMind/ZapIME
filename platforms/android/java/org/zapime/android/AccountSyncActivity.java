@@ -21,7 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
 public final class AccountSyncActivity extends Activity {
-    private static final String DATA_SCOPE = "同步范围包括已有和以后新增或修改的个人词库、快捷短语、候选规则、永久收藏和手动保存的剪贴板。";
+    private static final String DATA_SCOPE = "同步范围包括已有和以后新增或修改的个人词库、快捷短语、候选规则、永久收藏和手动保存的剪贴板。启用网页管理的服务器会托管新账户的同步密钥。服务端可用该密钥解密账户的同步资料，授权管理员可在后台查看已同步的词库和剪贴板。旧账户可另行选择迁移。";
     private static final class PendingLogin {
         final AccountLoginProtocol.Attempt attempt;
         final boolean requestSync;
@@ -40,7 +40,7 @@ public final class AccountSyncActivity extends Activity {
     private PendingLogin pending;
     private SyncHttp.Cancellation exchange;
     private Button enable, login, cancel;
-    private Button restoreKey, later, checkKey, loginAgain, signOut;
+    private Button restoreKey, later, checkKey, loginAgain, signOut, consoleAccess;
     private Switch syncEnabled;
     private LinearLayout loginCard;
     private TextView status;
@@ -98,6 +98,9 @@ public final class AccountSyncActivity extends Activity {
             work("正在准备同步", request -> SyncConsentController.enable(getApplicationContext(), config, shown, request));
         });
         Ui.addButton(progress, checkKey);
+        consoleAccess = Ui.button(this, "启用网页资料管理", Ui.BG, false);
+        consoleAccess.setOnClickListener(view -> confirmConsoleAccess());
+        Ui.addButton(progress, consoleAccess);
         loginAgain = Ui.button(this, "登录并开启同步", Ui.BG, false);
         loginAgain.setOnClickListener(view -> startLogin(true));
         Ui.addButton(progress, loginAgain);
@@ -159,6 +162,23 @@ public final class AccountSyncActivity extends Activity {
     }
 
     private void work(String progress, AssessmentAction action) {
+        work(progress, action, null);
+    }
+
+    private void confirmConsoleAccess() {
+        if (presented == null || !presented.consoleAvailable || presented.status != SyncConsentController.Status.READY) return;
+        SyncConsentStore.State shown = presented.state;
+        new AlertDialog.Builder(this).setTitle("启用网页资料管理？")
+                .setMessage("服务器 " + config.syncServer + "\n账号 " + shown.account
+                        + "\n\n确认后，服务器会加密保管此账户原有的同步密钥，并能解密该密钥保护的同步资料。你可在网页管理词库和云剪贴板，授权管理员也可查看这两类已同步资料。")
+                .setNegativeButton("取消", null)
+                .setPositiveButton("同意并启用", (dialog, button) -> work("正在核对账户并启用网页管理",
+                        request -> SyncConsentController.migrateToConsole(getApplicationContext(), config, shown, request),
+                        "网页资料管理已启用"))
+                .show();
+    }
+
+    private void work(String progress, AssessmentAction action, String notice) {
         if (pending != null || exchange != null) return;
         SyncHttp.Cancellation request = new SyncHttp.Cancellation();
         exchange = request;
@@ -171,7 +191,7 @@ public final class AccountSyncActivity extends Activity {
                         if (exchange != request || isDestroyed()) return;
                         exchange = null;
                         readingStatus = false;
-                        render(result, null);
+                        render(result, notice);
                     });
                 } catch (IOException | RuntimeException failure) {
                     runOnUiThread(() -> {
@@ -417,6 +437,8 @@ public final class AccountSyncActivity extends Activity {
         later.setVisibility(!waiting && shown == SyncConsentController.Status.WAITING_FOR_KEY ? View.VISIBLE : View.GONE);
         checkKey.setVisibility(!waiting && (shown == SyncConsentController.Status.KEY_UNREGISTERED
                 || shown == SyncConsentController.Status.PREPARATION_FAILED) ? View.VISIBLE : View.GONE);
+        consoleAccess.setVisibility(!waiting && shown == SyncConsentController.Status.READY && presented.consoleAvailable
+                ? View.VISIBLE : View.GONE);
         loginAgain.setVisibility(!waiting && (shown == SyncConsentController.Status.REVOKED
                 || shown == SyncConsentController.Status.WAITING_FOR_DEVICE) ? View.VISIBLE : View.GONE);
         signOut.setVisibility(consent != null && consent.account != null ? View.VISIBLE : View.GONE);

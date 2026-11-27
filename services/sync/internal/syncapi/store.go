@@ -33,7 +33,7 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err = tx.QueryRowContext(ctx, `SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil {
 		return err
 	}
-	if version < 1 || version > 5 {
+	if version < 1 || version > 6 {
 		return errors.New("unsupported_database_version")
 	}
 	_, err = tx.ExecContext(ctx, `CREATE TABLE IF NOT EXISTS zapime_accounts(
@@ -89,7 +89,10 @@ func (s *Store) Migrate(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=5 WHERE id=1`); err != nil {
+	if err = migrateConsole(ctx, tx); err != nil {
+		return err
+	}
+	if _, err = tx.ExecContext(ctx, `UPDATE zapime_schema SET version=6 WHERE id=1`); err != nil {
 		return err
 	}
 	return tx.Commit()
@@ -135,7 +138,7 @@ func (s *Store) Authenticate(ctx context.Context, token string) (Identity, error
 		return Identity{}, err
 	}
 	var actor Identity
-	err = s.DB.QueryRowContext(ctx, `SELECT account_id::text,id::text,role,expires_at FROM zapime_devices WHERE token_hash=$1 AND revoked_at IS NULL AND expires_at>now()`, hash).Scan(&actor.AccountID, &actor.DeviceID, &actor.Role, &actor.ExpiresAt)
+	err = s.DB.QueryRowContext(ctx, `SELECT d.account_id::text,d.id::text,d.role,d.expires_at FROM zapime_devices d JOIN zapime_accounts a ON a.id=d.account_id WHERE d.token_hash=$1 AND d.revoked_at IS NULL AND d.expires_at>now() AND a.disabled_at IS NULL`, hash).Scan(&actor.AccountID, &actor.DeviceID, &actor.Role, &actor.ExpiresAt)
 	actor.tokenHash = hash
 	if errors.Is(err, sql.ErrNoRows) {
 		return Identity{}, ErrUnauthorized
@@ -156,7 +159,10 @@ func (s *Store) lock(ctx context.Context, actor Identity) (*sql.Tx, int64, error
 		}
 	}()
 	var head int64
-	if err = tx.QueryRowContext(ctx, `SELECT revision FROM zapime_accounts WHERE id=$1 FOR UPDATE`, actor.AccountID).Scan(&head); err != nil {
+	if err = tx.QueryRowContext(ctx, `SELECT revision FROM zapime_accounts WHERE id=$1 AND disabled_at IS NULL FOR UPDATE`, actor.AccountID).Scan(&head); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			err = ErrUnauthorized
+		}
 		return nil, 0, err
 	}
 	var role string
@@ -183,11 +189,22 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 		return Change{}, err
 	}
 	defer tx.Rollback()
+	change, err := s.pushLocked(ctx, tx, actor, head, op)
+	if err != nil {
+		return Change{}, err
+	}
+	return change, tx.Commit()
+}
+
+// pushLocked shares the existing sync authorization, replay, CAS, quota and
+// object-write ordering with console writes inside their authorization lock.
+// The caller owns the transaction and must commit before returning success.
+func (s *Store) pushLocked(ctx context.Context, tx *sql.Tx, actor Identity, head int64, op Operation) (Change, error) {
 	canonical, _ := json.Marshal(op)
 	digest := sha256.Sum256(canonical)
 	var storedDigest, stored []byte
 	var device string
-	err = tx.QueryRowContext(ctx, `SELECT digest,change,device_id::text FROM zapime_operations WHERE account_id=$1 AND operation_id=$2`, actor.AccountID, op.OperationID).Scan(&storedDigest, &stored, &device)
+	err := tx.QueryRowContext(ctx, `SELECT digest,change,device_id::text FROM zapime_operations WHERE account_id=$1 AND operation_id=$2`, actor.AccountID, op.OperationID).Scan(&storedDigest, &stored, &device)
 	if err == nil {
 		if !bytes.Equal(storedDigest, digest[:]) || device != actor.DeviceID {
 			return Change{}, ErrOperationReused
@@ -196,7 +213,7 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 		if decodeErr != nil {
 			return Change{}, decodeErr
 		}
-		return change, tx.Commit()
+		return change, nil
 	}
 	if !errors.Is(err, sql.ErrNoRows) {
 		return Change{}, err
@@ -265,7 +282,7 @@ func (s *Store) Push(ctx context.Context, actor Identity, op Operation) (Change,
 	if _, err = tx.ExecContext(ctx, `UPDATE zapime_accounts SET revision=$2,stored_bytes=stored_bytes+$3 WHERE id=$1`, actor.AccountID, head+1, cost); err != nil {
 		return Change{}, err
 	}
-	return change, tx.Commit()
+	return change, nil
 }
 
 func (s *Store) Pull(ctx context.Context, actor Identity, after int64, limit int) (Page, error) {

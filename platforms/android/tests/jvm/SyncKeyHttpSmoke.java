@@ -54,6 +54,28 @@ public final class SyncKeyHttpSmoke {
         byte[] registration=("{\"version\":1,\"key_id\":\"11111111-1111-4111-8111-111111111111\",\"material_sha256\":\""+new String(new char[64]).replace('\0','b')+"\"}").getBytes(StandardCharsets.US_ASCII);
         byte[] response="{\"protocol\":1,\"account_id\":\"22222222-2222-4222-8222-222222222222\",\"state\":\"empty\",\"descriptor\":null,\"registered_by\":null,\"registered_at\":null}".getBytes(StandardCharsets.UTF_8);
         byte[] registeredResponse=("{\"protocol\":1,\"account_id\":\"22222222-2222-4222-8222-222222222222\",\"state\":\"registered\",\"descriptor\":"+new String(registration,StandardCharsets.US_ASCII)+",\"registered_by\":\"33333333-3333-4333-8333-333333333333\",\"registered_at\":\"2026-11-06T12:00:00Z\"}").getBytes(StandardCharsets.UTF_8);
+        byte[] material=new byte[72];Arrays.fill(material,(byte)7);
+        server.createContext("/v1/console-material/",exchange->{
+            try{
+                String path=exchange.getRequestURI().getPath();
+                require(exchange.getRequestURI().getRawQuery()==null,"material in query");
+                require("POST".equals(exchange.getRequestMethod()),"material method");
+                require(("Bearer "+new String(token)).equals(exchange.getRequestHeaders().getFirst("Authorization")),"material bearer");
+                require("application/octet-stream".equals(exchange.getRequestHeaders().getFirst("Content-Type")),"material MIME");
+                byte[] body=exchange.getRequestBody().readAllBytes();
+                require(path.endsWith("/import")?Arrays.equals(body,material):path.endsWith("/enable")&&body.length==0,"material request body");
+                String value=mode.get();
+                if(value.equals("redirect")){
+                    exchange.getResponseHeaders().set("Location","https://localhost:"+server.getAddress().getPort()+"/leak");
+                    exchange.sendResponseHeaders(307,-1);return;
+                }
+                if(value.equals("missing")){exchange.sendResponseHeaders(409,-1);return;}
+                exchange.getResponseHeaders().set("Content-Type","application/octet-stream");
+                byte[] result=value.equals("oversize")?new byte[73]:material;
+                exchange.sendResponseHeaders(200,result.length);exchange.getResponseBody().write(result);
+            }catch(Throwable failure){handlerFailure.compareAndSet(null,failure);}
+            finally{exchange.close();}
+        });
         server.createContext("/",exchange->{
             try{
                 if(!exchange.getRequestURI().getPath().equals("/v1/key-descriptor")||exchange.getRequestURI().getRawQuery()!=null){leaks.incrementAndGet();exchange.sendResponseHeaders(500,-1);return;}
@@ -74,6 +96,7 @@ public final class SyncKeyHttpSmoke {
                 int status=value.startsWith("status-")?Integer.parseInt(value.substring(7)):value.equals("put-status-503")?503:200;
                 if(value.equals("empty")){exchange.sendResponseHeaders(200,-1);return;}
                 exchange.getResponseHeaders().set("Content-Type",value.equals("mime")?"text/html":"application/json; charset=utf-8");
+                if(value.equals("console"))exchange.getResponseHeaders().set("Zapime-Console-Material","1");
                 byte[] result=value.equals("large")||value.equals("chunked")?new byte[2049]:put?registeredResponse:response;
                 exchange.sendResponseHeaders(status,value.equals("chunked")?0:result.length);
                 if(value.equals("cancel")){entered.countDown();try{release.await(10,TimeUnit.SECONDS);}catch(InterruptedException interrupted){Thread.currentThread().interrupt();}}
@@ -93,6 +116,18 @@ public final class SyncKeyHttpSmoke {
                 mode.set(value);String code=value.contains("redirect")?"redirect":value.equals("status-401")?"unauthorized":value.equals("status-403")?"forbidden":value.equals("status-404")?"unsupported":value.equals("status-409")?"key_conflict":value.equals("status-429")?"limited":value.endsWith("503")?"http":"response";
                 int before=requests.get();fails(code,()->SyncHttp.keyDescriptor(origin,token,value.startsWith("put")?registration:null,new SyncHttp.Cancellation()));require(requests.get()==before+1&&leaks.get()==0,"descriptor redirect or application retry occurred");
             }
+            SyncHttp.Capabilities capabilities=new SyncHttp.Capabilities();
+            mode.set("console");
+            SyncHttp.keyDescriptor(origin,token,null,false,new SyncHttp.Cancellation(),capabilities);
+            require(capabilities.consoleMaterial,"capability absent");
+            require(Arrays.equals(material,SyncHttp.consoleMaterial(origin,token,null,new SyncHttp.Cancellation())),"server material download");
+            require(Arrays.equals(material,SyncHttp.consoleMaterial(origin,token,material,new SyncHttp.Cancellation())),"material migration");
+            mode.set("redirect");fails("redirect",()->SyncHttp.consoleMaterial(origin,token,material,new SyncHttp.Cancellation()));
+            mode.set("missing");fails("console_material_missing",()->SyncHttp.consoleMaterial(origin,token,null,new SyncHttp.Cancellation()));
+            mode.set("oversize");fails("response",()->SyncHttp.consoleMaterial(origin,token,null,new SyncHttp.Cancellation()));
+            mode.set("get");
+            SyncHttp.keyDescriptor(origin,token,null,false,new SyncHttp.Cancellation(),capabilities);
+            require(!capabilities.consoleMaterial,"legacy server detected as console enabled");
             int before=requests.get();
             for(byte[] invalid:new byte[][]{new byte[0],new byte[1025],"{\"root\":\"forbidden\"}".getBytes(StandardCharsets.US_ASCII),new String(registration,StandardCharsets.US_ASCII).replace("11111111-1111-4111-8111-111111111111","00000000-0000-0000-0000-000000000000").getBytes(StandardCharsets.US_ASCII),new String(registration,StandardCharsets.US_ASCII).replace("version\":1","version\":1,\"version\":1").getBytes(StandardCharsets.US_ASCII)}){
                 fails("key_request",()->SyncHttp.keyDescriptor(origin,token,invalid,new SyncHttp.Cancellation()));require(requests.get()==before,"invalid descriptor went online");
