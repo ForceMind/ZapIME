@@ -99,8 +99,14 @@ def admin_login(cert, issuer, origin, expected_account):
     opener = browser(cert)
     url = origin + '/console/auth/login?return_to=admin'
     authorization = token_callback = False
+    events = []
+    known_paths = {'/console/auth/login': 'console_login', '/auth': 'oidc_authorize',
+                   '/console/auth/callback': 'console_callback', '/console/admin/': 'admin_page'}
     for _ in range(24):
         status, headers, body = browser_request(opener, url)
+        route = urllib.parse.urlsplit(url).path
+        phase = 'oidc_interaction' if route.startswith('/fixture-login/') else known_paths.get(route, 'other')
+        events.append((phase, status))
         if status in (302, 303):
             target = urllib.parse.urljoin(url, headers['Location'])
             parts = urllib.parse.urlsplit(target)
@@ -123,13 +129,14 @@ def admin_login(cert, issuer, origin, expected_account):
             status, headers, _ = browser_request(opener, url,
                 urllib.parse.urlencode({'challenge': match[1].decode()}).encode(),
                 {'Content-Type': 'application/x-www-form-urlencoded'})
-            assert status in (302, 303)
+            events.append(('oidc_interaction_post', status))
+            assert status in (302, 303), f'authorization steps {events}'
             url = urllib.parse.urljoin(url, headers['Location'])
             continue
-        assert status == 200 and url == origin + '/console/admin/'
+        assert status == 200 and url == origin + '/console/admin/', f'authorization steps {events}'
         break
     else:
-        raise AssertionError('bounded OAuth redirect chain did not finish')
+        raise AssertionError(f'bounded OAuth redirect chain did not finish: {events}')
     assert authorization and token_callback
     status, _, body = browser_request(opener, origin + '/console/api/session')
     session = json.loads(body)

@@ -268,7 +268,14 @@ func (api *API) consoleFinishLogin(ctx context.Context, w http.ResponseWriter, r
 		return err
 	}
 	c := api.Console
-	form := url.Values{"grant_type": {"authorization_code"}, "code": {q.Get("code")}, "redirect_uri": {c.Origin + "/console/auth/callback"}, "client_id": {c.ClientID}, "code_verifier": {verifier}}
+	form := url.Values{
+		"grant_type":    {"authorization_code"},
+		"code":          {q.Get("code")},
+		"redirect_uri":  {c.Origin + "/console/auth/callback"},
+		"client_id":     {c.ClientID},
+		"resource":      {c.Audience},
+		"code_verifier": {verifier},
+	}
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, c.TokenEndpoint, strings.NewReader(form.Encode()))
 	if err != nil {
 		return ErrUnauthorized

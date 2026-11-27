@@ -301,7 +301,7 @@ func TestPostgresConsoleOAuthStatePKCEAndCodeReplay(t *testing.T) {
 	access := sign("browser-login")
 	provider := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		calls++
-		if r.Method != "POST" || r.ParseForm() != nil || r.Form.Get("grant_type") != "authorization_code" || r.Form.Get("redirect_uri") != api.Console.Origin+"/console/auth/callback" || r.Form.Get("client_id") != enrollmentClient || r.Form.Get("code") != "synthetic-code" || base64URLHash(r.Form.Get("code_verifier")) != challenge {
+		if r.Method != "POST" || r.ParseForm() != nil || r.Form.Get("grant_type") != "authorization_code" || r.Form.Get("redirect_uri") != api.Console.Origin+"/console/auth/callback" || r.Form.Get("client_id") != enrollmentClient || r.Form.Get("resource") != api.Console.Audience || r.Form.Get("code") != "synthetic-code" || base64URLHash(r.Form.Get("code_verifier")) != challenge {
 			t.Error("invalid PKCE exchange")
 			w.WriteHeader(400)
 			return
