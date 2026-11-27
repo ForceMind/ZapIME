@@ -40,3 +40,7 @@
 | 打包、运行和交付 | 复核默认关闭、配置后可用、备份与恢复要求，记录前后端、数据库和移动端验证范围 | 配置及启用步骤见 [服务端部署](../SERVER_DEPLOY.md#用户中心与管理后台)。浏览器界面、生产身份提供方、实际服务器及实体手机单列验收 |
 
 托管的是账号的同步密钥，服务器可用它解密该密钥保护的同步资料。管理员后台仅提供词库和云剪贴板读取操作。浏览器开通及 Android 同意文案均说明托管后的可读范围。
+
+2026-11-27，实施提交 `bb33237` 已推送至 [实现草稿 PR #130](https://github.com/ForceMind/ZapIME/pull/130)。46 项网页交互测试通过。Linux CI 通过 PostgreSQL 竞态检查、S3 兼容存储、签名安装、旧库升级及隔离恢复。Android CI 通过密钥传输的 JVM HTTPS 回归、双架构 APK 构建及 API 28/35/36 系统输入回归。系统输入回归的结论仅覆盖键盘，密钥传输的结论来自 JVM HTTPS 与服务器测试。 [同步服务 CI](https://github.com/ForceMind/ZapIME/actions/runs/45976936702) · [Android CI](https://github.com/ForceMind/ZapIME/actions/runs/45976936613)
+
+正式启用需按部署文档配置实际 OIDC 回调、管理员主体及服务端主密钥。密码重置还需身份提供方的 HTTPS 适配器。生产 OIDC、网页实机浏览及手机上的密钥迁移仍待目标环境验收。

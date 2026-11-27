@@ -160,7 +160,7 @@ sudo chmod 0640 /etc/zapime-console/master.key
 命令拒绝覆盖已有文件。不要打印、粘贴、提交该文件，不放进发布包、镜像或公开 Web 目录。不要将它替换为 64 位十六进制文本、Base64 或带换行字符串。单独备份到受保护的离线位置，例如首次保存到一个全新文件：
 
 ```sh
-sudo install -o root -g root -m 0600 /etc/zapime-console/master.key /media/PRIVATE_RECOVERY/zapime-console-master.key
+sudo sh -c 'umask 077; set -C; cat /etc/zapime-console/master.key > /media/PRIVATE_RECOVERY/zapime-console-master.key'
 ```
 
 `/media/PRIVATE_RECOVERY` 须是自己已准备的私密备份位置；保留已有备份，不覆盖历史。运行服务的机器和备份位置均能解开托管材料，应限制访问。`zapime backup` 不复制此主密钥。失去它不会被服务自动生成新密钥补救；仅凭数据库和 R2 管理凭据不能解开旧托管材料。持有原客户端密钥的设备仍可按原恢复流程处理自己的资料。
