@@ -7,11 +7,11 @@ export const clientId = 'zapime-android-synthetic';
 export const subject = 'a3-synthetic-user';
 export const scope = 'zapime.device_enrollment';
 
-export function createIssuer(issuer, redirectUri, resources, privateKey = generateKeyPairSync('rsa', { modulusLength: 2048 }).privateKey, accountSubject = subject, registeredClient = clientId) {
+export function createIssuer(issuer, redirectUri, resources, privateKey = generateKeyPairSync('rsa', { modulusLength: 2048 }).privateKey, accountSubject = subject, registeredClient = clientId, applicationType = 'native') {
   const attributes = { kid: 'a3-fixture', alg: 'RS256', use: 'sig' };
   const publicKey = { ...createPublicKey(privateKey).export({ format: 'jwk' }), ...attributes };
   const provider = new Provider(issuer, {
-    clients: [{ client_id: registeredClient, application_type: 'native', grant_types: ['authorization_code'],
+    clients: [{ client_id: registeredClient, application_type: applicationType, grant_types: ['authorization_code'],
       response_types: ['code'], redirect_uris: [redirectUri], token_endpoint_auth_method: 'none' }],
     jwks: { keys: [{ ...privateKey.export({ format: 'jwk' }), ...attributes }] },
     cookies: { keys: [randomBytes(32).toString('base64url'), randomBytes(32).toString('base64url')] },

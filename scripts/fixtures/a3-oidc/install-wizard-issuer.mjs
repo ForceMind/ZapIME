@@ -13,7 +13,7 @@ assert.equal(process.env.GITHUB_ACTIONS, 'true');
 assert.equal(process.getuid(), 0);
 const selected = JSON.parse(readFileSync(configuration));
 const { provider, publicKey } = createIssuer(selected.issuer, selected.origin + '/console/auth/callback',
-  [selected.audience], createPrivateKey(readFileSync(folder + '/issuer.pem')), selected.subject, selected.client_id);
+  [selected.audience], createPrivateKey(readFileSync(folder + '/issuer.pem')), selected.subject, selected.client_id, 'web');
 provider.proxy = true;
 const delegate = provider.callback();
 const interactions = new Map();
