@@ -160,6 +160,10 @@ func run() error {
 	}
 	api := syncapi.NewAPIWithOIDC(store, login)
 	api.AllowAutomaticEnrollment = automatic == "1"
+	api.Console, api.ConsoleVault, err = loadConsole(store, login)
+	if err != nil {
+		return err
+	}
 	handler := http.Handler(api)
 	maintenance := os.Getenv("ZAPIME_MAINTENANCE_FLAG")
 	route := ""

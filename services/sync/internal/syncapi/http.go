@@ -15,6 +15,8 @@ import (
 )
 
 type API struct {
+	Console                  *Console
+	ConsoleVault             *ConsoleKeyVault
 	Store                    *Store
 	AllowAutomaticEnrollment bool
 	slots                    chan struct{}
@@ -47,6 +49,16 @@ func failure(w http.ResponseWriter, err error) {
 		write(w, 409, map[string]string{"error": "operation_id_reused"})
 	case errors.Is(err, ErrCursor):
 		write(w, 409, map[string]string{"error": "invalid_cursor"})
+	case errors.Is(err, ErrConsoleKeyUnavailable):
+		write(w, 503, map[string]string{"error": "console_key_unavailable"})
+	case errors.Is(err, ErrConsoleKeyRequired):
+		write(w, 409, map[string]string{"error": "console_key_required"})
+	case errors.Is(err, ErrConsoleDictionaryDuplicate):
+		write(w, 409, map[string]string{"error": "duplicate_dictionary_entry"})
+	case errors.Is(err, ErrConsoleRecordExpired):
+		write(w, 410, map[string]string{"error": "record_expired"})
+	case errors.Is(err, ErrConsoleRecordDeleted):
+		write(w, 410, map[string]string{"error": "record_deleted"})
 	case errors.Is(err, ErrKeyDescriptorConflict):
 		write(w, 409, map[string]string{"error": "key_descriptor_conflict"})
 	case errors.Is(err, ErrKeyDescriptorLegacy):
@@ -90,6 +102,10 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
+	if r.URL.Path == "/console" || strings.HasPrefix(r.URL.Path, "/console/") {
+		api.consoleHTTP(ctx, w, r)
+		return
+	}
 	if r.URL.Path == "/healthz" && r.Method == http.MethodGet {
 		if err := api.Store.DB.PingContext(ctx); err != nil {
 			failure(w, err)
@@ -120,6 +136,8 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	switch {
+	case strings.HasPrefix(r.URL.Path, "/v1/console-material/"):
+		api.consoleDeviceKey(ctx, w, r, actor)
 	case r.URL.Path == "/v1/key-descriptor" && r.Method == http.MethodGet:
 		if r.URL.RawQuery != "" || r.URL.ForceQuery || r.ContentLength != 0 || len(r.TransferEncoding) != 0 {
 			failure(w, ErrInvalid)
@@ -129,6 +147,9 @@ func (api *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			failure(w, err)
 			return
+		}
+		if api.Console != nil && api.ConsoleVault != nil {
+			w.Header().Set("Zapime-Console-Material", "1")
 		}
 		write(w, 200, state)
 	case (r.URL.Path == "/v1/key-descriptor" || r.URL.Path == "/v1/key-descriptor/initialize") && r.Method == http.MethodPut:

@@ -17,6 +17,7 @@ final class SyncConnection implements AutoCloseable {
     final UUID account,device;
     final String expires,role;
     private final char[] token;
+    final SyncHttp.Capabilities capabilities = new SyncHttp.Capabilities();
     private boolean closed;
     private SyncConnection(URI server,UUID account,UUID device,char[] token,String expires,String role){
         this.server=server;this.account=account;this.device=device;this.token=token;this.expires=expires;this.role=role;
@@ -79,7 +80,11 @@ final class SyncConnection implements AutoCloseable {
         if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.session(server,token,cancellation);
     }
     byte[] keyDescriptor(byte[] registration,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
-        if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.keyDescriptor(server,token,registration,cancellation);
+        if(closed)throw new SyncHttp.Failure("credential");return SyncHttp.keyDescriptor(server,token,registration,false,cancellation,capabilities);
+    }
+    byte[] consoleMaterial(byte[] imported,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
+        if(closed || !capabilities.consoleMaterial)throw new SyncHttp.Failure("unsupported");
+        return SyncHttp.consoleMaterial(server,token,imported,cancellation);
     }
     byte[] initializeKeyDescriptor(byte[] registration,SyncHttp.Cancellation cancellation)throws SyncHttp.Failure {
         if(closed)throw new SyncHttp.Failure("credential");

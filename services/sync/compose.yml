@@ -27,6 +27,14 @@ services:
       ZAPIME_OIDC_CLIENT_ID: ${ZAPIME_OIDC_CLIENT_ID:-}
       ZAPIME_OIDC_JWKS_FILE: ${ZAPIME_OIDC_JWKS_FILE:-}
       ZAPIME_OIDC_AUTO_ENROLL: ${ZAPIME_OIDC_AUTO_ENROLL:-0}
+      ZAPIME_CONSOLE_ORIGIN: ${ZAPIME_CONSOLE_ORIGIN:-}
+      ZAPIME_CONSOLE_AUTHORIZATION_ENDPOINT: ${ZAPIME_CONSOLE_AUTHORIZATION_ENDPOINT:-}
+      ZAPIME_CONSOLE_TOKEN_ENDPOINT: ${ZAPIME_CONSOLE_TOKEN_ENDPOINT:-}
+      ZAPIME_CONSOLE_CLIENT_SECRET: ${ZAPIME_CONSOLE_CLIENT_SECRET:-}
+      ZAPIME_CONSOLE_ADMINS: ${ZAPIME_CONSOLE_ADMINS:-}
+      ZAPIME_CONSOLE_MASTER_KEY_FILE: ${ZAPIME_CONSOLE_MASTER_KEY_FILE:-}
+      ZAPIME_CONSOLE_PASSWORD_RESET_ENDPOINT: ${ZAPIME_CONSOLE_PASSWORD_RESET_ENDPOINT:-}
+      ZAPIME_CONSOLE_PASSWORD_RESET_TOKEN: ${ZAPIME_CONSOLE_PASSWORD_RESET_TOKEN:-}
       ZAPIME_OBJECT_BACKEND: ${ZAPIME_OBJECT_BACKEND:-postgres}
       ZAPIME_S3_ENDPOINT: ${ZAPIME_S3_ENDPOINT:-}
       ZAPIME_S3_BUCKET: ${ZAPIME_S3_BUCKET:-}
@@ -48,6 +56,13 @@ services:
       - type: bind
         source: ${ZAPIME_OIDC_PUBLIC_JWKS:-./oidc-disabled.json}
         target: /run/zapime-oidc.json
+        read_only: true
+        bind: {create_host_path: false, selinux: z}
+      # Disabled installations use the existing harmless state directory.
+      # When enabled, select an external secrets directory, never a Web root.
+      - type: bind
+        source: ${ZAPIME_CONSOLE_SECRET_DIR:-./deployment-state}
+        target: /run/zapime-console
         read_only: true
         bind: {create_host_path: false, selinux: z}
     cap_drop: [ALL]

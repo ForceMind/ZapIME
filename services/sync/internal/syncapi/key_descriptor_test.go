@@ -497,8 +497,8 @@ func TestPostgresKeyDescriptorSchemaMigration(t *testing.T) {
 				t.Fatal(err)
 			}
 			var version int
-			if err = s.DB.QueryRow(`SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil || version != 5 {
-				t.Fatal("schema5 not persisted", err)
+			if err = s.DB.QueryRow(`SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil || version != 6 {
+				t.Fatal("schema6 not persisted", err)
 			}
 			page, err := s.Pull(ctx, actor, 0, 100)
 			if err != nil || len(page.Changes) != 1 || page.Changes[0] != original {
@@ -511,13 +511,13 @@ func TestPostgresKeyDescriptorSchemaMigration(t *testing.T) {
 			if _, err = s.RegisterKeyDescriptor(ctx, actor, descriptor(t)); !errors.Is(err, ErrKeyDescriptorLegacy) {
 				t.Fatal("old history adopted arbitrary root", err)
 			}
-			if _, err = s.DB.Exec(`UPDATE zapime_schema SET version=6`); err != nil {
+			if _, err = s.DB.Exec(`UPDATE zapime_schema SET version=7`); err != nil {
 				t.Fatal(err)
 			}
 			if err = s.Migrate(ctx); err == nil {
 				t.Fatal("future schema downgraded")
 			}
-			if err = s.DB.QueryRow(`SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil || version != 6 {
+			if err = s.DB.QueryRow(`SELECT version FROM zapime_schema WHERE id=1`).Scan(&version); err != nil || version != 7 {
 				t.Fatal("future version changed", err)
 			}
 		})

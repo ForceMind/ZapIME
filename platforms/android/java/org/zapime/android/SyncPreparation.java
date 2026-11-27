@@ -148,6 +148,26 @@ final class SyncPreparation {
             if(!local.initialized)throw new IOException("sync_workspace_uninitialized");
             guard.check();
             if(saved==null)candidate=SyncSecrets.loadInitialKey(context,account);
+            // Explicit login-and-sync consent may obtain the server-generated key.
+            // Existing device-only keys are exported only by the separate migration action.
+            if(device.capabilities.consoleMaterial && saved==null && candidate==null){
+                if("empty".equals(remote.state) && (local.account!=null || local.keyId!=null))
+                    throw new IOException("sync_material_missing");
+                byte[] issued=null;
+                try{
+                    guard.check();
+                    issued=device.consoleMaterial(null,cancel);
+                    guard.check();
+                    SyncKeyRegistration.Result registered=SyncKeyRegistration.inspectRemote(context,device,cancel);
+                    if(!descriptor(account,issued).same(registered.descriptor))
+                        throw new IOException("sync_consent_key_mismatch");
+                    install(context,account,issued,guard);
+                    return registered;
+                }catch(SyncHttp.Failure missing){
+                    if("registered".equals(remote.state) && "console_material_missing".equals(missing.code))return remote;
+                    throw missing;
+                }finally{if(issued!=null)Arrays.fill(issued,(byte)0);}
+            }
             if("empty".equals(remote.state)&&saved==null&&candidate==null){
                 if(local.account!=null||local.keyId!=null)throw new IOException("sync_material_missing");
                 byte[] generated=NativeCore.newSyncMaterial(account.toString());
@@ -189,6 +209,26 @@ final class SyncPreparation {
         finally{
             if(saved!=null)Arrays.fill(saved,(byte)0);
             if(candidate!=null)Arrays.fill(candidate,(byte)0);
+        }
+    }
+    static void migrateToConsole(Context context,SyncConnection device,SyncKeyRegistration.Descriptor confirmed,
+            SyncHttp.Cancellation cancel,CommitCheck guard)throws IOException {
+        worker();
+        guard.check();
+        SyncKeyRegistration.Result remote=SyncKeyRegistration.inspectRemote(context,device,cancel);
+        if(!device.capabilities.consoleMaterial || confirmed==null || !confirmed.same(remote.descriptor))
+            throw new IOException("sync_consent_key_mismatch");
+        byte[] original=SyncSecrets.load(context,device.account),verified=null;
+        try{
+            if(!confirmed.same(descriptor(device.account,original)) || !status(context,device.account,original).prepared)
+                throw new IOException("sync_consent_key_mismatch");
+            guard.check();
+            verified=device.consoleMaterial(original,cancel);
+            guard.check();
+            if(!MessageDigest.isEqual(original,verified))throw new IOException("sync_consent_key_mismatch");
+        }finally{
+            if(original!=null)Arrays.fill(original,(byte)0);
+            if(verified!=null)Arrays.fill(verified,(byte)0);
         }
     }
     static State create(Context context,UUID expected)throws IOException {

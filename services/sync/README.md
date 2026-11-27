@@ -2,13 +2,13 @@
 
 独立开发的 Go/PostgreSQL 服务，不复制 `msime-cloud` 实现。当前是 M3 的服务端切片：密文持久化、事务修订、幂等重试、冲突返回、设备令牌、撤销、账号隔离、只创建一次的公开密钥身份与数据库迁移。不是已经接通四端的云产品。
 
-当前账号由管理员 CLI 创建，账号 UUID 贯穿设备；尚无密码登录、邮件验证、带核对码的新设备配对、客户端密钥传输或四端数据同步。Android候选源码有[手动设备连接页](../../docs/ACCOUNT_CONNECTION.md)，通过新`GET /v1/session`验证账号/设备/角色/到期时间并加密保存连接，尚不交换个人资料。设备令牌不会解开端到端密文。客户端仍须持有根密钥或恢复资料；服务端不接收这些材料。
+账号由管理员预置 OIDC 主体或 CLI 创建，账号 UUID 贯穿设备。Android 登录与自动同步的实际范围见 [A3 记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)。可选浏览器用户中心沿用相同 OIDC，支持明确开启托管后的资料管理。默认设备协议仍不接收根密钥；托管使用独立确认入口和外部主密钥保护，不把设备访问令牌当成解密密钥。邮件验证、设备配对及完整四端验收仍分别交付。
 
 ## 公开密钥身份与升级
 
 新增 `GET/PUT /v1/key-descriptor`：owner在空历史账号上明确登记一次 `{version:1,key_id,material_sha256}`；相同描述符重试幂等，不同描述符拒绝。member只能读取和核对。描述符不含根密钥、恢复码或恢复包，不会自动创建客户端材料或配对。登记后的新Push必须使用同key ID，旧API不能绕过登记写入另一套key。已有历史但没有描述符的账号保留旧v1操作兼容，但不能自动登记新根；legacy迁移、密钥轮换和客户端HTTP编排仍未完成。
 
-服务端数据库升级为 schema5，旧版二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
+服务端数据库升级为 schema6，新增账号封禁、浏览器会话、查看审计及受保护的显式托管材料，旧版二进制拒绝打开。升级前保存成套备份。R2 对象 `storage_version=2`、客户端 SQLite 和 HTTP 协议 v1 保持原格式。密钥身份接口见[密钥身份说明](../../docs/SYNC_KEY_DESCRIPTOR.md)。
 
 A3 预置身份由管理员在服务运行环境内用 `zapime-sync bind-oidc-subject <account-uuid> <issuer> <subject>` 绑定到现有账号。参数是事先核实的签发者与主体，邮箱仅用于展示。相同绑定允许重试，改绑已关联主体会拒绝。映射表随 PostgreSQL 完整备份保存。[A3 执行记录](../../docs/ANDROID_ACCOUNT_SYNC_IMPLEMENTATION.md)
 
@@ -80,6 +80,12 @@ docker compose exec sync zapime-sync provision '我的首个设备'
 
 Compose 内数据库连接走独立 Docker 网络且不发布端口；跨主机 PostgreSQL 必须配置证书校验 TLS，不能把示例中的 `sslmode=disable` 用于公网数据库。
 
+### 可选浏览器用户中心
+
+默认关闭。包含本次实现的新版本部署后，配置 OIDC 浏览器回调、管理员精确主体名单、`ZAPIME_CONSOLE_ORIGIN` 与独立的原始 32 字节主密钥文件，再启动服务。Compose 将密钥目录只读挂载到 `/run/zapime-console`，容器 UID/GID 为 `65532:65532`；缺文件、错误长度或 Linux 上过宽权限会拒绝启动，不生成替代密钥。主密钥既不是 OIDC/设备凭据，也不是客户端恢复码。
+
+完整配置、Caddy/已有反代/Cloudflare Tunnel 入口、容器可读权限及恢复步骤统一见 [服务器部署 · 用户中心与管理后台](../../docs/SERVER_DEPLOY.md#用户中心与管理后台)。用户入口为 `/console/`，管理员入口为 `/console/admin/`。旧账户须持有原材料并明确迁移后才可读正文；不能用空列表冒充解密成功。
+
 ## 测试
 
 ```sh
@@ -93,7 +99,7 @@ go vet ./...
 
 ## 备份与新服务器恢复
 
-PostgreSQL 模式的数据库备份包含账号的密钥身份描述符、设备元数据、令牌摘要、密文、修订和操作历史；R2 模式新正文位于对象桶，必须同时保存 .objects.tar sidecar，仍需以私密文件管理；它不包含 E2EE 根密钥。
+数据库备份包含账号密钥身份、设备元数据、令牌摘要、密文、修订、操作历史和审计；已显式开启托管的账户还包含外部主密钥加密的材料。R2 模式新正文位于对象桶，必须同时保存 `.objects.tar` sidecar。成套备份不包含外部 Console 主密钥或客户端恢复包/恢复码，均按私密文件保管；托管主密钥须独立备份。
 
 ```sh
 bash backup.sh /absolute/path/zapime-backup.dump
@@ -106,7 +112,7 @@ bash restore.sh /absolute/path/zapime-backup.dump
 docker compose up -d sync
 ```
 
-恢复脚本拒绝已有 public 表的数据库，不执行 DROP/--clean；`pg_restore` 使用单事务，失败回滚。备份脚本使用私密临时文件和不覆盖目标的原子链接。生产恢复还应轮换设备凭据，并由客户端重新验证密文及恢复资料。
+恢复脚本拒绝已有 public 表的数据库，不执行 DROP/--clean；`pg_restore` 使用单事务，失败回滚。恢复后清除浏览器会话和待完成 OAuth 登录，撤销对应浏览器设备，用户须重新登录；手机设备及不可变同步历史保持。备份脚本使用私密临时文件和不覆盖目标的原子链接。开启 Console 的恢复部署须单独放回同一外部主密钥并核对只读挂载。生产恢复还应轮换设备凭据，并由客户端重新验证密文及恢复资料。
 
 这条路径恢复的是同一账号/修订历史；空服务器上的个人数据重建、所有设备丢失后的客户端恢复以及四端重新配对尚待端到端验收。
 

@@ -17,4 +17,4 @@ trap 'rm -f "$temp" "$object_temp"' EXIT
 # Publish the DB dump last as the completion marker. Refuse any overwrite.
 ln "$object_temp" "$objects"
 ln "$temp" "$file"
-echo "Backup complete: $file and $objects; keep BOTH files. Client keys are not included."
+echo "Backup complete: $file and $objects; keep BOTH files. The external console master key and client recovery materials are NOT included."

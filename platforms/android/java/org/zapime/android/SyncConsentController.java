@@ -20,10 +20,15 @@ final class SyncConsentController {
     static final class Assessment {
         final SyncConsentStore.State state;
         final Status status;
+        final boolean consoleAvailable;
 
         Assessment(SyncConsentStore.State state, Status status) {
+            this(state,status,false);
+        }
+        Assessment(SyncConsentStore.State state, Status status, boolean consoleAvailable) {
             this.state = state;
             this.status = status;
+            this.consoleAvailable = consoleAvailable;
         }
     }
 
@@ -123,7 +128,7 @@ final class SyncConsentController {
             if (confirm) {
                 state = SyncConsentStore.enable(context, state.generation, scope, saved.device, remote, cancel);
             }
-            return new Assessment(state, status);
+            return new Assessment(state, status, saved.capabilities.consoleMaterial);
         } catch (SyncHttp.Failure failure) {
             if (failure.code.equals("unauthorized") || failure.code.equals("forbidden") || failure.code.equals("identity")) {
                 return disable(context, state, Status.REVOKED);
@@ -140,6 +145,23 @@ final class SyncConsentController {
             }
         } finally {
             Arrays.fill(response, (byte) 0);
+        }
+    }
+    static Assessment migrateToConsole(Context context, AccountLoginProtocol.Config config,
+            SyncConsentStore.State shown,SyncHttp.Cancellation cancel)throws IOException {
+        current(context,shown,cancel);
+        SyncEnrollmentVault.Scope scope=shown.verifiedDeployment(config);
+        try(SyncConnection saved=SyncConnectionStore.load(context)){
+            if(saved==null || !shown.permits(scope,saved.device,shown.expectedKey)
+                    || !saved.server.equals(config.syncServer) || !saved.account.equals(shown.account))
+                throw new IOException("sync_consent_identity");
+            SyncPreparation.migrateToConsole(context,saved,shown.expectedKey,cancel,()->{
+                current(context,shown,cancel);
+                try(SyncConnection actual=SyncConnectionStore.load(context)){
+                    if(!saved.matchesSnapshot(actual))throw new IOException("sync_connection_changed");
+                }
+            });
+            return new Assessment(shown,Status.READY,true);
         }
     }
 
