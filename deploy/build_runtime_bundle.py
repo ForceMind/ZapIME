@@ -15,7 +15,7 @@ from build_preflight_bundle import write_bundle
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME_FILES = (
     "deploy/bootstrap.sh", "deploy/install.sh", "deploy/manage.sh", "deploy/oidc_setup.py", "deploy/preflight.py",
-    "deploy/upgrade.sh",
+    "deploy/upgrade.sh", "deploy/console_setup.py",
     "scripts/android_account_login_config.py", "services/sync/compose.yml", "services/sync/Caddyfile",
     "services/sync/backup.sh", "services/sync/restore.sh", "services/sync/oidc-disabled.json",
     "services/sync/assetlinks-disabled.json", "LICENSE", "services/sync/LICENSE",

@@ -11,6 +11,7 @@ verified_runtime= image_archive=
 oidc_config= oidc_jwks= oidc_subject= oidc_account= android_signer=
 proxy=caddy
 proxy_explicit=0
+wizard=0
 while (( $# )); do
   case "$1" in
     --ref) ref=${2:?Missing ref}; shift 2 ;;
@@ -18,13 +19,14 @@ while (( $# )); do
     --verified-runtime) verified_runtime=${2:?Missing verified runtime directory}; shift 2 ;;
     --image-archive) image_archive=${2:?Missing image archive}; shift 2 ;;
     --existing-proxy) proxy=existing; proxy_explicit=1; shift ;;
+    --wizard) wizard=1; shift ;;
     --oidc-config) oidc_config=${2:?Missing public Android OIDC JSON}; shift 2 ;;
     --oidc-jwks) oidc_jwks=${2:?Missing public JWKS}; shift 2 ;;
     --oidc-subject-file) oidc_subject=${2:?Missing issuer subject file}; shift 2 ;;
     --oidc-account) oidc_account=${2:?Missing existing account UUID}; shift 2 ;;
     --android-signer) android_signer=${2:?Missing Android certificate SHA-256}; shift 2 ;;
     --help)
-      echo 'ZapIME: [--ref main|40-hex-sha] [--restore /absolute/file.dump] [--existing-proxy]'
+      echo 'ZapIME: [--wizard] [--ref main|40-hex-sha] [--restore /absolute/file.dump] [--existing-proxy]'
       echo 'OIDC: --oidc-config JSON --oidc-jwks JSON --oidc-subject-file FILE [--oidc-account UUID] [--android-signer SHA256]'
       exit ;;
     *) echo "Unknown option: $1" >&2; exit 1 ;;
@@ -32,6 +34,13 @@ while (( $# )); do
 done
 [[ $EUID == 0 && $(uname -s) == Linux ]] || { echo 'Run on your Linux server with sudo bash' >&2; exit 1; }
 [[ $ref == main || $ref =~ ^[0-9a-f]{40}$ ]] || { echo 'Ref must be main or an exact commit SHA' >&2; exit 1; }
+if (( wizard )); then
+  [[ -n $verified_runtime || $ref != main ]] || { echo 'The setup command must name an exact release commit.' >&2; exit 1; }
+  [[ -z $restore ]] || { echo 'Restore uses the separate recoverable backup entry.' >&2; exit 1; }
+  [[ -z $verified_runtime || -f $verified_runtime/deploy/console_setup.py ]] || { echo 'This release predates the console setup wizard.' >&2; exit 1; }
+  exec 3<>/dev/tty || { echo 'Please run this command in an interactive SSH terminal.' >&2; exit 1; }
+  printf '\nZapIME 部署向导\n[1/5] 检查系统和 Docker Compose\n' >&3
+fi
 if [[ -n $verified_runtime ]]; then
   [[ $verified_runtime =~ ^/tmp/zapime-install\.[A-Za-z0-9]+$ && -d $verified_runtime && ! -L $verified_runtime &&
      $(stat -c '%u %a' "$verified_runtime") == '0 700' && -f $verified_runtime/manifest.json &&
@@ -213,11 +222,38 @@ if [[ -n $verified_runtime ]]; then
     printf '%s\n' "$trust" > "$root/release-trust.sha256"
   fi
 fi
+check_caddy_ports() {
+  python3 - <<'PY'
+import socket
+for port in (80, 443):
+    with socket.socket() as listener:
+        try:
+            listener.bind(("0.0.0.0", port))
+        except OSError:
+            raise SystemExit(f"Port {port} is occupied. Use an existing HTTPS proxy; no service was stopped.")
+PY
+}
 if [[ ! -f $root/config.env ]]; then
   exec 3<>/dev/tty || { echo 'First run needs a terminal to enter your R2 settings' >&2; exit 1; }
+  if (( wizard )); then
+    printf '\n[2/5] 设置访问域名和私有 R2\n使用 Tunnel 时，公开域名由 Cloudflare 处理，稍后向导会显示回源地址。\n' >&3
+  fi
   printf '\nZapIME · private R2 storage\nCreate an R2 Standard PRIVATE bucket and bucket-scoped Object Read & Write credentials first.\nFree tier is metered, not an unlimited free plan.\n' >&3
-  read -r -p 'HTTPS domain (DNS must point to this server): ' domain <&3
-  if [[ -n $verified_runtime && $proxy_explicit != 1 ]]; then
+  if (( wizard )); then
+    read -r -p 'HTTPS domain (hostname only): ' domain <&3
+  else
+    read -r -p 'HTTPS domain (DNS must point to this server): ' domain <&3
+  fi
+  if (( wizard && !proxy_explicit )); then
+    while :; do
+      read -r -p 'HTTPS mode [caddy/tunnel] (tunnel): ' selected_proxy <&3 || exit 1
+      case ${selected_proxy:-tunnel} in
+        tunnel) proxy=existing; break ;;
+        caddy) if check_caddy_ports; then proxy=caddy; break; fi ;;
+        *) echo '请选择 caddy 或 tunnel。' >&2 ;;
+      esac
+    done
+  elif [[ -n $verified_runtime && $proxy_explicit != 1 ]]; then
     read -r -p 'HTTPS mode [caddy/existing] (caddy): ' selected_proxy <&3
     proxy=${selected_proxy:-caddy}
     [[ $proxy == caddy || $proxy == existing ]] || { echo 'Select caddy or existing.' >&2; exit 1; }
@@ -237,7 +273,7 @@ if [[ ! -f $root/config.env ]]; then
   ln "$config" "$root/config.env"; rm -f "$config"
   unset secret access password
 fi
-if [[ -n $verified_runtime && ! -e $root/current && ! -f $root/oidc/binding.json && -z $oidc_config ]] &&
+if [[ $wizard == 0 && -n $verified_runtime && ! -e $root/current && ! -f $root/oidc/binding.json && -z $oidc_config ]] &&
   { exec 3<>/dev/tty; } 2>/dev/null; then
   echo 'Android sign-in requires a compatible OIDC provider.' >&3
   read -r -p 'Configure Android sign-in now? [y/N]: ' choose_oidc <&3
@@ -252,7 +288,7 @@ if [[ -n $verified_runtime && ! -e $root/current && ! -f $root/oidc/binding.json
   fi
 fi
 if [[ $proxy_explicit == 1 ]]; then
-  if [[ -e $root/current && -n $verified_runtime ]] &&
+  if [[ -e $root/current && ( -n $verified_runtime || $wizard == 1 ) ]] &&
     [[ $(sed -n 's/^ZAPIME_HTTPS_MODE=//p' "$root/config.env") != existing ]]; then
     echo 'Change the HTTPS mode separately from a signed release update.' >&2; exit 1
   fi
@@ -302,7 +338,12 @@ export COMPOSE_PROJECT_NAME=zapime ZAPIME_ENV_FILE="$root/config.env"
 compose=(docker compose --env-file "$root/config.env" -f "$release/services/sync/compose.yml")
 if [[ -e $root/current ]]; then
   [[ -z $restore ]] || { echo 'Restore is only accepted on a fresh installation' >&2; exit 1; }
-  if [[ -z $verified_runtime ]]; then
+  current_release=$(readlink -f "$root/current")
+  if (( wizard )) && [[ $current_release != "$release" ]]; then
+    echo '检测到另一个已安装版本。请用现有升级入口升级，完成后再运行向导。' >&2
+    exit 1
+  fi
+  if [[ -z $verified_runtime && $wizard == 0 ]]; then
     # The outer lock is held here; use the previous Compose file directly.
     COMPOSE_FILE="$root/current/services/sync/compose.yml" bash "$root/current/services/sync/backup.sh" \
       "$root/backups/legacy-$(date -u +%Y%m%dT%H%M%SZ)-$(openssl rand -hex 4).dump"
@@ -316,14 +357,15 @@ if [[ -n $oidc_config ]]; then
   [[ -z $oidc_account ]] || oidc_args+=(--account "$oidc_account")
   python3 "$release/deploy/oidc_setup.py" "$root" "$oidc_config" "$oidc_jwks" "$oidc_subject" "${oidc_args[@]}"
 fi
+if (( wizard )); then
+  printf '\n[3/5] 配置身份提供方、管理员和后台托管密钥\n' >&3
+  console_args=()
+  [[ -z $android_signer ]] || console_args+=(--android-signer "$android_signer")
+  python3 -I "$release/deploy/console_setup.py" "$root" "${console_args[@]}" <&3 >&3
+  printf '\n[4/5] 安装并启动同步服务\n' >&3
+fi
 if [[ $proxy == caddy && ! -e $root/current && -z $("${compose[@]}" ps --status running -q https) ]]; then
-  python3 - <<'PY'
-import socket
-for port in (80,443):
- with socket.socket() as s:
-  try:s.bind(('0.0.0.0',port))
-  except OSError:raise SystemExit(f'Port {port} is occupied. Use --existing-proxy and proxy HTTPS to 127.0.0.1:8787; no existing service was stopped.')
-PY
+  check_caddy_ports
 fi
 if [[ -z $verified_runtime ]]; then "${compose[@]}" build sync; fi
 "${compose[@]}" run --rm --no-deps -T sync check-storage
@@ -383,7 +425,7 @@ if [[ $proxy == caddy ]]; then
     if verify_public_https; then https_verified=1; break; fi
     sleep 2
   done
-  [[ $https_verified == 1 ]] || { echo 'Local service is ready, but public HTTPS did not reach this instance. Check DNS, ports and Caddy logs, then rerun.' >&2; exit 1; }
+  [[ $https_verified == 1 || $wizard == 1 ]] || { echo 'Local service is ready, but public HTTPS did not reach this instance. Check DNS, ports and Caddy logs, then rerun.' >&2; exit 1; }
 else
   for attempt in {1..3}; do
     if verify_public_https; then https_verified=1; break; fi
@@ -444,3 +486,113 @@ if [[ -f $root/oidc/binding.json ]]; then
     echo 'App Link [PENDING] Publish the association for the candidate APK signer and verify public HTTPS.'
   fi
 else echo 'OIDC [PENDING] Provide the verified identity configuration for Android sign-in.'; fi
+
+configure_tunnel_connector() {
+  local name=zapime-tunnel folder="$root/tunnel" token_file staged token owner
+  local replace=${1:-0} managed=0
+  local image='cloudflare/cloudflared@sha256:55c7e3e8d89d5e8d20b75a82f3602cbf98e06db406e73e282073cfdc5a9a3af6'
+  token_file="$folder/token"
+  if docker container inspect "$name" >/dev/null 2>&1; then
+    owner=$(docker container inspect --format '{{index .Config.Labels "io.zapime.installation"}}' "$name") || return 1
+    if [[ $owner != "$installation_id" ]]; then
+      echo '检测到自管 Tunnel 容器。请在 Cloudflare 中复用该连接器。' >&2
+      return 0
+    fi
+    managed=1
+  fi
+  [[ ! -L $folder && ! -L $token_file ]] || { echo 'Tunnel 凭据路径不可使用符号链接。' >&2; return 1; }
+  if [[ ! -f $token_file || $replace == 1 ]]; then
+    printf '如果这台服务器尚未运行 Tunnel 连接器，可在 Cloudflare 创建 Tunnel 后粘贴连接器 token。已有连接器请直接回车。\n' >&3
+    read -r -s -p 'Cloudflare Tunnel token (Enter to reuse an existing connector): ' token <&3 || return 1
+    printf '\n' >&3
+    [[ -n $token ]] || return 0
+    [[ ${#token} -ge 32 && ${#token} -le 4096 && $token =~ ^[A-Za-z0-9_+/=-]+$ ]] ||
+      { echo 'Tunnel token 格式不符，请输入 Cloudflare 的连接器 token。' >&2; return 1; }
+    install -d -o root -g 65532 -m 0750 "$folder" || return 1
+    staged=$(mktemp "$folder/token.incoming.XXXXXX") || return 1
+    if ! printf '%s\n' "$token" > "$staged" || ! chown 0:65532 "$staged" || ! chmod 0640 "$staged"; then
+      rm -f -- "$staged"
+      return 1
+    fi
+    unset token
+    if [[ $replace == 1 ]]; then
+      if ! mv -Tf -- "$staged" "$token_file"; then rm -f -- "$staged"; return 1; fi
+    else
+      if ! ln -- "$staged" "$token_file"; then rm -f -- "$staged"; return 1; fi
+      rm -f -- "$staged"
+    fi
+  fi
+  if [[ $managed == 1 ]]; then
+    if [[ $replace == 1 ]]; then
+      docker restart "$name" >/dev/null
+    else
+      docker start "$name" >/dev/null
+    fi
+    return
+  fi
+  docker run -d --name "$name" --label "io.zapime.installation=$installation_id" \
+    --restart unless-stopped --network host --user 65532:65532 --read-only --cap-drop ALL \
+    --security-opt no-new-privileges --log-driver local \
+    -v "$token_file:/run/zapime-tunnel-token:ro,Z" \
+    "$image" tunnel --no-autoupdate run --token-file /run/zapime-tunnel-token >/dev/null
+}
+
+if (( wizard )); then
+  printf '\n[5/5] 验证公开 HTTPS 和首位管理员登录\n' >&3
+  if [[ $https_verified == 0 && $proxy == existing ]]; then
+    printf '请在 Cloudflare 将公开主机 %s 指向 http://127.0.0.1:8787。\n' "$domain" >&3
+    configure_tunnel_connector || echo 'Tunnel 连接器还未就绪，可重新输入 token 或检查现有连接器。' >&2
+  fi
+  until [[ $https_verified == 1 ]]; do
+    if [[ $proxy == existing ]]; then
+      printf '请将宿主机 Cloudflare Tunnel 的公开主机 %s 指向 http://127.0.0.1:8787。\n' "$domain" >&3
+      echo '输入 r 可重新输入由本安装管理的连接器 token。' >&3
+    else
+      printf '请检查域名 %s 的 DNS 和入站 80/443。\n' "$domain" >&3
+    fi
+    read -r -p 'Press Enter to check HTTPS (q to exit): ' again <&3 || again=q
+    [[ $again != q ]] || { echo 'HTTPS [PENDING] 可再次执行同一命令继续检查。' >&2; exit 2; }
+    if [[ $again == r && $proxy == existing ]]; then
+      configure_tunnel_connector 1 || echo 'Tunnel 连接器还未就绪，可重新输入 token 或检查现有连接器。' >&2
+    fi
+    if verify_public_https; then
+      https_verified=1
+      : > "$root/public-https.verified"
+      printf 'HTTPS [PASS] https://%s\n' "$domain" >&3
+    fi
+  done
+  admin_url="https://$domain/console/admin/"
+  user_url="https://$domain/console/"
+  if [[ $(curl -sS --connect-timeout 3 --max-time 8 -o /dev/null -w '%{http_code}' "$admin_url") != 200 ||
+        $(curl -sS --connect-timeout 3 --max-time 8 -o /dev/null -w '%{http_code}' "https://$domain/console/auth/login?return_to=admin") != 302 ]]; then
+    echo 'Console [PENDING] 后台或 OIDC 跳转未就绪。请检查公开路由后重试。' >&2
+    exit 2
+  fi
+  printf 'Console [READY]\n用户中心 %s\n管理后台 %s\n' "$user_url" "$admin_url" >&3
+  admin_account=$(python3 -I -c 'import json,sys,uuid; print(uuid.UUID(json.load(open(sys.argv[1]))["account"]))' "$root/oidc/binding.json")
+  admin_session_ready() {
+    local result
+    result=$("${compose[@]}" exec -T db psql -X -U zapime -d zapime -Atq -v ON_ERROR_STOP=1 -c "
+      SELECT EXISTS(
+        SELECT 1 FROM zapime_console_sessions s
+        JOIN zapime_devices d ON d.id=s.device_id AND d.account_id=s.account_id AND d.token_hash=s.device_token_hash
+        JOIN zapime_accounts a ON a.id=s.account_id
+        JOIN zapime_oidc_subjects b ON b.account_id=s.account_id AND b.issuer=s.issuer AND b.subject=s.subject
+        WHERE s.account_id='$admin_account' AND s.expires_at>clock_timestamp()
+          AND a.disabled_at IS NULL AND d.revoked_at IS NULL AND d.expires_at>clock_timestamp()
+          AND EXISTS(
+            SELECT 1 FROM zapime_console_audit l
+            WHERE l.actor_account_id=s.account_id AND l.target_account_id=s.account_id
+              AND l.actor_issuer=s.issuer AND l.actor_subject=s.subject AND l.action='accounts.list'
+              AND l.created_at>=s.expires_at-interval '30 minutes'
+          )
+      )" ) || return 1
+    [[ $result == t ]]
+  }
+  until admin_session_ready; do
+    printf '请打开管理后台，用已绑定的首位管理员账号完成一次登录，然后回到此窗口。\n' >&3
+    read -r -p 'Press Enter after administrator login (q to exit): ' again <&3 || again=q
+    [[ $again != q ]] || { echo 'Console login [PENDING] 可再次执行同一命令继续检查。' >&2; exit 2; }
+  done
+  printf 'Console login [PASS]\n运维入口 sudo zapime status / doctor / backup\n' >&3
+fi

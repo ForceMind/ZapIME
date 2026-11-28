@@ -4,6 +4,7 @@
 No Cloudflare credentials, real domain, user host, or production storage are used.
 """
 import argparse
+import importlib.util
 import json
 from contextlib import contextmanager
 from hashlib import file_digest, sha256
@@ -315,6 +316,15 @@ def main():
             print('PASS signed upgrade: isolated migration, stopped writer backup, failed public check freezes data, same-bundle resume, original ciphertext and OIDC', flush=True)
             cleanup()
 
+            # A fresh terminal-driven install must exercise the real account
+            # login, rather than merely finding a browser session row in SQL.
+            # Its private fixture retains every pre-existing acceptance gate.
+            wizard_spec = importlib.util.spec_from_file_location(
+                'zapime_install_wizard_fixture', ROOT / 'scripts/fixtures/install_wizard_fixture.py')
+            wizard_fixture = importlib.util.module_from_spec(wizard_spec)
+            wizard_spec.loader.exec_module(wizard_fixture)
+            wizard_fixture.exercise(ROOT, INSTALL, work, env, command, cleanup)
+
             # The previous draft's actual production binary used schema 4.
             # Start it with a separate DB and bucket before upgrading.
             setup('zapime-ci-schema4-upgrade')
@@ -350,6 +360,8 @@ def main():
                     'public_key_sha256': pin, 'images_tar_sha256': manifest['archive_sha256'],
                 }, preview_output)
     try:
+        command(sys.executable, '-m', 'unittest', 'discover', '-s', 'scripts',
+                '-p', 'test_console_setup.py', '-v')
         setup('zapime-ci-install')
         install()
         owner=json.loads((INSTALL/'owner.json').read_text())
