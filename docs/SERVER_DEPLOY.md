@@ -14,10 +14,10 @@
 
 #### 上海服务器安装命令
 
-登录全新的 Linux amd64 或 arm64 实例，在交互式 SSH 终端复制下面整行。入口需要 Bash、curl、sha256sum 和 sudo。命令下载并核对固定版本，再启动向导。
+登录全新的 Linux amd64 或 arm64 实例，在交互式 SSH 的 Bash 终端复制下面整行。入口需要 curl 和 sha256sum，普通用户会看到 sudo 提权提示。入口自动下载并核对固定版本，再启动向导。
 
 ```bash
-sudo bash -c 'set -e; t=$(mktemp); trap '\''rm -f "$t"'\'' EXIT; curl -fsSL --proto =https --proto-redir =https "https://raw.githubusercontent.com/ForceMind/ZapIME/$1/deploy/install.sh" -o "$t"; printf "%s  %s\n" "$2" "$t" | sha256sum -c - >/dev/null; bash "$t" --wizard --ref "$1"' zapime-install bd29e738da889efdbbf2fd47c290e8d9038a0eac c4bd3dfd4bdc2e0e6ffd668f56df7330ff2d6569c2c267df078398a1cedebfb8
+bash <(curl -fsSL https://raw.githubusercontent.com/ForceMind/ZapIME/939bd38d7c997222ebd28619c83ec63ab9937236/deploy/install-online.sh)
 ```
 
 操作者在自己的 Cloudflare 和身份服务中准备域名、私有 R2 桶、读写凭据和兼容的 OIDC 客户端。向导计算回调地址，读取公开身份配置，引导绑定首位管理员。终端只需要运行安装命令，敏感值按提示输入。
@@ -26,7 +26,9 @@ sudo bash -c 'set -e; t=$(mktemp); trap '\''rm -f "$t"'\'' EXIT; curl -fsSL --pr
 - 选择 Tunnel 时，在 Cloudflare 将同步主机名映射到宿主机 `http://127.0.0.1:8787`。已有连接器可以复用。空白机可在向导中隐藏输入远程托管的连接器 token，安装器用固定摘要的官方镜像启动 `zapime-tunnel`。token 由 root 和连接器读取，位于 `/opt/zapime/tunnel/token`，更换服务器时使用 Cloudflare 提供的正式凭据。[Cloudflare 连接器凭据说明](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/configure-tunnels/run-parameters/#token-file)
 - 向导会给出用户中心和管理后台的 HTTPS 地址。首次从后台登录并看到用户目录后，回到同一 SSH 窗口继续。向导同时检查有效会话和用户目录审计，再显示 `Console login [PASS]`。从提示处按 `q` 可退出并保留已装服务，执行同一命令继续核对。
 
-2026-11-27，Ubuntu amd64 runner 从空安装目录执行上面的源码命令主体，实际下载 `bd29e73` 并核对 SHA-256。隔离容器使用真实 PostgreSQL 和 MinIO。测试先核对向导写入合成 R2 参数，再在 CI 专用适配器中接入 MinIO。HTTPS 走仅监听回环和 Docker 私有接口的代理。合成 OIDC 完成 PKCE 回调并返回真实后台会话，管理员目录返回 200 且写入审计。复跑验证配置、主密钥、账号及设备数量一致。CI 预装 Docker。实际 R2、Cloudflare Tunnel 边缘连接、上海域名和正式 OIDC 由部署现场核对。 [通过的服务器 CI](https://github.com/ForceMind/ZapIME/actions/runs/46042769879/job/140654531351) · [草稿 PR #131](https://github.com/ForceMind/ZapIME/pull/131)
+2026-11-27，Ubuntu amd64 runner 从空安装目录验证了安装器 `bd29e73` 的下载、SHA-256 校验、首装和重复执行。隔离容器使用真实 PostgreSQL 和 MinIO。测试先核对向导写入合成 R2 参数，再在 CI 专用适配器中接入 MinIO。HTTPS 走仅监听回环和 Docker 私有接口的代理。合成 OIDC 完成 PKCE 回调并返回真实后台会话，管理员目录返回 200 且写入审计。复跑验证配置、主密钥、账号及设备数量一致。CI 预装 Docker。实际 R2、Cloudflare Tunnel 边缘连接、上海域名和正式 OIDC 由部署现场核对。 [通过的服务器 CI](https://github.com/ForceMind/ZapIME/actions/runs/46042769879/job/140654531351) · [草稿 PR #131](https://github.com/ForceMind/ZapIME/pull/131)
+
+短入口 `939bd38` 通过本地 Bash 验证，会下载并校验同一个安装器，传入同一组向导参数。测试替换了安装执行步骤，检查下载内容损坏时拒绝启动，以及执行结束后清理临时文件。
 
 签名运行包及离线安装见[一次命令完成首装](#一次命令完成首装)。签名包的入口使用发布 URL、公钥摘要和启动器摘要。
 
